@@ -1,0 +1,518 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingApplicants
+  description: Stores personal and contact information for loan applicants.
+  fields:
+    - name: citizenshipStatus
+      type: ConsumerLendingVarchar!
+      description: US Citizen, Permanent Resident, etc.
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for applicant, may link to parties table
+    - name: currentAddressId
+      type: ConsumerLendingInt4
+      description: Reference to enterprise.addresses
+    - name: dateOfBirth
+      type: ConsumerLendingDate!
+      description: Applicant's date of birth
+    - name: email
+      type: ConsumerLendingVarchar!
+      description: Primary email address
+    - name: firstName
+      type: ConsumerLendingVarchar!
+      description: Applicant's legal first name
+    - name: housingStatus
+      type: ConsumerLendingVarchar!
+      description: Own, Rent, Live with Parents, etc.
+    - name: lastName
+      type: ConsumerLendingVarchar!
+      description: Applicant's legal last name
+    - name: mailingAddressId
+      type: ConsumerLendingInt4
+      description: Reference to enterprise.addresses if different from current
+    - name: maritalStatus
+      type: ConsumerLendingVarchar
+      description: Married, Single, Divorced, etc.
+    - name: middleName
+      type: ConsumerLendingVarchar
+      description: Applicant's middle name
+    - name: mobilePhone
+      type: ConsumerLendingVarchar
+      description: Mobile phone number if different from primary
+    - name: monthlyHousingExpense
+      type: ConsumerLendingNumeric
+      description: Monthly housing payment amount
+    - name: phone
+      type: ConsumerLendingVarchar!
+      description: Primary phone number
+    - name: previousAddressId
+      type: ConsumerLendingInt4
+      description: Reference to enterprise.addresses for previous residence
+    - name: ssn
+      type: ConsumerLendingVarchar!
+      description: Social Security Number, stored encrypted
+    - name: yearsAtCurrentAddress
+      type: ConsumerLendingInt4
+      description: Years at current residence
+  graphql:
+    typeName: ConsumerLendingApplicants
+    inputTypeName: ConsumerLendingApplicantsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_applicants
+      fieldMapping:
+        citizenshipStatus:
+          column:
+            name: citizenship_status
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        currentAddressId:
+          column:
+            name: current_address_id
+        dateOfBirth:
+          column:
+            name: date_of_birth
+        email:
+          column:
+            name: email
+        firstName:
+          column:
+            name: first_name
+        housingStatus:
+          column:
+            name: housing_status
+        lastName:
+          column:
+            name: last_name
+        mailingAddressId:
+          column:
+            name: mailing_address_id
+        maritalStatus:
+          column:
+            name: marital_status
+        middleName:
+          column:
+            name: middle_name
+        mobilePhone:
+          column:
+            name: mobile_phone
+        monthlyHousingExpense:
+          column:
+            name: monthly_housing_expense
+        phone:
+          column:
+            name: phone
+        previousAddressId:
+          column:
+            name: previous_address_id
+        ssn:
+          column:
+            name: ssn
+        yearsAtCurrentAddress:
+          column:
+            name: years_at_current_address
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingApplicants
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - citizenshipStatus
+          - consumerLendingApplicantId
+          - currentAddressId
+          - dateOfBirth
+          - email
+          - firstName
+          - housingStatus
+          - lastName
+          - mailingAddressId
+          - maritalStatus
+          - middleName
+          - mobilePhone
+          - monthlyHousingExpense
+          - phone
+          - previousAddressId
+          - ssn
+          - yearsAtCurrentAddress
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingApplicantsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingApplicants
+      comparableFields:
+        - fieldName: citizenshipStatus
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: currentAddressId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: dateOfBirth
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: email
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: firstName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: housingStatus
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: lastName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: mailingAddressId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: maritalStatus
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: middleName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: mobilePhone
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: monthlyHousingExpense
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: phone
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: previousAddressId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: ssn
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: yearsAtCurrentAddress
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicantAssets
+        - relationshipName: consumerLendingApplicantEmployments
+        - relationshipName: consumerLendingApplicantIncomes
+        - relationshipName: consumerLendingApplicantLiabilities
+        - relationshipName: consumerLendingApplicationApplicants
+        - relationshipName: consumerLendingCreditReports
+        - relationshipName: consumerLendingEcoaMonitorings
+        - relationshipName: consumerLendingMilitaryLendingChecks
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingApplicantsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingApplicants
+      aggregatableFields:
+        - fieldName: citizenshipStatus
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: currentAddressId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: dateOfBirth
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: email
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: firstName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: housingStatus
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: lastName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: mailingAddressId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: maritalStatus
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: middleName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: mobilePhone
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: monthlyHousingExpense
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: phone
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: previousAddressId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: ssn
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: yearsAtCurrentAddress
+          aggregateExpression: ConsumerLendingInt4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingApplicantsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingApplicants
+      orderableFields:
+        - fieldName: citizenshipStatus
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: currentAddressId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: dateOfBirth
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: email
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: firstName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: housingStatus
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: lastName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: mailingAddressId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: maritalStatus
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: middleName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: mobilePhone
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: monthlyHousingExpense
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: phone
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: previousAddressId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: ssn
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: yearsAtCurrentAddress
+          orderByExpression: ConsumerLendingInt4OrderByExp
+      orderableRelationships:
+        - relationshipName: currentAddress
+        - relationshipName: mailingAddress
+        - relationshipName: previousAddress
+  graphql:
+    expressionTypeName: ConsumerLendingApplicantsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingApplicants
+  objectType: ConsumerLendingApplicants
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_applicants
+  filterExpressionType: ConsumerLendingApplicantsBoolExp
+  aggregateExpression: ConsumerLendingApplicantsAggExp
+  orderByExpression: ConsumerLendingApplicantsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingApplicants
+      subscription:
+        rootField: consumerLendingApplicants
+    selectUniques:
+      - queryRootField: consumerLendingApplicantsByConsumerLendingApplicantId
+        uniqueIdentifier:
+          - consumerLendingApplicantId
+        subscription:
+          rootField: consumerLendingApplicantsByConsumerLendingApplicantId
+    filterInputTypeName: ConsumerLendingApplicantsFilterInput
+    aggregate:
+      queryRootField: consumerLendingApplicantsAggregate
+      subscription:
+        rootField: consumerLendingApplicantsAggregate
+  description: Stores personal and contact information for loan applicants.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingApplicants
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicantAssets
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingApplicantAssets
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingApplicantAssetsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingApplicantAssetsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicantEmployments
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingApplicantEmployments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingApplicantEmploymentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingApplicantEmploymentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicantIncomes
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingApplicantIncomes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingApplicantIncomesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingApplicantIncomesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicantLiabilities
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingApplicantLiabilities
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingApplicantLiabilitiesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingApplicantLiabilitiesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicationApplicants
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingApplicationApplicants
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingApplicationApplicantsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingApplicationApplicantsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingCreditReports
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingCreditReports
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingCreditReportsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingCreditReportsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingEcoaMonitorings
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingEcoaMonitoring
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingEcoaMonitoringAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingEcoaMonitoringsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingMilitaryLendingChecks
+  sourceType: ConsumerLendingApplicants
+  target:
+    model:
+      name: ConsumerLendingMilitaryLendingChecks
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingMilitaryLendingChecksAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+  graphql:
+    aggregateFieldName: consumerLendingMilitaryLendingChecksAggregate
+

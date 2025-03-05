@@ -1,0 +1,497 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingSuspiciousActivityReports
+  description: Tracks Suspicious Activity Reports filed with FinCEN
+  fields:
+    - name: accountClosed
+      type: Bool!
+      description: Whether account was closed
+    - name: accountClosingDate
+      type: Date
+      description: Date account was closed (if applicable)
+    - name: activityEndDate
+      type: Date!
+      description: Date when suspicious activity ended
+    - name: activityStartDate
+      type: Date!
+      description: Date when suspicious activity began
+    - name: amountInvolved
+      type: Numeric!
+      description: Total amount involved in suspicious activity
+    - name: approvedBy
+      type: Int4!
+      description: Person who approved the SAR
+    - name: bsaOfficerSignature
+      type: Int4!
+      description: Signature of BSA officer
+    - name: filingDate
+      type: Date!
+      description: Date the SAR was filed
+    - name: filingInstitution
+      type: Varchar!
+      description: Name of filing institution
+    - name: fincenAcknowledgment
+      type: Varchar
+      description: Acknowledgment received from FinCEN
+    - name: fraudInvolved
+      type: Bool!
+      description: Whether fraud was involved
+    - name: insiderAbuseInvolved
+      type: Bool!
+      description: Whether insider abuse was involved
+    - name: lawEnforcementAgency
+      type: Varchar
+      description: Agency contacted (if applicable)
+    - name: lawEnforcementContactDate
+      type: Date
+      description: Date of law enforcement contact
+    - name: lawEnforcementContactName
+      type: Varchar
+      description: Name of law enforcement contact
+    - name: lawEnforcementContacted
+      type: Bool!
+      description: Whether law enforcement was contacted
+    - name: moneyLaunderingInvolved
+      type: Bool!
+      description: Whether money laundering was involved
+    - name: otherDescription
+      type: Text
+      description: Description of other suspicious activity
+    - name: otherInvolved
+      type: Bool!
+      description: Whether other suspicious activity was involved
+    - name: preparedBy
+      type: Int4!
+      description: Person who prepared the SAR
+    - name: sarFilePath
+      type: Varchar
+      description: Path to stored copy of the SAR
+    - name: smallBusinessBankingBusinessId
+      type: Int4
+      description: Reference to the business if applicable
+    - name: smallBusinessBankingSarId
+      type: Int4!
+      description: Unique identifier for each SAR
+    - name: structuringInvolved
+      type: Bool!
+      description: Whether structuring was involved
+    - name: supportingDocumentation
+      type: Text
+      description: List of supporting documentation
+    - name: suspiciousActivityDescription
+      type: Text!
+      description: Detailed description of suspicious activity
+    - name: suspiciousActivityType
+      type: Varchar!
+      description: Type of suspicious activity
+    - name: terroristFinancingInvolved
+      type: Bool!
+      description: Whether terrorist financing was involved
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingSuspiciousActivityReports
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingSuspiciousActivityReportsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_suspicious_activity_reports
+      fieldMapping:
+        accountClosed:
+          column:
+            name: account_closed
+        accountClosingDate:
+          column:
+            name: account_closing_date
+        activityEndDate:
+          column:
+            name: activity_end_date
+        activityStartDate:
+          column:
+            name: activity_start_date
+        amountInvolved:
+          column:
+            name: amount_involved
+        approvedBy:
+          column:
+            name: approved_by
+        bsaOfficerSignature:
+          column:
+            name: bsa_officer_signature
+        filingDate:
+          column:
+            name: filing_date
+        filingInstitution:
+          column:
+            name: filing_institution
+        fincenAcknowledgment:
+          column:
+            name: fincen_acknowledgment
+        fraudInvolved:
+          column:
+            name: fraud_involved
+        insiderAbuseInvolved:
+          column:
+            name: insider_abuse_involved
+        lawEnforcementAgency:
+          column:
+            name: law_enforcement_agency
+        lawEnforcementContactDate:
+          column:
+            name: law_enforcement_contact_date
+        lawEnforcementContactName:
+          column:
+            name: law_enforcement_contact_name
+        lawEnforcementContacted:
+          column:
+            name: law_enforcement_contacted
+        moneyLaunderingInvolved:
+          column:
+            name: money_laundering_involved
+        otherDescription:
+          column:
+            name: other_description
+        otherInvolved:
+          column:
+            name: other_involved
+        preparedBy:
+          column:
+            name: prepared_by
+        sarFilePath:
+          column:
+            name: sar_file_path
+        smallBusinessBankingBusinessId:
+          column:
+            name: small_business_banking_business_id
+        smallBusinessBankingSarId:
+          column:
+            name: small_business_banking_sar_id
+        structuringInvolved:
+          column:
+            name: structuring_involved
+        supportingDocumentation:
+          column:
+            name: supporting_documentation
+        suspiciousActivityDescription:
+          column:
+            name: suspicious_activity_description
+        suspiciousActivityType:
+          column:
+            name: suspicious_activity_type
+        terroristFinancingInvolved:
+          column:
+            name: terrorist_financing_involved
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingSuspiciousActivityReports
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountClosed
+          - accountClosingDate
+          - activityEndDate
+          - activityStartDate
+          - amountInvolved
+          - approvedBy
+          - bsaOfficerSignature
+          - filingDate
+          - filingInstitution
+          - fincenAcknowledgment
+          - fraudInvolved
+          - insiderAbuseInvolved
+          - lawEnforcementAgency
+          - lawEnforcementContactDate
+          - lawEnforcementContactName
+          - lawEnforcementContacted
+          - moneyLaunderingInvolved
+          - otherDescription
+          - otherInvolved
+          - preparedBy
+          - sarFilePath
+          - smallBusinessBankingBusinessId
+          - smallBusinessBankingSarId
+          - structuringInvolved
+          - supportingDocumentation
+          - suspiciousActivityDescription
+          - suspiciousActivityType
+          - terroristFinancingInvolved
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingSuspiciousActivityReportsBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingSuspiciousActivityReports
+      comparableFields:
+        - fieldName: accountClosed
+          booleanExpressionType: BoolBoolExp
+        - fieldName: accountClosingDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: activityEndDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: activityStartDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: amountInvolved
+          booleanExpressionType: NumericBoolExp
+        - fieldName: approvedBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: bsaOfficerSignature
+          booleanExpressionType: Int4BoolExp
+        - fieldName: filingDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: filingInstitution
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: fincenAcknowledgment
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: fraudInvolved
+          booleanExpressionType: BoolBoolExp
+        - fieldName: insiderAbuseInvolved
+          booleanExpressionType: BoolBoolExp
+        - fieldName: lawEnforcementAgency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lawEnforcementContactDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: lawEnforcementContactName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lawEnforcementContacted
+          booleanExpressionType: BoolBoolExp
+        - fieldName: moneyLaunderingInvolved
+          booleanExpressionType: BoolBoolExp
+        - fieldName: otherDescription
+          booleanExpressionType: TextBoolExp
+        - fieldName: otherInvolved
+          booleanExpressionType: BoolBoolExp
+        - fieldName: preparedBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: sarFilePath
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: smallBusinessBankingBusinessId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingSarId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: structuringInvolved
+          booleanExpressionType: BoolBoolExp
+        - fieldName: supportingDocumentation
+          booleanExpressionType: TextBoolExp
+        - fieldName: suspiciousActivityDescription
+          booleanExpressionType: TextBoolExp
+        - fieldName: suspiciousActivityType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: terroristFinancingInvolved
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingSuspiciousActivityReportsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingSuspiciousActivityReportsAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingSuspiciousActivityReports
+      aggregatableFields:
+        - fieldName: accountClosed
+          aggregateExpression: BoolAggExp
+        - fieldName: accountClosingDate
+          aggregateExpression: DateAggExp
+        - fieldName: activityEndDate
+          aggregateExpression: DateAggExp
+        - fieldName: activityStartDate
+          aggregateExpression: DateAggExp
+        - fieldName: amountInvolved
+          aggregateExpression: NumericAggExp
+        - fieldName: approvedBy
+          aggregateExpression: Int4AggExp
+        - fieldName: bsaOfficerSignature
+          aggregateExpression: Int4AggExp
+        - fieldName: filingDate
+          aggregateExpression: DateAggExp
+        - fieldName: filingInstitution
+          aggregateExpression: VarcharAggExp
+        - fieldName: fincenAcknowledgment
+          aggregateExpression: VarcharAggExp
+        - fieldName: fraudInvolved
+          aggregateExpression: BoolAggExp
+        - fieldName: insiderAbuseInvolved
+          aggregateExpression: BoolAggExp
+        - fieldName: lawEnforcementAgency
+          aggregateExpression: VarcharAggExp
+        - fieldName: lawEnforcementContactDate
+          aggregateExpression: DateAggExp
+        - fieldName: lawEnforcementContactName
+          aggregateExpression: VarcharAggExp
+        - fieldName: lawEnforcementContacted
+          aggregateExpression: BoolAggExp
+        - fieldName: moneyLaunderingInvolved
+          aggregateExpression: BoolAggExp
+        - fieldName: otherDescription
+          aggregateExpression: TextAggExp
+        - fieldName: otherInvolved
+          aggregateExpression: BoolAggExp
+        - fieldName: preparedBy
+          aggregateExpression: Int4AggExp
+        - fieldName: sarFilePath
+          aggregateExpression: VarcharAggExp
+        - fieldName: smallBusinessBankingBusinessId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingSarId
+          aggregateExpression: Int4AggExp
+        - fieldName: structuringInvolved
+          aggregateExpression: BoolAggExp
+        - fieldName: supportingDocumentation
+          aggregateExpression: TextAggExp
+        - fieldName: suspiciousActivityDescription
+          aggregateExpression: TextAggExp
+        - fieldName: suspiciousActivityType
+          aggregateExpression: VarcharAggExp
+        - fieldName: terroristFinancingInvolved
+          aggregateExpression: BoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingSuspiciousActivityReportsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingSuspiciousActivityReportsOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingSuspiciousActivityReports
+      orderableFields:
+        - fieldName: accountClosed
+          orderByExpression: BoolOrderByExp
+        - fieldName: accountClosingDate
+          orderByExpression: DateOrderByExp
+        - fieldName: activityEndDate
+          orderByExpression: DateOrderByExp
+        - fieldName: activityStartDate
+          orderByExpression: DateOrderByExp
+        - fieldName: amountInvolved
+          orderByExpression: NumericOrderByExp
+        - fieldName: approvedBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: bsaOfficerSignature
+          orderByExpression: Int4OrderByExp
+        - fieldName: filingDate
+          orderByExpression: DateOrderByExp
+        - fieldName: filingInstitution
+          orderByExpression: VarcharOrderByExp
+        - fieldName: fincenAcknowledgment
+          orderByExpression: VarcharOrderByExp
+        - fieldName: fraudInvolved
+          orderByExpression: BoolOrderByExp
+        - fieldName: insiderAbuseInvolved
+          orderByExpression: BoolOrderByExp
+        - fieldName: lawEnforcementAgency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lawEnforcementContactDate
+          orderByExpression: DateOrderByExp
+        - fieldName: lawEnforcementContactName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lawEnforcementContacted
+          orderByExpression: BoolOrderByExp
+        - fieldName: moneyLaunderingInvolved
+          orderByExpression: BoolOrderByExp
+        - fieldName: otherDescription
+          orderByExpression: TextOrderByExp
+        - fieldName: otherInvolved
+          orderByExpression: BoolOrderByExp
+        - fieldName: preparedBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: sarFilePath
+          orderByExpression: VarcharOrderByExp
+        - fieldName: smallBusinessBankingBusinessId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingSarId
+          orderByExpression: Int4OrderByExp
+        - fieldName: structuringInvolved
+          orderByExpression: BoolOrderByExp
+        - fieldName: supportingDocumentation
+          orderByExpression: TextOrderByExp
+        - fieldName: suspiciousActivityDescription
+          orderByExpression: TextOrderByExp
+        - fieldName: suspiciousActivityType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: terroristFinancingInvolved
+          orderByExpression: BoolOrderByExp
+      orderableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: sarPreparedBy
+        - relationshipName: sarApprovedBy
+        - relationshipName: sarBsaOfficerSignature
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingSuspiciousActivityReportsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingSuspiciousActivityReports
+  objectType: SmallBusinessBankingSuspiciousActivityReports
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_suspicious_activity_reports
+  filterExpressionType: SmallBusinessBankingSuspiciousActivityReportsBoolExp
+  aggregateExpression: SmallBusinessBankingSuspiciousActivityReportsAggExp
+  orderByExpression: SmallBusinessBankingSuspiciousActivityReportsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingSuspiciousActivityReports
+      subscription:
+        rootField: smallBusinessBankingSuspiciousActivityReports
+    selectUniques:
+      - queryRootField: smallBusinessBankingSuspiciousActivityReportsBySmallBusinessBankingSarId
+        uniqueIdentifier:
+          - smallBusinessBankingSarId
+        subscription:
+          rootField: smallBusinessBankingSuspiciousActivityReportsBySmallBusinessBankingSarId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingSuspiciousActivityReportsFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingSuspiciousActivityReportsAggregate
+      subscription:
+        rootField: smallBusinessBankingSuspiciousActivityReportsAggregate
+  description: Tracks Suspicious Activity Reports filed with FinCEN
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingSuspiciousActivityReports
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusiness
+  sourceType: SmallBusinessBankingSuspiciousActivityReports
+  target:
+    model:
+      name: SmallBusinessBankingBusinesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingBusinessId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingBusinessId
+

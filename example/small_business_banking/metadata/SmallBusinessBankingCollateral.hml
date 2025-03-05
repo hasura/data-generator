@@ -1,0 +1,348 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingCollateral
+  description: Tracks assets pledged as security for loans and credit facilities
+  fields:
+    - name: collateralType
+      type: Varchar!
+      description: Type of collateral (real estate, equipment, vehicle, inventory, etc.)
+    - name: description
+      type: Text!
+      description: Detailed description of the collateral
+    - name: identificationNumber
+      type: Varchar
+      description: Serial number, VIN, or other identifier for the collateral
+    - name: insuranceExpiryDate
+      type: Date
+      description: Expiration date of the insurance policy
+    - name: insurancePolicyNumber
+      type: Varchar
+      description: Insurance policy number for this collateral
+    - name: insuranceProvider
+      type: Varchar
+      description: Name of insurance company covering this collateral
+    - name: lienFilingNumber
+      type: Varchar
+      description: Reference number for the lien filing
+    - name: lienPosition
+      type: Int4
+      description: Position of the bank's lien on this collateral (1st, 2nd, etc.)
+    - name: location
+      type: Text
+      description: Physical location of the collateral item
+    - name: smallBusinessBankingBusinessId
+      type: Int4!
+      description: Reference to the business that owns the collateral
+    - name: smallBusinessBankingCollateralId
+      type: Int4!
+      description: Unique identifier for each collateral item
+    - name: status
+      type: Varchar!
+      description: Current status of the collateral (active, sold, repossessed)
+    - name: valuationDate
+      type: Date!
+      description: Date when the value was determined
+    - name: valuationType
+      type: Varchar!
+      description: Method of valuation (appraisal, estimate, purchase price)
+    - name: value
+      type: Numeric!
+      description: Estimated or appraised value of the collateral
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingCollateral
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingCollateralInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_collateral
+      fieldMapping:
+        collateralType:
+          column:
+            name: collateral_type
+        description:
+          column:
+            name: description
+        identificationNumber:
+          column:
+            name: identification_number
+        insuranceExpiryDate:
+          column:
+            name: insurance_expiry_date
+        insurancePolicyNumber:
+          column:
+            name: insurance_policy_number
+        insuranceProvider:
+          column:
+            name: insurance_provider
+        lienFilingNumber:
+          column:
+            name: lien_filing_number
+        lienPosition:
+          column:
+            name: lien_position
+        location:
+          column:
+            name: location
+        smallBusinessBankingBusinessId:
+          column:
+            name: small_business_banking_business_id
+        smallBusinessBankingCollateralId:
+          column:
+            name: small_business_banking_collateral_id
+        status:
+          column:
+            name: status
+        valuationDate:
+          column:
+            name: valuation_date
+        valuationType:
+          column:
+            name: valuation_type
+        value:
+          column:
+            name: value
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingCollateral
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - collateralType
+          - description
+          - identificationNumber
+          - insuranceExpiryDate
+          - insurancePolicyNumber
+          - insuranceProvider
+          - lienFilingNumber
+          - lienPosition
+          - location
+          - smallBusinessBankingBusinessId
+          - smallBusinessBankingCollateralId
+          - status
+          - valuationDate
+          - valuationType
+          - value
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingCollateralBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingCollateral
+      comparableFields:
+        - fieldName: collateralType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: identificationNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: insuranceExpiryDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: insurancePolicyNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: insuranceProvider
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lienFilingNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lienPosition
+          booleanExpressionType: Int4BoolExp
+        - fieldName: location
+          booleanExpressionType: TextBoolExp
+        - fieldName: smallBusinessBankingBusinessId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingCollateralId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: valuationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: valuationType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: value
+          booleanExpressionType: NumericBoolExp
+      comparableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: smallBusinessBankingLoanCollaterals
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingCollateralBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingCollateralAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingCollateral
+      aggregatableFields:
+        - fieldName: collateralType
+          aggregateExpression: VarcharAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: identificationNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: insuranceExpiryDate
+          aggregateExpression: DateAggExp
+        - fieldName: insurancePolicyNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: insuranceProvider
+          aggregateExpression: VarcharAggExp
+        - fieldName: lienFilingNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: lienPosition
+          aggregateExpression: Int4AggExp
+        - fieldName: location
+          aggregateExpression: TextAggExp
+        - fieldName: smallBusinessBankingBusinessId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingCollateralId
+          aggregateExpression: Int4AggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: valuationDate
+          aggregateExpression: DateAggExp
+        - fieldName: valuationType
+          aggregateExpression: VarcharAggExp
+        - fieldName: value
+          aggregateExpression: NumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingCollateralAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingCollateralOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingCollateral
+      orderableFields:
+        - fieldName: collateralType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: identificationNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: insuranceExpiryDate
+          orderByExpression: DateOrderByExp
+        - fieldName: insurancePolicyNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: insuranceProvider
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lienFilingNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lienPosition
+          orderByExpression: Int4OrderByExp
+        - fieldName: location
+          orderByExpression: TextOrderByExp
+        - fieldName: smallBusinessBankingBusinessId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingCollateralId
+          orderByExpression: Int4OrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: valuationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: valuationType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: value
+          orderByExpression: NumericOrderByExp
+      orderableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingCollateralOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingCollateral
+  objectType: SmallBusinessBankingCollateral
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_collateral
+  filterExpressionType: SmallBusinessBankingCollateralBoolExp
+  aggregateExpression: SmallBusinessBankingCollateralAggExp
+  orderByExpression: SmallBusinessBankingCollateralOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingCollateral
+      subscription:
+        rootField: smallBusinessBankingCollateral
+    selectUniques:
+      - queryRootField: smallBusinessBankingCollateralBySmallBusinessBankingCollateralId
+        uniqueIdentifier:
+          - smallBusinessBankingCollateralId
+        subscription:
+          rootField: smallBusinessBankingCollateralBySmallBusinessBankingCollateralId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingCollateralFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingCollateralAggregate
+      subscription:
+        rootField: smallBusinessBankingCollateralAggregate
+  description: Tracks assets pledged as security for loans and credit facilities
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingCollateral
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusiness
+  sourceType: SmallBusinessBankingCollateral
+  target:
+    model:
+      name: SmallBusinessBankingBusinesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingBusinessId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingBusinessId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingLoanCollaterals
+  sourceType: SmallBusinessBankingCollateral
+  target:
+    model:
+      name: SmallBusinessBankingLoanCollateral
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SmallBusinessBankingLoanCollateralAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingCollateralId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingCollateralId
+  graphql:
+    aggregateFieldName: smallBusinessBankingLoanCollateralsAggregate
+

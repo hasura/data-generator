@@ -1,0 +1,154 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingAccountAccessConsentsPermissions
+  description: Junction table linking consents to specific permissions granted,
+    implements a many-to-many relationship
+  fields:
+    - name: consumerBankingConsentId
+      type: Int4
+      description: References a consent record
+    - name: enterprisePermissionId
+      type: Int4
+      description: References a permission record
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsPermissions
+    inputTypeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsPermissionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_account_access_consents_permissions
+      fieldMapping:
+        consumerBankingConsentId:
+          column:
+            name: consumer_banking_consent_id
+        enterprisePermissionId:
+          column:
+            name: enterprise_permission_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingAccountAccessConsentsPermissions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingConsentId
+          - enterprisePermissionId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAccountAccessConsentsPermissionsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingAccountAccessConsentsPermissions
+      comparableFields:
+        - fieldName: consumerBankingConsentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterprisePermissionId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingAccountAccessConsent
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsPermissionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountAccessConsentsPermissionsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingAccountAccessConsentsPermissions
+      aggregatableFields:
+        - fieldName: consumerBankingConsentId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterprisePermissionId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsPermissionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountAccessConsentsPermissionsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingAccountAccessConsentsPermissions
+      orderableFields:
+        - fieldName: consumerBankingConsentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterprisePermissionId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingAccountAccessConsent
+        - relationshipName: hasPermissions
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsPermissionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingAccountAccessConsentsPermissions
+  objectType: ConsumerBankingAccountAccessConsentsPermissions
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_account_access_consents_permissions
+  filterExpressionType: ConsumerBankingAccountAccessConsentsPermissionsBoolExp
+  aggregateExpression: ConsumerBankingAccountAccessConsentsPermissionsAggExp
+  orderByExpression: ConsumerBankingAccountAccessConsentsPermissionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingAccountAccessConsentsPermissions
+      subscription:
+        rootField: consumerBankingAccountAccessConsentsPermissions
+    selectUniques: []
+    filterInputTypeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsPermissionsFilterInput
+    aggregate:
+      queryRootField: consumerBankingAccountAccessConsentsPermissionsAggregate
+      subscription:
+        rootField: consumerBankingAccountAccessConsentsPermissionsAggregate
+  description: Junction table linking consents to specific permissions granted,
+    implements a many-to-many relationship
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingAccountAccessConsentsPermissions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccountAccessConsent
+  sourceType: ConsumerBankingAccountAccessConsentsPermissions
+  target:
+    model:
+      name: ConsumerBankingAccountAccessConsents
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingConsentId
+      target:
+        modelField:
+          - fieldName: consumerBankingConsentId
+

@@ -1,0 +1,250 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingBalances
+  description: Tracks account balance information with history, stores different
+    types of balances
+  fields:
+    - name: amount
+      type: Numeric!
+      description: Monetary amount with precision to 5 decimal places
+    - name: consumerBankingBalanceId
+      type: Int4!
+      description: Auto-incrementing identifier for each balance record
+    - name: creditDebitIndicator
+      type: Varchar!
+      description: Indicates if balance is credit or debit
+    - name: currency
+      type: Varchar!
+      description: Currency code (e.g., USD, EUR)
+    - name: dateTime
+      type: Timestamp!
+      description: When this balance was recorded
+    - name: enterpriseAccountId
+      type: Int4!
+      description: References the account this balance belongs to
+    - name: subType
+      type: Varchar
+      description: Optional further classification of balance type
+    - name: type
+      type: Varchar!
+      description: Primary balance type (e.g., AVBL for available)
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBalances
+    inputTypeName: ConsumerBanking_ConsumerBankingBalancesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_balances
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        consumerBankingBalanceId:
+          column:
+            name: consumer_banking_balance_id
+        creditDebitIndicator:
+          column:
+            name: credit_debit_indicator
+        currency:
+          column:
+            name: currency
+        dateTime:
+          column:
+            name: date_time
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        subType:
+          column:
+            name: sub_type
+        type:
+          column:
+            name: type
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingBalances
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - consumerBankingBalanceId
+          - creditDebitIndicator
+          - currency
+          - dateTime
+          - enterpriseAccountId
+          - subType
+          - type
+          - consumerBankingAccountId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingBalancesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingBalances
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: consumerBankingBalanceId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditDebitIndicator
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: dateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: subType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: type
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBalancesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingBalancesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingBalances
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: consumerBankingBalanceId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditDebitIndicator
+          aggregateExpression: VarcharAggExp
+        - fieldName: currency
+          aggregateExpression: VarcharAggExp
+        - fieldName: dateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: subType
+          aggregateExpression: VarcharAggExp
+        - fieldName: type
+          aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingBalancesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingBalancesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingBalances
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: consumerBankingBalanceId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditDebitIndicator
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: dateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: subType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: type
+          orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: account
+        - relationshipName: consumerBankingAccount
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingBalancesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingBalances
+  objectType: ConsumerBankingBalances
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_balances
+  filterExpressionType: ConsumerBankingBalancesBoolExp
+  aggregateExpression: ConsumerBankingBalancesAggExp
+  orderByExpression: ConsumerBankingBalancesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingBalances
+      subscription:
+        rootField: consumerBankingBalances
+    selectUniques:
+      - queryRootField: consumerBankingBalancesByConsumerBankingBalanceId
+        uniqueIdentifier:
+          - consumerBankingBalanceId
+        subscription:
+          rootField: consumerBankingBalancesByConsumerBankingBalanceId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingBalancesFilterInput
+    aggregate:
+      queryRootField: consumerBankingBalancesAggregate
+      subscription:
+        rootField: consumerBankingBalancesAggregate
+  description: Tracks account balance information with history, stores different
+    types of balances
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingBalances
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingBalances
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+

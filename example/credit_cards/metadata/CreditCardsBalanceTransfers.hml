@@ -1,0 +1,365 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsBalanceTransfers
+  description: Tracks balance transfers from other creditors
+  fields:
+    - name: accountNumber
+      type: Varchar
+      description: Account number at other creditor, masked
+    - name: completionDate
+      type: Date
+      description: When transfer was completed
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsOfferId
+      type: Int4
+      description: Reference to promotional_offers if applicable
+    - name: creditCardsTransactionId
+      type: Int4
+      description: Reference to transactions
+    - name: creditCardsTransferId
+      type: Int4!
+      description: Auto-incrementing identifier for each balance transfer
+    - name: creditorName
+      type: Varchar!
+      description: Name of creditor being paid
+    - name: currentBalance
+      type: Numeric
+      description: Current balance remaining from transfer
+    - name: feeAmount
+      type: Numeric
+      description: Fee charged for transfer
+    - name: interestRate
+      type: Numeric!
+      description: Interest rate applied to transfer
+    - name: promotionEndDate
+      type: Date
+      description: When promotional rate ends if applicable
+    - name: promotionalRate
+      type: Bool!
+      description: Whether rate is promotional
+    - name: requestDate
+      type: Date!
+      description: When transfer was requested
+    - name: status
+      type: Varchar!
+      description: Status of transfer (Pending, Completed, Rejected)
+    - name: transferAmount
+      type: Numeric!
+      description: Amount transferred
+  graphql:
+    typeName: _CreditCards__CreditCardsBalanceTransfers
+    inputTypeName: _CreditCards__CreditCardsBalanceTransfersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_balance_transfers
+      fieldMapping:
+        accountNumber:
+          column:
+            name: account_number
+        completionDate:
+          column:
+            name: completion_date
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsOfferId:
+          column:
+            name: credit_cards_offer_id
+        creditCardsTransactionId:
+          column:
+            name: credit_cards_transaction_id
+        creditCardsTransferId:
+          column:
+            name: credit_cards_transfer_id
+        creditorName:
+          column:
+            name: creditor_name
+        currentBalance:
+          column:
+            name: current_balance
+        feeAmount:
+          column:
+            name: fee_amount
+        interestRate:
+          column:
+            name: interest_rate
+        promotionEndDate:
+          column:
+            name: promotion_end_date
+        promotionalRate:
+          column:
+            name: promotional_rate
+        requestDate:
+          column:
+            name: request_date
+        status:
+          column:
+            name: status
+        transferAmount:
+          column:
+            name: transfer_amount
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsBalanceTransfers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - completionDate
+          - creditCardsCardAccountId
+          - creditCardsOfferId
+          - creditCardsTransactionId
+          - creditCardsTransferId
+          - creditorName
+          - currentBalance
+          - feeAmount
+          - interestRate
+          - promotionEndDate
+          - promotionalRate
+          - requestDate
+          - status
+          - transferAmount
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsBalanceTransfersBoolExp
+  operand:
+    object:
+      type: CreditCardsBalanceTransfers
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: completionDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsOfferId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsTransferId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditorName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currentBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: feeAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: interestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: promotionEndDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: promotionalRate
+          booleanExpressionType: BoolBoolExp
+        - fieldName: requestDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transferAmount
+          booleanExpressionType: NumericBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsPromotionalOffer
+        - relationshipName: creditCardsTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsBalanceTransfersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsBalanceTransfersAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsBalanceTransfers
+      aggregatableFields:
+        - fieldName: accountNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: completionDate
+          aggregateExpression: DateAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsOfferId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsTransferId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditorName
+          aggregateExpression: VarcharAggExp
+        - fieldName: currentBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: feeAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: interestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: promotionEndDate
+          aggregateExpression: DateAggExp
+        - fieldName: promotionalRate
+          aggregateExpression: BoolAggExp
+        - fieldName: requestDate
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: transferAmount
+          aggregateExpression: NumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsBalanceTransfersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsBalanceTransfersOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsBalanceTransfers
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: completionDate
+          orderByExpression: DateOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsOfferId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsTransferId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditorName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currentBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: feeAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: interestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: promotionEndDate
+          orderByExpression: DateOrderByExp
+        - fieldName: promotionalRate
+          orderByExpression: BoolOrderByExp
+        - fieldName: requestDate
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transferAmount
+          orderByExpression: NumericOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsPromotionalOffer
+        - relationshipName: creditCardsTransaction
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsBalanceTransfersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsBalanceTransfers
+  objectType: CreditCardsBalanceTransfers
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_balance_transfers
+  filterExpressionType: CreditCardsBalanceTransfersBoolExp
+  aggregateExpression: CreditCardsBalanceTransfersAggExp
+  orderByExpression: CreditCardsBalanceTransfersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsBalanceTransfers
+      subscription:
+        rootField: creditCardsBalanceTransfers
+    selectUniques:
+      - queryRootField: creditCardsBalanceTransfersByCreditCardsTransferId
+        uniqueIdentifier:
+          - creditCardsTransferId
+        subscription:
+          rootField: creditCardsBalanceTransfersByCreditCardsTransferId
+    filterInputTypeName: _CreditCards__CreditCardsBalanceTransfersFilterInput
+    aggregate:
+      queryRootField: creditCardsBalanceTransfersAggregate
+      subscription:
+        rootField: creditCardsBalanceTransfersAggregate
+  description: Tracks balance transfers from other creditors
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsBalanceTransfers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsBalanceTransfers
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsPromotionalOffer
+  sourceType: CreditCardsBalanceTransfers
+  target:
+    model:
+      name: CreditCardsPromotionalOffers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsOfferId
+      target:
+        modelField:
+          - fieldName: creditCardsOfferId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsTransaction
+  sourceType: CreditCardsBalanceTransfers
+  target:
+    model:
+      name: CreditCardsTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: creditCardsTransactionId
+

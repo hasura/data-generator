@@ -1,0 +1,261 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesClosingAppointments
+  description: Schedules and tracks mortgage closing appointments
+  fields:
+    - name: actualClosingDate
+      type: Timestamp
+      description: When the closing actually occurred
+    - name: closingAgent
+      type: Varchar
+      description: Name of the closing agent
+    - name: closingCompany
+      type: Varchar
+      description: Company handling the closing
+    - name: closingFee
+      type: Numeric
+      description: Fee charged for closing services
+    - name: locationAddressId
+      type: Int4
+      description: References the address where closing will occur
+    - name: mortgageServicesAppointmentId
+      type: Int4!
+      description: Auto-incrementing identifier for each appointment
+    - name: mortgageServicesLoanId
+      type: Int4!
+      description: References the loan this closing is for
+    - name: notes
+      type: Text
+      description: Additional information about the closing
+    - name: scheduledDate
+      type: Timestamp!
+      description: When the closing is scheduled
+    - name: status
+      type: Varchar!
+      description: Current status of the closing appointment
+  graphql:
+    typeName: _MortgageServices__MortgageServicesClosingAppointments
+    inputTypeName: _MortgageServices__MortgageServicesClosingAppointmentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_closing_appointments
+      fieldMapping:
+        actualClosingDate:
+          column:
+            name: actual_closing_date
+        closingAgent:
+          column:
+            name: closing_agent
+        closingCompany:
+          column:
+            name: closing_company
+        closingFee:
+          column:
+            name: closing_fee
+        locationAddressId:
+          column:
+            name: location_address_id
+        mortgageServicesAppointmentId:
+          column:
+            name: mortgage_services_appointment_id
+        mortgageServicesLoanId:
+          column:
+            name: mortgage_services_loan_id
+        notes:
+          column:
+            name: notes
+        scheduledDate:
+          column:
+            name: scheduled_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesClosingAppointments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actualClosingDate
+          - closingAgent
+          - closingCompany
+          - closingFee
+          - locationAddressId
+          - mortgageServicesAppointmentId
+          - mortgageServicesLoanId
+          - notes
+          - scheduledDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesClosingAppointmentsBoolExp
+  operand:
+    object:
+      type: MortgageServicesClosingAppointments
+      comparableFields:
+        - fieldName: actualClosingDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: closingAgent
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: closingCompany
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: closingFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: locationAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesAppointmentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLoanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: scheduledDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesLoan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesClosingAppointmentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesClosingAppointmentsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesClosingAppointments
+      aggregatableFields:
+        - fieldName: actualClosingDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: closingAgent
+          aggregateExpression: VarcharAggExp
+        - fieldName: closingCompany
+          aggregateExpression: VarcharAggExp
+        - fieldName: closingFee
+          aggregateExpression: NumericAggExp
+        - fieldName: locationAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesAppointmentId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLoanId
+          aggregateExpression: Int4AggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: scheduledDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesClosingAppointmentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesClosingAppointmentsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesClosingAppointments
+      orderableFields:
+        - fieldName: actualClosingDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: closingAgent
+          orderByExpression: VarcharOrderByExp
+        - fieldName: closingCompany
+          orderByExpression: VarcharOrderByExp
+        - fieldName: closingFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: locationAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesAppointmentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLoanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: notes
+          orderByExpression: TextOrderByExp
+        - fieldName: scheduledDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesLoan
+        - relationshipName: locationAddress
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesClosingAppointmentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesClosingAppointments
+  objectType: MortgageServicesClosingAppointments
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_closing_appointments
+  filterExpressionType: MortgageServicesClosingAppointmentsBoolExp
+  aggregateExpression: MortgageServicesClosingAppointmentsAggExp
+  orderByExpression: MortgageServicesClosingAppointmentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesClosingAppointments
+      subscription:
+        rootField: mortgageServicesClosingAppointments
+    selectUniques:
+      - queryRootField: mortgageServicesClosingAppointmentsByMortgageServicesAppointmentId
+        uniqueIdentifier:
+          - mortgageServicesAppointmentId
+        subscription:
+          rootField: mortgageServicesClosingAppointmentsByMortgageServicesAppointmentId
+    filterInputTypeName: _MortgageServices__MortgageServicesClosingAppointmentsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesClosingAppointmentsAggregate
+      subscription:
+        rootField: mortgageServicesClosingAppointmentsAggregate
+  description: Schedules and tracks mortgage closing appointments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesClosingAppointments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoan
+  sourceType: MortgageServicesClosingAppointments
+  target:
+    model:
+      name: MortgageServicesLoans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+

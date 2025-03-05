@@ -1,0 +1,197 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingCreditInquiries
+  description: Records inquiries made on a credit report, indicating potential
+    credit applications or checks.
+  fields:
+    - name: consumerLendingCreditReportId
+      type: ConsumerLendingInt4!
+      description: Reference to credit report
+    - name: consumerLendingInquiryId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for inquiry record
+    - name: creditorName
+      type:  ConsumerLendingVarchar!
+      description: Institution that made inquiry
+    - name: inquiryDate
+      type: ConsumerLendingDate!
+      description: Date of credit inquiry
+    - name: inquiryType
+      type:  ConsumerLendingVarchar
+      description: Hard inquiry, soft inquiry
+  graphql:
+    typeName: ConsumerLendingCreditInquiries
+    inputTypeName: ConsumerLendingCreditInquiriesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_credit_inquiries
+      fieldMapping:
+        consumerLendingCreditReportId:
+          column:
+            name: consumer_lending_credit_report_id
+        consumerLendingInquiryId:
+          column:
+            name: consumer_lending_inquiry_id
+        creditorName:
+          column:
+            name: creditor_name
+        inquiryDate:
+          column:
+            name: inquiry_date
+        inquiryType:
+          column:
+            name: inquiry_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingCreditInquiries
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingCreditReportId
+          - consumerLendingInquiryId
+          - creditorName
+          - inquiryDate
+          - inquiryType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingCreditInquiriesBoolExp
+  operand:
+    object:
+      type: ConsumerLendingCreditInquiries
+      comparableFields:
+        - fieldName: consumerLendingCreditReportId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingInquiryId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: creditorName
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: inquiryDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: inquiryType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingCreditReport
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingCreditInquiriesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingCreditInquiriesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingCreditInquiries
+      aggregatableFields:
+        - fieldName: consumerLendingCreditReportId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingInquiryId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: creditorName
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: inquiryDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: inquiryType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingCreditInquiriesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingCreditInquiriesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingCreditInquiries
+      orderableFields:
+        - fieldName: consumerLendingCreditReportId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingInquiryId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: creditorName
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: inquiryDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: inquiryType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingCreditReport
+  graphql:
+    expressionTypeName: ConsumerLendingCreditInquiriesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingCreditInquiries
+  objectType: ConsumerLendingCreditInquiries
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_credit_inquiries
+  filterExpressionType: ConsumerLendingCreditInquiriesBoolExp
+  aggregateExpression: ConsumerLendingCreditInquiriesAggExp
+  orderByExpression: ConsumerLendingCreditInquiriesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingCreditInquiries
+      subscription:
+        rootField: consumerLendingCreditInquiries
+    selectUniques:
+      - queryRootField: consumerLendingCreditInquiriesByConsumerLendingInquiryId
+        uniqueIdentifier:
+          - consumerLendingInquiryId
+        subscription:
+          rootField: consumerLendingCreditInquiriesByConsumerLendingInquiryId
+    filterInputTypeName: ConsumerLendingCreditInquiriesFilterInput
+    aggregate:
+      queryRootField: consumerLendingCreditInquiriesAggregate
+      subscription:
+        rootField: consumerLendingCreditInquiriesAggregate
+  description: Records inquiries made on a credit report, indicating potential
+    credit applications or checks.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingCreditInquiries
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingCreditReport
+  sourceType: ConsumerLendingCreditInquiries
+  target:
+    model:
+      name: ConsumerLendingCreditReports
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCreditReportId
+      target:
+        modelField:
+          - fieldName: consumerLendingCreditReportId
+

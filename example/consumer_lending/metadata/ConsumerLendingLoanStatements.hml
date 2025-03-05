@@ -1,0 +1,353 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingLoanStatements
+  description: Stores periodic loan statements, providing a summary of account
+    activity, balances, and payments.
+  fields:
+    - name: amountDue
+      type: ConsumerLendingNumeric!
+      description: Amount due for next payment
+    - name: closingBalance
+      type: ConsumerLendingNumeric!
+      description: Balance at end of period
+    - name: consumerLendingStatementId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for statement
+    - name: deliveryMethod
+      type:  ConsumerLendingVarchar
+      description: Email, Mail, Portal
+    - name: documentPath
+      type:  ConsumerLendingVarchar
+      description: Path to stored statement document
+    - name: dueDate
+      type: ConsumerLendingDate!
+      description: Next payment due date
+    - name: feesCharged
+      type: ConsumerLendingNumeric!
+      description: Fees charged in period
+    - name: feesPaid
+      type: ConsumerLendingNumeric!
+      description: Fees paid in period
+    - name: interestPaid
+      type: ConsumerLendingNumeric!
+      description: Interest paid in period
+    - name: loanAccountId
+      type: ConsumerLendingInt4!
+      description: Reference to loan account
+    - name: openingBalance
+      type: ConsumerLendingNumeric!
+      description: Balance at start of period
+    - name: principalPaid
+      type: ConsumerLendingNumeric!
+      description: Principal paid in period
+    - name: sentDate
+      type: ConsumerLendingDate
+      description: Date statement was sent to customer
+    - name: statementDate
+      type: ConsumerLendingDate!
+      description: Date statement was generated
+    - name: statementPeriodEnd
+      type: ConsumerLendingDate!
+      description: End date of statement period
+    - name: statementPeriodStart
+      type: ConsumerLendingDate!
+      description: Start date of statement period
+    - name: totalPayments
+      type: ConsumerLendingNumeric!
+      description: Sum of payments in period
+  graphql:
+    typeName: ConsumerLendingLoanStatements
+    inputTypeName: ConsumerLendingLoanStatementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_statements
+      fieldMapping:
+        amountDue:
+          column:
+            name: amount_due
+        closingBalance:
+          column:
+            name: closing_balance
+        consumerLendingStatementId:
+          column:
+            name: consumer_lending_statement_id
+        deliveryMethod:
+          column:
+            name: delivery_method
+        documentPath:
+          column:
+            name: document_path
+        dueDate:
+          column:
+            name: due_date
+        feesCharged:
+          column:
+            name: fees_charged
+        feesPaid:
+          column:
+            name: fees_paid
+        interestPaid:
+          column:
+            name: interest_paid
+        loanAccountId:
+          column:
+            name: loan_account_id
+        openingBalance:
+          column:
+            name: opening_balance
+        principalPaid:
+          column:
+            name: principal_paid
+        sentDate:
+          column:
+            name: sent_date
+        statementDate:
+          column:
+            name: statement_date
+        statementPeriodEnd:
+          column:
+            name: statement_period_end
+        statementPeriodStart:
+          column:
+            name: statement_period_start
+        totalPayments:
+          column:
+            name: total_payments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingLoanStatements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amountDue
+          - closingBalance
+          - consumerLendingStatementId
+          - deliveryMethod
+          - documentPath
+          - dueDate
+          - feesCharged
+          - feesPaid
+          - interestPaid
+          - loanAccountId
+          - openingBalance
+          - principalPaid
+          - sentDate
+          - statementDate
+          - statementPeriodEnd
+          - statementPeriodStart
+          - totalPayments
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingLoanStatementsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingLoanStatements
+      comparableFields:
+        - fieldName: amountDue
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: closingBalance
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: consumerLendingStatementId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: deliveryMethod
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: documentPath
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: dueDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: feesCharged
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: feesPaid
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: interestPaid
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: loanAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: openingBalance
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: principalPaid
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: sentDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: statementDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: statementPeriodEnd
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: statementPeriodStart
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: totalPayments
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingLoanStatementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanStatementsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingLoanStatements
+      aggregatableFields:
+        - fieldName: amountDue
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: closingBalance
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: consumerLendingStatementId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: deliveryMethod
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: documentPath
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: dueDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: feesCharged
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: feesPaid
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: interestPaid
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: loanAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: openingBalance
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: principalPaid
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: sentDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: statementDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: statementPeriodEnd
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: statementPeriodStart
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: totalPayments
+          aggregateExpression: ConsumerLendingNumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingLoanStatementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanStatementsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingLoanStatements
+      orderableFields:
+        - fieldName: amountDue
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: closingBalance
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: consumerLendingStatementId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: deliveryMethod
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: documentPath
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: dueDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: feesCharged
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: feesPaid
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: interestPaid
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: loanAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: openingBalance
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: principalPaid
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: sentDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: statementDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: statementPeriodEnd
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: statementPeriodStart
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: totalPayments
+          orderByExpression: ConsumerLendingNumericOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+  graphql:
+    expressionTypeName: ConsumerLendingLoanStatementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingLoanStatements
+  objectType: ConsumerLendingLoanStatements
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_statements
+  filterExpressionType: ConsumerLendingLoanStatementsBoolExp
+  aggregateExpression: ConsumerLendingLoanStatementsAggExp
+  orderByExpression: ConsumerLendingLoanStatementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingLoanStatements
+      subscription:
+        rootField: consumerLendingLoanStatements
+    selectUniques:
+      - queryRootField: consumerLendingLoanStatementsByConsumerLendingStatementId
+        uniqueIdentifier:
+          - consumerLendingStatementId
+        subscription:
+          rootField: consumerLendingLoanStatementsByConsumerLendingStatementId
+    filterInputTypeName: ConsumerLendingLoanStatementsFilterInput
+    aggregate:
+      queryRootField: consumerLendingLoanStatementsAggregate
+      subscription:
+        rootField: consumerLendingLoanStatementsAggregate
+  description: Stores periodic loan statements, providing a summary of account
+    activity, balances, and payments.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingLoanStatements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccount
+  sourceType: ConsumerLendingLoanStatements
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: loanAccountId
+      target:
+        modelField:
+          - fieldName: loanAccountId
+

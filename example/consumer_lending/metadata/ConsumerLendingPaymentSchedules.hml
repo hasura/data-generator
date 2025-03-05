@@ -1,0 +1,308 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingPaymentSchedules
+  description: Contains the payment schedule for each loan account, including
+    scheduled dates, amounts, and payment status.
+  fields:
+    - name: actualPaymentDate
+      type: ConsumerLendingDate
+      description: Date payment was actually made
+    - name: actualPaymentId
+      type: ConsumerLendingInt4
+      description: Reference to loan_payments if paid
+    - name: beginningBalance
+      type: ConsumerLendingNumeric!
+      description: Principal balance before payment
+    - name: consumerLendingLoanAccountId
+      type: ConsumerLendingInt4!
+      description: Reference to loan account
+    - name: endingBalance
+      type: ConsumerLendingNumeric!
+      description: Principal balance after payment
+    - name: interestAmount
+      type: ConsumerLendingNumeric!
+      description: Portion applied to interest
+    - name: paymentAmount
+      type: ConsumerLendingNumeric!
+      description: Total payment amount due
+    - name: paymentNumber
+      type: ConsumerLendingInt4!
+      description: Sequential payment number
+    - name: paymentScheduleId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for schedule entry
+    - name: principalAmount
+      type: ConsumerLendingNumeric!
+      description: Portion applied to principal
+    - name: scheduledDate
+      type: ConsumerLendingDate!
+      description: Date payment is scheduled
+    - name: status
+      type:  ConsumerLendingVarchar!
+      description: Scheduled, Paid, Past Due
+  graphql:
+    typeName: ConsumerLendingPaymentSchedules
+    inputTypeName: ConsumerLendingPaymentSchedulesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_payment_schedules
+      fieldMapping:
+        actualPaymentDate:
+          column:
+            name: actual_payment_date
+        actualPaymentId:
+          column:
+            name: actual_payment_id
+        beginningBalance:
+          column:
+            name: beginning_balance
+        consumerLendingLoanAccountId:
+          column:
+            name: consumer_lending_loan_account_id
+        endingBalance:
+          column:
+            name: ending_balance
+        interestAmount:
+          column:
+            name: interest_amount
+        paymentAmount:
+          column:
+            name: payment_amount
+        paymentNumber:
+          column:
+            name: payment_number
+        paymentScheduleId:
+          column:
+            name: payment_schedule_id
+        principalAmount:
+          column:
+            name: principal_amount
+        scheduledDate:
+          column:
+            name: scheduled_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingPaymentSchedules
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actualPaymentDate
+          - actualPaymentId
+          - beginningBalance
+          - consumerLendingLoanAccountId
+          - endingBalance
+          - interestAmount
+          - paymentAmount
+          - paymentNumber
+          - paymentScheduleId
+          - principalAmount
+          - scheduledDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingPaymentSchedulesBoolExp
+  operand:
+    object:
+      type: ConsumerLendingPaymentSchedules
+      comparableFields:
+        - fieldName: actualPaymentDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: actualPaymentId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: beginningBalance
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: consumerLendingLoanAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: endingBalance
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: interestAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: paymentAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: paymentNumber
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: paymentScheduleId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: principalAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: scheduledDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: status
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanPayment
+        - relationshipName: consumerLendingLoanAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingPaymentSchedulesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingPaymentSchedulesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingPaymentSchedules
+      aggregatableFields:
+        - fieldName: actualPaymentDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: actualPaymentId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: beginningBalance
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: consumerLendingLoanAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: endingBalance
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: interestAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: paymentAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: paymentNumber
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: paymentScheduleId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: principalAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: scheduledDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: status
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingPaymentSchedulesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingPaymentSchedulesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingPaymentSchedules
+      orderableFields:
+        - fieldName: actualPaymentDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: actualPaymentId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: beginningBalance
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: consumerLendingLoanAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: endingBalance
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: interestAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: paymentAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: paymentNumber
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: paymentScheduleId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: principalAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: scheduledDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: status
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanPayment
+        - relationshipName: consumerLendingLoanAccount
+  graphql:
+    expressionTypeName: ConsumerLendingPaymentSchedulesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingPaymentSchedules
+  objectType: ConsumerLendingPaymentSchedules
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_payment_schedules
+  filterExpressionType: ConsumerLendingPaymentSchedulesBoolExp
+  aggregateExpression: ConsumerLendingPaymentSchedulesAggExp
+  orderByExpression: ConsumerLendingPaymentSchedulesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingPaymentSchedules
+      subscription:
+        rootField: consumerLendingPaymentSchedules
+    selectUniques:
+      - queryRootField: consumerLendingPaymentSchedulesByPaymentScheduleId
+        uniqueIdentifier:
+          - paymentScheduleId
+        subscription:
+          rootField: consumerLendingPaymentSchedulesByPaymentScheduleId
+    filterInputTypeName: ConsumerLendingPaymentSchedulesFilterInput
+    aggregate:
+      queryRootField: consumerLendingPaymentSchedulesAggregate
+      subscription:
+        rootField: consumerLendingPaymentSchedulesAggregate
+  description: Contains the payment schedule for each loan account, including
+    scheduled dates, amounts, and payment status.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingPaymentSchedules
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanPayment
+  sourceType: ConsumerLendingPaymentSchedules
+  target:
+    model:
+      name: ConsumerLendingLoanPayments
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: actualPaymentId
+      target:
+        modelField:
+          - fieldName: consumerLendingPaymentId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccount
+  sourceType: ConsumerLendingPaymentSchedules
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanAccountId
+      target:
+        modelField:
+          - fieldName: loanAccountId
+

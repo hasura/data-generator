@@ -1,0 +1,223 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingProductEligibilityCriteria
+  description: Specifies the eligibility criteria for each loan product, such as
+    credit score, income, and employment requirements.
+  fields:
+    - name: consumerLendingCriteriaId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for eligibility criteria
+    - name: consumerLendingLoanProductId
+      type: ConsumerLendingInt4!
+      description: Reference to loan product
+    - name: criteriaType
+      type: ConsumerLendingVarchar!
+      description: Credit Score, Income, DTI, Employment
+    - name: description
+      type: ConsumerLendingText
+      description: Description of the eligibility criteria
+    - name: maxValue
+      type: ConsumerLendingVarchar
+      description: Maximum value for eligibility
+    - name: minValue
+      type: ConsumerLendingVarchar
+      description: Minimum value for eligibility
+    - name: required
+      type: ConsumerLendingBool!
+      description: Whether this criteria is required
+  graphql:
+    typeName: ConsumerLendingProductEligibilityCriteria
+    inputTypeName: ConsumerLendingProductEligibilityCriteriaInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_product_eligibility_criteria
+      fieldMapping:
+        consumerLendingCriteriaId:
+          column:
+            name: consumer_lending_criteria_id
+        consumerLendingLoanProductId:
+          column:
+            name: consumer_lending_loan_product_id
+        criteriaType:
+          column:
+            name: criteria_type
+        description:
+          column:
+            name: description
+        maxValue:
+          column:
+            name: max_value
+        minValue:
+          column:
+            name: min_value
+        required:
+          column:
+            name: required
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingProductEligibilityCriteria
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingCriteriaId
+          - consumerLendingLoanProductId
+          - criteriaType
+          - description
+          - maxValue
+          - minValue
+          - required
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingProductEligibilityCriteriaBoolExp
+  operand:
+    object:
+      type: ConsumerLendingProductEligibilityCriteria
+      comparableFields:
+        - fieldName: consumerLendingCriteriaId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingLoanProductId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: criteriaType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: maxValue
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: minValue
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: required
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanProduct
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingProductEligibilityCriteriaBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingProductEligibilityCriteriaAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingProductEligibilityCriteria
+      aggregatableFields:
+        - fieldName: consumerLendingCriteriaId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingLoanProductId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: criteriaType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: description
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: maxValue
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: minValue
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: required
+          aggregateExpression: ConsumerLendingBoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingProductEligibilityCriteriaAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingProductEligibilityCriteriaOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingProductEligibilityCriteria
+      orderableFields:
+        - fieldName: consumerLendingCriteriaId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingLoanProductId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: criteriaType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: description
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: maxValue
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: minValue
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: required
+          orderByExpression: ConsumerLendingBoolOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanProduct
+  graphql:
+    expressionTypeName: ConsumerLendingProductEligibilityCriteriaOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingProductEligibilityCriteria
+  objectType: ConsumerLendingProductEligibilityCriteria
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_product_eligibility_criteria
+  filterExpressionType: ConsumerLendingProductEligibilityCriteriaBoolExp
+  aggregateExpression: ConsumerLendingProductEligibilityCriteriaAggExp
+  orderByExpression: ConsumerLendingProductEligibilityCriteriaOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingProductEligibilityCriteria
+      subscription:
+        rootField: consumerLendingProductEligibilityCriteria
+    selectUniques:
+      - queryRootField: consumerLendingProductEligibilityCriteriaByConsumerLendingCriteriaId
+        uniqueIdentifier:
+          - consumerLendingCriteriaId
+        subscription:
+          rootField: consumerLendingProductEligibilityCriteriaByConsumerLendingCriteriaId
+    filterInputTypeName: ConsumerLendingProductEligibilityCriteriaFilterInput
+    aggregate:
+      queryRootField: consumerLendingProductEligibilityCriteriaAggregate
+      subscription:
+        rootField: consumerLendingProductEligibilityCriteriaAggregate
+  description: Specifies the eligibility criteria for each loan product, such as
+    credit score, income, and employment requirements.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingProductEligibilityCriteria
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanProduct
+  sourceType: ConsumerLendingProductEligibilityCriteria
+  target:
+    model:
+      name: ConsumerLendingLoanProducts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanProductId
+      target:
+        modelField:
+          - fieldName: consumerLendingLoanProductId
+

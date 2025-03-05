@@ -1,0 +1,361 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingProducts
+  description: Defines the financial products offered to small business customers
+  fields:
+    - name: baseInterestRate
+      type: Numeric
+      description: Standard interest rate for the product (if applicable)
+    - name: description
+      type: Text
+      description: Detailed product description
+    - name: isActive
+      type: Bool!
+      description: Indicates if the product is currently offered
+    - name: isInterestBearing
+      type: Bool!
+      description: Indicates if the product earns interest
+    - name: minBalance
+      type: Numeric
+      description: Minimum balance to avoid fees
+    - name: minOpeningDeposit
+      type: Numeric
+      description: Minimum amount required to open an account of this product type
+    - name: monthlyFee
+      type: Numeric
+      description: Standard monthly maintenance fee
+    - name: productCode
+      type: Varchar!
+      description: Internal code for the product
+    - name: productName
+      type: Varchar!
+      description: Display name for the product
+    - name: productType
+      type: Varchar!
+      description: Type of product (checking, savings, loan, credit line, credit card)
+    - name: smallBusinessBankingProductId
+      type: Int4!
+      description: Unique identifier for each product
+    - name: termLength
+      type: Int4
+      description: Term in months (for term products)
+    - name: transactionFee
+      type: Numeric
+      description: Fee charged per transaction beyond the limit
+    - name: transactionLimit
+      type: Int4
+      description: Number of free transactions per statement period
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingProducts
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingProductsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_products
+      fieldMapping:
+        baseInterestRate:
+          column:
+            name: base_interest_rate
+        description:
+          column:
+            name: description
+        isActive:
+          column:
+            name: is_active
+        isInterestBearing:
+          column:
+            name: is_interest_bearing
+        minBalance:
+          column:
+            name: min_balance
+        minOpeningDeposit:
+          column:
+            name: min_opening_deposit
+        monthlyFee:
+          column:
+            name: monthly_fee
+        productCode:
+          column:
+            name: product_code
+        productName:
+          column:
+            name: product_name
+        productType:
+          column:
+            name: product_type
+        smallBusinessBankingProductId:
+          column:
+            name: small_business_banking_product_id
+        termLength:
+          column:
+            name: term_length
+        transactionFee:
+          column:
+            name: transaction_fee
+        transactionLimit:
+          column:
+            name: transaction_limit
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingProducts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - baseInterestRate
+          - description
+          - isActive
+          - isInterestBearing
+          - minBalance
+          - minOpeningDeposit
+          - monthlyFee
+          - productCode
+          - productName
+          - productType
+          - smallBusinessBankingProductId
+          - termLength
+          - transactionFee
+          - transactionLimit
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingProductsBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingProducts
+      comparableFields:
+        - fieldName: baseInterestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: isActive
+          booleanExpressionType: BoolBoolExp
+        - fieldName: isInterestBearing
+          booleanExpressionType: BoolBoolExp
+        - fieldName: minBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: minOpeningDeposit
+          booleanExpressionType: NumericBoolExp
+        - fieldName: monthlyFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: productCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: productName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: productType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: smallBusinessBankingProductId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: termLength
+          booleanExpressionType: Int4BoolExp
+        - fieldName: transactionFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: transactionLimit
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: smallBusinessBankingAccounts
+        - relationshipName: smallBusinessBankingCreditLines
+        - relationshipName: smallBusinessBankingLoans
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingProductsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingProductsAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingProducts
+      aggregatableFields:
+        - fieldName: baseInterestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: isActive
+          aggregateExpression: BoolAggExp
+        - fieldName: isInterestBearing
+          aggregateExpression: BoolAggExp
+        - fieldName: minBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: minOpeningDeposit
+          aggregateExpression: NumericAggExp
+        - fieldName: monthlyFee
+          aggregateExpression: NumericAggExp
+        - fieldName: productCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: productName
+          aggregateExpression: VarcharAggExp
+        - fieldName: productType
+          aggregateExpression: VarcharAggExp
+        - fieldName: smallBusinessBankingProductId
+          aggregateExpression: Int4AggExp
+        - fieldName: termLength
+          aggregateExpression: Int4AggExp
+        - fieldName: transactionFee
+          aggregateExpression: NumericAggExp
+        - fieldName: transactionLimit
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingProductsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingProductsOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingProducts
+      orderableFields:
+        - fieldName: baseInterestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: isActive
+          orderByExpression: BoolOrderByExp
+        - fieldName: isInterestBearing
+          orderByExpression: BoolOrderByExp
+        - fieldName: minBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: minOpeningDeposit
+          orderByExpression: NumericOrderByExp
+        - fieldName: monthlyFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: productCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: productName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: productType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: smallBusinessBankingProductId
+          orderByExpression: Int4OrderByExp
+        - fieldName: termLength
+          orderByExpression: Int4OrderByExp
+        - fieldName: transactionFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: transactionLimit
+          orderByExpression: Int4OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingProductsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingProducts
+  objectType: SmallBusinessBankingProducts
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_products
+  filterExpressionType: SmallBusinessBankingProductsBoolExp
+  aggregateExpression: SmallBusinessBankingProductsAggExp
+  orderByExpression: SmallBusinessBankingProductsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingProducts
+      subscription:
+        rootField: smallBusinessBankingProducts
+    selectUniques:
+      - queryRootField: smallBusinessBankingProductsBySmallBusinessBankingProductId
+        uniqueIdentifier:
+          - smallBusinessBankingProductId
+        subscription:
+          rootField: smallBusinessBankingProductsBySmallBusinessBankingProductId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingProductsFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingProductsAggregate
+      subscription:
+        rootField: smallBusinessBankingProductsAggregate
+  description: Defines the financial products offered to small business customers
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingProducts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingAccounts
+  sourceType: SmallBusinessBankingProducts
+  target:
+    model:
+      name: SmallBusinessBankingAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SmallBusinessBankingAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingProductId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingProductId
+  graphql:
+    aggregateFieldName: smallBusinessBankingAccountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingCreditLines
+  sourceType: SmallBusinessBankingProducts
+  target:
+    model:
+      name: SmallBusinessBankingCreditLines
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SmallBusinessBankingCreditLinesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingProductId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingProductId
+  graphql:
+    aggregateFieldName: smallBusinessBankingCreditLinesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingLoans
+  sourceType: SmallBusinessBankingProducts
+  target:
+    model:
+      name: SmallBusinessBankingLoans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SmallBusinessBankingLoansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingProductId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingProductId
+  graphql:
+    aggregateFieldName: smallBusinessBankingLoansAggregate
+

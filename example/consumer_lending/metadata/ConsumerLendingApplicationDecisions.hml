@@ -1,0 +1,403 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingApplicationDecisions
+  description: Records the decisions made on loan applications, including
+    approvals, denials, and pre-qualifications.
+  fields:
+    - name: approvedAmount
+      type: ConsumerLendingNumeric
+      description: Approved loan amount
+    - name: approvedInterestRate
+      type: ConsumerLendingNumeric
+      description: Approved interest rate
+    - name: approvedMonthlyPayment
+      type: ConsumerLendingNumeric
+      description: Estimated monthly payment
+    - name: approvedTermMonths
+      type: ConsumerLendingInt4
+      description: Approved loan term in months
+    - name: conditionalApproval
+      type: ConsumerLendingBool
+      description: Whether approval has conditions
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4!
+      description: Reference to loan application
+    - name: consumerLendingDecisionId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for decision
+    - name: consumerLendingModelId
+      type: ConsumerLendingInt4
+      description: Reference to decision model used
+    - name: consumerLendingPricingTierId
+      type: ConsumerLendingInt4
+      description: Reference to pricing tier if approved
+    - name: decisionBy
+      type:  ConsumerLendingVarchar
+      description: User ID or System that made decision
+    - name: decisionDateTime
+      type: Timestamp!
+      description: When decision was made
+    - name: decisionResult
+      type:  ConsumerLendingVarchar!
+      description: Approved, Denied, Pending Review
+    - name: decisionScore
+      type: ConsumerLendingNumeric
+      description: ConsumerLendingNumeric score from decision model
+    - name: decisionType
+      type:  ConsumerLendingVarchar!
+      description: Prequalification, Initial, Final
+    - name: expiresDate
+      type: ConsumerLendingDate
+      description: When approval or prequalification expires
+    - name: notes
+      type: ConsumerLendingText
+      description: Additional decision notes
+  graphql:
+    typeName: ConsumerLendingApplicationDecisions
+    inputTypeName: ConsumerLendingApplicationDecisionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_application_decisions
+      fieldMapping:
+        approvedAmount:
+          column:
+            name: approved_amount
+        approvedInterestRate:
+          column:
+            name: approved_interest_rate
+        approvedMonthlyPayment:
+          column:
+            name: approved_monthly_payment
+        approvedTermMonths:
+          column:
+            name: approved_term_months
+        conditionalApproval:
+          column:
+            name: conditional_approval
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        consumerLendingDecisionId:
+          column:
+            name: consumer_lending_decision_id
+        consumerLendingModelId:
+          column:
+            name: consumer_lending_model_id
+        consumerLendingPricingTierId:
+          column:
+            name: consumer_lending_pricing_tier_id
+        decisionBy:
+          column:
+            name: decision_by
+        decisionDateTime:
+          column:
+            name: decision_date_time
+        decisionResult:
+          column:
+            name: decision_result
+        decisionScore:
+          column:
+            name: decision_score
+        decisionType:
+          column:
+            name: decision_type
+        expiresDate:
+          column:
+            name: expires_date
+        notes:
+          column:
+            name: notes
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingApplicationDecisions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approvedAmount
+          - approvedInterestRate
+          - approvedMonthlyPayment
+          - approvedTermMonths
+          - conditionalApproval
+          - consumerLendingApplicationId
+          - consumerLendingDecisionId
+          - consumerLendingModelId
+          - consumerLendingPricingTierId
+          - decisionBy
+          - decisionDateTime
+          - decisionResult
+          - decisionScore
+          - decisionType
+          - expiresDate
+          - notes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingApplicationDecisionsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingApplicationDecisions
+      comparableFields:
+        - fieldName: approvedAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: approvedInterestRate
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: approvedMonthlyPayment
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: approvedTermMonths
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: conditionalApproval
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingDecisionId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingModelId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingPricingTierId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: decisionBy
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: decisionDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: decisionResult
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: decisionScore
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: decisionType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: expiresDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: notes
+          booleanExpressionType: ConsumerLendingTextBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: consumerLendingDecisionModel
+        - relationshipName: consumerLendingRiskBasedPricingTier
+        - relationshipName: consumerLendingDecisionReasons
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingApplicationDecisionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicationDecisionsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingApplicationDecisions
+      aggregatableFields:
+        - fieldName: approvedAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: approvedInterestRate
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: approvedMonthlyPayment
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: approvedTermMonths
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: conditionalApproval
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingDecisionId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingModelId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingPricingTierId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: decisionBy
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: decisionDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: decisionResult
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: decisionScore
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: decisionType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: expiresDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: notes
+          aggregateExpression: ConsumerLendingTextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingApplicationDecisionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicationDecisionsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingApplicationDecisions
+      orderableFields:
+        - fieldName: approvedAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: approvedInterestRate
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: approvedMonthlyPayment
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: approvedTermMonths
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: conditionalApproval
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingDecisionId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingModelId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingPricingTierId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: decisionBy
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: decisionDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: decisionResult
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: decisionScore
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: decisionType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: expiresDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: notes
+          orderByExpression: ConsumerLendingTextOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: consumerLendingDecisionModel
+        - relationshipName: consumerLendingRiskBasedPricingTier
+  graphql:
+    expressionTypeName: ConsumerLendingApplicationDecisionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingApplicationDecisions
+  objectType: ConsumerLendingApplicationDecisions
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_application_decisions
+  filterExpressionType: ConsumerLendingApplicationDecisionsBoolExp
+  aggregateExpression: ConsumerLendingApplicationDecisionsAggExp
+  orderByExpression: ConsumerLendingApplicationDecisionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingApplicationDecisions
+      subscription:
+        rootField: consumerLendingApplicationDecisions
+    selectUniques:
+      - queryRootField: consumerLendingApplicationDecisionsByConsumerLendingDecisionId
+        uniqueIdentifier:
+          - consumerLendingDecisionId
+        subscription:
+          rootField: consumerLendingApplicationDecisionsByConsumerLendingDecisionId
+    filterInputTypeName: ConsumerLendingApplicationDecisionsFilterInput
+    aggregate:
+      queryRootField: consumerLendingApplicationDecisionsAggregate
+      subscription:
+        rootField: consumerLendingApplicationDecisionsAggregate
+  description: Records the decisions made on loan applications, including
+    approvals, denials, and pre-qualifications.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingApplicationDecisions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingApplicationDecisions
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingDecisionModel
+  sourceType: ConsumerLendingApplicationDecisions
+  target:
+    model:
+      name: ConsumerLendingDecisionModels
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingModelId
+      target:
+        modelField:
+          - fieldName: consumerLendingModelId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingRiskBasedPricingTier
+  sourceType: ConsumerLendingApplicationDecisions
+  target:
+    model:
+      name: ConsumerLendingRiskBasedPricingTiers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingPricingTierId
+      target:
+        modelField:
+          - fieldName: consumerLendingPricingTierId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingDecisionReasons
+  sourceType: ConsumerLendingApplicationDecisions
+  target:
+    model:
+      name: ConsumerLendingDecisionReasons
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingDecisionReasonsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingDecisionId
+      target:
+        modelField:
+          - fieldName: consumerLendingDecisionId
+  graphql:
+    aggregateFieldName: consumerLendingDecisionReasonsAggregate
+

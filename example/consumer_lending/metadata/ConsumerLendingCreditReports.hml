@@ -1,0 +1,364 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingCreditReports
+  description: Stores credit reports obtained for loan applicants, including
+    credit scores and other relevant information.
+  fields:
+    - name: bureauName
+      type:  ConsumerLendingVarchar
+      description: Equifax, Experian, TransUnion
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Reference to applicant
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4!
+      description: Reference to loan application
+    - name: consumerLendingCreditReportId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for credit report
+    - name: creditScore
+      type: ConsumerLendingInt4
+      description: Primary credit score from report
+    - name: expirationDate
+      type: ConsumerLendingDate!
+      description: When report expires
+    - name: reportDate
+      type: Timestamp!
+      description: When report was pulled
+    - name: reportPath
+      type:  ConsumerLendingVarchar
+      description: Path to stored report file
+    - name: reportReference
+      type:  ConsumerLendingVarchar
+      description: External reference ID from bureau
+    - name: reportType
+      type:  ConsumerLendingVarchar!
+      description: Tri-merge, Single Bureau
+    - name: status
+      type:  ConsumerLendingVarchar!
+      description: Completed, Failed, Pending
+  graphql:
+    typeName: ConsumerLendingCreditReports
+    inputTypeName: ConsumerLendingCreditReportsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_credit_reports
+      fieldMapping:
+        bureauName:
+          column:
+            name: bureau_name
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        consumerLendingCreditReportId:
+          column:
+            name: consumer_lending_credit_report_id
+        creditScore:
+          column:
+            name: credit_score
+        expirationDate:
+          column:
+            name: expiration_date
+        reportDate:
+          column:
+            name: report_date
+        reportPath:
+          column:
+            name: report_path
+        reportReference:
+          column:
+            name: report_reference
+        reportType:
+          column:
+            name: report_type
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingCreditReports
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - bureauName
+          - consumerLendingApplicantId
+          - consumerLendingApplicationId
+          - consumerLendingCreditReportId
+          - creditScore
+          - expirationDate
+          - reportDate
+          - reportPath
+          - reportReference
+          - reportType
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingCreditReportsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingCreditReports
+      comparableFields:
+        - fieldName: bureauName
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingCreditReportId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: creditScore
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: reportDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: reportPath
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: reportReference
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: reportType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: status
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingCreditInquiries
+        - relationshipName: consumerLendingCreditReportTradelines
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: consumerLendingPublicRecords
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingCreditReportsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingCreditReportsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingCreditReports
+      aggregatableFields:
+        - fieldName: bureauName
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingCreditReportId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: creditScore
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: expirationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: reportDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: reportPath
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: reportReference
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: reportType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: status
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingCreditReportsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingCreditReportsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingCreditReports
+      orderableFields:
+        - fieldName: bureauName
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingCreditReportId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: creditScore
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: expirationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: reportDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: reportPath
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: reportReference
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: reportType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: status
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+  graphql:
+    expressionTypeName: ConsumerLendingCreditReportsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingCreditReports
+  objectType: ConsumerLendingCreditReports
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_credit_reports
+  filterExpressionType: ConsumerLendingCreditReportsBoolExp
+  aggregateExpression: ConsumerLendingCreditReportsAggExp
+  orderByExpression: ConsumerLendingCreditReportsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingCreditReports
+      subscription:
+        rootField: consumerLendingCreditReports
+    selectUniques:
+      - queryRootField: consumerLendingCreditReportsByConsumerLendingCreditReportId
+        uniqueIdentifier:
+          - consumerLendingCreditReportId
+        subscription:
+          rootField: consumerLendingCreditReportsByConsumerLendingCreditReportId
+    filterInputTypeName: ConsumerLendingCreditReportsFilterInput
+    aggregate:
+      queryRootField: consumerLendingCreditReportsAggregate
+      subscription:
+        rootField: consumerLendingCreditReportsAggregate
+  description: Stores credit reports obtained for loan applicants, including
+    credit scores and other relevant information.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingCreditReports
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingCreditInquiries
+  sourceType: ConsumerLendingCreditReports
+  target:
+    model:
+      name: ConsumerLendingCreditInquiries
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingCreditInquiriesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCreditReportId
+      target:
+        modelField:
+          - fieldName: consumerLendingCreditReportId
+  graphql:
+    aggregateFieldName: consumerLendingCreditInquiriesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingCreditReportTradelines
+  sourceType: ConsumerLendingCreditReports
+  target:
+    model:
+      name: ConsumerLendingCreditReportTradelines
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingCreditReportTradelinesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCreditReportId
+      target:
+        modelField:
+          - fieldName: consumerLendingCreditReportId
+  graphql:
+    aggregateFieldName: consumerLendingCreditReportTradelinesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicant
+  sourceType: ConsumerLendingCreditReports
+  target:
+    model:
+      name: ConsumerLendingApplicants
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingCreditReports
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingPublicRecords
+  sourceType: ConsumerLendingCreditReports
+  target:
+    model:
+      name: ConsumerLendingPublicRecords
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingPublicRecordsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCreditReportId
+      target:
+        modelField:
+          - fieldName: consumerLendingCreditReportId
+  graphql:
+    aggregateFieldName: consumerLendingPublicRecordsAggregate
+

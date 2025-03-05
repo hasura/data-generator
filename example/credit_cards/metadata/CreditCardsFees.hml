@@ -1,0 +1,301 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsFees
+  description: Tracks fees charged to card accounts
+  fields:
+    - name: amount
+      type: Numeric!
+      description: Fee amount
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsFeeId
+      type: Int4!
+      description: Auto-incrementing identifier for each fee
+    - name: creditCardsStatementId
+      type: Int4
+      description: Reference to statements if included in statement
+    - name: creditCardsTransactionId
+      type: Int4
+      description: Reference to transactions if associated with specific transaction
+    - name: dateAssessed
+      type: Date!
+      description: Date fee was charged
+    - name: description
+      type: Varchar
+      description: Description of fee
+    - name: feeType
+      type: Varchar!
+      description: Type of fee (Annual, Late Payment, Cash Advance, Foreign
+        Transaction, etc.)
+    - name: waived
+      type: Bool!
+      description: Whether fee was waived
+    - name: waiverReason
+      type: Varchar
+      description: Reason fee was waived if applicable
+  graphql:
+    typeName: _CreditCards__CreditCardsFees
+    inputTypeName: _CreditCards__CreditCardsFeesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_fees
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsFeeId:
+          column:
+            name: credit_cards_fee_id
+        creditCardsStatementId:
+          column:
+            name: credit_cards_statement_id
+        creditCardsTransactionId:
+          column:
+            name: credit_cards_transaction_id
+        dateAssessed:
+          column:
+            name: date_assessed
+        description:
+          column:
+            name: description
+        feeType:
+          column:
+            name: fee_type
+        waived:
+          column:
+            name: waived
+        waiverReason:
+          column:
+            name: waiver_reason
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsFees
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - creditCardsCardAccountId
+          - creditCardsFeeId
+          - creditCardsStatementId
+          - creditCardsTransactionId
+          - dateAssessed
+          - description
+          - feeType
+          - waived
+          - waiverReason
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsFeesBoolExp
+  operand:
+    object:
+      type: CreditCardsFees
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsFeeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dateAssessed
+          booleanExpressionType: DateBoolExp
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: feeType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: waived
+          booleanExpressionType: BoolBoolExp
+        - fieldName: waiverReason
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsStatement
+        - relationshipName: creditCardsTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsFeesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsFeesAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsFees
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsFeeId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: dateAssessed
+          aggregateExpression: DateAggExp
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: feeType
+          aggregateExpression: VarcharAggExp
+        - fieldName: waived
+          aggregateExpression: BoolAggExp
+        - fieldName: waiverReason
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsFeesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsFeesOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsFees
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsFeeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dateAssessed
+          orderByExpression: DateOrderByExp
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: feeType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: waived
+          orderByExpression: BoolOrderByExp
+        - fieldName: waiverReason
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsStatement
+        - relationshipName: creditCardsTransaction
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsFeesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsFees
+  objectType: CreditCardsFees
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_fees
+  filterExpressionType: CreditCardsFeesBoolExp
+  aggregateExpression: CreditCardsFeesAggExp
+  orderByExpression: CreditCardsFeesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsFees
+      subscription:
+        rootField: creditCardsFees
+    selectUniques:
+      - queryRootField: creditCardsFeesByCreditCardsFeeId
+        uniqueIdentifier:
+          - creditCardsFeeId
+        subscription:
+          rootField: creditCardsFeesByCreditCardsFeeId
+    filterInputTypeName: _CreditCards__CreditCardsFeesFilterInput
+    aggregate:
+      queryRootField: creditCardsFeesAggregate
+      subscription:
+        rootField: creditCardsFeesAggregate
+  description: Tracks fees charged to card accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsFees
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsFees
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsStatement
+  sourceType: CreditCardsFees
+  target:
+    model:
+      name: CreditCardsStatements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsStatementId
+      target:
+        modelField:
+          - fieldName: creditCardsStatementId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsTransaction
+  sourceType: CreditCardsFees
+  target:
+    model:
+      name: CreditCardsTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: creditCardsTransactionId
+

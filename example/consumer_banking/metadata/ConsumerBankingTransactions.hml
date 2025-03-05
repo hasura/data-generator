@@ -1,0 +1,651 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingTransactions
+  description: Stores detailed information about account transactions
+  fields:
+    - name: addressLine
+      type: Varchar
+      description: Address associated with the transaction, if applicable
+    - name: amount
+      type: Numeric!
+      description: Monetary amount of the transaction
+    - name: bookingDateTime
+      type: Timestamp!
+      description: When the transaction was recorded in the books
+    - name: categoryPurposeCode
+      type: Varchar
+      description: Code classifying the overall purpose of the transaction
+    - name: chargeAmount
+      type: Numeric
+      description: Any fees associated with the transaction
+    - name: chargeCurrency
+      type: Varchar
+      description: Currency code for the transaction fee
+    - name: consumerBankingTransactionId
+      type: Int4!
+      description: Unique identifier for each transaction
+    - name: creditDebitIndicator
+      type: Varchar!
+      description: Indicates if transaction is a credit or debit
+    - name: currency
+      type: Varchar!
+      description: Currency code for the transaction amount
+    - name: enterpriseAccountId
+      type: Int4!
+      description: Account involved in the transaction
+    - name: paymentPurposeCode
+      type: Varchar
+      description: Code classifying the specific purpose of the payment
+    - name: status
+      type: Varchar!
+      description: Status of the transaction (e.g., pending, booked, rejected)
+    - name: transactionInformation
+      type: Varchar
+      description: Additional information about the transaction
+    - name: transactionMutability
+      type: Varchar
+      description: Whether the transaction can be changed (e.g., mutable, immutable)
+    - name: transactionReference
+      type: Varchar
+      description: Reference code for the transaction
+    - name: valueDateTime
+      type: Timestamp
+      description: When the transaction affects the account balance
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactions
+    inputTypeName: ConsumerBanking_ConsumerBankingTransactionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transactions
+      fieldMapping:
+        addressLine:
+          column:
+            name: address_line
+        amount:
+          column:
+            name: amount
+        bookingDateTime:
+          column:
+            name: booking_date_time
+        categoryPurposeCode:
+          column:
+            name: category_purpose_code
+        chargeAmount:
+          column:
+            name: charge_amount
+        chargeCurrency:
+          column:
+            name: charge_currency
+        consumerBankingTransactionId:
+          column:
+            name: consumer_banking_transaction_id
+        creditDebitIndicator:
+          column:
+            name: credit_debit_indicator
+        currency:
+          column:
+            name: currency
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        paymentPurposeCode:
+          column:
+            name: payment_purpose_code
+        status:
+          column:
+            name: status
+        transactionInformation:
+          column:
+            name: transaction_information
+        transactionMutability:
+          column:
+            name: transaction_mutability
+        transactionReference:
+          column:
+            name: transaction_reference
+        valueDateTime:
+          column:
+            name: value_date_time
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingTransactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - addressLine
+          - amount
+          - bookingDateTime
+          - categoryPurposeCode
+          - chargeAmount
+          - chargeCurrency
+          - consumerBankingTransactionId
+          - creditDebitIndicator
+          - currency
+          - enterpriseAccountId
+          - paymentPurposeCode
+          - status
+          - transactionInformation
+          - transactionMutability
+          - transactionReference
+          - valueDateTime
+          - consumerBankingAccountId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingTransactions
+      comparableFields:
+        - fieldName: addressLine
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: bookingDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: categoryPurposeCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: chargeAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: chargeCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditDebitIndicator
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: paymentPurposeCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transactionInformation
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transactionMutability
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transactionReference
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: valueDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingTransactionBalances
+        - relationshipName: consumerBankingTransactionBankTransactionCodes
+        - relationshipName: consumerBankingTransactionCardInstruments
+        - relationshipName: consumerBankingTransactionCreditorAccounts
+        - relationshipName: consumerBankingTransactionCreditorAgents
+        - relationshipName: consumerBankingTransactionCurrencyExchanges
+        - relationshipName: consumerBankingTransactionDebtorAccounts
+        - relationshipName: consumerBankingTransactionDebtorAgents
+        - relationshipName: consumerBankingTransactionMerchantDetails
+        - relationshipName: consumerBankingTransactionProprietaryBankTransactionCodes
+        - relationshipName: consumerBankingTransactionStatementReferences
+        - relationshipName: consumerBankingTransactionUltimateCreditors
+        - relationshipName: consumerBankingTransactionUltimateDebtors
+        - relationshipName: consumerBankingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingTransactions
+      aggregatableFields:
+        - fieldName: addressLine
+          aggregateExpression: VarcharAggExp
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: bookingDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: categoryPurposeCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: chargeAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: chargeCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditDebitIndicator
+          aggregateExpression: VarcharAggExp
+        - fieldName: currency
+          aggregateExpression: VarcharAggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: paymentPurposeCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: transactionInformation
+          aggregateExpression: VarcharAggExp
+        - fieldName: transactionMutability
+          aggregateExpression: VarcharAggExp
+        - fieldName: transactionReference
+          aggregateExpression: VarcharAggExp
+        - fieldName: valueDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingTransactions
+      orderableFields:
+        - fieldName: addressLine
+          orderByExpression: VarcharOrderByExp
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: bookingDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: categoryPurposeCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: chargeAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: chargeCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditDebitIndicator
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: paymentPurposeCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transactionInformation
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transactionMutability
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transactionReference
+          orderByExpression: VarcharOrderByExp
+        - fieldName: valueDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: account
+        - relationshipName: consumerBankingAccount
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingTransactions
+  objectType: ConsumerBankingTransactions
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transactions
+  filterExpressionType: ConsumerBankingTransactionsBoolExp
+  aggregateExpression: ConsumerBankingTransactionsAggExp
+  orderByExpression: ConsumerBankingTransactionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingTransactions
+      subscription:
+        rootField: consumerBankingTransactions
+    selectUniques:
+      - queryRootField: consumerBankingTransactionsByConsumerBankingTransactionId
+        uniqueIdentifier:
+          - consumerBankingTransactionId
+        subscription:
+          rootField: consumerBankingTransactionsByConsumerBankingTransactionId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingTransactionsFilterInput
+    aggregate:
+      queryRootField: consumerBankingTransactionsAggregate
+      subscription:
+        rootField: consumerBankingTransactionsAggregate
+  description: Stores detailed information about account transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingTransactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionBalances
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionBalances
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionBalancesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionBalancesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionBankTransactionCodes
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionBankTransactionCodes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionBankTransactionCodesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionBankTransactionCodesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionCardInstruments
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionCardInstruments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionCardInstrumentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionCardInstrumentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionCreditorAccounts
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionCreditorAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionCreditorAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionCreditorAccountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionCreditorAgents
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionCreditorAgents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionCreditorAgentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionCreditorAgentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionCurrencyExchanges
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionCurrencyExchanges
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionCurrencyExchangesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionCurrencyExchangesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionDebtorAccounts
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionDebtorAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionDebtorAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionDebtorAccountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionDebtorAgents
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionDebtorAgents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionDebtorAgentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionDebtorAgentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionMerchantDetails
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionMerchantDetails
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionMerchantDetailsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionMerchantDetailsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionProprietaryBankTransactionCodes
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionProprietaryBankTransactionCodes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionProprietaryBankTransactionCodesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionProprietaryBankTransactionCodesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionStatementReferences
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionStatementReferences
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionStatementReferencesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionStatementReferencesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionUltimateCreditors
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionUltimateCreditors
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionUltimateCreditorsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionUltimateCreditorsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactionUltimateDebtors
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingTransactionUltimateDebtors
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionUltimateDebtorsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionUltimateDebtorsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+

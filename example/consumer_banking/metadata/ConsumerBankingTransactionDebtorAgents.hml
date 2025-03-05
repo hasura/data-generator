@@ -1,0 +1,208 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAgents
+  description: Stores information about financial institutions sending funds in transactions
+  fields:
+    - name: consumerBankingTransactionDebtorAgentId
+      type: Int4!
+      description: Auto-incrementing identifier for each debtor agent record
+    - name: consumerBankingTransactionId
+      type: Int4!
+      description: References the transaction this debtor agent belongs to
+    - name: identification
+      type: Varchar!
+      description: Identifier of the sending financial institution
+    - name: lei
+      type: Varchar
+      description: Legal Entity Identifier of the sending institution
+    - name: name
+      type: Varchar
+      description: Name of the sending financial institution
+    - name: schemeName
+      type: Varchar!
+      description: Identifier scheme for the sending institution (e.g., BIC)
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionDebtorAgents
+    inputTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAgentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_debtor_agents
+      fieldMapping:
+        consumerBankingTransactionDebtorAgentId:
+          column:
+            name: consumer_banking_transaction_debtor_agent_id
+        consumerBankingTransactionId:
+          column:
+            name: consumer_banking_transaction_id
+        identification:
+          column:
+            name: identification
+        lei:
+          column:
+            name: lei
+        name:
+          column:
+            name: name
+        schemeName:
+          column:
+            name: scheme_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingTransactionDebtorAgents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingTransactionDebtorAgentId
+          - consumerBankingTransactionId
+          - identification
+          - lei
+          - name
+          - schemeName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAgentsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingTransactionDebtorAgents
+      comparableFields:
+        - fieldName: consumerBankingTransactionDebtorAgentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: identification
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lei
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: schemeName
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionDebtorAgentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAgentsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingTransactionDebtorAgents
+      aggregatableFields:
+        - fieldName: consumerBankingTransactionDebtorAgentId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: identification
+          aggregateExpression: VarcharAggExp
+        - fieldName: lei
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: schemeName
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAgentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAgentsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingTransactionDebtorAgents
+      orderableFields:
+        - fieldName: consumerBankingTransactionDebtorAgentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: identification
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lei
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: schemeName
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingTransaction
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAgentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingTransactionDebtorAgents
+  objectType: ConsumerBankingTransactionDebtorAgents
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_debtor_agents
+  filterExpressionType: ConsumerBankingTransactionDebtorAgentsBoolExp
+  aggregateExpression: ConsumerBankingTransactionDebtorAgentsAggExp
+  orderByExpression: ConsumerBankingTransactionDebtorAgentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingTransactionDebtorAgents
+      subscription:
+        rootField: consumerBankingTransactionDebtorAgents
+    selectUniques:
+      - queryRootField: consumerBankingTransactionDebtorAgentsByConsumerBankingTransactionDebtorAgentId
+        uniqueIdentifier:
+          - consumerBankingTransactionDebtorAgentId
+        subscription:
+          rootField: consumerBankingTransactionDebtorAgentsByConsumerBankingTransactionDebtorAgentId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAgentsFilterInput
+    aggregate:
+      queryRootField: consumerBankingTransactionDebtorAgentsAggregate
+      subscription:
+        rootField: consumerBankingTransactionDebtorAgentsAggregate
+  description: Stores information about financial institutions sending funds in transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingTransactionDebtorAgents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransaction
+  sourceType: ConsumerBankingTransactionDebtorAgents
+  target:
+    model:
+      name: ConsumerBankingTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+

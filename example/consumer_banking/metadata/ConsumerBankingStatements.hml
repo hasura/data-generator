@@ -1,0 +1,419 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingStatements
+  description: Stores information about account statements
+  fields:
+    - name: consumerBankingStatementId
+      type: Int4!
+      description: Unique identifier for each statement
+    - name: creationDateTime
+      type: Timestamp!
+      description: When the statement was generated
+    - name: endDateTime
+      type: Timestamp!
+      description: End of the period covered by the statement
+    - name: enterpriseAccountId
+      type: Int4!
+      description: Account for which the statement was generated
+    - name: startDateTime
+      type: Timestamp!
+      description: Start of the period covered by the statement
+    - name: statementReference
+      type: Varchar
+      description: Reference number for the statement
+    - name: type
+      type: Varchar!
+      description: Type of statement (e.g., regular, interim, final)
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatements
+    inputTypeName: ConsumerBanking_ConsumerBankingStatementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statements
+      fieldMapping:
+        consumerBankingStatementId:
+          column:
+            name: consumer_banking_statement_id
+        creationDateTime:
+          column:
+            name: creation_date_time
+        endDateTime:
+          column:
+            name: end_date_time
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        startDateTime:
+          column:
+            name: start_date_time
+        statementReference:
+          column:
+            name: statement_reference
+        type:
+          column:
+            name: type
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingStatements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingStatementId
+          - creationDateTime
+          - endDateTime
+          - enterpriseAccountId
+          - startDateTime
+          - statementReference
+          - type
+          - consumerBankingAccountId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingStatements
+      comparableFields:
+        - fieldName: consumerBankingStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creationDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: endDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: startDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: statementReference
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: type
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStatementAmounts
+        - relationshipName: consumerBankingStatementBenefits
+        - relationshipName: consumerBankingStatementDateTimes
+        - relationshipName: consumerBankingStatementDescriptions
+        - relationshipName: consumerBankingStatementFees
+        - relationshipName: consumerBankingStatementInterests
+        - relationshipName: consumerBankingStatementRates
+        - relationshipName: consumerBankingStatementValues
+        - relationshipName: consumerBankingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingStatements
+      aggregatableFields:
+        - fieldName: consumerBankingStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: creationDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: endDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: startDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: statementReference
+          aggregateExpression: VarcharAggExp
+        - fieldName: type
+          aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingStatements
+      orderableFields:
+        - fieldName: consumerBankingStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creationDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: endDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: startDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: statementReference
+          orderByExpression: VarcharOrderByExp
+        - fieldName: type
+          orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: account
+        - relationshipName: consumerBankingAccount
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingStatements
+  objectType: ConsumerBankingStatements
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statements
+  filterExpressionType: ConsumerBankingStatementsBoolExp
+  aggregateExpression: ConsumerBankingStatementsAggExp
+  orderByExpression: ConsumerBankingStatementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingStatements
+      subscription:
+        rootField: consumerBankingStatements
+    selectUniques:
+      - queryRootField: consumerBankingStatementsByConsumerBankingStatementId
+        uniqueIdentifier:
+          - consumerBankingStatementId
+        subscription:
+          rootField: consumerBankingStatementsByConsumerBankingStatementId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingStatementsFilterInput
+    aggregate:
+      queryRootField: consumerBankingStatementsAggregate
+      subscription:
+        rootField: consumerBankingStatementsAggregate
+  description: Stores information about account statements
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingStatements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementAmounts
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementAmounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementAmountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementAmountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementBenefits
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementBenefits
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementBenefitsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementBenefitsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementDateTimes
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementDateTimes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementDateTimesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementDateTimesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementDescriptions
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementDescriptions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementDescriptionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementDescriptionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementFees
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementFees
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementFeesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementFeesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementInterests
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementInterests
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementInterestsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementInterestsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementRates
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementRates
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementRatesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementRatesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementValues
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingStatementValues
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStatementValuesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingStatementValuesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+

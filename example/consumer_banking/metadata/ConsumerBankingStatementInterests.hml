@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingStatementInterests
+  description: Stores information about interest earned or charged during a statement period
+  fields:
+    - name: amount
+      type: Numeric!
+      description: Monetary amount of interest earned or charged
+    - name: consumerBankingStatementId
+      type: Int4!
+      description: References the statement this interest belongs to
+    - name: consumerBankingStatementInterestId
+      type: Int4!
+      description: Auto-incrementing identifier for each interest record
+    - name: creditDebitIndicator
+      type: Varchar!
+      description: Indicates if interest is earned (credit) or charged (debit)
+    - name: currency
+      type: Varchar!
+      description: Currency code for the interest amount
+    - name: description
+      type: Varchar
+      description: Description of the interest
+    - name: frequency
+      type: Varchar
+      description: How often interest is calculated (e.g., daily, monthly)
+    - name: rate
+      type: Numeric
+      description: Interest rate applied
+    - name: rateType
+      type: Varchar
+      description: Type of rate (e.g., fixed, variable, introductory)
+    - name: type
+      type: Varchar!
+      description: Type of interest (e.g., deposit, loan, credit card)
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementInterests
+    inputTypeName: ConsumerBanking_ConsumerBankingStatementInterestsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statement_interests
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        consumerBankingStatementId:
+          column:
+            name: consumer_banking_statement_id
+        consumerBankingStatementInterestId:
+          column:
+            name: consumer_banking_statement_interest_id
+        creditDebitIndicator:
+          column:
+            name: credit_debit_indicator
+        currency:
+          column:
+            name: currency
+        description:
+          column:
+            name: description
+        frequency:
+          column:
+            name: frequency
+        rate:
+          column:
+            name: rate
+        rateType:
+          column:
+            name: rate_type
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingStatementInterests
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - consumerBankingStatementId
+          - consumerBankingStatementInterestId
+          - creditDebitIndicator
+          - currency
+          - description
+          - frequency
+          - rate
+          - rateType
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementInterestsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingStatementInterests
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: consumerBankingStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingStatementInterestId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditDebitIndicator
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: frequency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: rate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: rateType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: type
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStatement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementInterestsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementInterestsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingStatementInterests
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: consumerBankingStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingStatementInterestId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditDebitIndicator
+          aggregateExpression: VarcharAggExp
+        - fieldName: currency
+          aggregateExpression: VarcharAggExp
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: frequency
+          aggregateExpression: VarcharAggExp
+        - fieldName: rate
+          aggregateExpression: NumericAggExp
+        - fieldName: rateType
+          aggregateExpression: VarcharAggExp
+        - fieldName: type
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementInterestsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementInterestsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingStatementInterests
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: consumerBankingStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingStatementInterestId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditDebitIndicator
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: frequency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: rate
+          orderByExpression: NumericOrderByExp
+        - fieldName: rateType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: type
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingStatement
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementInterestsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingStatementInterests
+  objectType: ConsumerBankingStatementInterests
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statement_interests
+  filterExpressionType: ConsumerBankingStatementInterestsBoolExp
+  aggregateExpression: ConsumerBankingStatementInterestsAggExp
+  orderByExpression: ConsumerBankingStatementInterestsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingStatementInterests
+      subscription:
+        rootField: consumerBankingStatementInterests
+    selectUniques:
+      - queryRootField: consumerBankingStatementInterestsByConsumerBankingStatementInterestId
+        uniqueIdentifier:
+          - consumerBankingStatementInterestId
+        subscription:
+          rootField: consumerBankingStatementInterestsByConsumerBankingStatementInterestId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingStatementInterestsFilterInput
+    aggregate:
+      queryRootField: consumerBankingStatementInterestsAggregate
+      subscription:
+        rootField: consumerBankingStatementInterestsAggregate
+  description: Stores information about interest earned or charged during a statement period
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingStatementInterests
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatement
+  sourceType: ConsumerBankingStatementInterests
+  target:
+    model:
+      name: ConsumerBankingStatements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+

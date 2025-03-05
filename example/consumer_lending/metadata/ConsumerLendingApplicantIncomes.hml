@@ -1,0 +1,223 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingApplicantIncomes
+  description: Tracks various income sources for loan applicants, including
+    employment and other income types.
+  fields:
+    - name: amount
+      type: ConsumerLendingNumeric!
+      description: Income amount
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Reference to applicant
+    - name: consumerLendingIncomeId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for income record
+    - name: frequency
+      type:  ConsumerLendingVarchar!
+      description: Monthly, Annual, etc.
+    - name: incomeType
+      type:  ConsumerLendingVarchar!
+      description: Salary, Self-employment, Rental, Alimony, etc.
+    - name: verificationDate
+      type: ConsumerLendingDate
+      description: Date income was verified
+    - name: verificationStatus
+      type:  ConsumerLendingVarchar!
+      description: Self-reported, Verified, Failed
+  graphql:
+    typeName: ConsumerLendingApplicantIncomes
+    inputTypeName: ConsumerLendingApplicantIncomesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_applicant_incomes
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        consumerLendingIncomeId:
+          column:
+            name: consumer_lending_income_id
+        frequency:
+          column:
+            name: frequency
+        incomeType:
+          column:
+            name: income_type
+        verificationDate:
+          column:
+            name: verification_date
+        verificationStatus:
+          column:
+            name: verification_status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingApplicantIncomes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - consumerLendingApplicantId
+          - consumerLendingIncomeId
+          - frequency
+          - incomeType
+          - verificationDate
+          - verificationStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingApplicantIncomesBoolExp
+  operand:
+    object:
+      type: ConsumerLendingApplicantIncomes
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingIncomeId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: frequency
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: incomeType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: verificationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicant
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingApplicantIncomesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantIncomesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingApplicantIncomes
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingIncomeId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: frequency
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: incomeType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: verificationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: verificationStatus
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingApplicantIncomesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantIncomesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingApplicantIncomes
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingIncomeId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: frequency
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: incomeType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: verificationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicant
+  graphql:
+    expressionTypeName: ConsumerLendingApplicantIncomesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingApplicantIncomes
+  objectType: ConsumerLendingApplicantIncomes
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_applicant_incomes
+  filterExpressionType: ConsumerLendingApplicantIncomesBoolExp
+  aggregateExpression: ConsumerLendingApplicantIncomesAggExp
+  orderByExpression: ConsumerLendingApplicantIncomesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingApplicantIncomes
+      subscription:
+        rootField: consumerLendingApplicantIncomes
+    selectUniques:
+      - queryRootField: consumerLendingApplicantIncomesByConsumerLendingIncomeId
+        uniqueIdentifier:
+          - consumerLendingIncomeId
+        subscription:
+          rootField: consumerLendingApplicantIncomesByConsumerLendingIncomeId
+    filterInputTypeName: ConsumerLendingApplicantIncomesFilterInput
+    aggregate:
+      queryRootField: consumerLendingApplicantIncomesAggregate
+      subscription:
+        rootField: consumerLendingApplicantIncomesAggregate
+  description: Tracks various income sources for loan applicants, including
+    employment and other income types.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingApplicantIncomes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicant
+  sourceType: ConsumerLendingApplicantIncomes
+  target:
+    model:
+      name: ConsumerLendingApplicants
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+

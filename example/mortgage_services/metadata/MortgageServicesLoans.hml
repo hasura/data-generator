@@ -1,0 +1,525 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesLoans
+  description: Stores detailed information about mortgage loans
+  fields:
+    - name: downPayment
+      type: Numeric
+      description: Amount paid upfront by the borrower
+    - name: downPaymentPercentage
+      type: Numeric
+      description: Down payment as a percentage of purchase price
+    - name: escrowAmount
+      type: Numeric
+      description: Monthly amount collected for taxes and insurance
+    - name: estimatedCashToClose
+      type: Numeric
+      description: Total cash needed from borrower to close
+    - name: estimatedClosingCosts
+      type: Numeric
+      description: Estimated fees and costs to close the loan
+    - name: estimatedMonthlyPayment
+      type: Numeric
+      description: Estimated regular payment including principal and interest
+    - name: firstPaymentDate
+      type: Date
+      description: Due date of the first loan payment
+    - name: interestRate
+      type: Numeric!
+      description: Annual percentage rate for the loan
+    - name: interestRateType
+      type: Varchar!
+      description: Whether the rate is fixed or adjustable
+    - name: loanAmount
+      type: Numeric!
+      description: Principal amount of the loan
+    - name: loanTermMonths
+      type: Int4!
+      description: Duration of the loan in months
+    - name: loanType
+      type: Varchar!
+      description: Type of mortgage loan product
+    - name: maturityDate
+      type: Date
+      description: When the loan will be fully paid off
+    - name: mortgageServicesApplicationId
+      type: Int4!
+      description: References the mortgage application this loan is associated with
+    - name: mortgageServicesLoanId
+      type: Int4!
+      description: Unique identifier for each loan
+    - name: originationDate
+      type: Date
+      description: When the loan was originated
+    - name: pmiRate
+      type: Numeric
+      description: Rate for private mortgage insurance if applicable
+    - name: privateMortgageInsurance
+      type: Bool
+      description: Indicates if PMI is required
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoans
+    inputTypeName: _MortgageServices__MortgageServicesLoansInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_loans
+      fieldMapping:
+        downPayment:
+          column:
+            name: down_payment
+        downPaymentPercentage:
+          column:
+            name: down_payment_percentage
+        escrowAmount:
+          column:
+            name: escrow_amount
+        estimatedCashToClose:
+          column:
+            name: estimated_cash_to_close
+        estimatedClosingCosts:
+          column:
+            name: estimated_closing_costs
+        estimatedMonthlyPayment:
+          column:
+            name: estimated_monthly_payment
+        firstPaymentDate:
+          column:
+            name: first_payment_date
+        interestRate:
+          column:
+            name: interest_rate
+        interestRateType:
+          column:
+            name: interest_rate_type
+        loanAmount:
+          column:
+            name: loan_amount
+        loanTermMonths:
+          column:
+            name: loan_term_months
+        loanType:
+          column:
+            name: loan_type
+        maturityDate:
+          column:
+            name: maturity_date
+        mortgageServicesApplicationId:
+          column:
+            name: mortgage_services_application_id
+        mortgageServicesLoanId:
+          column:
+            name: mortgage_services_loan_id
+        originationDate:
+          column:
+            name: origination_date
+        pmiRate:
+          column:
+            name: pmi_rate
+        privateMortgageInsurance:
+          column:
+            name: private_mortgage_insurance
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesLoans
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - downPayment
+          - downPaymentPercentage
+          - escrowAmount
+          - estimatedCashToClose
+          - estimatedClosingCosts
+          - estimatedMonthlyPayment
+          - firstPaymentDate
+          - interestRate
+          - interestRateType
+          - loanAmount
+          - loanTermMonths
+          - loanType
+          - maturityDate
+          - mortgageServicesApplicationId
+          - mortgageServicesLoanId
+          - originationDate
+          - pmiRate
+          - privateMortgageInsurance
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesLoansBoolExp
+  operand:
+    object:
+      type: MortgageServicesLoans
+      comparableFields:
+        - fieldName: downPayment
+          booleanExpressionType: NumericBoolExp
+        - fieldName: downPaymentPercentage
+          booleanExpressionType: NumericBoolExp
+        - fieldName: escrowAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: estimatedCashToClose
+          booleanExpressionType: NumericBoolExp
+        - fieldName: estimatedClosingCosts
+          booleanExpressionType: NumericBoolExp
+        - fieldName: estimatedMonthlyPayment
+          booleanExpressionType: NumericBoolExp
+        - fieldName: firstPaymentDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: interestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: interestRateType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: loanAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: loanTermMonths
+          booleanExpressionType: Int4BoolExp
+        - fieldName: loanType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: maturityDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: mortgageServicesApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLoanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: originationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: pmiRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: privateMortgageInsurance
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesAppraisals
+        - relationshipName: mortgageServicesClosedLoans
+        - relationshipName: mortgageServicesClosingAppointments
+        - relationshipName: mortgageServicesClosingDisclosures
+        - relationshipName: mortgageServicesHmdaRecords
+        - relationshipName: mortgageServicesLoanRateLocks
+        - relationshipName: mortgageServicesApplication
+        - relationshipName: mortgageServicesServicingAccounts
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoansBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesLoansAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesLoans
+      aggregatableFields:
+        - fieldName: downPayment
+          aggregateExpression: NumericAggExp
+        - fieldName: downPaymentPercentage
+          aggregateExpression: NumericAggExp
+        - fieldName: escrowAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: estimatedCashToClose
+          aggregateExpression: NumericAggExp
+        - fieldName: estimatedClosingCosts
+          aggregateExpression: NumericAggExp
+        - fieldName: estimatedMonthlyPayment
+          aggregateExpression: NumericAggExp
+        - fieldName: firstPaymentDate
+          aggregateExpression: DateAggExp
+        - fieldName: interestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: interestRateType
+          aggregateExpression: VarcharAggExp
+        - fieldName: loanAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: loanTermMonths
+          aggregateExpression: Int4AggExp
+        - fieldName: loanType
+          aggregateExpression: VarcharAggExp
+        - fieldName: maturityDate
+          aggregateExpression: DateAggExp
+        - fieldName: mortgageServicesApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLoanId
+          aggregateExpression: Int4AggExp
+        - fieldName: originationDate
+          aggregateExpression: DateAggExp
+        - fieldName: pmiRate
+          aggregateExpression: NumericAggExp
+        - fieldName: privateMortgageInsurance
+          aggregateExpression: BoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesLoansAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesLoansOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesLoans
+      orderableFields:
+        - fieldName: downPayment
+          orderByExpression: NumericOrderByExp
+        - fieldName: downPaymentPercentage
+          orderByExpression: NumericOrderByExp
+        - fieldName: escrowAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: estimatedCashToClose
+          orderByExpression: NumericOrderByExp
+        - fieldName: estimatedClosingCosts
+          orderByExpression: NumericOrderByExp
+        - fieldName: estimatedMonthlyPayment
+          orderByExpression: NumericOrderByExp
+        - fieldName: firstPaymentDate
+          orderByExpression: DateOrderByExp
+        - fieldName: interestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: interestRateType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: loanAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: loanTermMonths
+          orderByExpression: Int4OrderByExp
+        - fieldName: loanType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: maturityDate
+          orderByExpression: DateOrderByExp
+        - fieldName: mortgageServicesApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLoanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: originationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: pmiRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: privateMortgageInsurance
+          orderByExpression: BoolOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesApplication
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesLoansOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesLoans
+  objectType: MortgageServicesLoans
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_loans
+  filterExpressionType: MortgageServicesLoansBoolExp
+  aggregateExpression: MortgageServicesLoansAggExp
+  orderByExpression: MortgageServicesLoansOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesLoans
+      subscription:
+        rootField: mortgageServicesLoans
+    selectUniques:
+      - queryRootField: mortgageServicesLoansByMortgageServicesLoanId
+        uniqueIdentifier:
+          - mortgageServicesLoanId
+        subscription:
+          rootField: mortgageServicesLoansByMortgageServicesLoanId
+    filterInputTypeName: _MortgageServices__MortgageServicesLoansFilterInput
+    aggregate:
+      queryRootField: mortgageServicesLoansAggregate
+      subscription:
+        rootField: mortgageServicesLoansAggregate
+  description: Stores detailed information about mortgage loans
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesLoans
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesAppraisals
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesAppraisals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesAppraisalsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+  graphql:
+    aggregateFieldName: mortgageServicesAppraisalsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesClosedLoans
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesClosedLoans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesClosedLoansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+  graphql:
+    aggregateFieldName: mortgageServicesClosedLoansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesClosingAppointments
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesClosingAppointments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesClosingAppointmentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+  graphql:
+    aggregateFieldName: mortgageServicesClosingAppointmentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesClosingDisclosures
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesClosingDisclosures
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesClosingDisclosuresAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+  graphql:
+    aggregateFieldName: mortgageServicesClosingDisclosuresAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesHmdaRecords
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesHmdaRecords
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesHmdaRecordsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+  graphql:
+    aggregateFieldName: mortgageServicesHmdaRecordsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoanRateLocks
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesLoanRateLocks
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesLoanRateLocksAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+  graphql:
+    aggregateFieldName: mortgageServicesLoanRateLocksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplication
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesServicingAccounts
+  sourceType: MortgageServicesLoans
+  target:
+    model:
+      name: MortgageServicesServicingAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesServicingAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+  graphql:
+    aggregateFieldName: mortgageServicesServicingAccountsAggregate
+

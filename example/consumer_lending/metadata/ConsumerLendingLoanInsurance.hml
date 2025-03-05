@@ -1,0 +1,321 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingLoanInsurance
+  description: Stores information about insurance policies associated with loan
+    accounts or collateral.
+  fields:
+    - name: beneficiary
+      type:  ConsumerLendingVarchar
+      description: Named beneficiary if applicable
+    - name: carrierName
+      type:  ConsumerLendingVarchar!
+      description: Name of insurance company
+    - name: consumerLendingCollateralId
+      type: ConsumerLendingInt4
+      description: Reference to loan_collateral if associated with specific collateral
+    - name: consumerLendingInsuranceId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for insurance record
+    - name: consumerLendingLoanAccountId
+      type: ConsumerLendingInt4!
+      description: Reference to loan account
+    - name: coverageAmount
+      type: ConsumerLendingNumeric!
+      description: Amount of coverage
+    - name: effectiveDate
+      type: ConsumerLendingDate!
+      description: Policy start date
+    - name: expirationDate
+      type: ConsumerLendingDate!
+      description: Policy end date
+    - name: insuranceType
+      type:  ConsumerLendingVarchar!
+      description: Auto, Hazard, Credit Life, Disability
+    - name: policyNumber
+      type:  ConsumerLendingVarchar!
+      description: Insurance policy number
+    - name: premiumAmount
+      type: ConsumerLendingNumeric!
+      description: Cost of insurance premium
+    - name: premiumFrequency
+      type:  ConsumerLendingVarchar!
+      description: Annual, Monthly
+    - name: status
+      type:  ConsumerLendingVarchar!
+      description: Active, Lapsed, Canceled
+  graphql:
+    typeName: ConsumerLendingLoanInsurance
+    inputTypeName: ConsumerLendingLoanInsuranceInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_insurance
+      fieldMapping:
+        beneficiary:
+          column:
+            name: beneficiary
+        carrierName:
+          column:
+            name: carrier_name
+        consumerLendingCollateralId:
+          column:
+            name: consumer_lending_collateral_id
+        consumerLendingInsuranceId:
+          column:
+            name: consumer_lending_insurance_id
+        consumerLendingLoanAccountId:
+          column:
+            name: consumer_lending_loan_account_id
+        coverageAmount:
+          column:
+            name: coverage_amount
+        effectiveDate:
+          column:
+            name: effective_date
+        expirationDate:
+          column:
+            name: expiration_date
+        insuranceType:
+          column:
+            name: insurance_type
+        policyNumber:
+          column:
+            name: policy_number
+        premiumAmount:
+          column:
+            name: premium_amount
+        premiumFrequency:
+          column:
+            name: premium_frequency
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingLoanInsurance
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - beneficiary
+          - carrierName
+          - consumerLendingCollateralId
+          - consumerLendingInsuranceId
+          - consumerLendingLoanAccountId
+          - coverageAmount
+          - effectiveDate
+          - expirationDate
+          - insuranceType
+          - policyNumber
+          - premiumAmount
+          - premiumFrequency
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingLoanInsuranceBoolExp
+  operand:
+    object:
+      type: ConsumerLendingLoanInsurance
+      comparableFields:
+        - fieldName: beneficiary
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: carrierName
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingCollateralId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingInsuranceId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingLoanAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: coverageAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: insuranceType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: policyNumber
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: premiumAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: premiumFrequency
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: status
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanCollateral
+        - relationshipName: consumerLendingLoanAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingLoanInsuranceBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanInsuranceAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingLoanInsurance
+      aggregatableFields:
+        - fieldName: beneficiary
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: carrierName
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingCollateralId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingInsuranceId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingLoanAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: coverageAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: expirationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: insuranceType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: policyNumber
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: premiumAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: premiumFrequency
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: status
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingLoanInsuranceAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanInsuranceOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingLoanInsurance
+      orderableFields:
+        - fieldName: beneficiary
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: carrierName
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingCollateralId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingInsuranceId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingLoanAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: coverageAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: expirationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: insuranceType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: policyNumber
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: premiumAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: premiumFrequency
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: status
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanCollateral
+        - relationshipName: consumerLendingLoanAccount
+  graphql:
+    expressionTypeName: ConsumerLendingLoanInsuranceOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingLoanInsurance
+  objectType: ConsumerLendingLoanInsurance
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_insurance
+  filterExpressionType: ConsumerLendingLoanInsuranceBoolExp
+  aggregateExpression: ConsumerLendingLoanInsuranceAggExp
+  orderByExpression: ConsumerLendingLoanInsuranceOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingLoanInsurance
+      subscription:
+        rootField: consumerLendingLoanInsurance
+    selectUniques:
+      - queryRootField: consumerLendingLoanInsuranceByConsumerLendingInsuranceId
+        uniqueIdentifier:
+          - consumerLendingInsuranceId
+        subscription:
+          rootField: consumerLendingLoanInsuranceByConsumerLendingInsuranceId
+    filterInputTypeName: ConsumerLendingLoanInsuranceFilterInput
+    aggregate:
+      queryRootField: consumerLendingLoanInsuranceAggregate
+      subscription:
+        rootField: consumerLendingLoanInsuranceAggregate
+  description: Stores information about insurance policies associated with loan
+    accounts or collateral.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingLoanInsurance
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanCollateral
+  sourceType: ConsumerLendingLoanInsurance
+  target:
+    model:
+      name: ConsumerLendingLoanCollateral
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCollateralId
+      target:
+        modelField:
+          - fieldName: consumerLendingCollateralId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccount
+  sourceType: ConsumerLendingLoanInsurance
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanAccountId
+      target:
+        modelField:
+          - fieldName: loanAccountId
+

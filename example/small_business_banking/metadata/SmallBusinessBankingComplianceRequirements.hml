@@ -1,0 +1,280 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceRequirements
+  description: Catalogs compliance requirements affecting small business banking
+  fields:
+    - name: businessImpact
+      type: Text!
+      description: How the requirement impacts business banking
+    - name: controlMeasures
+      type: Text
+      description: Measures in place to ensure compliance
+    - name: description
+      type: Text!
+      description: Detailed description of the requirement
+    - name: effectiveDate
+      type: Date!
+      description: Date when the requirement became effective
+    - name: endDate
+      type: Date
+      description: Date when the requirement expires (if applicable)
+    - name: isActive
+      type: Bool!
+      description: Whether this requirement is currently active
+    - name: regulation
+      type: Varchar!
+      description: Associated regulation or law
+    - name: regulatoryAuthority
+      type: Varchar!
+      description: Authority that enforces the requirement
+    - name: requirementName
+      type: Varchar!
+      description: Name of the compliance requirement
+    - name: requirementOwner
+      type: Int4!
+      description: Department or role responsible for compliance
+    - name: smallBusinessBankingRequirementId
+      type: Int4!
+      description: Unique identifier for each compliance requirement
+    - name: verificationFrequency
+      type: Varchar!
+      description: How often compliance is verified (daily, monthly, quarterly, annual)
+    - name: verificationProcedure
+      type: Text
+      description: Description of the verification procedure
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingComplianceRequirements
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceRequirementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_compliance_requirements
+      fieldMapping:
+        businessImpact:
+          column:
+            name: business_impact
+        controlMeasures:
+          column:
+            name: control_measures
+        description:
+          column:
+            name: description
+        effectiveDate:
+          column:
+            name: effective_date
+        endDate:
+          column:
+            name: end_date
+        isActive:
+          column:
+            name: is_active
+        regulation:
+          column:
+            name: regulation
+        regulatoryAuthority:
+          column:
+            name: regulatory_authority
+        requirementName:
+          column:
+            name: requirement_name
+        requirementOwner:
+          column:
+            name: requirement_owner
+        smallBusinessBankingRequirementId:
+          column:
+            name: small_business_banking_requirement_id
+        verificationFrequency:
+          column:
+            name: verification_frequency
+        verificationProcedure:
+          column:
+            name: verification_procedure
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingComplianceRequirements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - businessImpact
+          - controlMeasures
+          - description
+          - effectiveDate
+          - endDate
+          - isActive
+          - regulation
+          - regulatoryAuthority
+          - requirementName
+          - requirementOwner
+          - smallBusinessBankingRequirementId
+          - verificationFrequency
+          - verificationProcedure
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceRequirementsBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingComplianceRequirements
+      comparableFields:
+        - fieldName: businessImpact
+          booleanExpressionType: TextBoolExp
+        - fieldName: controlMeasures
+          booleanExpressionType: TextBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: isActive
+          booleanExpressionType: BoolBoolExp
+        - fieldName: regulation
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: regulatoryAuthority
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: requirementName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: requirementOwner
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingRequirementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: verificationFrequency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: verificationProcedure
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingComplianceRequirementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceRequirementsAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingComplianceRequirements
+      aggregatableFields:
+        - fieldName: businessImpact
+          aggregateExpression: TextAggExp
+        - fieldName: controlMeasures
+          aggregateExpression: TextAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: DateAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: isActive
+          aggregateExpression: BoolAggExp
+        - fieldName: regulation
+          aggregateExpression: VarcharAggExp
+        - fieldName: regulatoryAuthority
+          aggregateExpression: VarcharAggExp
+        - fieldName: requirementName
+          aggregateExpression: VarcharAggExp
+        - fieldName: requirementOwner
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingRequirementId
+          aggregateExpression: Int4AggExp
+        - fieldName: verificationFrequency
+          aggregateExpression: VarcharAggExp
+        - fieldName: verificationProcedure
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceRequirementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceRequirementsOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingComplianceRequirements
+      orderableFields:
+        - fieldName: businessImpact
+          orderByExpression: TextOrderByExp
+        - fieldName: controlMeasures
+          orderByExpression: TextOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: DateOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: isActive
+          orderByExpression: BoolOrderByExp
+        - fieldName: regulation
+          orderByExpression: VarcharOrderByExp
+        - fieldName: regulatoryAuthority
+          orderByExpression: VarcharOrderByExp
+        - fieldName: requirementName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: requirementOwner
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingRequirementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: verificationFrequency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: verificationProcedure
+          orderByExpression: TextOrderByExp
+      orderableRelationships:
+        - relationshipName: requirementOwnedBy
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceRequirementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingComplianceRequirements
+  objectType: SmallBusinessBankingComplianceRequirements
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_compliance_requirements
+  filterExpressionType: SmallBusinessBankingComplianceRequirementsBoolExp
+  aggregateExpression: SmallBusinessBankingComplianceRequirementsAggExp
+  orderByExpression: SmallBusinessBankingComplianceRequirementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingComplianceRequirements
+      subscription:
+        rootField: smallBusinessBankingComplianceRequirements
+    selectUniques:
+      - queryRootField: smallBusinessBankingComplianceRequirementsBySmallBusinessBankingRequirementId
+        uniqueIdentifier:
+          - smallBusinessBankingRequirementId
+        subscription:
+          rootField: smallBusinessBankingComplianceRequirementsBySmallBusinessBankingRequirementId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceRequirementsFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingComplianceRequirementsAggregate
+      subscription:
+        rootField: smallBusinessBankingComplianceRequirementsAggregate
+  description: Catalogs compliance requirements affecting small business banking
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingComplianceRequirements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

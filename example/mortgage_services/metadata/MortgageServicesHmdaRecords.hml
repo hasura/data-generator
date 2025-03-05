@@ -1,0 +1,928 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesHmdaRecords
+  description: Stores data required for Home Mortgage Disclosure Act (HMDA)
+    regulatory reporting
+  fields:
+    - name: actionTaken
+      type: Varchar!
+      description: Code indicating final disposition (1=Originated, 2=Approved not
+        accepted, etc.)
+    - name: actionTakenDate
+      type: Date!
+      description: Date of final action
+    - name: aus1
+      type: Varchar
+      description: Primary automated underwriting system used
+    - name: aus2
+      type: Varchar
+      description: Secondary automated underwriting system used if applicable
+    - name: aus3
+      type: Varchar
+      description: Additional automated underwriting system if applicable
+    - name: aus4
+      type: Varchar
+      description: Additional automated underwriting system if applicable
+    - name: aus5
+      type: Varchar
+      description: Additional automated underwriting system if applicable
+    - name: balloonPayment
+      type: Varchar
+      description: Whether loan has balloon payment feature (1=Yes, 2=No)
+    - name: businessOrCommercialPurpose
+      type: Varchar
+      description: Whether loan is for business purpose (1=Yes, 2=No)
+    - name: censusTract
+      type: Varchar!
+      description: Census tract for property location
+    - name: constructionMethod
+      type: Varchar!
+      description: Code indicating construction method (1=Site-built, 2=Manufactured)
+    - name: county
+      type: Varchar!
+      description: County code for property location
+    - name: creditScoreApplicant
+      type: Int4
+      description: Credit score of primary applicant
+    - name: creditScoreCoApplicant
+      type: Int4
+      description: Credit score of co-applicant if applicable
+    - name: creditScoreModel
+      type: Varchar
+      description: Code indicating credit scoring model used
+    - name: denialReason1
+      type: Varchar
+      description: Primary reason for denial if applicable
+    - name: denialReason2
+      type: Varchar
+      description: Secondary reason for denial if applicable
+    - name: denialReason3
+      type: Varchar
+      description: Additional reason for denial if applicable
+    - name: denialReason4
+      type: Varchar
+      description: Additional reason for denial if applicable
+    - name: discountPoints
+      type: Numeric
+      description: Discount points paid by borrower
+    - name: editStatus
+      type: Varchar!
+      description: Status of edit checks for this record
+    - name: hoepaStatus
+      type: Int4!
+      description: Code indicating if loan is subject to HOEPA (1=Yes, 2=No)
+    - name: initiallyPayableToInstitution
+      type: Varchar
+      description: Whether loan was initially payable to reporting institution
+    - name: interestOnlyPayment
+      type: Varchar
+      description: Whether loan has interest-only payments (1=Yes, 2=No)
+    - name: introRatePeriod
+      type: Int4
+      description: Months until first rate adjustment for ARMs
+    - name: lastModifiedDate
+      type: Timestamp!
+      description: When record was last modified
+    - name: lastSubmissionDate
+      type: Date
+      description: When record was last submitted to regulators
+    - name: lei
+      type: Varchar!
+      description: Legal Entity Identifier of the reporting institution
+    - name: lenderCredits
+      type: Numeric
+      description: Credits provided by lender
+    - name: lienStatus
+      type: Int4!
+      description: Code indicating lien position (1=First lien, 2=Subordinate lien)
+    - name: loanAmount
+      type: Numeric!
+      description: Amount of the loan or application
+    - name: loanPurpose
+      type: Varchar!
+      description: Code indicating loan purpose (1=Home purchase, 2=Home improvement, etc.)
+    - name: loanTerm
+      type: Int4
+      description: Term of the loan in months
+    - name: loanType
+      type: Varchar!
+      description: Code indicating loan type (1=Conventional, 2=FHA, 3=VA, 4=USDA)
+    - name: manufacturedHomeLandPropertyInterest
+      type: Varchar
+      description: Code for land ownership with manufactured home
+    - name: manufacturedHomeSecuredPropertyType
+      type: Varchar
+      description: Code for manufactured home property type
+    - name: mortgageServicesApplicationId
+      type: Int4!
+      description: References the associated mortgage application
+    - name: mortgageServicesHmdaRecordId
+      type: Int4!
+      description: Auto-incrementing identifier for each HMDA record
+    - name: mortgageServicesLoanId
+      type: Int4
+      description: References the associated loan if originated
+    - name: multifamilyAffordableUnits
+      type: Int4
+      description: Number of income-restricted units in multifamily property
+    - name: negativeAmortization
+      type: Varchar
+      description: Whether loan allows negative amortization (1=Yes, 2=No)
+    - name: occupancyType
+      type: Varchar!
+      description: Code indicating intended property use (1=Primary, 2=Secondary,
+        3=Investment)
+    - name: openEndLineOfCredit
+      type: Varchar
+      description: Whether loan is an open-end line of credit (1=Yes, 2=No)
+    - name: originationCharges
+      type: Numeric
+      description: Total origination charges
+    - name: otherNonAmortizingFeatures
+      type: Varchar
+      description: Whether loan has other non-amortizing features (1=Yes, 2=No)
+    - name: preapproval
+      type: Varchar!
+      description: Code indicating if preapproval was requested
+    - name: propertyValue
+      type: Numeric
+      description: Value of the property securing the loan
+    - name: rateSpread
+      type: Numeric
+      description: Difference between APR and average prime offer rate
+    - name: reportingYear
+      type: Int4!
+      description: Calendar year for HMDA reporting
+    - name: reverseMortgage
+      type: Varchar
+      description: Whether loan is a reverse mortgage (1=Yes, 2=No)
+    - name: state
+      type: Varchar!
+      description: Two-letter state code for property location
+    - name: submissionOfApplication
+      type: Varchar
+      description: How application was submitted (1=Direct, 2=Not direct)
+    - name: submissionStatus
+      type: Varchar!
+      description: Status of HMDA submission for this record
+    - name: totalLoanCosts
+      type: Numeric
+      description: Total loan costs as disclosed
+    - name: totalPointsAndFees
+      type: Numeric
+      description: Total points and fees charged
+    - name: totalUnits
+      type: Int4!
+      description: Number of dwelling units in the property
+  graphql:
+    typeName: _MortgageServices__MortgageServicesHmdaRecords
+    inputTypeName: _MortgageServices__MortgageServicesHmdaRecordsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_hmda_records
+      fieldMapping:
+        actionTaken:
+          column:
+            name: action_taken
+        actionTakenDate:
+          column:
+            name: action_taken_date
+        aus1:
+          column:
+            name: aus1
+        aus2:
+          column:
+            name: aus2
+        aus3:
+          column:
+            name: aus3
+        aus4:
+          column:
+            name: aus4
+        aus5:
+          column:
+            name: aus5
+        balloonPayment:
+          column:
+            name: balloon_payment
+        businessOrCommercialPurpose:
+          column:
+            name: business_or_commercial_purpose
+        censusTract:
+          column:
+            name: census_tract
+        constructionMethod:
+          column:
+            name: construction_method
+        county:
+          column:
+            name: county
+        creditScoreApplicant:
+          column:
+            name: credit_score_applicant
+        creditScoreCoApplicant:
+          column:
+            name: credit_score_co_applicant
+        creditScoreModel:
+          column:
+            name: credit_score_model
+        denialReason1:
+          column:
+            name: denial_reason1
+        denialReason2:
+          column:
+            name: denial_reason2
+        denialReason3:
+          column:
+            name: denial_reason3
+        denialReason4:
+          column:
+            name: denial_reason4
+        discountPoints:
+          column:
+            name: discount_points
+        editStatus:
+          column:
+            name: edit_status
+        hoepaStatus:
+          column:
+            name: hoepa_status
+        initiallyPayableToInstitution:
+          column:
+            name: initially_payable_to_institution
+        interestOnlyPayment:
+          column:
+            name: interest_only_payment
+        introRatePeriod:
+          column:
+            name: intro_rate_period
+        lastModifiedDate:
+          column:
+            name: last_modified_date
+        lastSubmissionDate:
+          column:
+            name: last_submission_date
+        lei:
+          column:
+            name: lei
+        lenderCredits:
+          column:
+            name: lender_credits
+        lienStatus:
+          column:
+            name: lien_status
+        loanAmount:
+          column:
+            name: loan_amount
+        loanPurpose:
+          column:
+            name: loan_purpose
+        loanTerm:
+          column:
+            name: loan_term
+        loanType:
+          column:
+            name: loan_type
+        manufacturedHomeLandPropertyInterest:
+          column:
+            name: manufactured_home_land_property_interest
+        manufacturedHomeSecuredPropertyType:
+          column:
+            name: manufactured_home_secured_property_type
+        mortgageServicesApplicationId:
+          column:
+            name: mortgage_services_application_id
+        mortgageServicesHmdaRecordId:
+          column:
+            name: mortgage_services_hmda_record_id
+        mortgageServicesLoanId:
+          column:
+            name: mortgage_services_loan_id
+        multifamilyAffordableUnits:
+          column:
+            name: multifamily_affordable_units
+        negativeAmortization:
+          column:
+            name: negative_amortization
+        occupancyType:
+          column:
+            name: occupancy_type
+        openEndLineOfCredit:
+          column:
+            name: open_end_line_of_credit
+        originationCharges:
+          column:
+            name: origination_charges
+        otherNonAmortizingFeatures:
+          column:
+            name: other_non_amortizing_features
+        preapproval:
+          column:
+            name: preapproval
+        propertyValue:
+          column:
+            name: property_value
+        rateSpread:
+          column:
+            name: rate_spread
+        reportingYear:
+          column:
+            name: reporting_year
+        reverseMortgage:
+          column:
+            name: reverse_mortgage
+        state:
+          column:
+            name: state
+        submissionOfApplication:
+          column:
+            name: submission_of_application
+        submissionStatus:
+          column:
+            name: submission_status
+        totalLoanCosts:
+          column:
+            name: total_loan_costs
+        totalPointsAndFees:
+          column:
+            name: total_points_and_fees
+        totalUnits:
+          column:
+            name: total_units
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesHmdaRecords
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actionTaken
+          - actionTakenDate
+          - aus1
+          - aus2
+          - aus3
+          - aus4
+          - aus5
+          - balloonPayment
+          - businessOrCommercialPurpose
+          - censusTract
+          - constructionMethod
+          - county
+          - creditScoreApplicant
+          - creditScoreCoApplicant
+          - creditScoreModel
+          - denialReason1
+          - denialReason2
+          - denialReason3
+          - denialReason4
+          - discountPoints
+          - editStatus
+          - hoepaStatus
+          - initiallyPayableToInstitution
+          - interestOnlyPayment
+          - introRatePeriod
+          - lastModifiedDate
+          - lastSubmissionDate
+          - lei
+          - lenderCredits
+          - lienStatus
+          - loanAmount
+          - loanPurpose
+          - loanTerm
+          - loanType
+          - manufacturedHomeLandPropertyInterest
+          - manufacturedHomeSecuredPropertyType
+          - mortgageServicesApplicationId
+          - mortgageServicesHmdaRecordId
+          - mortgageServicesLoanId
+          - multifamilyAffordableUnits
+          - negativeAmortization
+          - occupancyType
+          - openEndLineOfCredit
+          - originationCharges
+          - otherNonAmortizingFeatures
+          - preapproval
+          - propertyValue
+          - rateSpread
+          - reportingYear
+          - reverseMortgage
+          - state
+          - submissionOfApplication
+          - submissionStatus
+          - totalLoanCosts
+          - totalPointsAndFees
+          - totalUnits
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesHmdaRecordsBoolExp
+  operand:
+    object:
+      type: MortgageServicesHmdaRecords
+      comparableFields:
+        - fieldName: actionTaken
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: actionTakenDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: aus1
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: aus2
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: aus3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: aus4
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: aus5
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: balloonPayment
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: businessOrCommercialPurpose
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: censusTract
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: constructionMethod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: county
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditScoreApplicant
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditScoreCoApplicant
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditScoreModel
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: denialReason1
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: denialReason2
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: denialReason3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: denialReason4
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: discountPoints
+          booleanExpressionType: NumericBoolExp
+        - fieldName: editStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: hoepaStatus
+          booleanExpressionType: Int4BoolExp
+        - fieldName: initiallyPayableToInstitution
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: interestOnlyPayment
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: introRatePeriod
+          booleanExpressionType: Int4BoolExp
+        - fieldName: lastModifiedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: lastSubmissionDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: lei
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lenderCredits
+          booleanExpressionType: NumericBoolExp
+        - fieldName: lienStatus
+          booleanExpressionType: Int4BoolExp
+        - fieldName: loanAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: loanPurpose
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: loanTerm
+          booleanExpressionType: Int4BoolExp
+        - fieldName: loanType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: manufacturedHomeLandPropertyInterest
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: manufacturedHomeSecuredPropertyType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesHmdaRecordId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLoanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: multifamilyAffordableUnits
+          booleanExpressionType: Int4BoolExp
+        - fieldName: negativeAmortization
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: occupancyType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: openEndLineOfCredit
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: originationCharges
+          booleanExpressionType: NumericBoolExp
+        - fieldName: otherNonAmortizingFeatures
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: preapproval
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: propertyValue
+          booleanExpressionType: NumericBoolExp
+        - fieldName: rateSpread
+          booleanExpressionType: NumericBoolExp
+        - fieldName: reportingYear
+          booleanExpressionType: Int4BoolExp
+        - fieldName: reverseMortgage
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: state
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: submissionOfApplication
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: submissionStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: totalLoanCosts
+          booleanExpressionType: NumericBoolExp
+        - fieldName: totalPointsAndFees
+          booleanExpressionType: NumericBoolExp
+        - fieldName: totalUnits
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesHmdaApplicantDemographics
+        - relationshipName: mortgageServicesHmdaEdits
+        - relationshipName: mortgageServicesApplication
+        - relationshipName: mortgageServicesLoan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesHmdaRecordsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesHmdaRecordsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesHmdaRecords
+      aggregatableFields:
+        - fieldName: actionTaken
+          aggregateExpression: VarcharAggExp
+        - fieldName: actionTakenDate
+          aggregateExpression: DateAggExp
+        - fieldName: aus1
+          aggregateExpression: VarcharAggExp
+        - fieldName: aus2
+          aggregateExpression: VarcharAggExp
+        - fieldName: aus3
+          aggregateExpression: VarcharAggExp
+        - fieldName: aus4
+          aggregateExpression: VarcharAggExp
+        - fieldName: aus5
+          aggregateExpression: VarcharAggExp
+        - fieldName: balloonPayment
+          aggregateExpression: VarcharAggExp
+        - fieldName: businessOrCommercialPurpose
+          aggregateExpression: VarcharAggExp
+        - fieldName: censusTract
+          aggregateExpression: VarcharAggExp
+        - fieldName: constructionMethod
+          aggregateExpression: VarcharAggExp
+        - fieldName: county
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditScoreApplicant
+          aggregateExpression: Int4AggExp
+        - fieldName: creditScoreCoApplicant
+          aggregateExpression: Int4AggExp
+        - fieldName: creditScoreModel
+          aggregateExpression: VarcharAggExp
+        - fieldName: denialReason1
+          aggregateExpression: VarcharAggExp
+        - fieldName: denialReason2
+          aggregateExpression: VarcharAggExp
+        - fieldName: denialReason3
+          aggregateExpression: VarcharAggExp
+        - fieldName: denialReason4
+          aggregateExpression: VarcharAggExp
+        - fieldName: discountPoints
+          aggregateExpression: NumericAggExp
+        - fieldName: editStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: hoepaStatus
+          aggregateExpression: Int4AggExp
+        - fieldName: initiallyPayableToInstitution
+          aggregateExpression: VarcharAggExp
+        - fieldName: interestOnlyPayment
+          aggregateExpression: VarcharAggExp
+        - fieldName: introRatePeriod
+          aggregateExpression: Int4AggExp
+        - fieldName: lastModifiedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: lastSubmissionDate
+          aggregateExpression: DateAggExp
+        - fieldName: lei
+          aggregateExpression: VarcharAggExp
+        - fieldName: lenderCredits
+          aggregateExpression: NumericAggExp
+        - fieldName: lienStatus
+          aggregateExpression: Int4AggExp
+        - fieldName: loanAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: loanPurpose
+          aggregateExpression: VarcharAggExp
+        - fieldName: loanTerm
+          aggregateExpression: Int4AggExp
+        - fieldName: loanType
+          aggregateExpression: VarcharAggExp
+        - fieldName: manufacturedHomeLandPropertyInterest
+          aggregateExpression: VarcharAggExp
+        - fieldName: manufacturedHomeSecuredPropertyType
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesHmdaRecordId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLoanId
+          aggregateExpression: Int4AggExp
+        - fieldName: multifamilyAffordableUnits
+          aggregateExpression: Int4AggExp
+        - fieldName: negativeAmortization
+          aggregateExpression: VarcharAggExp
+        - fieldName: occupancyType
+          aggregateExpression: VarcharAggExp
+        - fieldName: openEndLineOfCredit
+          aggregateExpression: VarcharAggExp
+        - fieldName: originationCharges
+          aggregateExpression: NumericAggExp
+        - fieldName: otherNonAmortizingFeatures
+          aggregateExpression: VarcharAggExp
+        - fieldName: preapproval
+          aggregateExpression: VarcharAggExp
+        - fieldName: propertyValue
+          aggregateExpression: NumericAggExp
+        - fieldName: rateSpread
+          aggregateExpression: NumericAggExp
+        - fieldName: reportingYear
+          aggregateExpression: Int4AggExp
+        - fieldName: reverseMortgage
+          aggregateExpression: VarcharAggExp
+        - fieldName: state
+          aggregateExpression: VarcharAggExp
+        - fieldName: submissionOfApplication
+          aggregateExpression: VarcharAggExp
+        - fieldName: submissionStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: totalLoanCosts
+          aggregateExpression: NumericAggExp
+        - fieldName: totalPointsAndFees
+          aggregateExpression: NumericAggExp
+        - fieldName: totalUnits
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesHmdaRecordsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesHmdaRecordsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesHmdaRecords
+      orderableFields:
+        - fieldName: actionTaken
+          orderByExpression: VarcharOrderByExp
+        - fieldName: actionTakenDate
+          orderByExpression: DateOrderByExp
+        - fieldName: aus1
+          orderByExpression: VarcharOrderByExp
+        - fieldName: aus2
+          orderByExpression: VarcharOrderByExp
+        - fieldName: aus3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: aus4
+          orderByExpression: VarcharOrderByExp
+        - fieldName: aus5
+          orderByExpression: VarcharOrderByExp
+        - fieldName: balloonPayment
+          orderByExpression: VarcharOrderByExp
+        - fieldName: businessOrCommercialPurpose
+          orderByExpression: VarcharOrderByExp
+        - fieldName: censusTract
+          orderByExpression: VarcharOrderByExp
+        - fieldName: constructionMethod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: county
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditScoreApplicant
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditScoreCoApplicant
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditScoreModel
+          orderByExpression: VarcharOrderByExp
+        - fieldName: denialReason1
+          orderByExpression: VarcharOrderByExp
+        - fieldName: denialReason2
+          orderByExpression: VarcharOrderByExp
+        - fieldName: denialReason3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: denialReason4
+          orderByExpression: VarcharOrderByExp
+        - fieldName: discountPoints
+          orderByExpression: NumericOrderByExp
+        - fieldName: editStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: hoepaStatus
+          orderByExpression: Int4OrderByExp
+        - fieldName: initiallyPayableToInstitution
+          orderByExpression: VarcharOrderByExp
+        - fieldName: interestOnlyPayment
+          orderByExpression: VarcharOrderByExp
+        - fieldName: introRatePeriod
+          orderByExpression: Int4OrderByExp
+        - fieldName: lastModifiedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: lastSubmissionDate
+          orderByExpression: DateOrderByExp
+        - fieldName: lei
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lenderCredits
+          orderByExpression: NumericOrderByExp
+        - fieldName: lienStatus
+          orderByExpression: Int4OrderByExp
+        - fieldName: loanAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: loanPurpose
+          orderByExpression: VarcharOrderByExp
+        - fieldName: loanTerm
+          orderByExpression: Int4OrderByExp
+        - fieldName: loanType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: manufacturedHomeLandPropertyInterest
+          orderByExpression: VarcharOrderByExp
+        - fieldName: manufacturedHomeSecuredPropertyType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesHmdaRecordId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLoanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: multifamilyAffordableUnits
+          orderByExpression: Int4OrderByExp
+        - fieldName: negativeAmortization
+          orderByExpression: VarcharOrderByExp
+        - fieldName: occupancyType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: openEndLineOfCredit
+          orderByExpression: VarcharOrderByExp
+        - fieldName: originationCharges
+          orderByExpression: NumericOrderByExp
+        - fieldName: otherNonAmortizingFeatures
+          orderByExpression: VarcharOrderByExp
+        - fieldName: preapproval
+          orderByExpression: VarcharOrderByExp
+        - fieldName: propertyValue
+          orderByExpression: NumericOrderByExp
+        - fieldName: rateSpread
+          orderByExpression: NumericOrderByExp
+        - fieldName: reportingYear
+          orderByExpression: Int4OrderByExp
+        - fieldName: reverseMortgage
+          orderByExpression: VarcharOrderByExp
+        - fieldName: state
+          orderByExpression: VarcharOrderByExp
+        - fieldName: submissionOfApplication
+          orderByExpression: VarcharOrderByExp
+        - fieldName: submissionStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: totalLoanCosts
+          orderByExpression: NumericOrderByExp
+        - fieldName: totalPointsAndFees
+          orderByExpression: NumericOrderByExp
+        - fieldName: totalUnits
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesApplication
+        - relationshipName: mortgageServicesLoan
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesHmdaRecordsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesHmdaRecords
+  objectType: MortgageServicesHmdaRecords
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_hmda_records
+  filterExpressionType: MortgageServicesHmdaRecordsBoolExp
+  aggregateExpression: MortgageServicesHmdaRecordsAggExp
+  orderByExpression: MortgageServicesHmdaRecordsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesHmdaRecords
+      subscription:
+        rootField: mortgageServicesHmdaRecords
+    selectUniques:
+      - queryRootField: mortgageServicesHmdaRecordsByMortgageServicesHmdaRecordId
+        uniqueIdentifier:
+          - mortgageServicesHmdaRecordId
+        subscription:
+          rootField: mortgageServicesHmdaRecordsByMortgageServicesHmdaRecordId
+    filterInputTypeName: _MortgageServices__MortgageServicesHmdaRecordsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesHmdaRecordsAggregate
+      subscription:
+        rootField: mortgageServicesHmdaRecordsAggregate
+  description: Stores data required for Home Mortgage Disclosure Act (HMDA)
+    regulatory reporting
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesHmdaRecords
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesHmdaApplicantDemographics
+  sourceType: MortgageServicesHmdaRecords
+  target:
+    model:
+      name: MortgageServicesHmdaApplicantDemographics
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesHmdaApplicantDemographicsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesHmdaRecordId
+      target:
+        modelField:
+          - fieldName: mortgageServicesHmdaRecordId
+  graphql:
+    aggregateFieldName: mortgageServicesHmdaApplicantDemographicsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesHmdaEdits
+  sourceType: MortgageServicesHmdaRecords
+  target:
+    model:
+      name: MortgageServicesHmdaEdits
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesHmdaEditsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesHmdaRecordId
+      target:
+        modelField:
+          - fieldName: mortgageServicesHmdaRecordId
+  graphql:
+    aggregateFieldName: mortgageServicesHmdaEditsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplication
+  sourceType: MortgageServicesHmdaRecords
+  target:
+    model:
+      name: MortgageServicesApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoan
+  sourceType: MortgageServicesHmdaRecords
+  target:
+    model:
+      name: MortgageServicesLoans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+

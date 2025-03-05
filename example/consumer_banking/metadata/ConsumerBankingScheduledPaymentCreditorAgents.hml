@@ -1,0 +1,208 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentCreditorAgents
+  description: Stores information about financial institutions receiving scheduled payments
+  fields:
+    - name: consumerBankingScheduledPaymentCreditorAgentId
+      type: Int4!
+      description: Auto-incrementing identifier for each agent record
+    - name: consumerBankingScheduledPaymentId
+      type: Int4!
+      description: References the scheduled payment
+    - name: identification
+      type: Varchar!
+      description: Identifier of the receiving financial institution
+    - name: lei
+      type: Varchar
+      description: Legal Entity Identifier of the receiving institution
+    - name: name
+      type: Varchar
+      description: Name of the receiving financial institution
+    - name: schemeName
+      type: Varchar!
+      description: Identifier scheme for the receiving institution (e.g., BIC)
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPaymentCreditorAgents
+    inputTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentCreditorAgentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_scheduled_payment_creditor_agents
+      fieldMapping:
+        consumerBankingScheduledPaymentCreditorAgentId:
+          column:
+            name: consumer_banking_scheduled_payment_creditor_agent_id
+        consumerBankingScheduledPaymentId:
+          column:
+            name: consumer_banking_scheduled_payment_id
+        identification:
+          column:
+            name: identification
+        lei:
+          column:
+            name: lei
+        name:
+          column:
+            name: name
+        schemeName:
+          column:
+            name: scheme_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingScheduledPaymentCreditorAgents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingScheduledPaymentCreditorAgentId
+          - consumerBankingScheduledPaymentId
+          - identification
+          - lei
+          - name
+          - schemeName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentCreditorAgentsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingScheduledPaymentCreditorAgents
+      comparableFields:
+        - fieldName: consumerBankingScheduledPaymentCreditorAgentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingScheduledPaymentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: identification
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lei
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: schemeName
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingScheduledPayment
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPaymentCreditorAgentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentCreditorAgentsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingScheduledPaymentCreditorAgents
+      aggregatableFields:
+        - fieldName: consumerBankingScheduledPaymentCreditorAgentId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingScheduledPaymentId
+          aggregateExpression: Int4AggExp
+        - fieldName: identification
+          aggregateExpression: VarcharAggExp
+        - fieldName: lei
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: schemeName
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentCreditorAgentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentCreditorAgentsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingScheduledPaymentCreditorAgents
+      orderableFields:
+        - fieldName: consumerBankingScheduledPaymentCreditorAgentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingScheduledPaymentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: identification
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lei
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: schemeName
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingScheduledPayment
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentCreditorAgentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingScheduledPaymentCreditorAgents
+  objectType: ConsumerBankingScheduledPaymentCreditorAgents
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_scheduled_payment_creditor_agents
+  filterExpressionType: ConsumerBankingScheduledPaymentCreditorAgentsBoolExp
+  aggregateExpression: ConsumerBankingScheduledPaymentCreditorAgentsAggExp
+  orderByExpression: ConsumerBankingScheduledPaymentCreditorAgentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingScheduledPaymentCreditorAgents
+      subscription:
+        rootField: consumerBankingScheduledPaymentCreditorAgents
+    selectUniques:
+      - queryRootField: consumerBankingScheduledPaymentCreditorAgentsByConsumerBankingScheduledPaymentCreditorAgentId
+        uniqueIdentifier:
+          - consumerBankingScheduledPaymentCreditorAgentId
+        subscription:
+          rootField: consumerBankingScheduledPaymentCreditorAgentsByConsumerBankingScheduledPaymentCreditorAgentId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentCreditorAgentsFilterInput
+    aggregate:
+      queryRootField: consumerBankingScheduledPaymentCreditorAgentsAggregate
+      subscription:
+        rootField: consumerBankingScheduledPaymentCreditorAgentsAggregate
+  description: Stores information about financial institutions receiving scheduled payments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingScheduledPaymentCreditorAgents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingScheduledPayment
+  sourceType: ConsumerBankingScheduledPaymentCreditorAgents
+  target:
+    model:
+      name: ConsumerBankingScheduledPayments
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingScheduledPaymentId
+      target:
+        modelField:
+          - fieldName: consumerBankingScheduledPaymentId
+

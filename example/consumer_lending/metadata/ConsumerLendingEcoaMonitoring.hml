@@ -1,0 +1,335 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingEcoaMonitoring
+  description: Tracks information related to the Equal Credit Opportunity Act
+    (ECOA) for monitoring and compliance purposes.
+  fields:
+    - name: actionDate
+      type: ConsumerLendingDate!
+      description: Date of action
+    - name: actionTaken
+      type: ConsumerLendingVarchar!
+      description: Approved, Denied, Withdrawn, Incomplete
+    - name: age
+      type: ConsumerLendingInt4
+      description: Applicant age
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Reference to applicant
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4!
+      description: Reference to loan application
+    - name: consumerLendingMonitoringId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for monitoring record
+    - name: ethnicity
+      type: ConsumerLendingVarchar
+      description: Self-reported ethnicity
+    - name: incomeMonitored
+      type: ConsumerLendingNumeric
+      description: Income used for decision
+    - name: informationMethod
+      type: ConsumerLendingVarchar!
+      description: Self-reported, Observed, Not Provided
+    - name: maritalStatus
+      type: ConsumerLendingVarchar
+      description: Marital status
+    - name: race
+      type: ConsumerLendingVarchar
+      description: Self-reported race
+    - name: sex
+      type: ConsumerLendingVarchar
+      description: Self-reported sex
+    - name: submissionDate
+      type: ConsumerLendingDate!
+      description: Date monitoring info submitted
+    - name: submittedBy
+      type: ConsumerLendingInt4
+      description: User who submitted monitoring info
+  graphql:
+    typeName: ConsumerLendingEcoaMonitoring
+    inputTypeName: ConsumerLendingEcoaMonitoringInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_ecoa_monitoring
+      fieldMapping:
+        actionDate:
+          column:
+            name: action_date
+        actionTaken:
+          column:
+            name: action_taken
+        age:
+          column:
+            name: age
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        consumerLendingMonitoringId:
+          column:
+            name: consumer_lending_monitoring_id
+        ethnicity:
+          column:
+            name: ethnicity
+        incomeMonitored:
+          column:
+            name: income_monitored
+        informationMethod:
+          column:
+            name: information_method
+        maritalStatus:
+          column:
+            name: marital_status
+        race:
+          column:
+            name: race
+        sex:
+          column:
+            name: sex
+        submissionDate:
+          column:
+            name: submission_date
+        submittedBy:
+          column:
+            name: submitted_by
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingEcoaMonitoring
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actionDate
+          - actionTaken
+          - age
+          - consumerLendingApplicantId
+          - consumerLendingApplicationId
+          - consumerLendingMonitoringId
+          - ethnicity
+          - incomeMonitored
+          - informationMethod
+          - maritalStatus
+          - race
+          - sex
+          - submissionDate
+          - submittedBy
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingEcoaMonitoringBoolExp
+  operand:
+    object:
+      type: ConsumerLendingEcoaMonitoring
+      comparableFields:
+        - fieldName: actionDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: actionTaken
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: age
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingMonitoringId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: ethnicity
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: incomeMonitored
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: informationMethod
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: maritalStatus
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: race
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: sex
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: submissionDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: submittedBy
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingEcoaMonitoringBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingEcoaMonitoringAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingEcoaMonitoring
+      aggregatableFields:
+        - fieldName: actionDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: actionTaken
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: age
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingMonitoringId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: ethnicity
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: incomeMonitored
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: informationMethod
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: maritalStatus
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: race
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: sex
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: submissionDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: submittedBy
+          aggregateExpression: ConsumerLendingInt4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingEcoaMonitoringAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingEcoaMonitoringOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingEcoaMonitoring
+      orderableFields:
+        - fieldName: actionDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: actionTaken
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: age
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingMonitoringId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: ethnicity
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: incomeMonitored
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: informationMethod
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: maritalStatus
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: race
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: sex
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: submissionDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: submittedBy
+          orderByExpression: ConsumerLendingInt4OrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: submittedBy
+  graphql:
+    expressionTypeName: ConsumerLendingEcoaMonitoringOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingEcoaMonitoring
+  objectType: ConsumerLendingEcoaMonitoring
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_ecoa_monitoring
+  filterExpressionType: ConsumerLendingEcoaMonitoringBoolExp
+  aggregateExpression: ConsumerLendingEcoaMonitoringAggExp
+  orderByExpression: ConsumerLendingEcoaMonitoringOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingEcoaMonitoring
+      subscription:
+        rootField: consumerLendingEcoaMonitoring
+    selectUniques:
+      - queryRootField: consumerLendingEcoaMonitoringByConsumerLendingMonitoringId
+        uniqueIdentifier:
+          - consumerLendingMonitoringId
+        subscription:
+          rootField: consumerLendingEcoaMonitoringByConsumerLendingMonitoringId
+    filterInputTypeName: ConsumerLendingEcoaMonitoringFilterInput
+    aggregate:
+      queryRootField: consumerLendingEcoaMonitoringAggregate
+      subscription:
+        rootField: consumerLendingEcoaMonitoringAggregate
+  description: Tracks information related to the Equal Credit Opportunity Act
+    (ECOA) for monitoring and compliance purposes.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingEcoaMonitoring
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicant
+  sourceType: ConsumerLendingEcoaMonitoring
+  target:
+    model:
+      name: ConsumerLendingApplicants
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingEcoaMonitoring
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+

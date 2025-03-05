@@ -1,0 +1,323 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesProperties
+  description: Stores information about properties being purchased or refinanced
+  fields:
+    - name: bathrooms
+      type: Numeric
+      description: Number of bathrooms (allows for half baths)
+    - name: bedrooms
+      type: Int4
+      description: Number of bedrooms
+    - name: constructionCompletionDate
+      type: Date
+      description: Expected completion date for new construction
+    - name: enterpriseAddressId
+      type: Int4!
+      description: References the property address
+    - name: hoaDues
+      type: Numeric
+      description: Monthly homeowners association fees if applicable
+    - name: isNewConstruction
+      type: Bool
+      description: Indicates if the property is newly constructed
+    - name: lotSize
+      type: Numeric
+      description: Size of the property lot
+    - name: mortgageServicesApplicationId
+      type: Int4!
+      description: References the mortgage application this property is associated with
+    - name: mortgageServicesPropertyId
+      type: Int4!
+      description: Auto-incrementing identifier for each property record
+    - name: occupancyType
+      type: Varchar!
+      description: How the property will be used by the borrower
+    - name: propertyType
+      type: Varchar!
+      description: Type of property (e.g., Single Family, Condo)
+    - name: squareFeet
+      type: Int4
+      description: Total living area in square feet
+    - name: yearBuilt
+      type: Int4
+      description: Year the property was constructed
+  graphql:
+    typeName: _MortgageServices__MortgageServicesProperties
+    inputTypeName: _MortgageServices__MortgageServicesPropertiesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_properties
+      fieldMapping:
+        bathrooms:
+          column:
+            name: bathrooms
+        bedrooms:
+          column:
+            name: bedrooms
+        constructionCompletionDate:
+          column:
+            name: construction_completion_date
+        enterpriseAddressId:
+          column:
+            name: enterprise_address_id
+        hoaDues:
+          column:
+            name: hoa_dues
+        isNewConstruction:
+          column:
+            name: is_new_construction
+        lotSize:
+          column:
+            name: lot_size
+        mortgageServicesApplicationId:
+          column:
+            name: mortgage_services_application_id
+        mortgageServicesPropertyId:
+          column:
+            name: mortgage_services_property_id
+        occupancyType:
+          column:
+            name: occupancy_type
+        propertyType:
+          column:
+            name: property_type
+        squareFeet:
+          column:
+            name: square_feet
+        yearBuilt:
+          column:
+            name: year_built
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesProperties
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - bathrooms
+          - bedrooms
+          - constructionCompletionDate
+          - enterpriseAddressId
+          - hoaDues
+          - isNewConstruction
+          - lotSize
+          - mortgageServicesApplicationId
+          - mortgageServicesPropertyId
+          - occupancyType
+          - propertyType
+          - squareFeet
+          - yearBuilt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesPropertiesBoolExp
+  operand:
+    object:
+      type: MortgageServicesProperties
+      comparableFields:
+        - fieldName: bathrooms
+          booleanExpressionType: NumericBoolExp
+        - fieldName: bedrooms
+          booleanExpressionType: Int4BoolExp
+        - fieldName: constructionCompletionDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: enterpriseAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: hoaDues
+          booleanExpressionType: NumericBoolExp
+        - fieldName: isNewConstruction
+          booleanExpressionType: BoolBoolExp
+        - fieldName: lotSize
+          booleanExpressionType: NumericBoolExp
+        - fieldName: mortgageServicesApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesPropertyId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: occupancyType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: propertyType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: squareFeet
+          booleanExpressionType: Int4BoolExp
+        - fieldName: yearBuilt
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesAppraisals
+        - relationshipName: mortgageServicesApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesPropertiesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesPropertiesAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesProperties
+      aggregatableFields:
+        - fieldName: bathrooms
+          aggregateExpression: NumericAggExp
+        - fieldName: bedrooms
+          aggregateExpression: Int4AggExp
+        - fieldName: constructionCompletionDate
+          aggregateExpression: DateAggExp
+        - fieldName: enterpriseAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: hoaDues
+          aggregateExpression: NumericAggExp
+        - fieldName: isNewConstruction
+          aggregateExpression: BoolAggExp
+        - fieldName: lotSize
+          aggregateExpression: NumericAggExp
+        - fieldName: mortgageServicesApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesPropertyId
+          aggregateExpression: Int4AggExp
+        - fieldName: occupancyType
+          aggregateExpression: VarcharAggExp
+        - fieldName: propertyType
+          aggregateExpression: VarcharAggExp
+        - fieldName: squareFeet
+          aggregateExpression: Int4AggExp
+        - fieldName: yearBuilt
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesPropertiesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesPropertiesOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesProperties
+      orderableFields:
+        - fieldName: bathrooms
+          orderByExpression: NumericOrderByExp
+        - fieldName: bedrooms
+          orderByExpression: Int4OrderByExp
+        - fieldName: constructionCompletionDate
+          orderByExpression: DateOrderByExp
+        - fieldName: enterpriseAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: hoaDues
+          orderByExpression: NumericOrderByExp
+        - fieldName: isNewConstruction
+          orderByExpression: BoolOrderByExp
+        - fieldName: lotSize
+          orderByExpression: NumericOrderByExp
+        - fieldName: mortgageServicesApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesPropertyId
+          orderByExpression: Int4OrderByExp
+        - fieldName: occupancyType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: propertyType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: squareFeet
+          orderByExpression: Int4OrderByExp
+        - fieldName: yearBuilt
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesApplication
+        - relationshipName: propertyAddress
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesPropertiesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesProperties
+  objectType: MortgageServicesProperties
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_properties
+  filterExpressionType: MortgageServicesPropertiesBoolExp
+  aggregateExpression: MortgageServicesPropertiesAggExp
+  orderByExpression: MortgageServicesPropertiesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesProperties
+      subscription:
+        rootField: mortgageServicesProperties
+    selectUniques:
+      - queryRootField: mortgageServicesPropertiesByMortgageServicesPropertyId
+        uniqueIdentifier:
+          - mortgageServicesPropertyId
+        subscription:
+          rootField: mortgageServicesPropertiesByMortgageServicesPropertyId
+    filterInputTypeName: _MortgageServices__MortgageServicesPropertiesFilterInput
+    aggregate:
+      queryRootField: mortgageServicesPropertiesAggregate
+      subscription:
+        rootField: mortgageServicesPropertiesAggregate
+  description: Stores information about properties being purchased or refinanced
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesProperties
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesAppraisals
+  sourceType: MortgageServicesProperties
+  target:
+    model:
+      name: MortgageServicesAppraisals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesAppraisalsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesPropertyId
+      target:
+        modelField:
+          - fieldName: mortgageServicesPropertyId
+  graphql:
+    aggregateFieldName: mortgageServicesAppraisalsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplication
+  sourceType: MortgageServicesProperties
+  target:
+    model:
+      name: MortgageServicesApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+

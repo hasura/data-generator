@@ -1,0 +1,258 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebits
+  description: Stores information about direct debit arrangements set up on accounts
+  fields:
+    - name: consumerBankingDirectDebitId
+      type: Int4!
+      description: Unique identifier for each direct debit mandate
+    - name: directDebitStatusCode
+      type: Varchar!
+      description: Status code of the direct debit (e.g., active, canceled)
+    - name: enterpriseAccountId
+      type: Int4!
+      description: Account from which the direct debit payments are taken
+    - name: name
+      type: Varchar!
+      description: Name of the merchant/organization collecting the direct debit
+    - name: previousPaymentAmount
+      type: Numeric
+      description: Amount of the last payment
+    - name: previousPaymentCurrency
+      type: Varchar
+      description: Currency of the last payment
+    - name: previousPaymentDateTime
+      type: Timestamp
+      description: When the last payment was made
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebits
+    inputTypeName: ConsumerBanking_ConsumerBankingDirectDebitsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_direct_debits
+      fieldMapping:
+        consumerBankingDirectDebitId:
+          column:
+            name: consumer_banking_direct_debit_id
+        directDebitStatusCode:
+          column:
+            name: direct_debit_status_code
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        name:
+          column:
+            name: name
+        previousPaymentAmount:
+          column:
+            name: previous_payment_amount
+        previousPaymentCurrency:
+          column:
+            name: previous_payment_currency
+        previousPaymentDateTime:
+          column:
+            name: previous_payment_date_time
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingDirectDebits
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingDirectDebitId
+          - directDebitStatusCode
+          - enterpriseAccountId
+          - name
+          - previousPaymentAmount
+          - previousPaymentCurrency
+          - previousPaymentDateTime
+          - consumerBankingAccountId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingDirectDebits
+      comparableFields:
+        - fieldName: consumerBankingDirectDebitId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: directDebitStatusCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: previousPaymentAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: previousPaymentCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: previousPaymentDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingMandateRelatedInformations
+        - relationshipName: consumerBankingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebitsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingDirectDebits
+      aggregatableFields:
+        - fieldName: consumerBankingDirectDebitId
+          aggregateExpression: Int4AggExp
+        - fieldName: directDebitStatusCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: previousPaymentAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: previousPaymentCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: previousPaymentDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingDirectDebitsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingDirectDebits
+      orderableFields:
+        - fieldName: consumerBankingDirectDebitId
+          orderByExpression: Int4OrderByExp
+        - fieldName: directDebitStatusCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: previousPaymentAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: previousPaymentCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: previousPaymentDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: account
+        - relationshipName: consumerBankingAccount
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingDirectDebitsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingDirectDebits
+  objectType: ConsumerBankingDirectDebits
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_direct_debits
+  filterExpressionType: ConsumerBankingDirectDebitsBoolExp
+  aggregateExpression: ConsumerBankingDirectDebitsAggExp
+  orderByExpression: ConsumerBankingDirectDebitsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingDirectDebits
+      subscription:
+        rootField: consumerBankingDirectDebits
+    selectUniques:
+      - queryRootField: consumerBankingDirectDebitsByConsumerBankingDirectDebitId
+        uniqueIdentifier:
+          - consumerBankingDirectDebitId
+        subscription:
+          rootField: consumerBankingDirectDebitsByConsumerBankingDirectDebitId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingDirectDebitsFilterInput
+    aggregate:
+      queryRootField: consumerBankingDirectDebitsAggregate
+      subscription:
+        rootField: consumerBankingDirectDebitsAggregate
+  description: Stores information about direct debit arrangements set up on accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingDirectDebits
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingMandateRelatedInformations
+  sourceType: ConsumerBankingDirectDebits
+  target:
+    model:
+      name: ConsumerBankingMandateRelatedInformation
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingMandateRelatedInformationAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingDirectDebitId
+      target:
+        modelField:
+          - fieldName: consumerBankingDirectDebitId
+  graphql:
+    aggregateFieldName: consumerBankingMandateRelatedInformationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingDirectDebits
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+

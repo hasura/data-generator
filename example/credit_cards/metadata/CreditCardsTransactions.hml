@@ -1,0 +1,551 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsTransactions
+  description: Stores all transaction activity on card accounts
+  fields:
+    - name: amount
+      type: Numeric!
+      description: Transaction amount
+    - name: authCode
+      type: Varchar
+      description: Authorization code
+    - name: category
+      type: Varchar
+      description: Spending category (e.g., Dining, Travel, Merchandise)
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsCardId
+      type: Int4!
+      description: Reference to specific card used
+    - name: creditCardsTransactionId
+      type: Int4!
+      description: Unique identifier for transaction
+    - name: declineReason
+      type: Varchar
+      description: Reason for decline if applicable
+    - name: description
+      type: Varchar!
+      description: Merchant name or transaction description
+    - name: exchangeRate
+      type: Numeric
+      description: Exchange rate used if international
+    - name: isBillable
+      type: Bool!
+      description: Whether transaction is included in statement billing
+    - name: isInternational
+      type: Bool!
+      description: Whether transaction is international
+    - name: isPending
+      type: Bool!
+      description: Whether transaction is pending
+    - name: isRecurring
+      type: Bool
+      description: Whether transaction appears to be recurring
+    - name: mccCode
+      type: Varchar
+      description: Merchant Category Code
+    - name: originalAmount
+      type: Numeric
+      description: Amount in original currency if international
+    - name: originalCurrency
+      type: Varchar
+      description: Original currency if international
+    - name: postDate
+      type: Date!
+      description: Date transaction posted to account
+    - name: referenceNumber
+      type: Varchar
+      description: Transaction reference number
+    - name: rewardsEarned
+      type: Numeric
+      description: Rewards points or cashback earned
+    - name: status
+      type: Varchar!
+      description: Approved, Declined, Reversed, Disputed
+    - name: transactionDate
+      type: Timestamp!
+      description: Date and time of transaction
+    - name: transactionType
+      type: Varchar!
+      description: Purchase, Cash Advance, Balance Transfer, Payment, Fee, Adjustment
+  graphql:
+    typeName: _CreditCards__CreditCardsTransactions
+    inputTypeName: _CreditCards__CreditCardsTransactionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_transactions
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        authCode:
+          column:
+            name: auth_code
+        category:
+          column:
+            name: category
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsCardId:
+          column:
+            name: credit_cards_card_id
+        creditCardsTransactionId:
+          column:
+            name: credit_cards_transaction_id
+        declineReason:
+          column:
+            name: decline_reason
+        description:
+          column:
+            name: description
+        exchangeRate:
+          column:
+            name: exchange_rate
+        isBillable:
+          column:
+            name: is_billable
+        isInternational:
+          column:
+            name: is_international
+        isPending:
+          column:
+            name: is_pending
+        isRecurring:
+          column:
+            name: is_recurring
+        mccCode:
+          column:
+            name: mcc_code
+        originalAmount:
+          column:
+            name: original_amount
+        originalCurrency:
+          column:
+            name: original_currency
+        postDate:
+          column:
+            name: post_date
+        referenceNumber:
+          column:
+            name: reference_number
+        rewardsEarned:
+          column:
+            name: rewards_earned
+        status:
+          column:
+            name: status
+        transactionDate:
+          column:
+            name: transaction_date
+        transactionType:
+          column:
+            name: transaction_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsTransactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - authCode
+          - category
+          - creditCardsCardAccountId
+          - creditCardsCardId
+          - creditCardsTransactionId
+          - declineReason
+          - description
+          - exchangeRate
+          - isBillable
+          - isInternational
+          - isPending
+          - isRecurring
+          - mccCode
+          - originalAmount
+          - originalCurrency
+          - postDate
+          - referenceNumber
+          - rewardsEarned
+          - status
+          - transactionDate
+          - transactionType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsTransactionsBoolExp
+  operand:
+    object:
+      type: CreditCardsTransactions
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: authCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: category
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsCardId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: declineReason
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: exchangeRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: isBillable
+          booleanExpressionType: BoolBoolExp
+        - fieldName: isInternational
+          booleanExpressionType: BoolBoolExp
+        - fieldName: isPending
+          booleanExpressionType: BoolBoolExp
+        - fieldName: isRecurring
+          booleanExpressionType: BoolBoolExp
+        - fieldName: mccCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: originalAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: originalCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: postDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: referenceNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: rewardsEarned
+          booleanExpressionType: NumericBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transactionDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: transactionType
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsBalanceTransfers
+        - relationshipName: creditCardsDisputedTransactions
+        - relationshipName: creditCardsFees
+        - relationshipName: creditCardsFraudTransactions
+        - relationshipName: creditCardsRewards
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsCard
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsTransactionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsTransactionsAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsTransactions
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: authCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: category
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsCardId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: declineReason
+          aggregateExpression: VarcharAggExp
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: exchangeRate
+          aggregateExpression: NumericAggExp
+        - fieldName: isBillable
+          aggregateExpression: BoolAggExp
+        - fieldName: isInternational
+          aggregateExpression: BoolAggExp
+        - fieldName: isPending
+          aggregateExpression: BoolAggExp
+        - fieldName: isRecurring
+          aggregateExpression: BoolAggExp
+        - fieldName: mccCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: originalAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: originalCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: postDate
+          aggregateExpression: DateAggExp
+        - fieldName: referenceNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: rewardsEarned
+          aggregateExpression: NumericAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: transactionDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: transactionType
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsTransactionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsTransactionsOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsTransactions
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: authCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: category
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsCardId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: declineReason
+          orderByExpression: VarcharOrderByExp
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: exchangeRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: isBillable
+          orderByExpression: BoolOrderByExp
+        - fieldName: isInternational
+          orderByExpression: BoolOrderByExp
+        - fieldName: isPending
+          orderByExpression: BoolOrderByExp
+        - fieldName: isRecurring
+          orderByExpression: BoolOrderByExp
+        - fieldName: mccCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: originalAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: originalCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: postDate
+          orderByExpression: DateOrderByExp
+        - fieldName: referenceNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: rewardsEarned
+          orderByExpression: NumericOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transactionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: transactionType
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsCard
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsTransactionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsTransactions
+  objectType: CreditCardsTransactions
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_transactions
+  filterExpressionType: CreditCardsTransactionsBoolExp
+  aggregateExpression: CreditCardsTransactionsAggExp
+  orderByExpression: CreditCardsTransactionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsTransactions
+      subscription:
+        rootField: creditCardsTransactions
+    selectUniques:
+      - queryRootField: creditCardsTransactionsByCreditCardsTransactionId
+        uniqueIdentifier:
+          - creditCardsTransactionId
+        subscription:
+          rootField: creditCardsTransactionsByCreditCardsTransactionId
+    filterInputTypeName: _CreditCards__CreditCardsTransactionsFilterInput
+    aggregate:
+      queryRootField: creditCardsTransactionsAggregate
+      subscription:
+        rootField: creditCardsTransactionsAggregate
+  description: Stores all transaction activity on card accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsTransactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsBalanceTransfers
+  sourceType: CreditCardsTransactions
+  target:
+    model:
+      name: CreditCardsBalanceTransfers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsBalanceTransfersAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: creditCardsTransactionId
+  graphql:
+    aggregateFieldName: creditCardsBalanceTransfersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsDisputedTransactions
+  sourceType: CreditCardsTransactions
+  target:
+    model:
+      name: CreditCardsDisputedTransactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsDisputedTransactionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: creditCardsTransactionId
+  graphql:
+    aggregateFieldName: creditCardsDisputedTransactionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsFees
+  sourceType: CreditCardsTransactions
+  target:
+    model:
+      name: CreditCardsFees
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsFeesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: creditCardsTransactionId
+  graphql:
+    aggregateFieldName: creditCardsFeesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsFraudTransactions
+  sourceType: CreditCardsTransactions
+  target:
+    model:
+      name: CreditCardsFraudTransactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsFraudTransactionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: transactionId
+  graphql:
+    aggregateFieldName: creditCardsFraudTransactionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsRewards
+  sourceType: CreditCardsTransactions
+  target:
+    model:
+      name: CreditCardsRewards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsRewardsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: creditCardsTransactionId
+  graphql:
+    aggregateFieldName: creditCardsRewardsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsTransactions
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCard
+  sourceType: CreditCardsTransactions
+  target:
+    model:
+      name: CreditCardsCards
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardId
+      target:
+        modelField:
+          - fieldName: creditCardsCardId
+

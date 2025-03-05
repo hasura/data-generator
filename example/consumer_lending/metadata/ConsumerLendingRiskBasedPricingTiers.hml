@@ -1,0 +1,285 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingRiskBasedPricingTiers
+  description: Defines pricing tiers based on risk factors, such as credit score
+    and debt-to-income ratio, for loan products.
+  fields:
+    - name: consumerLendingLoanProductId
+      type: ConsumerLendingInt4!
+      description: Reference to loan product
+    - name: consumerLendingPricingTierId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for pricing tier
+    - name: interestRateAdjustment
+      type: ConsumerLendingNumeric!
+      description: Added to base rate
+    - name: isActive
+      type: ConsumerLendingBool!
+      description: Whether tier is currently in use
+    - name: maxCreditScore
+      type: ConsumerLendingInt4
+      description: Maximum credit score for this tier
+    - name: maxDtiRatio
+      type: ConsumerLendingNumeric
+      description: Maximum debt-to-income ratio allowed
+    - name: maxLoanAmount
+      type: ConsumerLendingNumeric
+      description: Maximum loan amount for this tier
+    - name: minCreditScore
+      type: ConsumerLendingInt4
+      description: Minimum credit score for this tier
+    - name: minLoanAmount
+      type: ConsumerLendingNumeric
+      description: Minimum loan amount for this tier
+    - name: tierName
+      type: ConsumerLendingVarchar!
+      description: A, B, C, D, etc.
+  graphql:
+    typeName: ConsumerLendingRiskBasedPricingTiers
+    inputTypeName: ConsumerLendingRiskBasedPricingTiersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_risk_based_pricing_tiers
+      fieldMapping:
+        consumerLendingLoanProductId:
+          column:
+            name: consumer_lending_loan_product_id
+        consumerLendingPricingTierId:
+          column:
+            name: consumer_lending_pricing_tier_id
+        interestRateAdjustment:
+          column:
+            name: interest_rate_adjustment
+        isActive:
+          column:
+            name: is_active
+        maxCreditScore:
+          column:
+            name: max_credit_score
+        maxDtiRatio:
+          column:
+            name: max_dti_ratio
+        maxLoanAmount:
+          column:
+            name: max_loan_amount
+        minCreditScore:
+          column:
+            name: min_credit_score
+        minLoanAmount:
+          column:
+            name: min_loan_amount
+        tierName:
+          column:
+            name: tier_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingRiskBasedPricingTiers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingLoanProductId
+          - consumerLendingPricingTierId
+          - interestRateAdjustment
+          - isActive
+          - maxCreditScore
+          - maxDtiRatio
+          - maxLoanAmount
+          - minCreditScore
+          - minLoanAmount
+          - tierName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingRiskBasedPricingTiersBoolExp
+  operand:
+    object:
+      type: ConsumerLendingRiskBasedPricingTiers
+      comparableFields:
+        - fieldName: consumerLendingLoanProductId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingPricingTierId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: interestRateAdjustment
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: isActive
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: maxCreditScore
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: maxDtiRatio
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: maxLoanAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: minCreditScore
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: minLoanAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: tierName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicationDecisions
+        - relationshipName: consumerLendingLoanProduct
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingRiskBasedPricingTiersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingRiskBasedPricingTiersAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingRiskBasedPricingTiers
+      aggregatableFields:
+        - fieldName: consumerLendingLoanProductId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingPricingTierId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: interestRateAdjustment
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: isActive
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: maxCreditScore
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: maxDtiRatio
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: maxLoanAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: minCreditScore
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: minLoanAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: tierName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingRiskBasedPricingTiersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingRiskBasedPricingTiersOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingRiskBasedPricingTiers
+      orderableFields:
+        - fieldName: consumerLendingLoanProductId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingPricingTierId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: interestRateAdjustment
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: isActive
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: maxCreditScore
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: maxDtiRatio
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: maxLoanAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: minCreditScore
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: minLoanAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: tierName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanProduct
+  graphql:
+    expressionTypeName: ConsumerLendingRiskBasedPricingTiersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingRiskBasedPricingTiers
+  objectType: ConsumerLendingRiskBasedPricingTiers
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_risk_based_pricing_tiers
+  filterExpressionType: ConsumerLendingRiskBasedPricingTiersBoolExp
+  aggregateExpression: ConsumerLendingRiskBasedPricingTiersAggExp
+  orderByExpression: ConsumerLendingRiskBasedPricingTiersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingRiskBasedPricingTiers
+      subscription:
+        rootField: consumerLendingRiskBasedPricingTiers
+    selectUniques:
+      - queryRootField: consumerLendingRiskBasedPricingTiersByConsumerLendingPricingTierId
+        uniqueIdentifier:
+          - consumerLendingPricingTierId
+        subscription:
+          rootField: consumerLendingRiskBasedPricingTiersByConsumerLendingPricingTierId
+    filterInputTypeName: ConsumerLendingRiskBasedPricingTiersFilterInput
+    aggregate:
+      queryRootField: consumerLendingRiskBasedPricingTiersAggregate
+      subscription:
+        rootField: consumerLendingRiskBasedPricingTiersAggregate
+  description: Defines pricing tiers based on risk factors, such as credit score
+    and debt-to-income ratio, for loan products.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingRiskBasedPricingTiers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicationDecisions
+  sourceType: ConsumerLendingRiskBasedPricingTiers
+  target:
+    model:
+      name: ConsumerLendingApplicationDecisions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingApplicationDecisionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingPricingTierId
+      target:
+        modelField:
+          - fieldName: consumerLendingPricingTierId
+  graphql:
+    aggregateFieldName: consumerLendingApplicationDecisionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanProduct
+  sourceType: ConsumerLendingRiskBasedPricingTiers
+  target:
+    model:
+      name: ConsumerLendingLoanProducts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanProductId
+      target:
+        modelField:
+          - fieldName: consumerLendingLoanProductId
+

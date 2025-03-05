@@ -1,0 +1,305 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesLoanProducts
+  description: Defines mortgage loan products available to applicants
+  fields:
+    - name: baseInterestRate
+      type: Numeric!
+      description: Starting interest rate for this product
+    - name: description
+      type: Text
+      description: Detailed description of the loan product and its features
+    - name: interestRateType
+      type: Varchar!
+      description: Whether the rate is fixed or adjustable
+    - name: isActive
+      type: Bool!
+      description: Whether this product is currently offered
+    - name: loanType
+      type: Varchar!
+      description: Category of loan (e.g., Conventional, FHA, VA, USDA)
+    - name: maxLoanAmount
+      type: Numeric
+      description: Maximum principal amount for this product
+    - name: maxTermMonths
+      type: Int4!
+      description: Maximum loan duration in months
+    - name: minCreditScore
+      type: Int4
+      description: Minimum credit score required for approval
+    - name: minDownPaymentPercentage
+      type: Numeric
+      description: Minimum down payment as percentage of purchase price
+    - name: minLoanAmount
+      type: Numeric
+      description: Minimum principal amount for this product
+    - name: minTermMonths
+      type: Int4!
+      description: Minimum loan duration in months
+    - name: mortgageServicesLoanProductId
+      type: Int4!
+      description: Auto-incrementing identifier for each loan product
+    - name: productCode
+      type: Varchar!
+      description: Internal code identifying the loan product
+    - name: productName
+      type: Varchar!
+      description: Marketing name of the loan product
+    - name: requiresPmi
+      type: Bool
+      description: Whether private mortgage insurance is required
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoanProducts
+    inputTypeName: _MortgageServices__MortgageServicesLoanProductsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_loan_products
+      fieldMapping:
+        baseInterestRate:
+          column:
+            name: base_interest_rate
+        description:
+          column:
+            name: description
+        interestRateType:
+          column:
+            name: interest_rate_type
+        isActive:
+          column:
+            name: is_active
+        loanType:
+          column:
+            name: loan_type
+        maxLoanAmount:
+          column:
+            name: max_loan_amount
+        maxTermMonths:
+          column:
+            name: max_term_months
+        minCreditScore:
+          column:
+            name: min_credit_score
+        minDownPaymentPercentage:
+          column:
+            name: min_down_payment_percentage
+        minLoanAmount:
+          column:
+            name: min_loan_amount
+        minTermMonths:
+          column:
+            name: min_term_months
+        mortgageServicesLoanProductId:
+          column:
+            name: mortgage_services_loan_product_id
+        productCode:
+          column:
+            name: product_code
+        productName:
+          column:
+            name: product_name
+        requiresPmi:
+          column:
+            name: requires_pmi
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesLoanProducts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - baseInterestRate
+          - description
+          - interestRateType
+          - isActive
+          - loanType
+          - maxLoanAmount
+          - maxTermMonths
+          - minCreditScore
+          - minDownPaymentPercentage
+          - minLoanAmount
+          - minTermMonths
+          - mortgageServicesLoanProductId
+          - productCode
+          - productName
+          - requiresPmi
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesLoanProductsBoolExp
+  operand:
+    object:
+      type: MortgageServicesLoanProducts
+      comparableFields:
+        - fieldName: baseInterestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: interestRateType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: isActive
+          booleanExpressionType: BoolBoolExp
+        - fieldName: loanType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: maxLoanAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: maxTermMonths
+          booleanExpressionType: Int4BoolExp
+        - fieldName: minCreditScore
+          booleanExpressionType: Int4BoolExp
+        - fieldName: minDownPaymentPercentage
+          booleanExpressionType: NumericBoolExp
+        - fieldName: minLoanAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: minTermMonths
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLoanProductId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: productCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: productName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: requiresPmi
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoanProductsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesLoanProductsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesLoanProducts
+      aggregatableFields:
+        - fieldName: baseInterestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: interestRateType
+          aggregateExpression: VarcharAggExp
+        - fieldName: isActive
+          aggregateExpression: BoolAggExp
+        - fieldName: loanType
+          aggregateExpression: VarcharAggExp
+        - fieldName: maxLoanAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: maxTermMonths
+          aggregateExpression: Int4AggExp
+        - fieldName: minCreditScore
+          aggregateExpression: Int4AggExp
+        - fieldName: minDownPaymentPercentage
+          aggregateExpression: NumericAggExp
+        - fieldName: minLoanAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: minTermMonths
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLoanProductId
+          aggregateExpression: Int4AggExp
+        - fieldName: productCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: productName
+          aggregateExpression: VarcharAggExp
+        - fieldName: requiresPmi
+          aggregateExpression: BoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesLoanProductsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesLoanProductsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesLoanProducts
+      orderableFields:
+        - fieldName: baseInterestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: interestRateType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: isActive
+          orderByExpression: BoolOrderByExp
+        - fieldName: loanType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: maxLoanAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: maxTermMonths
+          orderByExpression: Int4OrderByExp
+        - fieldName: minCreditScore
+          orderByExpression: Int4OrderByExp
+        - fieldName: minDownPaymentPercentage
+          orderByExpression: NumericOrderByExp
+        - fieldName: minLoanAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: minTermMonths
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLoanProductId
+          orderByExpression: Int4OrderByExp
+        - fieldName: productCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: productName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: requiresPmi
+          orderByExpression: BoolOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesLoanProductsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesLoanProducts
+  objectType: MortgageServicesLoanProducts
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_loan_products
+  filterExpressionType: MortgageServicesLoanProductsBoolExp
+  aggregateExpression: MortgageServicesLoanProductsAggExp
+  orderByExpression: MortgageServicesLoanProductsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesLoanProducts
+      subscription:
+        rootField: mortgageServicesLoanProducts
+    selectUniques:
+      - queryRootField: mortgageServicesLoanProductsByMortgageServicesLoanProductId
+        uniqueIdentifier:
+          - mortgageServicesLoanProductId
+        subscription:
+          rootField: mortgageServicesLoanProductsByMortgageServicesLoanProductId
+    filterInputTypeName: _MortgageServices__MortgageServicesLoanProductsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesLoanProductsAggregate
+      subscription:
+        rootField: mortgageServicesLoanProductsAggregate
+  description: Defines mortgage loan products available to applicants
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesLoanProducts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

@@ -1,0 +1,312 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesLoanModifications
+  description: Tracks changes to loan terms after origination
+  fields:
+    - name: approvalDate
+      type: Date
+      description: When the modification was approved
+    - name: effectiveDate
+      type: Date
+      description: When the modification takes effect
+    - name: modificationType
+      type: Varchar!
+      description: Type of modification (e.g., Rate Reduction, Term Extension)
+    - name: mortgageServicesModificationId
+      type: Int4!
+      description: Auto-incrementing identifier for each modification
+    - name: mortgageServicesServicingAccountId
+      type: Int4!
+      description: References the servicing account being modified
+    - name: newPrincipalBalance
+      type: Numeric
+      description: Principal balance after modification
+    - name: newRate
+      type: Numeric
+      description: Interest rate after modification
+    - name: newTermMonths
+      type: Int4
+      description: Loan term in months after modification
+    - name: originalPrincipalBalance
+      type: Numeric
+      description: Principal balance before modification
+    - name: originalRate
+      type: Numeric
+      description: Interest rate before modification
+    - name: originalTermMonths
+      type: Int4
+      description: Loan term in months before modification
+    - name: reason
+      type: Text
+      description: Reason for the modification
+    - name: requestDate
+      type: Date!
+      description: When the modification was requested
+    - name: status
+      type: Varchar!
+      description: Current status of the modification request
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoanModifications
+    inputTypeName: _MortgageServices__MortgageServicesLoanModificationsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_loan_modifications
+      fieldMapping:
+        approvalDate:
+          column:
+            name: approval_date
+        effectiveDate:
+          column:
+            name: effective_date
+        modificationType:
+          column:
+            name: modification_type
+        mortgageServicesModificationId:
+          column:
+            name: mortgage_services_modification_id
+        mortgageServicesServicingAccountId:
+          column:
+            name: mortgage_services_servicing_account_id
+        newPrincipalBalance:
+          column:
+            name: new_principal_balance
+        newRate:
+          column:
+            name: new_rate
+        newTermMonths:
+          column:
+            name: new_term_months
+        originalPrincipalBalance:
+          column:
+            name: original_principal_balance
+        originalRate:
+          column:
+            name: original_rate
+        originalTermMonths:
+          column:
+            name: original_term_months
+        reason:
+          column:
+            name: reason
+        requestDate:
+          column:
+            name: request_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesLoanModifications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approvalDate
+          - effectiveDate
+          - modificationType
+          - mortgageServicesModificationId
+          - mortgageServicesServicingAccountId
+          - newPrincipalBalance
+          - newRate
+          - newTermMonths
+          - originalPrincipalBalance
+          - originalRate
+          - originalTermMonths
+          - reason
+          - requestDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesLoanModificationsBoolExp
+  operand:
+    object:
+      type: MortgageServicesLoanModifications
+      comparableFields:
+        - fieldName: approvalDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: modificationType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesModificationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesServicingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: newPrincipalBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: newRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: newTermMonths
+          booleanExpressionType: Int4BoolExp
+        - fieldName: originalPrincipalBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: originalRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: originalTermMonths
+          booleanExpressionType: Int4BoolExp
+        - fieldName: reason
+          booleanExpressionType: TextBoolExp
+        - fieldName: requestDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesServicingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoanModificationsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesLoanModificationsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesLoanModifications
+      aggregatableFields:
+        - fieldName: approvalDate
+          aggregateExpression: DateAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: DateAggExp
+        - fieldName: modificationType
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesModificationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesServicingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: newPrincipalBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: newRate
+          aggregateExpression: NumericAggExp
+        - fieldName: newTermMonths
+          aggregateExpression: Int4AggExp
+        - fieldName: originalPrincipalBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: originalRate
+          aggregateExpression: NumericAggExp
+        - fieldName: originalTermMonths
+          aggregateExpression: Int4AggExp
+        - fieldName: reason
+          aggregateExpression: TextAggExp
+        - fieldName: requestDate
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesLoanModificationsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesLoanModificationsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesLoanModifications
+      orderableFields:
+        - fieldName: approvalDate
+          orderByExpression: DateOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: DateOrderByExp
+        - fieldName: modificationType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesModificationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesServicingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: newPrincipalBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: newRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: newTermMonths
+          orderByExpression: Int4OrderByExp
+        - fieldName: originalPrincipalBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: originalRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: originalTermMonths
+          orderByExpression: Int4OrderByExp
+        - fieldName: reason
+          orderByExpression: TextOrderByExp
+        - fieldName: requestDate
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesServicingAccount
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesLoanModificationsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesLoanModifications
+  objectType: MortgageServicesLoanModifications
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_loan_modifications
+  filterExpressionType: MortgageServicesLoanModificationsBoolExp
+  aggregateExpression: MortgageServicesLoanModificationsAggExp
+  orderByExpression: MortgageServicesLoanModificationsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesLoanModifications
+      subscription:
+        rootField: mortgageServicesLoanModifications
+    selectUniques:
+      - queryRootField: mortgageServicesLoanModificationsByMortgageServicesModificationId
+        uniqueIdentifier:
+          - mortgageServicesModificationId
+        subscription:
+          rootField: mortgageServicesLoanModificationsByMortgageServicesModificationId
+    filterInputTypeName: _MortgageServices__MortgageServicesLoanModificationsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesLoanModificationsAggregate
+      subscription:
+        rootField: mortgageServicesLoanModificationsAggregate
+  description: Tracks changes to loan terms after origination
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesLoanModifications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesServicingAccount
+  sourceType: MortgageServicesLoanModifications
+  target:
+    model:
+      name: MortgageServicesServicingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+

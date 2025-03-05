@@ -1,0 +1,275 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingCollectionActions
+  description: Logs specific actions taken to collect on delinquent loan accounts,
+    such as calls, letters, and emails.
+  fields:
+    - name: actionBy
+      type: ConsumerLendingInt4!
+      description: User who performed action
+    - name: actionDate
+      type: Timestamp!
+      description: Date/time action was taken
+    - name: actionResult
+      type:  ConsumerLendingVarchar
+      description: Contact Made, Left Message, No Answer
+    - name: actionType
+      type:  ConsumerLendingVarchar!
+      description: Call, Letter, Email, Field Visit
+    - name: consumerLendingActionId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for collection action
+    - name: consumerLendingCollectionId
+      type: ConsumerLendingInt4!
+      description: Reference to collection account
+    - name: nextActionDate
+      type: ConsumerLendingDate
+      description: Date for next planned action
+    - name: nextActionType
+      type:  ConsumerLendingVarchar
+      description: Type of next planned action
+    - name: notes
+      type: ConsumerLendingText
+      description: Details of action and outcome
+    - name: promiseToPayAmount
+      type: ConsumerLendingNumeric
+      description: Amount customer promised to pay
+    - name: promiseToPayDate
+      type: ConsumerLendingDate
+      description: Date customer promised to pay by
+  graphql:
+    typeName: ConsumerLendingCollectionActions
+    inputTypeName: ConsumerLendingCollectionActionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_collection_actions
+      fieldMapping:
+        actionBy:
+          column:
+            name: action_by
+        actionDate:
+          column:
+            name: action_date
+        actionResult:
+          column:
+            name: action_result
+        actionType:
+          column:
+            name: action_type
+        consumerLendingActionId:
+          column:
+            name: consumer_lending_action_id
+        consumerLendingCollectionId:
+          column:
+            name: consumer_lending_collection_id
+        nextActionDate:
+          column:
+            name: next_action_date
+        nextActionType:
+          column:
+            name: next_action_type
+        notes:
+          column:
+            name: notes
+        promiseToPayAmount:
+          column:
+            name: promise_to_pay_amount
+        promiseToPayDate:
+          column:
+            name: promise_to_pay_date
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingCollectionActions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actionBy
+          - actionDate
+          - actionResult
+          - actionType
+          - consumerLendingActionId
+          - consumerLendingCollectionId
+          - nextActionDate
+          - nextActionType
+          - notes
+          - promiseToPayAmount
+          - promiseToPayDate
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingCollectionActionsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingCollectionActions
+      comparableFields:
+        - fieldName: actionBy
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: actionDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: actionResult
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: actionType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingActionId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingCollectionId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: nextActionDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: nextActionType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: notes
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: promiseToPayAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: promiseToPayDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingCollectionAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingCollectionActionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingCollectionActionsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingCollectionActions
+      aggregatableFields:
+        - fieldName: actionBy
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: actionDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: actionResult
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: actionType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingActionId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingCollectionId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: nextActionDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: nextActionType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: notes
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: promiseToPayAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: promiseToPayDate
+          aggregateExpression: ConsumerLendingDateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingCollectionActionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingCollectionActionsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingCollectionActions
+      orderableFields:
+        - fieldName: actionBy
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: actionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: actionResult
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: actionType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingActionId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingCollectionId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: nextActionDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: nextActionType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: notes
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: promiseToPayAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: promiseToPayDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingCollectionAccount
+  graphql:
+    expressionTypeName: ConsumerLendingCollectionActionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingCollectionActions
+  objectType: ConsumerLendingCollectionActions
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_collection_actions
+  filterExpressionType: ConsumerLendingCollectionActionsBoolExp
+  aggregateExpression: ConsumerLendingCollectionActionsAggExp
+  orderByExpression: ConsumerLendingCollectionActionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingCollectionActions
+      subscription:
+        rootField: consumerLendingCollectionActions
+    selectUniques:
+      - queryRootField: consumerLendingCollectionActionsByConsumerLendingActionId
+        uniqueIdentifier:
+          - consumerLendingActionId
+        subscription:
+          rootField: consumerLendingCollectionActionsByConsumerLendingActionId
+    filterInputTypeName: ConsumerLendingCollectionActionsFilterInput
+    aggregate:
+      queryRootField: consumerLendingCollectionActionsAggregate
+      subscription:
+        rootField: consumerLendingCollectionActionsAggregate
+  description: Logs specific actions taken to collect on delinquent loan accounts,
+    such as calls, letters, and emails.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingCollectionActions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingCollectionAccount
+  sourceType: ConsumerLendingCollectionActions
+  target:
+    model:
+      name: ConsumerLendingCollectionAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCollectionId
+      target:
+        modelField:
+          - fieldName: consumerLendingCollectionId
+

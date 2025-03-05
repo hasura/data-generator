@@ -1,0 +1,262 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesConditions
+  description: Tracks underwriting conditions that must be cleared for loan approval
+  fields:
+    - name: clearedBy
+      type: Int4
+      description: References the staff member who cleared the condition
+    - name: clearedDate
+      type: Timestamp
+      description: When the condition was satisfied or waived
+    - name: conditionType
+      type: Varchar!
+      description: When the condition must be satisfied (e.g., Prior to Approval)
+    - name: createdBy
+      type: Int4!
+      description: References the staff member who created the condition
+    - name: createdDate
+      type: Timestamp!
+      description: When the condition was created
+    - name: description
+      type: Text!
+      description: Detailed explanation of what must be provided or resolved
+    - name: dueDate
+      type: Date
+      description: Deadline for satisfying the condition
+    - name: mortgageServicesApplicationId
+      type: Int4!
+      description: References the application this condition applies to
+    - name: mortgageServicesConditionId
+      type: Int4!
+      description: Auto-incrementing identifier for each condition
+    - name: status
+      type: Varchar!
+      description: Current status of the condition
+  graphql:
+    typeName: _MortgageServices__MortgageServicesConditions
+    inputTypeName: _MortgageServices__MortgageServicesConditionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_conditions
+      fieldMapping:
+        clearedBy:
+          column:
+            name: cleared_by
+        clearedDate:
+          column:
+            name: cleared_date
+        conditionType:
+          column:
+            name: condition_type
+        createdBy:
+          column:
+            name: created_by
+        createdDate:
+          column:
+            name: created_date
+        description:
+          column:
+            name: description
+        dueDate:
+          column:
+            name: due_date
+        mortgageServicesApplicationId:
+          column:
+            name: mortgage_services_application_id
+        mortgageServicesConditionId:
+          column:
+            name: mortgage_services_condition_id
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesConditions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - clearedBy
+          - clearedDate
+          - conditionType
+          - createdBy
+          - createdDate
+          - description
+          - dueDate
+          - mortgageServicesApplicationId
+          - mortgageServicesConditionId
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesConditionsBoolExp
+  operand:
+    object:
+      type: MortgageServicesConditions
+      comparableFields:
+        - fieldName: clearedBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: clearedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: conditionType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: createdDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: dueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: mortgageServicesApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesConditionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesConditionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesConditionsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesConditions
+      aggregatableFields:
+        - fieldName: clearedBy
+          aggregateExpression: Int4AggExp
+        - fieldName: clearedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: conditionType
+          aggregateExpression: VarcharAggExp
+        - fieldName: createdBy
+          aggregateExpression: Int4AggExp
+        - fieldName: createdDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: dueDate
+          aggregateExpression: DateAggExp
+        - fieldName: mortgageServicesApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesConditionId
+          aggregateExpression: Int4AggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesConditionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesConditionsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesConditions
+      orderableFields:
+        - fieldName: clearedBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: clearedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: conditionType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: createdBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: createdDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: dueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: mortgageServicesApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesConditionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesApplication
+        - relationshipName: conditionCreatedBy
+        - relationshipName: conditionClearedBy
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesConditionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesConditions
+  objectType: MortgageServicesConditions
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_conditions
+  filterExpressionType: MortgageServicesConditionsBoolExp
+  aggregateExpression: MortgageServicesConditionsAggExp
+  orderByExpression: MortgageServicesConditionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesConditions
+      subscription:
+        rootField: mortgageServicesConditions
+    selectUniques:
+      - queryRootField: mortgageServicesConditionsByMortgageServicesConditionId
+        uniqueIdentifier:
+          - mortgageServicesConditionId
+        subscription:
+          rootField: mortgageServicesConditionsByMortgageServicesConditionId
+    filterInputTypeName: _MortgageServices__MortgageServicesConditionsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesConditionsAggregate
+      subscription:
+        rootField: mortgageServicesConditionsAggregate
+  description: Tracks underwriting conditions that must be cleared for loan approval
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesConditions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplication
+  sourceType: MortgageServicesConditions
+  target:
+    model:
+      name: MortgageServicesApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+

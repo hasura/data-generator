@@ -1,0 +1,418 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsCards
+  description: Stores information about physical and virtual cards issued for accounts
+  fields:
+    - name: activationDate
+      type: Date
+      description: When card was activated
+    - name: cardDesign
+      type: Varchar
+      description: Design/style of physical card
+    - name: cardNumber
+      type: Varchar
+      description: Masked card number (last 4 digits only)
+    - name: cardStatus
+      type: Varchar!
+      description: Active, Inactive, Lost, Stolen, Expired, Replaced
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsCardId
+      type: Int4!
+      description: Auto-incrementing identifier for each physical card
+    - name: digitalWalletEnabled
+      type: Bool!
+      description: Whether added to digital wallet
+    - name: expirationDate
+      type: Date!
+      description: When card expires
+    - name: isVirtual
+      type: Bool!
+      description: Whether card is virtual only
+    - name: issueDate
+      type: Date!
+      description: When card was issued
+    - name: pinSet
+      type: Bool!
+      description: Whether PIN has been set
+    - name: temporaryLimits
+      type: Jsonb
+      description: Temporary spending limits if any
+    - name: temporaryLimitsExpiry
+      type: Date
+      description: When temporary limits expire
+    - name: userId
+      type: Int4!
+      description: Reference to parties.party_id of cardholder
+    - name: userType
+      type: Varchar!
+      description: Primary or Authorized User
+  graphql:
+    typeName: _CreditCards__CreditCardsCards
+    inputTypeName: _CreditCards__CreditCardsCardsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_cards
+      fieldMapping:
+        activationDate:
+          column:
+            name: activation_date
+        cardDesign:
+          column:
+            name: card_design
+        cardNumber:
+          column:
+            name: card_number
+        cardStatus:
+          column:
+            name: card_status
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsCardId:
+          column:
+            name: credit_cards_card_id
+        digitalWalletEnabled:
+          column:
+            name: digital_wallet_enabled
+        expirationDate:
+          column:
+            name: expiration_date
+        isVirtual:
+          column:
+            name: is_virtual
+        issueDate:
+          column:
+            name: issue_date
+        pinSet:
+          column:
+            name: pin_set
+        temporaryLimits:
+          column:
+            name: temporary_limits
+        temporaryLimitsExpiry:
+          column:
+            name: temporary_limits_expiry
+        userId:
+          column:
+            name: user_id
+        userType:
+          column:
+            name: user_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsCards
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - activationDate
+          - cardDesign
+          - cardNumber
+          - cardStatus
+          - creditCardsCardAccountId
+          - creditCardsCardId
+          - digitalWalletEnabled
+          - expirationDate
+          - isVirtual
+          - issueDate
+          - pinSet
+          - temporaryLimits
+          - temporaryLimitsExpiry
+          - userId
+          - userType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsCardsBoolExp
+  operand:
+    object:
+      type: CreditCardsCards
+      comparableFields:
+        - fieldName: activationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: cardDesign
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: cardNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: cardStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsCardId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: digitalWalletEnabled
+          booleanExpressionType: BoolBoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: isVirtual
+          booleanExpressionType: BoolBoolExp
+        - fieldName: issueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: pinSet
+          booleanExpressionType: BoolBoolExp
+        - fieldName: temporaryLimits
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: temporaryLimitsExpiry
+          booleanExpressionType: DateBoolExp
+        - fieldName: userId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: userType
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardAlerts
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsFraudCases
+        - relationshipName: creditCardsSecurityBlocks
+        - relationshipName: creditCardsTransactions
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsCardsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsCardsAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsCards
+      aggregatableFields:
+        - fieldName: activationDate
+          aggregateExpression: DateAggExp
+        - fieldName: cardDesign
+          aggregateExpression: VarcharAggExp
+        - fieldName: cardNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: cardStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsCardId
+          aggregateExpression: Int4AggExp
+        - fieldName: digitalWalletEnabled
+          aggregateExpression: BoolAggExp
+        - fieldName: expirationDate
+          aggregateExpression: DateAggExp
+        - fieldName: isVirtual
+          aggregateExpression: BoolAggExp
+        - fieldName: issueDate
+          aggregateExpression: DateAggExp
+        - fieldName: pinSet
+          aggregateExpression: BoolAggExp
+        - fieldName: temporaryLimits
+          aggregateExpression: JsonbAggExp
+        - fieldName: temporaryLimitsExpiry
+          aggregateExpression: DateAggExp
+        - fieldName: userId
+          aggregateExpression: Int4AggExp
+        - fieldName: userType
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsCardsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsCardsOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsCards
+      orderableFields:
+        - fieldName: activationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: cardDesign
+          orderByExpression: VarcharOrderByExp
+        - fieldName: cardNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: cardStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsCardId
+          orderByExpression: Int4OrderByExp
+        - fieldName: digitalWalletEnabled
+          orderByExpression: BoolOrderByExp
+        - fieldName: expirationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: isVirtual
+          orderByExpression: BoolOrderByExp
+        - fieldName: issueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: pinSet
+          orderByExpression: BoolOrderByExp
+        - fieldName: temporaryLimits
+          orderByExpression: JsonbOrderByExp
+        - fieldName: temporaryLimitsExpiry
+          orderByExpression: DateOrderByExp
+        - fieldName: userId
+          orderByExpression: Int4OrderByExp
+        - fieldName: userType
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: user
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsCardsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsCards
+  objectType: CreditCardsCards
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_cards
+  filterExpressionType: CreditCardsCardsBoolExp
+  aggregateExpression: CreditCardsCardsAggExp
+  orderByExpression: CreditCardsCardsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsCards
+      subscription:
+        rootField: creditCardsCards
+    selectUniques:
+      - queryRootField: creditCardsCardsByCreditCardsCardId
+        uniqueIdentifier:
+          - creditCardsCardId
+        subscription:
+          rootField: creditCardsCardsByCreditCardsCardId
+    filterInputTypeName: _CreditCards__CreditCardsCardsFilterInput
+    aggregate:
+      queryRootField: creditCardsCardsAggregate
+      subscription:
+        rootField: creditCardsCardsAggregate
+  description: Stores information about physical and virtual cards issued for accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsCards
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAlerts
+  sourceType: CreditCardsCards
+  target:
+    model:
+      name: CreditCardsCardAlerts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsCardAlertsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardId
+      target:
+        modelField:
+          - fieldName: creditCardsCardId
+  graphql:
+    aggregateFieldName: creditCardsCardAlertsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsCards
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsFraudCases
+  sourceType: CreditCardsCards
+  target:
+    model:
+      name: CreditCardsFraudCases
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsFraudCasesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardId
+      target:
+        modelField:
+          - fieldName: creditCardsCardId
+  graphql:
+    aggregateFieldName: creditCardsFraudCasesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsSecurityBlocks
+  sourceType: CreditCardsCards
+  target:
+    model:
+      name: CreditCardsSecurityBlocks
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsSecurityBlocksAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardId
+      target:
+        modelField:
+          - fieldName: creditCardsCardId
+  graphql:
+    aggregateFieldName: creditCardsSecurityBlocksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsTransactions
+  sourceType: CreditCardsCards
+  target:
+    model:
+      name: CreditCardsTransactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsTransactionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardId
+      target:
+        modelField:
+          - fieldName: creditCardsCardId
+  graphql:
+    aggregateFieldName: creditCardsTransactionsAggregate
+

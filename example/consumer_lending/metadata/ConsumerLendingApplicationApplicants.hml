@@ -1,0 +1,230 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingApplicationApplicants
+  description: Links loan applications to individual applicants, allowing for
+    multiple applicants per application.
+  fields:
+    - name: applicantType
+      type:  ConsumerLendingVarchar!
+      description: Primary, Co-Applicant, Guarantor
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Reference to applicant
+    - name: consumerLendingApplicationApplicantId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for application-applicant relationship
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4!
+      description: Reference to loan application
+    - name: contributionPercentage
+      type: ConsumerLendingNumeric
+      description: Percentage of loan responsibility
+    - name: relationshipToPrimary
+      type:  ConsumerLendingVarchar
+      description: Spouse, Relative, Friend, etc.
+  graphql:
+    typeName: ConsumerLendingApplicationApplicants
+    inputTypeName: ConsumerLendingApplicationApplicantsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_application_applicants
+      fieldMapping:
+        applicantType:
+          column:
+            name: applicant_type
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        consumerLendingApplicationApplicantId:
+          column:
+            name: consumer_lending_application_applicant_id
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        contributionPercentage:
+          column:
+            name: contribution_percentage
+        relationshipToPrimary:
+          column:
+            name: relationship_to_primary
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingApplicationApplicants
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - applicantType
+          - consumerLendingApplicantId
+          - consumerLendingApplicationApplicantId
+          - consumerLendingApplicationId
+          - contributionPercentage
+          - relationshipToPrimary
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingApplicationApplicantsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingApplicationApplicants
+      comparableFields:
+        - fieldName: applicantType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingApplicationApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: contributionPercentage
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: relationshipToPrimary
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingApplicationApplicantsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicationApplicantsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingApplicationApplicants
+      aggregatableFields:
+        - fieldName: applicantType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingApplicationApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: contributionPercentage
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: relationshipToPrimary
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingApplicationApplicantsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicationApplicantsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingApplicationApplicants
+      orderableFields:
+        - fieldName: applicantType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingApplicationApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: contributionPercentage
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: relationshipToPrimary
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+  graphql:
+    expressionTypeName: ConsumerLendingApplicationApplicantsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingApplicationApplicants
+  objectType: ConsumerLendingApplicationApplicants
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_application_applicants
+  filterExpressionType: ConsumerLendingApplicationApplicantsBoolExp
+  aggregateExpression: ConsumerLendingApplicationApplicantsAggExp
+  orderByExpression: ConsumerLendingApplicationApplicantsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingApplicationApplicants
+      subscription:
+        rootField: consumerLendingApplicationApplicants
+    selectUniques:
+      - queryRootField: consumerLendingApplicationApplicantsByConsumerLendingApplicationApplicantId
+        uniqueIdentifier:
+          - consumerLendingApplicationApplicantId
+        subscription:
+          rootField: consumerLendingApplicationApplicantsByConsumerLendingApplicationApplicantId
+    filterInputTypeName: ConsumerLendingApplicationApplicantsFilterInput
+    aggregate:
+      queryRootField: consumerLendingApplicationApplicantsAggregate
+      subscription:
+        rootField: consumerLendingApplicationApplicantsAggregate
+  description: Links loan applications to individual applicants, allowing for
+    multiple applicants per application.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingApplicationApplicants
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicant
+  sourceType: ConsumerLendingApplicationApplicants
+  target:
+    model:
+      name: ConsumerLendingApplicants
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingApplicationApplicants
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+

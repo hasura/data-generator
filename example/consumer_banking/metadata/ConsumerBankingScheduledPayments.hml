@@ -1,0 +1,294 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPayments
+  description: Stores information about one-time future-dated payments
+  fields:
+    - name: consumerBankingScheduledPaymentId
+      type: Int4!
+      description: Unique identifier for each scheduled payment
+    - name: debtorReference
+      type: Varchar
+      description: Reference identifier for the payer
+    - name: enterpriseAccountId
+      type: Int4!
+      description: Account from which the payment will be made
+    - name: instructedAmount
+      type: Numeric!
+      description: Amount to be paid
+    - name: instructedAmountCurrency
+      type: Varchar!
+      description: Currency of the payment amount
+    - name: reference
+      type: Varchar
+      description: Reference identifier for the payment
+    - name: scheduledPaymentDateTime
+      type: Timestamp!
+      description: When the payment is scheduled to occur
+    - name: scheduledType
+      type: Varchar!
+      description: Type of scheduled payment (e.g., single, recurring)
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPayments
+    inputTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_scheduled_payments
+      fieldMapping:
+        consumerBankingScheduledPaymentId:
+          column:
+            name: consumer_banking_scheduled_payment_id
+        debtorReference:
+          column:
+            name: debtor_reference
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        instructedAmount:
+          column:
+            name: instructed_amount
+        instructedAmountCurrency:
+          column:
+            name: instructed_amount_currency
+        reference:
+          column:
+            name: reference
+        scheduledPaymentDateTime:
+          column:
+            name: scheduled_payment_date_time
+        scheduledType:
+          column:
+            name: scheduled_type
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingScheduledPayments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingScheduledPaymentId
+          - debtorReference
+          - enterpriseAccountId
+          - instructedAmount
+          - instructedAmountCurrency
+          - reference
+          - scheduledPaymentDateTime
+          - scheduledType
+          - consumerBankingAccountId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingScheduledPayments
+      comparableFields:
+        - fieldName: consumerBankingScheduledPaymentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: debtorReference
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: instructedAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: instructedAmountCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: reference
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: scheduledPaymentDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: scheduledType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingScheduledPaymentCreditorAccounts
+        - relationshipName: consumerBankingScheduledPaymentCreditorAgents
+        - relationshipName: consumerBankingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPaymentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingScheduledPayments
+      aggregatableFields:
+        - fieldName: consumerBankingScheduledPaymentId
+          aggregateExpression: Int4AggExp
+        - fieldName: debtorReference
+          aggregateExpression: VarcharAggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: instructedAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: instructedAmountCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: reference
+          aggregateExpression: VarcharAggExp
+        - fieldName: scheduledPaymentDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: scheduledType
+          aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingScheduledPayments
+      orderableFields:
+        - fieldName: consumerBankingScheduledPaymentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: debtorReference
+          orderByExpression: VarcharOrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: instructedAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: instructedAmountCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: reference
+          orderByExpression: VarcharOrderByExp
+        - fieldName: scheduledPaymentDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: scheduledType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: account
+        - relationshipName: consumerBankingAccount
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingScheduledPayments
+  objectType: ConsumerBankingScheduledPayments
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_scheduled_payments
+  filterExpressionType: ConsumerBankingScheduledPaymentsBoolExp
+  aggregateExpression: ConsumerBankingScheduledPaymentsAggExp
+  orderByExpression: ConsumerBankingScheduledPaymentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingScheduledPayments
+      subscription:
+        rootField: consumerBankingScheduledPayments
+    selectUniques:
+      - queryRootField: consumerBankingScheduledPaymentsByConsumerBankingScheduledPaymentId
+        uniqueIdentifier:
+          - consumerBankingScheduledPaymentId
+        subscription:
+          rootField: consumerBankingScheduledPaymentsByConsumerBankingScheduledPaymentId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentsFilterInput
+    aggregate:
+      queryRootField: consumerBankingScheduledPaymentsAggregate
+      subscription:
+        rootField: consumerBankingScheduledPaymentsAggregate
+  description: Stores information about one-time future-dated payments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingScheduledPayments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingScheduledPaymentCreditorAccounts
+  sourceType: ConsumerBankingScheduledPayments
+  target:
+    model:
+      name: ConsumerBankingScheduledPaymentCreditorAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingScheduledPaymentCreditorAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingScheduledPaymentId
+      target:
+        modelField:
+          - fieldName: consumerBankingScheduledPaymentId
+  graphql:
+    aggregateFieldName: consumerBankingScheduledPaymentCreditorAccountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingScheduledPaymentCreditorAgents
+  sourceType: ConsumerBankingScheduledPayments
+  target:
+    model:
+      name: ConsumerBankingScheduledPaymentCreditorAgents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingScheduledPaymentCreditorAgentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingScheduledPaymentId
+      target:
+        modelField:
+          - fieldName: consumerBankingScheduledPaymentId
+  graphql:
+    aggregateFieldName: consumerBankingScheduledPaymentCreditorAgentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingScheduledPayments
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+

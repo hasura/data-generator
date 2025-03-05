@@ -1,0 +1,184 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingStatementValues
+  description: Stores miscellaneous values associated with a statement that aren't
+    monetary amounts
+  fields:
+    - name: consumerBankingStatementId
+      type: Int4!
+      description: References the statement this value belongs to
+    - name: consumerBankingStatementValueId
+      type: Int4!
+      description: Auto-incrementing identifier for each value record
+    - name: type
+      type: Varchar!
+      description: Type of value (e.g., loyalty points, tier level, credit score)
+    - name: value
+      type: Varchar!
+      description: Value content (could be string or numeric depending on type)
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementValues
+    inputTypeName: ConsumerBanking_ConsumerBankingStatementValuesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statement_values
+      fieldMapping:
+        consumerBankingStatementId:
+          column:
+            name: consumer_banking_statement_id
+        consumerBankingStatementValueId:
+          column:
+            name: consumer_banking_statement_value_id
+        type:
+          column:
+            name: type
+        value:
+          column:
+            name: value
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingStatementValues
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingStatementId
+          - consumerBankingStatementValueId
+          - type
+          - value
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementValuesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingStatementValues
+      comparableFields:
+        - fieldName: consumerBankingStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingStatementValueId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: type
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: value
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStatement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementValuesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementValuesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingStatementValues
+      aggregatableFields:
+        - fieldName: consumerBankingStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingStatementValueId
+          aggregateExpression: Int4AggExp
+        - fieldName: type
+          aggregateExpression: VarcharAggExp
+        - fieldName: value
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementValuesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementValuesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingStatementValues
+      orderableFields:
+        - fieldName: consumerBankingStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingStatementValueId
+          orderByExpression: Int4OrderByExp
+        - fieldName: type
+          orderByExpression: VarcharOrderByExp
+        - fieldName: value
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingStatement
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementValuesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingStatementValues
+  objectType: ConsumerBankingStatementValues
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statement_values
+  filterExpressionType: ConsumerBankingStatementValuesBoolExp
+  aggregateExpression: ConsumerBankingStatementValuesAggExp
+  orderByExpression: ConsumerBankingStatementValuesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingStatementValues
+      subscription:
+        rootField: consumerBankingStatementValues
+    selectUniques:
+      - queryRootField: consumerBankingStatementValuesByConsumerBankingStatementValueId
+        uniqueIdentifier:
+          - consumerBankingStatementValueId
+        subscription:
+          rootField: consumerBankingStatementValuesByConsumerBankingStatementValueId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingStatementValuesFilterInput
+    aggregate:
+      queryRootField: consumerBankingStatementValuesAggregate
+      subscription:
+        rootField: consumerBankingStatementValuesAggregate
+  description: Stores miscellaneous values associated with a statement that aren't
+    monetary amounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingStatementValues
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatement
+  sourceType: ConsumerBankingStatementValues
+  target:
+    model:
+      name: ConsumerBankingStatements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+

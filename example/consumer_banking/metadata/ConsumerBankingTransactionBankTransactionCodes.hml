@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankTransactionCodes
+  description: Stores standardized bank transaction codes that categorize transactions
+  fields:
+    - name: code
+      type: Varchar!
+      description: Bank-specific transaction classification code
+    - name: consumerBankingTransactionBankTransactionCodeId
+      type: Int4!
+      description: Auto-incrementing identifier for each transaction code record
+    - name: consumerBankingTransactionId
+      type: Int4!
+      description: References the transaction this code belongs to
+    - name: subCode
+      type: Varchar!
+      description: Sub-classification code for more detailed categorization
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodes
+    inputTypeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_bank_transaction_codes
+      fieldMapping:
+        code:
+          column:
+            name: code
+        consumerBankingTransactionBankTransactionCodeId:
+          column:
+            name: consumer_banking_transaction_bank_transaction_code_id
+        consumerBankingTransactionId:
+          column:
+            name: consumer_banking_transaction_id
+        subCode:
+          column:
+            name: sub_code
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingTransactionBankTransactionCodes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - code
+          - consumerBankingTransactionBankTransactionCodeId
+          - consumerBankingTransactionId
+          - subCode
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankTransactionCodesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingTransactionBankTransactionCodes
+      comparableFields:
+        - fieldName: code
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingTransactionBankTransactionCodeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: subCode
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankTransactionCodesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingTransactionBankTransactionCodes
+      aggregatableFields:
+        - fieldName: code
+          aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingTransactionBankTransactionCodeId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: subCode
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankTransactionCodesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingTransactionBankTransactionCodes
+      orderableFields:
+        - fieldName: code
+          orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingTransactionBankTransactionCodeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: subCode
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingTransaction
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingTransactionBankTransactionCodes
+  objectType: ConsumerBankingTransactionBankTransactionCodes
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_bank_transaction_codes
+  filterExpressionType: ConsumerBankingTransactionBankTransactionCodesBoolExp
+  aggregateExpression: ConsumerBankingTransactionBankTransactionCodesAggExp
+  orderByExpression: ConsumerBankingTransactionBankTransactionCodesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingTransactionBankTransactionCodes
+      subscription:
+        rootField: consumerBankingTransactionBankTransactionCodes
+    selectUniques:
+      - queryRootField: consumerBankingTransactionBankTransactionCodesByConsumerBankingTransactionBankTransactionCodeId
+        uniqueIdentifier:
+          - consumerBankingTransactionBankTransactionCodeId
+        subscription:
+          rootField: consumerBankingTransactionBankTransactionCodesByConsumerBankingTransactionBankTransactionCodeId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodesFilterInput
+    aggregate:
+      queryRootField: consumerBankingTransactionBankTransactionCodesAggregate
+      subscription:
+        rootField: consumerBankingTransactionBankTransactionCodesAggregate
+  description: Stores standardized bank transaction codes that categorize transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingTransactionBankTransactionCodes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransaction
+  sourceType: ConsumerBankingTransactionBankTransactionCodes
+  target:
+    model:
+      name: ConsumerBankingTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+

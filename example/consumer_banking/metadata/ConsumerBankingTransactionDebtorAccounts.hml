@@ -1,0 +1,208 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAccounts
+  description: Stores information about accounts sending funds in transactions
+  fields:
+    - name: consumerBankingTransactionDebtorAccountId
+      type: Int4!
+      description: Auto-incrementing identifier for each debtor account record
+    - name: consumerBankingTransactionId
+      type: Int4!
+      description: References the transaction this debtor account belongs to
+    - name: identification
+      type: Varchar!
+      description: Account identifier sending the funds
+    - name: name
+      type: Varchar
+      description: Name associated with the sending account
+    - name: schemeName
+      type: Varchar!
+      description: Account identifier scheme (e.g., IBAN, BBAN)
+    - name: secondaryIdentification
+      type: Varchar
+      description: Additional identification for the sending account
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionDebtorAccounts
+    inputTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAccountsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_debtor_accounts
+      fieldMapping:
+        consumerBankingTransactionDebtorAccountId:
+          column:
+            name: consumer_banking_transaction_debtor_account_id
+        consumerBankingTransactionId:
+          column:
+            name: consumer_banking_transaction_id
+        identification:
+          column:
+            name: identification
+        name:
+          column:
+            name: name
+        schemeName:
+          column:
+            name: scheme_name
+        secondaryIdentification:
+          column:
+            name: secondary_identification
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingTransactionDebtorAccounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingTransactionDebtorAccountId
+          - consumerBankingTransactionId
+          - identification
+          - name
+          - schemeName
+          - secondaryIdentification
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAccountsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingTransactionDebtorAccounts
+      comparableFields:
+        - fieldName: consumerBankingTransactionDebtorAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: identification
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: schemeName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: secondaryIdentification
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionDebtorAccountsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAccountsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingTransactionDebtorAccounts
+      aggregatableFields:
+        - fieldName: consumerBankingTransactionDebtorAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: identification
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: schemeName
+          aggregateExpression: VarcharAggExp
+        - fieldName: secondaryIdentification
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAccountsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionDebtorAccountsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingTransactionDebtorAccounts
+      orderableFields:
+        - fieldName: consumerBankingTransactionDebtorAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: identification
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: schemeName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: secondaryIdentification
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingTransaction
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAccountsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingTransactionDebtorAccounts
+  objectType: ConsumerBankingTransactionDebtorAccounts
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_debtor_accounts
+  filterExpressionType: ConsumerBankingTransactionDebtorAccountsBoolExp
+  aggregateExpression: ConsumerBankingTransactionDebtorAccountsAggExp
+  orderByExpression: ConsumerBankingTransactionDebtorAccountsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingTransactionDebtorAccounts
+      subscription:
+        rootField: consumerBankingTransactionDebtorAccounts
+    selectUniques:
+      - queryRootField: consumerBankingTransactionDebtorAccountsByConsumerBankingTransactionDebtorAccountId
+        uniqueIdentifier:
+          - consumerBankingTransactionDebtorAccountId
+        subscription:
+          rootField: consumerBankingTransactionDebtorAccountsByConsumerBankingTransactionDebtorAccountId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingTransactionDebtorAccountsFilterInput
+    aggregate:
+      queryRootField: consumerBankingTransactionDebtorAccountsAggregate
+      subscription:
+        rootField: consumerBankingTransactionDebtorAccountsAggregate
+  description: Stores information about accounts sending funds in transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingTransactionDebtorAccounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransaction
+  sourceType: ConsumerBankingTransactionDebtorAccounts
+  target:
+    model:
+      name: ConsumerBankingTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+

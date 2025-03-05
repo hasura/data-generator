@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingTransactionMerchantDetails
+  description: Stores information about merchants involved in transactions
+  fields:
+    - name: consumerBankingTransactionId
+      type: Int4!
+      description: References the transaction this merchant detail belongs to
+    - name: consumerBankingTransactionMerchantDetailId
+      type: Int4!
+      description: Auto-incrementing identifier for each merchant detail record
+    - name: merchantCategoryCode
+      type: Varchar!
+      description: Standard code identifying the merchant's business category
+    - name: merchantName
+      type: Varchar!
+      description: Name of the merchant involved in the transaction
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionMerchantDetails
+    inputTypeName: ConsumerBanking_ConsumerBankingTransactionMerchantDetailsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_merchant_details
+      fieldMapping:
+        consumerBankingTransactionId:
+          column:
+            name: consumer_banking_transaction_id
+        consumerBankingTransactionMerchantDetailId:
+          column:
+            name: consumer_banking_transaction_merchant_detail_id
+        merchantCategoryCode:
+          column:
+            name: merchant_category_code
+        merchantName:
+          column:
+            name: merchant_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingTransactionMerchantDetails
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingTransactionId
+          - consumerBankingTransactionMerchantDetailId
+          - merchantCategoryCode
+          - merchantName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionMerchantDetailsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingTransactionMerchantDetails
+      comparableFields:
+        - fieldName: consumerBankingTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingTransactionMerchantDetailId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: merchantCategoryCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: merchantName
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionMerchantDetailsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionMerchantDetailsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingTransactionMerchantDetails
+      aggregatableFields:
+        - fieldName: consumerBankingTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingTransactionMerchantDetailId
+          aggregateExpression: Int4AggExp
+        - fieldName: merchantCategoryCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: merchantName
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionMerchantDetailsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionMerchantDetailsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingTransactionMerchantDetails
+      orderableFields:
+        - fieldName: consumerBankingTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingTransactionMerchantDetailId
+          orderByExpression: Int4OrderByExp
+        - fieldName: merchantCategoryCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: merchantName
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingTransaction
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionMerchantDetailsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingTransactionMerchantDetails
+  objectType: ConsumerBankingTransactionMerchantDetails
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_merchant_details
+  filterExpressionType: ConsumerBankingTransactionMerchantDetailsBoolExp
+  aggregateExpression: ConsumerBankingTransactionMerchantDetailsAggExp
+  orderByExpression: ConsumerBankingTransactionMerchantDetailsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingTransactionMerchantDetails
+      subscription:
+        rootField: consumerBankingTransactionMerchantDetails
+    selectUniques:
+      - queryRootField: consumerBankingTransactionMerchantDetailsByConsumerBankingTransactionMerchantDetailId
+        uniqueIdentifier:
+          - consumerBankingTransactionMerchantDetailId
+        subscription:
+          rootField: consumerBankingTransactionMerchantDetailsByConsumerBankingTransactionMerchantDetailId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingTransactionMerchantDetailsFilterInput
+    aggregate:
+      queryRootField: consumerBankingTransactionMerchantDetailsAggregate
+      subscription:
+        rootField: consumerBankingTransactionMerchantDetailsAggregate
+  description: Stores information about merchants involved in transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingTransactionMerchantDetails
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransaction
+  sourceType: ConsumerBankingTransactionMerchantDetails
+  target:
+    model:
+      name: ConsumerBankingTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+

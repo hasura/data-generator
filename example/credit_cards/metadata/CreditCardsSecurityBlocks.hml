@@ -1,0 +1,287 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsSecurityBlocks
+  description: Tracks security blocks placed on cards
+  fields:
+    - name: blockType
+      type: Varchar!
+      description: Type of block (Temporary, Permanent, Geographic)
+    - name: creditCardsBlockId
+      type: Int4!
+      description: Auto-incrementing identifier for each security block
+    - name: creditCardsCardId
+      type: Int4!
+      description: Reference to specific card
+    - name: endDate
+      type: Timestamp
+      description: When block ends if temporary
+    - name: geographicRestriction
+      type: Varchar
+      description: Geographic area blocked if applicable
+    - name: reason
+      type: Varchar!
+      description: Reason for security block
+    - name: removedBy
+      type: Int4
+      description: User who removed the block
+    - name: removedDate
+      type: Timestamp
+      description: When block was removed
+    - name: requestedBy
+      type: Varchar!
+      description: Who requested the block (Customer, Bank, Fraud System)
+    - name: startDate
+      type: Timestamp!
+      description: When block began
+    - name: status
+      type: Varchar!
+      description: Status of block (Active, Removed)
+    - name: transactionTypeRestricted
+      type: Varchar
+      description: Transaction types blocked if specific
+  graphql:
+    typeName: _CreditCards__CreditCardsSecurityBlocks
+    inputTypeName: _CreditCards__CreditCardsSecurityBlocksInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_security_blocks
+      fieldMapping:
+        blockType:
+          column:
+            name: block_type
+        creditCardsBlockId:
+          column:
+            name: credit_cards_block_id
+        creditCardsCardId:
+          column:
+            name: credit_cards_card_id
+        endDate:
+          column:
+            name: end_date
+        geographicRestriction:
+          column:
+            name: geographic_restriction
+        reason:
+          column:
+            name: reason
+        removedBy:
+          column:
+            name: removed_by
+        removedDate:
+          column:
+            name: removed_date
+        requestedBy:
+          column:
+            name: requested_by
+        startDate:
+          column:
+            name: start_date
+        status:
+          column:
+            name: status
+        transactionTypeRestricted:
+          column:
+            name: transaction_type_restricted
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsSecurityBlocks
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - blockType
+          - creditCardsBlockId
+          - creditCardsCardId
+          - endDate
+          - geographicRestriction
+          - reason
+          - removedBy
+          - removedDate
+          - requestedBy
+          - startDate
+          - status
+          - transactionTypeRestricted
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsSecurityBlocksBoolExp
+  operand:
+    object:
+      type: CreditCardsSecurityBlocks
+      comparableFields:
+        - fieldName: blockType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsBlockId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsCardId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: endDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: geographicRestriction
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: reason
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: removedBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: removedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: requestedBy
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: startDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transactionTypeRestricted
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCard
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsSecurityBlocksBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsSecurityBlocksAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsSecurityBlocks
+      aggregatableFields:
+        - fieldName: blockType
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsBlockId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsCardId
+          aggregateExpression: Int4AggExp
+        - fieldName: endDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: geographicRestriction
+          aggregateExpression: VarcharAggExp
+        - fieldName: reason
+          aggregateExpression: VarcharAggExp
+        - fieldName: removedBy
+          aggregateExpression: Int4AggExp
+        - fieldName: removedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: requestedBy
+          aggregateExpression: VarcharAggExp
+        - fieldName: startDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: transactionTypeRestricted
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsSecurityBlocksAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsSecurityBlocksOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsSecurityBlocks
+      orderableFields:
+        - fieldName: blockType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsBlockId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsCardId
+          orderByExpression: Int4OrderByExp
+        - fieldName: endDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: geographicRestriction
+          orderByExpression: VarcharOrderByExp
+        - fieldName: reason
+          orderByExpression: VarcharOrderByExp
+        - fieldName: removedBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: removedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: requestedBy
+          orderByExpression: VarcharOrderByExp
+        - fieldName: startDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transactionTypeRestricted
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCard
+        - relationshipName: blockRemovedBy
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsSecurityBlocksOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsSecurityBlocks
+  objectType: CreditCardsSecurityBlocks
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_security_blocks
+  filterExpressionType: CreditCardsSecurityBlocksBoolExp
+  aggregateExpression: CreditCardsSecurityBlocksAggExp
+  orderByExpression: CreditCardsSecurityBlocksOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsSecurityBlocks
+      subscription:
+        rootField: creditCardsSecurityBlocks
+    selectUniques:
+      - queryRootField: creditCardsSecurityBlocksByCreditCardsBlockId
+        uniqueIdentifier:
+          - creditCardsBlockId
+        subscription:
+          rootField: creditCardsSecurityBlocksByCreditCardsBlockId
+    filterInputTypeName: _CreditCards__CreditCardsSecurityBlocksFilterInput
+    aggregate:
+      queryRootField: creditCardsSecurityBlocksAggregate
+      subscription:
+        rootField: creditCardsSecurityBlocksAggregate
+  description: Tracks security blocks placed on cards
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsSecurityBlocks
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCard
+  sourceType: CreditCardsSecurityBlocks
+  target:
+    model:
+      name: CreditCardsCards
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardId
+      target:
+        modelField:
+          - fieldName: creditCardsCardId
+

@@ -1,0 +1,337 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseParties
+  description: Stores information about individuals and organizations that
+    interact with accounts
+  fields:
+    - name: accountRole
+      type: Varchar
+      description: Role in relation to the account (e.g., owner, authorized user)
+    - name: beneficialOwnership
+      type: Bool
+      description: Indicates if this party has beneficial ownership
+    - name: emailAddress
+      type: Varchar
+      description: Primary email contact
+    - name: enterprisePartyId
+      type: Int4!
+      description: Unique identifier for each party
+    - name: fullBusinessLegalName
+      type: Varchar
+      description: Complete legal name for business entities
+    - name: legalStructure
+      type: Varchar
+      description: Legal structure of the organization (e.g., LLC, corporation)
+    - name: lei
+      type: Varchar
+      description: Legal Entity Identifier for organizations
+    - name: mobile
+      type: Varchar
+      description: Mobile phone contact
+    - name: name
+      type: Varchar!
+      description: Name of the party
+    - name: partyNumber
+      type: Varchar
+      description: Alternative reference number for the party
+    - name: partyType
+      type: Varchar!
+      description: Type of party (e.g., individual, organization)
+    - name: phone
+      type: Varchar
+      description: Primary phone contact
+  graphql:
+    typeName: EnterpriseParties
+    inputTypeName: EnterprisePartiesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_parties
+      fieldMapping:
+        accountRole:
+          column:
+            name: account_role
+        beneficialOwnership:
+          column:
+            name: beneficial_ownership
+        emailAddress:
+          column:
+            name: email_address
+        enterprisePartyId:
+          column:
+            name: enterprise_party_id
+        fullBusinessLegalName:
+          column:
+            name: full_business_legal_name
+        legalStructure:
+          column:
+            name: legal_structure
+        lei:
+          column:
+            name: lei
+        mobile:
+          column:
+            name: mobile
+        name:
+          column:
+            name: name
+        partyNumber:
+          column:
+            name: party_number
+        partyType:
+          column:
+            name: party_type
+        phone:
+          column:
+            name: phone
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseParties
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountRole
+          - beneficialOwnership
+          - emailAddress
+          - enterprisePartyId
+          - fullBusinessLegalName
+          - legalStructure
+          - lei
+          - mobile
+          - name
+          - partyNumber
+          - partyType
+          - phone
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterprisePartiesBoolExp
+  operand:
+    object:
+      type: EnterpriseParties
+      comparableFields:
+        - fieldName: accountRole
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: beneficialOwnership
+          booleanExpressionType: BoolBoolExp
+        - fieldName: emailAddress
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterprisePartyId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: fullBusinessLegalName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: legalStructure
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lei
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mobile
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: partyNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: partyType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: phone
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: enterpriseAccountOwnerships
+        - relationshipName: enterprisePartyAddresses
+        - relationshipName: enterprisePartyRelationships
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: EnterprisePartiesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterprisePartiesAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseParties
+      aggregatableFields:
+        - fieldName: accountRole
+          aggregateExpression: VarcharAggExp
+        - fieldName: beneficialOwnership
+          aggregateExpression: BoolAggExp
+        - fieldName: emailAddress
+          aggregateExpression: VarcharAggExp
+        - fieldName: enterprisePartyId
+          aggregateExpression: Int4AggExp
+        - fieldName: fullBusinessLegalName
+          aggregateExpression: VarcharAggExp
+        - fieldName: legalStructure
+          aggregateExpression: VarcharAggExp
+        - fieldName: lei
+          aggregateExpression: VarcharAggExp
+        - fieldName: mobile
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: partyNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: partyType
+          aggregateExpression: VarcharAggExp
+        - fieldName: phone
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: EnterprisePartiesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterprisePartiesOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseParties
+      orderableFields:
+        - fieldName: accountRole
+          orderByExpression: VarcharOrderByExp
+        - fieldName: beneficialOwnership
+          orderByExpression: BoolOrderByExp
+        - fieldName: emailAddress
+          orderByExpression: VarcharOrderByExp
+        - fieldName: enterprisePartyId
+          orderByExpression: Int4OrderByExp
+        - fieldName: fullBusinessLegalName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: legalStructure
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lei
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mobile
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: partyNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: partyType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: phone
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: EnterprisePartiesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseParties
+  objectType: EnterpriseParties
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_parties
+  filterExpressionType: EnterprisePartiesBoolExp
+  aggregateExpression: EnterprisePartiesAggExp
+  orderByExpression: EnterprisePartiesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseParties
+      subscription:
+        rootField: enterpriseParties
+    selectUniques:
+      - queryRootField: enterprisePartiesByEnterprisePartyId
+        uniqueIdentifier:
+          - enterprisePartyId
+        subscription:
+          rootField: enterprisePartiesByEnterprisePartyId
+    filterInputTypeName: EnterprisePartiesFilterInput
+    aggregate:
+      queryRootField: enterprisePartiesAggregate
+      subscription:
+        rootField: enterprisePartiesAggregate
+  description: Stores information about individuals and organizations that
+    interact with accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseParties
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAccountOwnerships
+  sourceType: EnterpriseParties
+  target:
+    model:
+      name: EnterpriseAccountOwnership
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterpriseAccountOwnershipAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
+  graphql:
+    aggregateFieldName: enterpriseAccountOwnershipsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprisePartyAddresses
+  sourceType: EnterpriseParties
+  target:
+    model:
+      name: EnterprisePartyAddresses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterprisePartyAddressesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
+  graphql:
+    aggregateFieldName: enterprisePartyAddressesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprisePartyRelationships
+  sourceType: EnterpriseParties
+  target:
+    model:
+      name: EnterprisePartyRelationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterprisePartyRelationshipsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
+  graphql:
+    aggregateFieldName: enterprisePartyRelationshipsAggregate
+

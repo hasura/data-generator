@@ -1,0 +1,305 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesHmdaSubmissions
+  description: Tracks submissions of HMDA data to regulatory agencies
+  fields:
+    - name: completionDate
+      type: Timestamp
+      description: When the submission was accepted as complete
+    - name: confirmationNumber
+      type: Varchar
+      description: Confirmation number provided by the regulatory agency
+    - name: errorCount
+      type: Int4
+      description: Number of errors found in the submission
+    - name: fileName
+      type: Varchar
+      description: Name of the submitted file
+    - name: fileSize
+      type: Int4
+      description: Size of the submitted file in bytes
+    - name: institutionLei
+      type: Varchar!
+      description: Legal Entity Identifier of the reporting institution
+    - name: mortgageServicesSubmissionId
+      type: Int4!
+      description: Auto-incrementing identifier for each submission
+    - name: recordCount
+      type: Int4
+      description: Number of records in the submission
+    - name: reportingPeriod
+      type: Varchar!
+      description: Reporting period (ANNUAL, QUARTERLY_Q1, etc.)
+    - name: reportingYear
+      type: Int4!
+      description: Calendar year for this submission
+    - name: submissionDate
+      type: Timestamp!
+      description: When the submission was made
+    - name: submissionNotes
+      type: Text
+      description: Additional notes about the submission
+    - name: submissionStatus
+      type: Varchar!
+      description: Current status of the submission process
+    - name: submittedBy
+      type: Varchar
+      description: User who made the submission
+    - name: warningCount
+      type: Int4
+      description: Number of warnings found in the submission
+  graphql:
+    typeName: _MortgageServices__MortgageServicesHmdaSubmissions
+    inputTypeName: _MortgageServices__MortgageServicesHmdaSubmissionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_hmda_submissions
+      fieldMapping:
+        completionDate:
+          column:
+            name: completion_date
+        confirmationNumber:
+          column:
+            name: confirmation_number
+        errorCount:
+          column:
+            name: error_count
+        fileName:
+          column:
+            name: file_name
+        fileSize:
+          column:
+            name: file_size
+        institutionLei:
+          column:
+            name: institution_lei
+        mortgageServicesSubmissionId:
+          column:
+            name: mortgage_services_submission_id
+        recordCount:
+          column:
+            name: record_count
+        reportingPeriod:
+          column:
+            name: reporting_period
+        reportingYear:
+          column:
+            name: reporting_year
+        submissionDate:
+          column:
+            name: submission_date
+        submissionNotes:
+          column:
+            name: submission_notes
+        submissionStatus:
+          column:
+            name: submission_status
+        submittedBy:
+          column:
+            name: submitted_by
+        warningCount:
+          column:
+            name: warning_count
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesHmdaSubmissions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - completionDate
+          - confirmationNumber
+          - errorCount
+          - fileName
+          - fileSize
+          - institutionLei
+          - mortgageServicesSubmissionId
+          - recordCount
+          - reportingPeriod
+          - reportingYear
+          - submissionDate
+          - submissionNotes
+          - submissionStatus
+          - submittedBy
+          - warningCount
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesHmdaSubmissionsBoolExp
+  operand:
+    object:
+      type: MortgageServicesHmdaSubmissions
+      comparableFields:
+        - fieldName: completionDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: confirmationNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: errorCount
+          booleanExpressionType: Int4BoolExp
+        - fieldName: fileName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: fileSize
+          booleanExpressionType: Int4BoolExp
+        - fieldName: institutionLei
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesSubmissionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: recordCount
+          booleanExpressionType: Int4BoolExp
+        - fieldName: reportingPeriod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: reportingYear
+          booleanExpressionType: Int4BoolExp
+        - fieldName: submissionDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: submissionNotes
+          booleanExpressionType: TextBoolExp
+        - fieldName: submissionStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: submittedBy
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: warningCount
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesHmdaSubmissionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesHmdaSubmissionsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesHmdaSubmissions
+      aggregatableFields:
+        - fieldName: completionDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: confirmationNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: errorCount
+          aggregateExpression: Int4AggExp
+        - fieldName: fileName
+          aggregateExpression: VarcharAggExp
+        - fieldName: fileSize
+          aggregateExpression: Int4AggExp
+        - fieldName: institutionLei
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesSubmissionId
+          aggregateExpression: Int4AggExp
+        - fieldName: recordCount
+          aggregateExpression: Int4AggExp
+        - fieldName: reportingPeriod
+          aggregateExpression: VarcharAggExp
+        - fieldName: reportingYear
+          aggregateExpression: Int4AggExp
+        - fieldName: submissionDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: submissionNotes
+          aggregateExpression: TextAggExp
+        - fieldName: submissionStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: submittedBy
+          aggregateExpression: VarcharAggExp
+        - fieldName: warningCount
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesHmdaSubmissionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesHmdaSubmissionsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesHmdaSubmissions
+      orderableFields:
+        - fieldName: completionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: confirmationNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: errorCount
+          orderByExpression: Int4OrderByExp
+        - fieldName: fileName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: fileSize
+          orderByExpression: Int4OrderByExp
+        - fieldName: institutionLei
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesSubmissionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: recordCount
+          orderByExpression: Int4OrderByExp
+        - fieldName: reportingPeriod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: reportingYear
+          orderByExpression: Int4OrderByExp
+        - fieldName: submissionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: submissionNotes
+          orderByExpression: TextOrderByExp
+        - fieldName: submissionStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: submittedBy
+          orderByExpression: VarcharOrderByExp
+        - fieldName: warningCount
+          orderByExpression: Int4OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesHmdaSubmissionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesHmdaSubmissions
+  objectType: MortgageServicesHmdaSubmissions
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_hmda_submissions
+  filterExpressionType: MortgageServicesHmdaSubmissionsBoolExp
+  aggregateExpression: MortgageServicesHmdaSubmissionsAggExp
+  orderByExpression: MortgageServicesHmdaSubmissionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesHmdaSubmissions
+      subscription:
+        rootField: mortgageServicesHmdaSubmissions
+    selectUniques:
+      - queryRootField: mortgageServicesHmdaSubmissionsByMortgageServicesSubmissionId
+        uniqueIdentifier:
+          - mortgageServicesSubmissionId
+        subscription:
+          rootField: mortgageServicesHmdaSubmissionsByMortgageServicesSubmissionId
+    filterInputTypeName: _MortgageServices__MortgageServicesHmdaSubmissionsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesHmdaSubmissionsAggregate
+      subscription:
+        rootField: mortgageServicesHmdaSubmissionsAggregate
+  description: Tracks submissions of HMDA data to regulatory agencies
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesHmdaSubmissions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

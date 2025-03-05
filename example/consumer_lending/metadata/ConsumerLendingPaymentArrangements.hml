@@ -1,0 +1,275 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingPaymentArrangements
+  description: Records payment arrangements made with borrowers to resolve
+    delinquent accounts.
+  fields:
+    - name: approvedBy
+      type: ConsumerLendingInt4
+      description: User who approved arrangement
+    - name: arrangementDate
+      type: ConsumerLendingDate!
+      description: Date arrangement was created
+    - name: consumerLendingArrangementId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for payment arrangement
+    - name: consumerLendingCollectionId
+      type: ConsumerLendingInt4!
+      description: Reference to collection account
+    - name: firstPaymentDate
+      type: ConsumerLendingDate!
+      description: Date first payment is due
+    - name: notes
+      type: ConsumerLendingText
+      description: Additional arrangement notes
+    - name: numberOfPayments
+      type: ConsumerLendingInt4!
+      description: Number of payments in arrangement
+    - name: paymentAmount
+      type: ConsumerLendingNumeric!
+      description: Amount of each payment
+    - name: paymentFrequency
+      type:  ConsumerLendingVarchar!
+      description: Weekly, Bi-weekly, Monthly
+    - name: status
+      type:  ConsumerLendingVarchar!
+      description: Active, Completed, Broken
+    - name: totalAmount
+      type: ConsumerLendingNumeric!
+      description: Total amount to be paid
+  graphql:
+    typeName: ConsumerLendingPaymentArrangements
+    inputTypeName: ConsumerLendingPaymentArrangementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_payment_arrangements
+      fieldMapping:
+        approvedBy:
+          column:
+            name: approved_by
+        arrangementDate:
+          column:
+            name: arrangement_date
+        consumerLendingArrangementId:
+          column:
+            name: consumer_lending_arrangement_id
+        consumerLendingCollectionId:
+          column:
+            name: consumer_lending_collection_id
+        firstPaymentDate:
+          column:
+            name: first_payment_date
+        notes:
+          column:
+            name: notes
+        numberOfPayments:
+          column:
+            name: number_of_payments
+        paymentAmount:
+          column:
+            name: payment_amount
+        paymentFrequency:
+          column:
+            name: payment_frequency
+        status:
+          column:
+            name: status
+        totalAmount:
+          column:
+            name: total_amount
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingPaymentArrangements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approvedBy
+          - arrangementDate
+          - consumerLendingArrangementId
+          - consumerLendingCollectionId
+          - firstPaymentDate
+          - notes
+          - numberOfPayments
+          - paymentAmount
+          - paymentFrequency
+          - status
+          - totalAmount
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingPaymentArrangementsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingPaymentArrangements
+      comparableFields:
+        - fieldName: approvedBy
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: arrangementDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: consumerLendingArrangementId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingCollectionId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: firstPaymentDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: notes
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: numberOfPayments
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: paymentAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: paymentFrequency
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: status
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: totalAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingCollectionAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingPaymentArrangementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingPaymentArrangementsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingPaymentArrangements
+      aggregatableFields:
+        - fieldName: approvedBy
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: arrangementDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: consumerLendingArrangementId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingCollectionId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: firstPaymentDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: notes
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: numberOfPayments
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: paymentAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: paymentFrequency
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: status
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: totalAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingPaymentArrangementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingPaymentArrangementsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingPaymentArrangements
+      orderableFields:
+        - fieldName: approvedBy
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: arrangementDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: consumerLendingArrangementId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingCollectionId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: firstPaymentDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: notes
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: numberOfPayments
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: paymentAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: paymentFrequency
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: status
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: totalAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingCollectionAccount
+  graphql:
+    expressionTypeName: ConsumerLendingPaymentArrangementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingPaymentArrangements
+  objectType: ConsumerLendingPaymentArrangements
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_payment_arrangements
+  filterExpressionType: ConsumerLendingPaymentArrangementsBoolExp
+  aggregateExpression: ConsumerLendingPaymentArrangementsAggExp
+  orderByExpression: ConsumerLendingPaymentArrangementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingPaymentArrangements
+      subscription:
+        rootField: consumerLendingPaymentArrangements
+    selectUniques:
+      - queryRootField: consumerLendingPaymentArrangementsByConsumerLendingArrangementId
+        uniqueIdentifier:
+          - consumerLendingArrangementId
+        subscription:
+          rootField: consumerLendingPaymentArrangementsByConsumerLendingArrangementId
+    filterInputTypeName: ConsumerLendingPaymentArrangementsFilterInput
+    aggregate:
+      queryRootField: consumerLendingPaymentArrangementsAggregate
+      subscription:
+        rootField: consumerLendingPaymentArrangementsAggregate
+  description: Records payment arrangements made with borrowers to resolve
+    delinquent accounts.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingPaymentArrangements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingCollectionAccount
+  sourceType: ConsumerLendingPaymentArrangements
+  target:
+    model:
+      name: ConsumerLendingCollectionAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCollectionId
+      target:
+        modelField:
+          - fieldName: consumerLendingCollectionId
+

@@ -1,0 +1,208 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCreditorAccounts
+  description: Stores information about accounts receiving standing order payments
+  fields:
+    - name: consumerBankingStandingOrderCreditorAccountId
+      type: Int4!
+      description: Auto-incrementing identifier for each creditor account
+    - name: consumerBankingStandingOrderId
+      type: Int4!
+      description: References the standing order
+    - name: identification
+      type: Varchar!
+      description: Account identifier for receiving the payments
+    - name: name
+      type: Varchar
+      description: Name associated with the receiving account
+    - name: schemeName
+      type: Varchar!
+      description: Account identifier scheme (e.g., IBAN)
+    - name: secondaryIdentification
+      type: Varchar
+      description: Additional identification for the receiving account
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderCreditorAccounts
+    inputTypeName: ConsumerBanking_ConsumerBankingStandingOrderCreditorAccountsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_standing_order_creditor_accounts
+      fieldMapping:
+        consumerBankingStandingOrderCreditorAccountId:
+          column:
+            name: consumer_banking_standing_order_creditor_account_id
+        consumerBankingStandingOrderId:
+          column:
+            name: consumer_banking_standing_order_id
+        identification:
+          column:
+            name: identification
+        name:
+          column:
+            name: name
+        schemeName:
+          column:
+            name: scheme_name
+        secondaryIdentification:
+          column:
+            name: secondary_identification
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingStandingOrderCreditorAccounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingStandingOrderCreditorAccountId
+          - consumerBankingStandingOrderId
+          - identification
+          - name
+          - schemeName
+          - secondaryIdentification
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCreditorAccountsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingStandingOrderCreditorAccounts
+      comparableFields:
+        - fieldName: consumerBankingStandingOrderCreditorAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingStandingOrderId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: identification
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: schemeName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: secondaryIdentification
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStandingOrder
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderCreditorAccountsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCreditorAccountsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingStandingOrderCreditorAccounts
+      aggregatableFields:
+        - fieldName: consumerBankingStandingOrderCreditorAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingStandingOrderId
+          aggregateExpression: Int4AggExp
+        - fieldName: identification
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: schemeName
+          aggregateExpression: VarcharAggExp
+        - fieldName: secondaryIdentification
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStandingOrderCreditorAccountsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCreditorAccountsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingStandingOrderCreditorAccounts
+      orderableFields:
+        - fieldName: consumerBankingStandingOrderCreditorAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingStandingOrderId
+          orderByExpression: Int4OrderByExp
+        - fieldName: identification
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: schemeName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: secondaryIdentification
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingStandingOrder
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStandingOrderCreditorAccountsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingStandingOrderCreditorAccounts
+  objectType: ConsumerBankingStandingOrderCreditorAccounts
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_standing_order_creditor_accounts
+  filterExpressionType: ConsumerBankingStandingOrderCreditorAccountsBoolExp
+  aggregateExpression: ConsumerBankingStandingOrderCreditorAccountsAggExp
+  orderByExpression: ConsumerBankingStandingOrderCreditorAccountsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingStandingOrderCreditorAccounts
+      subscription:
+        rootField: consumerBankingStandingOrderCreditorAccounts
+    selectUniques:
+      - queryRootField: consumerBankingStandingOrderCreditorAccountsByConsumerBankingStandingOrderCreditorAccountId
+        uniqueIdentifier:
+          - consumerBankingStandingOrderCreditorAccountId
+        subscription:
+          rootField: consumerBankingStandingOrderCreditorAccountsByConsumerBankingStandingOrderCreditorAccountId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingStandingOrderCreditorAccountsFilterInput
+    aggregate:
+      queryRootField: consumerBankingStandingOrderCreditorAccountsAggregate
+      subscription:
+        rootField: consumerBankingStandingOrderCreditorAccountsAggregate
+  description: Stores information about accounts receiving standing order payments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingStandingOrderCreditorAccounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStandingOrder
+  sourceType: ConsumerBankingStandingOrderCreditorAccounts
+  target:
+    model:
+      name: ConsumerBankingStandingOrders
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStandingOrderId
+      target:
+        modelField:
+          - fieldName: consumerBankingStandingOrderId
+

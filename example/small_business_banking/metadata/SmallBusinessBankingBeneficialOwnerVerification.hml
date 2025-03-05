@@ -1,0 +1,502 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingBeneficialOwnerVerification
+  description: Tracks verification of beneficial owners as required by FinCEN
+  fields:
+    - name: addressVerified
+      type: Bool!
+      description: Whether address was verified
+    - name: adverseMediaFound
+      type: Bool!
+      description: Whether adverse media was found
+    - name: certificationDate
+      type: Date
+      description: Date of certification
+    - name: certificationReceived
+      type: Bool!
+      description: Whether certification of beneficial ownership was received
+    - name: exceptionReason
+      type: Text
+      description: Reason for exception (if applicable)
+    - name: idExpirationDate
+      type: Date
+      description: Expiration date of the ID
+    - name: idIssuingCountry
+      type: Varchar
+      description: Country that issued the ID
+    - name: idNumber
+      type: Varchar
+      description: ID number (masked for security)
+    - name: idType
+      type: Varchar
+      description: Type of ID provided (driver's license, passport, etc.)
+    - name: notes
+      type: Text
+      description: Additional notes about the verification
+    - name: ownershipPercentageVerified
+      type: Bool!
+      description: Whether ownership percentage was verified
+    - name: pepStatus
+      type: Bool!
+      description: Whether person is a politically exposed person
+    - name: performedBy
+      type: Int4!
+      description: Person who performed the verification
+    - name: recertificationDueDate
+      type: Date
+      description: Date when recertification is due
+    - name: sanctionsHit
+      type: Bool!
+      description: Whether person appears on sanctions lists
+    - name: screeningConducted
+      type: Bool!
+      description: Whether screening was conducted
+    - name: screeningDate
+      type: Date
+      description: Date of screening
+    - name: screeningResults
+      type: Text
+      description: Results of screening
+    - name: screeningSystem
+      type: Varchar
+      description: System used for screening
+    - name: smallBusinessBankingBusinessId
+      type: Int4!
+      description: Reference to the business
+    - name: smallBusinessBankingBusinessOwnerId
+      type: Int4!
+      description: Reference to the business owner
+    - name: smallBusinessBankingVerificationId
+      type: Int4!
+      description: Unique identifier for each verification record
+    - name: ssnVerified
+      type: Bool
+      description: Whether SSN was verified (for US persons)
+    - name: tinVerified
+      type: Bool
+      description: Whether TIN was verified (for non-US persons)
+    - name: verificationDate
+      type: Date!
+      description: Date the verification was performed
+    - name: verificationMethod
+      type: Varchar!
+      description: Method used to verify beneficial ownership
+    - name: verificationStatus
+      type: Varchar!
+      description: Status of verification (pending, completed, exception)
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingBeneficialOwnerVerification
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingBeneficialOwnerVerificationInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_beneficial_owner_verification
+      fieldMapping:
+        addressVerified:
+          column:
+            name: address_verified
+        adverseMediaFound:
+          column:
+            name: adverse_media_found
+        certificationDate:
+          column:
+            name: certification_date
+        certificationReceived:
+          column:
+            name: certification_received
+        exceptionReason:
+          column:
+            name: exception_reason
+        idExpirationDate:
+          column:
+            name: id_expiration_date
+        idIssuingCountry:
+          column:
+            name: id_issuing_country
+        idNumber:
+          column:
+            name: id_number
+        idType:
+          column:
+            name: id_type
+        notes:
+          column:
+            name: notes
+        ownershipPercentageVerified:
+          column:
+            name: ownership_percentage_verified
+        pepStatus:
+          column:
+            name: pep_status
+        performedBy:
+          column:
+            name: performed_by
+        recertificationDueDate:
+          column:
+            name: recertification_due_date
+        sanctionsHit:
+          column:
+            name: sanctions_hit
+        screeningConducted:
+          column:
+            name: screening_conducted
+        screeningDate:
+          column:
+            name: screening_date
+        screeningResults:
+          column:
+            name: screening_results
+        screeningSystem:
+          column:
+            name: screening_system
+        smallBusinessBankingBusinessId:
+          column:
+            name: small_business_banking_business_id
+        smallBusinessBankingBusinessOwnerId:
+          column:
+            name: small_business_banking_business_owner_id
+        smallBusinessBankingVerificationId:
+          column:
+            name: small_business_banking_verification_id
+        ssnVerified:
+          column:
+            name: ssn_verified
+        tinVerified:
+          column:
+            name: tin_verified
+        verificationDate:
+          column:
+            name: verification_date
+        verificationMethod:
+          column:
+            name: verification_method
+        verificationStatus:
+          column:
+            name: verification_status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingBeneficialOwnerVerification
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - addressVerified
+          - adverseMediaFound
+          - certificationDate
+          - certificationReceived
+          - exceptionReason
+          - idExpirationDate
+          - idIssuingCountry
+          - idNumber
+          - idType
+          - notes
+          - ownershipPercentageVerified
+          - pepStatus
+          - performedBy
+          - recertificationDueDate
+          - sanctionsHit
+          - screeningConducted
+          - screeningDate
+          - screeningResults
+          - screeningSystem
+          - smallBusinessBankingBusinessId
+          - smallBusinessBankingBusinessOwnerId
+          - smallBusinessBankingVerificationId
+          - ssnVerified
+          - tinVerified
+          - verificationDate
+          - verificationMethod
+          - verificationStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingBeneficialOwnerVerificationBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingBeneficialOwnerVerification
+      comparableFields:
+        - fieldName: addressVerified
+          booleanExpressionType: BoolBoolExp
+        - fieldName: adverseMediaFound
+          booleanExpressionType: BoolBoolExp
+        - fieldName: certificationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: certificationReceived
+          booleanExpressionType: BoolBoolExp
+        - fieldName: exceptionReason
+          booleanExpressionType: TextBoolExp
+        - fieldName: idExpirationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: idIssuingCountry
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: idNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: idType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: ownershipPercentageVerified
+          booleanExpressionType: BoolBoolExp
+        - fieldName: pepStatus
+          booleanExpressionType: BoolBoolExp
+        - fieldName: performedBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: recertificationDueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: sanctionsHit
+          booleanExpressionType: BoolBoolExp
+        - fieldName: screeningConducted
+          booleanExpressionType: BoolBoolExp
+        - fieldName: screeningDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: screeningResults
+          booleanExpressionType: TextBoolExp
+        - fieldName: screeningSystem
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: smallBusinessBankingBusinessId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingBusinessOwnerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingVerificationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: ssnVerified
+          booleanExpressionType: BoolBoolExp
+        - fieldName: tinVerified
+          booleanExpressionType: BoolBoolExp
+        - fieldName: verificationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: verificationMethod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: smallBusinessBankingBusinessOwner
+        - relationshipName: smallBusinessBankingBusiness
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingBeneficialOwnerVerificationBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingBeneficialOwnerVerificationAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingBeneficialOwnerVerification
+      aggregatableFields:
+        - fieldName: addressVerified
+          aggregateExpression: BoolAggExp
+        - fieldName: adverseMediaFound
+          aggregateExpression: BoolAggExp
+        - fieldName: certificationDate
+          aggregateExpression: DateAggExp
+        - fieldName: certificationReceived
+          aggregateExpression: BoolAggExp
+        - fieldName: exceptionReason
+          aggregateExpression: TextAggExp
+        - fieldName: idExpirationDate
+          aggregateExpression: DateAggExp
+        - fieldName: idIssuingCountry
+          aggregateExpression: VarcharAggExp
+        - fieldName: idNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: idType
+          aggregateExpression: VarcharAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: ownershipPercentageVerified
+          aggregateExpression: BoolAggExp
+        - fieldName: pepStatus
+          aggregateExpression: BoolAggExp
+        - fieldName: performedBy
+          aggregateExpression: Int4AggExp
+        - fieldName: recertificationDueDate
+          aggregateExpression: DateAggExp
+        - fieldName: sanctionsHit
+          aggregateExpression: BoolAggExp
+        - fieldName: screeningConducted
+          aggregateExpression: BoolAggExp
+        - fieldName: screeningDate
+          aggregateExpression: DateAggExp
+        - fieldName: screeningResults
+          aggregateExpression: TextAggExp
+        - fieldName: screeningSystem
+          aggregateExpression: VarcharAggExp
+        - fieldName: smallBusinessBankingBusinessId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingBusinessOwnerId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingVerificationId
+          aggregateExpression: Int4AggExp
+        - fieldName: ssnVerified
+          aggregateExpression: BoolAggExp
+        - fieldName: tinVerified
+          aggregateExpression: BoolAggExp
+        - fieldName: verificationDate
+          aggregateExpression: DateAggExp
+        - fieldName: verificationMethod
+          aggregateExpression: VarcharAggExp
+        - fieldName: verificationStatus
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingBeneficialOwnerVerificationAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingBeneficialOwnerVerificationOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingBeneficialOwnerVerification
+      orderableFields:
+        - fieldName: addressVerified
+          orderByExpression: BoolOrderByExp
+        - fieldName: adverseMediaFound
+          orderByExpression: BoolOrderByExp
+        - fieldName: certificationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: certificationReceived
+          orderByExpression: BoolOrderByExp
+        - fieldName: exceptionReason
+          orderByExpression: TextOrderByExp
+        - fieldName: idExpirationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: idIssuingCountry
+          orderByExpression: VarcharOrderByExp
+        - fieldName: idNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: idType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: notes
+          orderByExpression: TextOrderByExp
+        - fieldName: ownershipPercentageVerified
+          orderByExpression: BoolOrderByExp
+        - fieldName: pepStatus
+          orderByExpression: BoolOrderByExp
+        - fieldName: performedBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: recertificationDueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: sanctionsHit
+          orderByExpression: BoolOrderByExp
+        - fieldName: screeningConducted
+          orderByExpression: BoolOrderByExp
+        - fieldName: screeningDate
+          orderByExpression: DateOrderByExp
+        - fieldName: screeningResults
+          orderByExpression: TextOrderByExp
+        - fieldName: screeningSystem
+          orderByExpression: VarcharOrderByExp
+        - fieldName: smallBusinessBankingBusinessId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingBusinessOwnerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingVerificationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: ssnVerified
+          orderByExpression: BoolOrderByExp
+        - fieldName: tinVerified
+          orderByExpression: BoolOrderByExp
+        - fieldName: verificationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: verificationMethod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: smallBusinessBankingBusinessOwner
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: verificationPerformedBy
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingBeneficialOwnerVerificationOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingBeneficialOwnerVerification
+  objectType: SmallBusinessBankingBeneficialOwnerVerification
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_beneficial_owner_verification
+  filterExpressionType: SmallBusinessBankingBeneficialOwnerVerificationBoolExp
+  aggregateExpression: SmallBusinessBankingBeneficialOwnerVerificationAggExp
+  orderByExpression: SmallBusinessBankingBeneficialOwnerVerificationOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingBeneficialOwnerVerification
+      subscription:
+        rootField: smallBusinessBankingBeneficialOwnerVerification
+    selectUniques:
+      - queryRootField: smallBusinessBankingBeneficialOwnerVerificationBySmallBusinessBankingVerificationId
+        uniqueIdentifier:
+          - smallBusinessBankingVerificationId
+        subscription:
+          rootField: smallBusinessBankingBeneficialOwnerVerificationBySmallBusinessBankingVerificationId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingBeneficialOwnerVerificationFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingBeneficialOwnerVerificationAggregate
+      subscription:
+        rootField: smallBusinessBankingBeneficialOwnerVerificationAggregate
+  description: Tracks verification of beneficial owners as required by FinCEN
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingBeneficialOwnerVerification
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusinessOwner
+  sourceType: SmallBusinessBankingBeneficialOwnerVerification
+  target:
+    model:
+      name: SmallBusinessBankingBusinessOwners
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingBusinessOwnerId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingBusinessOwnerId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusiness
+  sourceType: SmallBusinessBankingBeneficialOwnerVerification
+  target:
+    model:
+      name: SmallBusinessBankingBusinesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingBusinessId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingBusinessId
+

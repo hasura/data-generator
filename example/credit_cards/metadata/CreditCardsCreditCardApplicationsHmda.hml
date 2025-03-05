@@ -1,0 +1,325 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsCreditCardApplicationsHmda
+  description: Regulatory reporting data for credit card applications under HMDA
+  fields:
+    - name: actionTaken
+      type: Varchar!
+      description: Final disposition (Approved, Denied, etc.)
+    - name: actionTakenDate
+      type: Date!
+      description: Date of final action
+    - name: age
+      type: Int4
+      description: Applicant's age at time of application
+    - name: creditCardsApplicationId
+      type: Int4!
+      description: Reference to applications
+    - name: creditCardsRecordId
+      type: Int4!
+      description: Auto-incrementing identifier for each HMDA record
+    - name: denialReason1
+      type: Varchar
+      description: Primary reason for denial if applicable
+    - name: denialReason2
+      type: Varchar
+      description: Secondary reason for denial if applicable
+    - name: ethnicity
+      type: Varchar
+      description: Applicant's ethnicity per HMDA categories
+    - name: hoepaStatus
+      type: Varchar
+      description: Whether subject to HOEPA (Yes, No)
+    - name: income
+      type: Numeric
+      description: Applicant's annual income in thousands
+    - name: race
+      type: Varchar
+      description: Applicant's race per HMDA categories
+    - name: rateSpread
+      type: Numeric
+      description: Difference between APR and average prime offer rate
+    - name: reportingYear
+      type: Int4!
+      description: Year for HMDA reporting
+    - name: sex
+      type: Varchar
+      description: Applicant's sex per HMDA categories
+    - name: submissionStatus
+      type: Varchar!
+      description: Status of HMDA submission
+  graphql:
+    typeName: _CreditCards__CreditCardsCreditCardApplicationsHmda
+    inputTypeName: _CreditCards__CreditCardsCreditCardApplicationsHmdaInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_credit_card_applications_hmda
+      fieldMapping:
+        actionTaken:
+          column:
+            name: action_taken
+        actionTakenDate:
+          column:
+            name: action_taken_date
+        age:
+          column:
+            name: age
+        creditCardsApplicationId:
+          column:
+            name: credit_cards_application_id
+        creditCardsRecordId:
+          column:
+            name: credit_cards_record_id
+        denialReason1:
+          column:
+            name: denial_reason1
+        denialReason2:
+          column:
+            name: denial_reason2
+        ethnicity:
+          column:
+            name: ethnicity
+        hoepaStatus:
+          column:
+            name: hoepa_status
+        income:
+          column:
+            name: income
+        race:
+          column:
+            name: race
+        rateSpread:
+          column:
+            name: rate_spread
+        reportingYear:
+          column:
+            name: reporting_year
+        sex:
+          column:
+            name: sex
+        submissionStatus:
+          column:
+            name: submission_status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsCreditCardApplicationsHmda
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actionTaken
+          - actionTakenDate
+          - age
+          - creditCardsApplicationId
+          - creditCardsRecordId
+          - denialReason1
+          - denialReason2
+          - ethnicity
+          - hoepaStatus
+          - income
+          - race
+          - rateSpread
+          - reportingYear
+          - sex
+          - submissionStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsCreditCardApplicationsHmdaBoolExp
+  operand:
+    object:
+      type: CreditCardsCreditCardApplicationsHmda
+      comparableFields:
+        - fieldName: actionTaken
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: actionTakenDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: age
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsRecordId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: denialReason1
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: denialReason2
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: ethnicity
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: hoepaStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: income
+          booleanExpressionType: NumericBoolExp
+        - fieldName: race
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: rateSpread
+          booleanExpressionType: NumericBoolExp
+        - fieldName: reportingYear
+          booleanExpressionType: Int4BoolExp
+        - fieldName: sex
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: submissionStatus
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsCreditCardApplicationsHmdaBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsCreditCardApplicationsHmdaAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsCreditCardApplicationsHmda
+      aggregatableFields:
+        - fieldName: actionTaken
+          aggregateExpression: VarcharAggExp
+        - fieldName: actionTakenDate
+          aggregateExpression: DateAggExp
+        - fieldName: age
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsRecordId
+          aggregateExpression: Int4AggExp
+        - fieldName: denialReason1
+          aggregateExpression: VarcharAggExp
+        - fieldName: denialReason2
+          aggregateExpression: VarcharAggExp
+        - fieldName: ethnicity
+          aggregateExpression: VarcharAggExp
+        - fieldName: hoepaStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: income
+          aggregateExpression: NumericAggExp
+        - fieldName: race
+          aggregateExpression: VarcharAggExp
+        - fieldName: rateSpread
+          aggregateExpression: NumericAggExp
+        - fieldName: reportingYear
+          aggregateExpression: Int4AggExp
+        - fieldName: sex
+          aggregateExpression: VarcharAggExp
+        - fieldName: submissionStatus
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsCreditCardApplicationsHmdaAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsCreditCardApplicationsHmdaOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsCreditCardApplicationsHmda
+      orderableFields:
+        - fieldName: actionTaken
+          orderByExpression: VarcharOrderByExp
+        - fieldName: actionTakenDate
+          orderByExpression: DateOrderByExp
+        - fieldName: age
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsRecordId
+          orderByExpression: Int4OrderByExp
+        - fieldName: denialReason1
+          orderByExpression: VarcharOrderByExp
+        - fieldName: denialReason2
+          orderByExpression: VarcharOrderByExp
+        - fieldName: ethnicity
+          orderByExpression: VarcharOrderByExp
+        - fieldName: hoepaStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: income
+          orderByExpression: NumericOrderByExp
+        - fieldName: race
+          orderByExpression: VarcharOrderByExp
+        - fieldName: rateSpread
+          orderByExpression: NumericOrderByExp
+        - fieldName: reportingYear
+          orderByExpression: Int4OrderByExp
+        - fieldName: sex
+          orderByExpression: VarcharOrderByExp
+        - fieldName: submissionStatus
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsApplication
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsCreditCardApplicationsHmdaOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsCreditCardApplicationsHmda
+  objectType: CreditCardsCreditCardApplicationsHmda
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_credit_card_applications_hmda
+  filterExpressionType: CreditCardsCreditCardApplicationsHmdaBoolExp
+  aggregateExpression: CreditCardsCreditCardApplicationsHmdaAggExp
+  orderByExpression: CreditCardsCreditCardApplicationsHmdaOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsCreditCardApplicationsHmda
+      subscription:
+        rootField: creditCardsCreditCardApplicationsHmda
+    selectUniques:
+      - queryRootField: creditCardsCreditCardApplicationsHmdaByCreditCardsRecordId
+        uniqueIdentifier:
+          - creditCardsRecordId
+        subscription:
+          rootField: creditCardsCreditCardApplicationsHmdaByCreditCardsRecordId
+    filterInputTypeName: _CreditCards__CreditCardsCreditCardApplicationsHmdaFilterInput
+    aggregate:
+      queryRootField: creditCardsCreditCardApplicationsHmdaAggregate
+      subscription:
+        rootField: creditCardsCreditCardApplicationsHmdaAggregate
+  description: Regulatory reporting data for credit card applications under HMDA
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsCreditCardApplicationsHmda
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsApplication
+  sourceType: CreditCardsCreditCardApplicationsHmda
+  target:
+    model:
+      name: CreditCardsApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsApplicationId
+      target:
+        modelField:
+          - fieldName: creditCardsApplicationId
+

@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingTransactionProprietaryBankTransactionCodes
+  description: Stores non-standard proprietary codes for transaction categorization
+  fields:
+    - name: code
+      type: Varchar!
+      description: Custom transaction code defined by the issuer
+    - name: consumerBankingTransactionId
+      type: Int4!
+      description: References the transaction this code belongs to
+    - name: consumerBankingTransactionProprietaryBankTransactionCode
+      type: Int4!
+      description: Auto-incrementing identifier for each proprietary code record
+    - name: issuer
+      type: Varchar
+      description: Organization that defined the proprietary code
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionProprietaryBankTransactionCodes
+    inputTypeName: ConsumerBanking_ConsumerBankingTransactionProprietaryBankTransactionCodesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_proprietary_bank_transaction_codes
+      fieldMapping:
+        code:
+          column:
+            name: code
+        consumerBankingTransactionId:
+          column:
+            name: consumer_banking_transaction_id
+        consumerBankingTransactionProprietaryBankTransactionCode:
+          column:
+            name: consumer_banking_transaction_proprietary_bank_transaction_code_
+        issuer:
+          column:
+            name: issuer
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingTransactionProprietaryBankTransactionCodes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - code
+          - consumerBankingTransactionId
+          - consumerBankingTransactionProprietaryBankTransactionCode
+          - issuer
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionProprietaryBankTransactionCodesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingTransactionProprietaryBankTransactionCodes
+      comparableFields:
+        - fieldName: code
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingTransactionProprietaryBankTransactionCode
+          booleanExpressionType: Int4BoolExp
+        - fieldName: issuer
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionProprietaryBankTransactionCodesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionProprietaryBankTransactionCodesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingTransactionProprietaryBankTransactionCodes
+      aggregatableFields:
+        - fieldName: code
+          aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingTransactionProprietaryBankTransactionCode
+          aggregateExpression: Int4AggExp
+        - fieldName: issuer
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionProprietaryBankTransactionCodesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionProprietaryBankTransactionCodesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingTransactionProprietaryBankTransactionCodes
+      orderableFields:
+        - fieldName: code
+          orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingTransactionProprietaryBankTransactionCode
+          orderByExpression: Int4OrderByExp
+        - fieldName: issuer
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingTransaction
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionProprietaryBankTransactionCodesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingTransactionProprietaryBankTransactionCodes
+  objectType: ConsumerBankingTransactionProprietaryBankTransactionCodes
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_proprietary_bank_transaction_codes
+  filterExpressionType: ConsumerBankingTransactionProprietaryBankTransactionCodesBoolExp
+  aggregateExpression: ConsumerBankingTransactionProprietaryBankTransactionCodesAggExp
+  orderByExpression: ConsumerBankingTransactionProprietaryBankTransactionCodesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingTransactionProprietaryBankTransactionCodes
+      subscription:
+        rootField: consumerBankingTransactionProprietaryBankTransactionCodes
+    selectUniques:
+      - queryRootField: consumerBankingTransactionProprietaryBankTransactionCodesByConsumerBankingTransactionProprietaryBankTransactionCode
+        uniqueIdentifier:
+          - consumerBankingTransactionProprietaryBankTransactionCode
+        subscription:
+          rootField: consumerBankingTransactionProprietaryBankTransactionCodesByConsumerBankingTransactionProprietaryBankTransactionCode
+    filterInputTypeName: ConsumerBanking_ConsumerBankingTransactionProprietaryBankTransactionCodesFilterInput
+    aggregate:
+      queryRootField: consumerBankingTransactionProprietaryBankTransactionCodesAggregate
+      subscription:
+        rootField: consumerBankingTransactionProprietaryBankTransactionCodesAggregate
+  description: Stores non-standard proprietary codes for transaction categorization
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingTransactionProprietaryBankTransactionCodes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransaction
+  sourceType: ConsumerBankingTransactionProprietaryBankTransactionCodes
+  target:
+    model:
+      name: ConsumerBankingTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+

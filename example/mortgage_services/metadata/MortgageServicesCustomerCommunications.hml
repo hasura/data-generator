@@ -1,0 +1,332 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesCustomerCommunications
+  description: Tracks all communications with customers throughout application and servicing
+  fields:
+    - name: communicationDate
+      type: Timestamp!
+      description: When the communication occurred
+    - name: communicationType
+      type: Varchar!
+      description: Medium of communication (e.g., Email, Letter, Phone)
+    - name: content
+      type: Text
+      description: Content of the communication
+    - name: direction
+      type: Varchar!
+      description: Whether communication was incoming or outgoing
+    - name: documentPath
+      type: Varchar
+      description: Storage location for communication document if applicable
+    - name: mortgageServicesApplicationId
+      type: Int4
+      description: References the application if communication is about application
+    - name: mortgageServicesCommunicationId
+      type: Int4!
+      description: Auto-incrementing identifier for each communication
+    - name: mortgageServicesServicingAccountId
+      type: Int4
+      description: References the servicing account if communication is about servicing
+    - name: recipient
+      type: Varchar
+      description: Person or entity that received the communication
+    - name: relatedTo
+      type: Varchar
+      description: Purpose or context of the communication
+    - name: sender
+      type: Varchar
+      description: Person or system that sent the communication
+    - name: status
+      type: Varchar!
+      description: Delivery status of the communication
+    - name: subject
+      type: Varchar
+      description: Subject or topic of communication
+    - name: templateId
+      type: Int4
+      description: Template used for the communication if applicable
+  graphql:
+    typeName: _MortgageServices__MortgageServicesCustomerCommunications
+    inputTypeName: _MortgageServices__MortgageServicesCustomerCommunicationsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_customer_communications
+      fieldMapping:
+        communicationDate:
+          column:
+            name: communication_date
+        communicationType:
+          column:
+            name: communication_type
+        content:
+          column:
+            name: content
+        direction:
+          column:
+            name: direction
+        documentPath:
+          column:
+            name: document_path
+        mortgageServicesApplicationId:
+          column:
+            name: mortgage_services_application_id
+        mortgageServicesCommunicationId:
+          column:
+            name: mortgage_services_communication_id
+        mortgageServicesServicingAccountId:
+          column:
+            name: mortgage_services_servicing_account_id
+        recipient:
+          column:
+            name: recipient
+        relatedTo:
+          column:
+            name: related_to
+        sender:
+          column:
+            name: sender
+        status:
+          column:
+            name: status
+        subject:
+          column:
+            name: subject
+        templateId:
+          column:
+            name: template_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesCustomerCommunications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - communicationDate
+          - communicationType
+          - content
+          - direction
+          - documentPath
+          - mortgageServicesApplicationId
+          - mortgageServicesCommunicationId
+          - mortgageServicesServicingAccountId
+          - recipient
+          - relatedTo
+          - sender
+          - status
+          - subject
+          - templateId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesCustomerCommunicationsBoolExp
+  operand:
+    object:
+      type: MortgageServicesCustomerCommunications
+      comparableFields:
+        - fieldName: communicationDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: communicationType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: content
+          booleanExpressionType: TextBoolExp
+        - fieldName: direction
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: documentPath
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesCommunicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesServicingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: recipient
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: relatedTo
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: sender
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: subject
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: templateId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesApplication
+        - relationshipName: mortgageServicesServicingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesCustomerCommunicationsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesCustomerCommunicationsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesCustomerCommunications
+      aggregatableFields:
+        - fieldName: communicationDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: communicationType
+          aggregateExpression: VarcharAggExp
+        - fieldName: content
+          aggregateExpression: TextAggExp
+        - fieldName: direction
+          aggregateExpression: VarcharAggExp
+        - fieldName: documentPath
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesCommunicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesServicingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: recipient
+          aggregateExpression: VarcharAggExp
+        - fieldName: relatedTo
+          aggregateExpression: VarcharAggExp
+        - fieldName: sender
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: subject
+          aggregateExpression: VarcharAggExp
+        - fieldName: templateId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesCustomerCommunicationsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesCustomerCommunicationsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesCustomerCommunications
+      orderableFields:
+        - fieldName: communicationDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: communicationType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: content
+          orderByExpression: TextOrderByExp
+        - fieldName: direction
+          orderByExpression: VarcharOrderByExp
+        - fieldName: documentPath
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesCommunicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesServicingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: recipient
+          orderByExpression: VarcharOrderByExp
+        - fieldName: relatedTo
+          orderByExpression: VarcharOrderByExp
+        - fieldName: sender
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: subject
+          orderByExpression: VarcharOrderByExp
+        - fieldName: templateId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesApplication
+        - relationshipName: mortgageServicesServicingAccount
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesCustomerCommunicationsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesCustomerCommunications
+  objectType: MortgageServicesCustomerCommunications
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_customer_communications
+  filterExpressionType: MortgageServicesCustomerCommunicationsBoolExp
+  aggregateExpression: MortgageServicesCustomerCommunicationsAggExp
+  orderByExpression: MortgageServicesCustomerCommunicationsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesCustomerCommunications
+      subscription:
+        rootField: mortgageServicesCustomerCommunications
+    selectUniques:
+      - queryRootField: mortgageServicesCustomerCommunicationsByMortgageServicesCommunicationId
+        uniqueIdentifier:
+          - mortgageServicesCommunicationId
+        subscription:
+          rootField: mortgageServicesCustomerCommunicationsByMortgageServicesCommunicationId
+    filterInputTypeName: _MortgageServices__MortgageServicesCustomerCommunicationsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesCustomerCommunicationsAggregate
+      subscription:
+        rootField: mortgageServicesCustomerCommunicationsAggregate
+  description: Tracks all communications with customers throughout application and servicing
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesCustomerCommunications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplication
+  sourceType: MortgageServicesCustomerCommunications
+  target:
+    model:
+      name: MortgageServicesApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesServicingAccount
+  sourceType: MortgageServicesCustomerCommunications
+  target:
+    model:
+      name: MortgageServicesServicingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+

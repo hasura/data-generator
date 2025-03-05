@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingStatementRates
+  description: Stores various rate information associated with a statement
+  fields:
+    - name: consumerBankingStatementId
+      type: Int4!
+      description: References the statement this rate belongs to
+    - name: consumerBankingStatementRateId
+      type: Int4!
+      description: Auto-incrementing identifier for each rate record
+    - name: rate
+      type: Numeric!
+      description: Rate value (e.g., interest rate, exchange rate)
+    - name: type
+      type: Varchar!
+      description: Type of rate (e.g., APR, exchange, promotional)
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementRates
+    inputTypeName: ConsumerBanking_ConsumerBankingStatementRatesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statement_rates
+      fieldMapping:
+        consumerBankingStatementId:
+          column:
+            name: consumer_banking_statement_id
+        consumerBankingStatementRateId:
+          column:
+            name: consumer_banking_statement_rate_id
+        rate:
+          column:
+            name: rate
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingStatementRates
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingStatementId
+          - consumerBankingStatementRateId
+          - rate
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementRatesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingStatementRates
+      comparableFields:
+        - fieldName: consumerBankingStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingStatementRateId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: rate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: type
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStatement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementRatesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementRatesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingStatementRates
+      aggregatableFields:
+        - fieldName: consumerBankingStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingStatementRateId
+          aggregateExpression: Int4AggExp
+        - fieldName: rate
+          aggregateExpression: NumericAggExp
+        - fieldName: type
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementRatesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementRatesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingStatementRates
+      orderableFields:
+        - fieldName: consumerBankingStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingStatementRateId
+          orderByExpression: Int4OrderByExp
+        - fieldName: rate
+          orderByExpression: NumericOrderByExp
+        - fieldName: type
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingStatement
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementRatesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingStatementRates
+  objectType: ConsumerBankingStatementRates
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statement_rates
+  filterExpressionType: ConsumerBankingStatementRatesBoolExp
+  aggregateExpression: ConsumerBankingStatementRatesAggExp
+  orderByExpression: ConsumerBankingStatementRatesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingStatementRates
+      subscription:
+        rootField: consumerBankingStatementRates
+    selectUniques:
+      - queryRootField: consumerBankingStatementRatesByConsumerBankingStatementRateId
+        uniqueIdentifier:
+          - consumerBankingStatementRateId
+        subscription:
+          rootField: consumerBankingStatementRatesByConsumerBankingStatementRateId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingStatementRatesFilterInput
+    aggregate:
+      queryRootField: consumerBankingStatementRatesAggregate
+      subscription:
+        rootField: consumerBankingStatementRatesAggregate
+  description: Stores various rate information associated with a statement
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingStatementRates
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatement
+  sourceType: ConsumerBankingStatementRates
+  target:
+    model:
+      name: ConsumerBankingStatements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+

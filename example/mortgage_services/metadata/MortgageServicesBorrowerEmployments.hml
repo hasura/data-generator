@@ -1,0 +1,287 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesBorrowerEmployments
+  description: Tracks employment history and income sources for mortgage borrowers
+  fields:
+    - name: employerName
+      type: Varchar!
+      description: Name of the employer
+    - name: employmentType
+      type: Varchar!
+      description: Type of employment arrangement
+    - name: endDate
+      type: Date
+      description: When employment ended, if applicable
+    - name: enterpriseAddressId
+      type: Int4
+      description: References the employer's address
+    - name: isCurrent
+      type: Bool!
+      description: Indicates if this is the borrower's current job
+    - name: monthlyIncome
+      type: Numeric!
+      description: Gross monthly income from this employment
+    - name: mortgageServicesBorrowerId
+      type: Int4!
+      description: References the borrower this employment belongs to
+    - name: mortgageServicesEmploymentId
+      type: Int4!
+      description: Auto-incrementing identifier for each employment record
+    - name: phone
+      type: Varchar
+      description: Employer's phone number
+    - name: position
+      type: Varchar!
+      description: Job title or position
+    - name: startDate
+      type: Date!
+      description: When employment began
+    - name: yearsInProfession
+      type: Int4
+      description: Total years in this profession, even at different employers
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowerEmployments
+    inputTypeName: _MortgageServices__MortgageServicesBorrowerEmploymentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_borrower_employments
+      fieldMapping:
+        employerName:
+          column:
+            name: employer_name
+        employmentType:
+          column:
+            name: employment_type
+        endDate:
+          column:
+            name: end_date
+        enterpriseAddressId:
+          column:
+            name: enterprise_address_id
+        isCurrent:
+          column:
+            name: is_current
+        monthlyIncome:
+          column:
+            name: monthly_income
+        mortgageServicesBorrowerId:
+          column:
+            name: mortgage_services_borrower_id
+        mortgageServicesEmploymentId:
+          column:
+            name: mortgage_services_employment_id
+        phone:
+          column:
+            name: phone
+        position:
+          column:
+            name: position
+        startDate:
+          column:
+            name: start_date
+        yearsInProfession:
+          column:
+            name: years_in_profession
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesBorrowerEmployments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - employerName
+          - employmentType
+          - endDate
+          - enterpriseAddressId
+          - isCurrent
+          - monthlyIncome
+          - mortgageServicesBorrowerId
+          - mortgageServicesEmploymentId
+          - phone
+          - position
+          - startDate
+          - yearsInProfession
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesBorrowerEmploymentsBoolExp
+  operand:
+    object:
+      type: MortgageServicesBorrowerEmployments
+      comparableFields:
+        - fieldName: employerName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: employmentType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: enterpriseAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: isCurrent
+          booleanExpressionType: BoolBoolExp
+        - fieldName: monthlyIncome
+          booleanExpressionType: NumericBoolExp
+        - fieldName: mortgageServicesBorrowerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesEmploymentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: phone
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: position
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: yearsInProfession
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesBorrower
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowerEmploymentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowerEmploymentsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesBorrowerEmployments
+      aggregatableFields:
+        - fieldName: employerName
+          aggregateExpression: VarcharAggExp
+        - fieldName: employmentType
+          aggregateExpression: VarcharAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: enterpriseAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: isCurrent
+          aggregateExpression: BoolAggExp
+        - fieldName: monthlyIncome
+          aggregateExpression: NumericAggExp
+        - fieldName: mortgageServicesBorrowerId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesEmploymentId
+          aggregateExpression: Int4AggExp
+        - fieldName: phone
+          aggregateExpression: VarcharAggExp
+        - fieldName: position
+          aggregateExpression: VarcharAggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
+        - fieldName: yearsInProfession
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesBorrowerEmploymentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowerEmploymentsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesBorrowerEmployments
+      orderableFields:
+        - fieldName: employerName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: employmentType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: enterpriseAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: isCurrent
+          orderByExpression: BoolOrderByExp
+        - fieldName: monthlyIncome
+          orderByExpression: NumericOrderByExp
+        - fieldName: mortgageServicesBorrowerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesEmploymentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: phone
+          orderByExpression: VarcharOrderByExp
+        - fieldName: position
+          orderByExpression: VarcharOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+        - fieldName: yearsInProfession
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesBorrower
+        - relationshipName: employerAddress
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesBorrowerEmploymentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesBorrowerEmployments
+  objectType: MortgageServicesBorrowerEmployments
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_borrower_employments
+  filterExpressionType: MortgageServicesBorrowerEmploymentsBoolExp
+  aggregateExpression: MortgageServicesBorrowerEmploymentsAggExp
+  orderByExpression: MortgageServicesBorrowerEmploymentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesBorrowerEmployments
+      subscription:
+        rootField: mortgageServicesBorrowerEmployments
+    selectUniques:
+      - queryRootField: mortgageServicesBorrowerEmploymentsByMortgageServicesEmploymentId
+        uniqueIdentifier:
+          - mortgageServicesEmploymentId
+        subscription:
+          rootField: mortgageServicesBorrowerEmploymentsByMortgageServicesEmploymentId
+    filterInputTypeName: _MortgageServices__MortgageServicesBorrowerEmploymentsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesBorrowerEmploymentsAggregate
+      subscription:
+        rootField: mortgageServicesBorrowerEmploymentsAggregate
+  description: Tracks employment history and income sources for mortgage borrowers
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesBorrowerEmployments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesBorrower
+  sourceType: MortgageServicesBorrowerEmployments
+  target:
+    model:
+      name: MortgageServicesBorrowers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+

@@ -1,0 +1,267 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsInterestCharges
+  description: Tracks interest charges applied to card accounts
+  fields:
+    - name: amount
+      type: Numeric!
+      description: Interest amount charged
+    - name: balanceSubjectToInterest
+      type: Numeric!
+      description: Balance amount subject to interest
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsChargeId
+      type: Int4!
+      description: Auto-incrementing identifier for each interest charge
+    - name: creditCardsStatementId
+      type: Int4!
+      description: Reference to statements
+    - name: dateAssessed
+      type: Date!
+      description: Date interest was charged
+    - name: daysInPeriod
+      type: Int4!
+      description: Number of days interest was calculated for
+    - name: interestRate
+      type: Numeric!
+      description: Interest rate applied
+    - name: interestType
+      type: Varchar!
+      description: Type of interest (Purchase, Cash Advance, Balance Transfer, Penalty)
+  graphql:
+    typeName: _CreditCards__CreditCardsInterestCharges
+    inputTypeName: _CreditCards__CreditCardsInterestChargesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_interest_charges
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        balanceSubjectToInterest:
+          column:
+            name: balance_subject_to_interest
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsChargeId:
+          column:
+            name: credit_cards_charge_id
+        creditCardsStatementId:
+          column:
+            name: credit_cards_statement_id
+        dateAssessed:
+          column:
+            name: date_assessed
+        daysInPeriod:
+          column:
+            name: days_in_period
+        interestRate:
+          column:
+            name: interest_rate
+        interestType:
+          column:
+            name: interest_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsInterestCharges
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - balanceSubjectToInterest
+          - creditCardsCardAccountId
+          - creditCardsChargeId
+          - creditCardsStatementId
+          - dateAssessed
+          - daysInPeriod
+          - interestRate
+          - interestType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsInterestChargesBoolExp
+  operand:
+    object:
+      type: CreditCardsInterestCharges
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: balanceSubjectToInterest
+          booleanExpressionType: NumericBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsChargeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dateAssessed
+          booleanExpressionType: DateBoolExp
+        - fieldName: daysInPeriod
+          booleanExpressionType: Int4BoolExp
+        - fieldName: interestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: interestType
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsStatement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsInterestChargesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsInterestChargesAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsInterestCharges
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: balanceSubjectToInterest
+          aggregateExpression: NumericAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsChargeId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: dateAssessed
+          aggregateExpression: DateAggExp
+        - fieldName: daysInPeriod
+          aggregateExpression: Int4AggExp
+        - fieldName: interestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: interestType
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsInterestChargesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsInterestChargesOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsInterestCharges
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: balanceSubjectToInterest
+          orderByExpression: NumericOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsChargeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dateAssessed
+          orderByExpression: DateOrderByExp
+        - fieldName: daysInPeriod
+          orderByExpression: Int4OrderByExp
+        - fieldName: interestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: interestType
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsStatement
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsInterestChargesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsInterestCharges
+  objectType: CreditCardsInterestCharges
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_interest_charges
+  filterExpressionType: CreditCardsInterestChargesBoolExp
+  aggregateExpression: CreditCardsInterestChargesAggExp
+  orderByExpression: CreditCardsInterestChargesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsInterestCharges
+      subscription:
+        rootField: creditCardsInterestCharges
+    selectUniques:
+      - queryRootField: creditCardsInterestChargesByCreditCardsChargeId
+        uniqueIdentifier:
+          - creditCardsChargeId
+        subscription:
+          rootField: creditCardsInterestChargesByCreditCardsChargeId
+    filterInputTypeName: _CreditCards__CreditCardsInterestChargesFilterInput
+    aggregate:
+      queryRootField: creditCardsInterestChargesAggregate
+      subscription:
+        rootField: creditCardsInterestChargesAggregate
+  description: Tracks interest charges applied to card accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsInterestCharges
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsInterestCharges
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsStatement
+  sourceType: CreditCardsInterestCharges
+  target:
+    model:
+      name: CreditCardsStatements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsStatementId
+      target:
+        modelField:
+          - fieldName: creditCardsStatementId
+

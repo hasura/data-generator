@@ -1,0 +1,309 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsPaymentMethods
+  description: Stores payment methods for card account payments
+  fields:
+    - name: accountNumber
+      type: Varchar
+      description: Masked account number
+    - name: accountType
+      type: Varchar
+      description: Checking or Savings if bank account
+    - name: bankName
+      type: Varchar
+      description: Name of the bank if applicable
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsPaymentMethodId
+      type: Int4!
+      description: Auto-incrementing identifier for each payment method
+    - name: expirationDate
+      type: Date
+      description: Expiration date if debit card
+    - name: isDefault
+      type: Bool!
+      description: Whether this is the default payment method
+    - name: nickname
+      type: Varchar
+      description: User-assigned nickname for payment method
+    - name: paymentType
+      type: Varchar!
+      description: Type of payment method (Bank Account, Debit Card, Check)
+    - name: routingNumber
+      type: Varchar
+      description: Routing number if bank account
+    - name: status
+      type: Varchar!
+      description: Status of payment method (Active, Inactive, Removed)
+    - name: verificationStatus
+      type: Varchar!
+      description: Status of verification (Verified, Pending, Failed)
+  graphql:
+    typeName: _CreditCards__CreditCardsPaymentMethods
+    inputTypeName: _CreditCards__CreditCardsPaymentMethodsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_payment_methods
+      fieldMapping:
+        accountNumber:
+          column:
+            name: account_number
+        accountType:
+          column:
+            name: account_type
+        bankName:
+          column:
+            name: bank_name
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsPaymentMethodId:
+          column:
+            name: credit_cards_payment_method_id
+        expirationDate:
+          column:
+            name: expiration_date
+        isDefault:
+          column:
+            name: is_default
+        nickname:
+          column:
+            name: nickname
+        paymentType:
+          column:
+            name: payment_type
+        routingNumber:
+          column:
+            name: routing_number
+        status:
+          column:
+            name: status
+        verificationStatus:
+          column:
+            name: verification_status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsPaymentMethods
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - accountType
+          - bankName
+          - creditCardsCardAccountId
+          - creditCardsPaymentMethodId
+          - expirationDate
+          - isDefault
+          - nickname
+          - paymentType
+          - routingNumber
+          - status
+          - verificationStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsPaymentMethodsBoolExp
+  operand:
+    object:
+      type: CreditCardsPaymentMethods
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: accountType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: bankName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsPaymentMethodId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: isDefault
+          booleanExpressionType: BoolBoolExp
+        - fieldName: nickname
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: paymentType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: routingNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsAutopaySettings
+        - relationshipName: creditCardsCardAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsPaymentMethodsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsPaymentMethodsAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsPaymentMethods
+      aggregatableFields:
+        - fieldName: accountNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: accountType
+          aggregateExpression: VarcharAggExp
+        - fieldName: bankName
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsPaymentMethodId
+          aggregateExpression: Int4AggExp
+        - fieldName: expirationDate
+          aggregateExpression: DateAggExp
+        - fieldName: isDefault
+          aggregateExpression: BoolAggExp
+        - fieldName: nickname
+          aggregateExpression: VarcharAggExp
+        - fieldName: paymentType
+          aggregateExpression: VarcharAggExp
+        - fieldName: routingNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: verificationStatus
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsPaymentMethodsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsPaymentMethodsOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsPaymentMethods
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: accountType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: bankName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsPaymentMethodId
+          orderByExpression: Int4OrderByExp
+        - fieldName: expirationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: isDefault
+          orderByExpression: BoolOrderByExp
+        - fieldName: nickname
+          orderByExpression: VarcharOrderByExp
+        - fieldName: paymentType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: routingNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsPaymentMethodsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsPaymentMethods
+  objectType: CreditCardsPaymentMethods
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_payment_methods
+  filterExpressionType: CreditCardsPaymentMethodsBoolExp
+  aggregateExpression: CreditCardsPaymentMethodsAggExp
+  orderByExpression: CreditCardsPaymentMethodsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsPaymentMethods
+      subscription:
+        rootField: creditCardsPaymentMethods
+    selectUniques:
+      - queryRootField: creditCardsPaymentMethodsByCreditCardsPaymentMethodId
+        uniqueIdentifier:
+          - creditCardsPaymentMethodId
+        subscription:
+          rootField: creditCardsPaymentMethodsByCreditCardsPaymentMethodId
+    filterInputTypeName: _CreditCards__CreditCardsPaymentMethodsFilterInput
+    aggregate:
+      queryRootField: creditCardsPaymentMethodsAggregate
+      subscription:
+        rootField: creditCardsPaymentMethodsAggregate
+  description: Stores payment methods for card account payments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsPaymentMethods
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsAutopaySettings
+  sourceType: CreditCardsPaymentMethods
+  target:
+    model:
+      name: CreditCardsAutopaySettings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsAutopaySettingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsPaymentMethodId
+      target:
+        modelField:
+          - fieldName: creditCardsPaymentMethodId
+  graphql:
+    aggregateFieldName: creditCardsAutopaySettingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsPaymentMethods
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+

@@ -1,0 +1,507 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesServicingAccounts
+  description: Manages ongoing servicing of closed mortgage loans
+  fields:
+    - name: accountNumber
+      type: Varchar!
+      description: Customer-facing servicing account number
+    - name: currentInterestRate
+      type: Numeric!
+      description: Current applicable interest rate
+    - name: currentPrincipalBalance
+      type: Numeric!
+      description: Current remaining principal balance
+    - name: escrowBalance
+      type: Numeric
+      description: Current balance in escrow account
+    - name: escrowPaidYtd
+      type: Numeric
+      description: Escrow paid year-to-date
+    - name: homeownersInsuranceDueDate
+      type: Date
+      description: When next insurance payment is due
+    - name: interestPaidYtd
+      type: Numeric
+      description: Interest paid year-to-date
+    - name: lastPaymentAmount
+      type: Numeric
+      description: Amount of last payment received
+    - name: lastPaymentDate
+      type: Date
+      description: When last payment was received
+    - name: mortgageServicesLoanId
+      type: Int4!
+      description: References the originated loan
+    - name: mortgageServicesServicingAccountId
+      type: Int4!
+      description: Unique identifier for each servicing account
+    - name: nextPaymentAmount
+      type: Numeric!
+      description: Amount due for next payment
+    - name: nextPaymentDueDate
+      type: Date!
+      description: When next payment is due
+    - name: originalPrincipalBalance
+      type: Numeric!
+      description: Original loan amount at closing
+    - name: principalPaidYtd
+      type: Numeric
+      description: Principal paid year-to-date
+    - name: propertyTaxDueDate
+      type: Date
+      description: When next property tax payment is due
+    - name: servicingTransferredDate
+      type: Date
+      description: When servicing was transferred to current servicer
+    - name: status
+      type: Varchar!
+      description: Current status of the loan being serviced
+  graphql:
+    typeName: _MortgageServices__MortgageServicesServicingAccounts
+    inputTypeName: _MortgageServices__MortgageServicesServicingAccountsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_servicing_accounts
+      fieldMapping:
+        accountNumber:
+          column:
+            name: account_number
+        currentInterestRate:
+          column:
+            name: current_interest_rate
+        currentPrincipalBalance:
+          column:
+            name: current_principal_balance
+        escrowBalance:
+          column:
+            name: escrow_balance
+        escrowPaidYtd:
+          column:
+            name: escrow_paid_ytd
+        homeownersInsuranceDueDate:
+          column:
+            name: homeowners_insurance_due_date
+        interestPaidYtd:
+          column:
+            name: interest_paid_ytd
+        lastPaymentAmount:
+          column:
+            name: last_payment_amount
+        lastPaymentDate:
+          column:
+            name: last_payment_date
+        mortgageServicesLoanId:
+          column:
+            name: mortgage_services_loan_id
+        mortgageServicesServicingAccountId:
+          column:
+            name: mortgage_services_servicing_account_id
+        nextPaymentAmount:
+          column:
+            name: next_payment_amount
+        nextPaymentDueDate:
+          column:
+            name: next_payment_due_date
+        originalPrincipalBalance:
+          column:
+            name: original_principal_balance
+        principalPaidYtd:
+          column:
+            name: principal_paid_ytd
+        propertyTaxDueDate:
+          column:
+            name: property_tax_due_date
+        servicingTransferredDate:
+          column:
+            name: servicing_transferred_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesServicingAccounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - currentInterestRate
+          - currentPrincipalBalance
+          - escrowBalance
+          - escrowPaidYtd
+          - homeownersInsuranceDueDate
+          - interestPaidYtd
+          - lastPaymentAmount
+          - lastPaymentDate
+          - mortgageServicesLoanId
+          - mortgageServicesServicingAccountId
+          - nextPaymentAmount
+          - nextPaymentDueDate
+          - originalPrincipalBalance
+          - principalPaidYtd
+          - propertyTaxDueDate
+          - servicingTransferredDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesServicingAccountsBoolExp
+  operand:
+    object:
+      type: MortgageServicesServicingAccounts
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currentInterestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: currentPrincipalBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: escrowBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: escrowPaidYtd
+          booleanExpressionType: NumericBoolExp
+        - fieldName: homeownersInsuranceDueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: interestPaidYtd
+          booleanExpressionType: NumericBoolExp
+        - fieldName: lastPaymentAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: lastPaymentDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: mortgageServicesLoanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesServicingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: nextPaymentAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: nextPaymentDueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: originalPrincipalBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: principalPaidYtd
+          booleanExpressionType: NumericBoolExp
+        - fieldName: propertyTaxDueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: servicingTransferredDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesCustomerCommunications
+        - relationshipName: mortgageServicesEscrowAnalyses
+        - relationshipName: mortgageServicesEscrowDisbursements
+        - relationshipName: mortgageServicesInsurancePolicies
+        - relationshipName: mortgageServicesLoanModifications
+        - relationshipName: mortgageServicesPayments
+        - relationshipName: mortgageServicesLoan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesServicingAccountsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesServicingAccountsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesServicingAccounts
+      aggregatableFields:
+        - fieldName: accountNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: currentInterestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: currentPrincipalBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: escrowBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: escrowPaidYtd
+          aggregateExpression: NumericAggExp
+        - fieldName: homeownersInsuranceDueDate
+          aggregateExpression: DateAggExp
+        - fieldName: interestPaidYtd
+          aggregateExpression: NumericAggExp
+        - fieldName: lastPaymentAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: lastPaymentDate
+          aggregateExpression: DateAggExp
+        - fieldName: mortgageServicesLoanId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesServicingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: nextPaymentAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: nextPaymentDueDate
+          aggregateExpression: DateAggExp
+        - fieldName: originalPrincipalBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: principalPaidYtd
+          aggregateExpression: NumericAggExp
+        - fieldName: propertyTaxDueDate
+          aggregateExpression: DateAggExp
+        - fieldName: servicingTransferredDate
+          aggregateExpression: DateAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesServicingAccountsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesServicingAccountsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesServicingAccounts
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currentInterestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: currentPrincipalBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: escrowBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: escrowPaidYtd
+          orderByExpression: NumericOrderByExp
+        - fieldName: homeownersInsuranceDueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: interestPaidYtd
+          orderByExpression: NumericOrderByExp
+        - fieldName: lastPaymentAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: lastPaymentDate
+          orderByExpression: DateOrderByExp
+        - fieldName: mortgageServicesLoanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesServicingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: nextPaymentAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: nextPaymentDueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: originalPrincipalBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: principalPaidYtd
+          orderByExpression: NumericOrderByExp
+        - fieldName: propertyTaxDueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: servicingTransferredDate
+          orderByExpression: DateOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesLoan
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesServicingAccountsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesServicingAccounts
+  objectType: MortgageServicesServicingAccounts
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_servicing_accounts
+  filterExpressionType: MortgageServicesServicingAccountsBoolExp
+  aggregateExpression: MortgageServicesServicingAccountsAggExp
+  orderByExpression: MortgageServicesServicingAccountsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesServicingAccounts
+      subscription:
+        rootField: mortgageServicesServicingAccounts
+    selectUniques:
+      - queryRootField: mortgageServicesServicingAccountsByAccountNumber
+        uniqueIdentifier:
+          - accountNumber
+        subscription:
+          rootField: mortgageServicesServicingAccountsByAccountNumber
+      - queryRootField: mortgageServicesServicingAccountsByMortgageServicesServicingAccountId
+        uniqueIdentifier:
+          - mortgageServicesServicingAccountId
+        subscription:
+          rootField: mortgageServicesServicingAccountsByMortgageServicesServicingAccountId
+    filterInputTypeName: _MortgageServices__MortgageServicesServicingAccountsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesServicingAccountsAggregate
+      subscription:
+        rootField: mortgageServicesServicingAccountsAggregate
+  description: Manages ongoing servicing of closed mortgage loans
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesServicingAccounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesCustomerCommunications
+  sourceType: MortgageServicesServicingAccounts
+  target:
+    model:
+      name: MortgageServicesCustomerCommunications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesCustomerCommunicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+  graphql:
+    aggregateFieldName: mortgageServicesCustomerCommunicationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesEscrowAnalyses
+  sourceType: MortgageServicesServicingAccounts
+  target:
+    model:
+      name: MortgageServicesEscrowAnalyses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesEscrowAnalysesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+  graphql:
+    aggregateFieldName: mortgageServicesEscrowAnalysesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesEscrowDisbursements
+  sourceType: MortgageServicesServicingAccounts
+  target:
+    model:
+      name: MortgageServicesEscrowDisbursements
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesEscrowDisbursementsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+  graphql:
+    aggregateFieldName: mortgageServicesEscrowDisbursementsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesInsurancePolicies
+  sourceType: MortgageServicesServicingAccounts
+  target:
+    model:
+      name: MortgageServicesInsurancePolicies
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesInsurancePoliciesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+  graphql:
+    aggregateFieldName: mortgageServicesInsurancePoliciesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoanModifications
+  sourceType: MortgageServicesServicingAccounts
+  target:
+    model:
+      name: MortgageServicesLoanModifications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesLoanModificationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+  graphql:
+    aggregateFieldName: mortgageServicesLoanModificationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesPayments
+  sourceType: MortgageServicesServicingAccounts
+  target:
+    model:
+      name: MortgageServicesPayments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesPaymentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+  graphql:
+    aggregateFieldName: mortgageServicesPaymentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoan
+  sourceType: MortgageServicesServicingAccounts
+  target:
+    model:
+      name: MortgageServicesLoans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+

@@ -1,0 +1,250 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingApplicantAssets
+  description: Records assets owned by loan applicants, including financial
+    accounts and property.
+  fields:
+    - name: accountNumber
+      type: ConsumerLendingVarchar
+      description: Account number, stored encrypted
+    - name: assetType
+      type: ConsumerLendingVarchar!
+      description: Checking, Savings, Investments, Property
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Reference to applicant
+    - name: consumerLendingAssetId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for asset record
+    - name: currentValue
+      type: ConsumerLendingNumeric!
+      description: Current market value of asset
+    - name: institutionName
+      type: ConsumerLendingVarchar
+      description: Financial institution holding the asset
+    - name: propertyAddressId
+      type: ConsumerLendingInt4
+      description: Reference to enterprise.addresses if asset is property
+    - name: verificationDate
+      type: ConsumerLendingDate
+      description: Date asset was verified
+    - name: verificationStatus
+      type: ConsumerLendingVarchar!
+      description: Self-reported, Verified, Failed
+  graphql:
+    typeName: ConsumerLendingApplicantAssets
+    inputTypeName: ConsumerLendingApplicantAssetsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_applicant_assets
+      fieldMapping:
+        accountNumber:
+          column:
+            name: account_number
+        assetType:
+          column:
+            name: asset_type
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        consumerLendingAssetId:
+          column:
+            name: consumer_lending_asset_id
+        currentValue:
+          column:
+            name: current_value
+        institutionName:
+          column:
+            name: institution_name
+        propertyAddressId:
+          column:
+            name: property_address_id
+        verificationDate:
+          column:
+            name: verification_date
+        verificationStatus:
+          column:
+            name: verification_status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingApplicantAssets
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - assetType
+          - consumerLendingApplicantId
+          - consumerLendingAssetId
+          - currentValue
+          - institutionName
+          - propertyAddressId
+          - verificationDate
+          - verificationStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingApplicantAssetsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingApplicantAssets
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: assetType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingAssetId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: currentValue
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: institutionName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: propertyAddressId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: verificationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicant
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingApplicantAssetsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantAssetsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingApplicantAssets
+      aggregatableFields:
+        - fieldName: accountNumber
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: assetType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingAssetId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: currentValue
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: institutionName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: propertyAddressId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: verificationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: verificationStatus
+          aggregateExpression: ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingApplicantAssetsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantAssetsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingApplicantAssets
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: assetType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingAssetId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: currentValue
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: institutionName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: propertyAddressId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: verificationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: propertyAddress
+  graphql:
+    expressionTypeName: ConsumerLendingApplicantAssetsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingApplicantAssets
+  objectType: ConsumerLendingApplicantAssets
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_applicant_assets
+  filterExpressionType: ConsumerLendingApplicantAssetsBoolExp
+  aggregateExpression: ConsumerLendingApplicantAssetsAggExp
+  orderByExpression: ConsumerLendingApplicantAssetsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingApplicantAssets
+      subscription:
+        rootField: consumerLendingApplicantAssets
+    selectUniques:
+      - queryRootField: consumerLendingApplicantAssetsByConsumerLendingAssetId
+        uniqueIdentifier:
+          - consumerLendingAssetId
+        subscription:
+          rootField: consumerLendingApplicantAssetsByConsumerLendingAssetId
+    filterInputTypeName: ConsumerLendingApplicantAssetsFilterInput
+    aggregate:
+      queryRootField: consumerLendingApplicantAssetsAggregate
+      subscription:
+        rootField: consumerLendingApplicantAssetsAggregate
+  description: Records assets owned by loan applicants, including financial
+    accounts and property.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingApplicantAssets
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicant
+  sourceType: ConsumerLendingApplicantAssets
+  target:
+    model:
+      name: ConsumerLendingApplicants
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+

@@ -1,0 +1,223 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingPublicRecords
+  description: Stores public records, such as bankruptcies, liens, and judgments,
+    associated with a credit report.
+  fields:
+    - name: amount
+      type: ConsumerLendingNumeric
+      description: Amount of judgment or lien
+    - name: consumerLendingCreditReportId
+      type: ConsumerLendingInt4!
+      description: Reference to credit report
+    - name: consumerLendingRecordId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for public record
+    - name: filingDate
+      type: ConsumerLendingDate!
+      description: Date record was filed
+    - name: recordType
+      type:  ConsumerLendingVarchar!
+      description: Bankruptcy, Lien, Judgment
+    - name: referenceNumber
+      type:  ConsumerLendingVarchar
+      description: Court or filing reference number
+    - name: status
+      type:  ConsumerLendingVarchar!
+      description: Active, Satisfied, Discharged
+  graphql:
+    typeName: ConsumerLendingPublicRecords
+    inputTypeName: ConsumerLendingPublicRecordsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_public_records
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        consumerLendingCreditReportId:
+          column:
+            name: consumer_lending_credit_report_id
+        consumerLendingRecordId:
+          column:
+            name: consumer_lending_record_id
+        filingDate:
+          column:
+            name: filing_date
+        recordType:
+          column:
+            name: record_type
+        referenceNumber:
+          column:
+            name: reference_number
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingPublicRecords
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - consumerLendingCreditReportId
+          - consumerLendingRecordId
+          - filingDate
+          - recordType
+          - referenceNumber
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingPublicRecordsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingPublicRecords
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: consumerLendingCreditReportId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingRecordId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: filingDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: recordType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: referenceNumber
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: status
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingCreditReport
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingPublicRecordsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingPublicRecordsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingPublicRecords
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: consumerLendingCreditReportId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingRecordId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: filingDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: recordType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: referenceNumber
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: status
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingPublicRecordsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingPublicRecordsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingPublicRecords
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: consumerLendingCreditReportId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingRecordId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: filingDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: recordType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: referenceNumber
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: status
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingCreditReport
+  graphql:
+    expressionTypeName: ConsumerLendingPublicRecordsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingPublicRecords
+  objectType: ConsumerLendingPublicRecords
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_public_records
+  filterExpressionType: ConsumerLendingPublicRecordsBoolExp
+  aggregateExpression: ConsumerLendingPublicRecordsAggExp
+  orderByExpression: ConsumerLendingPublicRecordsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingPublicRecords
+      subscription:
+        rootField: consumerLendingPublicRecords
+    selectUniques:
+      - queryRootField: consumerLendingPublicRecordsByConsumerLendingRecordId
+        uniqueIdentifier:
+          - consumerLendingRecordId
+        subscription:
+          rootField: consumerLendingPublicRecordsByConsumerLendingRecordId
+    filterInputTypeName: ConsumerLendingPublicRecordsFilterInput
+    aggregate:
+      queryRootField: consumerLendingPublicRecordsAggregate
+      subscription:
+        rootField: consumerLendingPublicRecordsAggregate
+  description: Stores public records, such as bankruptcies, liens, and judgments,
+    associated with a credit report.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingPublicRecords
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingCreditReport
+  sourceType: ConsumerLendingPublicRecords
+  target:
+    model:
+      name: ConsumerLendingCreditReports
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCreditReportId
+      target:
+        modelField:
+          - fieldName: consumerLendingCreditReportId
+

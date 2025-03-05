@@ -1,0 +1,359 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingLoanCollateral
+  description: Stores information about collateral used to secure loans, including
+    type, value, and insurance requirements.
+  fields:
+    - name: collateralType
+      type: ConsumerLendingVarchar!
+      description: Vehicle, Property, Deposit Account
+    - name: consumerLendingCollateralId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for collateral
+    - name: depositAccountId
+      type: ConsumerLendingInt4
+      description: Reference to enterprise.accounts if deposit
+    - name: description
+      type: ConsumerLendingVarchar!
+      description: Description of collateral
+    - name: insuranceExpirationDate
+      type: ConsumerLendingDate
+      description: Expiration date of insurance policy
+    - name: insuranceRequired
+      type: ConsumerLendingBool!
+      description: Whether insurance is required
+    - name: lienPosition
+      type: ConsumerLendingInt4
+      description: Priority of lien
+    - name: lienRecordingDate
+      type: ConsumerLendingDate
+      description: Date lien was recorded
+    - name: lienRecordingNumber
+      type: ConsumerLendingVarchar
+      description: Lien recording reference number
+    - name: loanAccountId
+      type: ConsumerLendingInt4!
+      description: Reference to loan account
+    - name: propertyAddressId
+      type: ConsumerLendingInt4
+      description: Reference to enterprise.addresses if property
+    - name: valuationDate
+      type: ConsumerLendingDate!
+      description: Date of valuation
+    - name: value
+      type: ConsumerLendingNumeric!
+      description: Estimated value of collateral
+    - name: vehicleId
+      type: ConsumerLendingInt4
+      description: Reference to vehicles table if applicable
+  graphql:
+    typeName: ConsumerLendingLoanCollateral
+    inputTypeName: ConsumerLendingLoanCollateralInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_collateral
+      fieldMapping:
+        collateralType:
+          column:
+            name: collateral_type
+        consumerLendingCollateralId:
+          column:
+            name: consumer_lending_collateral_id
+        depositAccountId:
+          column:
+            name: deposit_account_id
+        description:
+          column:
+            name: description
+        insuranceExpirationDate:
+          column:
+            name: insurance_expiration_date
+        insuranceRequired:
+          column:
+            name: insurance_required
+        lienPosition:
+          column:
+            name: lien_position
+        lienRecordingDate:
+          column:
+            name: lien_recording_date
+        lienRecordingNumber:
+          column:
+            name: lien_recording_number
+        loanAccountId:
+          column:
+            name: loan_account_id
+        propertyAddressId:
+          column:
+            name: property_address_id
+        valuationDate:
+          column:
+            name: valuation_date
+        value:
+          column:
+            name: value
+        vehicleId:
+          column:
+            name: vehicle_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingLoanCollateral
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - collateralType
+          - consumerLendingCollateralId
+          - depositAccountId
+          - description
+          - insuranceExpirationDate
+          - insuranceRequired
+          - lienPosition
+          - lienRecordingDate
+          - lienRecordingNumber
+          - loanAccountId
+          - propertyAddressId
+          - valuationDate
+          - value
+          - vehicleId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingLoanCollateralBoolExp
+  operand:
+    object:
+      type: ConsumerLendingLoanCollateral
+      comparableFields:
+        - fieldName: collateralType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingCollateralId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: depositAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: description
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: insuranceExpirationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: insuranceRequired
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: lienPosition
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: lienRecordingDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: lienRecordingNumber
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: loanAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: propertyAddressId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: valuationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: value
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: vehicleId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+        - relationshipName: consumerLendingVehicle
+        - relationshipName: consumerLendingLoanInsurances
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingLoanCollateralBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanCollateralAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingLoanCollateral
+      aggregatableFields:
+        - fieldName: collateralType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingCollateralId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: depositAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: description
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: insuranceExpirationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: insuranceRequired
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: lienPosition
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: lienRecordingDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: lienRecordingNumber
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: loanAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: propertyAddressId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: valuationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: value
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: vehicleId
+          aggregateExpression: ConsumerLendingInt4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingLoanCollateralAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanCollateralOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingLoanCollateral
+      orderableFields:
+        - fieldName: collateralType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingCollateralId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: depositAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: description
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: insuranceExpirationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: insuranceRequired
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: lienPosition
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: lienRecordingDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: lienRecordingNumber
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: loanAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: propertyAddressId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: valuationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: value
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: vehicleId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+        - relationshipName: consumerLendingVehicle
+        - relationshipName: propertyAddress
+        - relationshipName: depositAccount
+  graphql:
+    expressionTypeName: ConsumerLendingLoanCollateralOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingLoanCollateral
+  objectType: ConsumerLendingLoanCollateral
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_collateral
+  filterExpressionType: ConsumerLendingLoanCollateralBoolExp
+  aggregateExpression: ConsumerLendingLoanCollateralAggExp
+  orderByExpression: ConsumerLendingLoanCollateralOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingLoanCollateral
+      subscription:
+        rootField: consumerLendingLoanCollateral
+    selectUniques:
+      - queryRootField: consumerLendingLoanCollateralByConsumerLendingCollateralId
+        uniqueIdentifier:
+          - consumerLendingCollateralId
+        subscription:
+          rootField: consumerLendingLoanCollateralByConsumerLendingCollateralId
+    filterInputTypeName: ConsumerLendingLoanCollateralFilterInput
+    aggregate:
+      queryRootField: consumerLendingLoanCollateralAggregate
+      subscription:
+        rootField: consumerLendingLoanCollateralAggregate
+  description: Stores information about collateral used to secure loans, including
+    type, value, and insurance requirements.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingLoanCollateral
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccount
+  sourceType: ConsumerLendingLoanCollateral
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: loanAccountId
+      target:
+        modelField:
+          - fieldName: loanAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingVehicle
+  sourceType: ConsumerLendingLoanCollateral
+  target:
+    model:
+      name: ConsumerLendingVehicles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: vehicleId
+      target:
+        modelField:
+          - fieldName: vehicleId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanInsurances
+  sourceType: ConsumerLendingLoanCollateral
+  target:
+    model:
+      name: ConsumerLendingLoanInsurance
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingLoanInsuranceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingCollateralId
+      target:
+        modelField:
+          - fieldName: consumerLendingCollateralId
+  graphql:
+    aggregateFieldName: consumerLendingLoanInsurancesAggregate
+

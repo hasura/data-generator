@@ -1,0 +1,313 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceCases
+  description: Tracks compliance cases related to small business accounts
+  fields:
+    - name: assignedTo
+      type: Int4
+      description: Person or team assigned to the case
+    - name: caseType
+      type: Varchar!
+      description: Type of compliance case (AML, KYC, fraud, fair lending, etc.)
+    - name: closedDate
+      type: Date
+      description: Date the case was closed
+    - name: description
+      type: Text!
+      description: Description of the compliance case
+    - name: escalated
+      type: Bool!
+      description: Whether the case was escalated
+    - name: escalationDate
+      type: Date
+      description: Date of escalation if applicable
+    - name: escalationReason
+      type: Text
+      description: Reason for escalation
+    - name: openedDate
+      type: Date!
+      description: Date the case was opened
+    - name: priority
+      type: Varchar!
+      description: Priority level (high, medium, low)
+    - name: resolution
+      type: Text
+      description: Description of the resolution
+    - name: smallBusinessBankingBusinessId
+      type: Int4!
+      description: Reference to the business
+    - name: smallBusinessBankingCaseId
+      type: Int4!
+      description: Unique identifier for each compliance case
+    - name: source
+      type: Varchar!
+      description: Source that initiated the case (system alert, manual review, exam)
+    - name: status
+      type: Varchar!
+      description: Status of the case (open, in review, closed)
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingComplianceCases
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceCasesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_compliance_cases
+      fieldMapping:
+        assignedTo:
+          column:
+            name: assigned_to
+        caseType:
+          column:
+            name: case_type
+        closedDate:
+          column:
+            name: closed_date
+        description:
+          column:
+            name: description
+        escalated:
+          column:
+            name: escalated
+        escalationDate:
+          column:
+            name: escalation_date
+        escalationReason:
+          column:
+            name: escalation_reason
+        openedDate:
+          column:
+            name: opened_date
+        priority:
+          column:
+            name: priority
+        resolution:
+          column:
+            name: resolution
+        smallBusinessBankingBusinessId:
+          column:
+            name: small_business_banking_business_id
+        smallBusinessBankingCaseId:
+          column:
+            name: small_business_banking_case_id
+        source:
+          column:
+            name: source
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingComplianceCases
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - assignedTo
+          - caseType
+          - closedDate
+          - description
+          - escalated
+          - escalationDate
+          - escalationReason
+          - openedDate
+          - priority
+          - resolution
+          - smallBusinessBankingBusinessId
+          - smallBusinessBankingCaseId
+          - source
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceCasesBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingComplianceCases
+      comparableFields:
+        - fieldName: assignedTo
+          booleanExpressionType: Int4BoolExp
+        - fieldName: caseType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: closedDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: escalated
+          booleanExpressionType: BoolBoolExp
+        - fieldName: escalationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: escalationReason
+          booleanExpressionType: TextBoolExp
+        - fieldName: openedDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: priority
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: resolution
+          booleanExpressionType: TextBoolExp
+        - fieldName: smallBusinessBankingBusinessId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingCaseId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: source
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingComplianceCasesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceCasesAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingComplianceCases
+      aggregatableFields:
+        - fieldName: assignedTo
+          aggregateExpression: Int4AggExp
+        - fieldName: caseType
+          aggregateExpression: VarcharAggExp
+        - fieldName: closedDate
+          aggregateExpression: DateAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: escalated
+          aggregateExpression: BoolAggExp
+        - fieldName: escalationDate
+          aggregateExpression: DateAggExp
+        - fieldName: escalationReason
+          aggregateExpression: TextAggExp
+        - fieldName: openedDate
+          aggregateExpression: DateAggExp
+        - fieldName: priority
+          aggregateExpression: VarcharAggExp
+        - fieldName: resolution
+          aggregateExpression: TextAggExp
+        - fieldName: smallBusinessBankingBusinessId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingCaseId
+          aggregateExpression: Int4AggExp
+        - fieldName: source
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceCasesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingComplianceCasesOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingComplianceCases
+      orderableFields:
+        - fieldName: assignedTo
+          orderByExpression: Int4OrderByExp
+        - fieldName: caseType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: closedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: escalated
+          orderByExpression: BoolOrderByExp
+        - fieldName: escalationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: escalationReason
+          orderByExpression: TextOrderByExp
+        - fieldName: openedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: priority
+          orderByExpression: VarcharOrderByExp
+        - fieldName: resolution
+          orderByExpression: TextOrderByExp
+        - fieldName: smallBusinessBankingBusinessId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingCaseId
+          orderByExpression: Int4OrderByExp
+        - fieldName: source
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: caseAssignedTo
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceCasesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingComplianceCases
+  objectType: SmallBusinessBankingComplianceCases
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_compliance_cases
+  filterExpressionType: SmallBusinessBankingComplianceCasesBoolExp
+  aggregateExpression: SmallBusinessBankingComplianceCasesAggExp
+  orderByExpression: SmallBusinessBankingComplianceCasesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingComplianceCases
+      subscription:
+        rootField: smallBusinessBankingComplianceCases
+    selectUniques:
+      - queryRootField: smallBusinessBankingComplianceCasesBySmallBusinessBankingCaseId
+        uniqueIdentifier:
+          - smallBusinessBankingCaseId
+        subscription:
+          rootField: smallBusinessBankingComplianceCasesBySmallBusinessBankingCaseId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingComplianceCasesFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingComplianceCasesAggregate
+      subscription:
+        rootField: smallBusinessBankingComplianceCasesAggregate
+  description: Tracks compliance cases related to small business accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingComplianceCases
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusiness
+  sourceType: SmallBusinessBankingComplianceCases
+  target:
+    model:
+      name: SmallBusinessBankingBusinesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingBusinessId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingBusinessId
+

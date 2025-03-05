@@ -1,0 +1,11 @@
+consumer_banking__products__product_type = [
+    "CHECKING",
+    "SAVINGS",
+    "MONEY_MARKET_ACCOUNT",
+    "INDIVIDUAL_RETIREMENT_ACCOUNT",
+    "HEALTH_SAVINGS_ACCOUNT",
+    "CERTIFICATE_OF_DEPOSIT",
+    "DEBIT_CARD",
+    "PREPAID_CARD",
+    "TRUST_SERVICE"
+]

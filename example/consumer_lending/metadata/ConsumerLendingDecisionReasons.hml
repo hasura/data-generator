@@ -1,0 +1,197 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingDecisionReasons
+  description: Provides specific reasons for the decisions made on loan
+    applications, linked to the application_decisions table.
+  fields:
+    - name: consumerLendingDecisionId
+      type: ConsumerLendingInt4!
+      description: Reference to application decision
+    - name: consumerLendingDecisionReasonId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for decision reason
+    - name: reasonCode
+      type:  ConsumerLendingVarchar!
+      description: Standard reason code
+    - name: reasonDescription
+      type:  ConsumerLendingVarchar!
+      description: Description of reason
+    - name: sequence
+      type: ConsumerLendingInt4!
+      description: Order of importance for reason
+  graphql:
+    typeName: ConsumerLendingDecisionReasons
+    inputTypeName: ConsumerLendingDecisionReasonsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_decision_reasons
+      fieldMapping:
+        consumerLendingDecisionId:
+          column:
+            name: consumer_lending_decision_id
+        consumerLendingDecisionReasonId:
+          column:
+            name: consumer_lending_decision_reason_id
+        reasonCode:
+          column:
+            name: reason_code
+        reasonDescription:
+          column:
+            name: reason_description
+        sequence:
+          column:
+            name: sequence
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingDecisionReasons
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingDecisionId
+          - consumerLendingDecisionReasonId
+          - reasonCode
+          - reasonDescription
+          - sequence
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingDecisionReasonsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingDecisionReasons
+      comparableFields:
+        - fieldName: consumerLendingDecisionId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingDecisionReasonId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: reasonCode
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: reasonDescription
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: sequence
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicationDecision
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingDecisionReasonsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingDecisionReasonsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingDecisionReasons
+      aggregatableFields:
+        - fieldName: consumerLendingDecisionId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingDecisionReasonId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: reasonCode
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: reasonDescription
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: sequence
+          aggregateExpression: ConsumerLendingInt4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingDecisionReasonsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingDecisionReasonsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingDecisionReasons
+      orderableFields:
+        - fieldName: consumerLendingDecisionId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingDecisionReasonId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: reasonCode
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: reasonDescription
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: sequence
+          orderByExpression: ConsumerLendingInt4OrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicationDecision
+  graphql:
+    expressionTypeName: ConsumerLendingDecisionReasonsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingDecisionReasons
+  objectType: ConsumerLendingDecisionReasons
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_decision_reasons
+  filterExpressionType: ConsumerLendingDecisionReasonsBoolExp
+  aggregateExpression: ConsumerLendingDecisionReasonsAggExp
+  orderByExpression: ConsumerLendingDecisionReasonsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingDecisionReasons
+      subscription:
+        rootField: consumerLendingDecisionReasons
+    selectUniques:
+      - queryRootField: consumerLendingDecisionReasonsByConsumerLendingDecisionReasonId
+        uniqueIdentifier:
+          - consumerLendingDecisionReasonId
+        subscription:
+          rootField: consumerLendingDecisionReasonsByConsumerLendingDecisionReasonId
+    filterInputTypeName: ConsumerLendingDecisionReasonsFilterInput
+    aggregate:
+      queryRootField: consumerLendingDecisionReasonsAggregate
+      subscription:
+        rootField: consumerLendingDecisionReasonsAggregate
+  description: Provides specific reasons for the decisions made on loan
+    applications, linked to the application_decisions table.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingDecisionReasons
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicationDecision
+  sourceType: ConsumerLendingDecisionReasons
+  target:
+    model:
+      name: ConsumerLendingApplicationDecisions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingDecisionId
+      target:
+        modelField:
+          - fieldName: consumerLendingDecisionId
+

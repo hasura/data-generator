@@ -1,0 +1,309 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingMilitaryLendingChecks
+  description: Tracks compliance with the Military Lending Act (MLA), including
+    verification of military status and MAPR calculations.
+  fields:
+    - name: certificateDate
+      type: ConsumerLendingDate
+      description: Date on covered borrower certificate
+    - name: checkDate
+      type: Timestamp!
+      description: Date MLA status was checked
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Reference to applicant
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4!
+      description: Reference to loan application
+    - name: consumerLendingCheckId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for MLA check
+    - name: coveredBorrower
+      type: ConsumerLendingBool!
+      description: Whether applicant is a covered borrower
+    - name: documentPath
+      type: ConsumerLendingVarchar
+      description: Path to stored verification document
+    - name: maprCalculated
+      type: ConsumerLendingNumeric
+      description: Military Annual Percentage Rate if calculated
+    - name: maprDisclosureProvided
+      type: ConsumerLendingBool
+      description: Whether MAPR disclosure was provided
+    - name: militaryStatus
+      type: ConsumerLendingVarchar
+      description: Active Duty, Dependent, Not Military
+    - name: userId
+      type: ConsumerLendingInt4
+      description: User who performed check
+    - name: verificationMethod
+      type: ConsumerLendingVarchar!
+      description: MLA Database, Credit Report Flag
+  graphql:
+    typeName: ConsumerLendingMilitaryLendingChecks
+    inputTypeName: ConsumerLendingMilitaryLendingChecksInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_military_lending_checks
+      fieldMapping:
+        certificateDate:
+          column:
+            name: certificate_date
+        checkDate:
+          column:
+            name: check_date
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        consumerLendingCheckId:
+          column:
+            name: consumer_lending_check_id
+        coveredBorrower:
+          column:
+            name: covered_borrower
+        documentPath:
+          column:
+            name: document_path
+        maprCalculated:
+          column:
+            name: mapr_calculated
+        maprDisclosureProvided:
+          column:
+            name: mapr_disclosure_provided
+        militaryStatus:
+          column:
+            name: military_status
+        userId:
+          column:
+            name: user_id
+        verificationMethod:
+          column:
+            name: verification_method
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingMilitaryLendingChecks
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - certificateDate
+          - checkDate
+          - consumerLendingApplicantId
+          - consumerLendingApplicationId
+          - consumerLendingCheckId
+          - coveredBorrower
+          - documentPath
+          - maprCalculated
+          - maprDisclosureProvided
+          - militaryStatus
+          - userId
+          - verificationMethod
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingMilitaryLendingChecksBoolExp
+  operand:
+    object:
+      type: ConsumerLendingMilitaryLendingChecks
+      comparableFields:
+        - fieldName: certificateDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: checkDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingCheckId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: coveredBorrower
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: documentPath
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: maprCalculated
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: maprDisclosureProvided
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: militaryStatus
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: userId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: verificationMethod
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingMilitaryLendingChecksBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingMilitaryLendingChecksAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingMilitaryLendingChecks
+      aggregatableFields:
+        - fieldName: certificateDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: checkDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingCheckId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: coveredBorrower
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: documentPath
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: maprCalculated
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: maprDisclosureProvided
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: militaryStatus
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: userId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: verificationMethod
+          aggregateExpression: ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingMilitaryLendingChecksAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingMilitaryLendingChecksOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingMilitaryLendingChecks
+      orderableFields:
+        - fieldName: certificateDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: checkDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingCheckId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: coveredBorrower
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: documentPath
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: maprCalculated
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: maprDisclosureProvided
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: militaryStatus
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: userId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: verificationMethod
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicant
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: checkBy
+  graphql:
+    expressionTypeName: ConsumerLendingMilitaryLendingChecksOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingMilitaryLendingChecks
+  objectType: ConsumerLendingMilitaryLendingChecks
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_military_lending_checks
+  filterExpressionType: ConsumerLendingMilitaryLendingChecksBoolExp
+  aggregateExpression: ConsumerLendingMilitaryLendingChecksAggExp
+  orderByExpression: ConsumerLendingMilitaryLendingChecksOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingMilitaryLendingChecks
+      subscription:
+        rootField: consumerLendingMilitaryLendingChecks
+    selectUniques:
+      - queryRootField: consumerLendingMilitaryLendingChecksByConsumerLendingCheckId
+        uniqueIdentifier:
+          - consumerLendingCheckId
+        subscription:
+          rootField: consumerLendingMilitaryLendingChecksByConsumerLendingCheckId
+    filterInputTypeName: ConsumerLendingMilitaryLendingChecksFilterInput
+    aggregate:
+      queryRootField: consumerLendingMilitaryLendingChecksAggregate
+      subscription:
+        rootField: consumerLendingMilitaryLendingChecksAggregate
+  description: Tracks compliance with the Military Lending Act (MLA), including
+    verification of military status and MAPR calculations.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingMilitaryLendingChecks
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicant
+  sourceType: ConsumerLendingMilitaryLendingChecks
+  target:
+    model:
+      name: ConsumerLendingApplicants
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingMilitaryLendingChecks
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+

@@ -1,0 +1,255 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsCreditLimitChanges
+  description: Tracks history of credit limit changes
+  fields:
+    - name: approvedBy
+      type: Int4
+      description: User who approved change
+    - name: changeDate
+      type: Date!
+      description: Date of credit limit change
+    - name: changeReason
+      type: Varchar!
+      description: Reason for limit change
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsChangeId
+      type: Int4!
+      description: Auto-incrementing identifier for each limit change
+    - name: newLimit
+      type: Numeric!
+      description: Credit limit after change
+    - name: previousLimit
+      type: Numeric!
+      description: Credit limit before change
+    - name: requestedBy
+      type: Varchar!
+      description: Who requested change (Customer, Bank)
+  graphql:
+    typeName: _CreditCards__CreditCardsCreditLimitChanges
+    inputTypeName: _CreditCards__CreditCardsCreditLimitChangesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_credit_limit_changes
+      fieldMapping:
+        approvedBy:
+          column:
+            name: approved_by
+        changeDate:
+          column:
+            name: change_date
+        changeReason:
+          column:
+            name: change_reason
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsChangeId:
+          column:
+            name: credit_cards_change_id
+        newLimit:
+          column:
+            name: new_limit
+        previousLimit:
+          column:
+            name: previous_limit
+        requestedBy:
+          column:
+            name: requested_by
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsCreditLimitChanges
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approvedBy
+          - changeDate
+          - changeReason
+          - creditCardsCardAccountId
+          - creditCardsChangeId
+          - newLimit
+          - previousLimit
+          - requestedBy
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsCreditLimitChangesBoolExp
+  operand:
+    object:
+      type: CreditCardsCreditLimitChanges
+      comparableFields:
+        - fieldName: approvedBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: changeDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: changeReason
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsChangeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: newLimit
+          booleanExpressionType: NumericBoolExp
+        - fieldName: previousLimit
+          booleanExpressionType: NumericBoolExp
+        - fieldName: requestedBy
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsCreditLimitChangesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsCreditLimitChangesAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsCreditLimitChanges
+      aggregatableFields:
+        - fieldName: approvedBy
+          aggregateExpression: Int4AggExp
+        - fieldName: changeDate
+          aggregateExpression: DateAggExp
+        - fieldName: changeReason
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsChangeId
+          aggregateExpression: Int4AggExp
+        - fieldName: newLimit
+          aggregateExpression: NumericAggExp
+        - fieldName: previousLimit
+          aggregateExpression: NumericAggExp
+        - fieldName: requestedBy
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsCreditLimitChangesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsCreditLimitChangesOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsCreditLimitChanges
+      orderableFields:
+        - fieldName: approvedBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: changeDate
+          orderByExpression: DateOrderByExp
+        - fieldName: changeReason
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsChangeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: newLimit
+          orderByExpression: NumericOrderByExp
+        - fieldName: previousLimit
+          orderByExpression: NumericOrderByExp
+        - fieldName: requestedBy
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: limitChangeApprovedBy
+        - relationshipName: approved
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsCreditLimitChangesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsCreditLimitChanges
+  objectType: CreditCardsCreditLimitChanges
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_credit_limit_changes
+  filterExpressionType: CreditCardsCreditLimitChangesBoolExp
+  aggregateExpression: CreditCardsCreditLimitChangesAggExp
+  orderByExpression: CreditCardsCreditLimitChangesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsCreditLimitChanges
+      subscription:
+        rootField: creditCardsCreditLimitChanges
+    selectUniques:
+      - queryRootField: creditCardsCreditLimitChangesByCreditCardsChangeId
+        uniqueIdentifier:
+          - creditCardsChangeId
+        subscription:
+          rootField: creditCardsCreditLimitChangesByCreditCardsChangeId
+    filterInputTypeName: _CreditCards__CreditCardsCreditLimitChangesFilterInput
+    aggregate:
+      queryRootField: creditCardsCreditLimitChangesAggregate
+      subscription:
+        rootField: creditCardsCreditLimitChangesAggregate
+  description: Tracks history of credit limit changes
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsCreditLimitChanges
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsCreditLimitChanges
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: approved
+  sourceType: CreditCardsCreditLimitChanges
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: approvedBy
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
+

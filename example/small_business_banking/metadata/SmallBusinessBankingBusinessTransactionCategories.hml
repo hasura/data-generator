@@ -1,0 +1,255 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingBusinessTransactionCategories
+  description: Maps credit card transactions to business expense categories
+  fields:
+    - name: createdBy
+      type: Int4
+      description: User who created this categorization
+    - name: notes
+      type: Text
+      description: Additional notes about this transaction categorization
+    - name: receiptImagePath
+      type: Varchar
+      description: Path to stored receipt image
+    - name: smallBusinessBankingBusinessId
+      type: Int4!
+      description: Reference to the business
+    - name: smallBusinessBankingCategoryId
+      type: Int4!
+      description: Reference to the business expense category
+    - name: smallBusinessBankingTransactionCategoryId
+      type: Int4!
+      description: Unique identifier for each transaction categorization
+    - name: taxRelevant
+      type: Bool!
+      description: Flag indicating transaction is relevant for tax purposes
+    - name: transactionId
+      type: Int4!
+      description: Reference to the transaction in credit_cards schema
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingBusinessTransactionCategories
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingBusinessTransactionCategoriesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_business_transaction_categories
+      fieldMapping:
+        createdBy:
+          column:
+            name: created_by
+        notes:
+          column:
+            name: notes
+        receiptImagePath:
+          column:
+            name: receipt_image_path
+        smallBusinessBankingBusinessId:
+          column:
+            name: small_business_banking_business_id
+        smallBusinessBankingCategoryId:
+          column:
+            name: small_business_banking_category_id
+        smallBusinessBankingTransactionCategoryId:
+          column:
+            name: small_business_banking_transaction_category_id
+        taxRelevant:
+          column:
+            name: tax_relevant
+        transactionId:
+          column:
+            name: transaction_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingBusinessTransactionCategories
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdBy
+          - notes
+          - receiptImagePath
+          - smallBusinessBankingBusinessId
+          - smallBusinessBankingCategoryId
+          - smallBusinessBankingTransactionCategoryId
+          - taxRelevant
+          - transactionId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingBusinessTransactionCategoriesBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingBusinessTransactionCategories
+      comparableFields:
+        - fieldName: createdBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: receiptImagePath
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: smallBusinessBankingBusinessId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingCategoryId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingTransactionCategoryId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: taxRelevant
+          booleanExpressionType: BoolBoolExp
+        - fieldName: transactionId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: smallBusinessBankingBusinessExpenseCategory
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingBusinessTransactionCategoriesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingBusinessTransactionCategoriesAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingBusinessTransactionCategories
+      aggregatableFields:
+        - fieldName: createdBy
+          aggregateExpression: Int4AggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: receiptImagePath
+          aggregateExpression: VarcharAggExp
+        - fieldName: smallBusinessBankingBusinessId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingCategoryId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingTransactionCategoryId
+          aggregateExpression: Int4AggExp
+        - fieldName: taxRelevant
+          aggregateExpression: BoolAggExp
+        - fieldName: transactionId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingBusinessTransactionCategoriesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingBusinessTransactionCategoriesOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingBusinessTransactionCategories
+      orderableFields:
+        - fieldName: createdBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: notes
+          orderByExpression: TextOrderByExp
+        - fieldName: receiptImagePath
+          orderByExpression: VarcharOrderByExp
+        - fieldName: smallBusinessBankingBusinessId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingCategoryId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingTransactionCategoryId
+          orderByExpression: Int4OrderByExp
+        - fieldName: taxRelevant
+          orderByExpression: BoolOrderByExp
+        - fieldName: transactionId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: smallBusinessBankingBusinessExpenseCategory
+        - relationshipName: transaction
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingBusinessTransactionCategoriesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingBusinessTransactionCategories
+  objectType: SmallBusinessBankingBusinessTransactionCategories
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_business_transaction_categories
+  filterExpressionType: SmallBusinessBankingBusinessTransactionCategoriesBoolExp
+  aggregateExpression: SmallBusinessBankingBusinessTransactionCategoriesAggExp
+  orderByExpression: SmallBusinessBankingBusinessTransactionCategoriesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingBusinessTransactionCategories
+      subscription:
+        rootField: smallBusinessBankingBusinessTransactionCategories
+    selectUniques:
+      - queryRootField: smallBusinessBankingBusinessTransactionCategoriesBySmallBusinessBankingTransactionCategoryId
+        uniqueIdentifier:
+          - smallBusinessBankingTransactionCategoryId
+        subscription:
+          rootField: smallBusinessBankingBusinessTransactionCategoriesBySmallBusinessBankingTransactionCategoryId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingBusinessTransactionCategoriesFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingBusinessTransactionCategoriesAggregate
+      subscription:
+        rootField: smallBusinessBankingBusinessTransactionCategoriesAggregate
+  description: Maps credit card transactions to business expense categories
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingBusinessTransactionCategories
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusiness
+  sourceType: SmallBusinessBankingBusinessTransactionCategories
+  target:
+    model:
+      name: SmallBusinessBankingBusinesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingBusinessId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingBusinessId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusinessExpenseCategory
+  sourceType: SmallBusinessBankingBusinessTransactionCategories
+  target:
+    model:
+      name: SmallBusinessBankingBusinessExpenseCategories
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingCategoryId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingCategoryId
+

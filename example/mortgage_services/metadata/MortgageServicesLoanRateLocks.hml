@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesLoanRateLocks
+  description: Tracks interest rate locks for mortgage loans
+  fields:
+    - name: expirationDate
+      type: Timestamp!
+      description: When the rate lock expires
+    - name: extensionDate
+      type: Timestamp
+      description: Date the lock was extended, if applicable
+    - name: extensionFee
+      type: Numeric
+      description: Fee charged for extending the lock, if any
+    - name: lockDate
+      type: Timestamp!
+      description: When the interest rate was locked
+    - name: lockFee
+      type: Numeric
+      description: Fee charged for the rate lock, if any
+    - name: lockPeriodDays
+      type: Int4!
+      description: Duration of the lock in days
+    - name: lockedInterestRate
+      type: Numeric!
+      description: The interest rate secured by this lock
+    - name: mortgageServicesLoanId
+      type: Int4!
+      description: References the loan this rate lock applies to
+    - name: mortgageServicesRateLockId
+      type: Int4!
+      description: Auto-incrementing identifier for each rate lock
+    - name: status
+      type: Varchar!
+      description: Current status of the rate lock
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoanRateLocks
+    inputTypeName: _MortgageServices__MortgageServicesLoanRateLocksInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_loan_rate_locks
+      fieldMapping:
+        expirationDate:
+          column:
+            name: expiration_date
+        extensionDate:
+          column:
+            name: extension_date
+        extensionFee:
+          column:
+            name: extension_fee
+        lockDate:
+          column:
+            name: lock_date
+        lockFee:
+          column:
+            name: lock_fee
+        lockPeriodDays:
+          column:
+            name: lock_period_days
+        lockedInterestRate:
+          column:
+            name: locked_interest_rate
+        mortgageServicesLoanId:
+          column:
+            name: mortgage_services_loan_id
+        mortgageServicesRateLockId:
+          column:
+            name: mortgage_services_rate_lock_id
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesLoanRateLocks
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - expirationDate
+          - extensionDate
+          - extensionFee
+          - lockDate
+          - lockFee
+          - lockPeriodDays
+          - lockedInterestRate
+          - mortgageServicesLoanId
+          - mortgageServicesRateLockId
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesLoanRateLocksBoolExp
+  operand:
+    object:
+      type: MortgageServicesLoanRateLocks
+      comparableFields:
+        - fieldName: expirationDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: extensionDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: extensionFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: lockDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: lockFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: lockPeriodDays
+          booleanExpressionType: Int4BoolExp
+        - fieldName: lockedInterestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: mortgageServicesLoanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesRateLockId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesLoan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesLoanRateLocksBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesLoanRateLocksAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesLoanRateLocks
+      aggregatableFields:
+        - fieldName: expirationDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: extensionDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: extensionFee
+          aggregateExpression: NumericAggExp
+        - fieldName: lockDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: lockFee
+          aggregateExpression: NumericAggExp
+        - fieldName: lockPeriodDays
+          aggregateExpression: Int4AggExp
+        - fieldName: lockedInterestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: mortgageServicesLoanId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesRateLockId
+          aggregateExpression: Int4AggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesLoanRateLocksAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesLoanRateLocksOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesLoanRateLocks
+      orderableFields:
+        - fieldName: expirationDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: extensionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: extensionFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: lockDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: lockFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: lockPeriodDays
+          orderByExpression: Int4OrderByExp
+        - fieldName: lockedInterestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: mortgageServicesLoanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesRateLockId
+          orderByExpression: Int4OrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesLoan
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesLoanRateLocksOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesLoanRateLocks
+  objectType: MortgageServicesLoanRateLocks
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_loan_rate_locks
+  filterExpressionType: MortgageServicesLoanRateLocksBoolExp
+  aggregateExpression: MortgageServicesLoanRateLocksAggExp
+  orderByExpression: MortgageServicesLoanRateLocksOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesLoanRateLocks
+      subscription:
+        rootField: mortgageServicesLoanRateLocks
+    selectUniques:
+      - queryRootField: mortgageServicesLoanRateLocksByMortgageServicesRateLockId
+        uniqueIdentifier:
+          - mortgageServicesRateLockId
+        subscription:
+          rootField: mortgageServicesLoanRateLocksByMortgageServicesRateLockId
+    filterInputTypeName: _MortgageServices__MortgageServicesLoanRateLocksFilterInput
+    aggregate:
+      queryRootField: mortgageServicesLoanRateLocksAggregate
+      subscription:
+        rootField: mortgageServicesLoanRateLocksAggregate
+  description: Tracks interest rate locks for mortgage loans
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesLoanRateLocks
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoan
+  sourceType: MortgageServicesLoanRateLocks
+  target:
+    model:
+      name: MortgageServicesLoans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+

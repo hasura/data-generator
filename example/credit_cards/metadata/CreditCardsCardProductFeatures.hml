@@ -1,0 +1,234 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsCardProductFeatures
+  description: Stores features and benefits associated with card products
+  fields:
+    - name: creditCardsFeatureId
+      type: Int4!
+      description: Auto-incrementing identifier for each feature
+    - name: creditCardsProductId
+      type: Int4!
+      description: Reference to card_products
+    - name: endDate
+      type: Date
+      description: When feature expires if limited time
+    - name: featureDescription
+      type: Text!
+      description: Detailed description of the feature
+    - name: featureName
+      type: Varchar!
+      description: Name of the feature
+    - name: isLimitedTime
+      type: Bool!
+      description: Whether feature is limited-time offer
+    - name: isPremium
+      type: Bool!
+      description: Whether this is a premium feature
+    - name: startDate
+      type: Date
+      description: When feature becomes available
+  graphql:
+    typeName: _CreditCards__CreditCardsCardProductFeatures
+    inputTypeName: _CreditCards__CreditCardsCardProductFeaturesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_card_product_features
+      fieldMapping:
+        creditCardsFeatureId:
+          column:
+            name: credit_cards_feature_id
+        creditCardsProductId:
+          column:
+            name: credit_cards_product_id
+        endDate:
+          column:
+            name: end_date
+        featureDescription:
+          column:
+            name: feature_description
+        featureName:
+          column:
+            name: feature_name
+        isLimitedTime:
+          column:
+            name: is_limited_time
+        isPremium:
+          column:
+            name: is_premium
+        startDate:
+          column:
+            name: start_date
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsCardProductFeatures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - creditCardsFeatureId
+          - creditCardsProductId
+          - endDate
+          - featureDescription
+          - featureName
+          - isLimitedTime
+          - isPremium
+          - startDate
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsCardProductFeaturesBoolExp
+  operand:
+    object:
+      type: CreditCardsCardProductFeatures
+      comparableFields:
+        - fieldName: creditCardsFeatureId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsProductId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: featureDescription
+          booleanExpressionType: TextBoolExp
+        - fieldName: featureName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: isLimitedTime
+          booleanExpressionType: BoolBoolExp
+        - fieldName: isPremium
+          booleanExpressionType: BoolBoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardProduct
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsCardProductFeaturesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsCardProductFeaturesAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsCardProductFeatures
+      aggregatableFields:
+        - fieldName: creditCardsFeatureId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsProductId
+          aggregateExpression: Int4AggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: featureDescription
+          aggregateExpression: TextAggExp
+        - fieldName: featureName
+          aggregateExpression: VarcharAggExp
+        - fieldName: isLimitedTime
+          aggregateExpression: BoolAggExp
+        - fieldName: isPremium
+          aggregateExpression: BoolAggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsCardProductFeaturesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsCardProductFeaturesOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsCardProductFeatures
+      orderableFields:
+        - fieldName: creditCardsFeatureId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsProductId
+          orderByExpression: Int4OrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: featureDescription
+          orderByExpression: TextOrderByExp
+        - fieldName: featureName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: isLimitedTime
+          orderByExpression: BoolOrderByExp
+        - fieldName: isPremium
+          orderByExpression: BoolOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardProduct
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsCardProductFeaturesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsCardProductFeatures
+  objectType: CreditCardsCardProductFeatures
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_card_product_features
+  filterExpressionType: CreditCardsCardProductFeaturesBoolExp
+  aggregateExpression: CreditCardsCardProductFeaturesAggExp
+  orderByExpression: CreditCardsCardProductFeaturesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsCardProductFeatures
+      subscription:
+        rootField: creditCardsCardProductFeatures
+    selectUniques:
+      - queryRootField: creditCardsCardProductFeaturesByCreditCardsFeatureId
+        uniqueIdentifier:
+          - creditCardsFeatureId
+        subscription:
+          rootField: creditCardsCardProductFeaturesByCreditCardsFeatureId
+    filterInputTypeName: _CreditCards__CreditCardsCardProductFeaturesFilterInput
+    aggregate:
+      queryRootField: creditCardsCardProductFeaturesAggregate
+      subscription:
+        rootField: creditCardsCardProductFeaturesAggregate
+  description: Stores features and benefits associated with card products
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsCardProductFeatures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardProduct
+  sourceType: CreditCardsCardProductFeatures
+  target:
+    model:
+      name: CreditCardsCardProducts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsProductId
+      target:
+        modelField:
+          - fieldName: creditCardsProductId
+

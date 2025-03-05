@@ -1,0 +1,20 @@
+kind: Subgraph
+version: v2
+definition:
+  name: consumer_banking
+  generator:
+    rootPath: .
+    graphqlTypeNamePrefix: ConsumerBanking_
+    namingConvention: graphql
+  includePaths:
+    - metadata
+  envMapping:
+    CONSUMER_BANKING_CONSUMER_BANKING_AUTHORIZATION_HEADER:
+      fromEnv: CONSUMER_BANKING_CONSUMER_BANKING_AUTHORIZATION_HEADER
+    CONSUMER_BANKING_CONSUMER_BANKING_READ_URL:
+      fromEnv: CONSUMER_BANKING_CONSUMER_BANKING_READ_URL
+    CONSUMER_BANKING_CONSUMER_BANKING_WRITE_URL:
+      fromEnv: CONSUMER_BANKING_CONSUMER_BANKING_WRITE_URL
+  connectors:
+    - path: connector/consumer_banking/connector.yaml
+      connectorLinkName: consumer_banking

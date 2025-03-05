@@ -1,0 +1,319 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesAppraisals
+  description: Manages property appraisals for mortgage loans
+  fields:
+    - name: appraisalCompany
+      type: Varchar
+      description: Company performing the appraisal
+    - name: appraisalFee
+      type: Numeric
+      description: Fee charged for the appraisal
+    - name: appraisalType
+      type: Varchar!
+      description: Type of appraisal being performed
+    - name: appraisedValue
+      type: Numeric
+      description: Value determined by the appraisal
+    - name: appraiserName
+      type: Varchar
+      description: Name of the assigned appraiser
+    - name: completionDate
+      type: Date
+      description: When the appraisal was completed
+    - name: inspectionDate
+      type: Date
+      description: When the property was inspected
+    - name: mortgageServicesAppraisalId
+      type: Int4!
+      description: Auto-incrementing identifier for each appraisal
+    - name: mortgageServicesLoanId
+      type: Int4!
+      description: References the loan this appraisal is for
+    - name: mortgageServicesPropertyId
+      type: Int4!
+      description: References the property being appraised
+    - name: orderedDate
+      type: Timestamp!
+      description: When the appraisal was ordered
+    - name: reportPath
+      type: Varchar
+      description: Storage location of the appraisal report
+    - name: status
+      type: Varchar!
+      description: Current status of the appraisal process
+  graphql:
+    typeName: _MortgageServices__MortgageServicesAppraisals
+    inputTypeName: _MortgageServices__MortgageServicesAppraisalsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_appraisals
+      fieldMapping:
+        appraisalCompany:
+          column:
+            name: appraisal_company
+        appraisalFee:
+          column:
+            name: appraisal_fee
+        appraisalType:
+          column:
+            name: appraisal_type
+        appraisedValue:
+          column:
+            name: appraised_value
+        appraiserName:
+          column:
+            name: appraiser_name
+        completionDate:
+          column:
+            name: completion_date
+        inspectionDate:
+          column:
+            name: inspection_date
+        mortgageServicesAppraisalId:
+          column:
+            name: mortgage_services_appraisal_id
+        mortgageServicesLoanId:
+          column:
+            name: mortgage_services_loan_id
+        mortgageServicesPropertyId:
+          column:
+            name: mortgage_services_property_id
+        orderedDate:
+          column:
+            name: ordered_date
+        reportPath:
+          column:
+            name: report_path
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesAppraisals
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appraisalCompany
+          - appraisalFee
+          - appraisalType
+          - appraisedValue
+          - appraiserName
+          - completionDate
+          - inspectionDate
+          - mortgageServicesAppraisalId
+          - mortgageServicesLoanId
+          - mortgageServicesPropertyId
+          - orderedDate
+          - reportPath
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesAppraisalsBoolExp
+  operand:
+    object:
+      type: MortgageServicesAppraisals
+      comparableFields:
+        - fieldName: appraisalCompany
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: appraisalFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: appraisalType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: appraisedValue
+          booleanExpressionType: NumericBoolExp
+        - fieldName: appraiserName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: completionDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: inspectionDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: mortgageServicesAppraisalId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLoanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesPropertyId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: orderedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: reportPath
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesLoan
+        - relationshipName: mortgageServicesProperty
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesAppraisalsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesAppraisalsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesAppraisals
+      aggregatableFields:
+        - fieldName: appraisalCompany
+          aggregateExpression: VarcharAggExp
+        - fieldName: appraisalFee
+          aggregateExpression: NumericAggExp
+        - fieldName: appraisalType
+          aggregateExpression: VarcharAggExp
+        - fieldName: appraisedValue
+          aggregateExpression: NumericAggExp
+        - fieldName: appraiserName
+          aggregateExpression: VarcharAggExp
+        - fieldName: completionDate
+          aggregateExpression: DateAggExp
+        - fieldName: inspectionDate
+          aggregateExpression: DateAggExp
+        - fieldName: mortgageServicesAppraisalId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLoanId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesPropertyId
+          aggregateExpression: Int4AggExp
+        - fieldName: orderedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: reportPath
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesAppraisalsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesAppraisalsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesAppraisals
+      orderableFields:
+        - fieldName: appraisalCompany
+          orderByExpression: VarcharOrderByExp
+        - fieldName: appraisalFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: appraisalType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: appraisedValue
+          orderByExpression: NumericOrderByExp
+        - fieldName: appraiserName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: completionDate
+          orderByExpression: DateOrderByExp
+        - fieldName: inspectionDate
+          orderByExpression: DateOrderByExp
+        - fieldName: mortgageServicesAppraisalId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLoanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesPropertyId
+          orderByExpression: Int4OrderByExp
+        - fieldName: orderedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: reportPath
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesLoan
+        - relationshipName: mortgageServicesProperty
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesAppraisalsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesAppraisals
+  objectType: MortgageServicesAppraisals
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_appraisals
+  filterExpressionType: MortgageServicesAppraisalsBoolExp
+  aggregateExpression: MortgageServicesAppraisalsAggExp
+  orderByExpression: MortgageServicesAppraisalsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesAppraisals
+      subscription:
+        rootField: mortgageServicesAppraisals
+    selectUniques:
+      - queryRootField: mortgageServicesAppraisalsByMortgageServicesAppraisalId
+        uniqueIdentifier:
+          - mortgageServicesAppraisalId
+        subscription:
+          rootField: mortgageServicesAppraisalsByMortgageServicesAppraisalId
+    filterInputTypeName: _MortgageServices__MortgageServicesAppraisalsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesAppraisalsAggregate
+      subscription:
+        rootField: mortgageServicesAppraisalsAggregate
+  description: Manages property appraisals for mortgage loans
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesAppraisals
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoan
+  sourceType: MortgageServicesAppraisals
+  target:
+    model:
+      name: MortgageServicesLoans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesProperty
+  sourceType: MortgageServicesAppraisals
+  target:
+    model:
+      name: MortgageServicesProperties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesPropertyId
+      target:
+        modelField:
+          - fieldName: mortgageServicesPropertyId
+

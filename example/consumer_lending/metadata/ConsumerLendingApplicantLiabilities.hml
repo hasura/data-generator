@@ -1,0 +1,312 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingApplicantLiabilities
+  description: Tracks liabilities and debt obligations of loan applicants.
+  fields:
+    - name: accountNumber
+      type:  ConsumerLendingVarchar
+      description: Account number, stored encrypted
+    - name: consumerLendingApplicantId
+      type: ConsumerLendingInt4!
+      description: Reference to applicant
+    - name: consumerLendingLiabilityId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for liability record
+    - name: creditorName
+      type:  ConsumerLendingVarchar!
+      description: Name of creditor
+    - name: currentBalance
+      type: ConsumerLendingNumeric!
+      description: Current outstanding balance
+    - name: interestRate
+      type: ConsumerLendingNumeric
+      description: Current interest rate percentage
+    - name: liabilityType
+      type:  ConsumerLendingVarchar!
+      description: Credit Card, Auto Loan, Student Loan
+    - name: maturityDate
+      type: ConsumerLendingDate
+      description: When debt will be paid off
+    - name: monthlyPayment
+      type: ConsumerLendingNumeric!
+      description: Required monthly payment amount
+    - name: originalAmount
+      type: ConsumerLendingNumeric
+      description: Original loan or credit amount
+    - name: originationDate
+      type: ConsumerLendingDate
+      description: When debt was originated
+    - name: verificationDate
+      type: ConsumerLendingDate
+      description: Date liability was verified
+    - name: verificationStatus
+      type:  ConsumerLendingVarchar!
+      description: Self-reported, Verified, Failed
+    - name: willBePaidOff
+      type: ConsumerLendingBool
+      description: Indicates if debt will be paid off with loan
+  graphql:
+    typeName: ConsumerLendingApplicantLiabilities
+    inputTypeName: ConsumerLendingApplicantLiabilitiesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_applicant_liabilities
+      fieldMapping:
+        accountNumber:
+          column:
+            name: account_number
+        consumerLendingApplicantId:
+          column:
+            name: consumer_lending_applicant_id
+        consumerLendingLiabilityId:
+          column:
+            name: consumer_lending_liability_id
+        creditorName:
+          column:
+            name: creditor_name
+        currentBalance:
+          column:
+            name: current_balance
+        interestRate:
+          column:
+            name: interest_rate
+        liabilityType:
+          column:
+            name: liability_type
+        maturityDate:
+          column:
+            name: maturity_date
+        monthlyPayment:
+          column:
+            name: monthly_payment
+        originalAmount:
+          column:
+            name: original_amount
+        originationDate:
+          column:
+            name: origination_date
+        verificationDate:
+          column:
+            name: verification_date
+        verificationStatus:
+          column:
+            name: verification_status
+        willBePaidOff:
+          column:
+            name: will_be_paid_off
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingApplicantLiabilities
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - consumerLendingApplicantId
+          - consumerLendingLiabilityId
+          - creditorName
+          - currentBalance
+          - interestRate
+          - liabilityType
+          - maturityDate
+          - monthlyPayment
+          - originalAmount
+          - originationDate
+          - verificationDate
+          - verificationStatus
+          - willBePaidOff
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingApplicantLiabilitiesBoolExp
+  operand:
+    object:
+      type: ConsumerLendingApplicantLiabilities
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: consumerLendingApplicantId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingLiabilityId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: creditorName
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: currentBalance
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: interestRate
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: liabilityType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: maturityDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: monthlyPayment
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: originalAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: originationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: verificationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: willBePaidOff
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicant
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingApplicantLiabilitiesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantLiabilitiesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingApplicantLiabilities
+      aggregatableFields:
+        - fieldName: accountNumber
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: consumerLendingApplicantId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingLiabilityId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: creditorName
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: currentBalance
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: interestRate
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: liabilityType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: maturityDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: monthlyPayment
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: originalAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: originationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: verificationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: verificationStatus
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: willBePaidOff
+          aggregateExpression: ConsumerLendingBoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingApplicantLiabilitiesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingApplicantLiabilitiesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingApplicantLiabilities
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: consumerLendingApplicantId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingLiabilityId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: creditorName
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: currentBalance
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: interestRate
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: liabilityType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: maturityDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: monthlyPayment
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: originalAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: originationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: verificationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: willBePaidOff
+          orderByExpression: ConsumerLendingBoolOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingApplicant
+  graphql:
+    expressionTypeName: ConsumerLendingApplicantLiabilitiesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingApplicantLiabilities
+  objectType: ConsumerLendingApplicantLiabilities
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_applicant_liabilities
+  filterExpressionType: ConsumerLendingApplicantLiabilitiesBoolExp
+  aggregateExpression: ConsumerLendingApplicantLiabilitiesAggExp
+  orderByExpression: ConsumerLendingApplicantLiabilitiesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingApplicantLiabilities
+      subscription:
+        rootField: consumerLendingApplicantLiabilities
+    selectUniques:
+      - queryRootField: consumerLendingApplicantLiabilitiesByConsumerLendingLiabilityId
+        uniqueIdentifier:
+          - consumerLendingLiabilityId
+        subscription:
+          rootField: consumerLendingApplicantLiabilitiesByConsumerLendingLiabilityId
+    filterInputTypeName: ConsumerLendingApplicantLiabilitiesFilterInput
+    aggregate:
+      queryRootField: consumerLendingApplicantLiabilitiesAggregate
+      subscription:
+        rootField: consumerLendingApplicantLiabilitiesAggregate
+  description: Tracks liabilities and debt obligations of loan applicants.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingApplicantLiabilities
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicant
+  sourceType: ConsumerLendingApplicantLiabilities
+  target:
+    model:
+      name: ConsumerLendingApplicants
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicantId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicantId
+

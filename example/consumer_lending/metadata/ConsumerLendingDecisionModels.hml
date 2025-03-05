@@ -1,0 +1,241 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingDecisionModels
+  description: Contains information about the decision models used to evaluate
+    loan applications, including credit scoring, income verification, and fraud
+    detection models.
+  fields:
+    - name: consumerLendingModelId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for decision model
+    - name: description
+      type: ConsumerLendingText
+      description: Description of the model and its purpose
+    - name: effectiveDate
+      type: ConsumerLendingDate!
+      description: When model became effective
+    - name: expirationDate
+      type: ConsumerLendingDate
+      description: When model expires
+    - name: isActive
+      type: ConsumerLendingBool!
+      description: Whether model is in active use
+    - name: modelName
+      type: ConsumerLendingVarchar!
+      description: Name of the model
+    - name: modelType
+      type: ConsumerLendingVarchar!
+      description: Credit Score, Income Verification, Fraud Detection
+    - name: modelVersion
+      type: ConsumerLendingVarchar!
+      description: Version of the model
+  graphql:
+    typeName: ConsumerLendingDecisionModels
+    inputTypeName: ConsumerLendingDecisionModelsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_decision_models
+      fieldMapping:
+        consumerLendingModelId:
+          column:
+            name: consumer_lending_model_id
+        description:
+          column:
+            name: description
+        effectiveDate:
+          column:
+            name: effective_date
+        expirationDate:
+          column:
+            name: expiration_date
+        isActive:
+          column:
+            name: is_active
+        modelName:
+          column:
+            name: model_name
+        modelType:
+          column:
+            name: model_type
+        modelVersion:
+          column:
+            name: model_version
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingDecisionModels
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingModelId
+          - description
+          - effectiveDate
+          - expirationDate
+          - isActive
+          - modelName
+          - modelType
+          - modelVersion
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingDecisionModelsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingDecisionModels
+      comparableFields:
+        - fieldName: consumerLendingModelId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: description
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: isActive
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: modelName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: modelType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: modelVersion
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingApplicationDecisions
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingDecisionModelsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingDecisionModelsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingDecisionModels
+      aggregatableFields:
+        - fieldName: consumerLendingModelId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: description
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: expirationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: isActive
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: modelName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: modelType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: modelVersion
+          aggregateExpression: ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingDecisionModelsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingDecisionModelsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingDecisionModels
+      orderableFields:
+        - fieldName: consumerLendingModelId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: description
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: expirationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: isActive
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: modelName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: modelType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: modelVersion
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: ConsumerLendingDecisionModelsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingDecisionModels
+  objectType: ConsumerLendingDecisionModels
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_decision_models
+  filterExpressionType: ConsumerLendingDecisionModelsBoolExp
+  aggregateExpression: ConsumerLendingDecisionModelsAggExp
+  orderByExpression: ConsumerLendingDecisionModelsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingDecisionModels
+      subscription:
+        rootField: consumerLendingDecisionModels
+    selectUniques:
+      - queryRootField: consumerLendingDecisionModelsByConsumerLendingModelId
+        uniqueIdentifier:
+          - consumerLendingModelId
+        subscription:
+          rootField: consumerLendingDecisionModelsByConsumerLendingModelId
+    filterInputTypeName: ConsumerLendingDecisionModelsFilterInput
+    aggregate:
+      queryRootField: consumerLendingDecisionModelsAggregate
+      subscription:
+        rootField: consumerLendingDecisionModelsAggregate
+  description: Contains information about the decision models used to evaluate
+    loan applications, including credit scoring, income verification, and fraud
+    detection models.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingDecisionModels
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingApplicationDecisions
+  sourceType: ConsumerLendingDecisionModels
+  target:
+    model:
+      name: ConsumerLendingApplicationDecisions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingApplicationDecisionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingModelId
+      target:
+        modelField:
+          - fieldName: consumerLendingModelId
+  graphql:
+    aggregateFieldName: consumerLendingApplicationDecisionsAggregate
+

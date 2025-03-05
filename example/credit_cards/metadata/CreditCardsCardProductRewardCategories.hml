@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsCardProductRewardCategories
+  description: Defines reward earning categories for card products
+  fields:
+    - name: capAmount
+      type: Numeric
+      description: Spending cap for elevated rewards if applicable
+    - name: capPeriod
+      type: Varchar
+      description: Period for cap (e.g., Monthly, Quarterly, Annually)
+    - name: categoryName
+      type: Varchar!
+      description: Category name (e.g., Dining, Travel, Gas)
+    - name: creditCardsCategoryId
+      type: Int4!
+      description: Auto-incrementing identifier for each reward category
+    - name: creditCardsProductId
+      type: Int4!
+      description: Reference to card_products
+    - name: endDate
+      type: Date
+      description: End date for category if temporary
+    - name: isCapped
+      type: Bool!
+      description: Whether rewards are capped
+    - name: isQuarterly
+      type: Bool!
+      description: Whether category rotates quarterly
+    - name: rewardRate
+      type: Numeric!
+      description: Reward rate for this category (e.g., 3% cashback)
+    - name: startDate
+      type: Date
+      description: Start date for category if temporary
+  graphql:
+    typeName: _CreditCards__CreditCardsCardProductRewardCategories
+    inputTypeName: _CreditCards__CreditCardsCardProductRewardCategoriesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_card_product_reward_categories
+      fieldMapping:
+        capAmount:
+          column:
+            name: cap_amount
+        capPeriod:
+          column:
+            name: cap_period
+        categoryName:
+          column:
+            name: category_name
+        creditCardsCategoryId:
+          column:
+            name: credit_cards_category_id
+        creditCardsProductId:
+          column:
+            name: credit_cards_product_id
+        endDate:
+          column:
+            name: end_date
+        isCapped:
+          column:
+            name: is_capped
+        isQuarterly:
+          column:
+            name: is_quarterly
+        rewardRate:
+          column:
+            name: reward_rate
+        startDate:
+          column:
+            name: start_date
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsCardProductRewardCategories
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - capAmount
+          - capPeriod
+          - categoryName
+          - creditCardsCategoryId
+          - creditCardsProductId
+          - endDate
+          - isCapped
+          - isQuarterly
+          - rewardRate
+          - startDate
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsCardProductRewardCategoriesBoolExp
+  operand:
+    object:
+      type: CreditCardsCardProductRewardCategories
+      comparableFields:
+        - fieldName: capAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: capPeriod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: categoryName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsCategoryId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsProductId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: isCapped
+          booleanExpressionType: BoolBoolExp
+        - fieldName: isQuarterly
+          booleanExpressionType: BoolBoolExp
+        - fieldName: rewardRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardProduct
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsCardProductRewardCategoriesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsCardProductRewardCategoriesAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsCardProductRewardCategories
+      aggregatableFields:
+        - fieldName: capAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: capPeriod
+          aggregateExpression: VarcharAggExp
+        - fieldName: categoryName
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsCategoryId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsProductId
+          aggregateExpression: Int4AggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: isCapped
+          aggregateExpression: BoolAggExp
+        - fieldName: isQuarterly
+          aggregateExpression: BoolAggExp
+        - fieldName: rewardRate
+          aggregateExpression: NumericAggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsCardProductRewardCategoriesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsCardProductRewardCategoriesOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsCardProductRewardCategories
+      orderableFields:
+        - fieldName: capAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: capPeriod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: categoryName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsCategoryId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsProductId
+          orderByExpression: Int4OrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: isCapped
+          orderByExpression: BoolOrderByExp
+        - fieldName: isQuarterly
+          orderByExpression: BoolOrderByExp
+        - fieldName: rewardRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardProduct
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsCardProductRewardCategoriesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsCardProductRewardCategories
+  objectType: CreditCardsCardProductRewardCategories
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_card_product_reward_categories
+  filterExpressionType: CreditCardsCardProductRewardCategoriesBoolExp
+  aggregateExpression: CreditCardsCardProductRewardCategoriesAggExp
+  orderByExpression: CreditCardsCardProductRewardCategoriesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsCardProductRewardCategories
+      subscription:
+        rootField: creditCardsCardProductRewardCategories
+    selectUniques:
+      - queryRootField: creditCardsCardProductRewardCategoriesByCreditCardsCategoryId
+        uniqueIdentifier:
+          - creditCardsCategoryId
+        subscription:
+          rootField: creditCardsCardProductRewardCategoriesByCreditCardsCategoryId
+    filterInputTypeName: _CreditCards__CreditCardsCardProductRewardCategoriesFilterInput
+    aggregate:
+      queryRootField: creditCardsCardProductRewardCategoriesAggregate
+      subscription:
+        rootField: creditCardsCardProductRewardCategoriesAggregate
+  description: Defines reward earning categories for card products
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsCardProductRewardCategories
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardProduct
+  sourceType: CreditCardsCardProductRewardCategories
+  target:
+    model:
+      name: CreditCardsCardProducts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsProductId
+      target:
+        modelField:
+          - fieldName: creditCardsProductId
+

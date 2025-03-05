@@ -1,0 +1,372 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsRegZCreditCardDisclosures
+  description: Tracks Truth in Lending Act disclosures required for credit cards
+  fields:
+    - name: annualFee
+      type: Numeric
+      description: Annual fee disclosed
+    - name: annualPercentageRate
+      type: Numeric
+      description: APR disclosed
+    - name: balanceComputationMethod
+      type: Varchar
+      description: Method used to calculate balance
+    - name: creditCardsApplicationId
+      type: Int4
+      description: Reference to applications if pre-account opening
+    - name: creditCardsCardAccountId
+      type: Int4
+      description: Reference to card_accounts if post-account opening
+    - name: creditCardsDisclosureId
+      type: Int4!
+      description: Auto-incrementing identifier for each disclosure
+    - name: deliveryMethod
+      type: Varchar!
+      description: How disclosure was delivered (Mail, Electronic)
+    - name: disclosureDate
+      type: Timestamp!
+      description: Date disclosure was generated
+    - name: disclosureType
+      type: Varchar!
+      description: Type of Reg Z disclosure (Solicitation, Application,
+        Account-Opening, Periodic Statement)
+    - name: documentPath
+      type: Varchar
+      description: Path to stored disclosure document
+    - name: gracePeriodDisclosure
+      type: Text
+      description: Grace period disclosure text
+    - name: latePaymentFee
+      type: Numeric
+      description: Late payment fee disclosed
+    - name: overLimitFee
+      type: Numeric
+      description: Over-limit fee disclosed
+    - name: transactionFeeBalanceTransfers
+      type: Numeric
+      description: Fee for balance transfers
+    - name: transactionFeeCashAdvance
+      type: Numeric
+      description: Fee for cash advances
+    - name: transactionFeePurchases
+      type: Numeric
+      description: Fee for purchases if any
+    - name: variableRateIndicator
+      type: Bool
+      description: Whether rate is variable
+  graphql:
+    typeName: _CreditCards__CreditCardsRegZCreditCardDisclosures
+    inputTypeName: _CreditCards__CreditCardsRegZCreditCardDisclosuresInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_reg_z_credit_card_disclosures
+      fieldMapping:
+        annualFee:
+          column:
+            name: annual_fee
+        annualPercentageRate:
+          column:
+            name: annual_percentage_rate
+        balanceComputationMethod:
+          column:
+            name: balance_computation_method
+        creditCardsApplicationId:
+          column:
+            name: credit_cards_application_id
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsDisclosureId:
+          column:
+            name: credit_cards_disclosure_id
+        deliveryMethod:
+          column:
+            name: delivery_method
+        disclosureDate:
+          column:
+            name: disclosure_date
+        disclosureType:
+          column:
+            name: disclosure_type
+        documentPath:
+          column:
+            name: document_path
+        gracePeriodDisclosure:
+          column:
+            name: grace_period_disclosure
+        latePaymentFee:
+          column:
+            name: late_payment_fee
+        overLimitFee:
+          column:
+            name: over_limit_fee
+        transactionFeeBalanceTransfers:
+          column:
+            name: transaction_fee_balance_transfers
+        transactionFeeCashAdvance:
+          column:
+            name: transaction_fee_cash_advance
+        transactionFeePurchases:
+          column:
+            name: transaction_fee_purchases
+        variableRateIndicator:
+          column:
+            name: variable_rate_indicator
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsRegZCreditCardDisclosures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - annualFee
+          - annualPercentageRate
+          - balanceComputationMethod
+          - creditCardsApplicationId
+          - creditCardsCardAccountId
+          - creditCardsDisclosureId
+          - deliveryMethod
+          - disclosureDate
+          - disclosureType
+          - documentPath
+          - gracePeriodDisclosure
+          - latePaymentFee
+          - overLimitFee
+          - transactionFeeBalanceTransfers
+          - transactionFeeCashAdvance
+          - transactionFeePurchases
+          - variableRateIndicator
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsRegZCreditCardDisclosuresBoolExp
+  operand:
+    object:
+      type: CreditCardsRegZCreditCardDisclosures
+      comparableFields:
+        - fieldName: annualFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: annualPercentageRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: balanceComputationMethod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsDisclosureId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: deliveryMethod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: disclosureDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: disclosureType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: documentPath
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: gracePeriodDisclosure
+          booleanExpressionType: TextBoolExp
+        - fieldName: latePaymentFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: overLimitFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: transactionFeeBalanceTransfers
+          booleanExpressionType: NumericBoolExp
+        - fieldName: transactionFeeCashAdvance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: transactionFeePurchases
+          booleanExpressionType: NumericBoolExp
+        - fieldName: variableRateIndicator
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsApplication
+        - relationshipName: creditCardsCardAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsRegZCreditCardDisclosuresBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsRegZCreditCardDisclosuresAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsRegZCreditCardDisclosures
+      aggregatableFields:
+        - fieldName: annualFee
+          aggregateExpression: NumericAggExp
+        - fieldName: annualPercentageRate
+          aggregateExpression: NumericAggExp
+        - fieldName: balanceComputationMethod
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsDisclosureId
+          aggregateExpression: Int4AggExp
+        - fieldName: deliveryMethod
+          aggregateExpression: VarcharAggExp
+        - fieldName: disclosureDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: disclosureType
+          aggregateExpression: VarcharAggExp
+        - fieldName: documentPath
+          aggregateExpression: VarcharAggExp
+        - fieldName: gracePeriodDisclosure
+          aggregateExpression: TextAggExp
+        - fieldName: latePaymentFee
+          aggregateExpression: NumericAggExp
+        - fieldName: overLimitFee
+          aggregateExpression: NumericAggExp
+        - fieldName: transactionFeeBalanceTransfers
+          aggregateExpression: NumericAggExp
+        - fieldName: transactionFeeCashAdvance
+          aggregateExpression: NumericAggExp
+        - fieldName: transactionFeePurchases
+          aggregateExpression: NumericAggExp
+        - fieldName: variableRateIndicator
+          aggregateExpression: BoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsRegZCreditCardDisclosuresAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsRegZCreditCardDisclosuresOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsRegZCreditCardDisclosures
+      orderableFields:
+        - fieldName: annualFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: annualPercentageRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: balanceComputationMethod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsDisclosureId
+          orderByExpression: Int4OrderByExp
+        - fieldName: deliveryMethod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: disclosureDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: disclosureType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: documentPath
+          orderByExpression: VarcharOrderByExp
+        - fieldName: gracePeriodDisclosure
+          orderByExpression: TextOrderByExp
+        - fieldName: latePaymentFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: overLimitFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: transactionFeeBalanceTransfers
+          orderByExpression: NumericOrderByExp
+        - fieldName: transactionFeeCashAdvance
+          orderByExpression: NumericOrderByExp
+        - fieldName: transactionFeePurchases
+          orderByExpression: NumericOrderByExp
+        - fieldName: variableRateIndicator
+          orderByExpression: BoolOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsApplication
+        - relationshipName: creditCardsCardAccount
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsRegZCreditCardDisclosuresOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsRegZCreditCardDisclosures
+  objectType: CreditCardsRegZCreditCardDisclosures
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_reg_z_credit_card_disclosures
+  filterExpressionType: CreditCardsRegZCreditCardDisclosuresBoolExp
+  aggregateExpression: CreditCardsRegZCreditCardDisclosuresAggExp
+  orderByExpression: CreditCardsRegZCreditCardDisclosuresOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsRegZCreditCardDisclosures
+      subscription:
+        rootField: creditCardsRegZCreditCardDisclosures
+    selectUniques:
+      - queryRootField: creditCardsRegZCreditCardDisclosuresByCreditCardsDisclosureId
+        uniqueIdentifier:
+          - creditCardsDisclosureId
+        subscription:
+          rootField: creditCardsRegZCreditCardDisclosuresByCreditCardsDisclosureId
+    filterInputTypeName: _CreditCards__CreditCardsRegZCreditCardDisclosuresFilterInput
+    aggregate:
+      queryRootField: creditCardsRegZCreditCardDisclosuresAggregate
+      subscription:
+        rootField: creditCardsRegZCreditCardDisclosuresAggregate
+  description: Tracks Truth in Lending Act disclosures required for credit cards
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsRegZCreditCardDisclosures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsApplication
+  sourceType: CreditCardsRegZCreditCardDisclosures
+  target:
+    model:
+      name: CreditCardsApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsApplicationId
+      target:
+        modelField:
+          - fieldName: creditCardsApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsRegZCreditCardDisclosures
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+

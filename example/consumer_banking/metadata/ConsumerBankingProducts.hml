@@ -1,0 +1,235 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingProducts
+  description: Stores information about banking products associated with accounts
+  fields:
+    - name: consumerBankingProductId
+      type: Int4!
+      description: Unique identifier for each product
+    - name: enterpriseAccountId
+      type: Int4!
+      description: Account associated with this product
+    - name: marketingStateId
+      type: Varchar
+      description: Identifier for marketing campaign or state
+    - name: productName
+      type: Varchar!
+      description: Name of the banking product
+    - name: productType
+      type: Varchar!
+      description: Type of product (e.g., savings, checking, loan)
+    - name: secondaryProductId
+      type: Varchar
+      description: Alternative identifier for the product
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingProducts
+    inputTypeName: ConsumerBanking_ConsumerBankingProductsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_products
+      fieldMapping:
+        consumerBankingProductId:
+          column:
+            name: consumer_banking_product_id
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        marketingStateId:
+          column:
+            name: marketing_state_id
+        productName:
+          column:
+            name: product_name
+        productType:
+          column:
+            name: product_type
+        secondaryProductId:
+          column:
+            name: secondary_product_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingProducts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingProductId
+          - enterpriseAccountId
+          - marketingStateId
+          - productName
+          - productType
+          - secondaryProductId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingProductsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingProducts
+      comparableFields:
+        - fieldName: consumerBankingProductId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: marketingStateId
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: productName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: productType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: secondaryProductId
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingOtherProductTypes
+        - relationshipName: consumerBankingAccounts
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingProductsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingProductsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingProducts
+      aggregatableFields:
+        - fieldName: consumerBankingProductId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: marketingStateId
+          aggregateExpression: VarcharAggExp
+        - fieldName: productName
+          aggregateExpression: VarcharAggExp
+        - fieldName: productType
+          aggregateExpression: VarcharAggExp
+        - fieldName: secondaryProductId
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingProductsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingProductsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingProducts
+      orderableFields:
+        - fieldName: consumerBankingProductId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: marketingStateId
+          orderByExpression: VarcharOrderByExp
+        - fieldName: productName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: productType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: secondaryProductId
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: account
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingProductsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingProducts
+  objectType: ConsumerBankingProducts
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_products
+  filterExpressionType: ConsumerBankingProductsBoolExp
+  aggregateExpression: ConsumerBankingProductsAggExp
+  orderByExpression: ConsumerBankingProductsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingProducts
+      subscription:
+        rootField: consumerBankingProducts
+    selectUniques:
+      - queryRootField: consumerBankingProductsByConsumerBankingProductId
+        uniqueIdentifier:
+          - consumerBankingProductId
+        subscription:
+          rootField: consumerBankingProductsByConsumerBankingProductId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingProductsFilterInput
+    aggregate:
+      queryRootField: consumerBankingProductsAggregate
+      subscription:
+        rootField: consumerBankingProductsAggregate
+  description: Stores information about banking products associated with accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingProducts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingOtherProductTypes
+  sourceType: ConsumerBankingProducts
+  target:
+    model:
+      name: ConsumerBankingOtherProductTypes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingOtherProductTypesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingProductId
+      target:
+        modelField:
+          - fieldName: consumerBankingProductId
+  graphql:
+    aggregateFieldName: consumerBankingOtherProductTypesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccounts
+  sourceType: ConsumerBankingProducts
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingProductId
+      target:
+        modelField:
+          - fieldName: consumerBankingProductId
+  graphql:
+    aggregateFieldName: consumerBankingAccountsAggregate
+

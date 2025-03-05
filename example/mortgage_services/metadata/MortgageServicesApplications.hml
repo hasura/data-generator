@@ -1,0 +1,492 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesApplications
+  description: Stores mortgage application details and tracks application status
+  fields:
+    - name: applicationType
+      type: Varchar!
+      description: Type of mortgage application (e.g., Purchase, Refinance, HELOC)
+    - name: branchId
+      type: Int4
+      description: References the branch processing the application
+    - name: creationDateTime
+      type: Timestamp!
+      description: When the application was created
+    - name: customerId
+      type: Int4!
+      description: References the primary customer applying for the mortgage
+    - name: estimatedCreditScore
+      type: Int4
+      description: Estimated credit score of primary applicant
+    - name: estimatedPropertyValue
+      type: Numeric
+      description: Estimated value of the property
+    - name: lastUpdatedDateTime
+      type: Timestamp!
+      description: When the application was last modified
+    - name: loanOfficerId
+      type: Int4
+      description: References the loan officer handling the application
+    - name: loanPurpose
+      type: Varchar
+      description: Purpose of the loan (e.g., Primary Residence, Investment)
+    - name: mortgageServicesApplicationId
+      type: Int4!
+      description: Unique identifier for each mortgage application
+    - name: referralSource
+      type: Varchar
+      description: How the applicant learned about the mortgage product
+    - name: requestedLoanAmount
+      type: Numeric!
+      description: Amount of financing requested
+    - name: requestedLoanTermMonths
+      type: Int4!
+      description: Requested duration of the loan in months
+    - name: status
+      type: Varchar!
+      description: Current status in the application workflow
+    - name: submissionDateTime
+      type: Timestamp
+      description: When the application was formally submitted
+  graphql:
+    typeName: _MortgageServices__MortgageServicesApplications
+    inputTypeName: _MortgageServices__MortgageServicesApplicationsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_applications
+      fieldMapping:
+        applicationType:
+          column:
+            name: application_type
+        branchId:
+          column:
+            name: branch_id
+        creationDateTime:
+          column:
+            name: creation_date_time
+        customerId:
+          column:
+            name: customer_id
+        estimatedCreditScore:
+          column:
+            name: estimated_credit_score
+        estimatedPropertyValue:
+          column:
+            name: estimated_property_value
+        lastUpdatedDateTime:
+          column:
+            name: last_updated_date_time
+        loanOfficerId:
+          column:
+            name: loan_officer_id
+        loanPurpose:
+          column:
+            name: loan_purpose
+        mortgageServicesApplicationId:
+          column:
+            name: mortgage_services_application_id
+        referralSource:
+          column:
+            name: referral_source
+        requestedLoanAmount:
+          column:
+            name: requested_loan_amount
+        requestedLoanTermMonths:
+          column:
+            name: requested_loan_term_months
+        status:
+          column:
+            name: status
+        submissionDateTime:
+          column:
+            name: submission_date_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesApplications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - applicationType
+          - branchId
+          - creationDateTime
+          - customerId
+          - estimatedCreditScore
+          - estimatedPropertyValue
+          - lastUpdatedDateTime
+          - loanOfficerId
+          - loanPurpose
+          - mortgageServicesApplicationId
+          - referralSource
+          - requestedLoanAmount
+          - requestedLoanTermMonths
+          - status
+          - submissionDateTime
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesApplicationsBoolExp
+  operand:
+    object:
+      type: MortgageServicesApplications
+      comparableFields:
+        - fieldName: applicationType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: branchId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creationDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: customerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: estimatedCreditScore
+          booleanExpressionType: Int4BoolExp
+        - fieldName: estimatedPropertyValue
+          booleanExpressionType: NumericBoolExp
+        - fieldName: lastUpdatedDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: loanOfficerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: loanPurpose
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: referralSource
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: requestedLoanAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: requestedLoanTermMonths
+          booleanExpressionType: Int4BoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: submissionDateTime
+          booleanExpressionType: TimestampBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesApplicationBorrowers
+        - relationshipName: mortgageServicesConditions
+        - relationshipName: mortgageServicesCreditReports
+        - relationshipName: mortgageServicesCustomerCommunications
+        - relationshipName: mortgageServicesDocuments
+        - relationshipName: mortgageServicesHmdaRecords
+        - relationshipName: mortgageServicesLoans
+        - relationshipName: mortgageServicesProperties
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesApplicationsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesApplicationsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesApplications
+      aggregatableFields:
+        - fieldName: applicationType
+          aggregateExpression: VarcharAggExp
+        - fieldName: branchId
+          aggregateExpression: Int4AggExp
+        - fieldName: creationDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: customerId
+          aggregateExpression: Int4AggExp
+        - fieldName: estimatedCreditScore
+          aggregateExpression: Int4AggExp
+        - fieldName: estimatedPropertyValue
+          aggregateExpression: NumericAggExp
+        - fieldName: lastUpdatedDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: loanOfficerId
+          aggregateExpression: Int4AggExp
+        - fieldName: loanPurpose
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: referralSource
+          aggregateExpression: VarcharAggExp
+        - fieldName: requestedLoanAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: requestedLoanTermMonths
+          aggregateExpression: Int4AggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: submissionDateTime
+          aggregateExpression: TimestampAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesApplicationsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesApplicationsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesApplications
+      orderableFields:
+        - fieldName: applicationType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: branchId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creationDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: customerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: estimatedCreditScore
+          orderByExpression: Int4OrderByExp
+        - fieldName: estimatedPropertyValue
+          orderByExpression: NumericOrderByExp
+        - fieldName: lastUpdatedDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: loanOfficerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: loanPurpose
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesApplicationId
+          orderByExpression: Int4OrderByExp
+        - fieldName: referralSource
+          orderByExpression: VarcharOrderByExp
+        - fieldName: requestedLoanAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: requestedLoanTermMonths
+          orderByExpression: Int4OrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: submissionDateTime
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships:
+        - relationshipName: assignedLoanOfficer
+        - relationshipName: processedAtBranch
+        - relationshipName: customer
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesApplicationsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesApplications
+  objectType: MortgageServicesApplications
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_applications
+  filterExpressionType: MortgageServicesApplicationsBoolExp
+  aggregateExpression: MortgageServicesApplicationsAggExp
+  orderByExpression: MortgageServicesApplicationsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesApplications
+      subscription:
+        rootField: mortgageServicesApplications
+    selectUniques:
+      - queryRootField: mortgageServicesApplicationsByMortgageServicesApplicationId
+        uniqueIdentifier:
+          - mortgageServicesApplicationId
+        subscription:
+          rootField: mortgageServicesApplicationsByMortgageServicesApplicationId
+    filterInputTypeName: _MortgageServices__MortgageServicesApplicationsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesApplicationsAggregate
+      subscription:
+        rootField: mortgageServicesApplicationsAggregate
+  description: Stores mortgage application details and tracks application status
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesApplications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplicationBorrowers
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesApplicationBorrowers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesApplicationBorrowersAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesApplicationBorrowersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesConditions
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesConditions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesConditionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesConditionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesCreditReports
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesCreditReports
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesCreditReportsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesCreditReportsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesCustomerCommunications
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesCustomerCommunications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesCustomerCommunicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesCustomerCommunicationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesDocuments
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesDocuments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesDocumentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesDocumentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesHmdaRecords
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesHmdaRecords
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesHmdaRecordsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesHmdaRecordsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoans
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesLoans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesLoansAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesLoansAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesProperties
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesProperties
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesPropertiesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesPropertiesAggregate
+

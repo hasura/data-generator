@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingTransactionCurrencyExchanges
+  description: Stores currency exchange details for cross-currency transactions
+  fields:
+    - name: consumerBankingTransactionCurrencyExchangeId
+      type: Int4!
+      description: Auto-incrementing identifier for each currency exchange record
+    - name: consumerBankingTransactionId
+      type: Int4!
+      description: References the transaction this currency exchange belongs to
+    - name: contractIdentification
+      type: Varchar
+      description: Identifier for any forex contract used
+    - name: exchangeRate
+      type: Numeric!
+      description: Rate used for the currency conversion
+    - name: instructedAmount
+      type: Numeric
+      description: Original amount before conversion
+    - name: instructedAmountCurrency
+      type: Varchar
+      description: Currency of the original instructed amount
+    - name: quotationDate
+      type: Timestamp
+      description: When the exchange rate was quoted
+    - name: sourceCurrency
+      type: Varchar!
+      description: Original currency of the transaction
+    - name: targetCurrency
+      type: Varchar
+      description: Destination currency after conversion
+    - name: unitCurrency
+      type: Varchar
+      description: Currency used as the unit for the exchange rate
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionCurrencyExchanges
+    inputTypeName: ConsumerBanking_ConsumerBankingTransactionCurrencyExchangesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_currency_exchanges
+      fieldMapping:
+        consumerBankingTransactionCurrencyExchangeId:
+          column:
+            name: consumer_banking_transaction_currency_exchange_id
+        consumerBankingTransactionId:
+          column:
+            name: consumer_banking_transaction_id
+        contractIdentification:
+          column:
+            name: contract_identification
+        exchangeRate:
+          column:
+            name: exchange_rate
+        instructedAmount:
+          column:
+            name: instructed_amount
+        instructedAmountCurrency:
+          column:
+            name: instructed_amount_currency
+        quotationDate:
+          column:
+            name: quotation_date
+        sourceCurrency:
+          column:
+            name: source_currency
+        targetCurrency:
+          column:
+            name: target_currency
+        unitCurrency:
+          column:
+            name: unit_currency
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingTransactionCurrencyExchanges
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingTransactionCurrencyExchangeId
+          - consumerBankingTransactionId
+          - contractIdentification
+          - exchangeRate
+          - instructedAmount
+          - instructedAmountCurrency
+          - quotationDate
+          - sourceCurrency
+          - targetCurrency
+          - unitCurrency
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionCurrencyExchangesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingTransactionCurrencyExchanges
+      comparableFields:
+        - fieldName: consumerBankingTransactionCurrencyExchangeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: contractIdentification
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: exchangeRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: instructedAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: instructedAmountCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: quotationDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: sourceCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: targetCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: unitCurrency
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionCurrencyExchangesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionCurrencyExchangesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingTransactionCurrencyExchanges
+      aggregatableFields:
+        - fieldName: consumerBankingTransactionCurrencyExchangeId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: contractIdentification
+          aggregateExpression: VarcharAggExp
+        - fieldName: exchangeRate
+          aggregateExpression: NumericAggExp
+        - fieldName: instructedAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: instructedAmountCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: quotationDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: sourceCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: targetCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: unitCurrency
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionCurrencyExchangesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionCurrencyExchangesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingTransactionCurrencyExchanges
+      orderableFields:
+        - fieldName: consumerBankingTransactionCurrencyExchangeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: contractIdentification
+          orderByExpression: VarcharOrderByExp
+        - fieldName: exchangeRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: instructedAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: instructedAmountCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: quotationDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: sourceCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: targetCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: unitCurrency
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingTransaction
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionCurrencyExchangesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingTransactionCurrencyExchanges
+  objectType: ConsumerBankingTransactionCurrencyExchanges
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_currency_exchanges
+  filterExpressionType: ConsumerBankingTransactionCurrencyExchangesBoolExp
+  aggregateExpression: ConsumerBankingTransactionCurrencyExchangesAggExp
+  orderByExpression: ConsumerBankingTransactionCurrencyExchangesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingTransactionCurrencyExchanges
+      subscription:
+        rootField: consumerBankingTransactionCurrencyExchanges
+    selectUniques:
+      - queryRootField: consumerBankingTransactionCurrencyExchangesByConsumerBankingTransactionCurrencyExchangeId
+        uniqueIdentifier:
+          - consumerBankingTransactionCurrencyExchangeId
+        subscription:
+          rootField: consumerBankingTransactionCurrencyExchangesByConsumerBankingTransactionCurrencyExchangeId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingTransactionCurrencyExchangesFilterInput
+    aggregate:
+      queryRootField: consumerBankingTransactionCurrencyExchangesAggregate
+      subscription:
+        rootField: consumerBankingTransactionCurrencyExchangesAggregate
+  description: Stores currency exchange details for cross-currency transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingTransactionCurrencyExchanges
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransaction
+  sourceType: ConsumerBankingTransactionCurrencyExchanges
+  target:
+    model:
+      name: ConsumerBankingTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingTransactionId
+      target:
+        modelField:
+          - fieldName: consumerBankingTransactionId
+

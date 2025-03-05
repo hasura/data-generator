@@ -1,0 +1,299 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesInsurancePolicies
+  description: Tracks insurance policies protecting mortgaged properties
+  fields:
+    - name: agentName
+      type: Varchar
+      description: Insurance agent's name
+    - name: agentPhone
+      type: Varchar
+      description: Insurance agent's contact number
+    - name: annualPremium
+      type: Numeric!
+      description: Annual cost of the insurance policy
+    - name: carrierName
+      type: Varchar!
+      description: Insurance company providing coverage
+    - name: coverageAmount
+      type: Numeric!
+      description: Amount of insurance coverage
+    - name: effectiveDate
+      type: Date!
+      description: Start date of policy coverage
+    - name: expirationDate
+      type: Date!
+      description: End date of policy coverage
+    - name: insuranceType
+      type: Varchar!
+      description: Type of insurance coverage (e.g., Hazard, Flood)
+    - name: mortgageServicesPolicyId
+      type: Int4!
+      description: Auto-incrementing identifier for each policy
+    - name: mortgageServicesServicingAccountId
+      type: Int4!
+      description: References the servicing account this policy protects
+    - name: paidThroughEscrow
+      type: Bool!
+      description: Whether premium is paid from escrow account
+    - name: policyNumber
+      type: Varchar!
+      description: Insurance policy identifier
+    - name: status
+      type: Varchar!
+      description: Current status of the policy
+  graphql:
+    typeName: _MortgageServices__MortgageServicesInsurancePolicies
+    inputTypeName: _MortgageServices__MortgageServicesInsurancePoliciesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_insurance_policies
+      fieldMapping:
+        agentName:
+          column:
+            name: agent_name
+        agentPhone:
+          column:
+            name: agent_phone
+        annualPremium:
+          column:
+            name: annual_premium
+        carrierName:
+          column:
+            name: carrier_name
+        coverageAmount:
+          column:
+            name: coverage_amount
+        effectiveDate:
+          column:
+            name: effective_date
+        expirationDate:
+          column:
+            name: expiration_date
+        insuranceType:
+          column:
+            name: insurance_type
+        mortgageServicesPolicyId:
+          column:
+            name: mortgage_services_policy_id
+        mortgageServicesServicingAccountId:
+          column:
+            name: mortgage_services_servicing_account_id
+        paidThroughEscrow:
+          column:
+            name: paid_through_escrow
+        policyNumber:
+          column:
+            name: policy_number
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesInsurancePolicies
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agentName
+          - agentPhone
+          - annualPremium
+          - carrierName
+          - coverageAmount
+          - effectiveDate
+          - expirationDate
+          - insuranceType
+          - mortgageServicesPolicyId
+          - mortgageServicesServicingAccountId
+          - paidThroughEscrow
+          - policyNumber
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesInsurancePoliciesBoolExp
+  operand:
+    object:
+      type: MortgageServicesInsurancePolicies
+      comparableFields:
+        - fieldName: agentName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: agentPhone
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: annualPremium
+          booleanExpressionType: NumericBoolExp
+        - fieldName: carrierName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: coverageAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: insuranceType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesPolicyId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesServicingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: paidThroughEscrow
+          booleanExpressionType: BoolBoolExp
+        - fieldName: policyNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesServicingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesInsurancePoliciesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesInsurancePoliciesAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesInsurancePolicies
+      aggregatableFields:
+        - fieldName: agentName
+          aggregateExpression: VarcharAggExp
+        - fieldName: agentPhone
+          aggregateExpression: VarcharAggExp
+        - fieldName: annualPremium
+          aggregateExpression: NumericAggExp
+        - fieldName: carrierName
+          aggregateExpression: VarcharAggExp
+        - fieldName: coverageAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: DateAggExp
+        - fieldName: expirationDate
+          aggregateExpression: DateAggExp
+        - fieldName: insuranceType
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesPolicyId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesServicingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: paidThroughEscrow
+          aggregateExpression: BoolAggExp
+        - fieldName: policyNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesInsurancePoliciesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesInsurancePoliciesOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesInsurancePolicies
+      orderableFields:
+        - fieldName: agentName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: agentPhone
+          orderByExpression: VarcharOrderByExp
+        - fieldName: annualPremium
+          orderByExpression: NumericOrderByExp
+        - fieldName: carrierName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: coverageAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: DateOrderByExp
+        - fieldName: expirationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: insuranceType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesPolicyId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesServicingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: paidThroughEscrow
+          orderByExpression: BoolOrderByExp
+        - fieldName: policyNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesServicingAccount
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesInsurancePoliciesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesInsurancePolicies
+  objectType: MortgageServicesInsurancePolicies
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_insurance_policies
+  filterExpressionType: MortgageServicesInsurancePoliciesBoolExp
+  aggregateExpression: MortgageServicesInsurancePoliciesAggExp
+  orderByExpression: MortgageServicesInsurancePoliciesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesInsurancePolicies
+      subscription:
+        rootField: mortgageServicesInsurancePolicies
+    selectUniques:
+      - queryRootField: mortgageServicesInsurancePoliciesByMortgageServicesPolicyId
+        uniqueIdentifier:
+          - mortgageServicesPolicyId
+        subscription:
+          rootField: mortgageServicesInsurancePoliciesByMortgageServicesPolicyId
+    filterInputTypeName: _MortgageServices__MortgageServicesInsurancePoliciesFilterInput
+    aggregate:
+      queryRootField: mortgageServicesInsurancePoliciesAggregate
+      subscription:
+        rootField: mortgageServicesInsurancePoliciesAggregate
+  description: Tracks insurance policies protecting mortgaged properties
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesInsurancePolicies
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesServicingAccount
+  sourceType: MortgageServicesInsurancePolicies
+  target:
+    model:
+      name: MortgageServicesServicingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+

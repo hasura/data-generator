@@ -1,0 +1,341 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingHighCostMortgageTests
+  description: Records the results of high-cost mortgage tests performed under the
+    Home Ownership and Equity Protection Act (HOEPA).
+  fields:
+    - name: additionalDisclosuresRequired
+      type: ConsumerLendingBool!
+      description: Whether additional disclosures required
+    - name: apor
+      type: ConsumerLendingNumeric
+      description: Average Prime Offer Rate used
+    - name: aporDate
+      type: ConsumerLendingDate
+      description: Date of APOR used
+    - name: apr
+      type: ConsumerLendingNumeric!
+      description: APR used for test
+    - name: aprThreshold
+      type: ConsumerLendingNumeric!
+      description: Threshold for APR test
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4!
+      description: Reference to loan application
+    - name: consumerLendingTestId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for HOEPA test
+    - name: highCostMortgage
+      type: ConsumerLendingBool!
+      description: Whether loan is high-cost
+    - name: loanAmount
+      type: ConsumerLendingNumeric!
+      description: Amount used for test
+    - name: notes
+      type: ConsumerLendingText
+      description: Additional test notes
+    - name: pointsAndFees
+      type: ConsumerLendingNumeric!
+      description: Total points and fees
+    - name: pointsAndFeesPercentage
+      type: ConsumerLendingNumeric!
+      description: Points and fees as percentage of loan
+    - name: pointsAndFeesThreshold
+      type: ConsumerLendingNumeric!
+      description: Threshold for points and fees test
+    - name: testDate
+      type: ConsumerLendingDate!
+      description: Date test was performed
+    - name: testType
+      type: ConsumerLendingVarchar!
+      description: APR Test, Points and Fees Test
+    - name: userId
+      type: ConsumerLendingInt4
+      description: User who performed test
+  graphql:
+    typeName: ConsumerLendingHighCostMortgageTests
+    inputTypeName: ConsumerLendingHighCostMortgageTestsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_high_cost_mortgage_tests
+      fieldMapping:
+        additionalDisclosuresRequired:
+          column:
+            name: additional_disclosures_required
+        apor:
+          column:
+            name: apor
+        aporDate:
+          column:
+            name: apor_date
+        apr:
+          column:
+            name: apr
+        aprThreshold:
+          column:
+            name: apr_threshold
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        consumerLendingTestId:
+          column:
+            name: consumer_lending_test_id
+        highCostMortgage:
+          column:
+            name: high_cost_mortgage
+        loanAmount:
+          column:
+            name: loan_amount
+        notes:
+          column:
+            name: notes
+        pointsAndFees:
+          column:
+            name: points_and_fees
+        pointsAndFeesPercentage:
+          column:
+            name: points_and_fees_percentage
+        pointsAndFeesThreshold:
+          column:
+            name: points_and_fees_threshold
+        testDate:
+          column:
+            name: test_date
+        testType:
+          column:
+            name: test_type
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingHighCostMortgageTests
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - additionalDisclosuresRequired
+          - apor
+          - aporDate
+          - apr
+          - aprThreshold
+          - consumerLendingApplicationId
+          - consumerLendingTestId
+          - highCostMortgage
+          - loanAmount
+          - notes
+          - pointsAndFees
+          - pointsAndFeesPercentage
+          - pointsAndFeesThreshold
+          - testDate
+          - testType
+          - userId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingHighCostMortgageTestsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingHighCostMortgageTests
+      comparableFields:
+        - fieldName: additionalDisclosuresRequired
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: apor
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: aporDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: apr
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: aprThreshold
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingTestId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: highCostMortgage
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: loanAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: notes
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: pointsAndFees
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: pointsAndFeesPercentage
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: pointsAndFeesThreshold
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: testDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: testType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: userId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingHighCostMortgageTestsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingHighCostMortgageTestsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingHighCostMortgageTests
+      aggregatableFields:
+        - fieldName: additionalDisclosuresRequired
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: apor
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: aporDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: apr
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: aprThreshold
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingTestId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: highCostMortgage
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: loanAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: notes
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: pointsAndFees
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: pointsAndFeesPercentage
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: pointsAndFeesThreshold
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: testDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: testType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: userId
+          aggregateExpression: ConsumerLendingInt4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingHighCostMortgageTestsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingHighCostMortgageTestsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingHighCostMortgageTests
+      orderableFields:
+        - fieldName: additionalDisclosuresRequired
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: apor
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: aporDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: apr
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: aprThreshold
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingTestId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: highCostMortgage
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: loanAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: notes
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: pointsAndFees
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: pointsAndFeesPercentage
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: pointsAndFeesThreshold
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: testDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: testType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: userId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: testBy
+  graphql:
+    expressionTypeName: ConsumerLendingHighCostMortgageTestsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingHighCostMortgageTests
+  objectType: ConsumerLendingHighCostMortgageTests
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_high_cost_mortgage_tests
+  filterExpressionType: ConsumerLendingHighCostMortgageTestsBoolExp
+  aggregateExpression: ConsumerLendingHighCostMortgageTestsAggExp
+  orderByExpression: ConsumerLendingHighCostMortgageTestsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingHighCostMortgageTests
+      subscription:
+        rootField: consumerLendingHighCostMortgageTests
+    selectUniques:
+      - queryRootField: consumerLendingHighCostMortgageTestsByConsumerLendingTestId
+        uniqueIdentifier:
+          - consumerLendingTestId
+        subscription:
+          rootField: consumerLendingHighCostMortgageTestsByConsumerLendingTestId
+    filterInputTypeName: ConsumerLendingHighCostMortgageTestsFilterInput
+    aggregate:
+      queryRootField: consumerLendingHighCostMortgageTestsAggregate
+      subscription:
+        rootField: consumerLendingHighCostMortgageTestsAggregate
+  description: Records the results of high-cost mortgage tests performed under the
+    Home Ownership and Equity Protection Act (HOEPA).
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingHighCostMortgageTests
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingHighCostMortgageTests
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+

@@ -1,0 +1,411 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SmallBusinessBankingAdverseActionNotices
+  description: Tracks adverse action notices sent to declined applicants
+  fields:
+    - name: creditScore
+      type: Int4
+      description: Credit score disclosed (if applicable)
+    - name: creditScoreDisclosed
+      type: Bool!
+      description: Whether credit score was disclosed
+    - name: deliveryAddress
+      type: Varchar!
+      description: Address or email where notice was sent
+    - name: deliveryDate
+      type: Date!
+      description: Date the notice was delivered
+    - name: deliveryMethod
+      type: Varchar!
+      description: Method of delivery (mail, email, etc.)
+    - name: ecoaNoticeIncluded
+      type: Bool!
+      description: Whether ECOA notice was included
+    - name: fcraNoticeIncluded
+      type: Bool!
+      description: Whether FCRA notice was included
+    - name: generatedBy
+      type: Int4!
+      description: Person or system that generated the notice
+    - name: noticeDate
+      type: Date!
+      description: Date the notice was generated
+    - name: noticeFilePath
+      type: Varchar
+      description: Path to stored copy of the notice
+    - name: primaryReason
+      type: Varchar!
+      description: Primary reason for adverse action
+    - name: rightToAppraisalNotice
+      type: Bool!
+      description: Whether right to appraisal notice was included
+    - name: scoreFactors
+      type: Text
+      description: Factors affecting the credit score
+    - name: scoreRangeHigh
+      type: Int4
+      description: High end of score range
+    - name: scoreRangeLow
+      type: Int4
+      description: Low end of score range
+    - name: secondaryReasons
+      type: Text
+      description: Secondary reasons for adverse action
+    - name: smallBusinessBankingBusinessId
+      type: Int4!
+      description: Reference to the business
+    - name: smallBusinessBankingDecisionId
+      type: Int4!
+      description: Reference to the credit decision
+    - name: smallBusinessBankingNoticeId
+      type: Int4!
+      description: Unique identifier for each adverse action notice
+    - name: templateVersion
+      type: Varchar!
+      description: Version of the notice template used
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingAdverseActionNotices
+    inputTypeName: _SmallBusinessBanking__SmallBusinessBankingAdverseActionNoticesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_adverse_action_notices
+      fieldMapping:
+        creditScore:
+          column:
+            name: credit_score
+        creditScoreDisclosed:
+          column:
+            name: credit_score_disclosed
+        deliveryAddress:
+          column:
+            name: delivery_address
+        deliveryDate:
+          column:
+            name: delivery_date
+        deliveryMethod:
+          column:
+            name: delivery_method
+        ecoaNoticeIncluded:
+          column:
+            name: ecoa_notice_included
+        fcraNoticeIncluded:
+          column:
+            name: fcra_notice_included
+        generatedBy:
+          column:
+            name: generated_by
+        noticeDate:
+          column:
+            name: notice_date
+        noticeFilePath:
+          column:
+            name: notice_file_path
+        primaryReason:
+          column:
+            name: primary_reason
+        rightToAppraisalNotice:
+          column:
+            name: right_to_appraisal_notice
+        scoreFactors:
+          column:
+            name: score_factors
+        scoreRangeHigh:
+          column:
+            name: score_range_high
+        scoreRangeLow:
+          column:
+            name: score_range_low
+        secondaryReasons:
+          column:
+            name: secondary_reasons
+        smallBusinessBankingBusinessId:
+          column:
+            name: small_business_banking_business_id
+        smallBusinessBankingDecisionId:
+          column:
+            name: small_business_banking_decision_id
+        smallBusinessBankingNoticeId:
+          column:
+            name: small_business_banking_notice_id
+        templateVersion:
+          column:
+            name: template_version
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SmallBusinessBankingAdverseActionNotices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - creditScore
+          - creditScoreDisclosed
+          - deliveryAddress
+          - deliveryDate
+          - deliveryMethod
+          - ecoaNoticeIncluded
+          - fcraNoticeIncluded
+          - generatedBy
+          - noticeDate
+          - noticeFilePath
+          - primaryReason
+          - rightToAppraisalNotice
+          - scoreFactors
+          - scoreRangeHigh
+          - scoreRangeLow
+          - secondaryReasons
+          - smallBusinessBankingBusinessId
+          - smallBusinessBankingDecisionId
+          - smallBusinessBankingNoticeId
+          - templateVersion
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SmallBusinessBankingAdverseActionNoticesBoolExp
+  operand:
+    object:
+      type: SmallBusinessBankingAdverseActionNotices
+      comparableFields:
+        - fieldName: creditScore
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditScoreDisclosed
+          booleanExpressionType: BoolBoolExp
+        - fieldName: deliveryAddress
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: deliveryDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: deliveryMethod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: ecoaNoticeIncluded
+          booleanExpressionType: BoolBoolExp
+        - fieldName: fcraNoticeIncluded
+          booleanExpressionType: BoolBoolExp
+        - fieldName: generatedBy
+          booleanExpressionType: Int4BoolExp
+        - fieldName: noticeDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: noticeFilePath
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: primaryReason
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: rightToAppraisalNotice
+          booleanExpressionType: BoolBoolExp
+        - fieldName: scoreFactors
+          booleanExpressionType: TextBoolExp
+        - fieldName: scoreRangeHigh
+          booleanExpressionType: Int4BoolExp
+        - fieldName: scoreRangeLow
+          booleanExpressionType: Int4BoolExp
+        - fieldName: secondaryReasons
+          booleanExpressionType: TextBoolExp
+        - fieldName: smallBusinessBankingBusinessId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingDecisionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: smallBusinessBankingNoticeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: templateVersion
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: smallBusinessBankingCreditDecision
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _SmallBusinessBanking__SmallBusinessBankingAdverseActionNoticesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SmallBusinessBankingAdverseActionNoticesAggExp
+  operand:
+    object:
+      aggregatedType: SmallBusinessBankingAdverseActionNotices
+      aggregatableFields:
+        - fieldName: creditScore
+          aggregateExpression: Int4AggExp
+        - fieldName: creditScoreDisclosed
+          aggregateExpression: BoolAggExp
+        - fieldName: deliveryAddress
+          aggregateExpression: VarcharAggExp
+        - fieldName: deliveryDate
+          aggregateExpression: DateAggExp
+        - fieldName: deliveryMethod
+          aggregateExpression: VarcharAggExp
+        - fieldName: ecoaNoticeIncluded
+          aggregateExpression: BoolAggExp
+        - fieldName: fcraNoticeIncluded
+          aggregateExpression: BoolAggExp
+        - fieldName: generatedBy
+          aggregateExpression: Int4AggExp
+        - fieldName: noticeDate
+          aggregateExpression: DateAggExp
+        - fieldName: noticeFilePath
+          aggregateExpression: VarcharAggExp
+        - fieldName: primaryReason
+          aggregateExpression: VarcharAggExp
+        - fieldName: rightToAppraisalNotice
+          aggregateExpression: BoolAggExp
+        - fieldName: scoreFactors
+          aggregateExpression: TextAggExp
+        - fieldName: scoreRangeHigh
+          aggregateExpression: Int4AggExp
+        - fieldName: scoreRangeLow
+          aggregateExpression: Int4AggExp
+        - fieldName: secondaryReasons
+          aggregateExpression: TextAggExp
+        - fieldName: smallBusinessBankingBusinessId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingDecisionId
+          aggregateExpression: Int4AggExp
+        - fieldName: smallBusinessBankingNoticeId
+          aggregateExpression: Int4AggExp
+        - fieldName: templateVersion
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _SmallBusinessBanking__SmallBusinessBankingAdverseActionNoticesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SmallBusinessBankingAdverseActionNoticesOrderByExp
+  operand:
+    object:
+      orderedType: SmallBusinessBankingAdverseActionNotices
+      orderableFields:
+        - fieldName: creditScore
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditScoreDisclosed
+          orderByExpression: BoolOrderByExp
+        - fieldName: deliveryAddress
+          orderByExpression: VarcharOrderByExp
+        - fieldName: deliveryDate
+          orderByExpression: DateOrderByExp
+        - fieldName: deliveryMethod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: ecoaNoticeIncluded
+          orderByExpression: BoolOrderByExp
+        - fieldName: fcraNoticeIncluded
+          orderByExpression: BoolOrderByExp
+        - fieldName: generatedBy
+          orderByExpression: Int4OrderByExp
+        - fieldName: noticeDate
+          orderByExpression: DateOrderByExp
+        - fieldName: noticeFilePath
+          orderByExpression: VarcharOrderByExp
+        - fieldName: primaryReason
+          orderByExpression: VarcharOrderByExp
+        - fieldName: rightToAppraisalNotice
+          orderByExpression: BoolOrderByExp
+        - fieldName: scoreFactors
+          orderByExpression: TextOrderByExp
+        - fieldName: scoreRangeHigh
+          orderByExpression: Int4OrderByExp
+        - fieldName: scoreRangeLow
+          orderByExpression: Int4OrderByExp
+        - fieldName: secondaryReasons
+          orderByExpression: TextOrderByExp
+        - fieldName: smallBusinessBankingBusinessId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingDecisionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: smallBusinessBankingNoticeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: templateVersion
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: smallBusinessBankingBusiness
+        - relationshipName: smallBusinessBankingCreditDecision
+        - relationshipName: noticeGeneratedBy
+  graphql:
+    expressionTypeName: _SmallBusinessBanking__SmallBusinessBankingAdverseActionNoticesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SmallBusinessBankingAdverseActionNotices
+  objectType: SmallBusinessBankingAdverseActionNotices
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_adverse_action_notices
+  filterExpressionType: SmallBusinessBankingAdverseActionNoticesBoolExp
+  aggregateExpression: SmallBusinessBankingAdverseActionNoticesAggExp
+  orderByExpression: SmallBusinessBankingAdverseActionNoticesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: smallBusinessBankingAdverseActionNotices
+      subscription:
+        rootField: smallBusinessBankingAdverseActionNotices
+    selectUniques:
+      - queryRootField: smallBusinessBankingAdverseActionNoticesBySmallBusinessBankingNoticeId
+        uniqueIdentifier:
+          - smallBusinessBankingNoticeId
+        subscription:
+          rootField: smallBusinessBankingAdverseActionNoticesBySmallBusinessBankingNoticeId
+    filterInputTypeName: _SmallBusinessBanking__SmallBusinessBankingAdverseActionNoticesFilterInput
+    aggregate:
+      queryRootField: smallBusinessBankingAdverseActionNoticesAggregate
+      subscription:
+        rootField: smallBusinessBankingAdverseActionNoticesAggregate
+  description: Tracks adverse action notices sent to declined applicants
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SmallBusinessBankingAdverseActionNotices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingBusiness
+  sourceType: SmallBusinessBankingAdverseActionNotices
+  target:
+    model:
+      name: SmallBusinessBankingBusinesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingBusinessId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingBusinessId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: smallBusinessBankingCreditDecision
+  sourceType: SmallBusinessBankingAdverseActionNotices
+  target:
+    model:
+      name: SmallBusinessBankingCreditDecisions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: smallBusinessBankingDecisionId
+      target:
+        modelField:
+          - fieldName: smallBusinessBankingDecisionId
+

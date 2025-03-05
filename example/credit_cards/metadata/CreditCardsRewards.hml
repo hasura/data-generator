@@ -1,0 +1,280 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsRewards
+  description: Tracks reward earning and redemption activity
+  fields:
+    - name: amount
+      type: Numeric!
+      description: Amount of reward earned or redeemed
+    - name: category
+      type: Varchar
+      description: Category associated with reward if applicable
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsRewardId
+      type: Int4!
+      description: Auto-incrementing identifier for each reward record
+    - name: creditCardsTransactionId
+      type: Int4
+      description: Reference to transactions if earned from transaction
+    - name: dateEarned
+      type: Date!
+      description: Date reward was earned or redeemed
+    - name: description
+      type: Varchar!
+      description: Description of reward activity
+    - name: eventType
+      type: Varchar!
+      description: Earned, Bonus, Redeemed, Expired, Adjusted
+    - name: expirationDate
+      type: Date
+      description: Date reward will expire if applicable
+    - name: rewardType
+      type: Varchar!
+      description: Type of reward (Points, Cashback, Miles)
+  graphql:
+    typeName: _CreditCards__CreditCardsRewards
+    inputTypeName: _CreditCards__CreditCardsRewardsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_rewards
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        category:
+          column:
+            name: category
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsRewardId:
+          column:
+            name: credit_cards_reward_id
+        creditCardsTransactionId:
+          column:
+            name: credit_cards_transaction_id
+        dateEarned:
+          column:
+            name: date_earned
+        description:
+          column:
+            name: description
+        eventType:
+          column:
+            name: event_type
+        expirationDate:
+          column:
+            name: expiration_date
+        rewardType:
+          column:
+            name: reward_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsRewards
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - category
+          - creditCardsCardAccountId
+          - creditCardsRewardId
+          - creditCardsTransactionId
+          - dateEarned
+          - description
+          - eventType
+          - expirationDate
+          - rewardType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsRewardsBoolExp
+  operand:
+    object:
+      type: CreditCardsRewards
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: category
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsRewardId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsTransactionId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dateEarned
+          booleanExpressionType: DateBoolExp
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: eventType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: expirationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: rewardType
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsTransaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsRewardsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsRewardsAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsRewards
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: category
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsRewardId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsTransactionId
+          aggregateExpression: Int4AggExp
+        - fieldName: dateEarned
+          aggregateExpression: DateAggExp
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: eventType
+          aggregateExpression: VarcharAggExp
+        - fieldName: expirationDate
+          aggregateExpression: DateAggExp
+        - fieldName: rewardType
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsRewardsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsRewardsOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsRewards
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: category
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsRewardId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsTransactionId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dateEarned
+          orderByExpression: DateOrderByExp
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: eventType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: expirationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: rewardType
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+        - relationshipName: creditCardsTransaction
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsRewardsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsRewards
+  objectType: CreditCardsRewards
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_rewards
+  filterExpressionType: CreditCardsRewardsBoolExp
+  aggregateExpression: CreditCardsRewardsAggExp
+  orderByExpression: CreditCardsRewardsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsRewards
+      subscription:
+        rootField: creditCardsRewards
+    selectUniques:
+      - queryRootField: creditCardsRewardsByCreditCardsRewardId
+        uniqueIdentifier:
+          - creditCardsRewardId
+        subscription:
+          rootField: creditCardsRewardsByCreditCardsRewardId
+    filterInputTypeName: _CreditCards__CreditCardsRewardsFilterInput
+    aggregate:
+      queryRootField: creditCardsRewardsAggregate
+      subscription:
+        rootField: creditCardsRewardsAggregate
+  description: Tracks reward earning and redemption activity
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsRewards
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsRewards
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsTransaction
+  sourceType: CreditCardsRewards
+  target:
+    model:
+      name: CreditCardsTransactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsTransactionId
+      target:
+        modelField:
+          - fieldName: creditCardsTransactionId
+

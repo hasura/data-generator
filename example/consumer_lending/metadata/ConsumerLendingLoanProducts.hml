@@ -1,0 +1,464 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingLoanProducts
+  description: Defines the various loan products offered to consumers, including
+    their terms, fees, and features.
+  fields:
+    - name: baseInterestRate
+      type: ConsumerLendingNumeric!
+      description: Starting interest rate before adjustments
+    - name: consumerLendingLoanProductId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for loan product
+    - name: description
+      type: ConsumerLendingText
+      description: Detailed product description
+    - name: disbursementOptions
+      type: ConsumerLendingVarchar
+      description: Direct Deposit, Check, Dealer Direct, etc.
+    - name: earlyRepaymentPenalty
+      type: ConsumerLendingBool!
+      description: Whether penalty applies for early payoff
+    - name: interestRateType
+      type: ConsumerLendingVarchar!
+      description: Fixed, Variable
+    - name: isActive
+      type: ConsumerLendingBool!
+      description: Whether product is currently offered
+    - name: lateFeeAmount
+      type: ConsumerLendingNumeric
+      description: Amount or percentage of late fee
+    - name: lateFeeType
+      type: ConsumerLendingVarchar
+      description: Flat, Percentage
+    - name: loanType
+      type: ConsumerLendingVarchar!
+      description: Personal, Auto, Student, etc.
+    - name: maxLoanAmount
+      type: ConsumerLendingNumeric
+      description: Maximum allowed loan amount
+    - name: maxTermMonths
+      type: ConsumerLendingInt4!
+      description: Maximum allowed term in months
+    - name: minCreditScore
+      type: ConsumerLendingInt4
+      description: Minimum required credit score
+    - name: minLoanAmount
+      type: ConsumerLendingNumeric
+      description: Minimum allowed loan amount
+    - name: minTermMonths
+      type: ConsumerLendingInt4!
+      description: Minimum allowed term in months
+    - name: originationFeeAmount
+      type: ConsumerLendingNumeric
+      description: Amount or percentage of origination fee
+    - name: originationFeeType
+      type: ConsumerLendingVarchar
+      description: Flat, Percentage
+    - name: productCode
+      type: ConsumerLendingVarchar!
+      description: Internal code for the product
+    - name: productName
+      type: ConsumerLendingVarchar!
+      description: Marketing name of the product
+    - name: requiredCollateral
+      type: ConsumerLendingBool!
+      description: Whether collateral is required
+  graphql:
+    typeName: ConsumerLendingLoanProducts
+    inputTypeName: ConsumerLendingLoanProductsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_products
+      fieldMapping:
+        baseInterestRate:
+          column:
+            name: base_interest_rate
+        consumerLendingLoanProductId:
+          column:
+            name: consumer_lending_loan_product_id
+        description:
+          column:
+            name: description
+        disbursementOptions:
+          column:
+            name: disbursement_options
+        earlyRepaymentPenalty:
+          column:
+            name: early_repayment_penalty
+        interestRateType:
+          column:
+            name: interest_rate_type
+        isActive:
+          column:
+            name: is_active
+        lateFeeAmount:
+          column:
+            name: late_fee_amount
+        lateFeeType:
+          column:
+            name: late_fee_type
+        loanType:
+          column:
+            name: loan_type
+        maxLoanAmount:
+          column:
+            name: max_loan_amount
+        maxTermMonths:
+          column:
+            name: max_term_months
+        minCreditScore:
+          column:
+            name: min_credit_score
+        minLoanAmount:
+          column:
+            name: min_loan_amount
+        minTermMonths:
+          column:
+            name: min_term_months
+        originationFeeAmount:
+          column:
+            name: origination_fee_amount
+        originationFeeType:
+          column:
+            name: origination_fee_type
+        productCode:
+          column:
+            name: product_code
+        productName:
+          column:
+            name: product_name
+        requiredCollateral:
+          column:
+            name: required_collateral
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingLoanProducts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - baseInterestRate
+          - consumerLendingLoanProductId
+          - description
+          - disbursementOptions
+          - earlyRepaymentPenalty
+          - interestRateType
+          - isActive
+          - lateFeeAmount
+          - lateFeeType
+          - loanType
+          - maxLoanAmount
+          - maxTermMonths
+          - minCreditScore
+          - minLoanAmount
+          - minTermMonths
+          - originationFeeAmount
+          - originationFeeType
+          - productCode
+          - productName
+          - requiredCollateral
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingLoanProductsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingLoanProducts
+      comparableFields:
+        - fieldName: baseInterestRate
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: consumerLendingLoanProductId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: description
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: disbursementOptions
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: earlyRepaymentPenalty
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: interestRateType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: isActive
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+        - fieldName: lateFeeAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: lateFeeType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: loanType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: maxLoanAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: maxTermMonths
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: minCreditScore
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: minLoanAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: minTermMonths
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: originationFeeAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: originationFeeType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: productCode
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: productName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: requiredCollateral
+          booleanExpressionType: ConsumerLendingBoolBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingFairlendingAnalyses
+        - relationshipName: consumerLendingLoanAccounts
+        - relationshipName: consumerLendingProductEligibilityCriteria
+        - relationshipName: consumerLendingRiskBasedPricingTiers
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingLoanProductsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanProductsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingLoanProducts
+      aggregatableFields:
+        - fieldName: baseInterestRate
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: consumerLendingLoanProductId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: description
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: disbursementOptions
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: earlyRepaymentPenalty
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: interestRateType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: isActive
+          aggregateExpression: ConsumerLendingBoolAggExp
+        - fieldName: lateFeeAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: lateFeeType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: loanType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: maxLoanAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: maxTermMonths
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: minCreditScore
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: minLoanAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: minTermMonths
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: originationFeeAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: originationFeeType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: productCode
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: productName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: requiredCollateral
+          aggregateExpression: ConsumerLendingBoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingLoanProductsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanProductsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingLoanProducts
+      orderableFields:
+        - fieldName: baseInterestRate
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: consumerLendingLoanProductId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: description
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: disbursementOptions
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: earlyRepaymentPenalty
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: interestRateType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: isActive
+          orderByExpression: ConsumerLendingBoolOrderByExp
+        - fieldName: lateFeeAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: lateFeeType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: loanType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: maxLoanAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: maxTermMonths
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: minCreditScore
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: minLoanAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: minTermMonths
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: originationFeeAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: originationFeeType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: productCode
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: productName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: requiredCollateral
+          orderByExpression: ConsumerLendingBoolOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: ConsumerLendingLoanProductsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingLoanProducts
+  objectType: ConsumerLendingLoanProducts
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_products
+  filterExpressionType: ConsumerLendingLoanProductsBoolExp
+  aggregateExpression: ConsumerLendingLoanProductsAggExp
+  orderByExpression: ConsumerLendingLoanProductsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingLoanProducts
+      subscription:
+        rootField: consumerLendingLoanProducts
+    selectUniques:
+      - queryRootField: consumerLendingLoanProductsByConsumerLendingLoanProductId
+        uniqueIdentifier:
+          - consumerLendingLoanProductId
+        subscription:
+          rootField: consumerLendingLoanProductsByConsumerLendingLoanProductId
+    filterInputTypeName: ConsumerLendingLoanProductsFilterInput
+    aggregate:
+      queryRootField: consumerLendingLoanProductsAggregate
+      subscription:
+        rootField: consumerLendingLoanProductsAggregate
+  description: Defines the various loan products offered to consumers, including
+    their terms, fees, and features.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingLoanProducts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingFairlendingAnalyses
+  sourceType: ConsumerLendingLoanProducts
+  target:
+    model:
+      name: ConsumerLendingFairlendingAnalysis
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingFairlendingAnalysisAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanProductId
+      target:
+        modelField:
+          - fieldName: productId
+  graphql:
+    aggregateFieldName: consumerLendingFairlendingAnalysesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccounts
+  sourceType: ConsumerLendingLoanProducts
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingLoanAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanProductId
+      target:
+        modelField:
+          - fieldName: consumerLendingLoanProductId
+  graphql:
+    aggregateFieldName: consumerLendingLoanAccountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingProductEligibilityCriteria
+  sourceType: ConsumerLendingLoanProducts
+  target:
+    model:
+      name: ConsumerLendingProductEligibilityCriteria
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingProductEligibilityCriteriaAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanProductId
+      target:
+        modelField:
+          - fieldName: consumerLendingLoanProductId
+  graphql:
+    aggregateFieldName: consumerLendingProductEligibilityCriteriaAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingRiskBasedPricingTiers
+  sourceType: ConsumerLendingLoanProducts
+  target:
+    model:
+      name: ConsumerLendingRiskBasedPricingTiers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingRiskBasedPricingTiersAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanProductId
+      target:
+        modelField:
+          - fieldName: consumerLendingLoanProductId
+  graphql:
+    aggregateFieldName: consumerLendingRiskBasedPricingTiersAggregate
+

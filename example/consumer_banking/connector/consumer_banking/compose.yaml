@@ -1,0 +1,14 @@
+services:
+  consumer_banking_consumer_banking:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.consumer_banking
+    environment:
+      CONNECTION_URI: $CONSUMER_BANKING_CONSUMER_BANKING_CONNECTION_URI
+      HASURA_SERVICE_TOKEN_SECRET: $CONSUMER_BANKING_CONSUMER_BANKING_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $CONSUMER_BANKING_CONSUMER_BANKING_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $CONSUMER_BANKING_CONSUMER_BANKING_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 5691:8080

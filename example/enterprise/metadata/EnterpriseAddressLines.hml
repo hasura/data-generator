@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseAddressLines
+  description: Stores multiple address lines for addresses that require them
+  fields:
+    - name: addressLine
+      type: Varchar!
+      description: Text content of the address line
+    - name: enterpriseAddressId
+      type: Int4!
+      description: References the parent address record
+    - name: enterpriseAddressLineId
+      type: Int4!
+      description: Auto-incrementing identifier for each address line
+    - name: lineNumber
+      type: Int4!
+      description: Sequential number indicating the order of address lines
+  graphql:
+    typeName: EnterpriseAddressLines
+    inputTypeName: EnterpriseAddressLinesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_address_lines
+      fieldMapping:
+        addressLine:
+          column:
+            name: address_line
+        enterpriseAddressId:
+          column:
+            name: enterprise_address_id
+        enterpriseAddressLineId:
+          column:
+            name: enterprise_address_line_id
+        lineNumber:
+          column:
+            name: line_number
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseAddressLines
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - addressLine
+          - enterpriseAddressId
+          - enterpriseAddressLineId
+          - lineNumber
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseAddressLinesBoolExp
+  operand:
+    object:
+      type: EnterpriseAddressLines
+      comparableFields:
+        - fieldName: addressLine
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterpriseAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseAddressLineId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: lineNumber
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: enterpriseAddress
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: EnterpriseAddressLinesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseAddressLinesAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseAddressLines
+      aggregatableFields:
+        - fieldName: addressLine
+          aggregateExpression: VarcharAggExp
+        - fieldName: enterpriseAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseAddressLineId
+          aggregateExpression: Int4AggExp
+        - fieldName: lineNumber
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: EnterpriseAddressLinesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseAddressLinesOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseAddressLines
+      orderableFields:
+        - fieldName: addressLine
+          orderByExpression: VarcharOrderByExp
+        - fieldName: enterpriseAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseAddressLineId
+          orderByExpression: Int4OrderByExp
+        - fieldName: lineNumber
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: enterpriseAddress
+  graphql:
+    expressionTypeName: EnterpriseAddressLinesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseAddressLines
+  objectType: EnterpriseAddressLines
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_address_lines
+  filterExpressionType: EnterpriseAddressLinesBoolExp
+  aggregateExpression: EnterpriseAddressLinesAggExp
+  orderByExpression: EnterpriseAddressLinesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseAddressLines
+      subscription:
+        rootField: enterpriseAddressLines
+    selectUniques:
+      - queryRootField: enterpriseAddressLinesByEnterpriseAddressLineId
+        uniqueIdentifier:
+          - enterpriseAddressLineId
+        subscription:
+          rootField: enterpriseAddressLinesByEnterpriseAddressLineId
+    filterInputTypeName: EnterpriseAddressLinesFilterInput
+    aggregate:
+      queryRootField: enterpriseAddressLinesAggregate
+      subscription:
+        rootField: enterpriseAddressLinesAggregate
+  description: Stores multiple address lines for addresses that require them
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseAddressLines
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAddress
+  sourceType: EnterpriseAddressLines
+  target:
+    model:
+      name: EnterpriseAddresses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseAddressId
+      target:
+        modelField:
+          - fieldName: enterpriseAddressId
+

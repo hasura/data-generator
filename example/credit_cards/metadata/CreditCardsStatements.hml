@@ -1,0 +1,449 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreditCardsStatements
+  description: Stores monthly billing statements for card accounts
+  fields:
+    - name: balanceTransfers
+      type: Numeric!
+      description: Balance transfers in period
+    - name: cashAdvances
+      type: Numeric!
+      description: Cash advances in period
+    - name: creditCardsCardAccountId
+      type: Int4!
+      description: Reference to card_accounts
+    - name: creditCardsStatementId
+      type: Int4!
+      description: Auto-incrementing identifier for each statement
+    - name: credits
+      type: Numeric!
+      description: Credits/refunds in period
+    - name: daysInBillingCycle
+      type: Int4!
+      description: Number of days in billing cycle
+    - name: documentPath
+      type: Varchar
+      description: Path to stored statement document
+    - name: dueDate
+      type: Date!
+      description: Payment due date
+    - name: endingBalance
+      type: Numeric!
+      description: Ending statement balance
+    - name: fees
+      type: Numeric!
+      description: Fees charged in period
+    - name: interest
+      type: Numeric!
+      description: Interest charged in period
+    - name: minimumPayment
+      type: Numeric!
+      description: Minimum payment due
+    - name: newCharges
+      type: Numeric!
+      description: New purchases and charges
+    - name: paymentReceived
+      type: Bool!
+      description: Whether payment was received by due date
+    - name: paymentReceivedAmount
+      type: Numeric
+      description: Amount of payment received
+    - name: paymentReceivedDate
+      type: Date
+      description: Date payment was received
+    - name: payments
+      type: Numeric!
+      description: Payments received in period
+    - name: previousBalance
+      type: Numeric!
+      description: Balance carried over from previous statement
+    - name: statementDate
+      type: Date!
+      description: Date statement was generated
+    - name: statementPeriodEnd
+      type: Date!
+      description: End date for statement period
+    - name: statementPeriodStart
+      type: Date!
+      description: Start date for statement period
+  graphql:
+    typeName: _CreditCards__CreditCardsStatements
+    inputTypeName: _CreditCards__CreditCardsStatementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_statements
+      fieldMapping:
+        balanceTransfers:
+          column:
+            name: balance_transfers
+        cashAdvances:
+          column:
+            name: cash_advances
+        creditCardsCardAccountId:
+          column:
+            name: credit_cards_card_account_id
+        creditCardsStatementId:
+          column:
+            name: credit_cards_statement_id
+        credits:
+          column:
+            name: credits
+        daysInBillingCycle:
+          column:
+            name: days_in_billing_cycle
+        documentPath:
+          column:
+            name: document_path
+        dueDate:
+          column:
+            name: due_date
+        endingBalance:
+          column:
+            name: ending_balance
+        fees:
+          column:
+            name: fees
+        interest:
+          column:
+            name: interest
+        minimumPayment:
+          column:
+            name: minimum_payment
+        newCharges:
+          column:
+            name: new_charges
+        paymentReceived:
+          column:
+            name: payment_received
+        paymentReceivedAmount:
+          column:
+            name: payment_received_amount
+        paymentReceivedDate:
+          column:
+            name: payment_received_date
+        payments:
+          column:
+            name: payments
+        previousBalance:
+          column:
+            name: previous_balance
+        statementDate:
+          column:
+            name: statement_date
+        statementPeriodEnd:
+          column:
+            name: statement_period_end
+        statementPeriodStart:
+          column:
+            name: statement_period_start
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreditCardsStatements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - balanceTransfers
+          - cashAdvances
+          - creditCardsCardAccountId
+          - creditCardsStatementId
+          - credits
+          - daysInBillingCycle
+          - documentPath
+          - dueDate
+          - endingBalance
+          - fees
+          - interest
+          - minimumPayment
+          - newCharges
+          - paymentReceived
+          - paymentReceivedAmount
+          - paymentReceivedDate
+          - payments
+          - previousBalance
+          - statementDate
+          - statementPeriodEnd
+          - statementPeriodStart
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: CreditCardsStatementsBoolExp
+  operand:
+    object:
+      type: CreditCardsStatements
+      comparableFields:
+        - fieldName: balanceTransfers
+          booleanExpressionType: NumericBoolExp
+        - fieldName: cashAdvances
+          booleanExpressionType: NumericBoolExp
+        - fieldName: creditCardsCardAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: credits
+          booleanExpressionType: NumericBoolExp
+        - fieldName: daysInBillingCycle
+          booleanExpressionType: Int4BoolExp
+        - fieldName: documentPath
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: dueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: endingBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: fees
+          booleanExpressionType: NumericBoolExp
+        - fieldName: interest
+          booleanExpressionType: NumericBoolExp
+        - fieldName: minimumPayment
+          booleanExpressionType: NumericBoolExp
+        - fieldName: newCharges
+          booleanExpressionType: NumericBoolExp
+        - fieldName: paymentReceived
+          booleanExpressionType: BoolBoolExp
+        - fieldName: paymentReceivedAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: paymentReceivedDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: payments
+          booleanExpressionType: NumericBoolExp
+        - fieldName: previousBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: statementDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: statementPeriodEnd
+          booleanExpressionType: DateBoolExp
+        - fieldName: statementPeriodStart
+          booleanExpressionType: DateBoolExp
+      comparableRelationships:
+        - relationshipName: creditCardsFees
+        - relationshipName: creditCardsInterestCharges
+        - relationshipName: creditCardsCardAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _CreditCards__CreditCardsStatementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: CreditCardsStatementsAggExp
+  operand:
+    object:
+      aggregatedType: CreditCardsStatements
+      aggregatableFields:
+        - fieldName: balanceTransfers
+          aggregateExpression: NumericAggExp
+        - fieldName: cashAdvances
+          aggregateExpression: NumericAggExp
+        - fieldName: creditCardsCardAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditCardsStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: credits
+          aggregateExpression: NumericAggExp
+        - fieldName: daysInBillingCycle
+          aggregateExpression: Int4AggExp
+        - fieldName: documentPath
+          aggregateExpression: VarcharAggExp
+        - fieldName: dueDate
+          aggregateExpression: DateAggExp
+        - fieldName: endingBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: fees
+          aggregateExpression: NumericAggExp
+        - fieldName: interest
+          aggregateExpression: NumericAggExp
+        - fieldName: minimumPayment
+          aggregateExpression: NumericAggExp
+        - fieldName: newCharges
+          aggregateExpression: NumericAggExp
+        - fieldName: paymentReceived
+          aggregateExpression: BoolAggExp
+        - fieldName: paymentReceivedAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: paymentReceivedDate
+          aggregateExpression: DateAggExp
+        - fieldName: payments
+          aggregateExpression: NumericAggExp
+        - fieldName: previousBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: statementDate
+          aggregateExpression: DateAggExp
+        - fieldName: statementPeriodEnd
+          aggregateExpression: DateAggExp
+        - fieldName: statementPeriodStart
+          aggregateExpression: DateAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _CreditCards__CreditCardsStatementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: CreditCardsStatementsOrderByExp
+  operand:
+    object:
+      orderedType: CreditCardsStatements
+      orderableFields:
+        - fieldName: balanceTransfers
+          orderByExpression: NumericOrderByExp
+        - fieldName: cashAdvances
+          orderByExpression: NumericOrderByExp
+        - fieldName: creditCardsCardAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: credits
+          orderByExpression: NumericOrderByExp
+        - fieldName: daysInBillingCycle
+          orderByExpression: Int4OrderByExp
+        - fieldName: documentPath
+          orderByExpression: VarcharOrderByExp
+        - fieldName: dueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: endingBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: fees
+          orderByExpression: NumericOrderByExp
+        - fieldName: interest
+          orderByExpression: NumericOrderByExp
+        - fieldName: minimumPayment
+          orderByExpression: NumericOrderByExp
+        - fieldName: newCharges
+          orderByExpression: NumericOrderByExp
+        - fieldName: paymentReceived
+          orderByExpression: BoolOrderByExp
+        - fieldName: paymentReceivedAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: paymentReceivedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: payments
+          orderByExpression: NumericOrderByExp
+        - fieldName: previousBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: statementDate
+          orderByExpression: DateOrderByExp
+        - fieldName: statementPeriodEnd
+          orderByExpression: DateOrderByExp
+        - fieldName: statementPeriodStart
+          orderByExpression: DateOrderByExp
+      orderableRelationships:
+        - relationshipName: creditCardsCardAccount
+  graphql:
+    expressionTypeName: _CreditCards__CreditCardsStatementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: CreditCardsStatements
+  objectType: CreditCardsStatements
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_statements
+  filterExpressionType: CreditCardsStatementsBoolExp
+  aggregateExpression: CreditCardsStatementsAggExp
+  orderByExpression: CreditCardsStatementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: creditCardsStatements
+      subscription:
+        rootField: creditCardsStatements
+    selectUniques:
+      - queryRootField: creditCardsStatementsByCreditCardsStatementId
+        uniqueIdentifier:
+          - creditCardsStatementId
+        subscription:
+          rootField: creditCardsStatementsByCreditCardsStatementId
+    filterInputTypeName: _CreditCards__CreditCardsStatementsFilterInput
+    aggregate:
+      queryRootField: creditCardsStatementsAggregate
+      subscription:
+        rootField: creditCardsStatementsAggregate
+  description: Stores monthly billing statements for card accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: CreditCardsStatements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsFees
+  sourceType: CreditCardsStatements
+  target:
+    model:
+      name: CreditCardsFees
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsFeesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsStatementId
+      target:
+        modelField:
+          - fieldName: creditCardsStatementId
+  graphql:
+    aggregateFieldName: creditCardsFeesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsInterestCharges
+  sourceType: CreditCardsStatements
+  target:
+    model:
+      name: CreditCardsInterestCharges
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: CreditCardsInterestChargesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsStatementId
+      target:
+        modelField:
+          - fieldName: creditCardsStatementId
+  graphql:
+    aggregateFieldName: creditCardsInterestChargesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: creditCardsCardAccount
+  sourceType: CreditCardsStatements
+  target:
+    model:
+      name: CreditCardsCardAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: creditCardsCardAccountId
+      target:
+        modelField:
+          - fieldName: creditCardsCardAccountId
+

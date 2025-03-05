@@ -1,0 +1,372 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrders
+  description: Stores information about recurring payment instructions (standing orders)
+  fields:
+    - name: consumerBankingStandingOrderId
+      type: Int4!
+      description: Unique identifier for each standing order
+    - name: enterpriseAccountId
+      type: Int4!
+      description: Account from which the recurring payments are made
+    - name: finalPaymentAmount
+      type: Numeric
+      description: Amount of the final payment (if different)
+    - name: finalPaymentCurrency
+      type: Varchar
+      description: Currency of the final payment
+    - name: firstPaymentAmount
+      type: Numeric
+      description: Amount of the first payment (if different)
+    - name: firstPaymentCurrency
+      type: Varchar
+      description: Currency of the first payment
+    - name: lastPaymentAmount
+      type: Numeric
+      description: Amount of the most recent payment
+    - name: lastPaymentCurrency
+      type: Varchar
+      description: Currency of the most recent payment
+    - name: lastPaymentDateTime
+      type: Timestamp
+      description: When the most recent payment was made
+    - name: nextPaymentAmount
+      type: Numeric
+      description: Amount of the next scheduled payment
+    - name: nextPaymentCurrency
+      type: Varchar
+      description: Currency of the next payment
+    - name: nextPaymentDateTime
+      type: Timestamp
+      description: When the next payment is scheduled
+    - name: standingOrderStatusCode
+      type: Varchar
+      description: Status code of the standing order (e.g., active, canceled)
+    - name: supplementaryData
+      type: Text
+      description: Additional information about the standing order
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrders
+    inputTypeName: ConsumerBanking_ConsumerBankingStandingOrdersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_standing_orders
+      fieldMapping:
+        consumerBankingStandingOrderId:
+          column:
+            name: consumer_banking_standing_order_id
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        finalPaymentAmount:
+          column:
+            name: final_payment_amount
+        finalPaymentCurrency:
+          column:
+            name: final_payment_currency
+        firstPaymentAmount:
+          column:
+            name: first_payment_amount
+        firstPaymentCurrency:
+          column:
+            name: first_payment_currency
+        lastPaymentAmount:
+          column:
+            name: last_payment_amount
+        lastPaymentCurrency:
+          column:
+            name: last_payment_currency
+        lastPaymentDateTime:
+          column:
+            name: last_payment_date_time
+        nextPaymentAmount:
+          column:
+            name: next_payment_amount
+        nextPaymentCurrency:
+          column:
+            name: next_payment_currency
+        nextPaymentDateTime:
+          column:
+            name: next_payment_date_time
+        standingOrderStatusCode:
+          column:
+            name: standing_order_status_code
+        supplementaryData:
+          column:
+            name: supplementary_data
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingStandingOrders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingStandingOrderId
+          - enterpriseAccountId
+          - finalPaymentAmount
+          - finalPaymentCurrency
+          - firstPaymentAmount
+          - firstPaymentCurrency
+          - lastPaymentAmount
+          - lastPaymentCurrency
+          - lastPaymentDateTime
+          - nextPaymentAmount
+          - nextPaymentCurrency
+          - nextPaymentDateTime
+          - standingOrderStatusCode
+          - supplementaryData
+          - consumerBankingAccountId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrdersBoolExp
+  operand:
+    object:
+      type: ConsumerBankingStandingOrders
+      comparableFields:
+        - fieldName: consumerBankingStandingOrderId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: finalPaymentAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: finalPaymentCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: firstPaymentAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: firstPaymentCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastPaymentAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: lastPaymentCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastPaymentDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: nextPaymentAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: nextPaymentCurrency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: nextPaymentDateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: standingOrderStatusCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: supplementaryData
+          booleanExpressionType: TextBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStandingOrderCreditorAccounts
+        - relationshipName: consumerBankingStandingOrderCreditorAgents
+        - relationshipName: consumerBankingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrdersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrdersAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingStandingOrders
+      aggregatableFields:
+        - fieldName: consumerBankingStandingOrderId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: finalPaymentAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: finalPaymentCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: firstPaymentAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: firstPaymentCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastPaymentAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: lastPaymentCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastPaymentDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: nextPaymentAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: nextPaymentCurrency
+          aggregateExpression: VarcharAggExp
+        - fieldName: nextPaymentDateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: standingOrderStatusCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: supplementaryData
+          aggregateExpression: TextAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStandingOrdersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrdersOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingStandingOrders
+      orderableFields:
+        - fieldName: consumerBankingStandingOrderId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: finalPaymentAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: finalPaymentCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: firstPaymentAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: firstPaymentCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastPaymentAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: lastPaymentCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastPaymentDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: nextPaymentAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: nextPaymentCurrency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: nextPaymentDateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: standingOrderStatusCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: supplementaryData
+          orderByExpression: TextOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: account
+        - relationshipName: consumerBankingAccount
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStandingOrdersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingStandingOrders
+  objectType: ConsumerBankingStandingOrders
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_standing_orders
+  filterExpressionType: ConsumerBankingStandingOrdersBoolExp
+  aggregateExpression: ConsumerBankingStandingOrdersAggExp
+  orderByExpression: ConsumerBankingStandingOrdersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingStandingOrders
+      subscription:
+        rootField: consumerBankingStandingOrders
+    selectUniques:
+      - queryRootField: consumerBankingStandingOrdersByConsumerBankingStandingOrderId
+        uniqueIdentifier:
+          - consumerBankingStandingOrderId
+        subscription:
+          rootField: consumerBankingStandingOrdersByConsumerBankingStandingOrderId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingStandingOrdersFilterInput
+    aggregate:
+      queryRootField: consumerBankingStandingOrdersAggregate
+      subscription:
+        rootField: consumerBankingStandingOrdersAggregate
+  description: Stores information about recurring payment instructions (standing orders)
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingStandingOrders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStandingOrderCreditorAccounts
+  sourceType: ConsumerBankingStandingOrders
+  target:
+    model:
+      name: ConsumerBankingStandingOrderCreditorAccounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStandingOrderCreditorAccountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStandingOrderId
+      target:
+        modelField:
+          - fieldName: consumerBankingStandingOrderId
+  graphql:
+    aggregateFieldName: consumerBankingStandingOrderCreditorAccountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStandingOrderCreditorAgents
+  sourceType: ConsumerBankingStandingOrders
+  target:
+    model:
+      name: ConsumerBankingStandingOrderCreditorAgents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingStandingOrderCreditorAgentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStandingOrderId
+      target:
+        modelField:
+          - fieldName: consumerBankingStandingOrderId
+  graphql:
+    aggregateFieldName: consumerBankingStandingOrderCreditorAgentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingStandingOrders
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+

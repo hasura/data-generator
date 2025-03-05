@@ -1,0 +1,265 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseBuildings
+  description: Stores information about the physical buildings used by the
+    enterprise, including branches and other facilities.
+  fields:
+    - name: buildingName
+      type: Varchar
+      description: Name of the building.
+    - name: buildingType
+      type: Varchar
+      description: Type of building (e.g., Branch, Headquarters, Warehouse).
+    - name: city
+      type: Varchar
+      description: City where the building is located.
+    - name: closeDate
+      type: Date
+      description: Date the building was closed, if applicable.
+    - name: enterpriseBuildingId
+      type: Int4!
+      description: Unique identifier for each building.
+    - name: openDate
+      type: Date
+      description: Date the building was opened.
+    - name: phoneNumber
+      type: Varchar
+      description: Phone number of the building.
+    - name: postCode
+      type: Varchar
+      description: Postal code of the building.
+    - name: state
+      type: Varchar
+      description: State where the building is located.
+    - name: streetAddress
+      type: Varchar
+      description: Street address of the building.
+  graphql:
+    typeName: EnterpriseBuildings
+    inputTypeName: EnterpriseBuildingsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_buildings
+      fieldMapping:
+        buildingName:
+          column:
+            name: building_name
+        buildingType:
+          column:
+            name: building_type
+        city:
+          column:
+            name: city
+        closeDate:
+          column:
+            name: close_date
+        enterpriseBuildingId:
+          column:
+            name: enterprise_building_id
+        openDate:
+          column:
+            name: open_date
+        phoneNumber:
+          column:
+            name: phone_number
+        postCode:
+          column:
+            name: post_code
+        state:
+          column:
+            name: state
+        streetAddress:
+          column:
+            name: street_address
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseBuildings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - buildingName
+          - buildingType
+          - city
+          - closeDate
+          - enterpriseBuildingId
+          - openDate
+          - phoneNumber
+          - postCode
+          - state
+          - streetAddress
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseBuildingsBoolExp
+  operand:
+    object:
+      type: EnterpriseBuildings
+      comparableFields:
+        - fieldName: buildingName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: buildingType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: city
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: closeDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: enterpriseBuildingId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: openDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: phoneNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: postCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: state
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: streetAddress
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: enterpriseAssociates
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: EnterpriseBuildingsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseBuildingsAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseBuildings
+      aggregatableFields:
+        - fieldName: buildingName
+          aggregateExpression: VarcharAggExp
+        - fieldName: buildingType
+          aggregateExpression: VarcharAggExp
+        - fieldName: city
+          aggregateExpression: VarcharAggExp
+        - fieldName: closeDate
+          aggregateExpression: DateAggExp
+        - fieldName: enterpriseBuildingId
+          aggregateExpression: Int4AggExp
+        - fieldName: openDate
+          aggregateExpression: DateAggExp
+        - fieldName: phoneNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: postCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: state
+          aggregateExpression: VarcharAggExp
+        - fieldName: streetAddress
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: EnterpriseBuildingsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseBuildingsOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseBuildings
+      orderableFields:
+        - fieldName: buildingName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: buildingType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: city
+          orderByExpression: VarcharOrderByExp
+        - fieldName: closeDate
+          orderByExpression: DateOrderByExp
+        - fieldName: enterpriseBuildingId
+          orderByExpression: Int4OrderByExp
+        - fieldName: openDate
+          orderByExpression: DateOrderByExp
+        - fieldName: phoneNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: postCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: state
+          orderByExpression: VarcharOrderByExp
+        - fieldName: streetAddress
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: EnterpriseBuildingsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseBuildings
+  objectType: EnterpriseBuildings
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_buildings
+  filterExpressionType: EnterpriseBuildingsBoolExp
+  aggregateExpression: EnterpriseBuildingsAggExp
+  orderByExpression: EnterpriseBuildingsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseBuildings
+      subscription:
+        rootField: enterpriseBuildings
+    selectUniques:
+      - queryRootField: enterpriseBuildingsByEnterpriseBuildingId
+        uniqueIdentifier:
+          - enterpriseBuildingId
+        subscription:
+          rootField: enterpriseBuildingsByEnterpriseBuildingId
+    filterInputTypeName: EnterpriseBuildingsFilterInput
+    aggregate:
+      queryRootField: enterpriseBuildingsAggregate
+      subscription:
+        rootField: enterpriseBuildingsAggregate
+  description: Stores information about the physical buildings used by the
+    enterprise, including branches and other facilities.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseBuildings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAssociates
+  sourceType: EnterpriseBuildings
+  target:
+    model:
+      name: EnterpriseAssociates
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterpriseAssociatesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseBuildingId
+      target:
+        modelField:
+          - fieldName: enterpriseBuildingId
+  graphql:
+    aggregateFieldName: enterpriseAssociatesAggregate
+

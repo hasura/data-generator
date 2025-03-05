@@ -1,0 +1,246 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionNotices
+  description: Tracks adverse action notices sent to applicants when their loan
+    applications are denied.
+  fields:
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4!
+      description: Reference to loan application
+    - name: consumerLendingNoticeId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for notice
+    - name: deliveryMethod
+      type:  ConsumerLendingVarchar!
+      description: Email, Mail, Portal
+    - name: generatedDate
+      type: Timestamp!
+      description: When notice was generated
+    - name: noticePath
+      type:  ConsumerLendingVarchar
+      description: Path to stored notice document
+    - name: sentDate
+      type: Timestamp
+      description: When notice was sent to applicant
+    - name: status
+      type:  ConsumerLendingVarchar!
+      description: Generated, Sent, Delivered
+  graphql:
+    typeName: ConsumerLendingAdverseActionNotices
+    inputTypeName: ConsumerLendingAdverseActionNoticesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_adverse_action_notices
+      fieldMapping:
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        consumerLendingNoticeId:
+          column:
+            name: consumer_lending_notice_id
+        deliveryMethod:
+          column:
+            name: delivery_method
+        generatedDate:
+          column:
+            name: generated_date
+        noticePath:
+          column:
+            name: notice_path
+        sentDate:
+          column:
+            name: sent_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingAdverseActionNotices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingApplicationId
+          - consumerLendingNoticeId
+          - deliveryMethod
+          - generatedDate
+          - noticePath
+          - sentDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionNoticesBoolExp
+  operand:
+    object:
+      type: ConsumerLendingAdverseActionNotices
+      comparableFields:
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingNoticeId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: deliveryMethod
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: generatedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: noticePath
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: sentDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: status
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingAdverseActionDetails
+        - relationshipName: consumerLendingLoanApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingAdverseActionNoticesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionNoticesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingAdverseActionNotices
+      aggregatableFields:
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingNoticeId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: deliveryMethod
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: generatedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: noticePath
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: sentDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: status
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingAdverseActionNoticesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionNoticesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingAdverseActionNotices
+      orderableFields:
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingNoticeId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: deliveryMethod
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: generatedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: noticePath
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: sentDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: status
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanApplication
+  graphql:
+    expressionTypeName: ConsumerLendingAdverseActionNoticesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingAdverseActionNotices
+  objectType: ConsumerLendingAdverseActionNotices
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_adverse_action_notices
+  filterExpressionType: ConsumerLendingAdverseActionNoticesBoolExp
+  aggregateExpression: ConsumerLendingAdverseActionNoticesAggExp
+  orderByExpression: ConsumerLendingAdverseActionNoticesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingAdverseActionNotices
+      subscription:
+        rootField: consumerLendingAdverseActionNotices
+    selectUniques:
+      - queryRootField: consumerLendingAdverseActionNoticesByConsumerLendingNoticeId
+        uniqueIdentifier:
+          - consumerLendingNoticeId
+        subscription:
+          rootField: consumerLendingAdverseActionNoticesByConsumerLendingNoticeId
+    filterInputTypeName: ConsumerLendingAdverseActionNoticesFilterInput
+    aggregate:
+      queryRootField: consumerLendingAdverseActionNoticesAggregate
+      subscription:
+        rootField: consumerLendingAdverseActionNoticesAggregate
+  description: Tracks adverse action notices sent to applicants when their loan
+    applications are denied.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingAdverseActionNotices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingAdverseActionDetails
+  sourceType: ConsumerLendingAdverseActionNotices
+  target:
+    model:
+      name: ConsumerLendingAdverseActionDetails
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerLendingAdverseActionDetailsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingNoticeId
+      target:
+        modelField:
+          - fieldName: consumerLendingNoticeId
+  graphql:
+    aggregateFieldName: consumerLendingAdverseActionDetailsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingAdverseActionNotices
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+

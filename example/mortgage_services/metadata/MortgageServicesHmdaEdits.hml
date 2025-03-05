@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesHmdaEdits
+  description: Tracks validation issues with HMDA data and their resolution
+  fields:
+    - name: createdDate
+      type: Timestamp!
+      description: When the edit was first identified
+    - name: editCode
+      type: Varchar!
+      description: Standardized code identifying the specific edit rule
+    - name: editDescription
+      type: Text!
+      description: Description of the edit issue
+    - name: editType
+      type: Varchar!
+      description: Category of edit (SYNTACTICAL, VALIDITY, QUALITY, MACRO)
+    - name: mortgageServicesEditId
+      type: Int4!
+      description: Auto-incrementing identifier for each edit finding
+    - name: mortgageServicesHmdaRecordId
+      type: Int4!
+      description: References the HMDA record with the edit issue
+    - name: resolutionNotes
+      type: Text
+      description: Notes explaining how the edit was resolved
+    - name: resolvedBy
+      type: Varchar
+      description: User who resolved the edit
+    - name: resolvedDate
+      type: Timestamp
+      description: When the edit was resolved if applicable
+    - name: status
+      type: Varchar!
+      description: Current status of the edit (OPEN, VERIFIED, CORRECTED)
+  graphql:
+    typeName: _MortgageServices__MortgageServicesHmdaEdits
+    inputTypeName: _MortgageServices__MortgageServicesHmdaEditsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_hmda_edits
+      fieldMapping:
+        createdDate:
+          column:
+            name: created_date
+        editCode:
+          column:
+            name: edit_code
+        editDescription:
+          column:
+            name: edit_description
+        editType:
+          column:
+            name: edit_type
+        mortgageServicesEditId:
+          column:
+            name: mortgage_services_edit_id
+        mortgageServicesHmdaRecordId:
+          column:
+            name: mortgage_services_hmda_record_id
+        resolutionNotes:
+          column:
+            name: resolution_notes
+        resolvedBy:
+          column:
+            name: resolved_by
+        resolvedDate:
+          column:
+            name: resolved_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesHmdaEdits
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdDate
+          - editCode
+          - editDescription
+          - editType
+          - mortgageServicesEditId
+          - mortgageServicesHmdaRecordId
+          - resolutionNotes
+          - resolvedBy
+          - resolvedDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesHmdaEditsBoolExp
+  operand:
+    object:
+      type: MortgageServicesHmdaEdits
+      comparableFields:
+        - fieldName: createdDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: editCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: editDescription
+          booleanExpressionType: TextBoolExp
+        - fieldName: editType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesEditId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesHmdaRecordId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: resolutionNotes
+          booleanExpressionType: TextBoolExp
+        - fieldName: resolvedBy
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: resolvedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesHmdaRecord
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesHmdaEditsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesHmdaEditsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesHmdaEdits
+      aggregatableFields:
+        - fieldName: createdDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: editCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: editDescription
+          aggregateExpression: TextAggExp
+        - fieldName: editType
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesEditId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesHmdaRecordId
+          aggregateExpression: Int4AggExp
+        - fieldName: resolutionNotes
+          aggregateExpression: TextAggExp
+        - fieldName: resolvedBy
+          aggregateExpression: VarcharAggExp
+        - fieldName: resolvedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesHmdaEditsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesHmdaEditsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesHmdaEdits
+      orderableFields:
+        - fieldName: createdDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: editCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: editDescription
+          orderByExpression: TextOrderByExp
+        - fieldName: editType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesEditId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesHmdaRecordId
+          orderByExpression: Int4OrderByExp
+        - fieldName: resolutionNotes
+          orderByExpression: TextOrderByExp
+        - fieldName: resolvedBy
+          orderByExpression: VarcharOrderByExp
+        - fieldName: resolvedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesHmdaRecord
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesHmdaEditsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesHmdaEdits
+  objectType: MortgageServicesHmdaEdits
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_hmda_edits
+  filterExpressionType: MortgageServicesHmdaEditsBoolExp
+  aggregateExpression: MortgageServicesHmdaEditsAggExp
+  orderByExpression: MortgageServicesHmdaEditsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesHmdaEdits
+      subscription:
+        rootField: mortgageServicesHmdaEdits
+    selectUniques:
+      - queryRootField: mortgageServicesHmdaEditsByMortgageServicesEditId
+        uniqueIdentifier:
+          - mortgageServicesEditId
+        subscription:
+          rootField: mortgageServicesHmdaEditsByMortgageServicesEditId
+    filterInputTypeName: _MortgageServices__MortgageServicesHmdaEditsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesHmdaEditsAggregate
+      subscription:
+        rootField: mortgageServicesHmdaEditsAggregate
+  description: Tracks validation issues with HMDA data and their resolution
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesHmdaEdits
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesHmdaRecord
+  sourceType: MortgageServicesHmdaEdits
+  target:
+    model:
+      name: MortgageServicesHmdaRecords
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesHmdaRecordId
+      target:
+        modelField:
+          - fieldName: mortgageServicesHmdaRecordId
+

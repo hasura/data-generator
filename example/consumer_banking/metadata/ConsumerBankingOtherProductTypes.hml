@@ -1,0 +1,184 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingOtherProductTypes
+  description: Stores information about non-standard product types not covered in
+    main categories
+  fields:
+    - name: consumerBankingOtherProductTypeId
+      type: Int4!
+      description: Auto-incrementing identifier for each custom product type
+    - name: consumerBankingProductId
+      type: Int4!
+      description: References the related product record
+    - name: description
+      type: Varchar!
+      description: Detailed description of the custom product type
+    - name: name
+      type: Varchar!
+      description: Name of the custom product type
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingOtherProductTypes
+    inputTypeName: ConsumerBanking_ConsumerBankingOtherProductTypesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_other_product_types
+      fieldMapping:
+        consumerBankingOtherProductTypeId:
+          column:
+            name: consumer_banking_other_product_type_id
+        consumerBankingProductId:
+          column:
+            name: consumer_banking_product_id
+        description:
+          column:
+            name: description
+        name:
+          column:
+            name: name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingOtherProductTypes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerBankingOtherProductTypeId
+          - consumerBankingProductId
+          - description
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingOtherProductTypesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingOtherProductTypes
+      comparableFields:
+        - fieldName: consumerBankingOtherProductTypeId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingProductId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingProduct
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingOtherProductTypesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingOtherProductTypesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingOtherProductTypes
+      aggregatableFields:
+        - fieldName: consumerBankingOtherProductTypeId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingProductId
+          aggregateExpression: Int4AggExp
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingOtherProductTypesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingOtherProductTypesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingOtherProductTypes
+      orderableFields:
+        - fieldName: consumerBankingOtherProductTypeId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingProductId
+          orderByExpression: Int4OrderByExp
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingProduct
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingOtherProductTypesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingOtherProductTypes
+  objectType: ConsumerBankingOtherProductTypes
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_other_product_types
+  filterExpressionType: ConsumerBankingOtherProductTypesBoolExp
+  aggregateExpression: ConsumerBankingOtherProductTypesAggExp
+  orderByExpression: ConsumerBankingOtherProductTypesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingOtherProductTypes
+      subscription:
+        rootField: consumerBankingOtherProductTypes
+    selectUniques:
+      - queryRootField: consumerBankingOtherProductTypesByConsumerBankingOtherProductTypeId
+        uniqueIdentifier:
+          - consumerBankingOtherProductTypeId
+        subscription:
+          rootField: consumerBankingOtherProductTypesByConsumerBankingOtherProductTypeId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingOtherProductTypesFilterInput
+    aggregate:
+      queryRootField: consumerBankingOtherProductTypesAggregate
+      subscription:
+        rootField: consumerBankingOtherProductTypesAggregate
+  description: Stores information about non-standard product types not covered in
+    main categories
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingOtherProductTypes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingProduct
+  sourceType: ConsumerBankingOtherProductTypes
+  target:
+    model:
+      name: ConsumerBankingProducts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingProductId
+      target:
+        modelField:
+          - fieldName: consumerBankingProductId
+

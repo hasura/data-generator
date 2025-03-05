@@ -1,0 +1,312 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesBorrowerLiabilities
+  description: Tracks debts and financial obligations of mortgage borrowers
+  fields:
+    - name: accountNumber
+      type: Varchar
+      description: Account number for the liability
+    - name: creditorName
+      type: Varchar!
+      description: Name of the creditor
+    - name: currentBalance
+      type: Numeric!
+      description: Current outstanding balance
+    - name: interestRate
+      type: Numeric
+      description: Current interest rate on the liability
+    - name: liabilityType
+      type: Varchar!
+      description: Type of debt or obligation
+    - name: maturityDate
+      type: Date
+      description: When the liability is scheduled to be fully paid
+    - name: monthlyPayment
+      type: Numeric!
+      description: Regular monthly payment amount
+    - name: mortgageServicesBorrowerId
+      type: Int4!
+      description: References the borrower this liability belongs to
+    - name: mortgageServicesLiabilityId
+      type: Int4!
+      description: Auto-incrementing identifier for each liability record
+    - name: originalAmount
+      type: Numeric
+      description: Original amount of the liability
+    - name: originationDate
+      type: Date
+      description: When the liability was originated
+    - name: verificationDate
+      type: Date
+      description: When the liability was verified
+    - name: verificationStatus
+      type: Varchar!
+      description: Status of liability verification process
+    - name: willBePaidOff
+      type: Bool
+      description: Indicates if this liability will be paid off with the mortgage proceeds
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowerLiabilities
+    inputTypeName: _MortgageServices__MortgageServicesBorrowerLiabilitiesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_borrower_liabilities
+      fieldMapping:
+        accountNumber:
+          column:
+            name: account_number
+        creditorName:
+          column:
+            name: creditor_name
+        currentBalance:
+          column:
+            name: current_balance
+        interestRate:
+          column:
+            name: interest_rate
+        liabilityType:
+          column:
+            name: liability_type
+        maturityDate:
+          column:
+            name: maturity_date
+        monthlyPayment:
+          column:
+            name: monthly_payment
+        mortgageServicesBorrowerId:
+          column:
+            name: mortgage_services_borrower_id
+        mortgageServicesLiabilityId:
+          column:
+            name: mortgage_services_liability_id
+        originalAmount:
+          column:
+            name: original_amount
+        originationDate:
+          column:
+            name: origination_date
+        verificationDate:
+          column:
+            name: verification_date
+        verificationStatus:
+          column:
+            name: verification_status
+        willBePaidOff:
+          column:
+            name: will_be_paid_off
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesBorrowerLiabilities
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - creditorName
+          - currentBalance
+          - interestRate
+          - liabilityType
+          - maturityDate
+          - monthlyPayment
+          - mortgageServicesBorrowerId
+          - mortgageServicesLiabilityId
+          - originalAmount
+          - originationDate
+          - verificationDate
+          - verificationStatus
+          - willBePaidOff
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesBorrowerLiabilitiesBoolExp
+  operand:
+    object:
+      type: MortgageServicesBorrowerLiabilities
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: creditorName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currentBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: interestRate
+          booleanExpressionType: NumericBoolExp
+        - fieldName: liabilityType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: maturityDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: monthlyPayment
+          booleanExpressionType: NumericBoolExp
+        - fieldName: mortgageServicesBorrowerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLiabilityId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: originalAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: originationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: verificationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: willBePaidOff
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesBorrower
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowerLiabilitiesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowerLiabilitiesAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesBorrowerLiabilities
+      aggregatableFields:
+        - fieldName: accountNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: creditorName
+          aggregateExpression: VarcharAggExp
+        - fieldName: currentBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: interestRate
+          aggregateExpression: NumericAggExp
+        - fieldName: liabilityType
+          aggregateExpression: VarcharAggExp
+        - fieldName: maturityDate
+          aggregateExpression: DateAggExp
+        - fieldName: monthlyPayment
+          aggregateExpression: NumericAggExp
+        - fieldName: mortgageServicesBorrowerId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLiabilityId
+          aggregateExpression: Int4AggExp
+        - fieldName: originalAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: originationDate
+          aggregateExpression: DateAggExp
+        - fieldName: verificationDate
+          aggregateExpression: DateAggExp
+        - fieldName: verificationStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: willBePaidOff
+          aggregateExpression: BoolAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesBorrowerLiabilitiesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowerLiabilitiesOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesBorrowerLiabilities
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: creditorName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currentBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: interestRate
+          orderByExpression: NumericOrderByExp
+        - fieldName: liabilityType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: maturityDate
+          orderByExpression: DateOrderByExp
+        - fieldName: monthlyPayment
+          orderByExpression: NumericOrderByExp
+        - fieldName: mortgageServicesBorrowerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLiabilityId
+          orderByExpression: Int4OrderByExp
+        - fieldName: originalAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: originationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: verificationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: willBePaidOff
+          orderByExpression: BoolOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesBorrower
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesBorrowerLiabilitiesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesBorrowerLiabilities
+  objectType: MortgageServicesBorrowerLiabilities
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_borrower_liabilities
+  filterExpressionType: MortgageServicesBorrowerLiabilitiesBoolExp
+  aggregateExpression: MortgageServicesBorrowerLiabilitiesAggExp
+  orderByExpression: MortgageServicesBorrowerLiabilitiesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesBorrowerLiabilities
+      subscription:
+        rootField: mortgageServicesBorrowerLiabilities
+    selectUniques:
+      - queryRootField: mortgageServicesBorrowerLiabilitiesByMortgageServicesLiabilityId
+        uniqueIdentifier:
+          - mortgageServicesLiabilityId
+        subscription:
+          rootField: mortgageServicesBorrowerLiabilitiesByMortgageServicesLiabilityId
+    filterInputTypeName: _MortgageServices__MortgageServicesBorrowerLiabilitiesFilterInput
+    aggregate:
+      queryRootField: mortgageServicesBorrowerLiabilitiesAggregate
+      subscription:
+        rootField: mortgageServicesBorrowerLiabilitiesAggregate
+  description: Tracks debts and financial obligations of mortgage borrowers
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesBorrowerLiabilities
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesBorrower
+  sourceType: MortgageServicesBorrowerLiabilities
+  target:
+    model:
+      name: MortgageServicesBorrowers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+

@@ -1,0 +1,361 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingComplianceExceptions
+  description: Tracks compliance exceptions and issues encountered during the
+    lending process, including remediation efforts.
+  fields:
+    - name: consumerLendingApplicationId
+      type: ConsumerLendingInt4
+      description: Reference to loan application if applicable
+    - name: consumerLendingExceptionId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for exception
+    - name: description
+      type: ConsumerLendingText!
+      description: Detailed description of exception
+    - name: exceptionDate
+      type: Timestamp!
+      description: Date exception was identified
+    - name: exceptionType
+      type: ConsumerLendingVarchar!
+      description: Documentation, Disclosure, Timing, etc.
+    - name: identifiedBy
+      type: ConsumerLendingVarchar!
+      description: Person or process that identified exception
+    - name: loanAccountId
+      type: ConsumerLendingInt4
+      description: Reference to loan account if applicable
+    - name: notes
+      type: ConsumerLendingText
+      description: Additional exception notes
+    - name: preventiveAction
+      type: ConsumerLendingText
+      description: Action to prevent recurrence
+    - name: regulation
+      type: ConsumerLendingVarchar!
+      description: Reg Z, Reg B, FCRA, etc.
+    - name: remediatedBy
+      type: ConsumerLendingInt4
+      description: Person who remediated exception
+    - name: remediationDate
+      type: ConsumerLendingDate
+      description: Date remediation completed
+    - name: remediationPlan
+      type: ConsumerLendingText
+      description: Plan to address exception
+    - name: rootCause
+      type: ConsumerLendingText
+      description: Identified root cause
+    - name: severity
+      type: ConsumerLendingVarchar!
+      description: High, Medium, Low
+    - name: status
+      type: ConsumerLendingVarchar!
+      description: Open, In Remediation, Closed
+  graphql:
+    typeName: ConsumerLendingComplianceExceptions
+    inputTypeName: ConsumerLendingComplianceExceptionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_compliance_exceptions
+      fieldMapping:
+        consumerLendingApplicationId:
+          column:
+            name: consumer_lending_application_id
+        consumerLendingExceptionId:
+          column:
+            name: consumer_lending_exception_id
+        description:
+          column:
+            name: description
+        exceptionDate:
+          column:
+            name: exception_date
+        exceptionType:
+          column:
+            name: exception_type
+        identifiedBy:
+          column:
+            name: identified_by
+        loanAccountId:
+          column:
+            name: loan_account_id
+        notes:
+          column:
+            name: notes
+        preventiveAction:
+          column:
+            name: preventive_action
+        regulation:
+          column:
+            name: regulation
+        remediatedBy:
+          column:
+            name: remediated_by
+        remediationDate:
+          column:
+            name: remediation_date
+        remediationPlan:
+          column:
+            name: remediation_plan
+        rootCause:
+          column:
+            name: root_cause
+        severity:
+          column:
+            name: severity
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingComplianceExceptions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingApplicationId
+          - consumerLendingExceptionId
+          - description
+          - exceptionDate
+          - exceptionType
+          - identifiedBy
+          - loanAccountId
+          - notes
+          - preventiveAction
+          - regulation
+          - remediatedBy
+          - remediationDate
+          - remediationPlan
+          - rootCause
+          - severity
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingComplianceExceptionsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingComplianceExceptions
+      comparableFields:
+        - fieldName: consumerLendingApplicationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingExceptionId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: description
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: exceptionDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: exceptionType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: identifiedBy
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: loanAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: notes
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: preventiveAction
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: regulation
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: remediatedBy
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: remediationDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: remediationPlan
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: rootCause
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: severity
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: consumerLendingLoanAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingComplianceExceptionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingComplianceExceptionsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingComplianceExceptions
+      aggregatableFields:
+        - fieldName: consumerLendingApplicationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingExceptionId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: description
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: exceptionDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: exceptionType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: identifiedBy
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: loanAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: notes
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: preventiveAction
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: regulation
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: remediatedBy
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: remediationDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: remediationPlan
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: rootCause
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: severity
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: status
+          aggregateExpression: ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingComplianceExceptionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingComplianceExceptionsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingComplianceExceptions
+      orderableFields:
+        - fieldName: consumerLendingApplicationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingExceptionId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: description
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: exceptionDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: exceptionType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: identifiedBy
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: loanAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: notes
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: preventiveAction
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: regulation
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: remediatedBy
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: remediationDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: remediationPlan
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: rootCause
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: severity
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: status
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanApplication
+        - relationshipName: consumerLendingLoanAccount
+        - relationshipName: exceptionRemediatedBy
+  graphql:
+    expressionTypeName: ConsumerLendingComplianceExceptionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingComplianceExceptions
+  objectType: ConsumerLendingComplianceExceptions
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_compliance_exceptions
+  filterExpressionType: ConsumerLendingComplianceExceptionsBoolExp
+  aggregateExpression: ConsumerLendingComplianceExceptionsAggExp
+  orderByExpression: ConsumerLendingComplianceExceptionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingComplianceExceptions
+      subscription:
+        rootField: consumerLendingComplianceExceptions
+    selectUniques:
+      - queryRootField: consumerLendingComplianceExceptionsByConsumerLendingExceptionId
+        uniqueIdentifier:
+          - consumerLendingExceptionId
+        subscription:
+          rootField: consumerLendingComplianceExceptionsByConsumerLendingExceptionId
+    filterInputTypeName: ConsumerLendingComplianceExceptionsFilterInput
+    aggregate:
+      queryRootField: consumerLendingComplianceExceptionsAggregate
+      subscription:
+        rootField: consumerLendingComplianceExceptionsAggregate
+  description: Tracks compliance exceptions and issues encountered during the
+    lending process, including remediation efforts.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingComplianceExceptions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanApplication
+  sourceType: ConsumerLendingComplianceExceptions
+  target:
+    model:
+      name: ConsumerLendingLoanApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingApplicationId
+      target:
+        modelField:
+          - fieldName: consumerLendingApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccount
+  sourceType: ConsumerLendingComplianceExceptions
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: loanAccountId
+      target:
+        modelField:
+          - fieldName: loanAccountId
+

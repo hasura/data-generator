@@ -1,0 +1,459 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesBorrowers
+  description: Stores detailed information about mortgage borrowers
+  fields:
+    - name: citizenshipStatus
+      type: Varchar!
+      description: Borrower's citizenship or residency status
+    - name: currentAddressId
+      type: Int4
+      description: References borrower's current address
+    - name: dateOfBirth
+      type: Date!
+      description: Borrower's date of birth
+    - name: dependentCount
+      type: Int4
+      description: Number of dependents claimed by borrower
+    - name: email
+      type: Varchar!
+      description: Borrower's primary email address
+    - name: firstName
+      type: Varchar!
+      description: Borrower's first name
+    - name: lastName
+      type: Varchar!
+      description: Borrower's last name
+    - name: mailingAddressId
+      type: Int4
+      description: References borrower's mailing address if different
+    - name: maritalStatus
+      type: Varchar
+      description: Borrower's marital status
+    - name: middleName
+      type: Varchar
+      description: Borrower's middle name if applicable
+    - name: mobilePhone
+      type: Varchar
+      description: Borrower's mobile phone number
+    - name: mortgageServicesBorrowerId
+      type: Int4!
+      description: Unique identifier for each borrower
+    - name: phone
+      type: Varchar!
+      description: Borrower's primary phone number
+    - name: previousAddressId
+      type: Int4
+      description: References borrower's previous address if relevant
+    - name: ssn
+      type: Varchar!
+      description: Borrower's Social Security Number
+    - name: yearsInSchool
+      type: Int4
+      description: Total years of education
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowers
+    inputTypeName: _MortgageServices__MortgageServicesBorrowersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_borrowers
+      fieldMapping:
+        citizenshipStatus:
+          column:
+            name: citizenship_status
+        currentAddressId:
+          column:
+            name: current_address_id
+        dateOfBirth:
+          column:
+            name: date_of_birth
+        dependentCount:
+          column:
+            name: dependent_count
+        email:
+          column:
+            name: email
+        firstName:
+          column:
+            name: first_name
+        lastName:
+          column:
+            name: last_name
+        mailingAddressId:
+          column:
+            name: mailing_address_id
+        maritalStatus:
+          column:
+            name: marital_status
+        middleName:
+          column:
+            name: middle_name
+        mobilePhone:
+          column:
+            name: mobile_phone
+        mortgageServicesBorrowerId:
+          column:
+            name: mortgage_services_borrower_id
+        phone:
+          column:
+            name: phone
+        previousAddressId:
+          column:
+            name: previous_address_id
+        ssn:
+          column:
+            name: ssn
+        yearsInSchool:
+          column:
+            name: years_in_school
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesBorrowers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - citizenshipStatus
+          - currentAddressId
+          - dateOfBirth
+          - dependentCount
+          - email
+          - firstName
+          - lastName
+          - mailingAddressId
+          - maritalStatus
+          - middleName
+          - mobilePhone
+          - mortgageServicesBorrowerId
+          - phone
+          - previousAddressId
+          - ssn
+          - yearsInSchool
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesBorrowersBoolExp
+  operand:
+    object:
+      type: MortgageServicesBorrowers
+      comparableFields:
+        - fieldName: citizenshipStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currentAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dateOfBirth
+          booleanExpressionType: DateBoolExp
+        - fieldName: dependentCount
+          booleanExpressionType: Int4BoolExp
+        - fieldName: email
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: firstName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mailingAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: maritalStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: middleName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mobilePhone
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesBorrowerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: phone
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: previousAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: ssn
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: yearsInSchool
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesApplicationBorrowers
+        - relationshipName: mortgageServicesBorrowerAssets
+        - relationshipName: mortgageServicesBorrowerEmployments
+        - relationshipName: mortgageServicesBorrowerIncomes
+        - relationshipName: mortgageServicesBorrowerLiabilities
+        - relationshipName: mortgageServicesCreditReports
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowersAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesBorrowers
+      aggregatableFields:
+        - fieldName: citizenshipStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: currentAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: dateOfBirth
+          aggregateExpression: DateAggExp
+        - fieldName: dependentCount
+          aggregateExpression: Int4AggExp
+        - fieldName: email
+          aggregateExpression: VarcharAggExp
+        - fieldName: firstName
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastName
+          aggregateExpression: VarcharAggExp
+        - fieldName: mailingAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: maritalStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: middleName
+          aggregateExpression: VarcharAggExp
+        - fieldName: mobilePhone
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesBorrowerId
+          aggregateExpression: Int4AggExp
+        - fieldName: phone
+          aggregateExpression: VarcharAggExp
+        - fieldName: previousAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: ssn
+          aggregateExpression: VarcharAggExp
+        - fieldName: yearsInSchool
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesBorrowersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowersOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesBorrowers
+      orderableFields:
+        - fieldName: citizenshipStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currentAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dateOfBirth
+          orderByExpression: DateOrderByExp
+        - fieldName: dependentCount
+          orderByExpression: Int4OrderByExp
+        - fieldName: email
+          orderByExpression: VarcharOrderByExp
+        - fieldName: firstName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mailingAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: maritalStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: middleName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mobilePhone
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesBorrowerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: phone
+          orderByExpression: VarcharOrderByExp
+        - fieldName: previousAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: ssn
+          orderByExpression: VarcharOrderByExp
+        - fieldName: yearsInSchool
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: currentAddress
+        - relationshipName: mailingAddress
+        - relationshipName: previousAddress
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesBorrowersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesBorrowers
+  objectType: MortgageServicesBorrowers
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_borrowers
+  filterExpressionType: MortgageServicesBorrowersBoolExp
+  aggregateExpression: MortgageServicesBorrowersAggExp
+  orderByExpression: MortgageServicesBorrowersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesBorrowers
+      subscription:
+        rootField: mortgageServicesBorrowers
+    selectUniques:
+      - queryRootField: mortgageServicesBorrowersByMortgageServicesBorrowerId
+        uniqueIdentifier:
+          - mortgageServicesBorrowerId
+        subscription:
+          rootField: mortgageServicesBorrowersByMortgageServicesBorrowerId
+    filterInputTypeName: _MortgageServices__MortgageServicesBorrowersFilterInput
+    aggregate:
+      queryRootField: mortgageServicesBorrowersAggregate
+      subscription:
+        rootField: mortgageServicesBorrowersAggregate
+  description: Stores detailed information about mortgage borrowers
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesBorrowers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplicationBorrowers
+  sourceType: MortgageServicesBorrowers
+  target:
+    model:
+      name: MortgageServicesApplicationBorrowers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesApplicationBorrowersAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+  graphql:
+    aggregateFieldName: mortgageServicesApplicationBorrowersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesBorrowerAssets
+  sourceType: MortgageServicesBorrowers
+  target:
+    model:
+      name: MortgageServicesBorrowerAssets
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesBorrowerAssetsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+  graphql:
+    aggregateFieldName: mortgageServicesBorrowerAssetsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesBorrowerEmployments
+  sourceType: MortgageServicesBorrowers
+  target:
+    model:
+      name: MortgageServicesBorrowerEmployments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesBorrowerEmploymentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+  graphql:
+    aggregateFieldName: mortgageServicesBorrowerEmploymentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesBorrowerIncomes
+  sourceType: MortgageServicesBorrowers
+  target:
+    model:
+      name: MortgageServicesBorrowerIncomes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesBorrowerIncomesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+  graphql:
+    aggregateFieldName: mortgageServicesBorrowerIncomesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesBorrowerLiabilities
+  sourceType: MortgageServicesBorrowers
+  target:
+    model:
+      name: MortgageServicesBorrowerLiabilities
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesBorrowerLiabilitiesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+  graphql:
+    aggregateFieldName: mortgageServicesBorrowerLiabilitiesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesCreditReports
+  sourceType: MortgageServicesBorrowers
+  target:
+    model:
+      name: MortgageServicesCreditReports
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesCreditReportsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+  graphql:
+    aggregateFieldName: mortgageServicesCreditReportsAggregate
+

@@ -1,0 +1,296 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingLoanFees
+  description: Tracks fees charged to loan accounts, including fee type, amount,
+    status, and payment details.
+  fields:
+    - name: consumerLendingFeeId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for fee
+    - name: consumerLendingLoanAccountId
+      type: ConsumerLendingInt4!
+      description: Reference to loan account
+    - name: consumerLendingPaymentId
+      type: ConsumerLendingInt4
+      description: Reference to loan_payments if paid
+    - name: feeAmount
+      type: ConsumerLendingNumeric!
+      description: Fee amount
+    - name: feeDate
+      type: ConsumerLendingDate!
+      description: Date fee was assessed
+    - name: feeStatus
+      type: ConsumerLendingVarchar!
+      description: Pending, Charged, Waived, Paid
+    - name: feeType
+      type: ConsumerLendingVarchar!
+      description: Late Fee, NSF Fee, Origination Fee
+    - name: paidDate
+      type: ConsumerLendingDate
+      description: Date fee was paid
+    - name: waivedBy
+      type: ConsumerLendingInt4
+      description: User who waived the fee
+    - name: waivedDate
+      type: ConsumerLendingDate
+      description: Date fee was waived if applicable
+    - name: waiverReason
+      type: ConsumerLendingVarchar
+      description: Reason fee was waived
+  graphql:
+    typeName: ConsumerLendingLoanFees
+    inputTypeName: ConsumerLendingLoanFeesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_fees
+      fieldMapping:
+        consumerLendingFeeId:
+          column:
+            name: consumer_lending_fee_id
+        consumerLendingLoanAccountId:
+          column:
+            name: consumer_lending_loan_account_id
+        consumerLendingPaymentId:
+          column:
+            name: consumer_lending_payment_id
+        feeAmount:
+          column:
+            name: fee_amount
+        feeDate:
+          column:
+            name: fee_date
+        feeStatus:
+          column:
+            name: fee_status
+        feeType:
+          column:
+            name: fee_type
+        paidDate:
+          column:
+            name: paid_date
+        waivedBy:
+          column:
+            name: waived_by
+        waivedDate:
+          column:
+            name: waived_date
+        waiverReason:
+          column:
+            name: waiver_reason
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingLoanFees
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingFeeId
+          - consumerLendingLoanAccountId
+          - consumerLendingPaymentId
+          - feeAmount
+          - feeDate
+          - feeStatus
+          - feeType
+          - paidDate
+          - waivedBy
+          - waivedDate
+          - waiverReason
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingLoanFeesBoolExp
+  operand:
+    object:
+      type: ConsumerLendingLoanFees
+      comparableFields:
+        - fieldName: consumerLendingFeeId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingLoanAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingPaymentId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: feeAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: feeDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: feeStatus
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: feeType
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: paidDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: waivedBy
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: waivedDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: waiverReason
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+        - relationshipName: consumerLendingLoanPayment
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingLoanFeesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanFeesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingLoanFees
+      aggregatableFields:
+        - fieldName: consumerLendingFeeId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingLoanAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingPaymentId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: feeAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: feeDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: feeStatus
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: feeType
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: paidDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: waivedBy
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: waivedDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: waiverReason
+          aggregateExpression: ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingLoanFeesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanFeesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingLoanFees
+      orderableFields:
+        - fieldName: consumerLendingFeeId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingLoanAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingPaymentId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: feeAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: feeDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: feeStatus
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: feeType
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: paidDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: waivedBy
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: waivedDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: waiverReason
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+        - relationshipName: consumerLendingLoanPayment
+        - relationshipName: feeWaivedBy
+  graphql:
+    expressionTypeName: ConsumerLendingLoanFeesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingLoanFees
+  objectType: ConsumerLendingLoanFees
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_fees
+  filterExpressionType: ConsumerLendingLoanFeesBoolExp
+  aggregateExpression: ConsumerLendingLoanFeesAggExp
+  orderByExpression: ConsumerLendingLoanFeesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingLoanFees
+      subscription:
+        rootField: consumerLendingLoanFees
+    selectUniques:
+      - queryRootField: consumerLendingLoanFeesByConsumerLendingFeeId
+        uniqueIdentifier:
+          - consumerLendingFeeId
+        subscription:
+          rootField: consumerLendingLoanFeesByConsumerLendingFeeId
+    filterInputTypeName: ConsumerLendingLoanFeesFilterInput
+    aggregate:
+      queryRootField: consumerLendingLoanFeesAggregate
+      subscription:
+        rootField: consumerLendingLoanFeesAggregate
+  description: Tracks fees charged to loan accounts, including fee type, amount,
+    status, and payment details.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingLoanFees
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccount
+  sourceType: ConsumerLendingLoanFees
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingLoanAccountId
+      target:
+        modelField:
+          - fieldName: loanAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanPayment
+  sourceType: ConsumerLendingLoanFees
+  target:
+    model:
+      name: ConsumerLendingLoanPayments
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingPaymentId
+      target:
+        modelField:
+          - fieldName: consumerLendingPaymentId
+

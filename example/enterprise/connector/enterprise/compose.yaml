@@ -1,0 +1,14 @@
+services:
+  enterprise_enterprise:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.enterprise
+    environment:
+      CONNECTION_URI: $ENTERPRISE_ENTERPRISE_CONNECTION_URI
+      HASURA_SERVICE_TOKEN_SECRET: $ENTERPRISE_ENTERPRISE_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $ENTERPRISE_ENTERPRISE_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $ENTERPRISE_ENTERPRISE_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 5876:8080

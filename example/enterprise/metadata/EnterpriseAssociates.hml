@@ -1,0 +1,461 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseAssociates
+  description: Stores information about employees, contractors, or other
+    individuals associated with the enterprise.
+  fields:
+    - name: city
+      type: Varchar
+      description: Associate's city of residence.
+    - name: country
+      type: Varchar
+      description: Associate's country of residence.
+    - name: email
+      type: Varchar
+      description: Associate's unique email address.
+    - name: enterpriseAssociateId
+      type: Int4!
+      description: Unique identifier for each associate.
+    - name: enterpriseBuildingId
+      type: Int4
+      description: Foreign key referencing the building where the associate is
+        primarily located.
+    - name: enterpriseDepartmentId
+      type: Int4
+      description: Foreign key referencing the department the associate belongs to.
+    - name: firstName
+      type: Varchar
+      description: Associate's first name.
+    - name: hireDate
+      type: Date
+      description: Date the associate was hired.
+    - name: jobTitle
+      type: Varchar
+      description: Associate's functional job title (e.g., Teller, Loan Officer).
+    - name: lastName
+      type: Varchar
+      description: Associate's last name.
+    - name: managerId
+      type: Int4
+      description: Foreign key referencing the associate's manager.
+    - name: officerTitle
+      type: Varchar
+      description: Associate's formal officer title (e.g., VP, MD), if applicable.
+    - name: phoneNumber
+      type: Varchar
+      description: Associate's phone number.
+    - name: postCode
+      type: Varchar
+      description: Associate's postal code.
+    - name: relationshipType
+      type: Varchar
+      description: Type of relationship with the company (e.g., Employee, Contractor).
+    - name: releaseDate
+      type: Date
+      description: Date the associate was released from employment, if applicable.
+    - name: salary
+      type: Numeric
+      description: Associate's annual salary.
+    - name: state
+      type: Varchar
+      description: Associate's state of residence.
+    - name: status
+      type: Varchar
+      description: Current status of the associate (e.g., Active, Inactive).
+    - name: streetAddress
+      type: Varchar
+      description: Associate's street address.
+  graphql:
+    typeName: EnterpriseAssociates
+    inputTypeName: EnterpriseAssociatesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_associates
+      fieldMapping:
+        city:
+          column:
+            name: city
+        country:
+          column:
+            name: country
+        email:
+          column:
+            name: email
+        enterpriseAssociateId:
+          column:
+            name: enterprise_associate_id
+        enterpriseBuildingId:
+          column:
+            name: enterprise_building_id
+        enterpriseDepartmentId:
+          column:
+            name: enterprise_department_id
+        firstName:
+          column:
+            name: first_name
+        hireDate:
+          column:
+            name: hire_date
+        jobTitle:
+          column:
+            name: job_title
+        lastName:
+          column:
+            name: last_name
+        managerId:
+          column:
+            name: manager_id
+        officerTitle:
+          column:
+            name: officer_title
+        phoneNumber:
+          column:
+            name: phone_number
+        postCode:
+          column:
+            name: post_code
+        relationshipType:
+          column:
+            name: relationship_type
+        releaseDate:
+          column:
+            name: release_date
+        salary:
+          column:
+            name: salary
+        state:
+          column:
+            name: state
+        status:
+          column:
+            name: status
+        streetAddress:
+          column:
+            name: street_address
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseAssociates
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - city
+          - country
+          - email
+          - enterpriseAssociateId
+          - enterpriseBuildingId
+          - enterpriseDepartmentId
+          - firstName
+          - hireDate
+          - jobTitle
+          - lastName
+          - managerId
+          - officerTitle
+          - phoneNumber
+          - postCode
+          - relationshipType
+          - releaseDate
+          - salary
+          - state
+          - status
+          - streetAddress
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseAssociatesBoolExp
+  operand:
+    object:
+      type: EnterpriseAssociates
+      comparableFields:
+        - fieldName: city
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: country
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: email
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterpriseAssociateId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseBuildingId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseDepartmentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: firstName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: hireDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: jobTitle
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: managerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: officerTitle
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: phoneNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: postCode
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: relationshipType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: releaseDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: salary
+          booleanExpressionType: NumericBoolExp
+        - fieldName: state
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: streetAddress
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: enterpriseBuilding
+        - relationshipName: enterpriseDepartment
+        - relationshipName: enterpriseAssociate
+        - relationshipName: enterpriseAssociates
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: EnterpriseAssociatesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseAssociatesAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseAssociates
+      aggregatableFields:
+        - fieldName: city
+          aggregateExpression: VarcharAggExp
+        - fieldName: country
+          aggregateExpression: VarcharAggExp
+        - fieldName: email
+          aggregateExpression: VarcharAggExp
+        - fieldName: enterpriseAssociateId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseBuildingId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseDepartmentId
+          aggregateExpression: Int4AggExp
+        - fieldName: firstName
+          aggregateExpression: VarcharAggExp
+        - fieldName: hireDate
+          aggregateExpression: DateAggExp
+        - fieldName: jobTitle
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastName
+          aggregateExpression: VarcharAggExp
+        - fieldName: managerId
+          aggregateExpression: Int4AggExp
+        - fieldName: officerTitle
+          aggregateExpression: VarcharAggExp
+        - fieldName: phoneNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: postCode
+          aggregateExpression: VarcharAggExp
+        - fieldName: relationshipType
+          aggregateExpression: VarcharAggExp
+        - fieldName: releaseDate
+          aggregateExpression: DateAggExp
+        - fieldName: salary
+          aggregateExpression: NumericAggExp
+        - fieldName: state
+          aggregateExpression: VarcharAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: streetAddress
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: EnterpriseAssociatesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseAssociatesOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseAssociates
+      orderableFields:
+        - fieldName: city
+          orderByExpression: VarcharOrderByExp
+        - fieldName: country
+          orderByExpression: VarcharOrderByExp
+        - fieldName: email
+          orderByExpression: VarcharOrderByExp
+        - fieldName: enterpriseAssociateId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseBuildingId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseDepartmentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: firstName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: hireDate
+          orderByExpression: DateOrderByExp
+        - fieldName: jobTitle
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: managerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: officerTitle
+          orderByExpression: VarcharOrderByExp
+        - fieldName: phoneNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: postCode
+          orderByExpression: VarcharOrderByExp
+        - fieldName: relationshipType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: releaseDate
+          orderByExpression: DateOrderByExp
+        - fieldName: salary
+          orderByExpression: NumericOrderByExp
+        - fieldName: state
+          orderByExpression: VarcharOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: streetAddress
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: enterpriseBuilding
+        - relationshipName: enterpriseDepartment
+        - relationshipName: enterpriseAssociate
+  graphql:
+    expressionTypeName: EnterpriseAssociatesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseAssociates
+  objectType: EnterpriseAssociates
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_associates
+  filterExpressionType: EnterpriseAssociatesBoolExp
+  aggregateExpression: EnterpriseAssociatesAggExp
+  orderByExpression: EnterpriseAssociatesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseAssociates
+      subscription:
+        rootField: enterpriseAssociates
+    selectUniques:
+      - queryRootField: enterpriseAssociatesByEmail
+        uniqueIdentifier:
+          - email
+        subscription:
+          rootField: enterpriseAssociatesByEmail
+      - queryRootField: enterpriseAssociatesByEnterpriseAssociateId
+        uniqueIdentifier:
+          - enterpriseAssociateId
+        subscription:
+          rootField: enterpriseAssociatesByEnterpriseAssociateId
+    filterInputTypeName: EnterpriseAssociatesFilterInput
+    aggregate:
+      queryRootField: enterpriseAssociatesAggregate
+      subscription:
+        rootField: enterpriseAssociatesAggregate
+  description: Stores information about employees, contractors, or other
+    individuals associated with the enterprise.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseAssociates
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseBuilding
+  sourceType: EnterpriseAssociates
+  target:
+    model:
+      name: EnterpriseBuildings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseBuildingId
+      target:
+        modelField:
+          - fieldName: enterpriseBuildingId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseDepartment
+  sourceType: EnterpriseAssociates
+  target:
+    model:
+      name: EnterpriseDepartments
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseDepartmentId
+      target:
+        modelField:
+          - fieldName: enterpriseDepartmentId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAssociate
+  sourceType: EnterpriseAssociates
+  target:
+    model:
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: managerId
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAssociates
+  sourceType: EnterpriseAssociates
+  target:
+    model:
+      name: EnterpriseAssociates
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterpriseAssociatesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseAssociateId
+      target:
+        modelField:
+          - fieldName: managerId
+  graphql:
+    aggregateFieldName: enterpriseAssociatesAggregate
+

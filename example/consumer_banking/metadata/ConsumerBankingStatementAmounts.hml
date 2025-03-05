@@ -1,0 +1,221 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingStatementAmounts
+  description: Stores various monetary amount totals associated with a statement
+  fields:
+    - name: amount
+      type: Numeric!
+      description: Monetary value
+    - name: consumerBankingStatementAmountId
+      type: Int4!
+      description: Auto-incrementing identifier for each amount record
+    - name: consumerBankingStatementId
+      type: Int4!
+      description: References the statement this amount belongs to
+    - name: creditDebitIndicator
+      type: Varchar!
+      description: Indicates if amount is a credit or debit
+    - name: currency
+      type: Varchar!
+      description: Currency code for the amount
+    - name: subType
+      type: Varchar
+      description: Further classification of the amount type
+    - name: type
+      type: Varchar!
+      description: Type of amount (e.g., opening balance, closing balance, payments)
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementAmounts
+    inputTypeName: ConsumerBanking_ConsumerBankingStatementAmountsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statement_amounts
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        consumerBankingStatementAmountId:
+          column:
+            name: consumer_banking_statement_amount_id
+        consumerBankingStatementId:
+          column:
+            name: consumer_banking_statement_id
+        creditDebitIndicator:
+          column:
+            name: credit_debit_indicator
+        currency:
+          column:
+            name: currency
+        subType:
+          column:
+            name: sub_type
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingStatementAmounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - consumerBankingStatementAmountId
+          - consumerBankingStatementId
+          - creditDebitIndicator
+          - currency
+          - subType
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementAmountsBoolExp
+  operand:
+    object:
+      type: ConsumerBankingStatementAmounts
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: consumerBankingStatementAmountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingStatementId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: creditDebitIndicator
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: subType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: type
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStatement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementAmountsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementAmountsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingStatementAmounts
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: NumericAggExp
+        - fieldName: consumerBankingStatementAmountId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingStatementId
+          aggregateExpression: Int4AggExp
+        - fieldName: creditDebitIndicator
+          aggregateExpression: VarcharAggExp
+        - fieldName: currency
+          aggregateExpression: VarcharAggExp
+        - fieldName: subType
+          aggregateExpression: VarcharAggExp
+        - fieldName: type
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementAmountsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementAmountsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingStatementAmounts
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: NumericOrderByExp
+        - fieldName: consumerBankingStatementAmountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingStatementId
+          orderByExpression: Int4OrderByExp
+        - fieldName: creditDebitIndicator
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: subType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: type
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingStatement
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementAmountsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingStatementAmounts
+  objectType: ConsumerBankingStatementAmounts
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statement_amounts
+  filterExpressionType: ConsumerBankingStatementAmountsBoolExp
+  aggregateExpression: ConsumerBankingStatementAmountsAggExp
+  orderByExpression: ConsumerBankingStatementAmountsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingStatementAmounts
+      subscription:
+        rootField: consumerBankingStatementAmounts
+    selectUniques:
+      - queryRootField: consumerBankingStatementAmountsByConsumerBankingStatementAmountId
+        uniqueIdentifier:
+          - consumerBankingStatementAmountId
+        subscription:
+          rootField: consumerBankingStatementAmountsByConsumerBankingStatementAmountId
+    filterInputTypeName: ConsumerBanking_ConsumerBankingStatementAmountsFilterInput
+    aggregate:
+      queryRootField: consumerBankingStatementAmountsAggregate
+      subscription:
+        rootField: consumerBankingStatementAmountsAggregate
+  description: Stores various monetary amount totals associated with a statement
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingStatementAmounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatement
+  sourceType: ConsumerBankingStatementAmounts
+  target:
+    model:
+      name: ConsumerBankingStatements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+

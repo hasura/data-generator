@@ -1,0 +1,177 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseDepartments
+  description: Stores information about the various departments within the enterprise.
+  fields:
+    - name: departmentName
+      type: Varchar
+      description: Name of the department.
+    - name: enterpriseDepartmentId
+      type: Int4!
+      description: Unique identifier for each department.
+    - name: location
+      type: Varchar
+      description: Physical location of the department.
+  graphql:
+    typeName: EnterpriseDepartments
+    inputTypeName: EnterpriseDepartmentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_departments
+      fieldMapping:
+        departmentName:
+          column:
+            name: department_name
+        enterpriseDepartmentId:
+          column:
+            name: enterprise_department_id
+        location:
+          column:
+            name: location
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseDepartments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - departmentName
+          - enterpriseDepartmentId
+          - location
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseDepartmentsBoolExp
+  operand:
+    object:
+      type: EnterpriseDepartments
+      comparableFields:
+        - fieldName: departmentName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterpriseDepartmentId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: location
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: enterpriseAssociates
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: EnterpriseDepartmentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseDepartmentsAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseDepartments
+      aggregatableFields:
+        - fieldName: departmentName
+          aggregateExpression: VarcharAggExp
+        - fieldName: enterpriseDepartmentId
+          aggregateExpression: Int4AggExp
+        - fieldName: location
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: EnterpriseDepartmentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseDepartmentsOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseDepartments
+      orderableFields:
+        - fieldName: departmentName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: enterpriseDepartmentId
+          orderByExpression: Int4OrderByExp
+        - fieldName: location
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: EnterpriseDepartmentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseDepartments
+  objectType: EnterpriseDepartments
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_departments
+  filterExpressionType: EnterpriseDepartmentsBoolExp
+  aggregateExpression: EnterpriseDepartmentsAggExp
+  orderByExpression: EnterpriseDepartmentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseDepartments
+      subscription:
+        rootField: enterpriseDepartments
+    selectUniques:
+      - queryRootField: enterpriseDepartmentsByDepartmentName
+        uniqueIdentifier:
+          - departmentName
+        subscription:
+          rootField: enterpriseDepartmentsByDepartmentName
+      - queryRootField: enterpriseDepartmentsByEnterpriseDepartmentId
+        uniqueIdentifier:
+          - enterpriseDepartmentId
+        subscription:
+          rootField: enterpriseDepartmentsByEnterpriseDepartmentId
+    filterInputTypeName: EnterpriseDepartmentsFilterInput
+    aggregate:
+      queryRootField: enterpriseDepartmentsAggregate
+      subscription:
+        rootField: enterpriseDepartmentsAggregate
+  description: Stores information about the various departments within the enterprise.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseDepartments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAssociates
+  sourceType: EnterpriseDepartments
+  target:
+    model:
+      name: EnterpriseAssociates
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterpriseAssociatesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseDepartmentId
+      target:
+        modelField:
+          - fieldName: enterpriseDepartmentId
+  graphql:
+    aggregateFieldName: enterpriseAssociatesAggregate
+

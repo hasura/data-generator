@@ -1,0 +1,250 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesBorrowerAssets
+  description: Tracks assets owned by borrowers that may be relevant to mortgage
+    qualification
+  fields:
+    - name: accountNumber
+      type: Varchar
+      description: Account number for financial assets
+    - name: assetType
+      type: Varchar!
+      description: Type of asset (e.g., bank account, property)
+    - name: currentValue
+      type: Numeric!
+      description: Current estimated value of the asset
+    - name: institutionName
+      type: Varchar
+      description: Financial institution holding the asset
+    - name: mortgageServicesAssetId
+      type: Int4!
+      description: Auto-incrementing identifier for each asset record
+    - name: mortgageServicesBorrowerId
+      type: Int4!
+      description: References the borrower this asset belongs to
+    - name: propertyAddressId
+      type: Int4
+      description: References the address if asset is a property
+    - name: verificationDate
+      type: Date
+      description: When the asset was verified
+    - name: verificationStatus
+      type: Varchar!
+      description: Status of asset verification process
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowerAssets
+    inputTypeName: _MortgageServices__MortgageServicesBorrowerAssetsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_borrower_assets
+      fieldMapping:
+        accountNumber:
+          column:
+            name: account_number
+        assetType:
+          column:
+            name: asset_type
+        currentValue:
+          column:
+            name: current_value
+        institutionName:
+          column:
+            name: institution_name
+        mortgageServicesAssetId:
+          column:
+            name: mortgage_services_asset_id
+        mortgageServicesBorrowerId:
+          column:
+            name: mortgage_services_borrower_id
+        propertyAddressId:
+          column:
+            name: property_address_id
+        verificationDate:
+          column:
+            name: verification_date
+        verificationStatus:
+          column:
+            name: verification_status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesBorrowerAssets
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accountNumber
+          - assetType
+          - currentValue
+          - institutionName
+          - mortgageServicesAssetId
+          - mortgageServicesBorrowerId
+          - propertyAddressId
+          - verificationDate
+          - verificationStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesBorrowerAssetsBoolExp
+  operand:
+    object:
+      type: MortgageServicesBorrowerAssets
+      comparableFields:
+        - fieldName: accountNumber
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: assetType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: currentValue
+          booleanExpressionType: NumericBoolExp
+        - fieldName: institutionName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: mortgageServicesAssetId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesBorrowerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: propertyAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: verificationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesBorrower
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesBorrowerAssetsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowerAssetsAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesBorrowerAssets
+      aggregatableFields:
+        - fieldName: accountNumber
+          aggregateExpression: VarcharAggExp
+        - fieldName: assetType
+          aggregateExpression: VarcharAggExp
+        - fieldName: currentValue
+          aggregateExpression: NumericAggExp
+        - fieldName: institutionName
+          aggregateExpression: VarcharAggExp
+        - fieldName: mortgageServicesAssetId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesBorrowerId
+          aggregateExpression: Int4AggExp
+        - fieldName: propertyAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: verificationDate
+          aggregateExpression: DateAggExp
+        - fieldName: verificationStatus
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesBorrowerAssetsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesBorrowerAssetsOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesBorrowerAssets
+      orderableFields:
+        - fieldName: accountNumber
+          orderByExpression: VarcharOrderByExp
+        - fieldName: assetType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: currentValue
+          orderByExpression: NumericOrderByExp
+        - fieldName: institutionName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: mortgageServicesAssetId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesBorrowerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: propertyAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: verificationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesBorrower
+        - relationshipName: propertyAddress
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesBorrowerAssetsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesBorrowerAssets
+  objectType: MortgageServicesBorrowerAssets
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_borrower_assets
+  filterExpressionType: MortgageServicesBorrowerAssetsBoolExp
+  aggregateExpression: MortgageServicesBorrowerAssetsAggExp
+  orderByExpression: MortgageServicesBorrowerAssetsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesBorrowerAssets
+      subscription:
+        rootField: mortgageServicesBorrowerAssets
+    selectUniques:
+      - queryRootField: mortgageServicesBorrowerAssetsByMortgageServicesAssetId
+        uniqueIdentifier:
+          - mortgageServicesAssetId
+        subscription:
+          rootField: mortgageServicesBorrowerAssetsByMortgageServicesAssetId
+    filterInputTypeName: _MortgageServices__MortgageServicesBorrowerAssetsFilterInput
+    aggregate:
+      queryRootField: mortgageServicesBorrowerAssetsAggregate
+      subscription:
+        rootField: mortgageServicesBorrowerAssetsAggregate
+  description: Tracks assets owned by borrowers that may be relevant to mortgage
+    qualification
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesBorrowerAssets
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesBorrower
+  sourceType: MortgageServicesBorrowerAssets
+  target:
+    model:
+      name: MortgageServicesBorrowers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesBorrowerId
+      target:
+        modelField:
+          - fieldName: mortgageServicesBorrowerId
+

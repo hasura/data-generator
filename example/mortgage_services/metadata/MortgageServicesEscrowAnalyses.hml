@@ -1,0 +1,286 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: MortgageServicesEscrowAnalyses
+  description: Records periodic analyses of escrow accounts to determine payment adjustments
+  fields:
+    - name: analysisDate
+      type: Date!
+      description: When the analysis was performed
+    - name: customerNotificationDate
+      type: Date
+      description: When the customer was notified of the analysis results
+    - name: effectiveDate
+      type: Date!
+      description: When the analysis results take effect
+    - name: escrowShortage
+      type: Numeric
+      description: Amount by which the escrow account is short
+    - name: escrowSurplus
+      type: Numeric
+      description: Amount by which the escrow account exceeds requirements
+    - name: mortgageServicesAnalysisId
+      type: Int4!
+      description: Auto-incrementing identifier for each analysis
+    - name: mortgageServicesServicingAccountId
+      type: Int4!
+      description: References the servicing account being analyzed
+    - name: newMonthlyEscrow
+      type: Numeric!
+      description: New monthly escrow payment amount
+    - name: previousMonthlyEscrow
+      type: Numeric
+      description: Previous monthly escrow payment amount
+    - name: shortageSpreadMonths
+      type: Int4
+      description: Number of months to spread shortage payment
+    - name: status
+      type: Varchar!
+      description: Current status of the analysis
+    - name: surplusRefundAmount
+      type: Numeric
+      description: Amount of surplus to be refunded
+  graphql:
+    typeName: _MortgageServices__MortgageServicesEscrowAnalyses
+    inputTypeName: _MortgageServices__MortgageServicesEscrowAnalysesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_escrow_analyses
+      fieldMapping:
+        analysisDate:
+          column:
+            name: analysis_date
+        customerNotificationDate:
+          column:
+            name: customer_notification_date
+        effectiveDate:
+          column:
+            name: effective_date
+        escrowShortage:
+          column:
+            name: escrow_shortage
+        escrowSurplus:
+          column:
+            name: escrow_surplus
+        mortgageServicesAnalysisId:
+          column:
+            name: mortgage_services_analysis_id
+        mortgageServicesServicingAccountId:
+          column:
+            name: mortgage_services_servicing_account_id
+        newMonthlyEscrow:
+          column:
+            name: new_monthly_escrow
+        previousMonthlyEscrow:
+          column:
+            name: previous_monthly_escrow
+        shortageSpreadMonths:
+          column:
+            name: shortage_spread_months
+        status:
+          column:
+            name: status
+        surplusRefundAmount:
+          column:
+            name: surplus_refund_amount
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: MortgageServicesEscrowAnalyses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - analysisDate
+          - customerNotificationDate
+          - effectiveDate
+          - escrowShortage
+          - escrowSurplus
+          - mortgageServicesAnalysisId
+          - mortgageServicesServicingAccountId
+          - newMonthlyEscrow
+          - previousMonthlyEscrow
+          - shortageSpreadMonths
+          - status
+          - surplusRefundAmount
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: MortgageServicesEscrowAnalysesBoolExp
+  operand:
+    object:
+      type: MortgageServicesEscrowAnalyses
+      comparableFields:
+        - fieldName: analysisDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: customerNotificationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: escrowShortage
+          booleanExpressionType: NumericBoolExp
+        - fieldName: escrowSurplus
+          booleanExpressionType: NumericBoolExp
+        - fieldName: mortgageServicesAnalysisId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesServicingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: newMonthlyEscrow
+          booleanExpressionType: NumericBoolExp
+        - fieldName: previousMonthlyEscrow
+          booleanExpressionType: NumericBoolExp
+        - fieldName: shortageSpreadMonths
+          booleanExpressionType: Int4BoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: surplusRefundAmount
+          booleanExpressionType: NumericBoolExp
+      comparableRelationships:
+        - relationshipName: mortgageServicesServicingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: _MortgageServices__MortgageServicesEscrowAnalysesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: MortgageServicesEscrowAnalysesAggExp
+  operand:
+    object:
+      aggregatedType: MortgageServicesEscrowAnalyses
+      aggregatableFields:
+        - fieldName: analysisDate
+          aggregateExpression: DateAggExp
+        - fieldName: customerNotificationDate
+          aggregateExpression: DateAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: DateAggExp
+        - fieldName: escrowShortage
+          aggregateExpression: NumericAggExp
+        - fieldName: escrowSurplus
+          aggregateExpression: NumericAggExp
+        - fieldName: mortgageServicesAnalysisId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesServicingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: newMonthlyEscrow
+          aggregateExpression: NumericAggExp
+        - fieldName: previousMonthlyEscrow
+          aggregateExpression: NumericAggExp
+        - fieldName: shortageSpreadMonths
+          aggregateExpression: Int4AggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+        - fieldName: surplusRefundAmount
+          aggregateExpression: NumericAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: _MortgageServices__MortgageServicesEscrowAnalysesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: MortgageServicesEscrowAnalysesOrderByExp
+  operand:
+    object:
+      orderedType: MortgageServicesEscrowAnalyses
+      orderableFields:
+        - fieldName: analysisDate
+          orderByExpression: DateOrderByExp
+        - fieldName: customerNotificationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: DateOrderByExp
+        - fieldName: escrowShortage
+          orderByExpression: NumericOrderByExp
+        - fieldName: escrowSurplus
+          orderByExpression: NumericOrderByExp
+        - fieldName: mortgageServicesAnalysisId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesServicingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: newMonthlyEscrow
+          orderByExpression: NumericOrderByExp
+        - fieldName: previousMonthlyEscrow
+          orderByExpression: NumericOrderByExp
+        - fieldName: shortageSpreadMonths
+          orderByExpression: Int4OrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+        - fieldName: surplusRefundAmount
+          orderByExpression: NumericOrderByExp
+      orderableRelationships:
+        - relationshipName: mortgageServicesServicingAccount
+  graphql:
+    expressionTypeName: _MortgageServices__MortgageServicesEscrowAnalysesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: MortgageServicesEscrowAnalyses
+  objectType: MortgageServicesEscrowAnalyses
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_escrow_analyses
+  filterExpressionType: MortgageServicesEscrowAnalysesBoolExp
+  aggregateExpression: MortgageServicesEscrowAnalysesAggExp
+  orderByExpression: MortgageServicesEscrowAnalysesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: mortgageServicesEscrowAnalyses
+      subscription:
+        rootField: mortgageServicesEscrowAnalyses
+    selectUniques:
+      - queryRootField: mortgageServicesEscrowAnalysesByMortgageServicesAnalysisId
+        uniqueIdentifier:
+          - mortgageServicesAnalysisId
+        subscription:
+          rootField: mortgageServicesEscrowAnalysesByMortgageServicesAnalysisId
+    filterInputTypeName: _MortgageServices__MortgageServicesEscrowAnalysesFilterInput
+    aggregate:
+      queryRootField: mortgageServicesEscrowAnalysesAggregate
+      subscription:
+        rootField: mortgageServicesEscrowAnalysesAggregate
+  description: Records periodic analyses of escrow accounts to determine payment adjustments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: MortgageServicesEscrowAnalyses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesServicingAccount
+  sourceType: MortgageServicesEscrowAnalyses
+  target:
+    model:
+      name: MortgageServicesServicingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesServicingAccountId
+      target:
+        modelField:
+          - fieldName: mortgageServicesServicingAccountId
+

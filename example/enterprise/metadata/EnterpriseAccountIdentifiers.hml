@@ -1,0 +1,223 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseAccountIdentifiers
+  description: Stores various identifiers associated with accounts, supports
+    multiple identification schemes
+  fields:
+    - name: enterpriseAccountId
+      type: Int4!
+      description: References the main account
+    - name: enterpriseAccountIdentifierId
+      type: Int4!
+      description: Auto-incrementing identifier for each account identifier entry
+    - name: identification
+      type: Varchar!
+      description: The actual identifier value
+    - name: lei
+      type: Varchar
+      description: Legal Entity Identifier (if applicable)
+    - name: name
+      type: Varchar
+      description: Optional display name for this identifier
+    - name: schemeName
+      type: Varchar!
+      description: Naming scheme for the identifier (e.g., IBAN, BIC)
+    - name: secondaryIdentification
+      type: Varchar
+      description: Additional identification value (if applicable)
+  graphql:
+    typeName: EnterpriseAccountIdentifiers
+    inputTypeName: EnterpriseAccountIdentifiersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_account_identifiers
+      fieldMapping:
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        enterpriseAccountIdentifierId:
+          column:
+            name: enterprise_account_identifier_id
+        identification:
+          column:
+            name: identification
+        lei:
+          column:
+            name: lei
+        name:
+          column:
+            name: name
+        schemeName:
+          column:
+            name: scheme_name
+        secondaryIdentification:
+          column:
+            name: secondary_identification
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseAccountIdentifiers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - enterpriseAccountId
+          - enterpriseAccountIdentifierId
+          - identification
+          - lei
+          - name
+          - schemeName
+          - secondaryIdentification
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseAccountIdentifiersBoolExp
+  operand:
+    object:
+      type: EnterpriseAccountIdentifiers
+      comparableFields:
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseAccountIdentifierId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: identification
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lei
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: schemeName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: secondaryIdentification
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: enterpriseAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: EnterpriseAccountIdentifiersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseAccountIdentifiersAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseAccountIdentifiers
+      aggregatableFields:
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseAccountIdentifierId
+          aggregateExpression: Int4AggExp
+        - fieldName: identification
+          aggregateExpression: VarcharAggExp
+        - fieldName: lei
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: schemeName
+          aggregateExpression: VarcharAggExp
+        - fieldName: secondaryIdentification
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: EnterpriseAccountIdentifiersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseAccountIdentifiersOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseAccountIdentifiers
+      orderableFields:
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseAccountIdentifierId
+          orderByExpression: Int4OrderByExp
+        - fieldName: identification
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lei
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: schemeName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: secondaryIdentification
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: enterpriseAccount
+  graphql:
+    expressionTypeName: EnterpriseAccountIdentifiersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseAccountIdentifiers
+  objectType: EnterpriseAccountIdentifiers
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_account_identifiers
+  filterExpressionType: EnterpriseAccountIdentifiersBoolExp
+  aggregateExpression: EnterpriseAccountIdentifiersAggExp
+  orderByExpression: EnterpriseAccountIdentifiersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseAccountIdentifiers
+      subscription:
+        rootField: enterpriseAccountIdentifiers
+    selectUniques:
+      - queryRootField: enterpriseAccountIdentifiersByEnterpriseAccountIdentifierId
+        uniqueIdentifier:
+          - enterpriseAccountIdentifierId
+        subscription:
+          rootField: enterpriseAccountIdentifiersByEnterpriseAccountIdentifierId
+    filterInputTypeName: EnterpriseAccountIdentifiersFilterInput
+    aggregate:
+      queryRootField: enterpriseAccountIdentifiersAggregate
+      subscription:
+        rootField: enterpriseAccountIdentifiersAggregate
+  description: Stores various identifiers associated with accounts, supports
+    multiple identification schemes
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseAccountIdentifiers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAccount
+  sourceType: EnterpriseAccountIdentifiers
+  target:
+    model:
+      name: EnterpriseAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseAccountId
+      target:
+        modelField:
+          - fieldName: enterpriseAccountId
+

@@ -1,0 +1,353 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingLoanModifications
+  description: Tracks modifications made to existing loan accounts, such as
+    changes to interest rates, terms, or principal balance.
+  fields:
+    - name: approvalDate
+      type: ConsumerLendingDate
+      description: Date modification was approved
+    - name: approvedBy
+      type: ConsumerLendingInt4
+      description: User who approved modification
+    - name: capitalizedAmount
+      type: ConsumerLendingNumeric
+      description: Amount of interest or fees capitalized
+    - name: consumerLendingModificationId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for loan modification
+    - name: documentPath
+      type:  ConsumerLendingVarchar
+      description: Path to modification agreement document
+    - name: effectiveDate
+      type: ConsumerLendingDate
+      description: Date modification takes effect
+    - name: hardshipReason
+      type:  ConsumerLendingVarchar
+      description: Customer's reason for hardship
+    - name: loanAccountId
+      type: ConsumerLendingInt4!
+      description: Reference to loan account
+    - name: modificationType
+      type:  ConsumerLendingVarchar!
+      description: Rate Reduction, Term Extension, etc.
+    - name: newPrincipalBalance
+      type: ConsumerLendingNumeric
+      description: Principal balance after modification
+    - name: newRate
+      type: ConsumerLendingNumeric
+      description: Interest rate after modification
+    - name: newTermMonths
+      type: ConsumerLendingInt4
+      description: Loan term after modification
+    - name: originalPrincipalBalance
+      type: ConsumerLendingNumeric
+      description: Principal balance before modification
+    - name: originalRate
+      type: ConsumerLendingNumeric
+      description: Interest rate before modification
+    - name: originalTermMonths
+      type: ConsumerLendingInt4
+      description: Loan term before modification
+    - name: requestDate
+      type: ConsumerLendingDate!
+      description: Date modification was requested
+    - name: status
+      type:  ConsumerLendingVarchar!
+      description: Pending, Approved, Denied, Completed
+  graphql:
+    typeName: ConsumerLendingLoanModifications
+    inputTypeName: ConsumerLendingLoanModificationsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_modifications
+      fieldMapping:
+        approvalDate:
+          column:
+            name: approval_date
+        approvedBy:
+          column:
+            name: approved_by
+        capitalizedAmount:
+          column:
+            name: capitalized_amount
+        consumerLendingModificationId:
+          column:
+            name: consumer_lending_modification_id
+        documentPath:
+          column:
+            name: document_path
+        effectiveDate:
+          column:
+            name: effective_date
+        hardshipReason:
+          column:
+            name: hardship_reason
+        loanAccountId:
+          column:
+            name: loan_account_id
+        modificationType:
+          column:
+            name: modification_type
+        newPrincipalBalance:
+          column:
+            name: new_principal_balance
+        newRate:
+          column:
+            name: new_rate
+        newTermMonths:
+          column:
+            name: new_term_months
+        originalPrincipalBalance:
+          column:
+            name: original_principal_balance
+        originalRate:
+          column:
+            name: original_rate
+        originalTermMonths:
+          column:
+            name: original_term_months
+        requestDate:
+          column:
+            name: request_date
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingLoanModifications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approvalDate
+          - approvedBy
+          - capitalizedAmount
+          - consumerLendingModificationId
+          - documentPath
+          - effectiveDate
+          - hardshipReason
+          - loanAccountId
+          - modificationType
+          - newPrincipalBalance
+          - newRate
+          - newTermMonths
+          - originalPrincipalBalance
+          - originalRate
+          - originalTermMonths
+          - requestDate
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingLoanModificationsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingLoanModifications
+      comparableFields:
+        - fieldName: approvalDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: approvedBy
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: capitalizedAmount
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: consumerLendingModificationId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: documentPath
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: effectiveDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: hardshipReason
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: loanAccountId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: modificationType
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+        - fieldName: newPrincipalBalance
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: newRate
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: newTermMonths
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: originalPrincipalBalance
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: originalRate
+          booleanExpressionType: ConsumerLendingNumericBoolExp
+        - fieldName: originalTermMonths
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: requestDate
+          booleanExpressionType: ConsumerLendingDateBoolExp
+        - fieldName: status
+          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingLoanModificationsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanModificationsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingLoanModifications
+      aggregatableFields:
+        - fieldName: approvalDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: approvedBy
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: capitalizedAmount
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: consumerLendingModificationId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: documentPath
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: effectiveDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: hardshipReason
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: loanAccountId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: modificationType
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+        - fieldName: newPrincipalBalance
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: newRate
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: newTermMonths
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: originalPrincipalBalance
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: originalRate
+          aggregateExpression: ConsumerLendingNumericAggExp
+        - fieldName: originalTermMonths
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: requestDate
+          aggregateExpression: ConsumerLendingDateAggExp
+        - fieldName: status
+          aggregateExpression:  ConsumerLendingVarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingLoanModificationsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingLoanModificationsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingLoanModifications
+      orderableFields:
+        - fieldName: approvalDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: approvedBy
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: capitalizedAmount
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: consumerLendingModificationId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: documentPath
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: effectiveDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: hardshipReason
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: loanAccountId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: modificationType
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+        - fieldName: newPrincipalBalance
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: newRate
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: newTermMonths
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: originalPrincipalBalance
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: originalRate
+          orderByExpression: ConsumerLendingNumericOrderByExp
+        - fieldName: originalTermMonths
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: requestDate
+          orderByExpression: ConsumerLendingDateOrderByExp
+        - fieldName: status
+          orderByExpression:  ConsumerLendingVarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingLoanAccount
+  graphql:
+    expressionTypeName: ConsumerLendingLoanModificationsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingLoanModifications
+  objectType: ConsumerLendingLoanModifications
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_modifications
+  filterExpressionType: ConsumerLendingLoanModificationsBoolExp
+  aggregateExpression: ConsumerLendingLoanModificationsAggExp
+  orderByExpression: ConsumerLendingLoanModificationsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingLoanModifications
+      subscription:
+        rootField: consumerLendingLoanModifications
+    selectUniques:
+      - queryRootField: consumerLendingLoanModificationsByConsumerLendingModificationId
+        uniqueIdentifier:
+          - consumerLendingModificationId
+        subscription:
+          rootField: consumerLendingLoanModificationsByConsumerLendingModificationId
+    filterInputTypeName: ConsumerLendingLoanModificationsFilterInput
+    aggregate:
+      queryRootField: consumerLendingLoanModificationsAggregate
+      subscription:
+        rootField: consumerLendingLoanModificationsAggregate
+  description: Tracks modifications made to existing loan accounts, such as
+    changes to interest rates, terms, or principal balance.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingLoanModifications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingLoanAccount
+  sourceType: ConsumerLendingLoanModifications
+  target:
+    model:
+      name: ConsumerLendingLoanAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: loanAccountId
+      target:
+        modelField:
+          - fieldName: loanAccountId
+

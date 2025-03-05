@@ -1,0 +1,14 @@
+services:
+  credit_cards_credit_cards:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.credit_cards
+    environment:
+      CONNECTION_URI: $CREDIT_CARDS_CREDIT_CARDS_CONNECTION_URI
+      HASURA_SERVICE_TOKEN_SECRET: $CREDIT_CARDS_CREDIT_CARDS_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $CREDIT_CARDS_CREDIT_CARDS_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $CREDIT_CARDS_CREDIT_CARDS_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 8805:8080

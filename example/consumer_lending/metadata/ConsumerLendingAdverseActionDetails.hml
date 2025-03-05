@@ -1,0 +1,302 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionDetails
+  description: Provides detailed information about adverse action taken on loan
+    applications, including reasons and credit information.
+  fields:
+    - name: consumerLendingAdverseActionId
+      type: ConsumerLendingInt4!
+      description: Unique identifier for adverse action record
+    - name: consumerLendingNoticeId
+      type: ConsumerLendingInt4!
+      description: Reference to adverse_action_notices
+    - name: creditBureauName
+      type: ConsumerLendingVarchar
+      description: Name of credit bureau
+    - name: creditScoreDisclosed
+      type: ConsumerLendingInt4
+      description: Credit score disclosed to applicant
+    - name: creditScoreFactors
+      type: ConsumerLendingText
+      description: Key factors affecting score
+    - name: creditScoreRangeMax
+      type: ConsumerLendingInt4
+      description: Maximum score in range
+    - name: creditScoreRangeMin
+      type: ConsumerLendingInt4
+      description: Minimum score in range
+    - name: ecoaReasonCode
+      type: ConsumerLendingVarchar!
+      description: Standard ECOA reason code
+    - name: fcraReasonCode
+      type: ConsumerLendingVarchar
+      description: Standard FCRA reason code if applicable
+    - name: generatedDate
+      type: Timestamp!
+      description: Date details were generated
+    - name: reasonDescription
+      type: ConsumerLendingVarchar!
+      description: Description of reason for adverse action
+    - name: sequence
+      type: ConsumerLendingInt4!
+      description: Order of importance for reason
+    - name: userId
+      type: ConsumerLendingInt4
+      description: User who generated adverse action
+  graphql:
+    typeName: ConsumerLendingAdverseActionDetails
+    inputTypeName: ConsumerLendingAdverseActionDetailsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_adverse_action_details
+      fieldMapping:
+        consumerLendingAdverseActionId:
+          column:
+            name: consumer_lending_adverse_action_id
+        consumerLendingNoticeId:
+          column:
+            name: consumer_lending_notice_id
+        creditBureauName:
+          column:
+            name: credit_bureau_name
+        creditScoreDisclosed:
+          column:
+            name: credit_score_disclosed
+        creditScoreFactors:
+          column:
+            name: credit_score_factors
+        creditScoreRangeMax:
+          column:
+            name: credit_score_range_max
+        creditScoreRangeMin:
+          column:
+            name: credit_score_range_min
+        ecoaReasonCode:
+          column:
+            name: ecoa_reason_code
+        fcraReasonCode:
+          column:
+            name: fcra_reason_code
+        generatedDate:
+          column:
+            name: generated_date
+        reasonDescription:
+          column:
+            name: reason_description
+        sequence:
+          column:
+            name: sequence
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerLendingAdverseActionDetails
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumerLendingAdverseActionId
+          - consumerLendingNoticeId
+          - creditBureauName
+          - creditScoreDisclosed
+          - creditScoreFactors
+          - creditScoreRangeMax
+          - creditScoreRangeMin
+          - ecoaReasonCode
+          - fcraReasonCode
+          - generatedDate
+          - reasonDescription
+          - sequence
+          - userId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionDetailsBoolExp
+  operand:
+    object:
+      type: ConsumerLendingAdverseActionDetails
+      comparableFields:
+        - fieldName: consumerLendingAdverseActionId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: consumerLendingNoticeId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: creditBureauName
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: creditScoreDisclosed
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: creditScoreFactors
+          booleanExpressionType: ConsumerLendingTextBoolExp
+        - fieldName: creditScoreRangeMax
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: creditScoreRangeMin
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: ecoaReasonCode
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: fcraReasonCode
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: generatedDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: reasonDescription
+          booleanExpressionType: ConsumerLendingVarcharBoolExp
+        - fieldName: sequence
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+        - fieldName: userId
+          booleanExpressionType: ConsumerLendingInt4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerLendingAdverseActionNotice
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLendingAdverseActionDetailsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionDetailsAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerLendingAdverseActionDetails
+      aggregatableFields:
+        - fieldName: consumerLendingAdverseActionId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: consumerLendingNoticeId
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: creditBureauName
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: creditScoreDisclosed
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: creditScoreFactors
+          aggregateExpression: ConsumerLendingTextAggExp
+        - fieldName: creditScoreRangeMax
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: creditScoreRangeMin
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: ecoaReasonCode
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: fcraReasonCode
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: generatedDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: reasonDescription
+          aggregateExpression: ConsumerLendingVarcharAggExp
+        - fieldName: sequence
+          aggregateExpression: ConsumerLendingInt4AggExp
+        - fieldName: userId
+          aggregateExpression: ConsumerLendingInt4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLendingAdverseActionDetailsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerLendingAdverseActionDetailsOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerLendingAdverseActionDetails
+      orderableFields:
+        - fieldName: consumerLendingAdverseActionId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: consumerLendingNoticeId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: creditBureauName
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: creditScoreDisclosed
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: creditScoreFactors
+          orderByExpression: ConsumerLendingTextOrderByExp
+        - fieldName: creditScoreRangeMax
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: creditScoreRangeMin
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: ecoaReasonCode
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: fcraReasonCode
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: generatedDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: reasonDescription
+          orderByExpression: ConsumerLendingVarcharOrderByExp
+        - fieldName: sequence
+          orderByExpression: ConsumerLendingInt4OrderByExp
+        - fieldName: userId
+          orderByExpression: ConsumerLendingInt4OrderByExp
+      orderableRelationships:
+        - relationshipName: consumerLendingAdverseActionNotice
+        - relationshipName: user
+  graphql:
+    expressionTypeName: ConsumerLendingAdverseActionDetailsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerLendingAdverseActionDetails
+  objectType: ConsumerLendingAdverseActionDetails
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_adverse_action_details
+  filterExpressionType: ConsumerLendingAdverseActionDetailsBoolExp
+  aggregateExpression: ConsumerLendingAdverseActionDetailsAggExp
+  orderByExpression: ConsumerLendingAdverseActionDetailsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerLendingAdverseActionDetails
+      subscription:
+        rootField: consumerLendingAdverseActionDetails
+    selectUniques:
+      - queryRootField: consumerLendingAdverseActionDetailsByConsumerLendingAdverseActionId
+        uniqueIdentifier:
+          - consumerLendingAdverseActionId
+        subscription:
+          rootField: consumerLendingAdverseActionDetailsByConsumerLendingAdverseActionId
+    filterInputTypeName: ConsumerLendingAdverseActionDetailsFilterInput
+    aggregate:
+      queryRootField: consumerLendingAdverseActionDetailsAggregate
+      subscription:
+        rootField: consumerLendingAdverseActionDetailsAggregate
+  description: Provides detailed information about adverse action taken on loan
+    applications, including reasons and credit information.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerLendingAdverseActionDetails
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerLendingAdverseActionNotice
+  sourceType: ConsumerLendingAdverseActionDetails
+  target:
+    model:
+      name: ConsumerLendingAdverseActionNotices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerLendingNoticeId
+      target:
+        modelField:
+          - fieldName: consumerLendingNoticeId
+

@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseAccountOwnership
+  description: Represents ownership of an account by a party, allowing for joint
+    ownership across multiple accounts
+  fields:
+    - name: enterpriseAccountId
+      type: Int4!
+      description: References the account
+    - name: enterpriseAccountOwnershipId
+      type: Int4!
+      description: Auto-incrementing identifier for each account ownership record
+    - name: enterprisePartyId
+      type: Int4!
+      description: References the party (owner)
+  graphql:
+    typeName: EnterpriseAccountOwnership
+    inputTypeName: EnterpriseAccountOwnershipInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_account_ownership
+      fieldMapping:
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        enterpriseAccountOwnershipId:
+          column:
+            name: enterprise_account_ownership_id
+        enterprisePartyId:
+          column:
+            name: enterprise_party_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseAccountOwnership
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - enterpriseAccountId
+          - enterpriseAccountOwnershipId
+          - enterprisePartyId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseAccountOwnershipBoolExp
+  operand:
+    object:
+      type: EnterpriseAccountOwnership
+      comparableFields:
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseAccountOwnershipId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterprisePartyId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: enterpriseAccount
+        - relationshipName: enterpriseParty
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: EnterpriseAccountOwnershipBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseAccountOwnershipAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseAccountOwnership
+      aggregatableFields:
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseAccountOwnershipId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterprisePartyId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: EnterpriseAccountOwnershipAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseAccountOwnershipOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseAccountOwnership
+      orderableFields:
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseAccountOwnershipId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterprisePartyId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: enterpriseAccount
+        - relationshipName: enterpriseParty
+  graphql:
+    expressionTypeName: EnterpriseAccountOwnershipOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseAccountOwnership
+  objectType: EnterpriseAccountOwnership
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_account_ownership
+  filterExpressionType: EnterpriseAccountOwnershipBoolExp
+  aggregateExpression: EnterpriseAccountOwnershipAggExp
+  orderByExpression: EnterpriseAccountOwnershipOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseAccountOwnership
+      subscription:
+        rootField: enterpriseAccountOwnership
+    selectUniques:
+      - queryRootField: enterpriseAccountOwnershipByEnterpriseAccountOwnershipId
+        uniqueIdentifier:
+          - enterpriseAccountOwnershipId
+        subscription:
+          rootField: enterpriseAccountOwnershipByEnterpriseAccountOwnershipId
+    filterInputTypeName: EnterpriseAccountOwnershipFilterInput
+    aggregate:
+      queryRootField: enterpriseAccountOwnershipAggregate
+      subscription:
+        rootField: enterpriseAccountOwnershipAggregate
+  description: Represents ownership of an account by a party, allowing for joint
+    ownership across multiple accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseAccountOwnership
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAccount
+  sourceType: EnterpriseAccountOwnership
+  target:
+    model:
+      name: EnterpriseAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseAccountId
+      target:
+        modelField:
+          - fieldName: enterpriseAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseParty
+  sourceType: EnterpriseAccountOwnership
+  target:
+    model:
+      name: EnterpriseParties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
+

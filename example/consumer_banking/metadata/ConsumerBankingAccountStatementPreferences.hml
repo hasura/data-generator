@@ -1,0 +1,261 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ConsumerBankingAccountStatementPreferences
+  description: Stores customer preferences for account statements
+  fields:
+    - name: communicationMethod
+      type: Varchar!
+      description: How statements are delivered to the customer
+    - name: consumerBankingDeliveryAddressId
+      type: Int4
+      description: References the address where statements are sent
+    - name: enterpriseAccountId
+      type: Int4
+      description: References the account these preferences apply to
+    - name: format
+      type: Varchar!
+      description: Preferred format of statements (e.g., PDF, paper)
+    - name: frequency
+      type: Varchar!
+      description: How often statements are generated (e.g., monthly, quarterly)
+    - name: lastStatementDate
+      type: Date
+      description: When the last statement was generated
+    - name: nextStatementDate
+      type: Date
+      description: When the next statement is scheduled
+    - name: consumerBankingAccountId
+      type: Int4!
+    - name: enterpriseAddressId
+      type: Int4
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountStatementPreferences
+    inputTypeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_account_statement_preferences
+      fieldMapping:
+        communicationMethod:
+          column:
+            name: communication_method
+        consumerBankingDeliveryAddressId:
+          column:
+            name: consumer_banking_delivery_address_id
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
+        format:
+          column:
+            name: format
+        frequency:
+          column:
+            name: frequency
+        lastStatementDate:
+          column:
+            name: last_statement_date
+        nextStatementDate:
+          column:
+            name: next_statement_date
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
+        enterpriseAddressId:
+          column:
+            name: enterprise_address_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ConsumerBankingAccountStatementPreferences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - communicationMethod
+          - consumerBankingDeliveryAddressId
+          - enterpriseAccountId
+          - format
+          - frequency
+          - lastStatementDate
+          - nextStatementDate
+          - consumerBankingAccountId
+          - enterpriseAddressId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAccountStatementPreferencesBoolExp
+  operand:
+    object:
+      type: ConsumerBankingAccountStatementPreferences
+      comparableFields:
+        - fieldName: communicationMethod
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingDeliveryAddressId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: format
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: frequency
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastStatementDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: nextStatementDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: enterpriseAddressId
+          booleanExpressionType: Int4BoolExp
+      comparableRelationships:
+        - relationshipName: consumerBankingStatementDeliveryAddress
+        - relationshipName: consumerBankingAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountStatementPreferencesAggExp
+  operand:
+    object:
+      aggregatedType: ConsumerBankingAccountStatementPreferences
+      aggregatableFields:
+        - fieldName: communicationMethod
+          aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingDeliveryAddressId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: format
+          aggregateExpression: VarcharAggExp
+        - fieldName: frequency
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastStatementDate
+          aggregateExpression: DateAggExp
+        - fieldName: nextStatementDate
+          aggregateExpression: DateAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: enterpriseAddressId
+          aggregateExpression: Int4AggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountStatementPreferencesOrderByExp
+  operand:
+    object:
+      orderedType: ConsumerBankingAccountStatementPreferences
+      orderableFields:
+        - fieldName: communicationMethod
+          orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingDeliveryAddressId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: format
+          orderByExpression: VarcharOrderByExp
+        - fieldName: frequency
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastStatementDate
+          orderByExpression: DateOrderByExp
+        - fieldName: nextStatementDate
+          orderByExpression: DateOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: enterpriseAddressId
+          orderByExpression: Int4OrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingStatementDeliveryAddress
+        - relationshipName: deliveryAddress
+        - relationshipName: consumerBankingAccount
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ConsumerBankingAccountStatementPreferences
+  objectType: ConsumerBankingAccountStatementPreferences
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_account_statement_preferences
+  filterExpressionType: ConsumerBankingAccountStatementPreferencesBoolExp
+  aggregateExpression: ConsumerBankingAccountStatementPreferencesAggExp
+  orderByExpression: ConsumerBankingAccountStatementPreferencesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: consumerBankingAccountStatementPreferences
+      subscription:
+        rootField: consumerBankingAccountStatementPreferences
+    selectUniques: []
+    filterInputTypeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesFilterInput
+    aggregate:
+      queryRootField: consumerBankingAccountStatementPreferencesAggregate
+      subscription:
+        rootField: consumerBankingAccountStatementPreferencesAggregate
+  description: Stores customer preferences for account statements
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ConsumerBankingAccountStatementPreferences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatementDeliveryAddress
+  sourceType: ConsumerBankingAccountStatementPreferences
+  target:
+    model:
+      name: ConsumerBankingStatementDeliveryAddresses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingDeliveryAddressId
+      target:
+        modelField:
+          - fieldName: consumerBankingDeliveryAddressId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingAccountStatementPreferences
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+
