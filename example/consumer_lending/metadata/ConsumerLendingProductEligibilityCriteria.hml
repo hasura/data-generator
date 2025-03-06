@@ -7,29 +7,29 @@ definition:
     credit score, income, and employment requirements.
   fields:
     - name: consumerLendingCriteriaId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for eligibility criteria
     - name: consumerLendingLoanProductId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan product
     - name: criteriaType
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Credit Score, Income, DTI, Employment
     - name: description
-      type: ConsumerLendingText
+      type: Text
       description: Description of the eligibility criteria
     - name: maxValue
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Maximum value for eligibility
     - name: minValue
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Minimum value for eligibility
     - name: required
-      type: ConsumerLendingBool!
+      type: Bool!
       description: Whether this criteria is required
   graphql:
-    typeName: ConsumerLendingProductEligibilityCriteria
-    inputTypeName: ConsumerLendingProductEligibilityCriteriaInput
+    typeName: ConsumerLending_ConsumerLendingProductEligibilityCriteria
+    inputTypeName: ConsumerLending_ConsumerLendingProductEligibilityCriteriaInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_product_eligibility_criteria
@@ -83,19 +83,19 @@ definition:
       type: ConsumerLendingProductEligibilityCriteria
       comparableFields:
         - fieldName: consumerLendingCriteriaId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingLoanProductId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: criteriaType
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: description
-          booleanExpressionType: ConsumerLendingTextBoolExp
+          booleanExpressionType: TextBoolExp
         - fieldName: maxValue
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: minValue
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: required
-          booleanExpressionType: ConsumerLendingBoolBoolExp
+          booleanExpressionType: BoolBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanProduct
   logicalOperators:
@@ -103,7 +103,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingProductEligibilityCriteriaBoolExp
+    typeName: ConsumerLending_ConsumerLendingProductEligibilityCriteriaBoolExp
 
 ---
 kind: AggregateExpression
@@ -115,23 +115,23 @@ definition:
       aggregatedType: ConsumerLendingProductEligibilityCriteria
       aggregatableFields:
         - fieldName: consumerLendingCriteriaId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingLoanProductId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: criteriaType
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: description
-          aggregateExpression: ConsumerLendingTextAggExp
+          aggregateExpression: TextAggExp
         - fieldName: maxValue
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: minValue
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: required
-          aggregateExpression: ConsumerLendingBoolAggExp
+          aggregateExpression: BoolAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingProductEligibilityCriteriaAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingProductEligibilityCriteriaAggExp
 
 ---
 kind: OrderByExpression
@@ -143,23 +143,23 @@ definition:
       orderedType: ConsumerLendingProductEligibilityCriteria
       orderableFields:
         - fieldName: consumerLendingCriteriaId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingLoanProductId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: criteriaType
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: description
-          orderByExpression: ConsumerLendingTextOrderByExp
+          orderByExpression: TextOrderByExp
         - fieldName: maxValue
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: minValue
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: required
-          orderByExpression: ConsumerLendingBoolOrderByExp
+          orderByExpression: BoolOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanProduct
   graphql:
-    expressionTypeName: ConsumerLendingProductEligibilityCriteriaOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingProductEligibilityCriteriaOrderByExp
 
 ---
 kind: Model
@@ -184,7 +184,7 @@ definition:
           - consumerLendingCriteriaId
         subscription:
           rootField: consumerLendingProductEligibilityCriteriaByConsumerLendingCriteriaId
-    filterInputTypeName: ConsumerLendingProductEligibilityCriteriaFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingProductEligibilityCriteriaFilterInput
     aggregate:
       queryRootField: consumerLendingProductEligibilityCriteriaAggregate
       subscription:

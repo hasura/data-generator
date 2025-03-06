@@ -7,23 +7,23 @@ definition:
     credit applications or checks.
   fields:
     - name: consumerLendingCreditReportId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to credit report
     - name: consumerLendingInquiryId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for inquiry record
     - name: creditorName
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Institution that made inquiry
     - name: inquiryDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Date of credit inquiry
     - name: inquiryType
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Hard inquiry, soft inquiry
   graphql:
-    typeName: ConsumerLendingCreditInquiries
-    inputTypeName: ConsumerLendingCreditInquiriesInput
+    typeName: ConsumerLending_ConsumerLendingCreditInquiries
+    inputTypeName: ConsumerLending_ConsumerLendingCreditInquiriesInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_credit_inquiries
@@ -69,15 +69,15 @@ definition:
       type: ConsumerLendingCreditInquiries
       comparableFields:
         - fieldName: consumerLendingCreditReportId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingInquiryId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: creditorName
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: inquiryDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: inquiryType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingCreditReport
   logicalOperators:
@@ -85,7 +85,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingCreditInquiriesBoolExp
+    typeName: ConsumerLending_ConsumerLendingCreditInquiriesBoolExp
 
 ---
 kind: AggregateExpression
@@ -97,19 +97,19 @@ definition:
       aggregatedType: ConsumerLendingCreditInquiries
       aggregatableFields:
         - fieldName: consumerLendingCreditReportId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingInquiryId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: creditorName
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: inquiryDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: inquiryType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingCreditInquiriesAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingCreditInquiriesAggExp
 
 ---
 kind: OrderByExpression
@@ -121,19 +121,19 @@ definition:
       orderedType: ConsumerLendingCreditInquiries
       orderableFields:
         - fieldName: consumerLendingCreditReportId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingInquiryId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: creditorName
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: inquiryDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: inquiryType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingCreditReport
   graphql:
-    expressionTypeName: ConsumerLendingCreditInquiriesOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingCreditInquiriesOrderByExp
 
 ---
 kind: Model
@@ -158,7 +158,7 @@ definition:
           - consumerLendingInquiryId
         subscription:
           rootField: consumerLendingCreditInquiriesByConsumerLendingInquiryId
-    filterInputTypeName: ConsumerLendingCreditInquiriesFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingCreditInquiriesFilterInput
     aggregate:
       queryRootField: consumerLendingCreditInquiriesAggregate
       subscription:

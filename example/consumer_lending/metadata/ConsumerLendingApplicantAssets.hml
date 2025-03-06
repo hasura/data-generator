@@ -7,35 +7,35 @@ definition:
     accounts and property.
   fields:
     - name: accountNumber
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Account number, stored encrypted
     - name: assetType
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Checking, Savings, Investments, Property
     - name: consumerLendingApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to applicant
     - name: consumerLendingAssetId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for asset record
     - name: currentValue
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Current market value of asset
     - name: institutionName
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Financial institution holding the asset
     - name: propertyAddressId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to enterprise.addresses if asset is property
     - name: verificationDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date asset was verified
     - name: verificationStatus
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Self-reported, Verified, Failed
   graphql:
-    typeName: ConsumerLendingApplicantAssets
-    inputTypeName: ConsumerLendingApplicantAssetsInput
+    typeName: ConsumerLending_ConsumerLendingApplicantAssets
+    inputTypeName: ConsumerLending_ConsumerLendingApplicantAssetsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_applicant_assets
@@ -97,23 +97,23 @@ definition:
       type: ConsumerLendingApplicantAssets
       comparableFields:
         - fieldName: accountNumber
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: assetType
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingAssetId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: currentValue
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: institutionName
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: propertyAddressId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: verificationDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: verificationStatus
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicant
   logicalOperators:
@@ -121,7 +121,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingApplicantAssetsBoolExp
+    typeName: ConsumerLending_ConsumerLendingApplicantAssetsBoolExp
 
 ---
 kind: AggregateExpression
@@ -133,27 +133,27 @@ definition:
       aggregatedType: ConsumerLendingApplicantAssets
       aggregatableFields:
         - fieldName: accountNumber
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: assetType
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingAssetId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: currentValue
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: institutionName
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: propertyAddressId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: verificationDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: verificationStatus
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingApplicantAssetsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingApplicantAssetsAggExp
 
 ---
 kind: OrderByExpression
@@ -165,28 +165,27 @@ definition:
       orderedType: ConsumerLendingApplicantAssets
       orderableFields:
         - fieldName: accountNumber
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: assetType
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingAssetId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: currentValue
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: institutionName
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: propertyAddressId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: verificationDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: verificationStatus
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
-        - relationshipName: propertyAddress
   graphql:
-    expressionTypeName: ConsumerLendingApplicantAssetsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingApplicantAssetsOrderByExp
 
 ---
 kind: Model
@@ -211,7 +210,7 @@ definition:
           - consumerLendingAssetId
         subscription:
           rootField: consumerLendingApplicantAssetsByConsumerLendingAssetId
-    filterInputTypeName: ConsumerLendingApplicantAssetsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingApplicantAssetsFilterInput
     aggregate:
       queryRootField: consumerLendingApplicantAssetsAggregate
       subscription:

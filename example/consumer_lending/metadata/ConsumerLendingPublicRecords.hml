@@ -7,29 +7,29 @@ definition:
     associated with a credit report.
   fields:
     - name: amount
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Amount of judgment or lien
     - name: consumerLendingCreditReportId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to credit report
     - name: consumerLendingRecordId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for public record
     - name: filingDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Date record was filed
     - name: recordType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Bankruptcy, Lien, Judgment
     - name: referenceNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Court or filing reference number
     - name: status
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Active, Satisfied, Discharged
   graphql:
-    typeName: ConsumerLendingPublicRecords
-    inputTypeName: ConsumerLendingPublicRecordsInput
+    typeName: ConsumerLending_ConsumerLendingPublicRecords
+    inputTypeName: ConsumerLending_ConsumerLendingPublicRecordsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_public_records
@@ -83,19 +83,19 @@ definition:
       type: ConsumerLendingPublicRecords
       comparableFields:
         - fieldName: amount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerLendingCreditReportId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingRecordId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: filingDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: recordType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: referenceNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingCreditReport
   logicalOperators:
@@ -103,7 +103,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingPublicRecordsBoolExp
+    typeName: ConsumerLending_ConsumerLendingPublicRecordsBoolExp
 
 ---
 kind: AggregateExpression
@@ -115,23 +115,23 @@ definition:
       aggregatedType: ConsumerLendingPublicRecords
       aggregatableFields:
         - fieldName: amount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: consumerLendingCreditReportId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingRecordId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: filingDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: recordType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: referenceNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingPublicRecordsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingPublicRecordsAggExp
 
 ---
 kind: OrderByExpression
@@ -143,23 +143,23 @@ definition:
       orderedType: ConsumerLendingPublicRecords
       orderableFields:
         - fieldName: amount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerLendingCreditReportId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingRecordId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: filingDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: recordType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: referenceNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingCreditReport
   graphql:
-    expressionTypeName: ConsumerLendingPublicRecordsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingPublicRecordsOrderByExp
 
 ---
 kind: Model
@@ -184,7 +184,7 @@ definition:
           - consumerLendingRecordId
         subscription:
           rootField: consumerLendingPublicRecordsByConsumerLendingRecordId
-    filterInputTypeName: ConsumerLendingPublicRecordsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingPublicRecordsFilterInput
     aggregate:
       queryRootField: consumerLendingPublicRecordsAggregate
       subscription:

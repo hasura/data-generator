@@ -7,50 +7,50 @@ definition:
     delinquency details and collection actions.
   fields:
     - name: amountPastDue
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Total amount past due
     - name: assignedDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Date account was placed in collections
     - name: assignedTo
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Collector assigned to account
     - name: consumerLendingCollectionId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for collection record
     - name: daysDelinquent
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Current days delinquent
     - name: delinquencyDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: First date of delinquency
     - name: delinquencyReason
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Customer-provided reason for delinquency
     - name: lastActionDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date of most recent action taken
     - name: loanAccountId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan account
     - name: nextActionDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date of next scheduled action
     - name: priority
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: High, Medium, Low
     - name: resolutionDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date collection was resolved
     - name: resolutionType
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Paid, Settlement, Modification, Charge Off
     - name: status
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Active, Resolved, Charged Off
   graphql:
-    typeName: ConsumerLendingCollectionAccounts
-    inputTypeName: ConsumerLendingCollectionAccountsInput
+    typeName: ConsumerLending_ConsumerLendingCollectionAccounts
+    inputTypeName: ConsumerLending_ConsumerLendingCollectionAccountsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_collection_accounts
@@ -132,33 +132,33 @@ definition:
       type: ConsumerLendingCollectionAccounts
       comparableFields:
         - fieldName: amountPastDue
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: assignedDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: assignedTo
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingCollectionId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: daysDelinquent
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: delinquencyDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: delinquencyReason
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: lastActionDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: loanAccountId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: nextActionDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: priority
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: resolutionDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: resolutionType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanAccount
         - relationshipName: consumerLendingCollectionActions
@@ -168,7 +168,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingCollectionAccountsBoolExp
+    typeName: ConsumerLending_ConsumerLendingCollectionAccountsBoolExp
 
 ---
 kind: AggregateExpression
@@ -180,37 +180,37 @@ definition:
       aggregatedType: ConsumerLendingCollectionAccounts
       aggregatableFields:
         - fieldName: amountPastDue
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: assignedDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: assignedTo
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingCollectionId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: daysDelinquent
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: delinquencyDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: delinquencyReason
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: lastActionDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: loanAccountId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: nextActionDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: priority
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: resolutionDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: resolutionType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingCollectionAccountsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingCollectionAccountsAggExp
 
 ---
 kind: OrderByExpression
@@ -222,37 +222,37 @@ definition:
       orderedType: ConsumerLendingCollectionAccounts
       orderableFields:
         - fieldName: amountPastDue
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: assignedDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: assignedTo
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingCollectionId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: daysDelinquent
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: delinquencyDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: delinquencyReason
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: lastActionDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: loanAccountId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: nextActionDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: priority
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: resolutionDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: resolutionType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanAccount
   graphql:
-    expressionTypeName: ConsumerLendingCollectionAccountsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingCollectionAccountsOrderByExp
 
 ---
 kind: Model
@@ -277,7 +277,7 @@ definition:
           - consumerLendingCollectionId
         subscription:
           rootField: consumerLendingCollectionAccountsByConsumerLendingCollectionId
-    filterInputTypeName: ConsumerLendingCollectionAccountsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingCollectionAccountsFilterInput
     aggregate:
       queryRootField: consumerLendingCollectionAccountsAggregate
       subscription:

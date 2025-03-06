@@ -43,8 +43,8 @@ definition:
       type: Varchar
       description: Primary phone contact
   graphql:
-    typeName: EnterpriseParties
-    inputTypeName: EnterprisePartiesInput
+    typeName: Enterprise_EnterpriseParties
+    inputTypeName: Enterprise_EnterprisePartiesInput
   dataConnectorTypeMapping:
     - dataConnectorName: enterprise
       dataConnectorObjectType: enterprise_parties
@@ -145,12 +145,13 @@ definition:
         - relationshipName: enterpriseAccountOwnerships
         - relationshipName: enterprisePartyAddresses
         - relationshipName: enterprisePartyRelationships
+        - relationshipName: enterprisePartyRelationshipsByRelatedPartyId
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: EnterprisePartiesBoolExp
+    typeName: Enterprise_EnterprisePartiesBoolExp
 
 ---
 kind: AggregateExpression
@@ -188,7 +189,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: EnterprisePartiesAggExp
+    selectTypeName: Enterprise_EnterprisePartiesAggExp
 
 ---
 kind: OrderByExpression
@@ -225,7 +226,7 @@ definition:
           orderByExpression: VarcharOrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: EnterprisePartiesOrderByExp
+    expressionTypeName: Enterprise_EnterprisePartiesOrderByExp
 
 ---
 kind: Model
@@ -250,7 +251,7 @@ definition:
           - enterprisePartyId
         subscription:
           rootField: enterprisePartiesByEnterprisePartyId
-    filterInputTypeName: EnterprisePartiesFilterInput
+    filterInputTypeName: Enterprise_EnterprisePartiesFilterInput
     aggregate:
       queryRootField: enterprisePartiesAggregate
       subscription:
@@ -334,4 +335,26 @@ definition:
           - fieldName: enterprisePartyId
   graphql:
     aggregateFieldName: enterprisePartyRelationshipsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprisePartyRelationshipsByRelatedPartyId
+  sourceType: EnterpriseParties
+  target:
+    model:
+      name: EnterprisePartyRelationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterprisePartyRelationshipsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: relatedPartyId
+  graphql:
+    aggregateFieldName: enterprisePartyRelationshipsByRelatedPartyIdAggregate
 

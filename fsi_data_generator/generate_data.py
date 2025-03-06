@@ -70,7 +70,7 @@ def generate_banking_data():
         generator.custom_generators = custom_generators(generator)
 
         # Step 3: Generate data
-        generator.generate_vectorized_data(scale=.1, row_counts={
+        generator.generate_vectorized_data(scale=1, row_counts={
             "consumer_banking.account_access_consents": 200,
             "enterprise.permissions": 50,
             "consumer_banking.account_access_consents_permissions": 300,

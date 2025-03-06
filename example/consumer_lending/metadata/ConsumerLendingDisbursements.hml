@@ -7,47 +7,47 @@ definition:
     date, amount, method, and recipient information.
   fields:
     - name: checkNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Check number if applicable
     - name: consumerLendingLoanAccountId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan account
     - name: disbursementAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Amount disbursed
     - name: disbursementDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Date funds were disbursed
     - name: disbursementId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for disbursement
     - name: disbursementMethod
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: ACH, Check, Wire
     - name: disbursementStatus
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Pending, Completed, Failed
     - name: notes
-      type: ConsumerLendingText
+      type: Text
       description: Additional disbursement notes
     - name: recipientAccountNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Recipient account number, encrypted
     - name: recipientAccountType
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Checking, Savings
     - name: recipientName
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Name of recipient
     - name: recipientRoutingNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Recipient routing number
     - name: trackingNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Tracking or reference number
   graphql:
-    typeName: ConsumerLendingDisbursements
-    inputTypeName: ConsumerLendingDisbursementsInput
+    typeName: ConsumerLending_ConsumerLendingDisbursements
+    inputTypeName: ConsumerLending_ConsumerLendingDisbursementsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_disbursements
@@ -125,31 +125,31 @@ definition:
       type: ConsumerLendingDisbursements
       comparableFields:
         - fieldName: checkNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingLoanAccountId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: disbursementAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: disbursementDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: disbursementId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: disbursementMethod
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: disbursementStatus
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: notes
-          booleanExpressionType: ConsumerLendingTextBoolExp
+          booleanExpressionType: TextBoolExp
         - fieldName: recipientAccountNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: recipientAccountType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: recipientName
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: recipientRoutingNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: trackingNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanAccount
   logicalOperators:
@@ -157,7 +157,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingDisbursementsBoolExp
+    typeName: ConsumerLending_ConsumerLendingDisbursementsBoolExp
 
 ---
 kind: AggregateExpression
@@ -169,35 +169,35 @@ definition:
       aggregatedType: ConsumerLendingDisbursements
       aggregatableFields:
         - fieldName: checkNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingLoanAccountId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: disbursementAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: disbursementDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: disbursementId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: disbursementMethod
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: disbursementStatus
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: notes
-          aggregateExpression: ConsumerLendingTextAggExp
+          aggregateExpression: TextAggExp
         - fieldName: recipientAccountNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: recipientAccountType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: recipientName
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: recipientRoutingNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: trackingNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingDisbursementsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingDisbursementsAggExp
 
 ---
 kind: OrderByExpression
@@ -209,35 +209,35 @@ definition:
       orderedType: ConsumerLendingDisbursements
       orderableFields:
         - fieldName: checkNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingLoanAccountId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: disbursementAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: disbursementDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: disbursementId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: disbursementMethod
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: disbursementStatus
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: notes
-          orderByExpression: ConsumerLendingTextOrderByExp
+          orderByExpression: TextOrderByExp
         - fieldName: recipientAccountNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: recipientAccountType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: recipientName
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: recipientRoutingNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: trackingNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanAccount
   graphql:
-    expressionTypeName: ConsumerLendingDisbursementsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingDisbursementsOrderByExp
 
 ---
 kind: Model
@@ -262,7 +262,7 @@ definition:
           - disbursementId
         subscription:
           rootField: consumerLendingDisbursementsByDisbursementId
-    filterInputTypeName: ConsumerLendingDisbursementsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingDisbursementsFilterInput
     aggregate:
       queryRootField: consumerLendingDisbursementsAggregate
       subscription:

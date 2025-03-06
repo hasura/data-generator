@@ -6,59 +6,59 @@ definition:
   description: Stores personal and contact information for loan applicants.
   fields:
     - name: citizenshipStatus
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: US Citizen, Permanent Resident, etc.
     - name: consumerLendingApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for applicant, may link to parties table
     - name: currentAddressId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to enterprise.addresses
     - name: dateOfBirth
-      type: ConsumerLendingDate!
+      type: Date!
       description: Applicant's date of birth
     - name: email
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Primary email address
     - name: firstName
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Applicant's legal first name
     - name: housingStatus
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Own, Rent, Live with Parents, etc.
     - name: lastName
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Applicant's legal last name
     - name: mailingAddressId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to enterprise.addresses if different from current
     - name: maritalStatus
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Married, Single, Divorced, etc.
     - name: middleName
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Applicant's middle name
     - name: mobilePhone
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Mobile phone number if different from primary
     - name: monthlyHousingExpense
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Monthly housing payment amount
     - name: phone
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Primary phone number
     - name: previousAddressId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to enterprise.addresses for previous residence
     - name: ssn
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Social Security Number, stored encrypted
     - name: yearsAtCurrentAddress
-      type: ConsumerLendingInt4
+      type: Int4
       description: Years at current residence
   graphql:
-    typeName: ConsumerLendingApplicants
-    inputTypeName: ConsumerLendingApplicantsInput
+    typeName: ConsumerLending_ConsumerLendingApplicants
+    inputTypeName: ConsumerLending_ConsumerLendingApplicantsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_applicants
@@ -152,39 +152,39 @@ definition:
       type: ConsumerLendingApplicants
       comparableFields:
         - fieldName: citizenshipStatus
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: currentAddressId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: dateOfBirth
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: email
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: firstName
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: housingStatus
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: lastName
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: mailingAddressId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: maritalStatus
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: middleName
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: mobilePhone
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: monthlyHousingExpense
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: phone
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: previousAddressId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: ssn
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: yearsAtCurrentAddress
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicantAssets
         - relationshipName: consumerLendingApplicantEmployments
@@ -199,7 +199,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingApplicantsBoolExp
+    typeName: ConsumerLending_ConsumerLendingApplicantsBoolExp
 
 ---
 kind: AggregateExpression
@@ -211,43 +211,43 @@ definition:
       aggregatedType: ConsumerLendingApplicants
       aggregatableFields:
         - fieldName: citizenshipStatus
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: currentAddressId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: dateOfBirth
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: email
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: firstName
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: housingStatus
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: lastName
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: mailingAddressId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: maritalStatus
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: middleName
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: mobilePhone
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: monthlyHousingExpense
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: phone
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: previousAddressId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: ssn
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: yearsAtCurrentAddress
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingApplicantsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingApplicantsAggExp
 
 ---
 kind: OrderByExpression
@@ -259,45 +259,42 @@ definition:
       orderedType: ConsumerLendingApplicants
       orderableFields:
         - fieldName: citizenshipStatus
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: currentAddressId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: dateOfBirth
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: email
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: firstName
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: housingStatus
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: lastName
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: mailingAddressId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: maritalStatus
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: middleName
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: mobilePhone
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: monthlyHousingExpense
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: phone
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: previousAddressId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: ssn
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: yearsAtCurrentAddress
-          orderByExpression: ConsumerLendingInt4OrderByExp
-      orderableRelationships:
-        - relationshipName: currentAddress
-        - relationshipName: mailingAddress
-        - relationshipName: previousAddress
+          orderByExpression: Int4OrderByExp
+      orderableRelationships: []
   graphql:
-    expressionTypeName: ConsumerLendingApplicantsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingApplicantsOrderByExp
 
 ---
 kind: Model
@@ -322,7 +319,7 @@ definition:
           - consumerLendingApplicantId
         subscription:
           rootField: consumerLendingApplicantsByConsumerLendingApplicantId
-    filterInputTypeName: ConsumerLendingApplicantsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingApplicantsFilterInput
     aggregate:
       queryRootField: consumerLendingApplicantsAggregate
       subscription:

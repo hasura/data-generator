@@ -30,8 +30,8 @@ definition:
       type: Varchar!
       description: Who requested change (Customer, Bank)
   graphql:
-    typeName: _CreditCards__CreditCardsCreditLimitChanges
-    inputTypeName: _CreditCards__CreditCardsCreditLimitChangesInput
+    typeName: CreditCards_CreditCardsCreditLimitChanges
+    inputTypeName: CreditCards_CreditCardsCreditLimitChangesInput
   dataConnectorTypeMapping:
     - dataConnectorName: credit_cards
       dataConnectorObjectType: credit_cards_credit_limit_changes
@@ -111,7 +111,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: _CreditCards__CreditCardsCreditLimitChangesBoolExp
+    typeName: CreditCards_CreditCardsCreditLimitChangesBoolExp
 
 ---
 kind: AggregateExpression
@@ -141,7 +141,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: _CreditCards__CreditCardsCreditLimitChangesAggExp
+    selectTypeName: CreditCards_CreditCardsCreditLimitChangesAggExp
 
 ---
 kind: OrderByExpression
@@ -170,10 +170,8 @@ definition:
           orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: creditCardsCardAccount
-        - relationshipName: limitChangeApprovedBy
-        - relationshipName: approved
   graphql:
-    expressionTypeName: _CreditCards__CreditCardsCreditLimitChangesOrderByExp
+    expressionTypeName: CreditCards_CreditCardsCreditLimitChangesOrderByExp
 
 ---
 kind: Model
@@ -198,7 +196,7 @@ definition:
           - creditCardsChangeId
         subscription:
           rootField: creditCardsCreditLimitChangesByCreditCardsChangeId
-    filterInputTypeName: _CreditCards__CreditCardsCreditLimitChangesFilterInput
+    filterInputTypeName: CreditCards_CreditCardsCreditLimitChangesFilterInput
     aggregate:
       queryRootField: creditCardsCreditLimitChangesAggregate
       subscription:
@@ -233,23 +231,4 @@ definition:
       target:
         modelField:
           - fieldName: creditCardsCardAccountId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: approved
-  sourceType: CreditCardsCreditLimitChanges
-  target:
-    model:
-      subgraph: enterprise
-      name: EnterpriseAssociates
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: approvedBy
-      target:
-        modelField:
-          - fieldName: enterpriseAssociateId
 

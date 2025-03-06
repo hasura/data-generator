@@ -7,41 +7,41 @@ definition:
     status, and payment details.
   fields:
     - name: consumerLendingFeeId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for fee
     - name: consumerLendingLoanAccountId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan account
     - name: consumerLendingPaymentId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to loan_payments if paid
     - name: feeAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Fee amount
     - name: feeDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Date fee was assessed
     - name: feeStatus
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Pending, Charged, Waived, Paid
     - name: feeType
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Late Fee, NSF Fee, Origination Fee
     - name: paidDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date fee was paid
     - name: waivedBy
-      type: ConsumerLendingInt4
+      type: Int4
       description: User who waived the fee
     - name: waivedDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date fee was waived if applicable
     - name: waiverReason
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Reason fee was waived
   graphql:
-    typeName: ConsumerLendingLoanFees
-    inputTypeName: ConsumerLendingLoanFeesInput
+    typeName: ConsumerLending_ConsumerLendingLoanFees
+    inputTypeName: ConsumerLending_ConsumerLendingLoanFeesInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_loan_fees
@@ -111,27 +111,27 @@ definition:
       type: ConsumerLendingLoanFees
       comparableFields:
         - fieldName: consumerLendingFeeId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingLoanAccountId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingPaymentId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: feeAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: feeDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: feeStatus
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: feeType
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: paidDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: waivedBy
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: waivedDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: waiverReason
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanAccount
         - relationshipName: consumerLendingLoanPayment
@@ -140,7 +140,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingLoanFeesBoolExp
+    typeName: ConsumerLending_ConsumerLendingLoanFeesBoolExp
 
 ---
 kind: AggregateExpression
@@ -152,31 +152,31 @@ definition:
       aggregatedType: ConsumerLendingLoanFees
       aggregatableFields:
         - fieldName: consumerLendingFeeId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingLoanAccountId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingPaymentId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: feeAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: feeDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: feeStatus
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: feeType
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: paidDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: waivedBy
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: waivedDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: waiverReason
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingLoanFeesAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingLoanFeesAggExp
 
 ---
 kind: OrderByExpression
@@ -188,33 +188,32 @@ definition:
       orderedType: ConsumerLendingLoanFees
       orderableFields:
         - fieldName: consumerLendingFeeId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingLoanAccountId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingPaymentId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: feeAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: feeDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: feeStatus
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: feeType
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: paidDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: waivedBy
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: waivedDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: waiverReason
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanAccount
         - relationshipName: consumerLendingLoanPayment
-        - relationshipName: feeWaivedBy
   graphql:
-    expressionTypeName: ConsumerLendingLoanFeesOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingLoanFeesOrderByExp
 
 ---
 kind: Model
@@ -239,7 +238,7 @@ definition:
           - consumerLendingFeeId
         subscription:
           rootField: consumerLendingLoanFeesByConsumerLendingFeeId
-    filterInputTypeName: ConsumerLendingLoanFeesFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingLoanFeesFilterInput
     aggregate:
       queryRootField: consumerLendingLoanFeesAggregate
       subscription:

@@ -7,47 +7,47 @@ definition:
     accounts or collateral.
   fields:
     - name: beneficiary
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Named beneficiary if applicable
     - name: carrierName
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Name of insurance company
     - name: consumerLendingCollateralId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to loan_collateral if associated with specific collateral
     - name: consumerLendingInsuranceId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for insurance record
     - name: consumerLendingLoanAccountId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan account
     - name: coverageAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Amount of coverage
     - name: effectiveDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Policy start date
     - name: expirationDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Policy end date
     - name: insuranceType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Auto, Hazard, Credit Life, Disability
     - name: policyNumber
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Insurance policy number
     - name: premiumAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Cost of insurance premium
     - name: premiumFrequency
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Annual, Monthly
     - name: status
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Active, Lapsed, Canceled
   graphql:
-    typeName: ConsumerLendingLoanInsurance
-    inputTypeName: ConsumerLendingLoanInsuranceInput
+    typeName: ConsumerLending_ConsumerLendingLoanInsurance
+    inputTypeName: ConsumerLending_ConsumerLendingLoanInsuranceInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_loan_insurance
@@ -125,31 +125,31 @@ definition:
       type: ConsumerLendingLoanInsurance
       comparableFields:
         - fieldName: beneficiary
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: carrierName
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingCollateralId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingInsuranceId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingLoanAccountId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: coverageAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: effectiveDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: expirationDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: insuranceType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: policyNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: premiumAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: premiumFrequency
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanCollateral
         - relationshipName: consumerLendingLoanAccount
@@ -158,7 +158,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingLoanInsuranceBoolExp
+    typeName: ConsumerLending_ConsumerLendingLoanInsuranceBoolExp
 
 ---
 kind: AggregateExpression
@@ -170,35 +170,35 @@ definition:
       aggregatedType: ConsumerLendingLoanInsurance
       aggregatableFields:
         - fieldName: beneficiary
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: carrierName
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingCollateralId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingInsuranceId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingLoanAccountId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: coverageAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: effectiveDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: expirationDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: insuranceType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: policyNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: premiumAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: premiumFrequency
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingLoanInsuranceAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingLoanInsuranceAggExp
 
 ---
 kind: OrderByExpression
@@ -210,36 +210,36 @@ definition:
       orderedType: ConsumerLendingLoanInsurance
       orderableFields:
         - fieldName: beneficiary
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: carrierName
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingCollateralId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingInsuranceId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingLoanAccountId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: coverageAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: effectiveDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: expirationDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: insuranceType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: policyNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: premiumAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: premiumFrequency
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanCollateral
         - relationshipName: consumerLendingLoanAccount
   graphql:
-    expressionTypeName: ConsumerLendingLoanInsuranceOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingLoanInsuranceOrderByExp
 
 ---
 kind: Model
@@ -264,7 +264,7 @@ definition:
           - consumerLendingInsuranceId
         subscription:
           rootField: consumerLendingLoanInsuranceByConsumerLendingInsuranceId
-    filterInputTypeName: ConsumerLendingLoanInsuranceFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingLoanInsuranceFilterInput
     aggregate:
       queryRootField: consumerLendingLoanInsuranceAggregate
       subscription:

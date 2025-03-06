@@ -3,29 +3,18 @@ kind: ObjectType
 version: v1
 definition:
   name: EnterpriseAccounts
-  description: Core account information for all account types
+  description: Core account information for all account types. Indicates that any
+    LOB account was created or requested.
   fields:
     - name: accountCategory
       type: Varchar
-      description: Category of account (e.g., personal, business)
-    - name: accountTypeCode
-      type: Varchar
-      description: Code identifying the specific account type
-    - name: currency
-      type: Varchar
-      description: Primary currency of the account
+      description: Customer defined category of account (e.g., personal, business)
     - name: description
       type: Varchar
-      description: Brief description of the account
+      description: Customer defined description of the account
     - name: enterpriseAccountId
       type: Int4!
       description: Unique identifier for each account
-    - name: maturityDate
-      type: Timestamptz
-      description: When the account matures (for term accounts)
-    - name: nickname
-      type: Varchar
-      description: User-defined name for the account
     - name: openingDate
       type: Timestamptz
       description: When the account was opened
@@ -35,12 +24,9 @@ definition:
     - name: statusUpdateDateTime
       type: Timestamptz!
       description: When the status was last updated
-    - name: switchStatus
-      type: Varchar
-      description: Status of any account switching process
   graphql:
-    typeName: EnterpriseAccounts
-    inputTypeName: EnterpriseAccountsInput
+    typeName: Enterprise_EnterpriseAccounts
+    inputTypeName: Enterprise_EnterpriseAccountsInput
   dataConnectorTypeMapping:
     - dataConnectorName: enterprise
       dataConnectorObjectType: enterprise_accounts
@@ -48,24 +34,12 @@ definition:
         accountCategory:
           column:
             name: account_category
-        accountTypeCode:
-          column:
-            name: account_type_code
-        currency:
-          column:
-            name: currency
         description:
           column:
             name: description
         enterpriseAccountId:
           column:
             name: enterprise_account_id
-        maturityDate:
-          column:
-            name: maturity_date
-        nickname:
-          column:
-            name: nickname
         openingDate:
           column:
             name: opening_date
@@ -75,9 +49,6 @@ definition:
         statusUpdateDateTime:
           column:
             name: status_update_date_time
-        switchStatus:
-          column:
-            name: switch_status
 
 ---
 kind: TypePermissions
@@ -89,16 +60,11 @@ definition:
       output:
         allowedFields:
           - accountCategory
-          - accountTypeCode
-          - currency
           - description
           - enterpriseAccountId
-          - maturityDate
-          - nickname
           - openingDate
           - status
           - statusUpdateDateTime
-          - switchStatus
 
 ---
 kind: BooleanExpressionType
@@ -111,26 +77,16 @@ definition:
       comparableFields:
         - fieldName: accountCategory
           booleanExpressionType: VarcharBoolExp
-        - fieldName: accountTypeCode
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: currency
-          booleanExpressionType: VarcharBoolExp
         - fieldName: description
           booleanExpressionType: VarcharBoolExp
         - fieldName: enterpriseAccountId
           booleanExpressionType: Int4BoolExp
-        - fieldName: maturityDate
-          booleanExpressionType: TimestamptzBoolExp
-        - fieldName: nickname
-          booleanExpressionType: VarcharBoolExp
         - fieldName: openingDate
           booleanExpressionType: TimestamptzBoolExp
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
         - fieldName: statusUpdateDateTime
           booleanExpressionType: TimestamptzBoolExp
-        - fieldName: switchStatus
-          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAccountIdentifiers
         - relationshipName: enterpriseAccountOwnerships
@@ -139,7 +95,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: EnterpriseAccountsBoolExp
+    typeName: Enterprise_EnterpriseAccountsBoolExp
 
 ---
 kind: AggregateExpression
@@ -152,30 +108,20 @@ definition:
       aggregatableFields:
         - fieldName: accountCategory
           aggregateExpression: VarcharAggExp
-        - fieldName: accountTypeCode
-          aggregateExpression: VarcharAggExp
-        - fieldName: currency
-          aggregateExpression: VarcharAggExp
         - fieldName: description
           aggregateExpression: VarcharAggExp
         - fieldName: enterpriseAccountId
           aggregateExpression: Int4AggExp
-        - fieldName: maturityDate
-          aggregateExpression: TimestamptzAggExp
-        - fieldName: nickname
-          aggregateExpression: VarcharAggExp
         - fieldName: openingDate
           aggregateExpression: TimestamptzAggExp
         - fieldName: status
           aggregateExpression: VarcharAggExp
         - fieldName: statusUpdateDateTime
           aggregateExpression: TimestamptzAggExp
-        - fieldName: switchStatus
-          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: EnterpriseAccountsAggExp
+    selectTypeName: Enterprise_EnterpriseAccountsAggExp
 
 ---
 kind: OrderByExpression
@@ -188,29 +134,19 @@ definition:
       orderableFields:
         - fieldName: accountCategory
           orderByExpression: VarcharOrderByExp
-        - fieldName: accountTypeCode
-          orderByExpression: VarcharOrderByExp
-        - fieldName: currency
-          orderByExpression: VarcharOrderByExp
         - fieldName: description
           orderByExpression: VarcharOrderByExp
         - fieldName: enterpriseAccountId
           orderByExpression: Int4OrderByExp
-        - fieldName: maturityDate
-          orderByExpression: TimestamptzOrderByExp
-        - fieldName: nickname
-          orderByExpression: VarcharOrderByExp
         - fieldName: openingDate
           orderByExpression: TimestamptzOrderByExp
         - fieldName: status
           orderByExpression: VarcharOrderByExp
         - fieldName: statusUpdateDateTime
           orderByExpression: TimestamptzOrderByExp
-        - fieldName: switchStatus
-          orderByExpression: VarcharOrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: EnterpriseAccountsOrderByExp
+    expressionTypeName: Enterprise_EnterpriseAccountsOrderByExp
 
 ---
 kind: Model
@@ -235,12 +171,13 @@ definition:
           - enterpriseAccountId
         subscription:
           rootField: enterpriseAccountsByEnterpriseAccountId
-    filterInputTypeName: EnterpriseAccountsFilterInput
+    filterInputTypeName: Enterprise_EnterpriseAccountsFilterInput
     aggregate:
       queryRootField: enterpriseAccountsAggregate
       subscription:
         rootField: enterpriseAccountsAggregate
-  description: Core account information for all account types
+  description: Core account information for all account types. Indicates that any
+    LOB account was created or requested.
 
 ---
 kind: ModelPermissions

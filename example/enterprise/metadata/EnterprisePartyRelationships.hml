@@ -23,8 +23,8 @@ definition:
       type: Varchar
       description: Type of relationship (e.g., power_of_attorney, beneficiary, guardian)
   graphql:
-    typeName: EnterprisePartyRelationships
-    inputTypeName: EnterprisePartyRelationshipsInput
+    typeName: Enterprise_EnterprisePartyRelationships
+    inputTypeName: Enterprise_EnterprisePartyRelationshipsInput
   dataConnectorTypeMapping:
     - dataConnectorName: enterprise
       dataConnectorObjectType: enterprise_party_relationships
@@ -81,12 +81,13 @@ definition:
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: enterpriseParty
+        - relationshipName: enterprisePartyByRelatedPartyId
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: EnterprisePartyRelationshipsBoolExp
+    typeName: Enterprise_EnterprisePartyRelationshipsBoolExp
 
 ---
 kind: AggregateExpression
@@ -110,7 +111,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: EnterprisePartyRelationshipsAggExp
+    selectTypeName: Enterprise_EnterprisePartyRelationshipsAggExp
 
 ---
 kind: OrderByExpression
@@ -133,8 +134,9 @@ definition:
           orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: enterpriseParty
+        - relationshipName: enterprisePartyByRelatedPartyId
   graphql:
-    expressionTypeName: EnterprisePartyRelationshipsOrderByExp
+    expressionTypeName: Enterprise_EnterprisePartyRelationshipsOrderByExp
 
 ---
 kind: Model
@@ -159,7 +161,7 @@ definition:
           - enterprisePartyRelationshipId
         subscription:
           rootField: enterprisePartyRelationshipsByEnterprisePartyRelationshipId
-    filterInputTypeName: EnterprisePartyRelationshipsFilterInput
+    filterInputTypeName: Enterprise_EnterprisePartyRelationshipsFilterInput
     aggregate:
       queryRootField: enterprisePartyRelationshipsAggregate
       subscription:
@@ -192,6 +194,24 @@ definition:
     - source:
         fieldPath:
           - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprisePartyByRelatedPartyId
+  sourceType: EnterprisePartyRelationships
+  target:
+    model:
+      name: EnterpriseParties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: relatedPartyId
       target:
         modelField:
           - fieldName: enterprisePartyId

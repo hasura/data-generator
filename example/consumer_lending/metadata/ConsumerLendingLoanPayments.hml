@@ -7,56 +7,56 @@ definition:
     amount, method, and status.
   fields:
     - name: confirmationNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Payment confirmation number
     - name: consumerLendingLoanAccountId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan account
     - name: consumerLendingPaymentId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for payment
     - name: interestAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Amount applied to interest
     - name: lateFeeAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Amount applied to late fees
     - name: otherFeeAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Amount applied to other fees
     - name: paymentAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Total payment amount
     - name: paymentDate
       type: Timestamp!
       description: Date/time payment was received
     - name: paymentEffectiveDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Date payment is effective
     - name: paymentMethod
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: ACH, Check, Online, etc.
     - name: paymentStatus
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Pending, Completed, Returned, Canceled
     - name: paymentType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Regular, Extra Principal, Late
     - name: principalAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Amount applied to principal
     - name: returnedDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date payment was returned if applicable
     - name: returnedReason
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Reason for payment return if applicable
     - name: transactionId
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: External transaction identifier
   graphql:
-    typeName: ConsumerLendingLoanPayments
-    inputTypeName: ConsumerLendingLoanPaymentsInput
+    typeName: ConsumerLending_ConsumerLendingLoanPayments
+    inputTypeName: ConsumerLending_ConsumerLendingLoanPaymentsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_loan_payments
@@ -146,37 +146,37 @@ definition:
       type: ConsumerLendingLoanPayments
       comparableFields:
         - fieldName: confirmationNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingLoanAccountId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingPaymentId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: interestAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: lateFeeAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: otherFeeAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: paymentAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: paymentDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: paymentEffectiveDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: paymentMethod
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: paymentStatus
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: paymentType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: principalAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: returnedDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: returnedReason
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: transactionId
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanFees
         - relationshipName: consumerLendingLoanAccount
@@ -186,7 +186,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingLoanPaymentsBoolExp
+    typeName: ConsumerLending_ConsumerLendingLoanPaymentsBoolExp
 
 ---
 kind: AggregateExpression
@@ -198,41 +198,41 @@ definition:
       aggregatedType: ConsumerLendingLoanPayments
       aggregatableFields:
         - fieldName: confirmationNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingLoanAccountId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingPaymentId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: interestAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: lateFeeAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: otherFeeAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: paymentAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: paymentDate
           aggregateExpression: TimestampAggExp
         - fieldName: paymentEffectiveDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: paymentMethod
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: paymentStatus
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: paymentType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: principalAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: returnedDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: returnedReason
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: transactionId
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingLoanPaymentsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingLoanPaymentsAggExp
 
 ---
 kind: OrderByExpression
@@ -244,41 +244,41 @@ definition:
       orderedType: ConsumerLendingLoanPayments
       orderableFields:
         - fieldName: confirmationNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingLoanAccountId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingPaymentId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: interestAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: lateFeeAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: otherFeeAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: paymentAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: paymentDate
           orderByExpression: TimestampOrderByExp
         - fieldName: paymentEffectiveDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: paymentMethod
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: paymentStatus
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: paymentType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: principalAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: returnedDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: returnedReason
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: transactionId
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanAccount
   graphql:
-    expressionTypeName: ConsumerLendingLoanPaymentsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingLoanPaymentsOrderByExp
 
 ---
 kind: Model
@@ -303,7 +303,7 @@ definition:
           - consumerLendingPaymentId
         subscription:
           rootField: consumerLendingLoanPaymentsByConsumerLendingPaymentId
-    filterInputTypeName: ConsumerLendingLoanPaymentsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingLoanPaymentsFilterInput
     aggregate:
       queryRootField: consumerLendingLoanPaymentsAggregate
       subscription:

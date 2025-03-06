@@ -6,50 +6,50 @@ definition:
   description: Tracks liabilities and debt obligations of loan applicants.
   fields:
     - name: accountNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Account number, stored encrypted
     - name: consumerLendingApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to applicant
     - name: consumerLendingLiabilityId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for liability record
     - name: creditorName
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Name of creditor
     - name: currentBalance
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Current outstanding balance
     - name: interestRate
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Current interest rate percentage
     - name: liabilityType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Credit Card, Auto Loan, Student Loan
     - name: maturityDate
-      type: ConsumerLendingDate
+      type: Date
       description: When debt will be paid off
     - name: monthlyPayment
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Required monthly payment amount
     - name: originalAmount
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Original loan or credit amount
     - name: originationDate
-      type: ConsumerLendingDate
+      type: Date
       description: When debt was originated
     - name: verificationDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date liability was verified
     - name: verificationStatus
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Self-reported, Verified, Failed
     - name: willBePaidOff
-      type: ConsumerLendingBool
+      type: Bool
       description: Indicates if debt will be paid off with loan
   graphql:
-    typeName: ConsumerLendingApplicantLiabilities
-    inputTypeName: ConsumerLendingApplicantLiabilitiesInput
+    typeName: ConsumerLending_ConsumerLendingApplicantLiabilities
+    inputTypeName: ConsumerLending_ConsumerLendingApplicantLiabilitiesInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_applicant_liabilities
@@ -131,33 +131,33 @@ definition:
       type: ConsumerLendingApplicantLiabilities
       comparableFields:
         - fieldName: accountNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingLiabilityId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: creditorName
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: currentBalance
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: interestRate
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: liabilityType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: maturityDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: monthlyPayment
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: originalAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: originationDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: verificationDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: verificationStatus
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: willBePaidOff
-          booleanExpressionType: ConsumerLendingBoolBoolExp
+          booleanExpressionType: BoolBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicant
   logicalOperators:
@@ -165,7 +165,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingApplicantLiabilitiesBoolExp
+    typeName: ConsumerLending_ConsumerLendingApplicantLiabilitiesBoolExp
 
 ---
 kind: AggregateExpression
@@ -177,37 +177,37 @@ definition:
       aggregatedType: ConsumerLendingApplicantLiabilities
       aggregatableFields:
         - fieldName: accountNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingLiabilityId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: creditorName
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: currentBalance
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: interestRate
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: liabilityType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: maturityDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: monthlyPayment
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: originalAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: originationDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: verificationDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: verificationStatus
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: willBePaidOff
-          aggregateExpression: ConsumerLendingBoolAggExp
+          aggregateExpression: BoolAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingApplicantLiabilitiesAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingApplicantLiabilitiesAggExp
 
 ---
 kind: OrderByExpression
@@ -219,37 +219,37 @@ definition:
       orderedType: ConsumerLendingApplicantLiabilities
       orderableFields:
         - fieldName: accountNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingLiabilityId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: creditorName
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: currentBalance
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: interestRate
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: liabilityType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: maturityDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: monthlyPayment
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: originalAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: originationDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: verificationDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: verificationStatus
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: willBePaidOff
-          orderByExpression: ConsumerLendingBoolOrderByExp
+          orderByExpression: BoolOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
   graphql:
-    expressionTypeName: ConsumerLendingApplicantLiabilitiesOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingApplicantLiabilitiesOrderByExp
 
 ---
 kind: Model
@@ -274,7 +274,7 @@ definition:
           - consumerLendingLiabilityId
         subscription:
           rootField: consumerLendingApplicantLiabilitiesByConsumerLendingLiabilityId
-    filterInputTypeName: ConsumerLendingApplicantLiabilitiesFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingApplicantLiabilitiesFilterInput
     aggregate:
       queryRootField: consumerLendingApplicantLiabilitiesAggregate
       subscription:

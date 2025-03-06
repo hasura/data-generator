@@ -5,6 +5,9 @@ definition:
   name: ConsumerBankingStatements
   description: Stores information about account statements
   fields:
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
     - name: consumerBankingStatementId
       type: Int4!
       description: Unique identifier for each statement
@@ -14,9 +17,6 @@ definition:
     - name: endDateTime
       type: Timestamp!
       description: End of the period covered by the statement
-    - name: enterpriseAccountId
-      type: Int4!
-      description: Account for which the statement was generated
     - name: startDateTime
       type: Timestamp!
       description: Start of the period covered by the statement
@@ -26,9 +26,6 @@ definition:
     - name: type
       type: Varchar!
       description: Type of statement (e.g., regular, interim, final)
-    - name: consumerBankingAccountId
-      type: Int4!
-      description: References the account this balance belongs to
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStatements
     inputTypeName: ConsumerBanking_ConsumerBankingStatementsInput
@@ -36,6 +33,9 @@ definition:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_statements
       fieldMapping:
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
         consumerBankingStatementId:
           column:
             name: consumer_banking_statement_id
@@ -45,9 +45,6 @@ definition:
         endDateTime:
           column:
             name: end_date_time
-        enterpriseAccountId:
-          column:
-            name: enterprise_account_id
         startDateTime:
           column:
             name: start_date_time
@@ -57,9 +54,6 @@ definition:
         type:
           column:
             name: type
-        consumerBankingAccountId:
-          column:
-            name: consumer_banking_account_id
 
 ---
 kind: TypePermissions
@@ -70,14 +64,13 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - consumerBankingAccountId
           - consumerBankingStatementId
           - creationDateTime
           - endDateTime
-          - enterpriseAccountId
           - startDateTime
           - statementReference
           - type
-          - consumerBankingAccountId
 
 ---
 kind: BooleanExpressionType
@@ -88,22 +81,20 @@ definition:
     object:
       type: ConsumerBankingStatements
       comparableFields:
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingStatementId
           booleanExpressionType: Int4BoolExp
         - fieldName: creationDateTime
           booleanExpressionType: TimestampBoolExp
         - fieldName: endDateTime
           booleanExpressionType: TimestampBoolExp
-        - fieldName: enterpriseAccountId
-          booleanExpressionType: Int4BoolExp
         - fieldName: startDateTime
           booleanExpressionType: TimestampBoolExp
         - fieldName: statementReference
           booleanExpressionType: VarcharBoolExp
         - fieldName: type
           booleanExpressionType: VarcharBoolExp
-        - fieldName: consumerBankingAccountId
-          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerBankingStatementAmounts
         - relationshipName: consumerBankingStatementBenefits
@@ -130,22 +121,20 @@ definition:
     object:
       aggregatedType: ConsumerBankingStatements
       aggregatableFields:
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
         - fieldName: consumerBankingStatementId
           aggregateExpression: Int4AggExp
         - fieldName: creationDateTime
           aggregateExpression: TimestampAggExp
         - fieldName: endDateTime
           aggregateExpression: TimestampAggExp
-        - fieldName: enterpriseAccountId
-          aggregateExpression: Int4AggExp
         - fieldName: startDateTime
           aggregateExpression: TimestampAggExp
         - fieldName: statementReference
           aggregateExpression: VarcharAggExp
         - fieldName: type
           aggregateExpression: VarcharAggExp
-        - fieldName: consumerBankingAccountId
-          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
@@ -160,24 +149,21 @@ definition:
     object:
       orderedType: ConsumerBankingStatements
       orderableFields:
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingStatementId
           orderByExpression: Int4OrderByExp
         - fieldName: creationDateTime
           orderByExpression: TimestampOrderByExp
         - fieldName: endDateTime
           orderByExpression: TimestampOrderByExp
-        - fieldName: enterpriseAccountId
-          orderByExpression: Int4OrderByExp
         - fieldName: startDateTime
           orderByExpression: TimestampOrderByExp
         - fieldName: statementReference
           orderByExpression: VarcharOrderByExp
         - fieldName: type
           orderByExpression: VarcharOrderByExp
-        - fieldName: consumerBankingAccountId
-          orderByExpression: Int4OrderByExp
       orderableRelationships:
-        - relationshipName: account
         - relationshipName: consumerBankingAccount
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingStatementsOrderByExp

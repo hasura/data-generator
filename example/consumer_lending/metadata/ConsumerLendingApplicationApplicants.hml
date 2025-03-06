@@ -7,26 +7,26 @@ definition:
     multiple applicants per application.
   fields:
     - name: applicantType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Primary, Co-Applicant, Guarantor
     - name: consumerLendingApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to applicant
     - name: consumerLendingApplicationApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for application-applicant relationship
     - name: consumerLendingApplicationId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan application
     - name: contributionPercentage
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Percentage of loan responsibility
     - name: relationshipToPrimary
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Spouse, Relative, Friend, etc.
   graphql:
-    typeName: ConsumerLendingApplicationApplicants
-    inputTypeName: ConsumerLendingApplicationApplicantsInput
+    typeName: ConsumerLending_ConsumerLendingApplicationApplicants
+    inputTypeName: ConsumerLending_ConsumerLendingApplicationApplicantsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_application_applicants
@@ -76,17 +76,17 @@ definition:
       type: ConsumerLendingApplicationApplicants
       comparableFields:
         - fieldName: applicantType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingApplicationApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingApplicationId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: contributionPercentage
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: relationshipToPrimary
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicant
         - relationshipName: consumerLendingLoanApplication
@@ -95,7 +95,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingApplicationApplicantsBoolExp
+    typeName: ConsumerLending_ConsumerLendingApplicationApplicantsBoolExp
 
 ---
 kind: AggregateExpression
@@ -107,21 +107,21 @@ definition:
       aggregatedType: ConsumerLendingApplicationApplicants
       aggregatableFields:
         - fieldName: applicantType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingApplicationApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingApplicationId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: contributionPercentage
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: relationshipToPrimary
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingApplicationApplicantsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingApplicationApplicantsAggExp
 
 ---
 kind: OrderByExpression
@@ -133,22 +133,22 @@ definition:
       orderedType: ConsumerLendingApplicationApplicants
       orderableFields:
         - fieldName: applicantType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingApplicationApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingApplicationId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: contributionPercentage
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: relationshipToPrimary
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
         - relationshipName: consumerLendingLoanApplication
   graphql:
-    expressionTypeName: ConsumerLendingApplicationApplicantsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingApplicationApplicantsOrderByExp
 
 ---
 kind: Model
@@ -173,7 +173,7 @@ definition:
           - consumerLendingApplicationApplicantId
         subscription:
           rootField: consumerLendingApplicationApplicantsByConsumerLendingApplicationApplicantId
-    filterInputTypeName: ConsumerLendingApplicationApplicantsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingApplicationApplicantsFilterInput
     aggregate:
       queryRootField: consumerLendingApplicationApplicantsAggregate
       subscription:

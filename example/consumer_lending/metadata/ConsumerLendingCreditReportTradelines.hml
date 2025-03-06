@@ -7,50 +7,50 @@ definition:
     reported on a credit report.
   fields:
     - name: accountNumber
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Masked account number
     - name: accountType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Mortgage, Installment, Revolving, etc.
     - name: consumerLendingCreditReportId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to credit report
     - name: consumerLendingTradelineId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for tradeline
     - name: creditLimit
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Credit limit if applicable
     - name: creditorName
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Name of creditor
     - name: currentBalance
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Current balance on account
     - name: daysPastDue
-      type: ConsumerLendingInt4
+      type: Int4
       description: Current days past due
     - name: highCredit
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Highest balance or credit limit
     - name: monthlyPayment
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Monthly payment amount
     - name: openDate
-      type: ConsumerLendingDate
+      type: Date
       description: When account was opened
     - name: paymentStatus
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Current, 30 days late, etc.
     - name: worstDelinquency
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Worst historical delinquency
     - name: worstDelinquencyDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date of worst delinquency
   graphql:
-    typeName: ConsumerLendingCreditReportTradelines
-    inputTypeName: ConsumerLendingCreditReportTradelinesInput
+    typeName: ConsumerLending_ConsumerLendingCreditReportTradelines
+    inputTypeName: ConsumerLending_ConsumerLendingCreditReportTradelinesInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_credit_report_tradelines
@@ -132,33 +132,33 @@ definition:
       type: ConsumerLendingCreditReportTradelines
       comparableFields:
         - fieldName: accountNumber
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: accountType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingCreditReportId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingTradelineId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: creditLimit
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: creditorName
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: currentBalance
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: daysPastDue
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: highCredit
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: monthlyPayment
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: openDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: paymentStatus
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: worstDelinquency
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: worstDelinquencyDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingCreditReport
   logicalOperators:
@@ -166,7 +166,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingCreditReportTradelinesBoolExp
+    typeName: ConsumerLending_ConsumerLendingCreditReportTradelinesBoolExp
 
 ---
 kind: AggregateExpression
@@ -178,37 +178,37 @@ definition:
       aggregatedType: ConsumerLendingCreditReportTradelines
       aggregatableFields:
         - fieldName: accountNumber
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: accountType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingCreditReportId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingTradelineId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: creditLimit
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: creditorName
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: currentBalance
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: daysPastDue
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: highCredit
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: monthlyPayment
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: openDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: paymentStatus
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: worstDelinquency
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: worstDelinquencyDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingCreditReportTradelinesAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingCreditReportTradelinesAggExp
 
 ---
 kind: OrderByExpression
@@ -220,37 +220,37 @@ definition:
       orderedType: ConsumerLendingCreditReportTradelines
       orderableFields:
         - fieldName: accountNumber
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: accountType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingCreditReportId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingTradelineId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: creditLimit
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: creditorName
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: currentBalance
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: daysPastDue
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: highCredit
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: monthlyPayment
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: openDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: paymentStatus
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: worstDelinquency
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: worstDelinquencyDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingCreditReport
   graphql:
-    expressionTypeName: ConsumerLendingCreditReportTradelinesOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingCreditReportTradelinesOrderByExp
 
 ---
 kind: Model
@@ -275,7 +275,7 @@ definition:
           - consumerLendingTradelineId
         subscription:
           rootField: consumerLendingCreditReportTradelinesByConsumerLendingTradelineId
-    filterInputTypeName: ConsumerLendingCreditReportTradelinesFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingCreditReportTradelinesFilterInput
     aggregate:
       queryRootField: consumerLendingCreditReportTradelinesAggregate
       subscription:

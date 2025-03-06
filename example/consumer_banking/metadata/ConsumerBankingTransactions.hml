@@ -23,6 +23,9 @@ definition:
     - name: chargeCurrency
       type: Varchar
       description: Currency code for the transaction fee
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
     - name: consumerBankingTransactionId
       type: Int4!
       description: Unique identifier for each transaction
@@ -32,9 +35,6 @@ definition:
     - name: currency
       type: Varchar!
       description: Currency code for the transaction amount
-    - name: enterpriseAccountId
-      type: Int4!
-      description: Account involved in the transaction
     - name: paymentPurposeCode
       type: Varchar
       description: Code classifying the specific purpose of the payment
@@ -53,9 +53,6 @@ definition:
     - name: valueDateTime
       type: Timestamp
       description: When the transaction affects the account balance
-    - name: consumerBankingAccountId
-      type: Int4!
-      description: References the account this balance belongs to
   graphql:
     typeName: ConsumerBanking_ConsumerBankingTransactions
     inputTypeName: ConsumerBanking_ConsumerBankingTransactionsInput
@@ -81,6 +78,9 @@ definition:
         chargeCurrency:
           column:
             name: charge_currency
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
         consumerBankingTransactionId:
           column:
             name: consumer_banking_transaction_id
@@ -90,9 +90,6 @@ definition:
         currency:
           column:
             name: currency
-        enterpriseAccountId:
-          column:
-            name: enterprise_account_id
         paymentPurposeCode:
           column:
             name: payment_purpose_code
@@ -111,9 +108,6 @@ definition:
         valueDateTime:
           column:
             name: value_date_time
-        consumerBankingAccountId:
-          column:
-            name: consumer_banking_account_id
 
 ---
 kind: TypePermissions
@@ -130,17 +124,16 @@ definition:
           - categoryPurposeCode
           - chargeAmount
           - chargeCurrency
+          - consumerBankingAccountId
           - consumerBankingTransactionId
           - creditDebitIndicator
           - currency
-          - enterpriseAccountId
           - paymentPurposeCode
           - status
           - transactionInformation
           - transactionMutability
           - transactionReference
           - valueDateTime
-          - consumerBankingAccountId
 
 ---
 kind: BooleanExpressionType
@@ -163,14 +156,14 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: chargeCurrency
           booleanExpressionType: VarcharBoolExp
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingTransactionId
           booleanExpressionType: Int4BoolExp
         - fieldName: creditDebitIndicator
           booleanExpressionType: VarcharBoolExp
         - fieldName: currency
           booleanExpressionType: VarcharBoolExp
-        - fieldName: enterpriseAccountId
-          booleanExpressionType: Int4BoolExp
         - fieldName: paymentPurposeCode
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
@@ -183,8 +176,6 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: valueDateTime
           booleanExpressionType: TimestampBoolExp
-        - fieldName: consumerBankingAccountId
-          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerBankingTransactionBalances
         - relationshipName: consumerBankingTransactionBankTransactionCodes
@@ -228,14 +219,14 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: chargeCurrency
           aggregateExpression: VarcharAggExp
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
         - fieldName: consumerBankingTransactionId
           aggregateExpression: Int4AggExp
         - fieldName: creditDebitIndicator
           aggregateExpression: VarcharAggExp
         - fieldName: currency
           aggregateExpression: VarcharAggExp
-        - fieldName: enterpriseAccountId
-          aggregateExpression: Int4AggExp
         - fieldName: paymentPurposeCode
           aggregateExpression: VarcharAggExp
         - fieldName: status
@@ -248,8 +239,6 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: valueDateTime
           aggregateExpression: TimestampAggExp
-        - fieldName: consumerBankingAccountId
-          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
@@ -276,14 +265,14 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: chargeCurrency
           orderByExpression: VarcharOrderByExp
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingTransactionId
           orderByExpression: Int4OrderByExp
         - fieldName: creditDebitIndicator
           orderByExpression: VarcharOrderByExp
         - fieldName: currency
           orderByExpression: VarcharOrderByExp
-        - fieldName: enterpriseAccountId
-          orderByExpression: Int4OrderByExp
         - fieldName: paymentPurposeCode
           orderByExpression: VarcharOrderByExp
         - fieldName: status
@@ -296,10 +285,7 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: valueDateTime
           orderByExpression: TimestampOrderByExp
-        - fieldName: consumerBankingAccountId
-          orderByExpression: Int4OrderByExp
       orderableRelationships:
-        - relationshipName: account
         - relationshipName: consumerBankingAccount
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingTransactionsOrderByExp

@@ -5,12 +5,12 @@ definition:
   name: ConsumerBankingStandingOrders
   description: Stores information about recurring payment instructions (standing orders)
   fields:
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account this balance belongs to
     - name: consumerBankingStandingOrderId
       type: Int4!
       description: Unique identifier for each standing order
-    - name: enterpriseAccountId
-      type: Int4!
-      description: Account from which the recurring payments are made
     - name: finalPaymentAmount
       type: Numeric
       description: Amount of the final payment (if different)
@@ -47,9 +47,6 @@ definition:
     - name: supplementaryData
       type: Text
       description: Additional information about the standing order
-    - name: consumerBankingAccountId
-      type: Int4!
-      description: References the account this balance belongs to
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStandingOrders
     inputTypeName: ConsumerBanking_ConsumerBankingStandingOrdersInput
@@ -57,12 +54,12 @@ definition:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_standing_orders
       fieldMapping:
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
         consumerBankingStandingOrderId:
           column:
             name: consumer_banking_standing_order_id
-        enterpriseAccountId:
-          column:
-            name: enterprise_account_id
         finalPaymentAmount:
           column:
             name: final_payment_amount
@@ -99,9 +96,6 @@ definition:
         supplementaryData:
           column:
             name: supplementary_data
-        consumerBankingAccountId:
-          column:
-            name: consumer_banking_account_id
 
 ---
 kind: TypePermissions
@@ -112,8 +106,8 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - consumerBankingAccountId
           - consumerBankingStandingOrderId
-          - enterpriseAccountId
           - finalPaymentAmount
           - finalPaymentCurrency
           - firstPaymentAmount
@@ -126,7 +120,6 @@ definition:
           - nextPaymentDateTime
           - standingOrderStatusCode
           - supplementaryData
-          - consumerBankingAccountId
 
 ---
 kind: BooleanExpressionType
@@ -137,9 +130,9 @@ definition:
     object:
       type: ConsumerBankingStandingOrders
       comparableFields:
-        - fieldName: consumerBankingStandingOrderId
+        - fieldName: consumerBankingAccountId
           booleanExpressionType: Int4BoolExp
-        - fieldName: enterpriseAccountId
+        - fieldName: consumerBankingStandingOrderId
           booleanExpressionType: Int4BoolExp
         - fieldName: finalPaymentAmount
           booleanExpressionType: NumericBoolExp
@@ -165,8 +158,6 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: supplementaryData
           booleanExpressionType: TextBoolExp
-        - fieldName: consumerBankingAccountId
-          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerBankingStandingOrderCreditorAccounts
         - relationshipName: consumerBankingStandingOrderCreditorAgents
@@ -187,9 +178,9 @@ definition:
     object:
       aggregatedType: ConsumerBankingStandingOrders
       aggregatableFields:
-        - fieldName: consumerBankingStandingOrderId
+        - fieldName: consumerBankingAccountId
           aggregateExpression: Int4AggExp
-        - fieldName: enterpriseAccountId
+        - fieldName: consumerBankingStandingOrderId
           aggregateExpression: Int4AggExp
         - fieldName: finalPaymentAmount
           aggregateExpression: NumericAggExp
@@ -215,8 +206,6 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: supplementaryData
           aggregateExpression: TextAggExp
-        - fieldName: consumerBankingAccountId
-          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
@@ -231,9 +220,9 @@ definition:
     object:
       orderedType: ConsumerBankingStandingOrders
       orderableFields:
-        - fieldName: consumerBankingStandingOrderId
+        - fieldName: consumerBankingAccountId
           orderByExpression: Int4OrderByExp
-        - fieldName: enterpriseAccountId
+        - fieldName: consumerBankingStandingOrderId
           orderByExpression: Int4OrderByExp
         - fieldName: finalPaymentAmount
           orderByExpression: NumericOrderByExp
@@ -259,10 +248,7 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: supplementaryData
           orderByExpression: TextOrderByExp
-        - fieldName: consumerBankingAccountId
-          orderByExpression: Int4OrderByExp
       orderableRelationships:
-        - relationshipName: account
         - relationshipName: consumerBankingAccount
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingStandingOrdersOrderByExp

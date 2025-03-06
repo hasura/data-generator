@@ -7,44 +7,44 @@ definition:
     scheduled dates, amounts, and payment status.
   fields:
     - name: actualPaymentDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date payment was actually made
     - name: actualPaymentId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to loan_payments if paid
     - name: beginningBalance
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Principal balance before payment
     - name: consumerLendingLoanAccountId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan account
     - name: endingBalance
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Principal balance after payment
     - name: interestAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Portion applied to interest
     - name: paymentAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Total payment amount due
     - name: paymentNumber
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Sequential payment number
     - name: paymentScheduleId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for schedule entry
     - name: principalAmount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Portion applied to principal
     - name: scheduledDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Date payment is scheduled
     - name: status
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Scheduled, Paid, Past Due
   graphql:
-    typeName: ConsumerLendingPaymentSchedules
-    inputTypeName: ConsumerLendingPaymentSchedulesInput
+    typeName: ConsumerLending_ConsumerLendingPaymentSchedules
+    inputTypeName: ConsumerLending_ConsumerLendingPaymentSchedulesInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_payment_schedules
@@ -118,29 +118,29 @@ definition:
       type: ConsumerLendingPaymentSchedules
       comparableFields:
         - fieldName: actualPaymentDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: actualPaymentId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: beginningBalance
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerLendingLoanAccountId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: endingBalance
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: interestAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: paymentAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: paymentNumber
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: paymentScheduleId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: principalAmount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: scheduledDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: status
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanPayment
         - relationshipName: consumerLendingLoanAccount
@@ -149,7 +149,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingPaymentSchedulesBoolExp
+    typeName: ConsumerLending_ConsumerLendingPaymentSchedulesBoolExp
 
 ---
 kind: AggregateExpression
@@ -161,33 +161,33 @@ definition:
       aggregatedType: ConsumerLendingPaymentSchedules
       aggregatableFields:
         - fieldName: actualPaymentDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: actualPaymentId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: beginningBalance
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: consumerLendingLoanAccountId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: endingBalance
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: interestAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: paymentAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: paymentNumber
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: paymentScheduleId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: principalAmount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: scheduledDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: status
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingPaymentSchedulesAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingPaymentSchedulesAggExp
 
 ---
 kind: OrderByExpression
@@ -199,34 +199,34 @@ definition:
       orderedType: ConsumerLendingPaymentSchedules
       orderableFields:
         - fieldName: actualPaymentDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: actualPaymentId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: beginningBalance
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerLendingLoanAccountId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: endingBalance
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: interestAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: paymentAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: paymentNumber
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: paymentScheduleId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: principalAmount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: scheduledDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: status
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanPayment
         - relationshipName: consumerLendingLoanAccount
   graphql:
-    expressionTypeName: ConsumerLendingPaymentSchedulesOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingPaymentSchedulesOrderByExp
 
 ---
 kind: Model
@@ -251,7 +251,7 @@ definition:
           - paymentScheduleId
         subscription:
           rootField: consumerLendingPaymentSchedulesByPaymentScheduleId
-    filterInputTypeName: ConsumerLendingPaymentSchedulesFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingPaymentSchedulesFilterInput
     aggregate:
       queryRootField: consumerLendingPaymentSchedulesAggregate
       subscription:

@@ -7,23 +7,23 @@ definition:
     applications, linked to the application_decisions table.
   fields:
     - name: consumerLendingDecisionId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to application decision
     - name: consumerLendingDecisionReasonId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for decision reason
     - name: reasonCode
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Standard reason code
     - name: reasonDescription
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Description of reason
     - name: sequence
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Order of importance for reason
   graphql:
-    typeName: ConsumerLendingDecisionReasons
-    inputTypeName: ConsumerLendingDecisionReasonsInput
+    typeName: ConsumerLending_ConsumerLendingDecisionReasons
+    inputTypeName: ConsumerLending_ConsumerLendingDecisionReasonsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_decision_reasons
@@ -69,15 +69,15 @@ definition:
       type: ConsumerLendingDecisionReasons
       comparableFields:
         - fieldName: consumerLendingDecisionId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingDecisionReasonId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: reasonCode
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: reasonDescription
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: sequence
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicationDecision
   logicalOperators:
@@ -85,7 +85,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingDecisionReasonsBoolExp
+    typeName: ConsumerLending_ConsumerLendingDecisionReasonsBoolExp
 
 ---
 kind: AggregateExpression
@@ -97,19 +97,19 @@ definition:
       aggregatedType: ConsumerLendingDecisionReasons
       aggregatableFields:
         - fieldName: consumerLendingDecisionId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingDecisionReasonId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: reasonCode
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: reasonDescription
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: sequence
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingDecisionReasonsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingDecisionReasonsAggExp
 
 ---
 kind: OrderByExpression
@@ -121,19 +121,19 @@ definition:
       orderedType: ConsumerLendingDecisionReasons
       orderableFields:
         - fieldName: consumerLendingDecisionId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingDecisionReasonId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: reasonCode
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: reasonDescription
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: sequence
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicationDecision
   graphql:
-    expressionTypeName: ConsumerLendingDecisionReasonsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingDecisionReasonsOrderByExp
 
 ---
 kind: Model
@@ -158,7 +158,7 @@ definition:
           - consumerLendingDecisionReasonId
         subscription:
           rootField: consumerLendingDecisionReasonsByConsumerLendingDecisionReasonId
-    filterInputTypeName: ConsumerLendingDecisionReasonsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingDecisionReasonsFilterInput
     aggregate:
       queryRootField: consumerLendingDecisionReasonsAggregate
       subscription:

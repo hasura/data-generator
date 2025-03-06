@@ -7,41 +7,41 @@ definition:
     credit scores and other relevant information.
   fields:
     - name: bureauName
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Equifax, Experian, TransUnion
     - name: consumerLendingApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to applicant
     - name: consumerLendingApplicationId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan application
     - name: consumerLendingCreditReportId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for credit report
     - name: creditScore
-      type: ConsumerLendingInt4
+      type: Int4
       description: Primary credit score from report
     - name: expirationDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: When report expires
     - name: reportDate
       type: Timestamp!
       description: When report was pulled
     - name: reportPath
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Path to stored report file
     - name: reportReference
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: External reference ID from bureau
     - name: reportType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Tri-merge, Single Bureau
     - name: status
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Completed, Failed, Pending
   graphql:
-    typeName: ConsumerLendingCreditReports
-    inputTypeName: ConsumerLendingCreditReportsInput
+    typeName: ConsumerLending_ConsumerLendingCreditReports
+    inputTypeName: ConsumerLending_ConsumerLendingCreditReportsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_credit_reports
@@ -111,27 +111,27 @@ definition:
       type: ConsumerLendingCreditReports
       comparableFields:
         - fieldName: bureauName
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerLendingApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingApplicationId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingCreditReportId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: creditScore
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: expirationDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: reportDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: reportPath
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: reportReference
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: reportType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingCreditInquiries
         - relationshipName: consumerLendingCreditReportTradelines
@@ -143,7 +143,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingCreditReportsBoolExp
+    typeName: ConsumerLending_ConsumerLendingCreditReportsBoolExp
 
 ---
 kind: AggregateExpression
@@ -155,31 +155,31 @@ definition:
       aggregatedType: ConsumerLendingCreditReports
       aggregatableFields:
         - fieldName: bureauName
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerLendingApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingApplicationId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingCreditReportId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: creditScore
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: expirationDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: reportDate
           aggregateExpression: TimestampAggExp
         - fieldName: reportPath
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: reportReference
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: reportType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingCreditReportsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingCreditReportsAggExp
 
 ---
 kind: OrderByExpression
@@ -191,32 +191,32 @@ definition:
       orderedType: ConsumerLendingCreditReports
       orderableFields:
         - fieldName: bureauName
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerLendingApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingApplicationId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingCreditReportId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: creditScore
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: expirationDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: reportDate
           orderByExpression: TimestampOrderByExp
         - fieldName: reportPath
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: reportReference
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: reportType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
         - relationshipName: consumerLendingLoanApplication
   graphql:
-    expressionTypeName: ConsumerLendingCreditReportsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingCreditReportsOrderByExp
 
 ---
 kind: Model
@@ -241,7 +241,7 @@ definition:
           - consumerLendingCreditReportId
         subscription:
           rootField: consumerLendingCreditReportsByConsumerLendingCreditReportId
-    filterInputTypeName: ConsumerLendingCreditReportsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingCreditReportsFilterInput
     aggregate:
       queryRootField: consumerLendingCreditReportsAggregate
       subscription:

@@ -4,16 +4,13 @@ definition:
   current: default
   contexts:
     default:
-      project: lenient-condor-8788
+      project: destined-bee-6592
       supergraph: ../supergraph.yaml
-      subgraph: ../small_business_banking/subgraph.yaml
+      subgraph: ../enterprise/subgraph.yaml
       localEnvFile: ../.env
       cloudEnvFile: ../.env.cloud
   scripts:
     docker-start:
-      bash: HASURA_DDN_PAT=$(ddn auth print-access-token) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key) docker compose -f compose.yaml --env-file .env up --build --pull always
-      powershell: $Env:HASURA_DDN_PAT = ddn auth print-access-token; $Env:PROMPTQL_SECRET_KEY = ddn auth print-promptql-secret-key; docker compose -f compose.yaml --env-file .env up --build --pull always
-    docker-start-promptql:
       bash: HASURA_DDN_PAT=$(ddn auth print-access-token) PROMPTQL_SECRET_KEY=$(ddn auth print-promptql-secret-key) docker compose -f compose.yaml --env-file .env up --build --pull always
       powershell: $Env:HASURA_DDN_PAT = ddn auth print-access-token; $Env:PROMPTQL_SECRET_KEY = ddn auth print-promptql-secret-key; docker compose -f compose.yaml --env-file .env up --build --pull always
   promptQL: true

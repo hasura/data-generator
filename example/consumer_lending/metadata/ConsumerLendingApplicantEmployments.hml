@@ -6,44 +6,44 @@ definition:
   description: Stores employment history and income details for loan applicants.
   fields:
     - name: consumerLendingApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to applicant
     - name: consumerLendingEmploymentId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for employment record
     - name: employerName
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Name of employer
     - name: employmentType
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Full-time, Part-time, Self-employed
     - name: endDate
-      type: ConsumerLendingDate
+      type: Date
       description: Employment end date if applicable
     - name: enterpriseAddressId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to enterprise.addresses for employer location
     - name: isCurrent
-      type: ConsumerLendingBool!
+      type: Bool!
       description: Indicates if this is current employer
     - name: monthlyIncome
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Gross monthly income
     - name: phone
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Employer phone number
     - name: position
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Job title or position
     - name: startDate
-      type: ConsumerLendingDate!
+      type: Date!
       description: Employment start date
     - name: yearsInProfession
-      type: ConsumerLendingInt4
+      type: Int4
       description: Total years in this profession/industry
   graphql:
-    typeName: ConsumerLendingApplicantEmployments
-    inputTypeName: ConsumerLendingApplicantEmploymentsInput
+    typeName: ConsumerLending_ConsumerLendingApplicantEmployments
+    inputTypeName: ConsumerLending_ConsumerLendingApplicantEmploymentsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_applicant_employments
@@ -117,29 +117,29 @@ definition:
       type: ConsumerLendingApplicantEmployments
       comparableFields:
         - fieldName: consumerLendingApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingEmploymentId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: employerName
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: employmentType
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: endDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: enterpriseAddressId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: isCurrent
-          booleanExpressionType: ConsumerLendingBoolBoolExp
+          booleanExpressionType: BoolBoolExp
         - fieldName: monthlyIncome
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: phone
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: position
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: startDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: yearsInProfession
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicant
   logicalOperators:
@@ -147,7 +147,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingApplicantEmploymentsBoolExp
+    typeName: ConsumerLending_ConsumerLendingApplicantEmploymentsBoolExp
 
 ---
 kind: AggregateExpression
@@ -159,33 +159,33 @@ definition:
       aggregatedType: ConsumerLendingApplicantEmployments
       aggregatableFields:
         - fieldName: consumerLendingApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingEmploymentId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: employerName
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: employmentType
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: endDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: enterpriseAddressId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: isCurrent
-          aggregateExpression: ConsumerLendingBoolAggExp
+          aggregateExpression: BoolAggExp
         - fieldName: monthlyIncome
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: phone
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: position
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: startDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: yearsInProfession
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingApplicantEmploymentsAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingApplicantEmploymentsAggExp
 
 ---
 kind: OrderByExpression
@@ -197,34 +197,33 @@ definition:
       orderedType: ConsumerLendingApplicantEmployments
       orderableFields:
         - fieldName: consumerLendingApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingEmploymentId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: employerName
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: employmentType
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: endDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: enterpriseAddressId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: isCurrent
-          orderByExpression: ConsumerLendingBoolOrderByExp
+          orderByExpression: BoolOrderByExp
         - fieldName: monthlyIncome
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: phone
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: position
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: startDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: yearsInProfession
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
-        - relationshipName: employerAddress
   graphql:
-    expressionTypeName: ConsumerLendingApplicantEmploymentsOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingApplicantEmploymentsOrderByExp
 
 ---
 kind: Model
@@ -249,7 +248,7 @@ definition:
           - consumerLendingEmploymentId
         subscription:
           rootField: consumerLendingApplicantEmploymentsByConsumerLendingEmploymentId
-    filterInputTypeName: ConsumerLendingApplicantEmploymentsFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingApplicantEmploymentsFilterInput
     aggregate:
       queryRootField: consumerLendingApplicantEmploymentsAggregate
       subscription:

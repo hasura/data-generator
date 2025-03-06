@@ -7,29 +7,18 @@ definition:
   fields:
     - name: communicationMethod
       type: Varchar!
-      description: How statements are delivered to the customer
-    - name: consumerBankingDeliveryAddressId
-      type: Int4
-      description: References the address where statements are sent
-    - name: enterpriseAccountId
-      type: Int4
-      description: References the account these preferences apply to
-    - name: format
-      type: Varchar!
-      description: Preferred format of statements (e.g., PDF, paper)
-    - name: frequency
-      type: Varchar!
-      description: How often statements are generated (e.g., monthly, quarterly)
-    - name: lastStatementDate
-      type: Date
-      description: When the last statement was generated
-    - name: nextStatementDate
-      type: Date
-      description: When the next statement is scheduled
     - name: consumerBankingAccountId
       type: Int4!
     - name: enterpriseAddressId
       type: Int4
+    - name: format
+      type: Varchar!
+    - name: frequency
+      type: Varchar!
+    - name: lastStatementDate
+      type: Date
+    - name: nextStatementDate
+      type: Date
   graphql:
     typeName: ConsumerBanking_ConsumerBankingAccountStatementPreferences
     inputTypeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesInput
@@ -40,12 +29,12 @@ definition:
         communicationMethod:
           column:
             name: communication_method
-        consumerBankingDeliveryAddressId:
+        consumerBankingAccountId:
           column:
-            name: consumer_banking_delivery_address_id
-        enterpriseAccountId:
+            name: consumer_banking_account_id
+        enterpriseAddressId:
           column:
-            name: enterprise_account_id
+            name: enterprise_address_id
         format:
           column:
             name: format
@@ -58,12 +47,6 @@ definition:
         nextStatementDate:
           column:
             name: next_statement_date
-        consumerBankingAccountId:
-          column:
-            name: consumer_banking_account_id
-        enterpriseAddressId:
-          column:
-            name: enterprise_address_id
 
 ---
 kind: TypePermissions
@@ -75,14 +58,12 @@ definition:
       output:
         allowedFields:
           - communicationMethod
-          - consumerBankingDeliveryAddressId
-          - enterpriseAccountId
+          - consumerBankingAccountId
+          - enterpriseAddressId
           - format
           - frequency
           - lastStatementDate
           - nextStatementDate
-          - consumerBankingAccountId
-          - enterpriseAddressId
 
 ---
 kind: BooleanExpressionType
@@ -95,9 +76,9 @@ definition:
       comparableFields:
         - fieldName: communicationMethod
           booleanExpressionType: VarcharBoolExp
-        - fieldName: consumerBankingDeliveryAddressId
+        - fieldName: consumerBankingAccountId
           booleanExpressionType: Int4BoolExp
-        - fieldName: enterpriseAccountId
+        - fieldName: enterpriseAddressId
           booleanExpressionType: Int4BoolExp
         - fieldName: format
           booleanExpressionType: VarcharBoolExp
@@ -107,12 +88,7 @@ definition:
           booleanExpressionType: DateBoolExp
         - fieldName: nextStatementDate
           booleanExpressionType: DateBoolExp
-        - fieldName: consumerBankingAccountId
-          booleanExpressionType: Int4BoolExp
-        - fieldName: enterpriseAddressId
-          booleanExpressionType: Int4BoolExp
       comparableRelationships:
-        - relationshipName: consumerBankingStatementDeliveryAddress
         - relationshipName: consumerBankingAccount
   logicalOperators:
     enable: true
@@ -132,9 +108,9 @@ definition:
       aggregatableFields:
         - fieldName: communicationMethod
           aggregateExpression: VarcharAggExp
-        - fieldName: consumerBankingDeliveryAddressId
+        - fieldName: consumerBankingAccountId
           aggregateExpression: Int4AggExp
-        - fieldName: enterpriseAccountId
+        - fieldName: enterpriseAddressId
           aggregateExpression: Int4AggExp
         - fieldName: format
           aggregateExpression: VarcharAggExp
@@ -144,10 +120,6 @@ definition:
           aggregateExpression: DateAggExp
         - fieldName: nextStatementDate
           aggregateExpression: DateAggExp
-        - fieldName: consumerBankingAccountId
-          aggregateExpression: Int4AggExp
-        - fieldName: enterpriseAddressId
-          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
@@ -164,9 +136,9 @@ definition:
       orderableFields:
         - fieldName: communicationMethod
           orderByExpression: VarcharOrderByExp
-        - fieldName: consumerBankingDeliveryAddressId
+        - fieldName: consumerBankingAccountId
           orderByExpression: Int4OrderByExp
-        - fieldName: enterpriseAccountId
+        - fieldName: enterpriseAddressId
           orderByExpression: Int4OrderByExp
         - fieldName: format
           orderByExpression: VarcharOrderByExp
@@ -176,13 +148,7 @@ definition:
           orderByExpression: DateOrderByExp
         - fieldName: nextStatementDate
           orderByExpression: DateOrderByExp
-        - fieldName: consumerBankingAccountId
-          orderByExpression: Int4OrderByExp
-        - fieldName: enterpriseAddressId
-          orderByExpression: Int4OrderByExp
       orderableRelationships:
-        - relationshipName: consumerBankingStatementDeliveryAddress
-        - relationshipName: deliveryAddress
         - relationshipName: consumerBankingAccount
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesOrderByExp
@@ -222,24 +188,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: consumerBankingStatementDeliveryAddress
-  sourceType: ConsumerBankingAccountStatementPreferences
-  target:
-    model:
-      name: ConsumerBankingStatementDeliveryAddresses
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: consumerBankingDeliveryAddressId
-      target:
-        modelField:
-          - fieldName: consumerBankingDeliveryAddressId
 
 ---
 kind: Relationship

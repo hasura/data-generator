@@ -8,9 +8,6 @@ definition:
     - name: consumerBankingProductId
       type: Int4!
       description: Unique identifier for each product
-    - name: enterpriseAccountId
-      type: Int4!
-      description: Account associated with this product
     - name: marketingStateId
       type: Varchar
       description: Identifier for marketing campaign or state
@@ -33,9 +30,6 @@ definition:
         consumerBankingProductId:
           column:
             name: consumer_banking_product_id
-        enterpriseAccountId:
-          column:
-            name: enterprise_account_id
         marketingStateId:
           column:
             name: marketing_state_id
@@ -59,7 +53,6 @@ definition:
       output:
         allowedFields:
           - consumerBankingProductId
-          - enterpriseAccountId
           - marketingStateId
           - productName
           - productType
@@ -76,8 +69,6 @@ definition:
       comparableFields:
         - fieldName: consumerBankingProductId
           booleanExpressionType: Int4BoolExp
-        - fieldName: enterpriseAccountId
-          booleanExpressionType: Int4BoolExp
         - fieldName: marketingStateId
           booleanExpressionType: VarcharBoolExp
         - fieldName: productName
@@ -87,8 +78,8 @@ definition:
         - fieldName: secondaryProductId
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
-        - relationshipName: consumerBankingOtherProductTypes
         - relationshipName: consumerBankingAccounts
+        - relationshipName: consumerBankingOtherProductTypes
   logicalOperators:
     enable: true
   isNull:
@@ -106,8 +97,6 @@ definition:
       aggregatedType: ConsumerBankingProducts
       aggregatableFields:
         - fieldName: consumerBankingProductId
-          aggregateExpression: Int4AggExp
-        - fieldName: enterpriseAccountId
           aggregateExpression: Int4AggExp
         - fieldName: marketingStateId
           aggregateExpression: VarcharAggExp
@@ -133,8 +122,6 @@ definition:
       orderableFields:
         - fieldName: consumerBankingProductId
           orderByExpression: Int4OrderByExp
-        - fieldName: enterpriseAccountId
-          orderByExpression: Int4OrderByExp
         - fieldName: marketingStateId
           orderByExpression: VarcharOrderByExp
         - fieldName: productName
@@ -143,8 +130,7 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: secondaryProductId
           orderByExpression: VarcharOrderByExp
-      orderableRelationships:
-        - relationshipName: account
+      orderableRelationships: []
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingProductsOrderByExp
 
@@ -193,28 +179,6 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: consumerBankingOtherProductTypes
-  sourceType: ConsumerBankingProducts
-  target:
-    model:
-      name: ConsumerBankingOtherProductTypes
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ConsumerBankingOtherProductTypesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: consumerBankingProductId
-      target:
-        modelField:
-          - fieldName: consumerBankingProductId
-  graphql:
-    aggregateFieldName: consumerBankingOtherProductTypesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
   name: consumerBankingAccounts
   sourceType: ConsumerBankingProducts
   target:
@@ -232,4 +196,26 @@ definition:
           - fieldName: consumerBankingProductId
   graphql:
     aggregateFieldName: consumerBankingAccountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingOtherProductTypes
+  sourceType: ConsumerBankingProducts
+  target:
+    model:
+      name: ConsumerBankingOtherProductTypes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingOtherProductTypesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingProductId
+      target:
+        modelField:
+          - fieldName: consumerBankingProductId
+  graphql:
+    aggregateFieldName: consumerBankingOtherProductTypesAggregate
 

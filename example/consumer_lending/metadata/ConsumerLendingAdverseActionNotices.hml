@@ -7,29 +7,29 @@ definition:
     applications are denied.
   fields:
     - name: consumerLendingApplicationId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan application
     - name: consumerLendingNoticeId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for notice
     - name: deliveryMethod
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Email, Mail, Portal
     - name: generatedDate
       type: Timestamp!
       description: When notice was generated
     - name: noticePath
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Path to stored notice document
     - name: sentDate
       type: Timestamp
       description: When notice was sent to applicant
     - name: status
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Generated, Sent, Delivered
   graphql:
-    typeName: ConsumerLendingAdverseActionNotices
-    inputTypeName: ConsumerLendingAdverseActionNoticesInput
+    typeName: ConsumerLending_ConsumerLendingAdverseActionNotices
+    inputTypeName: ConsumerLending_ConsumerLendingAdverseActionNoticesInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_adverse_action_notices
@@ -83,19 +83,19 @@ definition:
       type: ConsumerLendingAdverseActionNotices
       comparableFields:
         - fieldName: consumerLendingApplicationId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingNoticeId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: deliveryMethod
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: generatedDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: noticePath
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: sentDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: status
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingAdverseActionDetails
         - relationshipName: consumerLendingLoanApplication
@@ -104,7 +104,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingAdverseActionNoticesBoolExp
+    typeName: ConsumerLending_ConsumerLendingAdverseActionNoticesBoolExp
 
 ---
 kind: AggregateExpression
@@ -116,23 +116,23 @@ definition:
       aggregatedType: ConsumerLendingAdverseActionNotices
       aggregatableFields:
         - fieldName: consumerLendingApplicationId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingNoticeId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: deliveryMethod
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: generatedDate
           aggregateExpression: TimestampAggExp
         - fieldName: noticePath
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: sentDate
           aggregateExpression: TimestampAggExp
         - fieldName: status
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingAdverseActionNoticesAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingAdverseActionNoticesAggExp
 
 ---
 kind: OrderByExpression
@@ -144,23 +144,23 @@ definition:
       orderedType: ConsumerLendingAdverseActionNotices
       orderableFields:
         - fieldName: consumerLendingApplicationId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingNoticeId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: deliveryMethod
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: generatedDate
           orderByExpression: TimestampOrderByExp
         - fieldName: noticePath
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: sentDate
           orderByExpression: TimestampOrderByExp
         - fieldName: status
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanApplication
   graphql:
-    expressionTypeName: ConsumerLendingAdverseActionNoticesOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingAdverseActionNoticesOrderByExp
 
 ---
 kind: Model
@@ -185,7 +185,7 @@ definition:
           - consumerLendingNoticeId
         subscription:
           rootField: consumerLendingAdverseActionNoticesByConsumerLendingNoticeId
-    filterInputTypeName: ConsumerLendingAdverseActionNoticesFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingAdverseActionNoticesFilterInput
     aggregate:
       queryRootField: consumerLendingAdverseActionNoticesAggregate
       subscription:

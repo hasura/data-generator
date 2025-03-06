@@ -7,56 +7,56 @@ definition:
     including the type of appraisal and its value.
   fields:
     - name: appraisalOrderedDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date appraisal was ordered
     - name: appraisalProvidedDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date appraisal was provided to applicant
     - name: appraisalReceivedDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date appraisal was received
     - name: appraisalType
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Full Appraisal, AVM, BPO, etc.
     - name: appraisalValue
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Appraised value if known
     - name: appraisalWaiver
-      type: ConsumerLendingBool!
+      type: Bool!
       description: Whether appraisal was waived
     - name: consumerLendingApplicationId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan application
     - name: consumerLendingDisclosureId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for appraisal disclosure
     - name: deliveryMethod
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Email, Mail, Electronic
     - name: disclosureDate
       type: Timestamp!
       description: Date disclosure was generated
     - name: disclosureType
-      type: ConsumerLendingVarchar!
+      type: Varchar!
       description: Initial Disclosure, Final Disclosure
     - name: documentPath
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Path to stored disclosure document
     - name: propertyAddressId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to enterprise.addresses
     - name: sentDate
       type: Timestamp!
       description: Date disclosure was sent
     - name: userId
-      type: ConsumerLendingInt4
+      type: Int4
       description: User who generated disclosure
     - name: waiverReason
-      type: ConsumerLendingVarchar
+      type: Varchar
       description: Reason for waiver if applicable
   graphql:
-    typeName: ConsumerLendingAppraisalDisclosures
-    inputTypeName: ConsumerLendingAppraisalDisclosuresInput
+    typeName: ConsumerLending_ConsumerLendingAppraisalDisclosures
+    inputTypeName: ConsumerLending_ConsumerLendingAppraisalDisclosuresInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_appraisal_disclosures
@@ -146,37 +146,37 @@ definition:
       type: ConsumerLendingAppraisalDisclosures
       comparableFields:
         - fieldName: appraisalOrderedDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: appraisalProvidedDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: appraisalReceivedDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: appraisalType
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: appraisalValue
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: appraisalWaiver
-          booleanExpressionType: ConsumerLendingBoolBoolExp
+          booleanExpressionType: BoolBoolExp
         - fieldName: consumerLendingApplicationId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingDisclosureId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: deliveryMethod
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: disclosureDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: disclosureType
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: documentPath
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: propertyAddressId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: sentDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: userId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: waiverReason
-          booleanExpressionType: ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanApplication
   logicalOperators:
@@ -184,7 +184,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingAppraisalDisclosuresBoolExp
+    typeName: ConsumerLending_ConsumerLendingAppraisalDisclosuresBoolExp
 
 ---
 kind: AggregateExpression
@@ -196,41 +196,41 @@ definition:
       aggregatedType: ConsumerLendingAppraisalDisclosures
       aggregatableFields:
         - fieldName: appraisalOrderedDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: appraisalProvidedDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: appraisalReceivedDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: appraisalType
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: appraisalValue
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: appraisalWaiver
-          aggregateExpression: ConsumerLendingBoolAggExp
+          aggregateExpression: BoolAggExp
         - fieldName: consumerLendingApplicationId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingDisclosureId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: deliveryMethod
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: disclosureDate
           aggregateExpression: TimestampAggExp
         - fieldName: disclosureType
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: documentPath
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: propertyAddressId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: sentDate
           aggregateExpression: TimestampAggExp
         - fieldName: userId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: waiverReason
-          aggregateExpression: ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingAppraisalDisclosuresAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingAppraisalDisclosuresAggExp
 
 ---
 kind: OrderByExpression
@@ -242,43 +242,41 @@ definition:
       orderedType: ConsumerLendingAppraisalDisclosures
       orderableFields:
         - fieldName: appraisalOrderedDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: appraisalProvidedDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: appraisalReceivedDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: appraisalType
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: appraisalValue
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: appraisalWaiver
-          orderByExpression: ConsumerLendingBoolOrderByExp
+          orderByExpression: BoolOrderByExp
         - fieldName: consumerLendingApplicationId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingDisclosureId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: deliveryMethod
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: disclosureDate
           orderByExpression: TimestampOrderByExp
         - fieldName: disclosureType
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: documentPath
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: propertyAddressId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: sentDate
           orderByExpression: TimestampOrderByExp
         - fieldName: userId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: waiverReason
-          orderByExpression: ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanApplication
-        - relationshipName: disclosureUser
-        - relationshipName: propertyAddress
   graphql:
-    expressionTypeName: ConsumerLendingAppraisalDisclosuresOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingAppraisalDisclosuresOrderByExp
 
 ---
 kind: Model
@@ -303,7 +301,7 @@ definition:
           - consumerLendingDisclosureId
         subscription:
           rootField: consumerLendingAppraisalDisclosuresByConsumerLendingDisclosureId
-    filterInputTypeName: ConsumerLendingAppraisalDisclosuresFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingAppraisalDisclosuresFilterInput
     aggregate:
       queryRootField: consumerLendingAppraisalDisclosuresAggregate
       subscription:

@@ -7,29 +7,29 @@ definition:
     employment and other income types.
   fields:
     - name: amount
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Income amount
     - name: consumerLendingApplicantId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to applicant
     - name: consumerLendingIncomeId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for income record
     - name: frequency
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Monthly, Annual, etc.
     - name: incomeType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Salary, Self-employment, Rental, Alimony, etc.
     - name: verificationDate
-      type: ConsumerLendingDate
+      type: Date
       description: Date income was verified
     - name: verificationStatus
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Self-reported, Verified, Failed
   graphql:
-    typeName: ConsumerLendingApplicantIncomes
-    inputTypeName: ConsumerLendingApplicantIncomesInput
+    typeName: ConsumerLending_ConsumerLendingApplicantIncomes
+    inputTypeName: ConsumerLending_ConsumerLendingApplicantIncomesInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_applicant_incomes
@@ -83,19 +83,19 @@ definition:
       type: ConsumerLendingApplicantIncomes
       comparableFields:
         - fieldName: amount
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerLendingApplicantId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingIncomeId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: frequency
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: incomeType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: verificationDate
-          booleanExpressionType: ConsumerLendingDateBoolExp
+          booleanExpressionType: DateBoolExp
         - fieldName: verificationStatus
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicant
   logicalOperators:
@@ -103,7 +103,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingApplicantIncomesBoolExp
+    typeName: ConsumerLending_ConsumerLendingApplicantIncomesBoolExp
 
 ---
 kind: AggregateExpression
@@ -115,23 +115,23 @@ definition:
       aggregatedType: ConsumerLendingApplicantIncomes
       aggregatableFields:
         - fieldName: amount
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: consumerLendingApplicantId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingIncomeId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: frequency
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: incomeType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: verificationDate
-          aggregateExpression: ConsumerLendingDateAggExp
+          aggregateExpression: DateAggExp
         - fieldName: verificationStatus
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingApplicantIncomesAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingApplicantIncomesAggExp
 
 ---
 kind: OrderByExpression
@@ -143,23 +143,23 @@ definition:
       orderedType: ConsumerLendingApplicantIncomes
       orderableFields:
         - fieldName: amount
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerLendingApplicantId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingIncomeId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: frequency
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: incomeType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: verificationDate
-          orderByExpression: ConsumerLendingDateOrderByExp
+          orderByExpression: DateOrderByExp
         - fieldName: verificationStatus
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
   graphql:
-    expressionTypeName: ConsumerLendingApplicantIncomesOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingApplicantIncomesOrderByExp
 
 ---
 kind: Model
@@ -184,7 +184,7 @@ definition:
           - consumerLendingIncomeId
         subscription:
           rootField: consumerLendingApplicantIncomesByConsumerLendingIncomeId
-    filterInputTypeName: ConsumerLendingApplicantIncomesFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingApplicantIncomesFilterInput
     aggregate:
       queryRootField: consumerLendingApplicantIncomesAggregate
       subscription:

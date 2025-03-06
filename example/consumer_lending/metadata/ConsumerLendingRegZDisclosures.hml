@@ -7,68 +7,68 @@ definition:
     Z), such as Loan Estimates and Closing Disclosures.
   fields:
     - name: amountFinanced
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Amount financed disclosed
     - name: annualPercentageRate
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: APR disclosed
     - name: consumerLendingApplicationId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Reference to loan application
     - name: consumerLendingDisclosureId
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Unique identifier for disclosure
     - name: deliveryMethod
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Email, Mail, In Person, Electronic
     - name: disclosureDate
       type: Timestamp!
       description: Date disclosure was generated
     - name: disclosureType
-      type:  ConsumerLendingVarchar!
+      type: Varchar!
       description: Initial TIL, Loan Estimate, Closing Disclosure, Change in Terms
     - name: documentPath
-      type:  ConsumerLendingVarchar
+      type: Varchar
       description: Path to stored disclosure document
     - name: financeCharge
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Total finance charge disclosed
     - name: latePaymentFee
-      type: ConsumerLendingNumeric
+      type: Numeric
       description: Late payment fee disclosed
     - name: loanAccountId
-      type: ConsumerLendingInt4
+      type: Int4
       description: Reference to loan account if originated
     - name: paymentSchedule
-      type: ConsumerLendingText
+      type: Text
       description: Summary of payment schedule
     - name: prepaymentPenalty
-      type: ConsumerLendingText
+      type: Text
       description: Description of prepayment penalty if any
     - name: receiptDate
       type: Timestamp
       description: Date receipt was confirmed
     - name: receivedByCustomer
-      type: ConsumerLendingBool
+      type: Bool
       description: Whether receipt confirmed
     - name: securityInterest
-      type: ConsumerLendingText
+      type: Text
       description: Description of security interest
     - name: sentDate
       type: Timestamp
       description: Date disclosure was sent to applicant
     - name: totalOfPayments
-      type: ConsumerLendingNumeric!
+      type: Numeric!
       description: Total of payments disclosed
     - name: userId
-      type: ConsumerLendingInt4
+      type: Int4
       description: User who generated disclosure
     - name: version
-      type: ConsumerLendingInt4!
+      type: Int4!
       description: Version number if multiple disclosures of same type
   graphql:
-    typeName: ConsumerLendingRegZDisclosures
-    inputTypeName: ConsumerLendingRegZDisclosuresInput
+    typeName: ConsumerLending_ConsumerLendingRegZDisclosures
+    inputTypeName: ConsumerLending_ConsumerLendingRegZDisclosuresInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_reg_z_disclosures
@@ -174,45 +174,45 @@ definition:
       type: ConsumerLendingRegZDisclosures
       comparableFields:
         - fieldName: amountFinanced
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: annualPercentageRate
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerLendingApplicationId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingDisclosureId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: deliveryMethod
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: disclosureDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: disclosureType
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: documentPath
-          booleanExpressionType:  ConsumerLendingVarcharBoolExp
+          booleanExpressionType: VarcharBoolExp
         - fieldName: financeCharge
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: latePaymentFee
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: loanAccountId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: paymentSchedule
-          booleanExpressionType: ConsumerLendingTextBoolExp
+          booleanExpressionType: TextBoolExp
         - fieldName: prepaymentPenalty
-          booleanExpressionType: ConsumerLendingTextBoolExp
+          booleanExpressionType: TextBoolExp
         - fieldName: receiptDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: receivedByCustomer
-          booleanExpressionType: ConsumerLendingBoolBoolExp
+          booleanExpressionType: BoolBoolExp
         - fieldName: securityInterest
-          booleanExpressionType: ConsumerLendingTextBoolExp
+          booleanExpressionType: TextBoolExp
         - fieldName: sentDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: totalOfPayments
-          booleanExpressionType: ConsumerLendingNumericBoolExp
+          booleanExpressionType: NumericBoolExp
         - fieldName: userId
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
         - fieldName: version
-          booleanExpressionType: ConsumerLendingInt4BoolExp
+          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanApplication
         - relationshipName: consumerLendingLoanAccount
@@ -221,7 +221,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerLendingRegZDisclosuresBoolExp
+    typeName: ConsumerLending_ConsumerLendingRegZDisclosuresBoolExp
 
 ---
 kind: AggregateExpression
@@ -233,49 +233,49 @@ definition:
       aggregatedType: ConsumerLendingRegZDisclosures
       aggregatableFields:
         - fieldName: amountFinanced
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: annualPercentageRate
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: consumerLendingApplicationId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingDisclosureId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: deliveryMethod
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: disclosureDate
           aggregateExpression: TimestampAggExp
         - fieldName: disclosureType
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: documentPath
-          aggregateExpression:  ConsumerLendingVarcharAggExp
+          aggregateExpression: VarcharAggExp
         - fieldName: financeCharge
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: latePaymentFee
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: loanAccountId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: paymentSchedule
-          aggregateExpression: ConsumerLendingTextAggExp
+          aggregateExpression: TextAggExp
         - fieldName: prepaymentPenalty
-          aggregateExpression: ConsumerLendingTextAggExp
+          aggregateExpression: TextAggExp
         - fieldName: receiptDate
           aggregateExpression: TimestampAggExp
         - fieldName: receivedByCustomer
-          aggregateExpression: ConsumerLendingBoolAggExp
+          aggregateExpression: BoolAggExp
         - fieldName: securityInterest
-          aggregateExpression: ConsumerLendingTextAggExp
+          aggregateExpression: TextAggExp
         - fieldName: sentDate
           aggregateExpression: TimestampAggExp
         - fieldName: totalOfPayments
-          aggregateExpression: ConsumerLendingNumericAggExp
+          aggregateExpression: NumericAggExp
         - fieldName: userId
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
         - fieldName: version
-          aggregateExpression: ConsumerLendingInt4AggExp
+          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerLendingRegZDisclosuresAggExp
+    selectTypeName: ConsumerLending_ConsumerLendingRegZDisclosuresAggExp
 
 ---
 kind: OrderByExpression
@@ -287,50 +287,50 @@ definition:
       orderedType: ConsumerLendingRegZDisclosures
       orderableFields:
         - fieldName: amountFinanced
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: annualPercentageRate
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerLendingApplicationId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingDisclosureId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: deliveryMethod
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: disclosureDate
           orderByExpression: TimestampOrderByExp
         - fieldName: disclosureType
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: documentPath
-          orderByExpression:  ConsumerLendingVarcharOrderByExp
+          orderByExpression: VarcharOrderByExp
         - fieldName: financeCharge
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: latePaymentFee
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: loanAccountId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: paymentSchedule
-          orderByExpression: ConsumerLendingTextOrderByExp
+          orderByExpression: TextOrderByExp
         - fieldName: prepaymentPenalty
-          orderByExpression: ConsumerLendingTextOrderByExp
+          orderByExpression: TextOrderByExp
         - fieldName: receiptDate
           orderByExpression: TimestampOrderByExp
         - fieldName: receivedByCustomer
-          orderByExpression: ConsumerLendingBoolOrderByExp
+          orderByExpression: BoolOrderByExp
         - fieldName: securityInterest
-          orderByExpression: ConsumerLendingTextOrderByExp
+          orderByExpression: TextOrderByExp
         - fieldName: sentDate
           orderByExpression: TimestampOrderByExp
         - fieldName: totalOfPayments
-          orderByExpression: ConsumerLendingNumericOrderByExp
+          orderByExpression: NumericOrderByExp
         - fieldName: userId
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
         - fieldName: version
-          orderByExpression: ConsumerLendingInt4OrderByExp
+          orderByExpression: Int4OrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanApplication
         - relationshipName: consumerLendingLoanAccount
   graphql:
-    expressionTypeName: ConsumerLendingRegZDisclosuresOrderByExp
+    expressionTypeName: ConsumerLending_ConsumerLendingRegZDisclosuresOrderByExp
 
 ---
 kind: Model
@@ -355,7 +355,7 @@ definition:
           - consumerLendingDisclosureId
         subscription:
           rootField: consumerLendingRegZDisclosuresByConsumerLendingDisclosureId
-    filterInputTypeName: ConsumerLendingRegZDisclosuresFilterInput
+    filterInputTypeName: ConsumerLending_ConsumerLendingRegZDisclosuresFilterInput
     aggregate:
       queryRootField: consumerLendingRegZDisclosuresAggregate
       subscription:

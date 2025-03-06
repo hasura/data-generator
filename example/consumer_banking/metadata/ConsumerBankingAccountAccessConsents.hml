@@ -21,12 +21,6 @@ definition:
     - name: statusUpdateDateTime
       type: Timestamp!
       description: When the status was last changed
-    - name: transactionFromDateTime
-      type: Timestamp
-      description: Start date for transaction data access
-    - name: transactionToDateTime
-      type: Timestamp
-      description: End date for transaction data access
   graphql:
     typeName: ConsumerBanking_ConsumerBankingAccountAccessConsents
     inputTypeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsInput
@@ -49,12 +43,6 @@ definition:
         statusUpdateDateTime:
           column:
             name: status_update_date_time
-        transactionFromDateTime:
-          column:
-            name: transaction_from_date_time
-        transactionToDateTime:
-          column:
-            name: transaction_to_date_time
 
 ---
 kind: TypePermissions
@@ -70,8 +58,6 @@ definition:
           - expirationDateTime
           - status
           - statusUpdateDateTime
-          - transactionFromDateTime
-          - transactionToDateTime
 
 ---
 kind: BooleanExpressionType
@@ -91,10 +77,6 @@ definition:
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
         - fieldName: statusUpdateDateTime
-          booleanExpressionType: TimestampBoolExp
-        - fieldName: transactionFromDateTime
-          booleanExpressionType: TimestampBoolExp
-        - fieldName: transactionToDateTime
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingAccountAccessConsentsPermissions
@@ -124,10 +106,6 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: statusUpdateDateTime
           aggregateExpression: TimestampAggExp
-        - fieldName: transactionFromDateTime
-          aggregateExpression: TimestampAggExp
-        - fieldName: transactionToDateTime
-          aggregateExpression: TimestampAggExp
   count:
     enable: true
   graphql:
@@ -151,10 +129,6 @@ definition:
         - fieldName: status
           orderByExpression: VarcharOrderByExp
         - fieldName: statusUpdateDateTime
-          orderByExpression: TimestampOrderByExp
-        - fieldName: transactionFromDateTime
-          orderByExpression: TimestampOrderByExp
-        - fieldName: transactionToDateTime
           orderByExpression: TimestampOrderByExp
       orderableRelationships: []
   graphql:
