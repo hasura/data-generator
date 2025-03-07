@@ -1,6 +1,6 @@
 import os
 import sys
-
+import glob
 import psycopg2
 from dotenv import load_dotenv
 
@@ -16,6 +16,43 @@ try:
 except ImportError:
     print("Error: Could not import DataGenerator. Make sure data_generator.py is in the same directory.")
     sys.exit(1)
+
+
+def execute_sql_scripts(conn, directory_path):
+    """
+    Recursively executes all SQL files in the specified directory.
+
+    Args:
+        conn: Database connection
+        directory_path: Path to directory containing SQL scripts
+    """
+    if not directory_path or not os.path.isdir(directory_path):
+        print(f"Warning: Directory not found: {directory_path}")
+        return
+
+    # Find all SQL files recursively
+    sql_files = glob.glob(os.path.join(directory_path, '**', '*.sql'), recursive=True)
+
+    # Sort files to ensure consistent execution order
+    sql_files.sort()
+
+    # Execute each SQL file
+    executed_count = 0
+    for sql_file in sql_files:
+        print(f"Executing SQL file: {sql_file}")
+        try:
+            with conn.cursor() as cursor:
+                with open(sql_file, "r") as file:
+                    sql = file.read()
+                    cursor.execute(sql)
+                    conn.commit()
+                    executed_count += 1
+                    print(f"SQL execution completed successfully: {sql_file}")
+        except Exception as e:
+            conn.rollback()
+            print(f"Error executing SQL file {sql_file}: {str(e)}")
+
+    print(f"Executed {executed_count} SQL script files from {directory_path}")
 
 
 def generate_banking_data():
@@ -70,7 +107,13 @@ def generate_banking_data():
         generator.custom_generators = custom_generators(generator)
 
         # Step 3: Generate data
-        generator.generate_vectorized_data(scale=1, row_counts={
+        scale = .1
+
+        # For consumer_banking.products, we want to ensure exactly 9 rows regardless of scale
+        # If scale is 0.1, then we'd set it to 9/0.1 = 90 to achieve 9 rows after scaling
+        product_count = int(9 / scale) if scale > 0 else 9
+
+        generator.generate_vectorized_data(scale=scale, row_counts={
             "consumer_banking.account_access_consents": 200,
             "enterprise.permissions": 50,
             "consumer_banking.account_access_consents_permissions": 300,
@@ -86,7 +129,7 @@ def generate_banking_data():
             "enterprise.parties": 2000,
             "enterprise.party_relationships": 1000,
             "enterprise.party_addresses": 2000,
-            "consumer_banking.products": 1000,
+            "consumer_banking.products": product_count,  # This will be scaled by the generator to result in 9 rows
             "consumer_banking.other_product_types": 200,
             "consumer_banking.scheduled_payments": 500,
             "consumer_banking.scheduled_payment_creditor_agents": 250,
@@ -267,6 +310,14 @@ def generate_banking_data():
             "consumer_lending.high_cost_mortgage_tests": 200,
             "consumer_lending.compliance_exceptions": 200
         })
+
+        # Step 4: Execute any scripted scenarios from SQL files
+        scripted_scenarios_path = os.environ.get('SCRIPTED_SCENARIOS')
+        if scripted_scenarios_path:
+            print("\nExecuting scripted scenarios...")
+            with psycopg2.connect(**conn_params) as conn:
+                execute_sql_scripts(conn, scripted_scenarios_path)
+
         print("\nDataGenerator completed successfully!")
 
     except Exception as e:

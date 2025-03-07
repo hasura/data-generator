@@ -1,4 +1,5 @@
 from fsi_data_generator.fsi_generators.text_list import text_list
+from fsi_data_generator.fsi_generators.unique_text_list import unique_text_list
 from fsi_data_generator.fsi_text.consumer_banking__beneficiaries__supplementary_data import \
     consumer_banking__beneficiaries__supplementary_data
 from fsi_data_generator.fsi_text.consumer_banking__products__product_type import \
@@ -51,6 +52,6 @@ def consumer_banking(_dg):
                 "IMMUTABLE"
             ])),
         ('consumer_banking.standing_orders', '^supplementary_data$', text_list(consumer_banking__standing_orders__supplementary_data)),
-        ('consumer_banking\\.products', '^product_type$', text_list(consumer_banking__products__product_type)),
+        ('consumer_banking\\.products', '^product_type$', unique_text_list(consumer_banking__products__product_type)),
         ('consumer_banking\\.account_access_consents', '^status$', text_list(["Active", "Revoked"])),
     ]
