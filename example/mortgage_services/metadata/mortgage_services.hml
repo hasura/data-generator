@@ -959,6 +959,23 @@ definition:
               type:
                 type: named
                 name: int4
+            opened_date:
+              description: When the account was opened
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+            status:
+              description: Current status of the account (e.g., Active, Inactive, Frozen, Closed)
+              type:
+                type: named
+                name: varchar
+            status_update_date_time:
+              description: When the status was last updated
+              type:
+                type: named
+                name: timestamptz
         consumer_banking_balances:
           description: Tracks account balance information with history, stores different types of balances
           fields:
@@ -6437,20 +6454,6 @@ definition:
                 underlying_type:
                   type: named
                   name: numeric
-            close_date:
-              description: When account was closed if applicable
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: date
-            close_reason:
-              description: Reason for account closure if applicable
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
             credit_cards_application_id:
               description: Reference to original application if applicable
               type:
@@ -6531,7 +6534,7 @@ definition:
               type:
                 type: named
                 name: numeric
-            open_date:
+            opened_date:
               description: When account was opened
               type:
                 type: named
@@ -6582,6 +6585,11 @@ definition:
               type:
                 type: named
                 name: varchar
+            status_update_date_time:
+              description: When the status was last updated
+              type:
+                type: named
+                name: timestamptz
             times_past_due_30_days:
               description: Count of 30+ day late payments
               type:
@@ -11175,7 +11183,7 @@ definition:
               type:
                 type: named
                 name: int4
-            opening_date:
+            opened_date:
               description: When the account was opened
               type:
                 type: nullable
@@ -11987,6 +11995,23 @@ definition:
               type:
                 type: named
                 name: int4
+            opened_date:
+              description: When the account was opened
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+            status:
+              description: Current status of the account (e.g., Active, Inactive, Frozen, Closed)
+              type:
+                type: named
+                name: varchar
+            status_update_date_time:
+              description: When the status was last updated
+              type:
+                type: named
+                name: timestamptz
         insert_consumer_banking_accounts_response:
           description: Responses from the 'insert_consumer_banking_accounts' procedure
           fields:
@@ -18887,20 +18912,6 @@ definition:
                 underlying_type:
                   type: named
                   name: numeric
-            close_date:
-              description: When account was closed if applicable
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: date
-            close_reason:
-              description: Reason for account closure if applicable
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
             credit_cards_application_id:
               description: Reference to original application if applicable
               type:
@@ -18991,7 +19002,7 @@ definition:
                 underlying_type:
                   type: named
                   name: numeric
-            open_date:
+            opened_date:
               description: When account was opened
               type:
                 type: named
@@ -19048,6 +19059,11 @@ definition:
               type:
                 type: named
                 name: varchar
+            status_update_date_time:
+              description: When the status was last updated
+              type:
+                type: named
+                name: timestamptz
             times_past_due_30_days:
               description: Count of 30+ day late payments
               type:
@@ -21327,7 +21343,7 @@ definition:
                 underlying_type:
                   type: named
                   name: int4
-            opening_date:
+            opened_date:
               description: When the account was opened
               type:
                 type: nullable
@@ -25286,13 +25302,6 @@ definition:
                 underlying_type:
                   type: named
                   name: numeric
-            closed_date:
-              description: Date when the account was closed (if applicable)
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: date
             currency:
               description: ISO currency code for the account
               type:
@@ -25364,6 +25373,11 @@ definition:
                 underlying_type:
                   type: named
                   name: varchar
+            status_update_date_time:
+              description: When the status was last updated
+              type:
+                type: named
+                name: timestamptz
         insert_small_business_banking_accounts_response:
           description: Responses from the 'insert_small_business_banking_accounts' procedure
           fields:
@@ -27007,7 +27021,7 @@ definition:
                 type: named
                 name: date
             status:
-              description: Current status of the credit line (active, frozen, closed)
+              description: Current status of the credit line (active, inactive, frozen, closed)
               type:
                 type: nullable
                 underlying_type:
@@ -30898,13 +30912,6 @@ definition:
               type:
                 type: named
                 name: numeric
-            closed_date:
-              description: Date when the account was closed (if applicable)
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: date
             currency:
               description: ISO currency code for the account
               type:
@@ -30966,6 +30973,11 @@ definition:
               type:
                 type: named
                 name: varchar
+            status_update_date_time:
+              description: When the status was last updated
+              type:
+                type: named
+                name: timestamptz
         small_business_banking_adverse_action_notices:
           description: Tracks adverse action notices sent to declined applicants
           fields:
@@ -32319,7 +32331,7 @@ definition:
                 type: named
                 name: date
             status:
-              description: Current status of the credit line (active, frozen, closed)
+              description: Current status of the credit line (active, inactive, frozen, closed)
               type:
                 type: named
                 name: varchar
@@ -33418,6 +33430,32 @@ definition:
               type:
                 type: named
                 name: int4
+        update_column_consumer_banking_accounts_opened_date:
+          description: Update the 'opened_date' column in the 'consumer_banking_accounts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamptz
+        update_column_consumer_banking_accounts_status:
+          description: Update the 'status' column in the 'consumer_banking_accounts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_consumer_banking_accounts_status_update_date_time:
+          description: Update the 'status_update_date_time' column in the 'consumer_banking_accounts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamptz
         update_column_consumer_banking_balances_amount:
           description: Update the 'amount' column in the 'consumer_banking_balances' collection
           fields:
@@ -41326,26 +41364,6 @@ definition:
                 underlying_type:
                   type: named
                   name: numeric
-        update_column_credit_cards_card_accounts_close_date:
-          description: Update the 'close_date' column in the 'credit_cards_card_accounts' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: date
-        update_column_credit_cards_card_accounts_close_reason:
-          description: Update the 'close_reason' column in the 'credit_cards_card_accounts' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
         update_column_credit_cards_card_accounts_credit_cards_application_id:
           description: Update the 'credit_cards_application_id' column in the 'credit_cards_card_accounts' collection
           fields:
@@ -41468,8 +41486,8 @@ definition:
               type:
                 type: named
                 name: numeric
-        update_column_credit_cards_card_accounts_open_date:
-          description: Update the 'open_date' column in the 'credit_cards_card_accounts' collection
+        update_column_credit_cards_card_accounts_opened_date:
+          description: Update the 'opened_date' column in the 'credit_cards_card_accounts' collection
           fields:
             _set:
               description: Set the column to this value
@@ -41546,6 +41564,14 @@ definition:
               type:
                 type: named
                 name: varchar
+        update_column_credit_cards_card_accounts_status_update_date_time:
+          description: Update the 'status_update_date_time' column in the 'credit_cards_card_accounts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamptz
         update_column_credit_cards_card_accounts_times_past_due_30_days:
           description: Update the 'times_past_due_30_days' column in the 'credit_cards_card_accounts' collection
           fields:
@@ -44210,8 +44236,8 @@ definition:
               type:
                 type: named
                 name: int4
-        update_column_enterprise_accounts_opening_date:
-          description: Update the 'opening_date' column in the 'enterprise_accounts' collection
+        update_column_enterprise_accounts_opened_date:
+          description: Update the 'opened_date' column in the 'enterprise_accounts' collection
           fields:
             _set:
               description: Set the column to this value
@@ -48952,16 +48978,6 @@ definition:
               type:
                 type: named
                 name: numeric
-        update_column_small_business_banking_accounts_closed_date:
-          description: Update the 'closed_date' column in the 'small_business_banking_accounts' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: date
         update_column_small_business_banking_accounts_currency:
           description: Update the 'currency' column in the 'small_business_banking_accounts' collection
           fields:
@@ -49056,6 +49072,14 @@ definition:
               type:
                 type: named
                 name: varchar
+        update_column_small_business_banking_accounts_status_update_date_time:
+          description: Update the 'status_update_date_time' column in the 'small_business_banking_accounts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: timestamptz
         update_column_small_business_banking_adverse_action_notices_credit_score:
           description: Update the 'credit_score' column in the 'small_business_banking_adverse_action_notices' collection
           fields:
@@ -52654,6 +52678,27 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_accounts_enterprise_account_id
+            opened_date:
+              description: Update the 'opened_date' column in the 'consumer_banking_accounts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_accounts_opened_date
+            status:
+              description: Update the 'status' column in the 'consumer_banking_accounts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_accounts_status
+            status_update_date_time:
+              description: Update the 'status_update_date_time' column in the 'consumer_banking_accounts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_accounts_status_update_date_time
         update_consumer_banking_balances_by_consumer_banking_balance_id_response:
           description: Responses from the 'update_consumer_banking_balances_by_consumer_banking_balance_id' procedure
           fields:
@@ -60723,20 +60768,6 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_credit_cards_card_accounts_cash_advance_limit
-            close_date:
-              description: Update the 'close_date' column in the 'credit_cards_card_accounts' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_credit_cards_card_accounts_close_date
-            close_reason:
-              description: Update the 'close_reason' column in the 'credit_cards_card_accounts' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_credit_cards_card_accounts_close_reason
             credit_cards_application_id:
               description: Update the 'credit_cards_application_id' column in the 'credit_cards_card_accounts' collection.
               type:
@@ -60835,13 +60866,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_credit_cards_card_accounts_minimum_payment_due
-            open_date:
-              description: Update the 'open_date' column in the 'credit_cards_card_accounts' collection.
+            opened_date:
+              description: Update the 'opened_date' column in the 'credit_cards_card_accounts' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_credit_cards_card_accounts_open_date
+                  name: update_column_credit_cards_card_accounts_opened_date
             overlimit_status:
               description: Update the 'overlimit_status' column in the 'credit_cards_card_accounts' collection.
               type:
@@ -60898,6 +60929,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_credit_cards_card_accounts_status
+            status_update_date_time:
+              description: Update the 'status_update_date_time' column in the 'credit_cards_card_accounts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_credit_cards_card_accounts_status_update_date_time
             times_past_due_30_days:
               description: Update the 'times_past_due_30_days' column in the 'credit_cards_card_accounts' collection.
               type:
@@ -60979,20 +61017,6 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_credit_cards_card_accounts_cash_advance_limit
-            close_date:
-              description: Update the 'close_date' column in the 'credit_cards_card_accounts' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_credit_cards_card_accounts_close_date
-            close_reason:
-              description: Update the 'close_reason' column in the 'credit_cards_card_accounts' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_credit_cards_card_accounts_close_reason
             credit_cards_application_id:
               description: Update the 'credit_cards_application_id' column in the 'credit_cards_card_accounts' collection.
               type:
@@ -61091,13 +61115,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_credit_cards_card_accounts_minimum_payment_due
-            open_date:
-              description: Update the 'open_date' column in the 'credit_cards_card_accounts' collection.
+            opened_date:
+              description: Update the 'opened_date' column in the 'credit_cards_card_accounts' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_credit_cards_card_accounts_open_date
+                  name: update_column_credit_cards_card_accounts_opened_date
             overlimit_status:
               description: Update the 'overlimit_status' column in the 'credit_cards_card_accounts' collection.
               type:
@@ -61154,6 +61178,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_credit_cards_card_accounts_status
+            status_update_date_time:
+              description: Update the 'status_update_date_time' column in the 'credit_cards_card_accounts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_credit_cards_card_accounts_status_update_date_time
             times_past_due_30_days:
               description: Update the 'times_past_due_30_days' column in the 'credit_cards_card_accounts' collection.
               type:
@@ -63693,13 +63724,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_enterprise_accounts_enterprise_account_id
-            opening_date:
-              description: Update the 'opening_date' column in the 'enterprise_accounts' collection.
+            opened_date:
+              description: Update the 'opened_date' column in the 'enterprise_accounts' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_enterprise_accounts_opening_date
+                  name: update_column_enterprise_accounts_opened_date
             status:
               description: Update the 'status' column in the 'enterprise_accounts' collection.
               type:
@@ -68440,13 +68471,6 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_small_business_banking_accounts_balance
-            closed_date:
-              description: Update the 'closed_date' column in the 'small_business_banking_accounts' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_small_business_banking_accounts_closed_date
             currency:
               description: Update the 'currency' column in the 'small_business_banking_accounts' collection.
               type:
@@ -68524,6 +68548,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_small_business_banking_accounts_status
+            status_update_date_time:
+              description: Update the 'status_update_date_time' column in the 'small_business_banking_accounts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_small_business_banking_accounts_status_update_date_time
         update_small_business_banking_adverse_action_notices_by_small_business_banking_notice_id_response:
           description: Responses from the 'update_small_business_banking_adverse_action_notices_by_small_business_banking_notice_id' procedure
           fields:

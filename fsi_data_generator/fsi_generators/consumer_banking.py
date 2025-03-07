@@ -16,6 +16,12 @@ fake = Faker()
 
 def consumer_banking(_dg):
     return [
+        ('consumer_banking\\.accounts', '^status$', text_list([
+            "Active",
+            "Inactive",
+            "Frozen",
+            "Closed"
+        ])),
         ('consumer_banking\\.statement_descriptions', '^description$', text_list(consumer_banking__statement__descriptions)),
         ('consumer_banking\\.beneficiaries', '^supplementary_data$', text_list(consumer_banking__beneficiaries__supplementary_data)),
         ('consumer_banking\\.transactions', '^category_purpose_code$', text_list(consumer_banking__transactions__category_purpose_code)),

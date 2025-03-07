@@ -754,10 +754,10 @@ def small_business_banking(dg):
         ])),
         # accounts.status
         ('small_business_banking\\.accounts', '^status$', text_list([
-            "active",
-            "inactive",
-            "frozen",
-            "closed"
+            "Active",
+            "Inactive",
+            "Frozen",
+            "Closed"
         ])),
         # accounts.currency
         ('small_business_banking\\.accounts', '^currency$', text_list([
@@ -842,10 +842,10 @@ def small_business_banking(dg):
         ])),
         # accounts.status
         ('small_business_banking\\.accounts', '^status$', text_list([
-            "active",
-            "inactive",
-            "frozen",
-            "closed"
+            "Active",
+            "Inactive",
+            "Frozen",
+            "Closed"
         ])),
         # accounts.currency
         ('small_business_banking\\.accounts', '^currency$', text_list([

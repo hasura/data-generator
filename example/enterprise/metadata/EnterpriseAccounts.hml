@@ -24,9 +24,12 @@ definition:
     - name: statusUpdateDateTime
       type: Timestamptz!
       description: When the status was last updated
+    - name: openedDate
+      type: Timestamptz
+      description: When the account was opened
   graphql:
-    typeName: Enterprise_EnterpriseAccounts
-    inputTypeName: Enterprise_EnterpriseAccountsInput
+    typeName: Enterprise_EnterpriseAccounts_1
+    inputTypeName: Enterprise_EnterpriseAccountsInput_1
   dataConnectorTypeMapping:
     - dataConnectorName: enterprise
       dataConnectorObjectType: enterprise_accounts
@@ -49,6 +52,9 @@ definition:
         statusUpdateDateTime:
           column:
             name: status_update_date_time
+        openedDate:
+          column:
+            name: opened_date
 
 ---
 kind: TypePermissions
@@ -65,6 +71,7 @@ definition:
           - openingDate
           - status
           - statusUpdateDateTime
+          - openedDate
 
 ---
 kind: BooleanExpressionType
@@ -87,6 +94,8 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: statusUpdateDateTime
           booleanExpressionType: TimestamptzBoolExp
+        - fieldName: openedDate
+          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAccountIdentifiers
         - relationshipName: enterpriseAccountOwnerships
@@ -95,7 +104,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Enterprise_EnterpriseAccountsBoolExp
+    typeName: Enterprise_EnterpriseAccountsBoolExp_1
 
 ---
 kind: AggregateExpression
@@ -118,10 +127,12 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: statusUpdateDateTime
           aggregateExpression: TimestamptzAggExp
+        - fieldName: openedDate
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: Enterprise_EnterpriseAccountsAggExp
+    selectTypeName: Enterprise_EnterpriseAccountsAggExp_1
 
 ---
 kind: OrderByExpression
@@ -144,9 +155,11 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: statusUpdateDateTime
           orderByExpression: TimestamptzOrderByExp
+        - fieldName: openedDate
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: Enterprise_EnterpriseAccountsOrderByExp
+    expressionTypeName: Enterprise_EnterpriseAccountsOrderByExp_1
 
 ---
 kind: Model

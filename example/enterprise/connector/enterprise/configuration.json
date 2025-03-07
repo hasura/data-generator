@@ -219,6 +219,30 @@
             },
             "nullable": "nonNullable",
             "description": null
+          },
+          "opened_date": {
+            "name": "opened_date",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": "When the account was opened"
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Current status of the account (e.g., Active, Inactive, Frozen, Closed)"
+          },
+          "status_update_date_time": {
+            "name": "status_update_date_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": "When the status was last updated"
           }
         },
         "uniquenessConstraints": {
@@ -9598,22 +9622,6 @@
             "nullable": "nullable",
             "description": "Limit for cash advances if different"
           },
-          "close_date": {
-            "name": "close_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": "When account was closed if applicable"
-          },
-          "close_reason": {
-            "name": "close_reason",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Reason for account closure if applicable"
-          },
           "credit_cards_application_id": {
             "name": "credit_cards_application_id",
             "type": {
@@ -9731,8 +9739,8 @@
             "hasDefault": "hasDefault",
             "description": "Minimum payment due"
           },
-          "open_date": {
-            "name": "open_date",
+          "opened_date": {
+            "name": "opened_date",
             "type": {
               "scalarType": "date"
             },
@@ -9805,6 +9813,14 @@
             },
             "nullable": "nonNullable",
             "description": "Account status (Active, Inactive, Closed, Suspended)"
+          },
+          "status_update_date_time": {
+            "name": "status_update_date_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": "When the status was last updated"
           },
           "times_past_due_30_days": {
             "name": "times_past_due_30_days",
@@ -12902,8 +12918,8 @@
             "hasDefault": "hasDefault",
             "description": "Unique identifier for each account"
           },
-          "opening_date": {
-            "name": "opening_date",
+          "opened_date": {
+            "name": "opened_date",
             "type": {
               "scalarType": "timestamptz"
             },
@@ -18088,14 +18104,6 @@
             "hasDefault": "hasDefault",
             "description": "Current balance of the account"
           },
-          "closed_date": {
-            "name": "closed_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": "Date when the account was closed (if applicable)"
-          },
           "currency": {
             "name": "currency",
             "type": {
@@ -18188,6 +18196,14 @@
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
             "description": "Current status of the account (active, inactive, frozen, closed)"
+          },
+          "status_update_date_time": {
+            "name": "status_update_date_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": "When the status was last updated"
           }
         },
         "uniquenessConstraints": {
@@ -20523,7 +20539,7 @@
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": "Current status of the credit line (active, frozen, closed)"
+            "description": "Current status of the credit line (active, inactive, frozen, closed)"
           }
         },
         "uniquenessConstraints": {
@@ -23207,7 +23223,15 @@
       "tiger",
       "crdb_internal",
       "columnar",
-      "columnar_internal"
+      "columnar_internal",
+      "_timescaledb_catalog",
+      "_timescaledb_functions",
+      "_timescaledb_internal",
+      "_timescaledb_cache",
+      "_timescaledb_config",
+      "timescaledb_experimental",
+      "timescaledb_information",
+      "_timescaledb_debug"
     ],
     "unqualifiedSchemasForTables": [
       "public"

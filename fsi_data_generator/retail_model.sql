@@ -105,7 +105,7 @@ CREATE TABLE "enterprise"."entity_addresses" (
 
 CREATE TABLE "enterprise"."accounts" (
   "enterprise_account_id" SERIAL PRIMARY KEY,
-  "opening_date" TIMESTAMPTZ,
+  "opened_date" TIMESTAMPTZ,
   "status" VARCHAR(10) NOT NULL,
   "status_update_date_time" TIMESTAMPTZ NOT NULL,
   "account_category" VARCHAR(40),
@@ -163,7 +163,10 @@ CREATE TABLE "enterprise"."buildings" (
 CREATE TABLE "consumer_banking"."accounts" (
   "consumer_banking_account_id" SERIAL PRIMARY KEY,
   "enterprise_account_id" INTEGER NOT NULL,
-  "consumer_banking_product_id" INTEGER
+  "consumer_banking_product_id" INTEGER,
+  "opened_date" TIMESTAMPTZ,
+  "status" VARCHAR(40) NOT NULL,
+  "status_update_date_time" TIMESTAMPTZ NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."account_access_consents" (
@@ -1954,10 +1957,9 @@ CREATE TABLE "credit_cards"."card_accounts" (
   "credit_cards_product_id" INTEGER NOT NULL,
   "credit_cards_application_id" INTEGER,
   "account_number" VARCHAR(30) UNIQUE NOT NULL,
+  "opened_date" DATE NOT NULL,
   "status" VARCHAR(20) NOT NULL,
-  "open_date" DATE NOT NULL,
-  "close_date" DATE,
-  "close_reason" VARCHAR(100),
+  "status_update_date_time" TIMESTAMPTZ NOT NULL,
   "credit_limit" NUMERIC(10,2) NOT NULL,
   "available_credit" NUMERIC(10,2) NOT NULL,
   "cash_advance_limit" NUMERIC(10,2),
@@ -2246,11 +2248,13 @@ CREATE TABLE "small_business_banking"."business_owners" (
 
 CREATE TABLE "small_business_banking"."accounts" (
   "small_business_banking_account_id" SERIAL PRIMARY KEY,
+  "enterprise_account_id" INTEGER NOT NULL,
   "small_business_banking_business_id" INTEGER NOT NULL,
   "account_number" VARCHAR(50) NOT NULL,
   "account_type" VARCHAR(50) NOT NULL,
   "small_business_banking_product_id" INTEGER NOT NULL,
-  "status" VARCHAR(20) NOT NULL DEFAULT 'active',
+  "status" VARCHAR(40) NOT NULL DEFAULT 'active',
+  "status_update_date_time" TIMESTAMPTZ NOT NULL,
   "balance" DECIMAL(18,2) NOT NULL DEFAULT 0,
   "available_balance" DECIMAL(18,2) NOT NULL DEFAULT 0,
   "currency" CHAR(3) NOT NULL DEFAULT 'USD',
@@ -2259,8 +2263,7 @@ CREATE TABLE "small_business_banking"."accounts" (
   "statement_frequency" VARCHAR(20) NOT NULL DEFAULT 'monthly',
   "statement_day" INTEGER,
   "last_statement_date" DATE,
-  "opened_date" DATE NOT NULL,
-  "closed_date" DATE
+  "opened_date" DATE NOT NULL
 );
 
 CREATE TABLE "small_business_banking"."products" (
@@ -2921,7 +2924,7 @@ COMMENT ON TABLE "enterprise"."accounts" IS 'Core account information for all ac
 
 COMMENT ON COLUMN "enterprise"."accounts"."enterprise_account_id" IS 'Unique identifier for each account';
 
-COMMENT ON COLUMN "enterprise"."accounts"."opening_date" IS 'When the account was opened';
+COMMENT ON COLUMN "enterprise"."accounts"."opened_date" IS 'When the account was opened';
 
 COMMENT ON COLUMN "enterprise"."accounts"."status" IS 'Current status of the account (e.g., active, closed)';
 
@@ -3010,6 +3013,12 @@ COMMENT ON COLUMN "enterprise"."buildings"."phone_number" IS 'Phone number of th
 COMMENT ON COLUMN "enterprise"."buildings"."open_date" IS 'Date the building was opened.';
 
 COMMENT ON COLUMN "enterprise"."buildings"."close_date" IS 'Date the building was closed, if applicable.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."opened_date" IS 'When the account was opened';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."status" IS 'Current status of the account (e.g., Active, Inactive, Frozen, Closed)';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."status_update_date_time" IS 'When the status was last updated';
 
 COMMENT ON TABLE "consumer_banking"."account_access_consents" IS 'Stores consent records for account access, tracking when and how third parties are permitted to access consumer banking account information';
 
@@ -6079,13 +6088,11 @@ COMMENT ON COLUMN "credit_cards"."card_accounts"."credit_cards_application_id" I
 
 COMMENT ON COLUMN "credit_cards"."card_accounts"."account_number" IS 'Masked account number';
 
+COMMENT ON COLUMN "credit_cards"."card_accounts"."opened_date" IS 'When account was opened';
+
 COMMENT ON COLUMN "credit_cards"."card_accounts"."status" IS 'Account status (Active, Inactive, Closed, Suspended)';
 
-COMMENT ON COLUMN "credit_cards"."card_accounts"."open_date" IS 'When account was opened';
-
-COMMENT ON COLUMN "credit_cards"."card_accounts"."close_date" IS 'When account was closed if applicable';
-
-COMMENT ON COLUMN "credit_cards"."card_accounts"."close_reason" IS 'Reason for account closure if applicable';
+COMMENT ON COLUMN "credit_cards"."card_accounts"."status_update_date_time" IS 'When the status was last updated';
 
 COMMENT ON COLUMN "credit_cards"."card_accounts"."credit_limit" IS 'Current approved credit limit';
 
@@ -6591,6 +6598,8 @@ COMMENT ON TABLE "small_business_banking"."accounts" IS 'Stores the business dep
 
 COMMENT ON COLUMN "small_business_banking"."accounts"."small_business_banking_account_id" IS 'Unique identifier for each business account';
 
+COMMENT ON COLUMN "small_business_banking"."accounts"."enterprise_account_id" IS 'References the main account';
+
 COMMENT ON COLUMN "small_business_banking"."accounts"."small_business_banking_business_id" IS 'Reference to the business that owns this account';
 
 COMMENT ON COLUMN "small_business_banking"."accounts"."account_number" IS 'Unique account number visible to customers';
@@ -6600,6 +6609,8 @@ COMMENT ON COLUMN "small_business_banking"."accounts"."account_type" IS 'Type of
 COMMENT ON COLUMN "small_business_banking"."accounts"."small_business_banking_product_id" IS 'Reference to the product this account is based on';
 
 COMMENT ON COLUMN "small_business_banking"."accounts"."status" IS 'Current status of the account (active, inactive, frozen, closed)';
+
+COMMENT ON COLUMN "small_business_banking"."accounts"."status_update_date_time" IS 'When the status was last updated';
 
 COMMENT ON COLUMN "small_business_banking"."accounts"."balance" IS 'Current balance of the account';
 
@@ -6618,8 +6629,6 @@ COMMENT ON COLUMN "small_business_banking"."accounts"."statement_day" IS 'Day of
 COMMENT ON COLUMN "small_business_banking"."accounts"."last_statement_date" IS 'Date when the last statement was generated';
 
 COMMENT ON COLUMN "small_business_banking"."accounts"."opened_date" IS 'Date when the account was opened';
-
-COMMENT ON COLUMN "small_business_banking"."accounts"."closed_date" IS 'Date when the account was closed (if applicable)';
 
 COMMENT ON TABLE "small_business_banking"."products" IS 'Defines the financial products offered to small business customers';
 
@@ -6751,7 +6760,7 @@ COMMENT ON COLUMN "small_business_banking"."credit_lines"."start_date" IS 'Date 
 
 COMMENT ON COLUMN "small_business_banking"."credit_lines"."renewal_date" IS 'Date when the credit line is up for renewal';
 
-COMMENT ON COLUMN "small_business_banking"."credit_lines"."status" IS 'Current status of the credit line (active, frozen, closed)';
+COMMENT ON COLUMN "small_business_banking"."credit_lines"."status" IS 'Current status of the credit line (active, inactive, frozen, closed)';
 
 COMMENT ON TABLE "small_business_banking"."collateral" IS 'Tracks assets pledged as security for loans and credit facilities';
 
@@ -7740,6 +7749,8 @@ ALTER TABLE "small_business_banking"."businesses" ADD FOREIGN KEY ("enterprise_p
 ALTER TABLE "small_business_banking"."business_owners" ADD FOREIGN KEY ("small_business_banking_business_id") REFERENCES "small_business_banking"."businesses" ("small_business_banking_business_id");
 
 ALTER TABLE "small_business_banking"."business_owners" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
+
+ALTER TABLE "small_business_banking"."accounts" ADD FOREIGN KEY ("enterprise_account_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
 
 ALTER TABLE "small_business_banking"."accounts" ADD FOREIGN KEY ("small_business_banking_business_id") REFERENCES "small_business_banking"."businesses" ("small_business_banking_business_id");
 

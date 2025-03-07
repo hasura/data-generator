@@ -107,9 +107,15 @@ definition:
     - name: timesPastDue90Days
       type: Int4!
       description: Count of 90+ day late payments
+    - name: openedDate
+      type: Date!
+      description: When account was opened
+    - name: statusUpdateDateTime
+      type: Timestamptz!
+      description: When the status was last updated
   graphql:
-    typeName: CreditCards_CreditCardsCardAccounts
-    inputTypeName: CreditCards_CreditCardsCardAccountsInput
+    typeName: CreditCards_CreditCardsCardAccounts_1
+    inputTypeName: CreditCards_CreditCardsCardAccountsInput_1
   dataConnectorTypeMapping:
     - dataConnectorName: credit_cards
       dataConnectorObjectType: credit_cards_card_accounts
@@ -216,6 +222,12 @@ definition:
         timesPastDue90Days:
           column:
             name: times_past_due_90_days
+        openedDate:
+          column:
+            name: opened_date
+        statusUpdateDateTime:
+          column:
+            name: status_update_date_time
 
 ---
 kind: TypePermissions
@@ -260,6 +272,8 @@ definition:
           - timesPastDue30Days
           - timesPastDue60Days
           - timesPastDue90Days
+          - openedDate
+          - statusUpdateDateTime
 
 ---
 kind: BooleanExpressionType
@@ -338,6 +352,10 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: timesPastDue90Days
           booleanExpressionType: Int4BoolExp
+        - fieldName: openedDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: statusUpdateDateTime
+          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: creditCardsAuthorizedUsers
         - relationshipName: creditCardsAutopaySettings
@@ -364,7 +382,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: CreditCards_CreditCardsCardAccountsBoolExp
+    typeName: CreditCards_CreditCardsCardAccountsBoolExp_1
 
 ---
 kind: AggregateExpression
@@ -443,10 +461,14 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: timesPastDue90Days
           aggregateExpression: Int4AggExp
+        - fieldName: openedDate
+          aggregateExpression: DateAggExp
+        - fieldName: statusUpdateDateTime
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: CreditCards_CreditCardsCardAccountsAggExp
+    selectTypeName: CreditCards_CreditCardsCardAccountsAggExp_1
 
 ---
 kind: OrderByExpression
@@ -525,11 +547,17 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: timesPastDue90Days
           orderByExpression: Int4OrderByExp
+        - fieldName: openedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: statusUpdateDateTime
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
         - relationshipName: creditCardsApplication
         - relationshipName: creditCardsCardProduct
+        - relationshipName: enterpriseAccount
+        - relationshipName: customer
   graphql:
-    expressionTypeName: CreditCards_CreditCardsCardAccountsOrderByExp
+    expressionTypeName: CreditCards_CreditCardsCardAccountsOrderByExp_1
 
 ---
 kind: Model

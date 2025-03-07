@@ -53,9 +53,12 @@ definition:
     - name: status
       type: Varchar!
       description: Current status of the account (active, inactive, frozen, closed)
+    - name: statusUpdateDateTime
+      type: Timestamptz!
+      description: When the status was last updated
   graphql:
-    typeName: SmallBusinessBanking_SmallBusinessBankingAccounts
-    inputTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsInput
+    typeName: SmallBusinessBanking_SmallBusinessBankingAccounts_1
+    inputTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsInput_1
   dataConnectorTypeMapping:
     - dataConnectorName: small_business_banking
       dataConnectorObjectType: small_business_banking_accounts
@@ -108,6 +111,9 @@ definition:
         status:
           column:
             name: status
+        statusUpdateDateTime:
+          column:
+            name: status_update_date_time
 
 ---
 kind: TypePermissions
@@ -134,6 +140,7 @@ definition:
           - statementDay
           - statementFrequency
           - status
+          - statusUpdateDateTime
 
 ---
 kind: BooleanExpressionType
@@ -176,6 +183,8 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
+        - fieldName: statusUpdateDateTime
+          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: smallBusinessBankingAccountSignatories
         - relationshipName: smallBusinessBankingBusiness
@@ -191,7 +200,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: SmallBusinessBanking_SmallBusinessBankingAccountsBoolExp
+    typeName: SmallBusinessBanking_SmallBusinessBankingAccountsBoolExp_1
 
 ---
 kind: AggregateExpression
@@ -234,10 +243,12 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: status
           aggregateExpression: VarcharAggExp
+        - fieldName: statusUpdateDateTime
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsAggExp
+    selectTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsAggExp_1
 
 ---
 kind: OrderByExpression
@@ -280,11 +291,13 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: status
           orderByExpression: VarcharOrderByExp
+        - fieldName: statusUpdateDateTime
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
         - relationshipName: smallBusinessBankingBusiness
         - relationshipName: smallBusinessBankingProduct
   graphql:
-    expressionTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsOrderByExp
+    expressionTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsOrderByExp_1
 
 ---
 kind: Model

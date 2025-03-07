@@ -1,6 +1,6 @@
 packagingDefinition:
   type: PrebuiltDockerImage
-  dockerImage: ghcr.io/hasura/ndc-postgres:v2.0.0
+  dockerImage: ghcr.io/hasura/ndc-postgres:v2.1.0
 supportedEnvironmentVariables:
   - name: CONNECTION_URI
     description: The PostgreSQL connection URI
@@ -19,8 +19,28 @@ commands:
 cliPlugin:
   type: null
   name: ndc-postgres
-  version: v2.0.0
+  version: v2.1.0
 dockerComposeWatch:
   - path: ./
     action: sync+restart
     target: /etc/connector
+nativeToolchainDefinition:
+  commands:
+    start:
+      type: ShellScript
+      bash: |-
+        #!/usr/bin/env bash
+        set -eu -o pipefail
+        HASURA_CONFIGURATION_DIRECTORY="$HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH" "$HASURA_DDN_NATIVE_CONNECTOR_DIR/ndc-postgres" serve
+      powershell: |-
+        $ErrorActionPreference = "Stop"
+        $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\ndc-postgres.exe" serve
+    update:
+      type: ShellScript
+      bash: |-
+        #!/usr/bin/env bash
+        set -eu -o pipefail
+        "$HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR/hasura-ndc-postgres" update
+      powershell: |-
+        $ErrorActionPreference = "Stop"
+        & "$env:HASURA_DDN_NATIVE_CONNECTOR_PLUGIN_DIR\hasura-ndc-postgres.exe" update

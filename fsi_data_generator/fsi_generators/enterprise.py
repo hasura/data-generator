@@ -60,9 +60,6 @@ def account_description(a,b,c):
             return value
     return value
 
-def status_update_date_time(a,b,c):
-    opening_date = a.get("opening_date")
-    return generate_random_date_between(opening_date)
 
 def legal_structure(a,b,c):
     party_type = a.get('party_type')
@@ -78,7 +75,6 @@ def enterprise(_dg):
         ('enterprise\\.parties', '^name$',party_name),
         ('enterprise\\.parties', '^legal_structure$', legal_structure),
         ('enterprise\\.parties', '^full_business_legal_name$',full_business_legal_name),
-        ('enterprise\\.accounts', '^status_update_date_time$', status_update_date_time),
         ('enterprise\\.accounts', '^currency$', generate_currency()),
         ('enterprise\\.accounts', '^description$', account_description),
         ('enterprise\\.accounts', '^status$', text_list(["Active", "Closed"])),

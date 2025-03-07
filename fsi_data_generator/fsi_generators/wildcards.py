@@ -1,9 +1,13 @@
+from datetime import datetime, timedelta
+
 from faker import Faker
+from sympy.physics.units import years
 
 from fsi_data_generator.fsi_generators.generate_email import generate_email
 from fsi_data_generator.fsi_generators.generate_identification import generate_identification
 from fsi_data_generator.fsi_generators.generate_leis import generate_leis
 from fsi_data_generator.fsi_generators.generate_permission_name import generate_all_permission_names
+from fsi_data_generator.fsi_generators.generate_random_date_between import generate_random_date_between
 from fsi_data_generator.fsi_generators.generate_random_forex_contract_id import generate_random_forex_contract_id
 from fsi_data_generator.fsi_generators.probability_return_string import probability_return_string
 from fsi_data_generator.fsi_generators.text_list import text_list
@@ -32,7 +36,15 @@ three_word_strings = [" ".join((fake.word(), fake.word(), fake.word())) for _ in
 three_word_strings.append('')
 three_word_tuple = tuple(three_word_strings)
 
+
+def status_update_date_time(a,b,c):
+    opening_date = a.get("opened_date")
+    if opening_date is None:
+        return fake.date_time_between_dates(datetime_start=timedelta(weeks=-10*52), datetime_end=datetime.now())
+    return generate_random_date_between(opening_date)
+
 wildcards = [
+    ('.*\\.accounts', '^status_update_date_time$', status_update_date_time),
     ('.*', '^mobile$', lambda a, b, c: fake.phone_number()),
     ('.*', '^first_name$', lambda a, b, c: fake.first_name()),
     ('.*', '^middle_name$', lambda a, b, c: fake.first_name()),
