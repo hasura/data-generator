@@ -1,4 +1,6 @@
 from data_generator import DataGenerator
+from fsi_data_generator.fsi_generators.consumer_banking_generate_transaction_fee import \
+    consumer_banking_generate_transaction_fee
 from fsi_data_generator.fsi_generators.generate_transactions_and_balances import generate_fake_balance, \
     generate_fake_transaction
 from fsi_data_generator.fsi_generators.text_list import text_list
@@ -88,6 +90,8 @@ def get_consumer_transaction(dg: DataGenerator):
 
 def consumer_banking(dg):
     return [
+        ('consumer_banking\\.transactions', '^charge_amount$', consumer_banking_generate_transaction_fee),
+        ('consumer_banking\\.transactions', '^charge_currency$', lambda a,b,c: 'USD'),
         ('consumer_banking\\.transactions', '^merchant_address$', lambda a,b,c: fake.address()),
         ('consumer_banking\\.customer_interactions', '^resolution$', text_list(consumer_banking__customer_interactions__resolution)),
         ('consumer_banking\\.customer_interactions', '^description$', text_list(consumer_banking__customer_interactions__description)),
