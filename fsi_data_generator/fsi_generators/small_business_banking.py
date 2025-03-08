@@ -675,43 +675,43 @@ def small_business_banking(dg):
             "Groceries",
             "Entertainment",
             "Other"
-        ])),
+        ], lower=True)),
         # credit_cards.card_product_reward_categories (from your example)
         ('credit_cards.card_product_reward_categories', '^cap_period$', text_list([
             "Monthly",
             "Quarterly",
             "Annually"
-        ])),
+        ], lower=True)),
         # credit_lines.status
         ('small_business_banking\\.credit_lines', '^status$', text_list([
             "active",
             "frozen",
             "closed"
-        ])),
+        ], lower=True)),
         # collateral.collateral_type
         ('small_business_banking\\.collateral', '^collateral_type$', text_list([
             "real estate",
             "equipment",
             "vehicle",
             "inventory"
-        ])),
+        ], lower=True)),
         # collateral.valuation_type
         ('small_business_banking\\.collateral', '^valuation_type$', text_list([
             "appraisal",
             "estimate",
             "purchase price"
-        ])),
+        ], lower=True)),
         # collateral.status
         ('small_business_banking\\.collateral', '^status$', text_list([
             "active",
             "sold",
             "repossessed"
-        ])),
+        ], lower=True)),
         # business_card_accounts.account_type
         ('small_business_banking\\.business_card_accounts', '^account_type$', text_list([
             "business",
             "corporate"
-        ])),
+        ], lower=True)),
         # business_card_accounts.business_structure
         ('small_business_banking\\.business_card_accounts', '^business_structure$',
          text_list([
@@ -725,26 +725,26 @@ def small_business_banking(dg):
             "sole proprietor",
             "partnership",
             "corporation"
-        ])),
+        ], lower=True)),
         # business_card_accounts.liability_type
         ('small_business_banking\\.business_card_accounts', '^liability_type$', text_list([
             "business liability",
             "joint liability",
             "personal liability"
-        ])),
+        ], lower=True)),
         # business_card_accounts.expense_category_setup
         ('small_business_banking\\.business_card_accounts', '^expense_category_setup$',
          text_list([
              "standard",
              "custom"
-         ])),
+         ], lower=True)),
         # business_card_users.role
         ('small_business_banking\\.business_card_users', '^role$', text_list([
             "owner",
             "employee",
             "accountant",
             "administrator"
-        ])),
+        ], lower=True)),
         # accounts.account_type
         ('small_business_banking\\.accounts', '^account_type$', text_list([
             "checking",
@@ -754,11 +754,11 @@ def small_business_banking(dg):
         ])),
         # accounts.status
         ('small_business_banking\\.accounts', '^status$', text_list([
-            "Active",
+            "active",
             "Inactive",
             "Frozen",
             "Closed"
-        ])),
+        ], lower=True)),
         # accounts.currency
         ('small_business_banking\\.accounts', '^currency$', text_list([
             "USD",
@@ -772,7 +772,7 @@ def small_business_banking(dg):
             "weekly",
             "monthly",
             "quarterly"
-        ])),
+        ], lower=True)),
         # products.product_type
         ('small_business_banking\\.products', '^product_type$', text_list([
             "checking",
@@ -780,36 +780,36 @@ def small_business_banking(dg):
             "loan",
             "credit line",
             "credit card"
-        ])),
+        ], lower=True)),
         # account_signatories.signatory_level
         ('small_business_banking\\.account_signatories', '^signatory_level$', text_list([
             "primary",
             "secondary",
             "view-only"
-        ])),
+        ], lower=True)),
         # loans.interest_type
         ('small_business_banking\\.loans', '^interest_type$', text_list([
             "fixed",
             "variable"
-        ])),
+        ], lower=True)),
         # loans.payment_frequency
         ('small_business_banking\\.loans', '^payment_frequency$', text_list([
             "weekly",
             "monthly",
             "quarterly"
-        ])),
+        ], lower=True)),
         # loans.status
         ('small_business_banking\\.loans', '^status$', text_list([
             "pending",
             "active",
             "paid",
             "defaulted"
-        ])),
+        ], lower=True)),
         # credit_lines.interest_type
         ('small_business_banking\\.credit_lines', '^interest_type$', text_list([
             "fixed",
             "variable"
-        ])),
+        ], lower=True)),
         # business_type
         ('small_business_banking\\.businesses', '^business_type$', text_list([
             "LLC",
@@ -817,14 +817,14 @@ def small_business_banking(dg):
             "Sole Proprietorship",
             "Partnership",
             "Nonprofit"
-        ])),
+        ], lower=True)),
         # business.status
         ('small_business_banking\\.businesses', '^status$', text_list([
             "active",
             "inactive",
             "suspended",
             "closed"
-        ])),
+        ], lower=True)),
         # business_owners.role
         ('small_business_banking\\.business_owners', '^role$', text_list([
             "CEO",
@@ -832,21 +832,21 @@ def small_business_banking(dg):
             "Managing Partner",
             "Owner",
             "Director"
-        ])),
+        ], lower=True)),
         # accounts.account_type
         ('small_business_banking\\.accounts', '^account_type$', text_list([
             "checking",
             "savings",
             "money market",
             "CD"
-        ])),
+        ], lower=True)),
         # accounts.status
         ('small_business_banking\\.accounts', '^status$', text_list([
-            "Active",
+            "active",
             "Inactive",
             "Frozen",
             "Closed"
-        ])),
+        ], lower=True)),
         # accounts.currency
         ('small_business_banking\\.accounts', '^currency$', text_list([
             "USD",
@@ -860,7 +860,7 @@ def small_business_banking(dg):
             "weekly",
             "monthly",
             "quarterly"
-        ])),
+        ], lower=True)),
         # products.product_type
         ('small_business_banking\\.products', '^product_type$', text_list([
             "checking",
@@ -868,15 +868,15 @@ def small_business_banking(dg):
             "loan",
             "credit line",
             "credit card"
-        ])),
+        ], lower=True)),
         # account_signatories.signatory_level
         ('small_business_banking\\.account_signatories', '^signatory_level$', text_list([
             "primary",
             "secondary",
             "view-only"
-        ])),
+        ], lower=True)),
         # loans.interest_type
         ('small_business_banking\\.loans', '^interest_type$', text_list([
             "fixed",
             "variable"
-        ])), ]
+        ], lower=True)), ]

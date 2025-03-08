@@ -6,7 +6,7 @@ definition:
   description: Stores detailed information about direct debit mandates including
     payment schedules
   fields:
-    - name: categoryPurposeCode
+    - name: category
       type: Varchar
       description: Purpose code for categorizing the payment type
     - name: classification
@@ -43,15 +43,15 @@ definition:
       type: Timestamp
       description: When recurring payments are scheduled
   graphql:
-    typeName: ConsumerBanking_ConsumerBankingMandateRelatedInformation_1
-    inputTypeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationInput_1
+    typeName: ConsumerBanking_ConsumerBankingMandateRelatedInformation
+    inputTypeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_mandate_related_information
       fieldMapping:
-        categoryPurposeCode:
+        category:
           column:
-            name: category_purpose_code
+            name: category
         classification:
           column:
             name: classification
@@ -95,7 +95,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - categoryPurposeCode
+          - category
           - classification
           - consumerBankingDirectDebitId
           - consumerBankingMandateRelatedInformationId
@@ -117,7 +117,7 @@ definition:
     object:
       type: ConsumerBankingMandateRelatedInformation
       comparableFields:
-        - fieldName: categoryPurposeCode
+        - fieldName: category
           booleanExpressionType: VarcharBoolExp
         - fieldName: classification
           booleanExpressionType: VarcharBoolExp
@@ -148,7 +148,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationBoolExp_1
+    typeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationBoolExp
 
 ---
 kind: AggregateExpression
@@ -159,7 +159,7 @@ definition:
     object:
       aggregatedType: ConsumerBankingMandateRelatedInformation
       aggregatableFields:
-        - fieldName: categoryPurposeCode
+        - fieldName: category
           aggregateExpression: VarcharAggExp
         - fieldName: classification
           aggregateExpression: VarcharAggExp
@@ -186,7 +186,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationAggExp_1
+    selectTypeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationAggExp
 
 ---
 kind: OrderByExpression
@@ -197,7 +197,7 @@ definition:
     object:
       orderedType: ConsumerBankingMandateRelatedInformation
       orderableFields:
-        - fieldName: categoryPurposeCode
+        - fieldName: category
           orderByExpression: VarcharOrderByExp
         - fieldName: classification
           orderByExpression: VarcharOrderByExp
@@ -224,7 +224,7 @@ definition:
       orderableRelationships:
         - relationshipName: consumerBankingDirectDebit
   graphql:
-    expressionTypeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationOrderByExp_1
+    expressionTypeName: ConsumerBanking_ConsumerBankingMandateRelatedInformationOrderByExp
 
 ---
 kind: Model

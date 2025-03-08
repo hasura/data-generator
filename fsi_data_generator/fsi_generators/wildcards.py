@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 from faker import Faker
-from sympy.physics.units import years
 
 from fsi_data_generator.fsi_generators.generate_email import generate_email
 from fsi_data_generator.fsi_generators.generate_identification import generate_identification
@@ -37,11 +36,12 @@ three_word_strings.append('')
 three_word_tuple = tuple(three_word_strings)
 
 
-def status_update_date_time(a,b,c):
+def status_update_date_time(a, b, c):
     opening_date = a.get("opened_date")
     if opening_date is None:
-        return fake.date_time_between_dates(datetime_start=timedelta(weeks=-10*52), datetime_end=datetime.now())
+        return fake.date_time_between_dates(datetime_start=timedelta(weeks=-10 * 52), datetime_end=datetime.now())
     return generate_random_date_between(opening_date)
+
 
 wildcards = [
     ('.*\\.accounts', '^status_update_date_time$', status_update_date_time),
@@ -59,7 +59,8 @@ wildcards = [
          "supplier",
          "partner", "shareholder", "legal_representative", "agent", "regulator", "government_agency"])),
     ('.*\\.account_statement_preferences', '^frequency$', text_list(
-        ["Daily", "Weekly", "Bi-Weekly", "Monthly", "Quarterly", "Annually", "Upon Request", "End of Month"])),
+        ["Daily", "Weekly", "Bi-Weekly", "Monthly", "Quarterly", "Annually", "Upon Request", "End of Month"],
+        lower=True)),
     ('.*\\.account_statement_preferences', '^format$',
      text_list(["PDF", "Paper", "CSV", "HTML", "XML", "Plain Text"])),
     ('.*\\.account_statement_preferences', '^communication_method$',
@@ -96,11 +97,11 @@ wildcards = [
     ('.*\\.transaction_debtor_agents', '^name$', lambda a, b, c: fake.company()),
     ('.*', '^merchant_category_code$', lambda a, b, c: fake.merchant_category_code()),
     ('.*\\.transaction_balances', '^type$', text_list([
-        "BOOK",
-        "AVAL",
-        "HOLD",
-        "CLOS"
-    ])),
+        "Booked",
+        "Available",
+        "Hold",
+        "Closing"
+    ], lower=True)),
     ('.*\\.transaction_bank_transaction_codes', '^code$', text_list([
         "PAYMENT",
         "TRANSFER",
@@ -128,7 +129,7 @@ wildcards = [
         "SECURITY_TRADE",
         "DIVIDEND",
         "TAX"
-    ])),
+    ], lower=True)),
     ('.*\\.transaction_bank_transaction_codes', '^sub_code$', text_list([
         "DOMESTIC",
         "INTERNATIONAL",
@@ -171,7 +172,7 @@ wildcards = [
         "CLOTHING",
         "FUEL",
         "INSURANCE"
-    ])),
+    ], lower=True)),
     ('.*', '^contract_identification$', lambda a, b, c: generate_random_forex_contract_id()),
 
     (
@@ -182,7 +183,7 @@ wildcards = [
             "REWARD_STATUS",
             "ACCOUNT_STANDING",
             "CUSTOMER_SEGMENT"
-        ])
+        ], lower=True)
     ),
     (
         '.*\\.statement_date_times', '^type$', text_list([
@@ -192,7 +193,7 @@ wildcards = [
             "STATEMENT_GENERATED",
             "INTEREST_CALCULATED",
             "LAST_STATEMENT_DATE"
-        ])
+        ], lower=True)
     ),
     (
         '.*\\.statement_rates', '^type$', text_list([
@@ -203,7 +204,7 @@ wildcards = [
             "PENALTY",
             "DISCOUNT",
             "BONUS"
-        ])
+        ], lower=True)
     ),
     (
         '.*\\.statement_amounts', '^type$', text_list([
@@ -217,7 +218,7 @@ wildcards = [
             "REWARDS_EARNED",
             "TRANSFERS_IN",
             "TRANSFERS_OUT"
-        ])
+        ], lower=True)
     ),
     (
         '.*\\.statement_amounts', '^sub_type$', text_list([
@@ -226,7 +227,7 @@ wildcards = [
             "CHECK_DEPOSIT",
             "DIRECT_DEBIT",
             "STANDING_ORDER"
-        ])
+        ], lower=True)
     ),
     (
         '*\\.statement_interests', '^type$', text_list([
@@ -235,7 +236,7 @@ wildcards = [
             "CREDIT_CARD",
             "MORTGAGE",
             "INVESTMENT"
-        ])
+        ], lower=True)
     ),
     (
         '*\\.statement_interests', '^rate_type$', text_list([
@@ -244,7 +245,7 @@ wildcards = [
             "INTRODUCTORY",
             "PENALTY",
             "PROMOTIONAL"
-        ])
+        ], lower=True)
     ),
     (
         '*\\.statement_interests', '^frequency$', text_list([
@@ -253,75 +254,79 @@ wildcards = [
             "MONTHLY",
             "QUARTERLY",
             "ANNUALLY"
-        ])
+        ], lower=True)
     ),
     (
-        '.*\\.statement_fees', '^frequency$', text_list(__statement_fees__frequency)
+        '.*\\.statement_fees', '^frequency$', text_list(__statement_fees__frequency, lower=True)
     ),
     (
-        '^.*\\.statement_.*$', '^rate_type$', text_list(__statement__rate_type)
+        '^.*\\.statement_.*$', '^rate_type$', text_list(__statement__rate_type, lower=True)
     ),
     (
-        '.*\\.statement_fees', '^type$', text_list(__statement_fees__type)
+        '.*\\.statement_fees', '^type$', text_list(__statement_fees__type, lower=True)
     ),
     (
-        '.*\\.statement_benefits', '^type$', text_list(__statement_benefits__type)
+        '.*\\.statement_benefits', '^type$', text_list(__statement_benefits__type, lower=True)
     ),
     (
-        '.*\\.statements', '^type$', text_list(__statements__type)
+        '.*\\.statements', '^type$', text_list(__statements__type, lower=True)
     ),
 
     (
         '.*', '^scheduled_type$', text_list([
             "SINGLE",
             "RECURRING"
-        ])
+        ], lower=True)
     ),
 
     (
-        '.*', '^address_type$', text_list(____address_type)
+        '.*', '^address_type$', text_list(____address_type, lower=True)
     ),
     (
-        '.*', '^account_role|relationship_type$', text_list(____account_role)
+        '.*', '^account_role|relationship_type$', text_list(____account_role, lower=True)
     ),
     (
-        '^(?!enterprise\\.parties).*', '^legal_structure$', text_list(____legal_structure)
+        '^(?!enterprise\\.parties).*', '^legal_structure$', text_list(____legal_structure, lower=True)
     ),
     (
         '.*', '^issuer|merchant_name$', lambda a, b, c: fake.company()
     ),
     (
-        '.*', '^offer_type$', text_list(____offer_type)
+        '.*', '^offer_type$', text_list(____offer_type, lower=True)
     ),
     (
-        '.*', '^frequency_point_in_time$', text_list(____frequency_point_in_time)
+        '.*', '^frequency_point_in_time$', text_list(____frequency_point_in_time, lower=True)
     ),
     (
-        '.*', '^frequency_type$', text_list(____frequency_type)
+        '.*', '^frequency_type$', text_list(____frequency_type, lower=True)
     ),
     (
-        '.*', '^direct_debit_status_code$', text_list(____direct_debit_status_code)
+        '.*', '^direct_debit_status_code$', text_list(____direct_debit_status_code, lower=True)
     ),
     (
-        '.*', '^credit_debit_indicator$', text_list(["Credit", "Debit"])
+        '.*', '^credit_debit_indicator$', text_list(["CR", "DB"], lower=True)
     ),
     (
-        '.*\\.balances', '^type$', text_list(__balances__type)
+        '.*\\.balances', '^type$', text_list(__balances__type, lower=True)
     ),
     (
-        '.*\\.balances', '^sub_type$', text_list(__balances__sub_type)
+        '.*\\.balances', '^sub_type$', text_list(__balances__sub_type, lower=True)
     ),
     (
-        '.*\\.balances', '^currency|source_currency|target_currency|unit_currency$',
-        lambda a, b, c: fake.currency_code()
-    ),
+        '.*\\.(balances|transactions)', '^currency|source_currency|target_currency|unit_currency|charge_currency$',text_list([
+            "USD",
+            "EUR",
+            "GBP",
+            "JPY"
+        ]
+    )),
     (
         '.*', '^scheme_name$',
         text_list(____scheme_name)
     ),
     (
         '.*', '^beneficiary_type|party_type$',
-        text_list(["Individual", "Organization"])
+        text_list(["Individual", "Organization"], lower=True)
     ),
     (
         '.*', '^identification$',

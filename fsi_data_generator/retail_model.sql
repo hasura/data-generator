@@ -222,7 +222,7 @@ CREATE TABLE "consumer_banking"."beneficiary_creditor_accounts" (
 CREATE TABLE "consumer_banking"."direct_debits" (
   "consumer_banking_direct_debit_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "direct_debit_status_code" VARCHAR(4) NOT NULL,
+  "direct_debit_status_code" VARCHAR(20) NOT NULL,
   "name" VARCHAR(70) NOT NULL,
   "previous_payment_date_time" TIMESTAMP,
   "previous_payment_amount" NUMERIC(18,5),
@@ -233,12 +233,12 @@ CREATE TABLE "consumer_banking"."mandate_related_information" (
   "consumer_banking_mandate_related_information_id" SERIAL PRIMARY KEY,
   "consumer_banking_direct_debit_id" INTEGER NOT NULL,
   "mandate_id" INTEGER NOT NULL,
-  "classification" VARCHAR(4),
-  "category_purpose_code" VARCHAR(4),
+  "classification" VARCHAR(20),
+  "category" VARCHAR(20),
   "first_payment_date_time" TIMESTAMP,
   "recurring_payment_date_time" TIMESTAMP,
   "final_payment_date_time" TIMESTAMP,
-  "frequency_type" VARCHAR(4) NOT NULL,
+  "frequency_type" VARCHAR(20) NOT NULL,
   "frequency_count_per_period" INT,
   "frequency_point_in_time" VARCHAR(2),
   "reason" VARCHAR(256)
@@ -428,16 +428,16 @@ CREATE TABLE "consumer_banking"."transactions" (
   "credit_debit_indicator" VARCHAR(6) NOT NULL,
   "status" VARCHAR(10) NOT NULL,
   "transaction_mutability" VARCHAR(10),
-  "booking_date_time" TIMESTAMP NOT NULL,
-  "value_date_time" TIMESTAMP,
-  "transaction_information" VARCHAR(500),
-  "address_line" VARCHAR(70),
+  "transaction_date" TIMESTAMP NOT NULL,
+  "value_date" TIMESTAMP,
+  "description" VARCHAR(500),
+  "merchant_address" VARCHAR(70),
   "amount" NUMERIC(18,5) NOT NULL,
   "currency" VARCHAR(3) NOT NULL,
   "charge_amount" NUMERIC(18,5),
   "charge_currency" VARCHAR(3),
-  "category_purpose_code" VARCHAR(4),
-  "payment_purpose_code" VARCHAR(4)
+  "category" VARCHAR(20),
+  "transaction_type" VARCHAR(20)
 );
 
 CREATE TABLE "consumer_banking"."transaction_statement_references" (
@@ -466,8 +466,8 @@ CREATE TABLE "consumer_banking"."transaction_bank_transaction_codes" (
   "sub_code" VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE "consumer_banking"."transaction_proprietary_bank_transaction_codes" (
-  "consumer_banking_transaction_proprietary_bank_transaction_code_id" SERIAL PRIMARY KEY,
+CREATE TABLE "consumer_banking"."proprietary_transaction_codes" (
+  "consumer_banking_proprietary_transaction_code_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
   "code" VARCHAR(35) NOT NULL,
   "issuer" VARCHAR(35)
@@ -477,7 +477,7 @@ CREATE TABLE "consumer_banking"."transaction_balances" (
   "consumer_banking_transaction_balance_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
   "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "type" VARCHAR(4) NOT NULL,
+  "type" VARCHAR(20) NOT NULL,
   "amount" NUMERIC(18,5) NOT NULL,
   "currency" VARCHAR(3) NOT NULL
 );
@@ -486,7 +486,7 @@ CREATE TABLE "consumer_banking"."transaction_merchant_details" (
   "consumer_banking_transaction_merchant_detail_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
   "merchant_name" VARCHAR(350) NOT NULL,
-  "merchant_category_code" VARCHAR(4) NOT NULL
+  "merchant_category_code" VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."transaction_creditor_agents" (
@@ -560,6 +560,24 @@ CREATE TABLE "consumer_banking"."account_statement_preferences" (
   "next_statement_date" DATE,
   "last_statement_date" DATE,
   "enterprise_address_id" INTEGER
+);
+
+CREATE TABLE "consumer_banking"."customer_interactions" (
+  "consumer_banking_interaction_id" SERIAL PRIMARY KEY,
+  "customer_id" INT,
+  "account_id" INT,
+  "enterprise_associate_id" INT,
+  "interaction_type" VARCHAR(50),
+  "interaction_date_time" TIMESTAMP,
+  "channel" VARCHAR(50),
+  "subject" VARCHAR(255),
+  "description" TEXT,
+  "resolution" TEXT,
+  "status" VARCHAR(20),
+  "priority" VARCHAR(20),
+  "related_transaction_id" INT,
+  "created_at" TIMESTAMP DEFAULT (now()),
+  "updated_at" TIMESTAMP DEFAULT (now())
 );
 
 CREATE TABLE "mortgage_services"."applications" (
@@ -957,7 +975,7 @@ CREATE TABLE "mortgage_services"."hmda_records" (
   "lei" VARCHAR(20) NOT NULL,
   "loan_type" VARCHAR(79) NOT NULL,
   "loan_purpose" VARCHAR(81) NOT NULL,
-  "preapproval" VARCHAR(4) NOT NULL,
+  "preapproval" VARCHAR(20) NOT NULL,
   "construction_method" VARCHAR(20) NOT NULL,
   "occupancy_type" VARCHAR(20) NOT NULL,
   "loan_amount" NUMERIC(18,2) NOT NULL,
@@ -983,25 +1001,25 @@ CREATE TABLE "mortgage_services"."hmda_records" (
   "lender_credits" NUMERIC(18,2),
   "loan_term" INTEGER,
   "intro_rate_period" INTEGER,
-  "balloon_payment" VARCHAR(4),
-  "interest_only_payment" VARCHAR(4),
-  "negative_amortization" VARCHAR(4),
-  "other_non_amortizing_features" VARCHAR(4),
+  "balloon_payment" VARCHAR(20),
+  "interest_only_payment" VARCHAR(20),
+  "negative_amortization" VARCHAR(20),
+  "other_non_amortizing_features" VARCHAR(20),
   "property_value" NUMERIC(18,2),
   "manufactured_home_secured_property_type" VARCHAR(20),
   "manufactured_home_land_property_interest" VARCHAR(20),
   "total_units" INTEGER NOT NULL,
   "multifamily_affordable_units" INTEGER,
   "submission_of_application" VARCHAR(90),
-  "initially_payable_to_institution" VARCHAR(4),
+  "initially_payable_to_institution" VARCHAR(20),
   "aus1" VARCHAR(60),
   "aus2" VARCHAR(60),
   "aus3" VARCHAR(60),
   "aus4" VARCHAR(60),
   "aus5" VARCHAR(60),
-  "reverse_mortgage" VARCHAR(4),
-  "open_end_line_of_credit" VARCHAR(4),
-  "business_or_commercial_purpose" VARCHAR(4),
+  "reverse_mortgage" VARCHAR(20),
+  "open_end_line_of_credit" VARCHAR(20),
+  "business_or_commercial_purpose" VARCHAR(20),
   "submission_status" VARCHAR(80) NOT NULL DEFAULT 'PENDING',
   "last_submission_date" DATE,
   "last_modified_date" TIMESTAMP NOT NULL,
@@ -2026,7 +2044,7 @@ CREATE TABLE "credit_cards"."transactions" (
   "amount" NUMERIC(10,2) NOT NULL,
   "description" VARCHAR(100) NOT NULL,
   "category" VARCHAR(50),
-  "mcc_code" VARCHAR(4),
+  "mcc_code" VARCHAR(20),
   "is_international" BOOLEAN NOT NULL DEFAULT false,
   "original_currency" VARCHAR(3),
   "original_amount" NUMERIC(10,2),
@@ -3122,7 +3140,7 @@ COMMENT ON COLUMN "consumer_banking"."mandate_related_information"."mandate_id" 
 
 COMMENT ON COLUMN "consumer_banking"."mandate_related_information"."classification" IS 'Classification of the mandate (e.g., personal, business)';
 
-COMMENT ON COLUMN "consumer_banking"."mandate_related_information"."category_purpose_code" IS 'Purpose code for categorizing the payment type';
+COMMENT ON COLUMN "consumer_banking"."mandate_related_information"."category" IS 'Purpose code for categorizing the payment type';
 
 COMMENT ON COLUMN "consumer_banking"."mandate_related_information"."first_payment_date_time" IS 'When the first payment is scheduled';
 
@@ -3434,13 +3452,13 @@ COMMENT ON COLUMN "consumer_banking"."transactions"."status" IS 'Status of the t
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_mutability" IS 'Whether the transaction can be changed (e.g., mutable, immutable)';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."booking_date_time" IS 'When the transaction was recorded in the books';
+COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_date" IS 'When the transaction was recorded in the books';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."value_date_time" IS 'When the transaction affects the account balance';
+COMMENT ON COLUMN "consumer_banking"."transactions"."value_date" IS 'When the transaction affects the account balance';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_information" IS 'Additional information about the transaction';
+COMMENT ON COLUMN "consumer_banking"."transactions"."description" IS 'Additional information about the transaction';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."address_line" IS 'Address associated with the transaction, if applicable';
+COMMENT ON COLUMN "consumer_banking"."transactions"."merchant_address" IS 'Address associated with the transaction, if applicable';
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."amount" IS 'Monetary amount of the transaction';
 
@@ -3450,9 +3468,9 @@ COMMENT ON COLUMN "consumer_banking"."transactions"."charge_amount" IS 'Any fees
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."charge_currency" IS 'Currency code for the transaction fee';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."category_purpose_code" IS 'Code classifying the overall purpose of the transaction';
+COMMENT ON COLUMN "consumer_banking"."transactions"."category" IS 'Code classifying the overall purpose of the transaction';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."payment_purpose_code" IS 'Code classifying the specific purpose of the payment';
+COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_type" IS 'Code classifying the specific purpose of the payment';
 
 COMMENT ON TABLE "consumer_banking"."transaction_statement_references" IS 'Links transactions to specific statements they appear on';
 
@@ -3494,15 +3512,15 @@ COMMENT ON COLUMN "consumer_banking"."transaction_bank_transaction_codes"."code"
 
 COMMENT ON COLUMN "consumer_banking"."transaction_bank_transaction_codes"."sub_code" IS 'Sub-classification code for more detailed categorization';
 
-COMMENT ON TABLE "consumer_banking"."transaction_proprietary_bank_transaction_codes" IS 'Stores non-standard proprietary codes for transaction categorization';
+COMMENT ON TABLE "consumer_banking"."proprietary_transaction_codes" IS 'Stores non-standard proprietary codes for transaction categorization';
 
-COMMENT ON COLUMN "consumer_banking"."transaction_proprietary_bank_transaction_codes"."consumer_banking_transaction_proprietary_bank_transaction_code_id" IS 'Auto-incrementing identifier for each proprietary code record';
+COMMENT ON COLUMN "consumer_banking"."proprietary_transaction_codes"."consumer_banking_proprietary_transaction_code_id" IS 'Auto-incrementing identifier for each proprietary code record';
 
-COMMENT ON COLUMN "consumer_banking"."transaction_proprietary_bank_transaction_codes"."consumer_banking_transaction_id" IS 'References the transaction this code belongs to';
+COMMENT ON COLUMN "consumer_banking"."proprietary_transaction_codes"."consumer_banking_transaction_id" IS 'References the transaction this code belongs to';
 
-COMMENT ON COLUMN "consumer_banking"."transaction_proprietary_bank_transaction_codes"."code" IS 'Custom transaction code defined by the issuer';
+COMMENT ON COLUMN "consumer_banking"."proprietary_transaction_codes"."code" IS 'Custom transaction code defined by the issuer';
 
-COMMENT ON COLUMN "consumer_banking"."transaction_proprietary_bank_transaction_codes"."issuer" IS 'Organization that defined the proprietary code';
+COMMENT ON COLUMN "consumer_banking"."proprietary_transaction_codes"."issuer" IS 'Organization that defined the proprietary code';
 
 COMMENT ON TABLE "consumer_banking"."transaction_balances" IS 'Stores account balance information at the time of each transaction';
 
@@ -3627,6 +3645,36 @@ COMMENT ON COLUMN "consumer_banking"."transaction_ultimate_debtors"."lei" IS 'Le
 COMMENT ON COLUMN "consumer_banking"."transaction_ultimate_debtors"."scheme_name" IS 'Identification scheme for the debtor''s identifier';
 
 COMMENT ON TABLE "consumer_banking"."account_statement_preferences" IS 'Stores customer preferences for account statements';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."consumer_banking_interaction_id" IS 'A unique identifier for each interaction.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."customer_id" IS 'The ID of the customer involved in the interaction.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."account_id" IS 'The ID of the specific account related to the interaction. This can be NULL if the interaction isn''t tied to a specific account (e.g., a general inquiry).';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."enterprise_associate_id" IS 'The ID of the bank employee who handled the interaction. This can be NULL if it was an automated interaction.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."interaction_type" IS 'The type of interaction (e.g., "phone call," "email," "chat," "in-person," "online form," "ATM interaction").';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."interaction_date_time" IS 'The date and time of the interaction.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."channel" IS 'The channel through which the interaction occurred (e.g., "phone," "email," "web," "branch," "mobile app").';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."subject" IS 'A brief subject or title of the interaction.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."description" IS 'A detailed description of the interaction.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."resolution" IS 'Description of how the interaction was resolved.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."status" IS 'The status of the interaction (e.g., "open," "resolved," "pending").';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."priority" IS 'The priority of the interaction (e.g., "high," "medium," "low").';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."related_transaction_id" IS 'If the interaction relates to a specific transaction, this can hold that transaction ID.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."created_at" IS 'When the interaction record was created.';
+
+COMMENT ON COLUMN "consumer_banking"."customer_interactions"."updated_at" IS 'When the interaction record was last updated.';
 
 COMMENT ON TABLE "mortgage_services"."applications" IS 'Stores mortgage application details and tracks application status';
 
@@ -7506,9 +7554,19 @@ ALTER TABLE "consumer_banking"."mandate_related_information" ADD FOREIGN KEY ("c
 
 ALTER TABLE "consumer_banking"."offers" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
+ALTER TABLE "consumer_banking"."other_product_types" ADD FOREIGN KEY ("consumer_banking_product_id") REFERENCES "consumer_banking"."products" ("consumer_banking_product_id");
+
 ALTER TABLE "consumer_banking"."scheduled_payments" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
+ALTER TABLE "consumer_banking"."scheduled_payment_creditor_agents" ADD FOREIGN KEY ("consumer_banking_scheduled_payment_id") REFERENCES "consumer_banking"."scheduled_payments" ("consumer_banking_scheduled_payment_id");
+
+ALTER TABLE "consumer_banking"."scheduled_payment_creditor_accounts" ADD FOREIGN KEY ("consumer_banking_scheduled_payment_id") REFERENCES "consumer_banking"."scheduled_payments" ("consumer_banking_scheduled_payment_id");
+
 ALTER TABLE "consumer_banking"."standing_orders" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
+
+ALTER TABLE "consumer_banking"."standing_order_creditor_agents" ADD FOREIGN KEY ("consumer_banking_standing_order_id") REFERENCES "consumer_banking"."standing_orders" ("consumer_banking_standing_order_id");
+
+ALTER TABLE "consumer_banking"."standing_order_creditor_accounts" ADD FOREIGN KEY ("consumer_banking_standing_order_id") REFERENCES "consumer_banking"."standing_orders" ("consumer_banking_standing_order_id");
 
 ALTER TABLE "consumer_banking"."statements" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
@@ -7536,7 +7594,7 @@ ALTER TABLE "consumer_banking"."transaction_currency_exchanges" ADD FOREIGN KEY 
 
 ALTER TABLE "consumer_banking"."transaction_bank_transaction_codes" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
-ALTER TABLE "consumer_banking"."transaction_proprietary_bank_transaction_codes" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
+ALTER TABLE "consumer_banking"."proprietary_transaction_codes" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "consumer_banking"."transaction_balances" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
@@ -7566,6 +7624,8 @@ ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("loan_officer_id
 
 ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("branch_id") REFERENCES "enterprise"."buildings" ("enterprise_building_id");
 
+ALTER TABLE "mortgage_services"."application_borrowers" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
 ALTER TABLE "mortgage_services"."application_borrowers" ADD FOREIGN KEY ("mortgage_services_borrower_id") REFERENCES "mortgage_services"."borrowers" ("mortgage_services_borrower_id");
 
 ALTER TABLE "mortgage_services"."borrowers" ADD FOREIGN KEY ("current_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
@@ -7586,15 +7646,41 @@ ALTER TABLE "mortgage_services"."borrower_assets" ADD FOREIGN KEY ("property_add
 
 ALTER TABLE "mortgage_services"."borrower_liabilities" ADD FOREIGN KEY ("mortgage_services_borrower_id") REFERENCES "mortgage_services"."borrowers" ("mortgage_services_borrower_id");
 
+ALTER TABLE "mortgage_services"."properties" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
 ALTER TABLE "mortgage_services"."properties" ADD FOREIGN KEY ("enterprise_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
+ALTER TABLE "mortgage_services"."loans" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
+ALTER TABLE "mortgage_services"."loan_rate_locks" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+
+ALTER TABLE "mortgage_services"."documents" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
 ALTER TABLE "mortgage_services"."documents" ADD FOREIGN KEY ("reviewer_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "mortgage_services"."conditions" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
 
 ALTER TABLE "mortgage_services"."conditions" ADD FOREIGN KEY ("created_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "mortgage_services"."conditions" ADD FOREIGN KEY ("cleared_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "mortgage_services"."appraisals" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+
+ALTER TABLE "mortgage_services"."appraisals" ADD FOREIGN KEY ("mortgage_services_property_id") REFERENCES "mortgage_services"."properties" ("mortgage_services_property_id");
+
+ALTER TABLE "mortgage_services"."credit_reports" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
+ALTER TABLE "mortgage_services"."credit_reports" ADD FOREIGN KEY ("mortgage_services_borrower_id") REFERENCES "mortgage_services"."borrowers" ("mortgage_services_borrower_id");
+
+ALTER TABLE "mortgage_services"."closing_disclosures" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+
+ALTER TABLE "mortgage_services"."closing_appointments" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+
 ALTER TABLE "mortgage_services"."closing_appointments" ADD FOREIGN KEY ("location_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
+
+ALTER TABLE "mortgage_services"."closed_loans" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+
+ALTER TABLE "mortgage_services"."servicing_accounts" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
 
 ALTER TABLE "mortgage_services"."payments" ADD FOREIGN KEY ("mortgage_services_servicing_account_id") REFERENCES "mortgage_services"."servicing_accounts" ("mortgage_services_servicing_account_id");
 
@@ -7607,6 +7693,16 @@ ALTER TABLE "mortgage_services"."insurance_policies" ADD FOREIGN KEY ("mortgage_
 ALTER TABLE "mortgage_services"."loan_modifications" ADD FOREIGN KEY ("mortgage_services_servicing_account_id") REFERENCES "mortgage_services"."servicing_accounts" ("mortgage_services_servicing_account_id");
 
 ALTER TABLE "mortgage_services"."customer_communications" ADD FOREIGN KEY ("mortgage_services_servicing_account_id") REFERENCES "mortgage_services"."servicing_accounts" ("mortgage_services_servicing_account_id");
+
+ALTER TABLE "mortgage_services"."customer_communications" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
+ALTER TABLE "mortgage_services"."hmda_records" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
+ALTER TABLE "mortgage_services"."hmda_records" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+
+ALTER TABLE "mortgage_services"."hmda_applicant_demographics" ADD FOREIGN KEY ("mortgage_services_hmda_record_id") REFERENCES "mortgage_services"."hmda_records" ("mortgage_services_hmda_record_id");
+
+ALTER TABLE "mortgage_services"."hmda_edits" ADD FOREIGN KEY ("mortgage_services_hmda_record_id") REFERENCES "mortgage_services"."hmda_records" ("mortgage_services_hmda_record_id");
 
 ALTER TABLE "consumer_lending"."loan_applications" ADD FOREIGN KEY ("customer_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
 
@@ -7681,6 +7777,14 @@ ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("user_
 ALTER TABLE "consumer_lending"."high_cost_mortgage_tests" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("remediated_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("customer_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("enterprise_associate_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("related_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "credit_cards"."fraud_cases" ADD FOREIGN KEY ("credit_cards_card_id") REFERENCES "credit_cards"."cards" ("credit_cards_card_id");
 
@@ -7873,54 +7977,6 @@ ALTER TABLE "small_business_banking"."suspicious_activity_reports" ADD FOREIGN K
 ALTER TABLE "small_business_banking"."suspicious_activity_reports" ADD FOREIGN KEY ("approved_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "small_business_banking"."suspicious_activity_reports" ADD FOREIGN KEY ("bsa_officer_signature") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
-
-ALTER TABLE "consumer_banking"."other_product_types" ADD FOREIGN KEY ("consumer_banking_product_id") REFERENCES "consumer_banking"."products" ("consumer_banking_product_id");
-
-ALTER TABLE "consumer_banking"."scheduled_payment_creditor_agents" ADD FOREIGN KEY ("consumer_banking_scheduled_payment_id") REFERENCES "consumer_banking"."scheduled_payments" ("consumer_banking_scheduled_payment_id");
-
-ALTER TABLE "consumer_banking"."scheduled_payment_creditor_accounts" ADD FOREIGN KEY ("consumer_banking_scheduled_payment_id") REFERENCES "consumer_banking"."scheduled_payments" ("consumer_banking_scheduled_payment_id");
-
-ALTER TABLE "consumer_banking"."standing_order_creditor_agents" ADD FOREIGN KEY ("consumer_banking_standing_order_id") REFERENCES "consumer_banking"."standing_orders" ("consumer_banking_standing_order_id");
-
-ALTER TABLE "consumer_banking"."standing_order_creditor_accounts" ADD FOREIGN KEY ("consumer_banking_standing_order_id") REFERENCES "consumer_banking"."standing_orders" ("consumer_banking_standing_order_id");
-
-ALTER TABLE "mortgage_services"."application_borrowers" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."properties" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."loans" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."loan_rate_locks" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
-
-ALTER TABLE "mortgage_services"."appraisals" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
-
-ALTER TABLE "mortgage_services"."appraisals" ADD FOREIGN KEY ("mortgage_services_property_id") REFERENCES "mortgage_services"."properties" ("mortgage_services_property_id");
-
-ALTER TABLE "mortgage_services"."documents" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."conditions" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."credit_reports" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."credit_reports" ADD FOREIGN KEY ("mortgage_services_borrower_id") REFERENCES "mortgage_services"."borrowers" ("mortgage_services_borrower_id");
-
-ALTER TABLE "mortgage_services"."closing_disclosures" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
-
-ALTER TABLE "mortgage_services"."closing_appointments" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
-
-ALTER TABLE "mortgage_services"."closed_loans" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
-
-ALTER TABLE "mortgage_services"."servicing_accounts" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
-
-ALTER TABLE "mortgage_services"."customer_communications" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."hmda_records" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
-
-ALTER TABLE "mortgage_services"."hmda_records" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
-
-ALTER TABLE "mortgage_services"."hmda_applicant_demographics" ADD FOREIGN KEY ("mortgage_services_hmda_record_id") REFERENCES "mortgage_services"."hmda_records" ("mortgage_services_hmda_record_id");
-
-ALTER TABLE "mortgage_services"."hmda_edits" ADD FOREIGN KEY ("mortgage_services_hmda_record_id") REFERENCES "mortgage_services"."hmda_records" ("mortgage_services_hmda_record_id");
 
 ALTER TABLE "consumer_lending"."application_applicants" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 

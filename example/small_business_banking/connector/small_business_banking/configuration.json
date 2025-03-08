@@ -556,6 +556,171 @@
         },
         "description": "Stores financial institution details for beneficiaries, records information about banks/agents"
       },
+      "consumer_banking_customer_interactions": {
+        "schemaName": "consumer_banking",
+        "tableName": "customer_interactions",
+        "columns": {
+          "account_id": {
+            "name": "account_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "The ID of the specific account related to the interaction. This can be NULL if the interaction isn't tied to a specific account (e.g., a general inquiry)."
+          },
+          "channel": {
+            "name": "channel",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "The channel through which the interaction occurred (e.g., \"phone,\" \"email,\" \"web,\" \"branch,\" \"mobile app\")."
+          },
+          "consumer_banking_interaction_id": {
+            "name": "consumer_banking_interaction_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "A unique identifier for each interaction."
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "When the interaction record was created."
+          },
+          "customer_id": {
+            "name": "customer_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "The ID of the customer involved in the interaction."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "A detailed description of the interaction."
+          },
+          "enterprise_associate_id": {
+            "name": "enterprise_associate_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "The ID of the bank employee who handled the interaction. This can be NULL if it was an automated interaction."
+          },
+          "interaction_date_time": {
+            "name": "interaction_date_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "The date and time of the interaction."
+          },
+          "interaction_type": {
+            "name": "interaction_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "The type of interaction (e.g., \"phone call,\" \"email,\" \"chat,\" \"in-person,\" \"online form,\" \"ATM interaction\")."
+          },
+          "priority": {
+            "name": "priority",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "The priority of the interaction (e.g., \"high,\" \"medium,\" \"low\")."
+          },
+          "related_transaction_id": {
+            "name": "related_transaction_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "If the interaction relates to a specific transaction, this can hold that transaction ID."
+          },
+          "resolution": {
+            "name": "resolution",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Description of how the interaction was resolved."
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "The status of the interaction (e.g., \"open,\" \"resolved,\" \"pending\")."
+          },
+          "subject": {
+            "name": "subject",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "A brief subject or title of the interaction."
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "When the interaction record was last updated."
+          }
+        },
+        "uniquenessConstraints": {
+          "customer_interactions_pkey": [
+            "consumer_banking_interaction_id"
+          ]
+        },
+        "foreignRelations": {
+          "customer_interactions_account_id_fkey": {
+            "foreignSchema": "consumer_banking",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "account_id": "consumer_banking_account_id"
+            }
+          },
+          "customer_interactions_customer_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "parties",
+            "columnMapping": {
+              "customer_id": "enterprise_party_id"
+            }
+          },
+          "customer_interactions_enterprise_associate_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "enterprise_associate_id": "enterprise_associate_id"
+            }
+          },
+          "customer_interactions_related_transaction_id_fkey": {
+            "foreignSchema": "consumer_banking",
+            "foreignTable": "transactions",
+            "columnMapping": {
+              "related_transaction_id": "consumer_banking_transaction_id"
+            }
+          }
+        },
+        "description": null
+      },
       "consumer_banking_direct_debits": {
         "schemaName": "consumer_banking",
         "tableName": "direct_debits",
@@ -638,8 +803,8 @@
         "schemaName": "consumer_banking",
         "tableName": "mandate_related_information",
         "columns": {
-          "category_purpose_code": {
-            "name": "category_purpose_code",
+          "category": {
+            "name": "category",
             "type": {
               "scalarType": "varchar"
             },
@@ -993,6 +1158,60 @@
         },
         "foreignRelations": {},
         "description": "Stores information about banking products associated with accounts"
+      },
+      "consumer_banking_proprietary_transaction_codes": {
+        "schemaName": "consumer_banking",
+        "tableName": "proprietary_transaction_codes",
+        "columns": {
+          "code": {
+            "name": "code",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Custom transaction code defined by the issuer"
+          },
+          "consumer_banking_proprietary_transaction_code_id": {
+            "name": "consumer_banking_proprietary_transaction_code_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Auto-incrementing identifier for each proprietary code record"
+          },
+          "consumer_banking_transaction_id": {
+            "name": "consumer_banking_transaction_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "References the transaction this code belongs to"
+          },
+          "issuer": {
+            "name": "issuer",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Organization that defined the proprietary code"
+          }
+        },
+        "uniquenessConstraints": {
+          "proprietary_transaction_codes_pkey": [
+            "consumer_banking_proprietary_transaction_code_id"
+          ]
+        },
+        "foreignRelations": {
+          "proprietary_transaction_codes_consumer_banking_transaction_fkey": {
+            "foreignSchema": "consumer_banking",
+            "foreignTable": "transactions",
+            "columnMapping": {
+              "consumer_banking_transaction_id": "consumer_banking_transaction_id"
+            }
+          }
+        },
+        "description": "Stores non-standard proprietary codes for transaction categorization"
       },
       "consumer_banking_scheduled_payment_creditor_accounts": {
         "schemaName": "consumer_banking",
@@ -2754,60 +2973,6 @@
         },
         "description": "Stores information about merchants involved in transactions"
       },
-      "consumer_banking_transaction_proprietary_bank_transaction_codes": {
-        "schemaName": "consumer_banking",
-        "tableName": "transaction_proprietary_bank_transaction_codes",
-        "columns": {
-          "code": {
-            "name": "code",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Custom transaction code defined by the issuer"
-          },
-          "consumer_banking_transaction_id": {
-            "name": "consumer_banking_transaction_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": "References the transaction this code belongs to"
-          },
-          "consumer_banking_transaction_proprietary_bank_transaction_code_": {
-            "name": "consumer_banking_transaction_proprietary_bank_transaction_code_",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": "Auto-incrementing identifier for each proprietary code record"
-          },
-          "issuer": {
-            "name": "issuer",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Organization that defined the proprietary code"
-          }
-        },
-        "uniquenessConstraints": {
-          "transaction_proprietary_bank_transaction_codes_pkey": [
-            "consumer_banking_transaction_proprietary_bank_transaction_code_"
-          ]
-        },
-        "foreignRelations": {
-          "transaction_proprietary_bank__consumer_banking_transaction_fkey": {
-            "foreignSchema": "consumer_banking",
-            "foreignTable": "transactions",
-            "columnMapping": {
-              "consumer_banking_transaction_id": "consumer_banking_transaction_id"
-            }
-          }
-        },
-        "description": "Stores non-standard proprietary codes for transaction categorization"
-      },
       "consumer_banking_transaction_statement_references": {
         "schemaName": "consumer_banking",
         "tableName": "transaction_statement_references",
@@ -2998,14 +3163,6 @@
         "schemaName": "consumer_banking",
         "tableName": "transactions",
         "columns": {
-          "address_line": {
-            "name": "address_line",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Address associated with the transaction, if applicable"
-          },
           "amount": {
             "name": "amount",
             "type": {
@@ -3014,16 +3171,8 @@
             "nullable": "nonNullable",
             "description": "Monetary amount of the transaction"
           },
-          "booking_date_time": {
-            "name": "booking_date_time",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nonNullable",
-            "description": "When the transaction was recorded in the books"
-          },
-          "category_purpose_code": {
-            "name": "category_purpose_code",
+          "category": {
+            "name": "category",
             "type": {
               "scalarType": "varchar"
             },
@@ -3079,13 +3228,21 @@
             "nullable": "nonNullable",
             "description": "Currency code for the transaction amount"
           },
-          "payment_purpose_code": {
-            "name": "payment_purpose_code",
+          "description": {
+            "name": "description",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": "Code classifying the specific purpose of the payment"
+            "description": "Additional information about the transaction"
+          },
+          "merchant_address": {
+            "name": "merchant_address",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Address associated with the transaction, if applicable"
           },
           "status": {
             "name": "status",
@@ -3095,13 +3252,13 @@
             "nullable": "nonNullable",
             "description": "Status of the transaction (e.g., pending, booked, rejected)"
           },
-          "transaction_information": {
-            "name": "transaction_information",
+          "transaction_date": {
+            "name": "transaction_date",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "timestamp"
             },
-            "nullable": "nullable",
-            "description": "Additional information about the transaction"
+            "nullable": "nonNullable",
+            "description": "When the transaction was recorded in the books"
           },
           "transaction_mutability": {
             "name": "transaction_mutability",
@@ -3119,8 +3276,16 @@
             "nullable": "nullable",
             "description": "Reference code for the transaction"
           },
-          "value_date_time": {
-            "name": "value_date_time",
+          "transaction_type": {
+            "name": "transaction_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Code classifying the specific purpose of the payment"
+          },
+          "value_date": {
+            "name": "value_date",
             "type": {
               "scalarType": "timestamp"
             },
@@ -18113,6 +18278,14 @@
             "hasDefault": "hasDefault",
             "description": "ISO currency code for the account"
           },
+          "enterprise_account_id": {
+            "name": "enterprise_account_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "References the main account"
+          },
           "interest_rate": {
             "name": "interest_rate",
             "type": {
@@ -18212,6 +18385,13 @@
           ]
         },
         "foreignRelations": {
+          "accounts_enterprise_account_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "enterprise_account_id": "enterprise_account_id"
+            }
+          },
           "accounts_small_business_banking_business_id_fkey": {
             "foreignSchema": "small_business_banking",
             "foreignTable": "businesses",

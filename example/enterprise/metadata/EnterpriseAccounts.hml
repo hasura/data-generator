@@ -15,7 +15,7 @@ definition:
     - name: enterpriseAccountId
       type: Int4!
       description: Unique identifier for each account
-    - name: openingDate
+    - name: openedDate
       type: Timestamptz
       description: When the account was opened
     - name: status
@@ -24,12 +24,9 @@ definition:
     - name: statusUpdateDateTime
       type: Timestamptz!
       description: When the status was last updated
-    - name: openedDate
-      type: Timestamptz
-      description: When the account was opened
   graphql:
-    typeName: Enterprise_EnterpriseAccounts_1
-    inputTypeName: Enterprise_EnterpriseAccountsInput_1
+    typeName: Enterprise_EnterpriseAccounts
+    inputTypeName: Enterprise_EnterpriseAccountsInput
   dataConnectorTypeMapping:
     - dataConnectorName: enterprise
       dataConnectorObjectType: enterprise_accounts
@@ -43,18 +40,15 @@ definition:
         enterpriseAccountId:
           column:
             name: enterprise_account_id
-        openingDate:
+        openedDate:
           column:
-            name: opening_date
+            name: opened_date
         status:
           column:
             name: status
         statusUpdateDateTime:
           column:
             name: status_update_date_time
-        openedDate:
-          column:
-            name: opened_date
 
 ---
 kind: TypePermissions
@@ -68,10 +62,9 @@ definition:
           - accountCategory
           - description
           - enterpriseAccountId
-          - openingDate
+          - openedDate
           - status
           - statusUpdateDateTime
-          - openedDate
 
 ---
 kind: BooleanExpressionType
@@ -88,13 +81,11 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: enterpriseAccountId
           booleanExpressionType: Int4BoolExp
-        - fieldName: openingDate
+        - fieldName: openedDate
           booleanExpressionType: TimestamptzBoolExp
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
         - fieldName: statusUpdateDateTime
-          booleanExpressionType: TimestamptzBoolExp
-        - fieldName: openedDate
           booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAccountIdentifiers
@@ -104,7 +95,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: Enterprise_EnterpriseAccountsBoolExp_1
+    typeName: Enterprise_EnterpriseAccountsBoolExp
 
 ---
 kind: AggregateExpression
@@ -121,18 +112,16 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: enterpriseAccountId
           aggregateExpression: Int4AggExp
-        - fieldName: openingDate
+        - fieldName: openedDate
           aggregateExpression: TimestamptzAggExp
         - fieldName: status
           aggregateExpression: VarcharAggExp
         - fieldName: statusUpdateDateTime
           aggregateExpression: TimestamptzAggExp
-        - fieldName: openedDate
-          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: Enterprise_EnterpriseAccountsAggExp_1
+    selectTypeName: Enterprise_EnterpriseAccountsAggExp
 
 ---
 kind: OrderByExpression
@@ -149,17 +138,15 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: enterpriseAccountId
           orderByExpression: Int4OrderByExp
-        - fieldName: openingDate
+        - fieldName: openedDate
           orderByExpression: TimestamptzOrderByExp
         - fieldName: status
           orderByExpression: VarcharOrderByExp
         - fieldName: statusUpdateDateTime
           orderByExpression: TimestamptzOrderByExp
-        - fieldName: openedDate
-          orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: Enterprise_EnterpriseAccountsOrderByExp_1
+    expressionTypeName: Enterprise_EnterpriseAccountsOrderByExp
 
 ---
 kind: Model

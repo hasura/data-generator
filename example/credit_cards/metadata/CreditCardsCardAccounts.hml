@@ -23,12 +23,6 @@ definition:
     - name: cashAdvanceLimit
       type: Numeric
       description: Limit for cash advances if different
-    - name: closeDate
-      type: Date
-      description: When account was closed if applicable
-    - name: closeReason
-      type: Varchar
-      description: Reason for account closure if applicable
     - name: creditCardsApplicationId
       type: Int4
       description: Reference to original application if applicable
@@ -71,7 +65,7 @@ definition:
     - name: minimumPaymentDue
       type: Numeric!
       description: Minimum payment due
-    - name: openDate
+    - name: openedDate
       type: Date!
       description: When account was opened
     - name: overlimitStatus
@@ -98,6 +92,9 @@ definition:
     - name: status
       type: Varchar!
       description: Account status (Active, Inactive, Closed, Suspended)
+    - name: statusUpdateDateTime
+      type: Timestamptz!
+      description: When the status was last updated
     - name: timesPastDue30Days
       type: Int4!
       description: Count of 30+ day late payments
@@ -107,15 +104,9 @@ definition:
     - name: timesPastDue90Days
       type: Int4!
       description: Count of 90+ day late payments
-    - name: openedDate
-      type: Date!
-      description: When account was opened
-    - name: statusUpdateDateTime
-      type: Timestamptz!
-      description: When the status was last updated
   graphql:
-    typeName: CreditCards_CreditCardsCardAccounts_1
-    inputTypeName: CreditCards_CreditCardsCardAccountsInput_1
+    typeName: CreditCards_CreditCardsCardAccounts
+    inputTypeName: CreditCards_CreditCardsCardAccountsInput
   dataConnectorTypeMapping:
     - dataConnectorName: credit_cards
       dataConnectorObjectType: credit_cards_card_accounts
@@ -138,12 +129,6 @@ definition:
         cashAdvanceLimit:
           column:
             name: cash_advance_limit
-        closeDate:
-          column:
-            name: close_date
-        closeReason:
-          column:
-            name: close_reason
         creditCardsApplicationId:
           column:
             name: credit_cards_application_id
@@ -186,9 +171,9 @@ definition:
         minimumPaymentDue:
           column:
             name: minimum_payment_due
-        openDate:
+        openedDate:
           column:
-            name: open_date
+            name: opened_date
         overlimitStatus:
           column:
             name: overlimit_status
@@ -213,6 +198,9 @@ definition:
         status:
           column:
             name: status
+        statusUpdateDateTime:
+          column:
+            name: status_update_date_time
         timesPastDue30Days:
           column:
             name: times_past_due_30_days
@@ -222,12 +210,6 @@ definition:
         timesPastDue90Days:
           column:
             name: times_past_due_90_days
-        openedDate:
-          column:
-            name: opened_date
-        statusUpdateDateTime:
-          column:
-            name: status_update_date_time
 
 ---
 kind: TypePermissions
@@ -244,8 +226,6 @@ definition:
           - balanceTransferInterestRate
           - cashAdvanceInterestRate
           - cashAdvanceLimit
-          - closeDate
-          - closeReason
           - creditCardsApplicationId
           - creditCardsCardAccountId
           - creditCardsProductId
@@ -260,7 +240,7 @@ definition:
           - lastPaymentAmount
           - lastPaymentDate
           - minimumPaymentDue
-          - openDate
+          - openedDate
           - overlimitStatus
           - paymentDueDate
           - penaltyInterestRate
@@ -269,11 +249,10 @@ definition:
           - securityDepositAmount
           - statementBalance
           - status
+          - statusUpdateDateTime
           - timesPastDue30Days
           - timesPastDue60Days
           - timesPastDue90Days
-          - openedDate
-          - statusUpdateDateTime
 
 ---
 kind: BooleanExpressionType
@@ -296,10 +275,6 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: cashAdvanceLimit
           booleanExpressionType: NumericBoolExp
-        - fieldName: closeDate
-          booleanExpressionType: DateBoolExp
-        - fieldName: closeReason
-          booleanExpressionType: VarcharBoolExp
         - fieldName: creditCardsApplicationId
           booleanExpressionType: Int4BoolExp
         - fieldName: creditCardsCardAccountId
@@ -328,7 +303,7 @@ definition:
           booleanExpressionType: DateBoolExp
         - fieldName: minimumPaymentDue
           booleanExpressionType: NumericBoolExp
-        - fieldName: openDate
+        - fieldName: openedDate
           booleanExpressionType: DateBoolExp
         - fieldName: overlimitStatus
           booleanExpressionType: BoolBoolExp
@@ -346,16 +321,14 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
+        - fieldName: statusUpdateDateTime
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: timesPastDue30Days
           booleanExpressionType: Int4BoolExp
         - fieldName: timesPastDue60Days
           booleanExpressionType: Int4BoolExp
         - fieldName: timesPastDue90Days
           booleanExpressionType: Int4BoolExp
-        - fieldName: openedDate
-          booleanExpressionType: DateBoolExp
-        - fieldName: statusUpdateDateTime
-          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: creditCardsAuthorizedUsers
         - relationshipName: creditCardsAutopaySettings
@@ -382,7 +355,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: CreditCards_CreditCardsCardAccountsBoolExp_1
+    typeName: CreditCards_CreditCardsCardAccountsBoolExp
 
 ---
 kind: AggregateExpression
@@ -405,10 +378,6 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: cashAdvanceLimit
           aggregateExpression: NumericAggExp
-        - fieldName: closeDate
-          aggregateExpression: DateAggExp
-        - fieldName: closeReason
-          aggregateExpression: VarcharAggExp
         - fieldName: creditCardsApplicationId
           aggregateExpression: Int4AggExp
         - fieldName: creditCardsCardAccountId
@@ -437,7 +406,7 @@ definition:
           aggregateExpression: DateAggExp
         - fieldName: minimumPaymentDue
           aggregateExpression: NumericAggExp
-        - fieldName: openDate
+        - fieldName: openedDate
           aggregateExpression: DateAggExp
         - fieldName: overlimitStatus
           aggregateExpression: BoolAggExp
@@ -455,20 +424,18 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: status
           aggregateExpression: VarcharAggExp
+        - fieldName: statusUpdateDateTime
+          aggregateExpression: TimestamptzAggExp
         - fieldName: timesPastDue30Days
           aggregateExpression: Int4AggExp
         - fieldName: timesPastDue60Days
           aggregateExpression: Int4AggExp
         - fieldName: timesPastDue90Days
           aggregateExpression: Int4AggExp
-        - fieldName: openedDate
-          aggregateExpression: DateAggExp
-        - fieldName: statusUpdateDateTime
-          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
-    selectTypeName: CreditCards_CreditCardsCardAccountsAggExp_1
+    selectTypeName: CreditCards_CreditCardsCardAccountsAggExp
 
 ---
 kind: OrderByExpression
@@ -491,10 +458,6 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: cashAdvanceLimit
           orderByExpression: NumericOrderByExp
-        - fieldName: closeDate
-          orderByExpression: DateOrderByExp
-        - fieldName: closeReason
-          orderByExpression: VarcharOrderByExp
         - fieldName: creditCardsApplicationId
           orderByExpression: Int4OrderByExp
         - fieldName: creditCardsCardAccountId
@@ -523,7 +486,7 @@ definition:
           orderByExpression: DateOrderByExp
         - fieldName: minimumPaymentDue
           orderByExpression: NumericOrderByExp
-        - fieldName: openDate
+        - fieldName: openedDate
           orderByExpression: DateOrderByExp
         - fieldName: overlimitStatus
           orderByExpression: BoolOrderByExp
@@ -541,23 +504,19 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: status
           orderByExpression: VarcharOrderByExp
+        - fieldName: statusUpdateDateTime
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: timesPastDue30Days
           orderByExpression: Int4OrderByExp
         - fieldName: timesPastDue60Days
           orderByExpression: Int4OrderByExp
         - fieldName: timesPastDue90Days
           orderByExpression: Int4OrderByExp
-        - fieldName: openedDate
-          orderByExpression: DateOrderByExp
-        - fieldName: statusUpdateDateTime
-          orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
         - relationshipName: creditCardsApplication
         - relationshipName: creditCardsCardProduct
-        - relationshipName: enterpriseAccount
-        - relationshipName: customer
   graphql:
-    expressionTypeName: CreditCards_CreditCardsCardAccountsOrderByExp_1
+    expressionTypeName: CreditCards_CreditCardsCardAccountsOrderByExp
 
 ---
 kind: Model

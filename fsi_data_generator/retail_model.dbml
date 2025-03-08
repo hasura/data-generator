@@ -121,7 +121,7 @@ Table "enterprise"."entity_addresses" {
 
 Table "enterprise"."accounts" {
   "enterprise_account_id" SERIAL [pk, increment, note: "Unique identifier for each account"]
-  "opening_date" TIMESTAMPTZ [note: "When the account was opened"]
+  "opened_date" TIMESTAMPTZ [note: "When the account was opened"]
   "status" VARCHAR(10) [not null, note: "Current status of the account (e.g., active, closed)"]
   "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
   "account_category" VARCHAR(40) [note: "Customer defined category of account (e.g., personal, business)"]
@@ -185,7 +185,15 @@ Table "enterprise"."buildings" {
   note: 'Stores information about the physical buildings used by the enterprise, including branches and other facilities.'
 }
 
-TableGroup "Enterprise Accounts" {
+TableGroup "Parties & Addresses" [color: #1E69FD] {
+  "enterprise"."parties"
+  "enterprise"."party_relationships"
+  "enterprise"."party_addresses"
+
+  note: "Tables related to account stakeholders and their contact information"
+}
+
+TableGroup "Enterprise Accounts" [color: #1E69FD] {
   "enterprise"."permissions"
   "enterprise"."accounts"
   "enterprise"."account_identifiers"
@@ -194,13 +202,13 @@ TableGroup "Enterprise Accounts" {
   note: "Tables related to core enterprise account management"
 }
 
-TableGroup "Enterprise Infra" {
+TableGroup "Enterprise Infra" [color: #1E69FD] {
   "enterprise"."associates"
   "enterprise"."buildings"
   "enterprise"."departments"
 }
 
-TableGroup "Addresses" {
+TableGroup "Addresses" [color: #1E69FD] {
   "enterprise"."addresses"
   "enterprise"."address_lines"
   "enterprise"."entity_addresses"
@@ -217,6 +225,9 @@ Table "consumer_banking"."accounts" {
   "consumer_banking_account_id" SERIAL [pk, increment]
   "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id]
   "consumer_banking_product_id" INTEGER [ref: > consumer_banking.products.consumer_banking_product_id]
+  "opened_date" TIMESTAMPTZ [note: "When the account was opened"]
+  "status" VARCHAR(40) [not null, note: "Current status of the account (e.g., Active, Inactive, Frozen, Closed)"]
+  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
 }
 
 Table "consumer_banking"."account_access_consents" {
@@ -288,7 +299,7 @@ Table "consumer_banking"."beneficiary_creditor_accounts" {
 Table "consumer_banking"."direct_debits" {
   "consumer_banking_direct_debit_id" SERIAL [pk, increment, note: "Unique identifier for each direct debit mandate"]
   "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
-  "direct_debit_status_code" VARCHAR(4) [not null, note: "Status code of the direct debit (e.g., active, canceled)"]
+  "direct_debit_status_code" VARCHAR(20) [not null, note: "Status code of the direct debit (e.g., active, canceled)"]
   "name" VARCHAR(70) [not null, note: "Name of the merchant/organization collecting the direct debit"]
   "previous_payment_date_time" TIMESTAMP [note: "When the last payment was made"]
   "previous_payment_amount" NUMERIC(18,5) [note: "Amount of the last payment"]
@@ -301,12 +312,12 @@ Table "consumer_banking"."mandate_related_information" {
   "consumer_banking_mandate_related_information_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for mandate information"]
   "consumer_banking_direct_debit_id" INTEGER [not null, ref: > consumer_banking.direct_debits.consumer_banking_direct_debit_id, note: "References the direct debit this mandate belongs to"]
   "mandate_id" INTEGER [not null, note: "Unique reference for the direct debit mandate"]
-  "classification" VARCHAR(4) [note: "Classification of the mandate (e.g., personal, business)"]
-  "category_purpose_code" VARCHAR(4) [note: "Purpose code for categorizing the payment type"]
+  "classification" VARCHAR(20) [note: "Classification of the mandate (e.g., personal, business)"]
+  "category" VARCHAR(20) [note: "Purpose code for categorizing the payment type"]
   "first_payment_date_time" TIMESTAMP [note: "When the first payment is scheduled"]
   "recurring_payment_date_time" TIMESTAMP [note: "When recurring payments are scheduled"]
   "final_payment_date_time" TIMESTAMP [note: "When the final payment is scheduled (if applicable)"]
-  "frequency_type" VARCHAR(4) [not null, note: "How often payments occur (e.g., monthly, weekly)"]
+  "frequency_type" VARCHAR(20) [not null, note: "How often payments occur (e.g., monthly, weekly)"]
   "frequency_count_per_period" INT [note: "Number of payments in each period"]
   "frequency_point_in_time" VARCHAR(2) [note: "Specific day or time point for payments"]
   "reason" VARCHAR(256) [note: "Reason or purpose for the mandate"]
@@ -345,7 +356,7 @@ Table "consumer_banking"."products" {
 
 Table "consumer_banking"."other_product_types" {
   "consumer_banking_other_product_type_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each custom product type"]
-  "consumer_banking_product_id" INTEGER [not null, note: "References the related product record"]
+  "consumer_banking_product_id" INTEGER [not null, ref: > consumer_banking.products.consumer_banking_product_id, note: "References the related product record"]
   "name" VARCHAR(350) [not null, note: "Name of the custom product type"]
   "description" VARCHAR(350) [not null, note: "Detailed description of the custom product type"]
 
@@ -367,7 +378,7 @@ Table "consumer_banking"."scheduled_payments" {
 
 Table "consumer_banking"."scheduled_payment_creditor_agents" {
   "consumer_banking_scheduled_payment_creditor_agent_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each agent record"]
-  "consumer_banking_scheduled_payment_id" INTEGER [not null, note: "References the scheduled payment"]
+  "consumer_banking_scheduled_payment_id" INTEGER [not null, ref: > consumer_banking.scheduled_payments.consumer_banking_scheduled_payment_id, note: "References the scheduled payment"]
   "scheme_name" VARCHAR(50) [not null, note: "Identifier scheme for the receiving institution (e.g., BIC)"]
   "identification" VARCHAR(35) [not null, note: "Identifier of the receiving financial institution"]
   "name" VARCHAR(140) [note: "Name of the receiving financial institution"]
@@ -378,7 +389,7 @@ Table "consumer_banking"."scheduled_payment_creditor_agents" {
 
 Table "consumer_banking"."scheduled_payment_creditor_accounts" {
   "consumer_banking_scheduled_payment_creditor_account_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each creditor account"]
-  "consumer_banking_scheduled_payment_id" INTEGER [not null, note: "References the scheduled payment"]
+  "consumer_banking_scheduled_payment_id" INTEGER [not null, ref: > consumer_banking.scheduled_payments.consumer_banking_scheduled_payment_id, note: "References the scheduled payment"]
   "scheme_name" VARCHAR(50) [not null, note: "Account identifier scheme (e.g., IBAN)"]
   "identification" VARCHAR(256) [not null, note: "Account identifier for receiving the payment"]
   "name" VARCHAR(350) [note: "Name associated with the receiving account"]
@@ -408,7 +419,7 @@ Table "consumer_banking"."standing_orders" {
 
 Table "consumer_banking"."standing_order_creditor_agents" {
   "consumer_banking_standing_order_creditor_agent_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each agent record"]
-  "consumer_banking_standing_order_id" INTEGER [not null, note: "References the standing order"]
+  "consumer_banking_standing_order_id" INTEGER [not null, ref: > consumer_banking.standing_orders.consumer_banking_standing_order_id , note: "References the standing order"]
   "scheme_name" VARCHAR(50) [not null, note: "Identifier scheme for the receiving institution"]
   "identification" VARCHAR(35) [not null, note: "Identifier of the receiving financial institution"]
   "name" VARCHAR(140) [note: "Name of the receiving financial institution"]
@@ -419,7 +430,7 @@ Table "consumer_banking"."standing_order_creditor_agents" {
 
 Table "consumer_banking"."standing_order_creditor_accounts" {
   "consumer_banking_standing_order_creditor_account_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each creditor account"]
-  "consumer_banking_standing_order_id" INTEGER [not null, note: "References the standing order"]
+  "consumer_banking_standing_order_id" INTEGER [not null, ref: > consumer_banking.standing_orders.consumer_banking_standing_order_id, note: "References the standing order"]
   "scheme_name" VARCHAR(50) [not null, note: "Account identifier scheme (e.g., IBAN)"]
   "identification" VARCHAR(256) [not null, note: "Account identifier for receiving the payments"]
   "name" VARCHAR(350) [note: "Name associated with the receiving account"]
@@ -534,16 +545,16 @@ Table "consumer_banking"."transactions" {
   "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if transaction is a credit or debit"]
   "status" VARCHAR(10) [not null, note: "Status of the transaction (e.g., pending, booked, rejected)"]
   "transaction_mutability" VARCHAR(10) [note: "Whether the transaction can be changed (e.g., mutable, immutable)"]
-  "booking_date_time" TIMESTAMP [not null, note: "When the transaction was recorded in the books"]
-  "value_date_time" TIMESTAMP [note: "When the transaction affects the account balance"]
-  "transaction_information" VARCHAR(500) [note: "Additional information about the transaction"]
-  "address_line" VARCHAR(70) [note: "Address associated with the transaction, if applicable"]
+  "transaction_date" TIMESTAMP [not null, note: "When the transaction was recorded in the books"]
+  "value_date" TIMESTAMP [note: "When the transaction affects the account balance"]
+  "description" VARCHAR(500) [note: "Additional information about the transaction"]
+  "merchant_address" VARCHAR(70) [note: "Address associated with the transaction, if applicable"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount of the transaction"]
   "currency" VARCHAR(3) [not null, note: "Currency code for the transaction amount"]
   "charge_amount" NUMERIC(18,5) [note: "Any fees associated with the transaction"]
   "charge_currency" VARCHAR(3) [note: "Currency code for the transaction fee"]
-  "category_purpose_code" VARCHAR(4) [note: "Code classifying the overall purpose of the transaction"]
-  "payment_purpose_code" VARCHAR(4) [note: "Code classifying the specific purpose of the payment"]
+  "category" VARCHAR(20) [note: "Code classifying the overall purpose of the transaction"]
+  "transaction_type" VARCHAR(20) [note: "Code classifying the specific purpose of the payment"]
 
   note: "Stores detailed information about account transactions"
 }
@@ -580,8 +591,8 @@ Table "consumer_banking"."transaction_bank_transaction_codes" {
   note: "Stores standardized bank transaction codes that categorize transactions"
 }
 
-Table "consumer_banking"."transaction_proprietary_bank_transaction_codes" {
-  "consumer_banking_transaction_proprietary_bank_transaction_code_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each proprietary code record"]
+Table "consumer_banking"."proprietary_transaction_codes" {
+  "consumer_banking_proprietary_transaction_code_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each proprietary code record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this code belongs to"]
   "code" VARCHAR(35) [not null, note: "Custom transaction code defined by the issuer"]
   "issuer" VARCHAR(35) [note: "Organization that defined the proprietary code"]
@@ -593,7 +604,7 @@ Table "consumer_banking"."transaction_balances" {
   "consumer_banking_transaction_balance_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each transaction balance record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this balance belongs to"]
   "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if balance is credit or debit"]
-  "type" VARCHAR(4) [not null, note: "Type of balance (e.g., available, booked)"]
+  "type" VARCHAR(20) [not null, note: "Type of balance (e.g., available, booked)"]
   "amount" NUMERIC(18,5) [not null, note: "Balance amount after the transaction"]
   "currency" VARCHAR(3) [not null, note: "Currency code for the balance amount"]
 
@@ -604,7 +615,7 @@ Table "consumer_banking"."transaction_merchant_details" {
   "consumer_banking_transaction_merchant_detail_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each merchant detail record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this merchant detail belongs to"]
   "merchant_name" VARCHAR(350) [not null, note: "Name of the merchant involved in the transaction"]
-  "merchant_category_code" VARCHAR(4) [not null, note: "Standard code identifying the merchant's business category"]
+  "merchant_category_code" VARCHAR(20) [not null, note: "Standard code identifying the merchant's business category"]
 
   note: "Stores information about merchants involved in transactions"
 }
@@ -698,6 +709,73 @@ Table "consumer_banking"."account_statement_preferences" {
   note: "Stores customer preferences for account statements"
 }
 
+TableGroup "Consumer Accounts" [color: #2D6512] {
+  "consumer_banking"."accounts"
+  "consumer_banking"."account_access_consents"
+  "consumer_banking"."account_access_consents_permissions"
+  "consumer_banking"."balances"
+  "consumer_banking"."account_statement_preferences"
+
+  note: "Tables related to consumer-facing account functionality"
+}
+
+TableGroup "Beneficiaries" [color: #2D6512] {
+  "consumer_banking"."beneficiaries"
+  "consumer_banking"."beneficiary_creditor_agents"
+  "consumer_banking"."beneficiary_creditor_accounts"
+
+  note: "Tables related to payment beneficiary management"
+}
+
+TableGroup "Offers & Products" [color: #2D6512] {
+  "consumer_banking"."offers"
+  "consumer_banking"."products"
+  "consumer_banking"."other_product_types"
+
+  note: "Tables related to banking products and promotional offers"
+}
+
+TableGroup "Statements" [color: #2D6512] {
+  "consumer_banking"."statements"
+  "consumer_banking"."statement_descriptions"
+  "consumer_banking"."statement_benefits"
+  "consumer_banking"."statement_fees"
+  "consumer_banking"."statement_interests"
+  "consumer_banking"."statement_amounts"
+  "consumer_banking"."statement_date_times"
+  "consumer_banking"."statement_rates"
+  "consumer_banking"."statement_values"
+
+  note: "Tables related to account statement generation and content"
+}
+
+TableGroup "Transactions" [color: #2D6512] {
+  "consumer_banking"."transactions"
+  "consumer_banking"."transaction_statement_references"
+  "consumer_banking"."transaction_currency_exchanges"
+  "consumer_banking"."transaction_bank_transaction_codes"
+  "consumer_banking"."proprietary_transaction_codes"
+  "consumer_banking"."transaction_balances"
+  "consumer_banking"."transaction_merchant_details"
+  "consumer_banking"."transaction_creditor_agents"
+  "consumer_banking"."transaction_creditor_accounts"
+  "consumer_banking"."transaction_debtor_agents"
+  "consumer_banking"."transaction_debtor_accounts"
+  "consumer_banking"."transaction_card_instruments"
+  "consumer_banking"."transaction_ultimate_creditors"
+  "consumer_banking"."transaction_ultimate_debtors"
+  "consumer_banking"."standing_orders"
+  "consumer_banking"."standing_order_creditor_agents"
+  "consumer_banking"."standing_order_creditor_accounts"
+  "consumer_banking"."scheduled_payments"
+  "consumer_banking"."scheduled_payment_creditor_agents"
+  "consumer_banking"."scheduled_payment_creditor_accounts"
+  "consumer_banking"."direct_debits"
+  "consumer_banking"."mandate_related_information"
+
+  note: "Tables related to financial transactions, including payment details, currency exchanges, transaction codes, merchant information, and payment schedules"
+}
+
 //
 // MORTGAGE SERVICES
 //
@@ -724,7 +802,7 @@ Table "mortgage_services"."applications" {
 
 Table "mortgage_services"."application_borrowers" {
   "mortgage_services_application_borrower_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each application-borrower relationship"]
-  "mortgage_services_application_id" INTEGER [pk, not null, note: "References the mortgage application"]
+  "mortgage_services_application_id" INTEGER [pk, not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application"]
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower associated with this application"]
   "borrower_type" VARCHAR(20) [not null, note: "Role of this borrower (e.g., Primary, Co-Borrower)"]
   "relationship_to_primary" VARCHAR(50) [note: "Relationship of co-borrower to primary borrower"]
@@ -818,7 +896,7 @@ Table "mortgage_services"."borrower_liabilities" {
 
 Table "mortgage_services"."properties" {
   "mortgage_services_property_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each property record"]
-  "mortgage_services_application_id" INTEGER [not null, note: "References the mortgage application this property is associated with"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application this property is associated with"]
   "enterprise_address_id" INTEGER [not null, ref: > enterprise.addresses.enterprise_address_id, note: "References the property address"]
   "property_type" VARCHAR(50) [not null, note: "Type of property (e.g., Single Family, Condo)"]
   "occupancy_type" VARCHAR(30) [not null, note: "How the property will be used by the borrower"]
@@ -836,7 +914,7 @@ Table "mortgage_services"."properties" {
 
 Table "mortgage_services"."loans" {
   "mortgage_services_loan_id" SERIAL [pk, increment, note: "Unique identifier for each loan"]
-  "mortgage_services_application_id" INTEGER [not null, note: "References the mortgage application this loan is associated with"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application this loan is associated with"]
   "loan_type" VARCHAR(50) [not null, note: "Type of mortgage loan product"]
   "interest_rate_type" VARCHAR(20) [not null, note: "Whether the rate is fixed or adjustable"]
   "interest_rate" NUMERIC(6,3) [not null, note: "Annual percentage rate for the loan"]
@@ -879,7 +957,7 @@ Table "mortgage_services"."loan_products" {
 
 Table "mortgage_services"."loan_rate_locks" {
   "mortgage_services_rate_lock_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each rate lock"]
-  "mortgage_services_loan_id" INTEGER [not null, note: "References the loan this rate lock applies to"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this rate lock applies to"]
   "lock_date" TIMESTAMP [not null, note: "When the interest rate was locked"]
   "expiration_date" TIMESTAMP [not null, note: "When the rate lock expires"]
   "locked_interest_rate" NUMERIC(6,3) [not null, note: "The interest rate secured by this lock"]
@@ -894,7 +972,7 @@ Table "mortgage_services"."loan_rate_locks" {
 
 Table "mortgage_services"."documents" {
   "mortgage_services_document_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each document"]
-  "mortgage_services_application_id" INTEGER [not null, note: "References the application this document belongs to"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this document belongs to"]
   "document_type" VARCHAR(50) [not null, note: "Category of document (e.g., W2, Tax Return)"]
   "document_name" VARCHAR(255) [not null, note: "Filename or display name of the document"]
   "document_path" VARCHAR(500) [not null, note: "Storage location or path to access the document"]
@@ -910,7 +988,7 @@ Table "mortgage_services"."documents" {
 
 Table "mortgage_services"."conditions" {
   "mortgage_services_condition_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each condition"]
-  "mortgage_services_application_id" INTEGER [not null, note: "References the application this condition applies to"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this condition applies to"]
   "condition_type" VARCHAR(50) [not null, note: "When the condition must be satisfied (e.g., Prior to Approval)"]
   "description" TEXT [not null, note: "Detailed explanation of what must be provided or resolved"]
   "status" VARCHAR(20) [not null, note: "Current status of the condition"]
@@ -925,8 +1003,8 @@ Table "mortgage_services"."conditions" {
 
 Table "mortgage_services"."appraisals" {
   "mortgage_services_appraisal_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each appraisal"]
-  "mortgage_services_loan_id" INTEGER [not null, note: "References the loan this appraisal is for"]
-  "mortgage_services_property_id" INTEGER [not null, note: "References the property being appraised"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this appraisal is for"]
+  "mortgage_services_property_id" INTEGER [not null, ref: > mortgage_services.properties.mortgage_services_property_id, note: "References the property being appraised"]
   "appraisal_type" VARCHAR(50) [not null, note: "Type of appraisal being performed"]
   "ordered_date" TIMESTAMP [not null, note: "When the appraisal was ordered"]
   "appraiser_name" VARCHAR(100) [note: "Name of the assigned appraiser"]
@@ -943,8 +1021,8 @@ Table "mortgage_services"."appraisals" {
 
 Table "mortgage_services"."credit_reports" {
   "mortgage_services_credit_report_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each credit report"]
-  "mortgage_services_application_id" INTEGER [not null, note: "References the application this credit report is for"]
-  "mortgage_services_borrower_id" INTEGER [not null, note: "References the borrower this credit report is for"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this credit report is for"]
+  "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower this credit report is for"]
   "report_date" TIMESTAMP [not null, note: "When the credit report was pulled"]
   "expiration_date" DATE [not null, note: "When the credit report expires"]
   "credit_score" INTEGER [note: "Credit score from the report"]
@@ -957,7 +1035,7 @@ Table "mortgage_services"."credit_reports" {
 
 Table "mortgage_services"."closing_disclosures" {
   "mortgage_services_disclosure_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each disclosure"]
-  "mortgage_services_loan_id" INTEGER [not null, note: "References the loan this disclosure is for"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this disclosure is for"]
   "disclosure_type" VARCHAR(50) [not null, note: "Type of disclosure document"]
   "created_date" TIMESTAMP [not null, note: "When the disclosure was created"]
   "sent_date" TIMESTAMP [note: "When the disclosure was sent to borrowers"]
@@ -974,7 +1052,7 @@ Table "mortgage_services"."closing_disclosures" {
 
 Table "mortgage_services"."closing_appointments" {
   "mortgage_services_appointment_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each appointment"]
-  "mortgage_services_loan_id" INTEGER [not null, note: "References the loan this closing is for"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this closing is for"]
   "scheduled_date" TIMESTAMP [not null, note: "When the closing is scheduled"]
   "location_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the address where closing will occur"]
   "status" VARCHAR(20) [not null, note: "Current status of the closing appointment"]
@@ -989,7 +1067,7 @@ Table "mortgage_services"."closing_appointments" {
 
 Table "mortgage_services"."closed_loans" {
   "mortgage_services_closed_loan_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each closed loan record"]
-  "mortgage_services_loan_id" INTEGER [not null, note: "References the loan that was closed"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan that was closed"]
   "closing_date" DATE [not null, note: "When loan documents were signed"]
   "funding_date" DATE [not null, note: "When loan funds were disbursed"]
   "final_loan_amount" NUMERIC(18,2) [not null, note: "Final principal amount of the loan"]
@@ -1008,7 +1086,7 @@ Table "mortgage_services"."closed_loans" {
 
 Table "mortgage_services"."servicing_accounts" {
   "mortgage_services_servicing_account_id" SERIAL [pk, note: "Unique identifier for each servicing account"]
-  "mortgage_services_loan_id" INTEGER [not null, note: "References the originated loan"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the originated loan"]
   "account_number" VARCHAR(30) [not null, unique, note: "Customer-facing servicing account number"]
   "status" VARCHAR(20) [not null, note: "Current status of the loan being serviced"]
   "current_principal_balance" NUMERIC(18,2) [not null, note: "Current remaining principal balance"]
@@ -1122,7 +1200,7 @@ Table "mortgage_services"."loan_modifications" {
 Table "mortgage_services"."customer_communications" {
   "mortgage_services_communication_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each communication"]
   "mortgage_services_servicing_account_id" INTEGER [ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account if communication is about servicing"]
-  "mortgage_services_application_id" INTEGER [note: "References the application if communication is about application"]
+  "mortgage_services_application_id" INTEGER [ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application if communication is about application"]
   "communication_date" TIMESTAMP [not null, note: "When the communication occurred"]
   "communication_type" VARCHAR(30) [not null, note: "Medium of communication (e.g., Email, Letter, Phone)"]
   "direction" VARCHAR(10) [not null, note: "Whether communication was incoming or outgoing"]
@@ -1140,13 +1218,13 @@ Table "mortgage_services"."customer_communications" {
 
 Table "mortgage_services"."hmda_records" {
   "mortgage_services_hmda_record_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each HMDA record"]
-  "mortgage_services_application_id" INTEGER [not null, note: "References the associated mortgage application"]
-  "mortgage_services_loan_id" INTEGER [note: "References the associated loan if originated"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the associated mortgage application"]
+  "mortgage_services_loan_id" INTEGER [ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the associated loan if originated"]
   "reporting_year" INTEGER [not null, note: "Calendar year for HMDA reporting"]
   "lei" VARCHAR(20) [not null, note: "Legal Entity Identifier of the reporting institution"]
   "loan_type" VARCHAR(79) [not null, note: "Code indicating loan type (1=Conventional, 2=FHA, 3=VA, 4=USDA)"]
   "loan_purpose" VARCHAR(81) [not null, note: "Code indicating loan purpose (1=Home purchase, 2=Home improvement, etc.)"]
-  "preapproval" VARCHAR(4) [not null, note: "Code indicating if preapproval was requested"]
+  "preapproval" VARCHAR(20) [not null, note: "Code indicating if preapproval was requested"]
   "construction_method" VARCHAR(20) [not null, note: "Code indicating construction method (1=Site-built, 2=Manufactured)"]
   "occupancy_type" VARCHAR(20) [not null, note: "Code indicating intended property use (1=Primary, 2=Secondary, 3=Investment)"]
   "loan_amount" NUMERIC(18,2) [not null, note: "Amount of the loan or application"]
@@ -1172,25 +1250,25 @@ Table "mortgage_services"."hmda_records" {
   "lender_credits" NUMERIC(18,2) [note: "Credits provided by lender"]
   "loan_term" INTEGER [note: "Term of the loan in months"]
   "intro_rate_period" INTEGER [note: "Months until first rate adjustment for ARMs"]
-  "balloon_payment" VARCHAR(4) [note: "Whether loan has balloon payment feature (1=Yes, 2=No)"]
-  "interest_only_payment" VARCHAR(4) [note: "Whether loan has interest-only payments (1=Yes, 2=No)"]
-  "negative_amortization" VARCHAR(4) [note: "Whether loan allows negative amortization (1=Yes, 2=No)"]
-  "other_non_amortizing_features" VARCHAR(4) [note: "Whether loan has other non-amortizing features (1=Yes, 2=No)"]
+  "balloon_payment" VARCHAR(20) [note: "Whether loan has balloon payment feature (1=Yes, 2=No)"]
+  "interest_only_payment" VARCHAR(20) [note: "Whether loan has interest-only payments (1=Yes, 2=No)"]
+  "negative_amortization" VARCHAR(20) [note: "Whether loan allows negative amortization (1=Yes, 2=No)"]
+  "other_non_amortizing_features" VARCHAR(20) [note: "Whether loan has other non-amortizing features (1=Yes, 2=No)"]
   "property_value" NUMERIC(18,2) [note: "Value of the property securing the loan"]
   "manufactured_home_secured_property_type" VARCHAR(20) [note: "Code for manufactured home property type"]
   "manufactured_home_land_property_interest" VARCHAR(20) [note: "Code for land ownership with manufactured home"]
   "total_units" INTEGER [not null, note: "Number of dwelling units in the property"]
   "multifamily_affordable_units" INTEGER [note: "Number of income-restricted units in multifamily property"]
   "submission_of_application" VARCHAR(90) [note: "How application was submitted (1=Direct, 2=Not direct)"]
-  "initially_payable_to_institution" VARCHAR(4) [note: "Whether loan was initially payable to reporting institution"]
+  "initially_payable_to_institution" VARCHAR(20) [note: "Whether loan was initially payable to reporting institution"]
   "aus1" VARCHAR(60) [note: "Primary automated underwriting system used"]
   "aus2" VARCHAR(60) [note: "Secondary automated underwriting system used if applicable"]
   "aus3" VARCHAR(60) [note: "Additional automated underwriting system if applicable"]
   "aus4" VARCHAR(60) [note: "Additional automated underwriting system if applicable"]
   "aus5" VARCHAR(60) [note: "Additional automated underwriting system if applicable"]
-  "reverse_mortgage" VARCHAR(4) [note: "Whether loan is a reverse mortgage (1=Yes, 2=No)"]
-  "open_end_line_of_credit" VARCHAR(4) [note: "Whether loan is an open-end line of credit (1=Yes, 2=No)"]
-  "business_or_commercial_purpose" VARCHAR(4) [note: "Whether loan is for business purpose (1=Yes, 2=No)"]
+  "reverse_mortgage" VARCHAR(20) [note: "Whether loan is a reverse mortgage (1=Yes, 2=No)"]
+  "open_end_line_of_credit" VARCHAR(20) [note: "Whether loan is an open-end line of credit (1=Yes, 2=No)"]
+  "business_or_commercial_purpose" VARCHAR(20) [note: "Whether loan is for business purpose (1=Yes, 2=No)"]
   "submission_status" VARCHAR(80) [not null, default: 'PENDING', note: "Status of HMDA submission for this record"]
   "last_submission_date" DATE [note: "When record was last submitted to regulators"]
   "last_modified_date" TIMESTAMP [not null, note: "When record was last modified"]
@@ -1201,7 +1279,7 @@ Table "mortgage_services"."hmda_records" {
 
 Table "mortgage_services"."hmda_applicant_demographics" {
   "mortgage_services_applicant_demographics_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each demographics record"]
-  "mortgage_services_hmda_record_id" INTEGER [not null, note: "References the associated HMDA record"]
+  "mortgage_services_hmda_record_id" INTEGER [not null, ref: > mortgage_services.hmda_records.mortgage_services_hmda_record_id, note: "References the associated HMDA record"]
   "applicant_type" VARCHAR(20) [not null, note: "Indicates if record is for primary applicant or co-applicant"]
   ethnicity_1 VARCHAR(100) [note: "Primary ethnicity selection"]
   ethnicity_2 VARCHAR(100) [note: "Secondary ethnicity selection if applicable"]
@@ -1228,7 +1306,7 @@ Table "mortgage_services"."hmda_applicant_demographics" {
 
 Table "mortgage_services"."hmda_edits" {
   "mortgage_services_edit_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each edit finding"]
-  "mortgage_services_hmda_record_id" INTEGER [not null, note: "References the HMDA record with the edit issue"]
+  "mortgage_services_hmda_record_id" INTEGER [not null, ref: > mortgage_services.hmda_records.mortgage_services_hmda_record_id, note: "References the HMDA record with the edit issue"]
   "edit_code" VARCHAR(20) [not null, note: "Standardized code identifying the specific edit rule"]
   "edit_type" VARCHAR(20) [not null, note: "Category of edit (SYNTACTICAL, VALIDITY, QUALITY, MACRO)"]
   "edit_description" TEXT [not null, note: "Description of the edit issue"]
@@ -1265,7 +1343,7 @@ Table "mortgage_services"."hmda_submissions" {
   note: "Tracks submissions of HMDA data to regulatory agencies"
 }
 
-TableGroup "Mortgage" {
+TableGroup "Mortgage" [color: #990D0D] {
   "mortgage_services"."applications"
   "mortgage_services"."application_borrowers"
   "mortgage_services"."borrowers"
@@ -1279,14 +1357,14 @@ TableGroup "Mortgage" {
   note: "Tables related to mortgage applications and loan processing"
 }
 
-TableGroup "Loan & Products" {
+TableGroup "Loan & Products" [color: #990D0D] {
   "mortgage_services"."loan_products"
   "mortgage_services"."loan_rate_locks"
 
   note: "Tables related to mortgage product offerings and rate locks"
 }
 
-TableGroup "Processing & Underwriting" {
+TableGroup "Processing & Underwriting" [color: #990D0D] {
   "mortgage_services"."documents"
   "mortgage_services"."conditions"
   "mortgage_services"."appraisals"
@@ -1295,7 +1373,7 @@ TableGroup "Processing & Underwriting" {
   note: "Tables supporting the mortgage application review process"
 }
 
-TableGroup "Closing" {
+TableGroup "Closing" [color: #990D0D] {
   "mortgage_services"."closing_disclosures"
   "mortgage_services"."closing_appointments"
   "mortgage_services"."closed_loans"
@@ -1303,7 +1381,7 @@ TableGroup "Closing" {
   note: "Tables related to mortgage loan closing activities"
 }
 
-TableGroup "Servicing" {
+TableGroup "Servicing" [color: #990D0D] {
   "mortgage_services"."servicing_accounts"
   "mortgage_services"."payments"
   "mortgage_services"."escrow_disbursements"
@@ -1315,7 +1393,7 @@ TableGroup "Servicing" {
   note: "Tables related to ongoing management of closed mortgage loans"
 }
 
-TableGroup "Mortgage Regulatory" {
+TableGroup "Mortgage Regulatory" [color: #990D0D] {
   "mortgage_services"."hmda_records"
   "mortgage_services"."hmda_applicant_demographics"
   "mortgage_services"."hmda_edits"
@@ -2106,6 +2184,24 @@ Table "consumer_lending"."compliance_exceptions" {
   note: "Tracks compliance exceptions and issues encountered during the lending process, including remediation efforts."
 }
 
+Table "consumer_banking"."customer_interactions" {
+  "consumer_banking_interaction_id" SERIAL [pk, increment, note: 'A unique identifier for each interaction.']
+  "customer_id" INT [ref: > enterprise.parties.enterprise_party_id, note: 'The ID of the customer involved in the interaction.']
+  "account_id" INT [null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: 'The ID of the specific account related to the interaction. This can be NULL if the interaction isn\'t tied to a specific account (e.g., a general inquiry).']
+  "enterprise_associate_id" INT [null, ref: > enterprise.associates.enterprise_associate_id, note: 'The ID of the bank employee who handled the interaction. This can be NULL if it was an automated interaction.']
+  "interaction_type" VARCHAR(50) [note: 'The type of interaction (e.g., "phone call," "email," "chat," "in-person," "online form," "ATM interaction").']
+  "interaction_date_time" TIMESTAMP [note: 'The date and time of the interaction.']
+  "channel" VARCHAR(50) [note: 'The channel through which the interaction occurred (e.g., "phone," "email," "web," "branch," "mobile app").']
+  "subject" VARCHAR(255) [null, note: 'A brief subject or title of the interaction.']
+  "description" TEXT [null, note: 'A detailed description of the interaction.']
+  "resolution" TEXT [null, note: 'Description of how the interaction was resolved.']
+  "status" VARCHAR(20) [note: 'The status of the interaction (e.g., "open," "resolved," "pending").']
+  "priority" VARCHAR(20) [null, note: 'The priority of the interaction (e.g., "high," "medium," "low").']
+  "related_transaction_id" INT [null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: 'If the interaction relates to a specific transaction, this can hold that transaction ID.']
+  "created_at" TIMESTAMP [default: `now()`, note: 'When the interaction record was created.']
+  "updated_at" TIMESTAMP [default: `now()`, note: 'When the interaction record was last updated.']
+}
+
 TableGroup "Loan Applications" {
   "consumer_lending"."loan_applications"
   "consumer_lending"."application_applicants"
@@ -2405,10 +2501,9 @@ Table "credit_cards"."card_accounts" {
   "credit_cards_product_id" INTEGER [not null, note: "Reference to card_products"]
   "credit_cards_application_id" INTEGER [note: "Reference to original application if applicable"]
   "account_number" VARCHAR(30) [not null, unique, note: "Masked account number"]
+  "opened_date" DATE [not null, note: "When account was opened"]
   "status" VARCHAR(20) [not null, note: "Account status (Active, Inactive, Closed, Suspended)"]
-  "open_date" DATE [not null, note: "When account was opened"]
-  "close_date" DATE [note: "When account was closed if applicable"]
-  "close_reason" VARCHAR(100) [note: "Reason for account closure if applicable"]
+  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
   "credit_limit" NUMERIC(10,2) [not null, note: "Current approved credit limit"]
   "available_credit" NUMERIC(10,2) [not null, note: "Current available credit"]
   "cash_advance_limit" NUMERIC(10,2) [note: "Limit for cash advances if different"]
@@ -2485,7 +2580,7 @@ Table "credit_cards"."transactions" {
   "amount" NUMERIC(10,2) [not null, note: "Transaction amount"]
   "description" VARCHAR(100) [not null, note: "Merchant name or transaction description"]
   "category" VARCHAR(50) [note: "Spending category (e.g., Dining, Travel, Merchandise)"]
-  "mcc_code" VARCHAR(4) [note: "Merchant Category Code"]
+  "mcc_code" VARCHAR(20) [note: "Merchant Category Code"]
   "is_international" BOOLEAN [not null, default: false, note: "Whether transaction is international"]
   "original_currency" VARCHAR(3) [note: "Original currency if international"]
   "original_amount" NUMERIC(10,2) [note: "Amount in original currency if international"]
@@ -2812,11 +2907,13 @@ Table "small_business_banking"."business_owners" {
 
 Table "small_business_banking"."accounts" {
   "small_business_banking_account_id" SERIAL [pk, increment, note: "Unique identifier for each business account"]
+  "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the main account"]
   "small_business_banking_business_id" INTEGER [not null, ref: > "small_business_banking"."businesses"."small_business_banking_business_id", note: "Reference to the business that owns this account"]
   "account_number" VARCHAR(50) [not null, note: "Unique account number visible to customers"]
   "account_type" VARCHAR(50) [not null, note: "Type of account (checking, savings, money market, etc.)"]
   "small_business_banking_product_id" INTEGER [not null, ref: > "small_business_banking"."products"."small_business_banking_product_id", note: "Reference to the product this account is based on"]
-  "status" VARCHAR(20) [not null, default: "active", note: "Current status of the account (active, inactive, frozen, closed)"]
+  "status" VARCHAR(40) [not null, default: "active", note: "Current status of the account (active, inactive, frozen, closed)"]
+  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
   "balance" DECIMAL(18,2) [not null, default: 0.00, note: "Current balance of the account"]
   "available_balance" DECIMAL(18,2) [not null, default: 0.00, note: "Available balance after holds and pending transactions"]
   "currency" CHAR(3) [not null, default: "USD", note: "ISO currency code for the account"]
@@ -2826,7 +2923,6 @@ Table "small_business_banking"."accounts" {
   "statement_day" INTEGER [note: "Day of month/week when statements are generated"]
   "last_statement_date" DATE [note: "Date when the last statement was generated"]
   "opened_date" DATE [not null, note: "Date when the account was opened"]
-  "closed_date" DATE [note: "Date when the account was closed (if applicable)"]
 
   Indexes {
     "account_number" [unique, note: "Ensures account numbers are unique"]
@@ -2924,7 +3020,7 @@ Table "small_business_banking"."credit_lines" {
   "minimum_payment_amount" DECIMAL(10,2) [not null, note: "Minimum fixed amount required as monthly payment"]
   "start_date" DATE [not null, note: "Date when the credit line becomes available"]
   "renewal_date" DATE [note: "Date when the credit line is up for renewal"]
-  "status" VARCHAR(20) [not null, default: "active", note: "Current status of the credit line (active, frozen, closed)"]
+  "status" VARCHAR(20) [not null, default: "active", note: "Current status of the credit line (active, inactive, frozen, closed)"]
 
   Indexes {
     "credit_line_number" [unique, note: "Ensures credit line numbers are unique"]
@@ -3444,162 +3540,66 @@ TableGroup AMLAndKYC {
 // REFERENCES
 //
 
-Ref:"consumer_banking"."products"."consumer_banking_product_id" < "consumer_banking"."other_product_types"."consumer_banking_product_id" [note: "Associates custom product types with their base products"]
-Ref:"consumer_banking"."scheduled_payments"."consumer_banking_scheduled_payment_id" < "consumer_banking"."scheduled_payment_creditor_agents"."consumer_banking_scheduled_payment_id" [note: "Associates scheduled payments with receiving financial institutions"]
-Ref:"consumer_banking"."scheduled_payments"."consumer_banking_scheduled_payment_id" < "consumer_banking"."scheduled_payment_creditor_accounts"."consumer_banking_scheduled_payment_id" [note: "Associates scheduled payments with destination accounts"]
-Ref:"consumer_banking"."standing_orders"."consumer_banking_standing_order_id" < "consumer_banking"."standing_order_creditor_agents"."consumer_banking_standing_order_id" [note: "Associates standing orders with receiving financial institutions"]
-Ref:"consumer_banking"."standing_orders"."consumer_banking_standing_order_id" < "consumer_banking"."standing_order_creditor_accounts"."consumer_banking_standing_order_id" [note: "Associates standing orders with destination accounts"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."application_borrowers"."mortgage_services_application_id" [note: "Links borrowers to mortgage applications"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."properties"."mortgage_services_application_id" [note: "Links properties to mortgage applications"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."loans"."mortgage_services_application_id" [note: "Links loans to their applications"]
-Ref:"mortgage_services"."loans"."mortgage_services_loan_id" < "mortgage_services"."loan_rate_locks"."mortgage_services_loan_id" [note: "Links rate locks to their loans"]
-Ref:"mortgage_services"."loans"."mortgage_services_loan_id" < "mortgage_services"."appraisals"."mortgage_services_loan_id" [note: "Links appraisals to their loans"]
-Ref:"mortgage_services"."properties"."mortgage_services_property_id" < "mortgage_services"."appraisals"."mortgage_services_property_id" [note: "Links appraisals to properties"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."documents"."mortgage_services_application_id" [note: "Links documents to applications"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."conditions"."mortgage_services_application_id" [note: "Links conditions to applications"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."credit_reports"."mortgage_services_application_id" [note: "Links credit reports to applications"]
-Ref:"mortgage_services"."borrowers"."mortgage_services_borrower_id" < "mortgage_services"."credit_reports"."mortgage_services_borrower_id" [note: "Links credit reports to specific borrowers"]
-Ref:"mortgage_services"."loans"."mortgage_services_loan_id" < "mortgage_services"."closing_disclosures"."mortgage_services_loan_id" [note: "Links closing disclosures to loans"]
-Ref:"mortgage_services"."loans"."mortgage_services_loan_id" < "mortgage_services"."closing_appointments"."mortgage_services_loan_id" [note: "Links closing appointments to loans"]
-Ref:"mortgage_services"."loans"."mortgage_services_loan_id" < "mortgage_services"."closed_loans"."mortgage_services_loan_id" [note: "Links closed loan records to loans"]
-Ref:"mortgage_services"."loans"."mortgage_services_loan_id" < "mortgage_services"."servicing_accounts"."mortgage_services_loan_id" [note: "Links servicing accounts to originated loans"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."customer_communications"."mortgage_services_application_id" [note: "Links customer communications to applications"]
-Ref:"mortgage_services"."applications"."mortgage_services_application_id" < "mortgage_services"."hmda_records"."mortgage_services_application_id" [note: "Links HMDA records to mortgage applications"]
-Ref:"mortgage_services"."loans"."mortgage_services_loan_id" < "mortgage_services"."hmda_records"."mortgage_services_loan_id" [note: "Links HMDA records to originated loans when applicable"]
-Ref:"mortgage_services"."hmda_records"."mortgage_services_hmda_record_id" < "mortgage_services"."hmda_applicant_demographics"."mortgage_services_hmda_record_id" [note: "Links demographic information to HMDA records"]
-Ref:"mortgage_services"."hmda_records"."mortgage_services_hmda_record_id" < "mortgage_services"."hmda_edits"."mortgage_services_hmda_record_id" [note: "Links edit findings to HMDA records"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."application_applicants"."consumer_lending_application_id" [note: "Links applicants to loan applications"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."application_applicants"."consumer_lending_applicant_id" [note: "Links applicant details to application"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_employments"."consumer_lending_applicant_id" [note: "Links employment history to applicant"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_incomes"."consumer_lending_applicant_id" [note: "Links income sources to applicant"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_assets"."consumer_lending_applicant_id" [note: "Links assets to applicant"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_liabilities"."consumer_lending_applicant_id" [note: "Links liabilities to applicant"]
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."product_eligibility_criteria"."consumer_lending_loan_product_id" [note: "Links eligibility criteria to product"]
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."risk_based_pricing_tiers"."consumer_lending_loan_product_id" [note: "Links pricing tiers to product"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."credit_reports"."consumer_lending_application_id" [note: "Links credit reports to application"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."credit_reports"."consumer_lending_applicant_id" [note: "Links credit reports to specific applicant"]
-Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."credit_report_tradelines"."consumer_lending_credit_report_id" [note: "Links tradelines to credit report"]
-Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."credit_inquiries"."consumer_lending_credit_report_id" [note: "Links inquiries to credit report"]
-Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."public_records"."consumer_lending_credit_report_id" [note: "Links public records to credit report"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."application_decisions"."consumer_lending_application_id" [note: "Links decisions to application"]
-Ref:"consumer_lending"."decision_models"."consumer_lending_model_id" < "consumer_lending"."application_decisions"."consumer_lending_model_id" [note: "Links decision model used"]
-Ref:"consumer_lending"."risk_based_pricing_tiers"."consumer_lending_pricing_tier_id" < "consumer_lending"."application_decisions"."consumer_lending_pricing_tier_id" [note: "Links pricing tier to decision"]
-Ref:"consumer_lending"."application_decisions"."consumer_lending_decision_id" < "consumer_lending"."decision_reasons"."consumer_lending_decision_id" [note: "Links reasons to decision"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."adverse_action_notices"."consumer_lending_application_id" [note: "Links adverse action notices to application"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."vehicles"."consumer_lending_application_id" [note: "Links vehicle to auto loan application"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_accounts"."consumer_lending_application_id" [note: "Links funded loan to application"]
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."loan_accounts"."consumer_lending_loan_product_id" [note: "Links loan account to product"]
-Ref:"consumer_lending"."loan_payments"."consumer_lending_payment_id" < "consumer_lending"."loan_fees"."consumer_lending_payment_id" [note: "Links fee payment to payment record"]
-Ref:"consumer_lending"."vehicles"."vehicle_id" < "consumer_lending"."loan_collateral"."vehicle_id" [note: "Links vehicle details to collateral"]
-Ref:"consumer_lending"."loan_collateral"."consumer_lending_collateral_id" < "consumer_lending"."loan_insurance"."consumer_lending_collateral_id" [note: "Links insurance to specific collateral"]
-Ref:"consumer_lending"."loan_payments"."consumer_lending_payment_id" < "consumer_lending"."payment_schedules"."actual_payment_id" [note: "Links actual payment to scheduled payment"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_documents"."consumer_lending_application_id" [note: "Links documents to application"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_communications"."consumer_lending_application_id" [note: "Links communications to application"]
-Ref:"consumer_lending"."collection_accounts"."consumer_lending_collection_id" < "consumer_lending"."collection_actions"."consumer_lending_collection_id" [note: "Links collection actions to collection account"]
-Ref:"consumer_lending"."collection_accounts"."consumer_lending_collection_id" < "consumer_lending"."payment_arrangements"."consumer_lending_collection_id" [note: "Links payment arrangements to collection account"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."reg_z_disclosures"."consumer_lending_application_id" [note: "Links TIL disclosures to application"]
-Ref:"consumer_lending"."adverse_action_notices"."consumer_lending_notice_id" < "consumer_lending"."adverse_action_details"."consumer_lending_notice_id" [note: "Links details to adverse action notice"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."ecoa_monitoring"."consumer_lending_application_id" [note: "Links monitoring info to application"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."ecoa_monitoring"."consumer_lending_applicant_id" [note: "Links monitoring info to applicant"]
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."fairlending_analysis"."product_id" [note: "Links analysis to specific product"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."reg_b_notices"."consumer_lending_application_id" [note: "Links Reg B notices to application"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."appraisal_disclosures"."consumer_lending_application_id" [note: "Links appraisal disclosures to application"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."military_lending_checks"."consumer_lending_application_id" [note: "Links MLA check to application"]
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."military_lending_checks"."consumer_lending_applicant_id" [note: "Links MLA check to applicant"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."high_cost_mortgage_tests"."consumer_lending_application_id" [note: "Links HOEPA test to application"]
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."compliance_exceptions"."consumer_lending_application_id" [note: "Links exception to application"]
-Ref:"consumer_lending"."loan_accounts"."loan_account_id" < "consumer_lending"."compliance_exceptions"."loan_account_id" [note: "Links exception to loan account"]
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_product_features"."credit_cards_product_id" [note: "Links features to card products"]
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_product_reward_categories"."credit_cards_product_id" [note: "Links reward categories to card products"]
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."applications"."credit_cards_product_id" [note: "Links applications to card products"]
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_accounts"."credit_cards_product_id" [note: "Links accounts to card products"]
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."card_accounts"."credit_cards_application_id" [note: "Links accounts to original applications"]
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."fees"."credit_cards_transaction_id" [note: "Links fees to transactions if applicable"]
-Ref:"credit_cards"."statements"."credit_cards_statement_id" < "credit_cards"."fees"."credit_cards_statement_id" [note: "Links fees to statements"]
-Ref:"credit_cards"."statements"."credit_cards_statement_id" < "credit_cards"."interest_charges"."credit_cards_statement_id" [note: "Links interest charges to statements"]
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."rewards"."credit_cards_transaction_id" [note: "Links rewards to transactions"]
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."balance_transfers"."credit_cards_transaction_id" [note: "Links balance transfers to transactions"]
-Ref:"credit_cards"."promotional_offers"."credit_cards_offer_id" < "credit_cards"."balance_transfers"."credit_cards_offer_id" [note: "Links balance transfers to offers"]
-Ref:"credit_cards"."payment_methods"."credit_cards_payment_method_id" < "credit_cards"."autopay_settings"."credit_cards_payment_method_id" [note: "Links autopay to payment methods"]
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."disputed_transactions"."credit_cards_transaction_id" [note: "Links disputes to transactions"]
-Ref:"credit_cards"."card_accounts"."credit_cards_card_account_id" < "credit_cards"."fraud_cases"."credit_cards_card_account_id" [note: "Links fraud cases to accounts"]
-Ref:"credit_cards"."fraud_cases"."credit_cards_case_id" < "credit_cards"."fraud_transactions"."credit_cards_case_id" [note: "Links fraud transactions to cases"]
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."fraud_transactions"."transaction_id" [note: "Links fraud transactions to transactions"]
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."credit_card_applications_hmda"."credit_cards_application_id" [note: "Links HMDA records to applications"]
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."reg_z_credit_card_disclosures"."credit_cards_application_id" [note: "Links Reg Z disclosures to applications"]
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."ability_to_pay_assessments"."credit_cards_application_id" [note: "Links ability to pay assessments to applications"]
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."application_applicants"."consumer_lending_application_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."application_applicants"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_employments"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_incomes"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_assets"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_liabilities"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."product_eligibility_criteria"."consumer_lending_loan_product_id"
+Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."risk_based_pricing_tiers"."consumer_lending_loan_product_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."credit_reports"."consumer_lending_application_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."credit_reports"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."credit_report_tradelines"."consumer_lending_credit_report_id"
+Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."credit_inquiries"."consumer_lending_credit_report_id"
+Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."public_records"."consumer_lending_credit_report_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."application_decisions"."consumer_lending_application_id"
+Ref:"consumer_lending"."decision_models"."consumer_lending_model_id" < "consumer_lending"."application_decisions"."consumer_lending_model_id"
+Ref:"consumer_lending"."risk_based_pricing_tiers"."consumer_lending_pricing_tier_id" < "consumer_lending"."application_decisions"."consumer_lending_pricing_tier_id"
+Ref:"consumer_lending"."application_decisions"."consumer_lending_decision_id" < "consumer_lending"."decision_reasons"."consumer_lending_decision_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."adverse_action_notices"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."vehicles"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_accounts"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."loan_accounts"."consumer_lending_loan_product_id"
+Ref:"consumer_lending"."loan_payments"."consumer_lending_payment_id" < "consumer_lending"."loan_fees"."consumer_lending_payment_id"
+Ref:"consumer_lending"."vehicles"."vehicle_id" < "consumer_lending"."loan_collateral"."vehicle_id"
+Ref:"consumer_lending"."loan_collateral"."consumer_lending_collateral_id" < "consumer_lending"."loan_insurance"."consumer_lending_collateral_id"
+Ref:"consumer_lending"."loan_payments"."consumer_lending_payment_id" < "consumer_lending"."payment_schedules"."actual_payment_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_documents"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_communications"."consumer_lending_application_id"
+Ref:"consumer_lending"."collection_accounts"."consumer_lending_collection_id" < "consumer_lending"."collection_actions"."consumer_lending_collection_id"
+Ref:"consumer_lending"."collection_accounts"."consumer_lending_collection_id" < "consumer_lending"."payment_arrangements"."consumer_lending_collection_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."reg_z_disclosures"."consumer_lending_application_id"
+Ref:"consumer_lending"."adverse_action_notices"."consumer_lending_notice_id" < "consumer_lending"."adverse_action_details"."consumer_lending_notice_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."ecoa_monitoring"."consumer_lending_application_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."ecoa_monitoring"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."fairlending_analysis"."product_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."reg_b_notices"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."appraisal_disclosures"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."military_lending_checks"."consumer_lending_application_id"
+Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."military_lending_checks"."consumer_lending_applicant_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."high_cost_mortgage_tests"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."compliance_exceptions"."consumer_lending_application_id"
+Ref:"consumer_lending"."loan_accounts"."loan_account_id" < "consumer_lending"."compliance_exceptions"."loan_account_id"
+Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_product_features"."credit_cards_product_id"
+Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_product_reward_categories"."credit_cards_product_id"
+Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."applications"."credit_cards_product_id"
+Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_accounts"."credit_cards_product_id"
+Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."card_accounts"."credit_cards_application_id"
+Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."fees"."credit_cards_transaction_id"
+Ref:"credit_cards"."statements"."credit_cards_statement_id" < "credit_cards"."fees"."credit_cards_statement_id"
+Ref:"credit_cards"."statements"."credit_cards_statement_id" < "credit_cards"."interest_charges"."credit_cards_statement_id"
+Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."rewards"."credit_cards_transaction_id"
+Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."balance_transfers"."credit_cards_transaction_id"
+Ref:"credit_cards"."promotional_offers"."credit_cards_offer_id" < "credit_cards"."balance_transfers"."credit_cards_offer_id"
+Ref:"credit_cards"."payment_methods"."credit_cards_payment_method_id" < "credit_cards"."autopay_settings"."credit_cards_payment_method_id"
+Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."disputed_transactions"."credit_cards_transaction_id"
+Ref:"credit_cards"."card_accounts"."credit_cards_card_account_id" < "credit_cards"."fraud_cases"."credit_cards_card_account_id"
+Ref:"credit_cards"."fraud_cases"."credit_cards_case_id" < "credit_cards"."fraud_transactions"."credit_cards_case_id"
+Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."fraud_transactions"."transaction_id"
+Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."credit_card_applications_hmda"."credit_cards_application_id"
+Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."reg_z_credit_card_disclosures"."credit_cards_application_id"
+Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."ability_to_pay_assessments"."credit_cards_application_id"
 
 
-TableGroup "Consumer Accounts" {
-  "consumer_banking"."account_access_consents"
-  "consumer_banking"."account_access_consents_permissions"
-  "consumer_banking"."balances"
-  "consumer_banking"."account_statement_preferences"
 
-  note: "Tables related to consumer-facing account functionality"
-}
-
-TableGroup "Beneficiaries" {
-  "consumer_banking"."beneficiaries"
-  "consumer_banking"."beneficiary_creditor_agents"
-  "consumer_banking"."beneficiary_creditor_accounts"
-
-  note: "Tables related to payment beneficiary management"
-}
-
-TableGroup "Offers & Products" {
-  "consumer_banking"."offers"
-  "consumer_banking"."products"
-  "consumer_banking"."other_product_types"
-
-  note: "Tables related to banking products and promotional offers"
-}
-
-TableGroup "Parties & Addresses" {
-  "enterprise"."parties"
-  "enterprise"."party_relationships"
-  "enterprise"."party_addresses"
-
-  note: "Tables related to account stakeholders and their contact information"
-}
-
-TableGroup "Statements" {
-  "consumer_banking"."statements"
-  "consumer_banking"."statement_descriptions"
-  "consumer_banking"."statement_benefits"
-  "consumer_banking"."statement_fees"
-  "consumer_banking"."statement_interests"
-  "consumer_banking"."statement_amounts"
-  "consumer_banking"."statement_date_times"
-  "consumer_banking"."statement_rates"
-  "consumer_banking"."statement_values"
-
-  note: "Tables related to account statement generation and content"
-}
-
-TableGroup "Transactions" {
-  "consumer_banking"."transactions"
-  "consumer_banking"."transaction_statement_references"
-  "consumer_banking"."transaction_currency_exchanges"
-  "consumer_banking"."transaction_bank_transaction_codes"
-  "consumer_banking"."transaction_proprietary_bank_transaction_codes"
-  "consumer_banking"."transaction_balances"
-  "consumer_banking"."transaction_merchant_details"
-  "consumer_banking"."transaction_creditor_agents"
-  "consumer_banking"."transaction_creditor_accounts"
-  "consumer_banking"."transaction_debtor_agents"
-  "consumer_banking"."transaction_debtor_accounts"
-  "consumer_banking"."transaction_card_instruments"
-  "consumer_banking"."transaction_ultimate_creditors"
-  "consumer_banking"."transaction_ultimate_debtors"
-  "consumer_banking"."standing_orders"
-  "consumer_banking"."standing_order_creditor_agents"
-  "consumer_banking"."standing_order_creditor_accounts"
-  "consumer_banking"."scheduled_payments"
-  "consumer_banking"."scheduled_payment_creditor_agents"
-  "consumer_banking"."scheduled_payment_creditor_accounts"
-  "consumer_banking"."direct_debits"
-  "consumer_banking"."mandate_related_information"
-
-  note: "Tables related to financial transactions, including payment details, currency exchanges, transaction codes, merchant information, and payment schedules"
-}

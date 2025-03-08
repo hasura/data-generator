@@ -20,8 +20,8 @@ definition:
       type: Timestamptz!
       description: When the status was last updated
   graphql:
-    typeName: ConsumerBanking_ConsumerBankingAccounts_1
-    inputTypeName: ConsumerBanking_ConsumerBankingAccountsInput_1
+    typeName: ConsumerBanking_ConsumerBankingAccounts
+    inputTypeName: ConsumerBanking_ConsumerBankingAccountsInput
   dataConnectorTypeMapping:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_accounts
@@ -87,6 +87,7 @@ definition:
         - relationshipName: consumerBankingProduct
         - relationshipName: consumerBankingBalances
         - relationshipName: consumerBankingBeneficiaries
+        - relationshipName: consumerBankingCustomerInteractions
         - relationshipName: consumerBankingDirectDebits
         - relationshipName: consumerBankingOffers
         - relationshipName: consumerBankingScheduledPayments
@@ -98,7 +99,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerBanking_ConsumerBankingAccountsBoolExp_1
+    typeName: ConsumerBanking_ConsumerBankingAccountsBoolExp
 
 ---
 kind: AggregateExpression
@@ -124,7 +125,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: ConsumerBanking_ConsumerBankingAccountsAggExp_1
+    selectTypeName: ConsumerBanking_ConsumerBankingAccountsAggExp
 
 ---
 kind: OrderByExpression
@@ -149,9 +150,8 @@ definition:
           orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingProduct
-        - relationshipName: enterpriseAccount
   graphql:
-    expressionTypeName: ConsumerBanking_ConsumerBankingAccountsOrderByExp_1
+    expressionTypeName: ConsumerBanking_ConsumerBankingAccountsOrderByExp
 
 ---
 kind: Model
@@ -276,6 +276,28 @@ definition:
           - fieldName: consumerBankingAccountId
   graphql:
     aggregateFieldName: consumerBankingBeneficiariesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingCustomerInteractions
+  sourceType: ConsumerBankingAccounts
+  target:
+    model:
+      name: ConsumerBankingCustomerInteractions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingCustomerInteractionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: accountId
+  graphql:
+    aggregateFieldName: consumerBankingCustomerInteractionsAggregate
 
 ---
 kind: Relationship

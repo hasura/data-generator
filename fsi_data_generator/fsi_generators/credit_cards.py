@@ -23,7 +23,7 @@ def credit_cards(_dg):
         ('credit_cards\\.applications', '^application_channel$', text_list([
             "Online",
             "Branch",
-            "Mail",
+            "mail",
             "Phone"
         ])),
         ('credit_cards\\.applications', '^status$', text_list([
@@ -44,7 +44,7 @@ def credit_cards(_dg):
             "Student"
         ])),
         ('credit_cards\\.card_accounts', '^status$', text_list([
-            "Active",
+            "active",
             "Inactive",
             "Closed",
             "Suspended"
@@ -54,7 +54,7 @@ def credit_cards(_dg):
             "Authorized User"
         ])),
         ('credit_cards\\.cards', '^card_status$', text_list([
-            "Active",
+            "active",
             "Inactive",
             "Lost",
             "Stolen",
@@ -69,7 +69,7 @@ def credit_cards(_dg):
             "Other"
         ])),
         ('credit_cards\\.authorized_users', '^status$', text_list([
-            "Active",
+            "active",
             "Removed"
         ])),
         ('credit_cards\\.transactions', '^transaction_type$', text_list([
@@ -133,7 +133,7 @@ def credit_cards(_dg):
             "Introductory Rate"
         ])),
         ('credit_cards\\.promotional_offers', '^status$', text_list([
-            "Active",
+            "active",
             "Accepted",
             "Declined",
             "Expired"
@@ -149,7 +149,7 @@ def credit_cards(_dg):
             "Check"
         ])),
         ('credit_cards\\.payment_methods', '^status$', text_list([
-            "Active",
+            "active",
             "Inactive",
             "Removed"
         ])),
@@ -159,7 +159,7 @@ def credit_cards(_dg):
             "Failed"
         ])),
         ('credit_cards\\.autopay_settings', '^status$', text_list([
-            "Active",
+            "active",
             "Inactive"
         ])),
         ('credit_cards\\.autopay_settings', '^payment_option$', text_list([
@@ -193,7 +193,7 @@ def credit_cards(_dg):
             "Fraud"
         ])),
         ('credit_cards\\.card_alerts', '^delivery_method$', text_list([
-            "Email",
+            "email",
             "SMS",
             "Push"
         ])),
@@ -240,7 +240,7 @@ def credit_cards(_dg):
             "Fraud System"
         ])),
         ('credit_cards\\.security_blocks', '^status$', text_list([
-            "Active",
+            "active",
             "Removed"
         ])),
         ('credit_cards\\.credit_card_applications_hmda', '^hoepa_status$', text_list([
@@ -254,10 +254,10 @@ def credit_cards(_dg):
             "Incomplete"
         ])),
         ('credit_cards\\.credit_card_applications_hmda', '^submission_status$', text_list([
-            "PENDING",
+            "pending",
             "SUBMITTED",
             "ACCEPTED",
-            "REJECTED"
+            "rejected"
         ])),
         ('credit_cards\\.reg_z_credit_card_disclosures', '^disclosure_type$', text_list([
             "Solicitation",
@@ -266,8 +266,8 @@ def credit_cards(_dg):
             "Periodic Statement"
         ])),
         ('credit_cards\\.reg_z_credit_card_disclosures', '^delivery_method$', text_list([
-            "Mail",
-            "Electronic"
+            "mail",
+            "electronic"
         ])),
         ('credit_cards\\.ability_to_pay_assessments', '^income_source$', text_list([
             "Paystub",
@@ -298,5 +298,5 @@ def credit_cards(_dg):
         ])),
         ('credit_cards\\.security_blocks', '^block_type$', text_list(["Temporary", "Permanent", "Geographic"])),
         ('credit_cards\\.security_blocks', 'requested_by', text_list(["Customer", "Bank", "Fraud System"])),
-        ('credit_cards\\.security_blocks', '^status$', text_list(["Active", "Removed"])),
+        ('credit_cards\\.security_blocks', '^status$', text_list(["active", "Removed"])),
     ]

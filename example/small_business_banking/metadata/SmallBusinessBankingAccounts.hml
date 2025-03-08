@@ -17,12 +17,12 @@ definition:
     - name: balance
       type: Numeric!
       description: Current balance of the account
-    - name: closedDate
-      type: Date
-      description: Date when the account was closed (if applicable)
     - name: currency
       type: Bpchar!
       description: ISO currency code for the account
+    - name: enterpriseAccountId
+      type: Int4!
+      description: References the main account
     - name: interestRate
       type: Numeric
       description: Current interest rate applied to the account (if applicable)
@@ -57,8 +57,8 @@ definition:
       type: Timestamptz!
       description: When the status was last updated
   graphql:
-    typeName: SmallBusinessBanking_SmallBusinessBankingAccounts_1
-    inputTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsInput_1
+    typeName: SmallBusinessBanking_SmallBusinessBankingAccounts
+    inputTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsInput
   dataConnectorTypeMapping:
     - dataConnectorName: small_business_banking
       dataConnectorObjectType: small_business_banking_accounts
@@ -75,12 +75,12 @@ definition:
         balance:
           column:
             name: balance
-        closedDate:
-          column:
-            name: closed_date
         currency:
           column:
             name: currency
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
         interestRate:
           column:
             name: interest_rate
@@ -128,8 +128,8 @@ definition:
           - accountType
           - availableBalance
           - balance
-          - closedDate
           - currency
+          - enterpriseAccountId
           - interestRate
           - lastStatementDate
           - openedDate
@@ -159,10 +159,10 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: balance
           booleanExpressionType: NumericBoolExp
-        - fieldName: closedDate
-          booleanExpressionType: DateBoolExp
         - fieldName: currency
           booleanExpressionType: BpcharBoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
         - fieldName: interestRate
           booleanExpressionType: NumericBoolExp
         - fieldName: lastStatementDate
@@ -200,7 +200,7 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: SmallBusinessBanking_SmallBusinessBankingAccountsBoolExp_1
+    typeName: SmallBusinessBanking_SmallBusinessBankingAccountsBoolExp
 
 ---
 kind: AggregateExpression
@@ -219,10 +219,10 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: balance
           aggregateExpression: NumericAggExp
-        - fieldName: closedDate
-          aggregateExpression: DateAggExp
         - fieldName: currency
           aggregateExpression: BpcharAggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
         - fieldName: interestRate
           aggregateExpression: NumericAggExp
         - fieldName: lastStatementDate
@@ -248,7 +248,7 @@ definition:
   count:
     enable: true
   graphql:
-    selectTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsAggExp_1
+    selectTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsAggExp
 
 ---
 kind: OrderByExpression
@@ -267,10 +267,10 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: balance
           orderByExpression: NumericOrderByExp
-        - fieldName: closedDate
-          orderByExpression: DateOrderByExp
         - fieldName: currency
           orderByExpression: BpcharOrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
         - fieldName: interestRate
           orderByExpression: NumericOrderByExp
         - fieldName: lastStatementDate
@@ -297,7 +297,7 @@ definition:
         - relationshipName: smallBusinessBankingBusiness
         - relationshipName: smallBusinessBankingProduct
   graphql:
-    expressionTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsOrderByExp_1
+    expressionTypeName: SmallBusinessBanking_SmallBusinessBankingAccountsOrderByExp
 
 ---
 kind: Model

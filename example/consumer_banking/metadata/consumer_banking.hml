@@ -1127,6 +1127,111 @@ definition:
               type:
                 type: named
                 name: varchar
+        consumer_banking_customer_interactions:
+          fields:
+            account_id:
+              description: The ID of the specific account related to the interaction. This can be NULL if the interaction isn't tied to a specific account (e.g., a general inquiry).
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            channel:
+              description: The channel through which the interaction occurred (e.g., "phone," "email," "web," "branch," "mobile app").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            consumer_banking_interaction_id:
+              description: A unique identifier for each interaction.
+              type:
+                type: named
+                name: int4
+            created_at:
+              description: When the interaction record was created.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            customer_id:
+              description: The ID of the customer involved in the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            description:
+              description: A detailed description of the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            enterprise_associate_id:
+              description: The ID of the bank employee who handled the interaction. This can be NULL if it was an automated interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            interaction_date_time:
+              description: The date and time of the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            interaction_type:
+              description: The type of interaction (e.g., "phone call," "email," "chat," "in-person," "online form," "ATM interaction").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            priority:
+              description: The priority of the interaction (e.g., "high," "medium," "low").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            related_transaction_id:
+              description: If the interaction relates to a specific transaction, this can hold that transaction ID.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            resolution:
+              description: Description of how the interaction was resolved.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            status:
+              description: The status of the interaction (e.g., "open," "resolved," "pending").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            subject:
+              description: A brief subject or title of the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            updated_at:
+              description: When the interaction record was last updated.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
         consumer_banking_direct_debits:
           description: Stores information about direct debit arrangements set up on accounts
           fields:
@@ -1174,7 +1279,7 @@ definition:
         consumer_banking_mandate_related_information:
           description: Stores detailed information about direct debit mandates including payment schedules
           fields:
-            category_purpose_code:
+            category:
               description: Purpose code for categorizing the payment type
               type:
                 type: nullable
@@ -1395,6 +1500,31 @@ definition:
                 name: varchar
             secondary_product_id:
               description: Alternative identifier for the product
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        consumer_banking_proprietary_transaction_codes:
+          description: Stores non-standard proprietary codes for transaction categorization
+          fields:
+            code:
+              description: Custom transaction code defined by the issuer
+              type:
+                type: named
+                name: varchar
+            consumer_banking_proprietary_transaction_code_id:
+              description: Auto-incrementing identifier for each proprietary code record
+              type:
+                type: named
+                name: int4
+            consumer_banking_transaction_id:
+              description: References the transaction this code belongs to
+              type:
+                type: named
+                name: int4
+            issuer:
+              description: Organization that defined the proprietary code
               type:
                 type: nullable
                 underlying_type:
@@ -2340,31 +2470,6 @@ definition:
               type:
                 type: named
                 name: varchar
-        consumer_banking_transaction_proprietary_bank_transaction_codes:
-          description: Stores non-standard proprietary codes for transaction categorization
-          fields:
-            code:
-              description: Custom transaction code defined by the issuer
-              type:
-                type: named
-                name: varchar
-            consumer_banking_transaction_id:
-              description: References the transaction this code belongs to
-              type:
-                type: named
-                name: int4
-            consumer_banking_transaction_proprietary_bank_transaction_code_:
-              description: Auto-incrementing identifier for each proprietary code record
-              type:
-                type: named
-                name: int4
-            issuer:
-              description: Organization that defined the proprietary code
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
         consumer_banking_transaction_statement_references:
           description: Links transactions to specific statements they appear on
           fields:
@@ -2464,24 +2569,12 @@ definition:
         consumer_banking_transactions:
           description: Stores detailed information about account transactions
           fields:
-            address_line:
-              description: Address associated with the transaction, if applicable
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
             amount:
               description: Monetary amount of the transaction
               type:
                 type: named
                 name: numeric
-            booking_date_time:
-              description: When the transaction was recorded in the books
-              type:
-                type: named
-                name: timestamp
-            category_purpose_code:
+            category:
               description: Code classifying the overall purpose of the transaction
               type:
                 type: nullable
@@ -2522,8 +2615,15 @@ definition:
               type:
                 type: named
                 name: varchar
-            payment_purpose_code:
-              description: Code classifying the specific purpose of the payment
+            description:
+              description: Additional information about the transaction
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            merchant_address:
+              description: Address associated with the transaction, if applicable
               type:
                 type: nullable
                 underlying_type:
@@ -2534,13 +2634,11 @@ definition:
               type:
                 type: named
                 name: varchar
-            transaction_information:
-              description: Additional information about the transaction
+            transaction_date:
+              description: When the transaction was recorded in the books
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
+                type: named
+                name: timestamp
             transaction_mutability:
               description: Whether the transaction can be changed (e.g., mutable, immutable)
               type:
@@ -2555,7 +2653,14 @@ definition:
                 underlying_type:
                   type: named
                   name: varchar
-            value_date_time:
+            transaction_type:
+              description: Code classifying the specific purpose of the payment
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            value_date:
               description: When the transaction affects the account balance
               type:
                 type: nullable
@@ -8429,6 +8534,21 @@ definition:
                 element_type:
                   type: named
                   name: consumer_banking_beneficiary_creditor_agents
+        delete_consumer_banking_customer_interactions_by_consumer_banking_interaction_id_response:
+          description: Responses from the 'delete_consumer_banking_customer_interactions_by_consumer_banking_interaction_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: consumer_banking_customer_interactions
         delete_consumer_banking_direct_debits_by_consumer_banking_direct_debit_id_response:
           description: Responses from the 'delete_consumer_banking_direct_debits_by_consumer_banking_direct_debit_id' procedure
           fields:
@@ -8504,6 +8624,21 @@ definition:
                 element_type:
                   type: named
                   name: consumer_banking_products
+        delete_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id_response:
+          description: Responses from the 'delete_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: consumer_banking_proprietary_transaction_codes
         delete_consumer_banking_scheduled_payment_creditor_accounts_by_consumer_banking_scheduled_payment_creditor_account_id_response:
           description: Responses from the 'delete_consumer_banking_scheduled_payment_creditor_accounts_by_consumer_banking_scheduled_payment_creditor_account_id' procedure
           fields:
@@ -8864,21 +8999,6 @@ definition:
                 element_type:
                   type: named
                   name: consumer_banking_transaction_merchant_details
-        ? delete_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code__response
-        : description: Responses from the 'delete_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code_' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: consumer_banking_transaction_proprietary_bank_transaction_codes
         delete_consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id_response:
           description: Responses from the 'delete_consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id' procedure
           fields:
@@ -12242,6 +12362,128 @@ definition:
                 element_type:
                   type: named
                   name: consumer_banking_beneficiary_creditor_agents
+        insert_consumer_banking_customer_interactions_object:
+          fields:
+            account_id:
+              description: The ID of the specific account related to the interaction. This can be NULL if the interaction isn't tied to a specific account (e.g., a general inquiry).
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            channel:
+              description: The channel through which the interaction occurred (e.g., "phone," "email," "web," "branch," "mobile app").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            consumer_banking_interaction_id:
+              description: A unique identifier for each interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            created_at:
+              description: When the interaction record was created.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            customer_id:
+              description: The ID of the customer involved in the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            description:
+              description: A detailed description of the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            enterprise_associate_id:
+              description: The ID of the bank employee who handled the interaction. This can be NULL if it was an automated interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            interaction_date_time:
+              description: The date and time of the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+            interaction_type:
+              description: The type of interaction (e.g., "phone call," "email," "chat," "in-person," "online form," "ATM interaction").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            priority:
+              description: The priority of the interaction (e.g., "high," "medium," "low").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            related_transaction_id:
+              description: If the interaction relates to a specific transaction, this can hold that transaction ID.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            resolution:
+              description: Description of how the interaction was resolved.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+            status:
+              description: The status of the interaction (e.g., "open," "resolved," "pending").
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            subject:
+              description: A brief subject or title of the interaction.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            updated_at:
+              description: When the interaction record was last updated.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+        insert_consumer_banking_customer_interactions_response:
+          description: Responses from the 'insert_consumer_banking_customer_interactions' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: consumer_banking_customer_interactions
         insert_consumer_banking_direct_debits_object:
           fields:
             consumer_banking_account_id:
@@ -12304,7 +12546,7 @@ definition:
                   name: consumer_banking_direct_debits
         insert_consumer_banking_mandate_related_information_object:
           fields:
-            category_purpose_code:
+            category:
               description: Purpose code for categorizing the payment type
               type:
                 type: nullable
@@ -12595,6 +12837,47 @@ definition:
                 element_type:
                   type: named
                   name: consumer_banking_products
+        insert_consumer_banking_proprietary_transaction_codes_object:
+          fields:
+            code:
+              description: Custom transaction code defined by the issuer
+              type:
+                type: named
+                name: varchar
+            consumer_banking_proprietary_transaction_code_id:
+              description: Auto-incrementing identifier for each proprietary code record
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+            consumer_banking_transaction_id:
+              description: References the transaction this code belongs to
+              type:
+                type: named
+                name: int4
+            issuer:
+              description: Organization that defined the proprietary code
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        insert_consumer_banking_proprietary_transaction_codes_response:
+          description: Responses from the 'insert_consumer_banking_proprietary_transaction_codes' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: consumer_banking_proprietary_transaction_codes
         insert_consumer_banking_scheduled_payment_creditor_accounts_object:
           fields:
             consumer_banking_scheduled_payment_creditor_account_id:
@@ -13919,47 +14202,6 @@ definition:
                 element_type:
                   type: named
                   name: consumer_banking_transaction_merchant_details
-        insert_consumer_banking_transaction_proprietary_bank_transaction_codes_object:
-          fields:
-            code:
-              description: Custom transaction code defined by the issuer
-              type:
-                type: named
-                name: varchar
-            consumer_banking_transaction_id:
-              description: References the transaction this code belongs to
-              type:
-                type: named
-                name: int4
-            consumer_banking_transaction_proprietary_bank_transaction_code_:
-              description: Auto-incrementing identifier for each proprietary code record
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: int4
-            issuer:
-              description: Organization that defined the proprietary code
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
-        insert_consumer_banking_transaction_proprietary_bank_transaction_codes_response:
-          description: Responses from the 'insert_consumer_banking_transaction_proprietary_bank_transaction_codes' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: consumer_banking_transaction_proprietary_bank_transaction_codes
         insert_consumer_banking_transaction_statement_references_object:
           fields:
             consumer_banking_transaction_id:
@@ -14106,24 +14348,12 @@ definition:
                   name: consumer_banking_transaction_ultimate_debtors
         insert_consumer_banking_transactions_object:
           fields:
-            address_line:
-              description: Address associated with the transaction, if applicable
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
             amount:
               description: Monetary amount of the transaction
               type:
                 type: named
                 name: numeric
-            booking_date_time:
-              description: When the transaction was recorded in the books
-              type:
-                type: named
-                name: timestamp
-            category_purpose_code:
+            category:
               description: Code classifying the overall purpose of the transaction
               type:
                 type: nullable
@@ -14166,8 +14396,15 @@ definition:
               type:
                 type: named
                 name: varchar
-            payment_purpose_code:
-              description: Code classifying the specific purpose of the payment
+            description:
+              description: Additional information about the transaction
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            merchant_address:
+              description: Address associated with the transaction, if applicable
               type:
                 type: nullable
                 underlying_type:
@@ -14178,13 +14415,11 @@ definition:
               type:
                 type: named
                 name: varchar
-            transaction_information:
-              description: Additional information about the transaction
+            transaction_date:
+              description: When the transaction was recorded in the books
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
+                type: named
+                name: timestamp
             transaction_mutability:
               description: Whether the transaction can be changed (e.g., mutable, immutable)
               type:
@@ -14199,7 +14434,14 @@ definition:
                 underlying_type:
                   type: named
                   name: varchar
-            value_date_time:
+            transaction_type:
+              description: Code classifying the specific purpose of the payment
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+            value_date:
               description: When the transaction affects the account balance
               type:
                 type: nullable
@@ -25309,6 +25551,11 @@ definition:
                 underlying_type:
                   type: named
                   name: bpchar
+            enterprise_account_id:
+              description: References the main account
+              type:
+                type: named
+                name: int4
             interest_rate:
               description: Current interest rate applied to the account (if applicable)
               type:
@@ -30917,6 +31164,11 @@ definition:
               type:
                 type: named
                 name: bpchar
+            enterprise_account_id:
+              description: References the main account
+              type:
+                type: named
+                name: int4
             interest_rate:
               description: Current interest rate applied to the account (if applicable)
               type:
@@ -33670,6 +33922,154 @@ definition:
               type:
                 type: named
                 name: varchar
+        update_column_consumer_banking_customer_interactions_account_id:
+          description: Update the 'account_id' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_consumer_banking_customer_interactions_channel:
+          description: Update the 'channel' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_customer_interactions_consumer_banking_interaction_id:
+          description: Update the 'consumer_banking_interaction_id' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_consumer_banking_customer_interactions_created_at:
+          description: Update the 'created_at' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+        update_column_consumer_banking_customer_interactions_customer_id:
+          description: Update the 'customer_id' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_consumer_banking_customer_interactions_description:
+          description: Update the 'description' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+        update_column_consumer_banking_customer_interactions_enterprise_associate_id:
+          description: Update the 'enterprise_associate_id' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_consumer_banking_customer_interactions_interaction_date_time:
+          description: Update the 'interaction_date_time' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
+        update_column_consumer_banking_customer_interactions_interaction_type:
+          description: Update the 'interaction_type' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_customer_interactions_priority:
+          description: Update the 'priority' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_customer_interactions_related_transaction_id:
+          description: Update the 'related_transaction_id' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: int4
+        update_column_consumer_banking_customer_interactions_resolution:
+          description: Update the 'resolution' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: text
+        update_column_consumer_banking_customer_interactions_status:
+          description: Update the 'status' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_customer_interactions_subject:
+          description: Update the 'subject' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_customer_interactions_updated_at:
+          description: Update the 'updated_at' column in the 'consumer_banking_customer_interactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: timestamp
         update_column_consumer_banking_direct_debits_consumer_banking_account_id:
           description: Update the 'consumer_banking_account_id' column in the 'consumer_banking_direct_debits' collection
           fields:
@@ -33732,8 +34132,8 @@ definition:
                 underlying_type:
                   type: named
                   name: timestamp
-        update_column_consumer_banking_mandate_related_information_category_purpose_code:
-          description: Update the 'category_purpose_code' column in the 'consumer_banking_mandate_related_information' collection
+        update_column_consumer_banking_mandate_related_information_category:
+          description: Update the 'category' column in the 'consumer_banking_mandate_related_information' collection
           fields:
             _set:
               description: Set the column to this value
@@ -34046,6 +34446,40 @@ definition:
                 name: varchar
         update_column_consumer_banking_products_secondary_product_id:
           description: Update the 'secondary_product_id' column in the 'consumer_banking_products' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_proprietary_transaction_codes_code:
+          description: Update the 'code' column in the 'consumer_banking_proprietary_transaction_codes' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: varchar
+        update_column_consumer_banking_proprietary_transaction_codes_consumer_banking_proprietary_transaction_code_id:
+          description: Update the 'consumer_banking_proprietary_transaction_code_id' column in the 'consumer_banking_proprietary_transaction_codes' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_consumer_banking_proprietary_transaction_codes_consumer_banking_transaction_id:
+          description: Update the 'consumer_banking_transaction_id' column in the 'consumer_banking_proprietary_transaction_codes' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
+        update_column_consumer_banking_proprietary_transaction_codes_issuer:
+          description: Update the 'issuer' column in the 'consumer_banking_proprietary_transaction_codes' collection
           fields:
             _set:
               description: Set the column to this value
@@ -35384,40 +35818,6 @@ definition:
               type:
                 type: named
                 name: varchar
-        update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_code:
-          description: Update the 'code' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: varchar
-        update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_consumer_banking_transaction_id:
-          description: Update the 'consumer_banking_transaction_id' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: int4
-        ? update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_consumer_banking_transaction_proprietary_bank_transaction_code_
-        : description: Update the 'consumer_banking_transaction_proprietary_bank_transaction_code_' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: int4
-        update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_issuer:
-          description: Update the 'issuer' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
         update_column_consumer_banking_transaction_statement_references_consumer_banking_transaction_id:
           description: Update the 'consumer_banking_transaction_id' column in the 'consumer_banking_transaction_statement_references' collection
           fields:
@@ -35550,16 +35950,6 @@ definition:
                 underlying_type:
                   type: named
                   name: varchar
-        update_column_consumer_banking_transactions_address_line:
-          description: Update the 'address_line' column in the 'consumer_banking_transactions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
         update_column_consumer_banking_transactions_amount:
           description: Update the 'amount' column in the 'consumer_banking_transactions' collection
           fields:
@@ -35568,16 +35958,8 @@ definition:
               type:
                 type: named
                 name: numeric
-        update_column_consumer_banking_transactions_booking_date_time:
-          description: Update the 'booking_date_time' column in the 'consumer_banking_transactions' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: named
-                name: timestamp
-        update_column_consumer_banking_transactions_category_purpose_code:
-          description: Update the 'category_purpose_code' column in the 'consumer_banking_transactions' collection
+        update_column_consumer_banking_transactions_category:
+          description: Update the 'category' column in the 'consumer_banking_transactions' collection
           fields:
             _set:
               description: Set the column to this value
@@ -35638,8 +36020,18 @@ definition:
               type:
                 type: named
                 name: varchar
-        update_column_consumer_banking_transactions_payment_purpose_code:
-          description: Update the 'payment_purpose_code' column in the 'consumer_banking_transactions' collection
+        update_column_consumer_banking_transactions_description:
+          description: Update the 'description' column in the 'consumer_banking_transactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_transactions_merchant_address:
+          description: Update the 'merchant_address' column in the 'consumer_banking_transactions' collection
           fields:
             _set:
               description: Set the column to this value
@@ -35656,16 +36048,14 @@ definition:
               type:
                 type: named
                 name: varchar
-        update_column_consumer_banking_transactions_transaction_information:
-          description: Update the 'transaction_information' column in the 'consumer_banking_transactions' collection
+        update_column_consumer_banking_transactions_transaction_date:
+          description: Update the 'transaction_date' column in the 'consumer_banking_transactions' collection
           fields:
             _set:
               description: Set the column to this value
               type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
+                type: named
+                name: timestamp
         update_column_consumer_banking_transactions_transaction_mutability:
           description: Update the 'transaction_mutability' column in the 'consumer_banking_transactions' collection
           fields:
@@ -35686,8 +36076,18 @@ definition:
                 underlying_type:
                   type: named
                   name: varchar
-        update_column_consumer_banking_transactions_value_date_time:
-          description: Update the 'value_date_time' column in the 'consumer_banking_transactions' collection
+        update_column_consumer_banking_transactions_transaction_type:
+          description: Update the 'transaction_type' column in the 'consumer_banking_transactions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: varchar
+        update_column_consumer_banking_transactions_value_date:
+          description: Update the 'value_date' column in the 'consumer_banking_transactions' collection
           fields:
             _set:
               description: Set the column to this value
@@ -48986,6 +49386,14 @@ definition:
               type:
                 type: named
                 name: bpchar
+        update_column_small_business_banking_accounts_enterprise_account_id:
+          description: Update the 'enterprise_account_id' column in the 'small_business_banking_accounts' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: named
+                name: int4
         update_column_small_business_banking_accounts_interest_rate:
           description: Update the 'interest_rate' column in the 'small_business_banking_accounts' collection
           fields:
@@ -52946,6 +53354,129 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_beneficiary_creditor_agents_scheme_name
+        update_consumer_banking_customer_interactions_by_consumer_banking_interaction_id_response:
+          description: Responses from the 'update_consumer_banking_customer_interactions_by_consumer_banking_interaction_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: consumer_banking_customer_interactions
+        update_consumer_banking_customer_interactions_by_consumer_banking_interaction_id_update_columns:
+          description: Update the columns of the 'consumer_banking_customer_interactions' collection
+          fields:
+            account_id:
+              description: Update the 'account_id' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_account_id
+            channel:
+              description: Update the 'channel' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_channel
+            consumer_banking_interaction_id:
+              description: Update the 'consumer_banking_interaction_id' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_consumer_banking_interaction_id
+            created_at:
+              description: Update the 'created_at' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_created_at
+            customer_id:
+              description: Update the 'customer_id' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_customer_id
+            description:
+              description: Update the 'description' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_description
+            enterprise_associate_id:
+              description: Update the 'enterprise_associate_id' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_enterprise_associate_id
+            interaction_date_time:
+              description: Update the 'interaction_date_time' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_interaction_date_time
+            interaction_type:
+              description: Update the 'interaction_type' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_interaction_type
+            priority:
+              description: Update the 'priority' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_priority
+            related_transaction_id:
+              description: Update the 'related_transaction_id' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_related_transaction_id
+            resolution:
+              description: Update the 'resolution' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_resolution
+            status:
+              description: Update the 'status' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_status
+            subject:
+              description: Update the 'subject' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_subject
+            updated_at:
+              description: Update the 'updated_at' column in the 'consumer_banking_customer_interactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_customer_interactions_updated_at
         update_consumer_banking_direct_debits_by_consumer_banking_direct_debit_id_response:
           description: Responses from the 'update_consumer_banking_direct_debits_by_consumer_banking_direct_debit_id' procedure
           fields:
@@ -53031,13 +53562,13 @@ definition:
         update_consumer_banking_mandate_related_information_by_consumer_banking_mandate_related_information_id_update_columns:
           description: Update the columns of the 'consumer_banking_mandate_related_information' collection
           fields:
-            category_purpose_code:
-              description: Update the 'category_purpose_code' column in the 'consumer_banking_mandate_related_information' collection.
+            category:
+              description: Update the 'category' column in the 'consumer_banking_mandate_related_information' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_consumer_banking_mandate_related_information_category_purpose_code
+                  name: update_column_consumer_banking_mandate_related_information_category
             classification:
               description: Update the 'classification' column in the 'consumer_banking_mandate_related_information' collection.
               type:
@@ -53330,6 +53861,52 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_products_secondary_product_id
+        update_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id_response:
+          description: Responses from the 'update_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                type: named
+                name: int4
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: consumer_banking_proprietary_transaction_codes
+        update_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id_update_columns:
+          description: Update the columns of the 'consumer_banking_proprietary_transaction_codes' collection
+          fields:
+            code:
+              description: Update the 'code' column in the 'consumer_banking_proprietary_transaction_codes' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_proprietary_transaction_codes_code
+            consumer_banking_proprietary_transaction_code_id:
+              description: Update the 'consumer_banking_proprietary_transaction_code_id' column in the 'consumer_banking_proprietary_transaction_codes' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_proprietary_transaction_codes_consumer_banking_proprietary_transaction_code_id
+            consumer_banking_transaction_id:
+              description: Update the 'consumer_banking_transaction_id' column in the 'consumer_banking_proprietary_transaction_codes' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_proprietary_transaction_codes_consumer_banking_transaction_id
+            issuer:
+              description: Update the 'issuer' column in the 'consumer_banking_proprietary_transaction_codes' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_proprietary_transaction_codes_issuer
         update_consumer_banking_scheduled_payment_creditor_accounts_by_consumer_banking_scheduled_payment_creditor_account_id_response:
           description: Responses from the 'update_consumer_banking_scheduled_payment_creditor_accounts_by_consumer_banking_scheduled_payment_creditor_account_id' procedure
           fields:
@@ -54840,52 +55417,6 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_transaction_merchant_details_merchant_name
-        ? update_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code__response
-        : description: Responses from the 'update_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code_' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                type: named
-                name: int4
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: consumer_banking_transaction_proprietary_bank_transaction_codes
-        ? update_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code__update_columns
-        : description: Update the columns of the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-          fields:
-            code:
-              description: Update the 'code' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_code
-            consumer_banking_transaction_id:
-              description: Update the 'consumer_banking_transaction_id' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_consumer_banking_transaction_id
-            consumer_banking_transaction_proprietary_bank_transaction_code_:
-              description: Update the 'consumer_banking_transaction_proprietary_bank_transaction_code_' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_consumer_banking_transaction_proprietary_bank_transaction_code_
-            issuer:
-              description: Update the 'issuer' column in the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_consumer_banking_transaction_proprietary_bank_transaction_codes_issuer
         update_consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id_response:
           description: Responses from the 'update_consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id' procedure
           fields:
@@ -55063,13 +55594,6 @@ definition:
         update_consumer_banking_transactions_by_consumer_banking_transaction_id_update_columns:
           description: Update the columns of the 'consumer_banking_transactions' collection
           fields:
-            address_line:
-              description: Update the 'address_line' column in the 'consumer_banking_transactions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_consumer_banking_transactions_address_line
             amount:
               description: Update the 'amount' column in the 'consumer_banking_transactions' collection.
               type:
@@ -55077,20 +55601,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_transactions_amount
-            booking_date_time:
-              description: Update the 'booking_date_time' column in the 'consumer_banking_transactions' collection.
+            category:
+              description: Update the 'category' column in the 'consumer_banking_transactions' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_consumer_banking_transactions_booking_date_time
-            category_purpose_code:
-              description: Update the 'category_purpose_code' column in the 'consumer_banking_transactions' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_consumer_banking_transactions_category_purpose_code
+                  name: update_column_consumer_banking_transactions_category
             charge_amount:
               description: Update the 'charge_amount' column in the 'consumer_banking_transactions' collection.
               type:
@@ -55133,13 +55650,20 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_transactions_currency
-            payment_purpose_code:
-              description: Update the 'payment_purpose_code' column in the 'consumer_banking_transactions' collection.
+            description:
+              description: Update the 'description' column in the 'consumer_banking_transactions' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_consumer_banking_transactions_payment_purpose_code
+                  name: update_column_consumer_banking_transactions_description
+            merchant_address:
+              description: Update the 'merchant_address' column in the 'consumer_banking_transactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_transactions_merchant_address
             status:
               description: Update the 'status' column in the 'consumer_banking_transactions' collection.
               type:
@@ -55147,13 +55671,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_transactions_status
-            transaction_information:
-              description: Update the 'transaction_information' column in the 'consumer_banking_transactions' collection.
+            transaction_date:
+              description: Update the 'transaction_date' column in the 'consumer_banking_transactions' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_consumer_banking_transactions_transaction_information
+                  name: update_column_consumer_banking_transactions_transaction_date
             transaction_mutability:
               description: Update the 'transaction_mutability' column in the 'consumer_banking_transactions' collection.
               type:
@@ -55168,13 +55692,20 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_consumer_banking_transactions_transaction_reference
-            value_date_time:
-              description: Update the 'value_date_time' column in the 'consumer_banking_transactions' collection.
+            transaction_type:
+              description: Update the 'transaction_type' column in the 'consumer_banking_transactions' collection.
               type:
                 type: nullable
                 underlying_type:
                   type: named
-                  name: update_column_consumer_banking_transactions_value_date_time
+                  name: update_column_consumer_banking_transactions_transaction_type
+            value_date:
+              description: Update the 'value_date' column in the 'consumer_banking_transactions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_consumer_banking_transactions_value_date
         update_consumer_lending_adverse_action_details_by_consumer_lending_adverse_action_id_response:
           description: Responses from the 'update_consumer_lending_adverse_action_details_by_consumer_lending_adverse_action_id' procedure
           fields:
@@ -68478,6 +69009,13 @@ definition:
                 underlying_type:
                   type: named
                   name: update_column_small_business_banking_accounts_currency
+            enterprise_account_id:
+              description: Update the 'enterprise_account_id' column in the 'small_business_banking_accounts' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  type: named
+                  name: update_column_small_business_banking_accounts_enterprise_account_id
             interest_rate:
               description: Update the 'interest_rate' column in the 'small_business_banking_accounts' collection.
               type:
@@ -71929,6 +72467,30 @@ definition:
               column_mapping:
                 consumer_banking_beneficiary_id: consumer_banking_beneficiary_id
               foreign_collection: consumer_banking_beneficiaries
+        - name: consumer_banking_customer_interactions
+          arguments: {}
+          type: consumer_banking_customer_interactions
+          uniqueness_constraints:
+            customer_interactions_pkey:
+              unique_columns:
+                - consumer_banking_interaction_id
+          foreign_keys:
+            customer_interactions_account_id_fkey:
+              column_mapping:
+                account_id: consumer_banking_account_id
+              foreign_collection: consumer_banking_accounts
+            customer_interactions_customer_id_fkey:
+              column_mapping:
+                customer_id: enterprise_party_id
+              foreign_collection: enterprise_parties
+            customer_interactions_enterprise_associate_id_fkey:
+              column_mapping:
+                enterprise_associate_id: enterprise_associate_id
+              foreign_collection: enterprise_associates
+            customer_interactions_related_transaction_id_fkey:
+              column_mapping:
+                related_transaction_id: consumer_banking_transaction_id
+              foreign_collection: consumer_banking_transactions
         - name: consumer_banking_direct_debits
           description: Stores information about direct debit arrangements set up on accounts
           arguments: {}
@@ -71990,6 +72552,19 @@ definition:
               unique_columns:
                 - consumer_banking_product_id
           foreign_keys: {}
+        - name: consumer_banking_proprietary_transaction_codes
+          description: Stores non-standard proprietary codes for transaction categorization
+          arguments: {}
+          type: consumer_banking_proprietary_transaction_codes
+          uniqueness_constraints:
+            proprietary_transaction_codes_pkey:
+              unique_columns:
+                - consumer_banking_proprietary_transaction_code_id
+          foreign_keys:
+            proprietary_transaction_codes_consumer_banking_transaction_fkey:
+              column_mapping:
+                consumer_banking_transaction_id: consumer_banking_transaction_id
+              foreign_collection: consumer_banking_transactions
         - name: consumer_banking_scheduled_payment_creditor_accounts
           description: Stores information about accounts receiving scheduled payments
           arguments: {}
@@ -72299,19 +72874,6 @@ definition:
                 - consumer_banking_transaction_merchant_detail_id
           foreign_keys:
             transaction_merchant_details_consumer_banking_transaction__fkey:
-              column_mapping:
-                consumer_banking_transaction_id: consumer_banking_transaction_id
-              foreign_collection: consumer_banking_transactions
-        - name: consumer_banking_transaction_proprietary_bank_transaction_codes
-          description: Stores non-standard proprietary codes for transaction categorization
-          arguments: {}
-          type: consumer_banking_transaction_proprietary_bank_transaction_codes
-          uniqueness_constraints:
-            transaction_proprietary_bank_transaction_codes_pkey:
-              unique_columns:
-                - consumer_banking_transaction_proprietary_bank_transaction_code_
-          foreign_keys:
-            transaction_proprietary_bank__consumer_banking_transaction_fkey:
               column_mapping:
                 consumer_banking_transaction_id: consumer_banking_transaction_id
               foreign_collection: consumer_banking_transactions
@@ -74136,6 +74698,10 @@ definition:
               unique_columns:
                 - small_business_banking_account_id
           foreign_keys:
+            accounts_enterprise_account_id_fkey:
+              column_mapping:
+                enterprise_account_id: enterprise_account_id
+              foreign_collection: enterprise_accounts
             accounts_small_business_banking_business_id_fkey:
               column_mapping:
                 small_business_banking_business_id: small_business_banking_business_id
@@ -74727,6 +75293,24 @@ definition:
           result_type:
             type: named
             name: delete_consumer_banking_beneficiary_creditor_agents_by_consumer_banking_beneficiary_creditor_agent_id_response
+        - name: delete_consumer_banking_customer_interactions_by_consumer_banking_interaction_id
+          description: Delete any row on the 'consumer_banking_customer_interactions' collection using the 'consumer_banking_interaction_id' key
+          arguments:
+            key_consumer_banking_interaction_id:
+              description: A unique identifier for each interaction.
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'consumer_banking_customer_interactions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_customer_interactions
+          result_type:
+            type: named
+            name: delete_consumer_banking_customer_interactions_by_consumer_banking_interaction_id_response
         - name: delete_consumer_banking_direct_debits_by_consumer_banking_direct_debit_id
           description: Delete any row on the 'consumer_banking_direct_debits' collection using the 'consumer_banking_direct_debit_id' key
           arguments:
@@ -74817,6 +75401,24 @@ definition:
           result_type:
             type: named
             name: delete_consumer_banking_products_by_consumer_banking_product_id_response
+        - name: delete_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id
+          description: Delete any row on the 'consumer_banking_proprietary_transaction_codes' collection using the 'consumer_banking_proprietary_transaction_code_id' key
+          arguments:
+            key_consumer_banking_proprietary_transaction_code_id:
+              description: Auto-incrementing identifier for each proprietary code record
+              type:
+                type: named
+                name: int4
+            pre_check:
+              description: Delete permission predicate over the 'consumer_banking_proprietary_transaction_codes' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_proprietary_transaction_codes
+          result_type:
+            type: named
+            name: delete_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id_response
         - name: delete_consumer_banking_scheduled_payment_creditor_accounts_by_consumer_banking_scheduled_payment_creditor_account_id
           description: Delete any row on the 'consumer_banking_scheduled_payment_creditor_accounts' collection using the 'consumer_banking_scheduled_payment_creditor_account_id' key
           arguments:
@@ -75249,24 +75851,6 @@ definition:
           result_type:
             type: named
             name: delete_consumer_banking_transaction_merchant_details_by_consumer_banking_transaction_merchant_detail_id_response
-        - name: delete_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code_
-          description: Delete any row on the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection using the 'consumer_banking_transaction_proprietary_bank_transaction_code_' key
-          arguments:
-            key_consumer_banking_transaction_proprietary_bank_transaction_code_:
-              description: Auto-incrementing identifier for each proprietary code record
-              type:
-                type: named
-                name: int4
-            pre_check:
-              description: Delete permission predicate over the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: consumer_banking_transaction_proprietary_bank_transaction_codes
-          result_type:
-            type: named
-            name: delete_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code__response
         - name: delete_consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id
           description: Delete any row on the 'consumer_banking_transaction_statement_references' collection using the 'consumer_banking_transaction_statement_reference_id' key
           arguments:
@@ -78092,6 +78676,25 @@ definition:
           result_type:
             type: named
             name: insert_consumer_banking_beneficiary_creditor_agents_response
+        - name: insert_consumer_banking_customer_interactions
+          description: Insert into the consumer_banking_customer_interactions table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_consumer_banking_customer_interactions_object
+            post_check:
+              description: Insert permission predicate over the 'consumer_banking_customer_interactions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_customer_interactions
+          result_type:
+            type: named
+            name: insert_consumer_banking_customer_interactions_response
         - name: insert_consumer_banking_direct_debits
           description: Insert into the consumer_banking_direct_debits table
           arguments:
@@ -78187,6 +78790,25 @@ definition:
           result_type:
             type: named
             name: insert_consumer_banking_products_response
+        - name: insert_consumer_banking_proprietary_transaction_codes
+          description: Insert into the consumer_banking_proprietary_transaction_codes table
+          arguments:
+            objects:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: insert_consumer_banking_proprietary_transaction_codes_object
+            post_check:
+              description: Insert permission predicate over the 'consumer_banking_proprietary_transaction_codes' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_proprietary_transaction_codes
+          result_type:
+            type: named
+            name: insert_consumer_banking_proprietary_transaction_codes_response
         - name: insert_consumer_banking_scheduled_payment_creditor_accounts
           description: Insert into the consumer_banking_scheduled_payment_creditor_accounts table
           arguments:
@@ -78643,25 +79265,6 @@ definition:
           result_type:
             type: named
             name: insert_consumer_banking_transaction_merchant_details_response
-        - name: insert_consumer_banking_transaction_proprietary_bank_transaction_codes
-          description: Insert into the consumer_banking_transaction_proprietary_bank_transaction_codes table
-          arguments:
-            objects:
-              type:
-                type: array
-                element_type:
-                  type: named
-                  name: insert_consumer_banking_transaction_proprietary_bank_transaction_codes_object
-            post_check:
-              description: Insert permission predicate over the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: consumer_banking_transaction_proprietary_bank_transaction_codes
-          result_type:
-            type: named
-            name: insert_consumer_banking_transaction_proprietary_bank_transaction_codes_response
         - name: insert_consumer_banking_transaction_statement_references
           description: Insert into the consumer_banking_transaction_statement_references table
           arguments:
@@ -81552,6 +82155,35 @@ definition:
           result_type:
             type: named
             name: update_consumer_banking_beneficiary_creditor_agents_by_consumer_banking_beneficiary_creditor_agent_id_response
+        - name: update_consumer_banking_customer_interactions_by_consumer_banking_interaction_id
+          description: Update any row on the 'consumer_banking_customer_interactions' collection using the 'consumer_banking_interaction_id' key
+          arguments:
+            key_consumer_banking_interaction_id:
+              description: A unique identifier for each interaction.
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'consumer_banking_customer_interactions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_customer_interactions
+            pre_check:
+              description: Update permission pre-condition predicate over the 'consumer_banking_customer_interactions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_customer_interactions
+            update_columns:
+              type:
+                type: named
+                name: update_consumer_banking_customer_interactions_by_consumer_banking_interaction_id_update_columns
+          result_type:
+            type: named
+            name: update_consumer_banking_customer_interactions_by_consumer_banking_interaction_id_response
         - name: update_consumer_banking_direct_debits_by_consumer_banking_direct_debit_id
           description: Update any row on the 'consumer_banking_direct_debits' collection using the 'consumer_banking_direct_debit_id' key
           arguments:
@@ -81697,6 +82329,35 @@ definition:
           result_type:
             type: named
             name: update_consumer_banking_products_by_consumer_banking_product_id_response
+        - name: update_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id
+          description: Update any row on the 'consumer_banking_proprietary_transaction_codes' collection using the 'consumer_banking_proprietary_transaction_code_id' key
+          arguments:
+            key_consumer_banking_proprietary_transaction_code_id:
+              description: Auto-incrementing identifier for each proprietary code record
+              type:
+                type: named
+                name: int4
+            post_check:
+              description: Update permission post-condition predicate over the 'consumer_banking_proprietary_transaction_codes' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_proprietary_transaction_codes
+            pre_check:
+              description: Update permission pre-condition predicate over the 'consumer_banking_proprietary_transaction_codes' collection
+              type:
+                type: nullable
+                underlying_type:
+                  type: predicate
+                  object_type_name: consumer_banking_proprietary_transaction_codes
+            update_columns:
+              type:
+                type: named
+                name: update_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id_update_columns
+          result_type:
+            type: named
+            name: update_consumer_banking_proprietary_transaction_codes_by_consumer_banking_proprietary_transaction_code_id_response
         - name: update_consumer_banking_scheduled_payment_creditor_accounts_by_consumer_banking_scheduled_payment_creditor_account_id
           description: Update any row on the 'consumer_banking_scheduled_payment_creditor_accounts' collection using the 'consumer_banking_scheduled_payment_creditor_account_id' key
           arguments:
@@ -82393,35 +83054,6 @@ definition:
           result_type:
             type: named
             name: update_consumer_banking_transaction_merchant_details_by_consumer_banking_transaction_merchant_detail_id_response
-        - name: update_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code_
-          description: Update any row on the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection using the 'consumer_banking_transaction_proprietary_bank_transaction_code_' key
-          arguments:
-            key_consumer_banking_transaction_proprietary_bank_transaction_code_:
-              description: Auto-incrementing identifier for each proprietary code record
-              type:
-                type: named
-                name: int4
-            post_check:
-              description: Update permission post-condition predicate over the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: consumer_banking_transaction_proprietary_bank_transaction_codes
-            pre_check:
-              description: Update permission pre-condition predicate over the 'consumer_banking_transaction_proprietary_bank_transaction_codes' collection
-              type:
-                type: nullable
-                underlying_type:
-                  type: predicate
-                  object_type_name: consumer_banking_transaction_proprietary_bank_transaction_codes
-            update_columns:
-              type:
-                type: named
-                name: update_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code__update_columns
-          result_type:
-            type: named
-            name: update_consumer_banking_transaction_proprietary_bank_transaction_codes_by_consumer_banking_transaction_proprietary_bank_transaction_code__response
         - name: update_consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id
           description: Update any row on the 'consumer_banking_transaction_statement_references' collection using the 'consumer_banking_transaction_statement_reference_id' key
           arguments:

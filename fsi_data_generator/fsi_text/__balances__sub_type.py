@@ -1,13 +1,16 @@
 __balances__sub_type = [
-    "FRAUD",
-    "UNVFD",
-    "TECH",
-    "COURT",
-    "CASH",
-    "PURC",
-    "BALT",
-    "SAVNG",
-    "INVES",
-    "BILL",
-    "CHECK"
+    "Blocked",
+    "Delayed",
+    "On Hold",
+    "Pending",
+    "Clearing",
+    "Earned",
+    "Forward",
+    "Lien",
+    "Adjustment",
+    "Current",
+    "Previous Day",
+    "Projected",
+    "Rate-Related",
+    "Special Purpose"
 ]
