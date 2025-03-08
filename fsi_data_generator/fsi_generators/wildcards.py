@@ -304,7 +304,7 @@ wildcards = [
         '.*', '^direct_debit_status_code$', text_list(____direct_debit_status_code, lower=True)
     ),
     (
-        '.*', '^credit_debit_indicator$', text_list(["CR", "DB"], lower=True)
+        '.*', '^credit_debit_indicator$', text_list(["CR", "DR"])
     ),
     (
         '.*\\.balances', '^type$', text_list(__balances__type, lower=True)
