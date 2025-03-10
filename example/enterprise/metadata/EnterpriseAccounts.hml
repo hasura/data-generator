@@ -3,27 +3,32 @@ kind: ObjectType
 version: v1
 definition:
   name: EnterpriseAccounts
-  description: Core account information for all account types. Indicates that any
-    LOB account was created or requested.
+  description: Master account record that other LOB accounts link to. Every LOB
+    account must have a corresponding enterprise account. One enterprise account
+    can have multiple LOB accounts.
   fields:
     - name: accountCategory
       type: Varchar
-      description: Customer defined category of account (e.g., personal, business)
+      description: Customer defined category of account (e.g., personal, business,
+        retirement)
     - name: description
       type: Varchar
       description: Customer defined description of the account
     - name: enterpriseAccountId
       type: Int4!
-      description: Unique identifier for each account
+      description: Unique identifier for each enterprise account
     - name: openedDate
       type: Timestamptz
-      description: When the account was opened
+      description: When the enterprise account was created, typically coincides with
+        first LOB account.
     - name: status
       type: Varchar!
-      description: Current status of the account (e.g., active, closed)
+      description: Current status of the account (e.g., active, closed). When set to
+        'closed', all linked LOB accounts must be closed or in a terminal state.
     - name: statusUpdateDateTime
       type: Timestamptz!
-      description: When the status was last updated
+      description: When the status was last updated. Updates here may trigger required
+        status changes in linked LOB accounts.
   graphql:
     typeName: Enterprise_EnterpriseAccounts
     inputTypeName: Enterprise_EnterpriseAccountsInput
@@ -176,8 +181,9 @@ definition:
       queryRootField: enterpriseAccountsAggregate
       subscription:
         rootField: enterpriseAccountsAggregate
-  description: Core account information for all account types. Indicates that any
-    LOB account was created or requested.
+  description: Master account record that other LOB accounts link to. Every LOB
+    account must have a corresponding enterprise account. One enterprise account
+    can have multiple LOB accounts.
 
 ---
 kind: ModelPermissions

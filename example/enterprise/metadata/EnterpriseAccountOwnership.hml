@@ -3,18 +3,22 @@ kind: ObjectType
 version: v1
 definition:
   name: EnterpriseAccountOwnership
-  description: Represents ownership of an account by a party, allowing for joint
-    ownership across multiple accounts
+  description: Junction table establishing ownership of enterprise accounts by
+    parties. All LOB account access flows through this ownership. When ownership
+    is terminated, party loses access to all linked LOB accounts. Multiple
+    parties can own the same enterprise account (joint ownership).
   fields:
     - name: enterpriseAccountId
       type: Int4!
-      description: References the account
+      description: References the enterprise account being owned. When ownership ends,
+        access to all linked LOB accounts is terminated.
     - name: enterpriseAccountOwnershipId
       type: Int4!
-      description: Auto-incrementing identifier for each account ownership record
+      description: Auto-incrementing, unique identifier for each account ownership record
     - name: enterprisePartyId
       type: Int4!
-      description: References the party (owner)
+      description: References the party who owns the account. Party must exist before
+        ownership can be established.
   graphql:
     typeName: Enterprise_EnterpriseAccountOwnership
     inputTypeName: Enterprise_EnterpriseAccountOwnershipInput
@@ -139,8 +143,10 @@ definition:
       queryRootField: enterpriseAccountOwnershipAggregate
       subscription:
         rootField: enterpriseAccountOwnershipAggregate
-  description: Represents ownership of an account by a party, allowing for joint
-    ownership across multiple accounts
+  description: Junction table establishing ownership of enterprise accounts by
+    parties. All LOB account access flows through this ownership. When ownership
+    is terminated, party loses access to all linked LOB accounts. Multiple
+    parties can own the same enterprise account (joint ownership).
 
 ---
 kind: ModelPermissions

@@ -313,7 +313,7 @@ wildcards = [
         '.*\\.balances', '^sub_type$', text_list(__balances__sub_type, lower=True)
     ),
     (
-        '.*\\.(balances|transactions)', '^currency|source_currency|target_currency|unit_currency|charge_currency$',text_list([
+        '.*\\.(balances|transactions)', '^currency|source_currency|target_currency|unit_currency$',text_list([
             "USD",
             "EUR",
             "GBP",

@@ -6,9 +6,6 @@ definition:
   description: Stores information about individuals and organizations that
     interact with accounts
   fields:
-    - name: accountRole
-      type: Varchar
-      description: Role in relation to the account (e.g., owner, authorized user)
     - name: beneficialOwnership
       type: Bool
       description: Indicates if this party has beneficial ownership
@@ -49,9 +46,6 @@ definition:
     - dataConnectorName: enterprise
       dataConnectorObjectType: enterprise_parties
       fieldMapping:
-        accountRole:
-          column:
-            name: account_role
         beneficialOwnership:
           column:
             name: beneficial_ownership
@@ -95,7 +89,6 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - accountRole
           - beneficialOwnership
           - emailAddress
           - enterprisePartyId
@@ -117,8 +110,6 @@ definition:
     object:
       type: EnterpriseParties
       comparableFields:
-        - fieldName: accountRole
-          booleanExpressionType: VarcharBoolExp
         - fieldName: beneficialOwnership
           booleanExpressionType: BoolBoolExp
         - fieldName: emailAddress
@@ -162,8 +153,6 @@ definition:
     object:
       aggregatedType: EnterpriseParties
       aggregatableFields:
-        - fieldName: accountRole
-          aggregateExpression: VarcharAggExp
         - fieldName: beneficialOwnership
           aggregateExpression: BoolAggExp
         - fieldName: emailAddress
@@ -200,8 +189,6 @@ definition:
     object:
       orderedType: EnterpriseParties
       orderableFields:
-        - fieldName: accountRole
-          orderByExpression: VarcharOrderByExp
         - fieldName: beneficialOwnership
           orderByExpression: BoolOrderByExp
         - fieldName: emailAddress

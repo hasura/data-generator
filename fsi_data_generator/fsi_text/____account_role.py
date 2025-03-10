@@ -1,6 +1,4 @@
 ____account_role = [
-    "OWNER",
-    "JOINT_OWNER",
     "AUTHORIZED_USER",
     "BENEFICIARY",
     "TRUSTEE",

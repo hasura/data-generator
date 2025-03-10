@@ -30,7 +30,6 @@ Table "enterprise"."parties" {
   "legal_structure" VARCHAR(50) [note: "Legal structure of the organization (e.g., LLC, corporation)"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier for organizations"]
   "beneficial_ownership" BOOLEAN [note: "Indicates if this party has beneficial ownership"]
-  "account_role" VARCHAR(50) [note: "Role in relation to the account (e.g., owner, authorized user)"]
   "email_address" VARCHAR(256) [note: "Primary email contact"]
   "phone" VARCHAR(30) [note: "Primary phone contact"]
   "mobile" VARCHAR(30) [note: "Mobile phone contact"]
@@ -40,12 +39,12 @@ Table "enterprise"."parties" {
 
 Table "enterprise"."party_relationships" {
   "enterprise_party_relationship_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each relationship record"]
-  "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party initiating the relationship"]
-  "related_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party related to the first party"]
-  "relationship_type" VARCHAR(50) [note: "Type of relationship (e.g., power_of_attorney, beneficiary, guardian)"]
+  "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the to the party being represented or acted upon"]
+  "related_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party taking the role e.g. power of attorney, guardin, etc."]
+  "relationship_type" VARCHAR(50) [note: "Describes the role of the related party relative to the enterprise party, e.g. related party is the 'guardian' of enterprise party'"]
   "priority" INT [note: "Order of precedence for the relationship type (lower number = higher priority)"]
 
-  note: "Defines relationships between parties, such as power of attorney, beneficiary designations, etc."
+  note: "Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc."
 }
 
 Table "enterprise"."party_addresses" {
@@ -120,22 +119,22 @@ Table "enterprise"."entity_addresses" {
 }
 
 Table "enterprise"."accounts" {
-  "enterprise_account_id" SERIAL [pk, increment, note: "Unique identifier for each account"]
-  "opened_date" TIMESTAMPTZ [note: "When the account was opened"]
-  "status" VARCHAR(10) [not null, note: "Current status of the account (e.g., active, closed)"]
-  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
-  "account_category" VARCHAR(40) [note: "Customer defined category of account (e.g., personal, business)"]
+  "enterprise_account_id" SERIAL [pk, increment, note: "Unique identifier for each enterprise account"]
+  "opened_date" TIMESTAMPTZ [note: "When the enterprise account was created, typically coincides with first LOB account."]
+  "status" VARCHAR(10) [not null, note: "Current status of the account (e.g., active, closed). When set to 'closed', all linked LOB accounts must be closed or in a terminal state."]
+  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated. Updates here may trigger required status changes in linked LOB accounts."]
+  "account_category" VARCHAR(40) [note: "Customer defined category of account (e.g., personal, business, retirement)"]
   "description" VARCHAR(35) [note: "Customer defined description of the account"]
 
-  note: "Core account information for all account types. Indicates that any LOB account was created or requested."
+  note: "Root account record in the account hierarchy. All other account types (consumer, mortgage, credit) are children of an enterprise account and cannot exist without it. The single source of truth for account ownership and access control."
 }
 
 Table "enterprise"."account_ownership" {
-  "enterprise_account_ownership_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each account ownership record"]
-  "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the account"]
-  "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party (owner)"]
+  "enterprise_account_ownership_id" SERIAL [pk, increment, note: "Auto-incrementing, unique identifier for each account ownership record"]
+  "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the enterprise account being owned. When ownership ends, access to all linked LOB accounts is terminated."]
+  "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party who owns the account. Party must exist before ownership can be established."]
 
-  note: "Represents ownership of an account by a party, allowing for joint ownership across multiple accounts"
+  note: "The only table that controls account access rights. Creates the mandatory link between parties and accounts. Any query checking account access or ownership must start with this table. No direct relationships exist between parties and other account tables."
 }
 
 Table "enterprise"."associates" {
@@ -222,12 +221,14 @@ TableGroup "Addresses" [color: #1E69FD] {
 //
 
 Table "consumer_banking"."accounts" {
-  "consumer_banking_account_id" SERIAL [pk, increment]
+  "consumer_banking_account_id" SERIAL [pk, increment, note: "Unique identifier for each consumer banking account"]
   "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id]
-  "consumer_banking_product_id" INTEGER [ref: > consumer_banking.products.consumer_banking_product_id]
+  "consumer_banking_product_id" INTEGER [ref: > consumer_banking.products.consumer_banking_product_id, note: "References the enterprise account this consumer account belongs to. Required for all consumer accounts"]
   "opened_date" TIMESTAMPTZ [note: "When the account was opened"]
-  "status" VARCHAR(40) [not null, note: "Current status of the account (e.g., Active, Inactive, Frozen, Closed)"]
-  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
+  "status" VARCHAR(40) [not null, note: "Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed"]
+  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated. Updates to closed status do not automatically close the enterprise account."]
+
+  note: "Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be 'active' if parent enterprise account is closed."
 }
 
 Table "consumer_banking"."account_access_consents" {
@@ -255,7 +256,7 @@ Table "consumer_banking"."balances" {
   "consumer_banking_balance_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each balance record"]
   "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
   "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if balance is credit or debit"]
-  "type" VARCHAR(5) [not null, note: "Primary balance type (e.g., AVBL for available)"]
+  "type" VARCHAR(10) [not null, note: "Primary balance type (e.g., available, closing, etc.)"]
   "date_time" TIMESTAMP [not null, note: "When this balance was recorded"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount with precision to 5 decimal places"]
   "currency" VARCHAR(3) [not null, note: "Currency code (e.g., USD, EUR)"]
@@ -546,6 +547,8 @@ Table "consumer_banking"."transactions" {
   "status" VARCHAR(10) [not null, note: "Status of the transaction (e.g., pending, booked, rejected)"]
   "transaction_mutability" VARCHAR(10) [note: "Whether the transaction can be changed (e.g., mutable, immutable)"]
   "transaction_date" TIMESTAMP [not null, note: "When the transaction was recorded in the books"]
+  "category" VARCHAR(20) [note: "Code classifying the overall purpose of the transaction"]
+  "transaction_type" VARCHAR(20) [note: "Code classifying the specific purpose of the payment"]
   "value_date" TIMESTAMP [note: "When the transaction affects the account balance"]
   "description" VARCHAR(500) [note: "Additional information about the transaction"]
   "merchant_address" VARCHAR(70) [note: "Address associated with the transaction, if applicable"]
@@ -553,8 +556,6 @@ Table "consumer_banking"."transactions" {
   "currency" VARCHAR(3) [not null, note: "Currency code for the transaction amount"]
   "charge_amount" NUMERIC(18,5) [note: "Any fees associated with the transaction"]
   "charge_currency" VARCHAR(3) [note: "Currency code for the transaction fee"]
-  "category" VARCHAR(20) [note: "Code classifying the overall purpose of the transaction"]
-  "transaction_type" VARCHAR(20) [note: "Code classifying the specific purpose of the payment"]
 
   note: "Stores detailed information about account transactions"
 }

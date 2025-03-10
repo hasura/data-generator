@@ -3,11 +3,17 @@ kind: ObjectType
 version: v1
 definition:
   name: ConsumerBankingAccounts
+  description: Line of business specific account information. Must link to an
+    enterprise account owned by one or more parties. Account status cannot be
+    'active' if parent enterprise account is closed.
   fields:
     - name: consumerBankingAccountId
       type: Int4!
+      description: Unique identifier for each consumer banking account
     - name: consumerBankingProductId
       type: Int4
+      description: References the enterprise account this consumer account belongs to.
+        Required for all consumer accounts
     - name: enterpriseAccountId
       type: Int4!
     - name: openedDate
@@ -15,10 +21,13 @@ definition:
       description: When the account was opened
     - name: status
       type: Varchar!
-      description: Current status of the account (e.g., Active, Inactive, Frozen, Closed)
+      description: Operational status of the account (e.g., Active, Inactive, Frozen,
+        Closed). Can be closed independently of enterprise account, but must be
+        closed if enterprise account is closed
     - name: statusUpdateDateTime
       type: Timestamptz!
-      description: When the status was last updated
+      description: When the status was last updated. Updates to closed status do not
+        automatically close the enterprise account.
   graphql:
     typeName: ConsumerBanking_ConsumerBankingAccounts
     inputTypeName: ConsumerBanking_ConsumerBankingAccountsInput
@@ -181,6 +190,9 @@ definition:
       queryRootField: consumerBankingAccountsAggregate
       subscription:
         rootField: consumerBankingAccountsAggregate
+  description: Line of business specific account information. Must link to an
+    enterprise account owned by one or more parties. Account status cannot be
+    'active' if parent enterprise account is closed.
 
 ---
 kind: ModelPermissions

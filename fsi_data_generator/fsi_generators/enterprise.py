@@ -75,13 +75,13 @@ def enterprise(_dg):
             "JPY"
         ])),
         ('enterprise\\.accounts', '^description$', account_description),
-        ('enterprise\\.accounts', '^status$', text_list(["active", "Closed"])),
-        ('enterprise\\.accounts', '^account_category$', text_list(["Personal", "Business", "Retirement"])),
+        ('enterprise\\.accounts', '^status$', text_list(["active", "closed"])),
+        ('enterprise\\.accounts', '^account_category$', text_list(["personal", "business", "retirement"])),
 
-        ('enterprise\\.associates', '^status$', text_list(["active", "Terminated", "Retired", "On-Leave"])),
+        ('enterprise\\.associates', '^status$', text_list(["active", "terminated", "retired", "on-leave"])),
         ('enterprise\\.associates', '^job_title$', text_list(enterprise__associates__job_title)),
         ('enterprise\\.associates', '^officer_title$', text_list(enterprise__associates__officer_title)),
-        ('enterprise\\.associates', '^status$', text_list(['active', 'Terminated'])),
+        ('enterprise\\.associates', '^status$', text_list(['active', 'terminated'])),
         ('enterprise\\.associates', '^release_date$', release_date),
         ('enterprise\\.buildings', '^building_name$', text_list(three_word_tuple)),
         ('enterprise\\.departments', '^department_name$',

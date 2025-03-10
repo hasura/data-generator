@@ -65,6 +65,7 @@ cp ../scripts/cross_schema_relationships/consumer_banking* consumer_banking/meta
 cp ../scripts/cross_schema_relationships/consumer_lending* consumer_lending/metadata
 cp ../scripts/cross_schema_relationships/credit_cards* credit_cards/metadata
 cp ../scripts/cross_schema_relationships/mortgage_services* mortgage_services/metadata
+cp ../scripts/promptql_config.yaml.sample promptql_config.yaml
 
 ddn supergraph build local
 ddn run docker-start

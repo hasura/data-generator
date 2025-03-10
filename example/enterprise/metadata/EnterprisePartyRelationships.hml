@@ -3,12 +3,12 @@ kind: ObjectType
 version: v1
 definition:
   name: EnterprisePartyRelationships
-  description: Defines relationships between parties, such as power of attorney,
-    beneficiary designations, etc.
+  description: Defines the role of related party acts to the the enterprise party,
+    such as power of attorney, beneficiary designations, etc.
   fields:
     - name: enterprisePartyId
       type: Int4!
-      description: References the party initiating the relationship
+      description: References the to the party being represented or acted upon
     - name: enterprisePartyRelationshipId
       type: Int4!
       description: Auto-incrementing identifier for each relationship record
@@ -18,10 +18,12 @@ definition:
         higher priority)
     - name: relatedPartyId
       type: Int4!
-      description: References the party related to the first party
+      description: References the party taking the role e.g. power of attorney,
+        guardin, etc.
     - name: relationshipType
       type: Varchar
-      description: Type of relationship (e.g., power_of_attorney, beneficiary, guardian)
+      description: Describes the role of the related party relative to the enterprise
+        party, e.g. related party is the 'guardian' of enterprise party'
   graphql:
     typeName: Enterprise_EnterprisePartyRelationships
     inputTypeName: Enterprise_EnterprisePartyRelationshipsInput
@@ -166,8 +168,8 @@ definition:
       queryRootField: enterprisePartyRelationshipsAggregate
       subscription:
         rootField: enterprisePartyRelationshipsAggregate
-  description: Defines relationships between parties, such as power of attorney,
-    beneficiary designations, etc.
+  description: Defines the role of related party acts to the the enterprise party,
+    such as power of attorney, beneficiary designations, etc.
 
 ---
 kind: ModelPermissions

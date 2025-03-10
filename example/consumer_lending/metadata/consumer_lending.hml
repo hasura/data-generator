@@ -944,12 +944,15 @@ definition:
                   type: named
                   name: date
         consumer_banking_accounts:
+          description: Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be 'active' if parent enterprise account is closed.
           fields:
             consumer_banking_account_id:
+              description: Unique identifier for each consumer banking account
               type:
                 type: named
                 name: int4
             consumer_banking_product_id:
+              description: References the enterprise account this consumer account belongs to. Required for all consumer accounts
               type:
                 type: nullable
                 underlying_type:
@@ -967,12 +970,12 @@ definition:
                   type: named
                   name: timestamptz
             status:
-              description: Current status of the account (e.g., Active, Inactive, Frozen, Closed)
+              description: Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed
               type:
                 type: named
                 name: varchar
             status_update_date_time:
-              description: When the status was last updated
+              description: When the status was last updated. Updates to closed status do not automatically close the enterprise account.
               type:
                 type: named
                 name: timestamptz
@@ -11264,28 +11267,28 @@ definition:
                   type: named
                   name: varchar
         enterprise_account_ownership:
-          description: Represents ownership of an account by a party, allowing for joint ownership across multiple accounts
+          description: Junction table establishing ownership of enterprise accounts by parties. All LOB account access flows through this ownership. When ownership is terminated, party loses access to all linked LOB accounts. Multiple parties can own the same enterprise account (joint ownership).
           fields:
             enterprise_account_id:
-              description: References the account
+              description: References the enterprise account being owned. When ownership ends, access to all linked LOB accounts is terminated.
               type:
                 type: named
                 name: int4
             enterprise_account_ownership_id:
-              description: Auto-incrementing identifier for each account ownership record
+              description: Auto-incrementing, unique identifier for each account ownership record
               type:
                 type: named
                 name: int4
             enterprise_party_id:
-              description: References the party (owner)
+              description: References the party who owns the account. Party must exist before ownership can be established.
               type:
                 type: named
                 name: int4
         enterprise_accounts:
-          description: Core account information for all account types. Indicates that any LOB account was created or requested.
+          description: Master account record that other LOB accounts link to. Every LOB account must have a corresponding enterprise account. One enterprise account can have multiple LOB accounts.
           fields:
             account_category:
-              description: Customer defined category of account (e.g., personal, business)
+              description: Customer defined category of account (e.g., personal, business, retirement)
               type:
                 type: nullable
                 underlying_type:
@@ -11299,24 +11302,24 @@ definition:
                   type: named
                   name: varchar
             enterprise_account_id:
-              description: Unique identifier for each account
+              description: Unique identifier for each enterprise account
               type:
                 type: named
                 name: int4
             opened_date:
-              description: When the account was opened
+              description: When the enterprise account was created, typically coincides with first LOB account.
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: timestamptz
             status:
-              description: Current status of the account (e.g., active, closed)
+              description: Current status of the account (e.g., active, closed). When set to 'closed', all linked LOB accounts must be closed or in a terminal state.
               type:
                 type: named
                 name: varchar
             status_update_date_time:
-              description: When the status was last updated
+              description: When the status was last updated. Updates here may trigger required status changes in linked LOB accounts.
               type:
                 type: named
                 name: timestamptz
@@ -11730,13 +11733,6 @@ definition:
         enterprise_parties:
           description: Stores information about individuals and organizations that interact with accounts
           fields:
-            account_role:
-              description: Role in relation to the account (e.g., owner, authorized user)
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
             beneficial_ownership:
               description: Indicates if this party has beneficial ownership
               type:
@@ -11923,10 +11919,10 @@ definition:
                   type: named
                   name: varchar
         enterprise_party_relationships:
-          description: Defines relationships between parties, such as power of attorney, beneficiary designations, etc.
+          description: Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc.
           fields:
             enterprise_party_id:
-              description: References the party initiating the relationship
+              description: References the to the party being represented or acted upon
               type:
                 type: named
                 name: int4
@@ -11943,12 +11939,12 @@ definition:
                   type: named
                   name: int4
             related_party_id:
-              description: References the party related to the first party
+              description: References the party taking the role e.g. power of attorney, guardin, etc.
               type:
                 type: named
                 name: int4
             relationship_type:
-              description: Type of relationship (e.g., power_of_attorney, beneficiary, guardian)
+              description: Describes the role of the related party relative to the enterprise party, e.g. related party is the 'guardian' of enterprise party'
               type:
                 type: nullable
                 underlying_type:
@@ -12100,12 +12096,14 @@ definition:
         insert_consumer_banking_accounts_object:
           fields:
             consumer_banking_account_id:
+              description: Unique identifier for each consumer banking account
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: int4
             consumer_banking_product_id:
+              description: References the enterprise account this consumer account belongs to. Required for all consumer accounts
               type:
                 type: nullable
                 underlying_type:
@@ -12123,12 +12121,12 @@ definition:
                   type: named
                   name: timestamptz
             status:
-              description: Current status of the account (e.g., Active, Inactive, Frozen, Closed)
+              description: Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed
               type:
                 type: named
                 name: varchar
             status_update_date_time:
-              description: When the status was last updated
+              description: When the status was last updated. Updates to closed status do not automatically close the enterprise account.
               type:
                 type: named
                 name: timestamptz
@@ -21531,19 +21529,19 @@ definition:
         insert_enterprise_account_ownership_object:
           fields:
             enterprise_account_id:
-              description: References the account
+              description: References the enterprise account being owned. When ownership ends, access to all linked LOB accounts is terminated.
               type:
                 type: named
                 name: int4
             enterprise_account_ownership_id:
-              description: Auto-incrementing identifier for each account ownership record
+              description: Auto-incrementing, unique identifier for each account ownership record
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: int4
             enterprise_party_id:
-              description: References the party (owner)
+              description: References the party who owns the account. Party must exist before ownership can be established.
               type:
                 type: named
                 name: int4
@@ -21565,7 +21563,7 @@ definition:
         insert_enterprise_accounts_object:
           fields:
             account_category:
-              description: Customer defined category of account (e.g., personal, business)
+              description: Customer defined category of account (e.g., personal, business, retirement)
               type:
                 type: nullable
                 underlying_type:
@@ -21579,26 +21577,26 @@ definition:
                   type: named
                   name: varchar
             enterprise_account_id:
-              description: Unique identifier for each account
+              description: Unique identifier for each enterprise account
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: int4
             opened_date:
-              description: When the account was opened
+              description: When the enterprise account was created, typically coincides with first LOB account.
               type:
                 type: nullable
                 underlying_type:
                   type: named
                   name: timestamptz
             status:
-              description: Current status of the account (e.g., active, closed)
+              description: Current status of the account (e.g., active, closed). When set to 'closed', all linked LOB accounts must be closed or in a terminal state.
               type:
                 type: named
                 name: varchar
             status_update_date_time:
-              description: When the status was last updated
+              description: When the status was last updated. Updates here may trigger required status changes in linked LOB accounts.
               type:
                 type: named
                 name: timestamptz
@@ -22122,13 +22120,6 @@ definition:
                   name: enterprise_entity_addresses
         insert_enterprise_parties_object:
           fields:
-            account_role:
-              description: Role in relation to the account (e.g., owner, authorized user)
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
             beneficial_ownership:
               description: Indicates if this party has beneficial ownership
               type:
@@ -22350,7 +22341,7 @@ definition:
         insert_enterprise_party_relationships_object:
           fields:
             enterprise_party_id:
-              description: References the party initiating the relationship
+              description: References the to the party being represented or acted upon
               type:
                 type: named
                 name: int4
@@ -22369,12 +22360,12 @@ definition:
                   type: named
                   name: int4
             related_party_id:
-              description: References the party related to the first party
+              description: References the party taking the role e.g. power of attorney, guardin, etc.
               type:
                 type: named
                 name: int4
             relationship_type:
-              description: Type of relationship (e.g., power_of_attorney, beneficiary, guardian)
+              description: Describes the role of the related party relative to the enterprise party, e.g. related party is the 'guardian' of enterprise party'
               type:
                 type: nullable
                 underlying_type:
@@ -45228,16 +45219,6 @@ definition:
               type:
                 type: named
                 name: varchar
-        update_column_enterprise_parties_account_role:
-          description: Update the 'account_role' column in the 'enterprise_parties' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: varchar
         update_column_enterprise_parties_beneficial_ownership:
           description: Update the 'beneficial_ownership' column in the 'enterprise_parties' collection
           fields:
@@ -65012,13 +64993,6 @@ definition:
         update_enterprise_parties_by_enterprise_party_id_update_columns:
           description: Update the columns of the 'enterprise_parties' collection
           fields:
-            account_role:
-              description: Update the 'account_role' column in the 'enterprise_parties' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  type: named
-                  name: update_column_enterprise_parties_account_role
             beneficial_ownership:
               description: Update the 'beneficial_ownership' column in the 'enterprise_parties' collection.
               type:
@@ -72400,6 +72374,7 @@ definition:
                 enterprise_address_id: enterprise_address_id
               foreign_collection: enterprise_addresses
         - name: consumer_banking_accounts
+          description: Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be 'active' if parent enterprise account is closed.
           arguments: {}
           type: consumer_banking_accounts
           uniqueness_constraints:
@@ -74082,7 +74057,7 @@ definition:
                 enterprise_account_id: enterprise_account_id
               foreign_collection: enterprise_accounts
         - name: enterprise_account_ownership
-          description: Represents ownership of an account by a party, allowing for joint ownership across multiple accounts
+          description: Junction table establishing ownership of enterprise accounts by parties. All LOB account access flows through this ownership. When ownership is terminated, party loses access to all linked LOB accounts. Multiple parties can own the same enterprise account (joint ownership).
           arguments: {}
           type: enterprise_account_ownership
           uniqueness_constraints:
@@ -74099,7 +74074,7 @@ definition:
                 enterprise_party_id: enterprise_party_id
               foreign_collection: enterprise_parties
         - name: enterprise_accounts
-          description: Core account information for all account types. Indicates that any LOB account was created or requested.
+          description: Master account record that other LOB accounts link to. Every LOB account must have a corresponding enterprise account. One enterprise account can have multiple LOB accounts.
           arguments: {}
           type: enterprise_accounts
           uniqueness_constraints:
@@ -74210,7 +74185,7 @@ definition:
                 enterprise_party_id: enterprise_party_id
               foreign_collection: enterprise_parties
         - name: enterprise_party_relationships
-          description: Defines relationships between parties, such as power of attorney, beneficiary designations, etc.
+          description: Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc.
           arguments: {}
           type: enterprise_party_relationships
           uniqueness_constraints:
@@ -75208,6 +75183,7 @@ definition:
           description: Delete any row on the 'consumer_banking_accounts' collection using the 'consumer_banking_account_id' key
           arguments:
             key_consumer_banking_account_id:
+              description: Unique identifier for each consumer banking account
               type:
                 type: named
                 name: int4
@@ -77223,7 +77199,7 @@ definition:
           description: Delete any row on the 'enterprise_account_ownership' collection using the 'enterprise_account_ownership_id' key
           arguments:
             key_enterprise_account_ownership_id:
-              description: Auto-incrementing identifier for each account ownership record
+              description: Auto-incrementing, unique identifier for each account ownership record
               type:
                 type: named
                 name: int4
@@ -77241,7 +77217,7 @@ definition:
           description: Delete any row on the 'enterprise_accounts' collection using the 'enterprise_account_id' key
           arguments:
             key_enterprise_account_id:
-              description: Unique identifier for each account
+              description: Unique identifier for each enterprise account
               type:
                 type: named
                 name: int4
@@ -82015,6 +81991,7 @@ definition:
           description: Update any row on the 'consumer_banking_accounts' collection using the 'consumer_banking_account_id' key
           arguments:
             key_consumer_banking_account_id:
+              description: Unique identifier for each consumer banking account
               type:
                 type: named
                 name: int4
@@ -85262,7 +85239,7 @@ definition:
           description: Update any row on the 'enterprise_account_ownership' collection using the 'enterprise_account_ownership_id' key
           arguments:
             key_enterprise_account_ownership_id:
-              description: Auto-incrementing identifier for each account ownership record
+              description: Auto-incrementing, unique identifier for each account ownership record
               type:
                 type: named
                 name: int4
@@ -85291,7 +85268,7 @@ definition:
           description: Update any row on the 'enterprise_accounts' collection using the 'enterprise_account_id' key
           arguments:
             key_enterprise_account_id:
-              description: Unique identifier for each account
+              description: Unique identifier for each enterprise account
               type:
                 type: named
                 name: int4

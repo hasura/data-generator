@@ -12,34 +12,34 @@ Technical requirements:
 3. For credit/debit indicators:
    - Check for opposite indicators (CREDIT vs DEBIT)
    - Handle various formats (credit/debit, CR/DR, +/-)
-4. Do not use DATEADD in generated SQL. Date math should be done in Python.
+4. Do not use DATEADD or DATEDIFF in generated SQL. Date math should be done in Python.
 5. LOB accounts and enterprise accounts are related by the enterpriseAccountId.
    But transactions are identified by the LOB account id.
-6. Suggest you use simple SQL and use Python to connect data sets. Do not use CTEs.
+6. Do not use CTEs in SQL queries.
+7. Do not use subqueries in SQL queries.
 
 Analysis requirements:
 1. Analyze relationship types to determine fiduciary relationship types. Make no assumptions
    about the names of relationship types.
-2. Do not hardcode transaction type names or codes. Instead:
-   - First query and analyze a sample of transaction types and their characteristics
-   - Use the observed types, amounts, and patterns to identify relevant transactions
-   - Document which transaction types you're focusing on and why based on the data.
-3. Focus on consumer banking transactions.
-4. Identify matching transaction patterns between fiduciary and client accounts within 3 days, including:
+2. Focus on consumer banking transactions.
+3. Identify matching transaction patterns between fiduciary and principal accounts within 3 days, including:
    - Exact amount matches with opposite credit/debit indicators
-   - Split transactions where multiple guardian transactions add up to a ward transaction
-   - Focus on cash transactions, ATM withdrawals, or transfers
-5. Flag patterns where:
-   - Money moves between fiduciary and client accounts
+   - Split transactions where multiple fiduciary transactions add up to a principal transaction
+   - Focus on all transactions
+4. Flag patterns where:
+   - Money moves between fiduciary and principal accounts
    - Transactions occur in close temporal proximity
    - Transaction descriptions suggest potential concealment
-6. Report for each fiduciary-client pair:
-   - Names of fiduciary and client
+5. Report for each fiduciary-principal pair:
+   - Names of fiduciary and principal
    - Number and total amount of suspicious transactions
    - Date range of suspicious activity
    - Types of suspicious patterns found
-7. Highlight cases where:
-   - A guardian shows patterns across multiple clients
+6. Highlight cases where:
+   - A fiduciary shows patterns across multiple principals
    - Patterns occur repeatedly over time
    - Large amounts are involved
+
+Be thorough and systematic and carefully follow instructions.
+Verify that you completed all of the required steps.
 

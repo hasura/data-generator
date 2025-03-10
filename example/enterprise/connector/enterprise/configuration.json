@@ -202,7 +202,7 @@
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": null
+            "description": "Unique identifier for each consumer banking account"
           },
           "consumer_banking_product_id": {
             "name": "consumer_banking_product_id",
@@ -210,7 +210,7 @@
               "scalarType": "int4"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "References the enterprise account this consumer account belongs to. Required for all consumer accounts"
           },
           "enterprise_account_id": {
             "name": "enterprise_account_id",
@@ -234,7 +234,7 @@
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": "Current status of the account (e.g., Active, Inactive, Frozen, Closed)"
+            "description": "Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed"
           },
           "status_update_date_time": {
             "name": "status_update_date_time",
@@ -242,7 +242,7 @@
               "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
-            "description": "When the status was last updated"
+            "description": "When the status was last updated. Updates to closed status do not automatically close the enterprise account."
           }
         },
         "uniquenessConstraints": {
@@ -266,7 +266,7 @@
             }
           }
         },
-        "description": null
+        "description": "Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be 'active' if parent enterprise account is closed."
       },
       "consumer_banking_balances": {
         "schemaName": "consumer_banking",
@@ -13011,7 +13011,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the account"
+            "description": "References the enterprise account being owned. When ownership ends, access to all linked LOB accounts is terminated."
           },
           "enterprise_account_ownership_id": {
             "name": "enterprise_account_ownership_id",
@@ -13020,7 +13020,7 @@
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": "Auto-incrementing identifier for each account ownership record"
+            "description": "Auto-incrementing, unique identifier for each account ownership record"
           },
           "enterprise_party_id": {
             "name": "enterprise_party_id",
@@ -13028,7 +13028,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the party (owner)"
+            "description": "References the party who owns the account. Party must exist before ownership can be established."
           }
         },
         "uniquenessConstraints": {
@@ -13052,7 +13052,7 @@
             }
           }
         },
-        "description": "Represents ownership of an account by a party, allowing for joint ownership across multiple accounts"
+        "description": "Junction table establishing ownership of enterprise accounts by parties. All LOB account access flows through this ownership. When ownership is terminated, party loses access to all linked LOB accounts. Multiple parties can own the same enterprise account (joint ownership)."
       },
       "enterprise_accounts": {
         "schemaName": "enterprise",
@@ -13064,7 +13064,7 @@
               "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": "Customer defined category of account (e.g., personal, business)"
+            "description": "Customer defined category of account (e.g., personal, business, retirement)"
           },
           "description": {
             "name": "description",
@@ -13081,7 +13081,7 @@
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": "Unique identifier for each account"
+            "description": "Unique identifier for each enterprise account"
           },
           "opened_date": {
             "name": "opened_date",
@@ -13089,7 +13089,7 @@
               "scalarType": "timestamptz"
             },
             "nullable": "nullable",
-            "description": "When the account was opened"
+            "description": "When the enterprise account was created, typically coincides with first LOB account."
           },
           "status": {
             "name": "status",
@@ -13097,7 +13097,7 @@
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": "Current status of the account (e.g., active, closed)"
+            "description": "Current status of the account (e.g., active, closed). When set to 'closed', all linked LOB accounts must be closed or in a terminal state."
           },
           "status_update_date_time": {
             "name": "status_update_date_time",
@@ -13105,7 +13105,7 @@
               "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
-            "description": "When the status was last updated"
+            "description": "When the status was last updated. Updates here may trigger required status changes in linked LOB accounts."
           }
         },
         "uniquenessConstraints": {
@@ -13114,7 +13114,7 @@
           ]
         },
         "foreignRelations": {},
-        "description": "Core account information for all account types. Indicates that any LOB account was created or requested."
+        "description": "Master account record that other LOB accounts link to. Every LOB account must have a corresponding enterprise account. One enterprise account can have multiple LOB accounts."
       },
       "enterprise_address_lines": {
         "schemaName": "enterprise",
@@ -13720,14 +13720,6 @@
         "schemaName": "enterprise",
         "tableName": "parties",
         "columns": {
-          "account_role": {
-            "name": "account_role",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Role in relation to the account (e.g., owner, authorized user)"
-          },
           "beneficial_ownership": {
             "name": "beneficial_ownership",
             "type": {
@@ -13994,7 +13986,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the party initiating the relationship"
+            "description": "References the to the party being represented or acted upon"
           },
           "enterprise_party_relationship_id": {
             "name": "enterprise_party_relationship_id",
@@ -14019,7 +14011,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the party related to the first party"
+            "description": "References the party taking the role e.g. power of attorney, guardin, etc."
           },
           "relationship_type": {
             "name": "relationship_type",
@@ -14027,7 +14019,7 @@
               "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": "Type of relationship (e.g., power_of_attorney, beneficiary, guardian)"
+            "description": "Describes the role of the related party relative to the enterprise party, e.g. related party is the 'guardian' of enterprise party'"
           }
         },
         "uniquenessConstraints": {
@@ -14051,7 +14043,7 @@
             }
           }
         },
-        "description": "Defines relationships between parties, such as power of attorney, beneficiary designations, etc."
+        "description": "Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc."
       },
       "enterprise_permissions": {
         "schemaName": "enterprise",

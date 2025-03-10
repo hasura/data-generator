@@ -34,7 +34,6 @@ CREATE TABLE "enterprise"."parties" (
   "legal_structure" VARCHAR(50),
   "lei" VARCHAR(20),
   "beneficial_ownership" BOOLEAN,
-  "account_role" VARCHAR(50),
   "email_address" VARCHAR(256),
   "phone" VARCHAR(30),
   "mobile" VARCHAR(30)
@@ -186,7 +185,7 @@ CREATE TABLE "consumer_banking"."balances" (
   "consumer_banking_balance_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
   "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "type" VARCHAR(5) NOT NULL,
+  "type" VARCHAR(10) NOT NULL,
   "date_time" TIMESTAMP NOT NULL,
   "amount" NUMERIC(18,5) NOT NULL,
   "currency" VARCHAR(3) NOT NULL,
@@ -429,15 +428,15 @@ CREATE TABLE "consumer_banking"."transactions" (
   "status" VARCHAR(10) NOT NULL,
   "transaction_mutability" VARCHAR(10),
   "transaction_date" TIMESTAMP NOT NULL,
+  "category" VARCHAR(20),
+  "transaction_type" VARCHAR(20),
   "value_date" TIMESTAMP,
   "description" VARCHAR(500),
   "merchant_address" VARCHAR(70),
   "amount" NUMERIC(18,5) NOT NULL,
   "currency" VARCHAR(3) NOT NULL,
   "charge_amount" NUMERIC(18,5),
-  "charge_currency" VARCHAR(3),
-  "category" VARCHAR(20),
-  "transaction_type" VARCHAR(20)
+  "charge_currency" VARCHAR(3)
 );
 
 CREATE TABLE "consumer_banking"."transaction_statement_references" (
@@ -2824,23 +2823,21 @@ COMMENT ON COLUMN "enterprise"."parties"."lei" IS 'Legal Entity Identifier for o
 
 COMMENT ON COLUMN "enterprise"."parties"."beneficial_ownership" IS 'Indicates if this party has beneficial ownership';
 
-COMMENT ON COLUMN "enterprise"."parties"."account_role" IS 'Role in relation to the account (e.g., owner, authorized user)';
-
 COMMENT ON COLUMN "enterprise"."parties"."email_address" IS 'Primary email contact';
 
 COMMENT ON COLUMN "enterprise"."parties"."phone" IS 'Primary phone contact';
 
 COMMENT ON COLUMN "enterprise"."parties"."mobile" IS 'Mobile phone contact';
 
-COMMENT ON TABLE "enterprise"."party_relationships" IS 'Defines relationships between parties, such as power of attorney, beneficiary designations, etc.';
+COMMENT ON TABLE "enterprise"."party_relationships" IS 'Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc.';
 
 COMMENT ON COLUMN "enterprise"."party_relationships"."enterprise_party_relationship_id" IS 'Auto-incrementing identifier for each relationship record';
 
-COMMENT ON COLUMN "enterprise"."party_relationships"."enterprise_party_id" IS 'References the party initiating the relationship';
+COMMENT ON COLUMN "enterprise"."party_relationships"."enterprise_party_id" IS 'References the to the party being represented or acted upon';
 
-COMMENT ON COLUMN "enterprise"."party_relationships"."related_party_id" IS 'References the party related to the first party';
+COMMENT ON COLUMN "enterprise"."party_relationships"."related_party_id" IS 'References the party taking the role e.g. power of attorney, guardin, etc.';
 
-COMMENT ON COLUMN "enterprise"."party_relationships"."relationship_type" IS 'Type of relationship (e.g., power_of_attorney, beneficiary, guardian)';
+COMMENT ON COLUMN "enterprise"."party_relationships"."relationship_type" IS 'Describes the role of the related party relative to the enterprise party, e.g. related party is the ''guardian'' of enterprise party''';
 
 COMMENT ON COLUMN "enterprise"."party_relationships"."priority" IS 'Order of precedence for the relationship type (lower number = higher priority)';
 
@@ -2938,27 +2935,27 @@ COMMENT ON COLUMN "enterprise"."entity_addresses"."entity_type" IS 'Type of enti
 
 COMMENT ON COLUMN "enterprise"."entity_addresses"."entity_id" IS 'Identifier of the entity this address belongs to';
 
-COMMENT ON TABLE "enterprise"."accounts" IS 'Core account information for all account types. Indicates that any LOB account was created or requested.';
+COMMENT ON TABLE "enterprise"."accounts" IS 'Root account record in the account hierarchy. All other account types (consumer, mortgage, credit) are children of an enterprise account and cannot exist without it. The single source of truth for account ownership and access control.';
 
-COMMENT ON COLUMN "enterprise"."accounts"."enterprise_account_id" IS 'Unique identifier for each account';
+COMMENT ON COLUMN "enterprise"."accounts"."enterprise_account_id" IS 'Unique identifier for each enterprise account';
 
-COMMENT ON COLUMN "enterprise"."accounts"."opened_date" IS 'When the account was opened';
+COMMENT ON COLUMN "enterprise"."accounts"."opened_date" IS 'When the enterprise account was created, typically coincides with first LOB account.';
 
-COMMENT ON COLUMN "enterprise"."accounts"."status" IS 'Current status of the account (e.g., active, closed)';
+COMMENT ON COLUMN "enterprise"."accounts"."status" IS 'Current status of the account (e.g., active, closed). When set to ''closed'', all linked LOB accounts must be closed or in a terminal state.';
 
-COMMENT ON COLUMN "enterprise"."accounts"."status_update_date_time" IS 'When the status was last updated';
+COMMENT ON COLUMN "enterprise"."accounts"."status_update_date_time" IS 'When the status was last updated. Updates here may trigger required status changes in linked LOB accounts.';
 
-COMMENT ON COLUMN "enterprise"."accounts"."account_category" IS 'Customer defined category of account (e.g., personal, business)';
+COMMENT ON COLUMN "enterprise"."accounts"."account_category" IS 'Customer defined category of account (e.g., personal, business, retirement)';
 
 COMMENT ON COLUMN "enterprise"."accounts"."description" IS 'Customer defined description of the account';
 
-COMMENT ON TABLE "enterprise"."account_ownership" IS 'Represents ownership of an account by a party, allowing for joint ownership across multiple accounts';
+COMMENT ON TABLE "enterprise"."account_ownership" IS 'The only table that controls account access rights. Creates the mandatory link between parties and accounts. Any query checking account access or ownership must start with this table. No direct relationships exist between parties and other account tables.';
 
-COMMENT ON COLUMN "enterprise"."account_ownership"."enterprise_account_ownership_id" IS 'Auto-incrementing identifier for each account ownership record';
+COMMENT ON COLUMN "enterprise"."account_ownership"."enterprise_account_ownership_id" IS 'Auto-incrementing, unique identifier for each account ownership record';
 
-COMMENT ON COLUMN "enterprise"."account_ownership"."enterprise_account_id" IS 'References the account';
+COMMENT ON COLUMN "enterprise"."account_ownership"."enterprise_account_id" IS 'References the enterprise account being owned. When ownership ends, access to all linked LOB accounts is terminated.';
 
-COMMENT ON COLUMN "enterprise"."account_ownership"."enterprise_party_id" IS 'References the party (owner)';
+COMMENT ON COLUMN "enterprise"."account_ownership"."enterprise_party_id" IS 'References the party who owns the account. Party must exist before ownership can be established.';
 
 COMMENT ON TABLE "enterprise"."associates" IS 'Stores information about employees, contractors, or other individuals associated with the enterprise.';
 
@@ -3032,11 +3029,17 @@ COMMENT ON COLUMN "enterprise"."buildings"."open_date" IS 'Date the building was
 
 COMMENT ON COLUMN "enterprise"."buildings"."close_date" IS 'Date the building was closed, if applicable.';
 
+COMMENT ON TABLE "consumer_banking"."accounts" IS 'Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be ''active'' if parent enterprise account is closed.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."consumer_banking_account_id" IS 'Unique identifier for each consumer banking account';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."consumer_banking_product_id" IS 'References the enterprise account this consumer account belongs to. Required for all consumer accounts';
+
 COMMENT ON COLUMN "consumer_banking"."accounts"."opened_date" IS 'When the account was opened';
 
-COMMENT ON COLUMN "consumer_banking"."accounts"."status" IS 'Current status of the account (e.g., Active, Inactive, Frozen, Closed)';
+COMMENT ON COLUMN "consumer_banking"."accounts"."status" IS 'Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed';
 
-COMMENT ON COLUMN "consumer_banking"."accounts"."status_update_date_time" IS 'When the status was last updated';
+COMMENT ON COLUMN "consumer_banking"."accounts"."status_update_date_time" IS 'When the status was last updated. Updates to closed status do not automatically close the enterprise account.';
 
 COMMENT ON TABLE "consumer_banking"."account_access_consents" IS 'Stores consent records for account access, tracking when and how third parties are permitted to access consumer banking account information';
 
@@ -3064,7 +3067,7 @@ COMMENT ON COLUMN "consumer_banking"."balances"."consumer_banking_account_id" IS
 
 COMMENT ON COLUMN "consumer_banking"."balances"."credit_debit_indicator" IS 'Indicates if balance is credit or debit';
 
-COMMENT ON COLUMN "consumer_banking"."balances"."type" IS 'Primary balance type (e.g., AVBL for available)';
+COMMENT ON COLUMN "consumer_banking"."balances"."type" IS 'Primary balance type (e.g., available, closing, etc.)';
 
 COMMENT ON COLUMN "consumer_banking"."balances"."date_time" IS 'When this balance was recorded';
 
@@ -3454,6 +3457,10 @@ COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_mutability" IS 
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_date" IS 'When the transaction was recorded in the books';
 
+COMMENT ON COLUMN "consumer_banking"."transactions"."category" IS 'Code classifying the overall purpose of the transaction';
+
+COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_type" IS 'Code classifying the specific purpose of the payment';
+
 COMMENT ON COLUMN "consumer_banking"."transactions"."value_date" IS 'When the transaction affects the account balance';
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."description" IS 'Additional information about the transaction';
@@ -3467,10 +3474,6 @@ COMMENT ON COLUMN "consumer_banking"."transactions"."currency" IS 'Currency code
 COMMENT ON COLUMN "consumer_banking"."transactions"."charge_amount" IS 'Any fees associated with the transaction';
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."charge_currency" IS 'Currency code for the transaction fee';
-
-COMMENT ON COLUMN "consumer_banking"."transactions"."category" IS 'Code classifying the overall purpose of the transaction';
-
-COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_type" IS 'Code classifying the specific purpose of the payment';
 
 COMMENT ON TABLE "consumer_banking"."transaction_statement_references" IS 'Links transactions to specific statements they appear on';
 

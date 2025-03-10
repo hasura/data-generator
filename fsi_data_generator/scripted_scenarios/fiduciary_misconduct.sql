@@ -7,11 +7,11 @@ BEGIN; -- Start the transaction
 
 -- Enterprise Account for John Doe
 INSERT INTO enterprise.accounts (opened_date, status, status_update_date_time, account_category, description)
-VALUES (NOW() - INTERVAL '1 year', 'Active', NOW(), 'Personal', 'John Doe Main Account');
+VALUES (NOW() - INTERVAL '1 year', 'active', NOW(), 'Personal', 'John Doe Main Account');
 
 -- Enterprise Account for Jane Smith
 INSERT INTO enterprise.accounts (opened_date, status, status_update_date_time, account_category, description)
-VALUES (NOW() - INTERVAL '6 months', 'Active', NOW(), 'Personal', 'Jane Smith Main Account');
+VALUES (NOW() - INTERVAL '6 months', 'active', NOW(), 'Personal', 'Jane Smith Main Account');
 
 -- Enterprise Party (Consumer - John Doe)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
@@ -46,7 +46,7 @@ SELECT
     (SELECT enterprise_account_id FROM enterprise.accounts WHERE description = 'John Doe Main Account' ORDER BY enterprise_account_id DESC LIMIT 1),
     (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
     NOW() - INTERVAL '1 year',
-    'Active',
+    'active',
     NOW();
 
 -- Consumer Banking Account (Jane Smith)
@@ -55,7 +55,7 @@ SELECT
     (SELECT enterprise_account_id FROM enterprise.accounts WHERE description = 'Jane Smith Main Account' ORDER BY enterprise_account_id DESC LIMIT 1),
     (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
     NOW() - INTERVAL '6 months',
-    'Active',
+    'active',
     NOW();
 
 -- Transactions (Varied amounts and times)
@@ -112,11 +112,11 @@ SELECT
 
 -- Enterprise Account for Alice Johnson
 INSERT INTO enterprise.accounts (opened_date, status, status_update_date_time, account_category, description)
-VALUES (NOW() - INTERVAL '8 months', 'Active', NOW(), 'Personal', 'Alice Johnson Main Account');
+VALUES (NOW() - INTERVAL '8 months', 'active', NOW(), 'Personal', 'Alice Johnson Main Account');
 
 -- Enterprise Account for Bob Williams
 INSERT INTO enterprise.accounts (opened_date, status, status_update_date_time, account_category, description)
-VALUES (NOW() - INTERVAL '3 months', 'Active', NOW(), 'Personal', 'Bob Williams Main Account');
+VALUES (NOW() - INTERVAL '3 months', 'active', NOW(), 'Personal', 'Bob Williams Main Account');
 
 -- Enterprise Party (Consumer)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
@@ -151,7 +151,7 @@ SELECT
     (SELECT enterprise_account_id FROM enterprise.accounts WHERE description = 'Alice Johnson Main Account' ORDER BY enterprise_account_id DESC LIMIT 1),
     (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
     NOW() - INTERVAL '8 months',
-    'Active',
+    'active',
     NOW();
 
 -- Consumer Banking Account (Bob Williams)
@@ -160,7 +160,7 @@ SELECT
     (SELECT enterprise_account_id FROM enterprise.accounts WHERE description = 'Bob Williams Main Account' ORDER BY enterprise_account_id DESC LIMIT 1),
     (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
     NOW() - INTERVAL '3 months',
-    'Active',
+    'active',
     NOW();
 
 -- Transactions (Varied amounts, times, and transaction types)
@@ -225,15 +225,15 @@ SELECT
 
 -- Enterprise Account for Charlie Brown
 INSERT INTO enterprise.accounts (opened_date, status, status_update_date_time, account_category, description)
-VALUES (NOW() - INTERVAL '10 months', 'Active', NOW(), 'Personal', 'Charlie Brown Main Account');
+VALUES (NOW() - INTERVAL '10 months', 'active', NOW(), 'Personal', 'Charlie Brown Main Account');
 
 -- Enterprise Account for Lucy Van Pelt
 INSERT INTO enterprise.accounts (opened_date, status, status_update_date_time, account_category, description)
-VALUES (NOW() - INTERVAL '7 months', 'Active', NOW(), 'Personal', 'Lucy Van Pelt Main Account');
+VALUES (NOW() - INTERVAL '7 months', 'active', NOW(), 'Personal', 'Lucy Van Pelt Main Account');
 
 -- Enterprise Account for Linus Van Pelt
 INSERT INTO enterprise.accounts (opened_date, status, status_update_date_time, account_category, description)
-VALUES (NOW() - INTERVAL '5 months', 'Active', NOW(), 'Personal', 'Linus Van Pelt Main Account');
+VALUES (NOW() - INTERVAL '5 months', 'active', NOW(), 'Personal', 'Linus Van Pelt Main Account');
 
 -- Enterprise Party (Consumer)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
@@ -284,7 +284,7 @@ SELECT
     (SELECT enterprise_account_id FROM enterprise.accounts WHERE description = 'Charlie Brown Main Account' ORDER BY enterprise_account_id DESC LIMIT 1),
     (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
     NOW() - INTERVAL '10 months',
-    'Active',
+    'active',
     NOW();
 
 -- Consumer Banking Account (Lucy Van Pelt)
@@ -293,7 +293,7 @@ SELECT
     (SELECT enterprise_account_id FROM enterprise.accounts WHERE description = 'Lucy Van Pelt Main Account' ORDER BY enterprise_account_id DESC LIMIT 1),
     (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
     NOW() - INTERVAL '7 months',
-    'Active',
+    'active',
     NOW();
 
 -- Consumer Banking Account (Linus Van Pelt)
@@ -302,7 +302,7 @@ SELECT
     (SELECT enterprise_account_id FROM enterprise.accounts WHERE description = 'Linus Van Pelt Main Account' ORDER BY enterprise_account_id DESC LIMIT 1),
     (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
     NOW() - INTERVAL '5 months',
-    'Active',
+    'active',
     NOW();
 
 -- Transactions (Varied guardians, amounts, and times)
