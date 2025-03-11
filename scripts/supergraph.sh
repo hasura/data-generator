@@ -59,6 +59,14 @@ ddn connector introspect enterprise
 ddn model add enterprise "enterprise*"
 ddn relationship add enterprise "*"
 
+ddn subgraph init security
+ddn subgraph add --subgraph security/subgraph.yaml --target-supergraph ./supergraph.yaml
+ddn context set subgraph security/subgraph.yaml
+ddn codemod rename-graphql-prefixes --graphql-type-name 'Security_'
+ddn connector init security --hub-connector hasura/postgres -i
+ddn connector introspect security
+ddn model add security "security*"
+ddn relationship add security "*"
 
 cp ../scripts/cross_schema_relationships/small_business_banking* small_business_banking/metadata
 cp ../scripts/cross_schema_relationships/consumer_banking* consumer_banking/metadata

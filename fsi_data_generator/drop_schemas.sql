@@ -10,3 +10,5 @@ drop schema if exists credit_cards cascade;
 
 drop schema if exists enterprise cascade;
 
+drop schema if exists security cascade;
+

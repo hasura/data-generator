@@ -820,16 +820,6 @@ class DataGenerator:
             child_key = f"{child_schema}.{child_table}"
             parent_key = f"{parent_schema}.{parent_table}"
 
-            # # Replace the normalized_exclusions check with the pattern-based check
-            # # Check if either child or parent table should be excluded
-            # child_excluded = any(table_regex.search(child_key) and column_regex.search('*')
-            #                      for table_regex, column_regex in self.exclusion_patterns)
-            # parent_excluded = any(table_regex.search(parent_key) and column_regex.search('*')
-            #                       for table_regex, column_regex in self.exclusion_patterns)
-            #
-            # if child_excluded or parent_excluded:
-            #     continue
-
             if parent_key not in self.table_dependencies:
                 self.table_dependencies[parent_key] = []  # Ensure parent exists as a key
             if child_key not in self.table_dependencies:
@@ -1124,6 +1114,8 @@ class DataGenerator:
 
         if data_type in ["integer", "smallint", "bigint", "int"]:
             self._generate_integer_value(data_type, num_precision, values)
+        elif data_type in ["inet"]:
+            values.append(self.fake.ipv4())
         elif data_type in ["numeric", "decimal", "real", "double precision"]:
             self._generate_numeric_value(num_precision, num_scale, values)
         elif data_type in ["boolean"]:

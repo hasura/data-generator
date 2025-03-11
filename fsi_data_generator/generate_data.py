@@ -4,6 +4,7 @@ import glob
 import psycopg2
 from dotenv import load_dotenv
 
+import cve_manager
 from fsi_data_generator.banking_generators import custom_generators
 
 # Load environment variables from .env file
@@ -102,7 +103,13 @@ def generate_banking_data():
         # Step 2: Initialize the DataGenerator
         generator = DataGenerator(
             conn_params=conn_params,
-            exclude_schemas=['public']
+            exclude_schemas=['public'],
+            exclusions=[
+                ('security\\.cvss', '.*'),
+                ('security\\.cpe', '.*'),
+                ('security\\.cwe', '.*'),
+                ('security\\.cve_problem', '.*')
+            ]
         )
         generator.custom_generators = custom_generators(generator)
 
@@ -317,6 +324,10 @@ def generate_banking_data():
             print("\nExecuting scripted scenarios...")
             with psycopg2.connect(**conn_params) as conn:
                 execute_sql_scripts(conn, scripted_scenarios_path)
+
+        # Step 5: Download CVEs and upload them to database
+        cve_manager.download_cves()
+        cve_manager.process_cves(csv_file=True, import_db=True, **conn_params)
 
         print("\nDataGenerator completed successfully!")
 

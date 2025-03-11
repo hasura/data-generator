@@ -1,3 +1,5 @@
+CREATE SCHEMA "security";
+
 CREATE SCHEMA "enterprise";
 
 CREATE SCHEMA "consumer_banking";
@@ -9,6 +11,372 @@ CREATE SCHEMA "consumer_lending";
 CREATE SCHEMA "credit_cards";
 
 CREATE SCHEMA "small_business_banking";
+
+CREATE TYPE "security"."tcp_flag_type" AS ENUM (
+  'SYN',
+  'ACK',
+  'FIN',
+  'RST',
+  'PSH',
+  'URG',
+  'ECE',
+  'CWR'
+);
+
+CREATE TABLE "security"."devices" (
+  "ip_address" INET PRIMARY KEY NOT NULL,
+  "device_type" VARCHAR(50) NOT NULL,
+  "subnet" VARCHAR(50),
+  "hostname" VARCHAR(100),
+  "created_at" TIMESTAMP(6) DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMP(6) DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE "security"."network_events" (
+  "id" BIGSERIAL PRIMARY KEY NOT NULL,
+  "timestamp" TIMESTAMP(6) NOT NULL,
+  "source_ip" INET NOT NULL,
+  "source_port" INTEGER NOT NULL,
+  "dest_ip" INET NOT NULL,
+  "dest_port" INTEGER NOT NULL,
+  "protocol" VARCHAR(20) NOT NULL,
+  "status" VARCHAR(50) NOT NULL,
+  "tcp_flag" security.tcp_flag_type,
+  "sequence" BIGINT,
+  "ack" BIGINT,
+  "window_size" INTEGER,
+  "length" INTEGER NOT NULL DEFAULT 0,
+  "bytes_sent" INTEGER NOT NULL DEFAULT 0,
+  "bytes_received" INTEGER NOT NULL DEFAULT 0,
+  "device_id" INET NOT NULL,
+  "log_message" TEXT,
+  "created_at" TIMESTAMP(6) DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE "security"."policies" (
+  "policy_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200) UNIQUE NOT NULL,
+  "description" TEXT NOT NULL,
+  "created_at" TIMESTAMP(6) DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMP(6) DEFAULT (CURRENT_TIMESTAMP),
+  "active" BOOLEAN DEFAULT true
+);
+
+CREATE TABLE "security"."policy_attributes" (
+  "policy_id" UUID NOT NULL,
+  "attribute_name" VARCHAR(200) NOT NULL,
+  "attribute_value" VARCHAR(200),
+  PRIMARY KEY ("policy_id", "attribute_name")
+);
+
+CREATE TABLE "security"."policy_rules" (
+  "rule_id" UUID PRIMARY KEY NOT NULL,
+  "policy_id" UUID,
+  "rule_name" VARCHAR(200) NOT NULL,
+  "rule_description" TEXT NOT NULL
+);
+
+CREATE TABLE "security"."access_profiles" (
+  "access_profile_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200),
+  "display_name" VARCHAR(200),
+  "description" VARCHAR(200),
+  "owner_id" UUID
+);
+
+CREATE TABLE "security"."account_entitlement_attributes" (
+  "account_id" UUID NOT NULL,
+  "attribute_name" VARCHAR(200) NOT NULL,
+  "attribute_value" VARCHAR(200) NOT NULL,
+  PRIMARY KEY ("account_id", "attribute_name", "attribute_value")
+);
+
+CREATE TABLE "security"."accounts" (
+  "account_id" UUID PRIMARY KEY NOT NULL,
+  "identity_id" UUID,
+  "name" VARCHAR(200),
+  "account_id_string" VARCHAR(200),
+  "source_id" UUID,
+  "disabled" BOOLEAN,
+  "locked" BOOLEAN,
+  "privileged" BOOLEAN,
+  "manually_correlated" BOOLEAN,
+  "password_last_set" TIMESTAMP(6),
+  "created" TIMESTAMP(6)
+);
+
+CREATE TABLE "security"."apps" (
+  "app_id" UUID PRIMARY KEY NOT NULL,
+  "identity_id" UUID,
+  "name" VARCHAR(200),
+  "source_id" UUID,
+  "account_id" UUID
+);
+
+CREATE TABLE "security"."entitlements" (
+  "entitlement_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200),
+  "display_name" VARCHAR(200),
+  "description" VARCHAR(200),
+  "attribute" VARCHAR(200),
+  "source_id" UUID,
+  "value" VARCHAR(200),
+  "privileged" BOOLEAN
+);
+
+CREATE TABLE "security"."governance_groups" (
+  "group_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200),
+  "owner_id" UUID
+);
+
+CREATE TABLE "security"."iam_logins" (
+  "login_id" UUID PRIMARY KEY NOT NULL,
+  "system_id" UUID,
+  "user_name" VARCHAR(200),
+  "login_time" TIMESTAMP(6),
+  "logout_time" TIMESTAMP(6),
+  "login_method" VARCHAR(200)
+);
+
+CREATE TABLE "security"."identities" (
+  "identity_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200),
+  "display_name" VARCHAR(200),
+  "first_name" VARCHAR(200),
+  "last_name" VARCHAR(200),
+  "email" VARCHAR(200),
+  "phone" VARCHAR(200),
+  "created" TIMESTAMP(6),
+  "inactive" BOOLEAN,
+  "status" VARCHAR(200),
+  "employee_number" VARCHAR(200),
+  "is_manager" BOOLEAN,
+  "manager_id" UUID,
+  "authoritative_source_id" UUID,
+  "identity_profile_id" UUID,
+  "modified" TIMESTAMP(6),
+  "synced" TIMESTAMP(6),
+  "is_fallback_approver" BOOLEAN
+);
+
+CREATE TABLE "security"."identity_access_profiles" (
+  "identity_id" UUID NOT NULL,
+  "access_profile_id" UUID NOT NULL,
+  PRIMARY KEY ("identity_id", "access_profile_id")
+);
+
+CREATE TABLE "security"."identity_attributes" (
+  "identity_id" UUID NOT NULL,
+  "attribute_name" VARCHAR(200) NOT NULL,
+  "attribute_value" VARCHAR(200),
+  PRIMARY KEY ("identity_id", "attribute_name")
+);
+
+CREATE TABLE "security"."identity_entitlements" (
+  "identity_id" UUID NOT NULL,
+  "entitlement_id" UUID NOT NULL,
+  PRIMARY KEY ("identity_id", "entitlement_id")
+);
+
+CREATE TABLE "security"."identity_profiles" (
+  "identity_profile_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200)
+);
+
+CREATE TABLE "security"."identity_roles" (
+  "identity_id" UUID NOT NULL,
+  "role_id" UUID NOT NULL,
+  PRIMARY KEY ("identity_id", "role_id")
+);
+
+CREATE TABLE "security"."roles" (
+  "role_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200),
+  "display_name" VARCHAR(200),
+  "description" VARCHAR(200),
+  "disabled" BOOLEAN,
+  "owner_id" UUID
+);
+
+CREATE TABLE "security"."sources" (
+  "source_id" UUID PRIMARY KEY NOT NULL,
+  "name" VARCHAR(200),
+  "type" VARCHAR(200),
+  "owner_id" UUID
+);
+
+CREATE TABLE "security"."file_accesses" (
+  "access_id" UUID PRIMARY KEY NOT NULL,
+  "system_id" UUID NOT NULL,
+  "file_id" UUID NOT NULL,
+  "access_type" VARCHAR(10),
+  "access_time" TIMESTAMP(6),
+  "execution_id" UUID NOT NULL
+);
+
+CREATE TABLE "security"."file_threats" (
+  "file_hash" VARCHAR(64) PRIMARY KEY NOT NULL,
+  "threat_level" VARCHAR(10),
+  "threat_description" TEXT
+);
+
+CREATE TABLE "security"."files" (
+  "file_id" UUID PRIMARY KEY NOT NULL,
+  "system_id" UUID NOT NULL,
+  "file_path" TEXT,
+  "file_hash" VARCHAR(64),
+  "file_size" BIGINT,
+  "last_modified" TIMESTAMP(6)
+);
+
+CREATE TABLE "security"."installed_applications" (
+  "system_id" UUID NOT NULL,
+  "application_name" VARCHAR(100) NOT NULL,
+  "application_version" VARCHAR(50),
+  "installation_date" TIMESTAMP(6),
+  PRIMARY KEY ("system_id", "application_name")
+);
+
+CREATE TABLE "security"."network_connections" (
+  "connection_id" UUID PRIMARY KEY NOT NULL,
+  "system_id" UUID NOT NULL,
+  "execution_id" UUID NOT NULL,
+  "connection_type" VARCHAR(10),
+  "protocol" VARCHAR(10),
+  "local_ip" VARCHAR(15),
+  "local_port" INTEGER,
+  "remote_ip" VARCHAR(15),
+  "remote_port" INTEGER,
+  "start_time" TIMESTAMP(6),
+  "end_time" TIMESTAMP(6)
+);
+
+CREATE TABLE "security"."open_ports" (
+  "system_id" UUID NOT NULL,
+  "port_number" INTEGER NOT NULL,
+  "protocol" VARCHAR(10) NOT NULL,
+  PRIMARY KEY ("system_id", "port_number", "protocol")
+);
+
+CREATE TABLE "security"."process_executions" (
+  "execution_id" UUID PRIMARY KEY NOT NULL,
+  "system_id" UUID NOT NULL,
+  "process_name" VARCHAR(255),
+  "process_id" INTEGER,
+  "parent_process_id" INTEGER,
+  "start_time" TIMESTAMP(6),
+  "end_time" TIMESTAMP(6),
+  "command_line" TEXT,
+  "user_name" VARCHAR(50)
+);
+
+CREATE TABLE "security"."running_services" (
+  "system_id" UUID NOT NULL,
+  "service_name" VARCHAR(100) NOT NULL,
+  "start_time" TIMESTAMP(6),
+  "status" VARCHAR(20),
+  PRIMARY KEY ("system_id", "service_name")
+);
+
+CREATE TABLE "security"."system_stats" (
+  "stat_id" UUID PRIMARY KEY NOT NULL,
+  "system_id" UUID NOT NULL,
+  "cpu_usage_percent" INTEGER,
+  "memory_usage_gb" NUMERIC(5,1),
+  "memory_total_gb" INTEGER,
+  "disk_free_gb" INTEGER,
+  "disk_total_gb" INTEGER,
+  "timestamp" TIMESTAMP(6)
+);
+
+CREATE TABLE "security"."systems" (
+  "system_id" UUID PRIMARY KEY NOT NULL,
+  "hostname" VARCHAR(255),
+  "agent_id" VARCHAR(36),
+  "ip_address_internal" VARCHAR(15),
+  "ip_address_external" VARCHAR(15),
+  "mac_address" VARCHAR(17),
+  "system_type" VARCHAR(50),
+  "os" VARCHAR(50),
+  "os_version" VARCHAR(100),
+  "last_seen" TIMESTAMP(6),
+  "agent_version" VARCHAR(50),
+  "agent_status" VARCHAR(20),
+  "patch_status" VARCHAR(20),
+  "last_patched" TIMESTAMP(6),
+  "compliance" VARCHAR(20),
+  "checked_out_date" DATE,
+  "asset_owner_name" VARCHAR(50),
+  "asset_owner_email" VARCHAR(50),
+  "patch_level" VARCHAR(50),
+  "patch_update_available" BOOLEAN
+);
+
+CREATE TABLE "security"."usb_device_usage" (
+  "usage_id" UUID PRIMARY KEY NOT NULL,
+  "system_id" UUID NOT NULL,
+  "device_name" VARCHAR(100),
+  "device_type" VARCHAR(50),
+  "connection_time" TIMESTAMP(6),
+  "disconnection_time" TIMESTAMP(6)
+);
+
+CREATE TABLE "security"."cvss" (
+  "cve" VARCHAR(20) PRIMARY KEY,
+  "attack_complexity_3" VARCHAR(5),
+  "attack_vector_3" VARCHAR(20),
+  "availability_impact_3" VARCHAR(5),
+  "confidentiality_impact_3" VARCHAR(5),
+  "integrity_impact_3" VARCHAR(5),
+  "privileges_required_3" VARCHAR(5),
+  "scope_3" VARCHAR(10),
+  "user_interaction_3" VARCHAR(10),
+  "vector_string_3" VARCHAR(50),
+  "exploitability_score_3" REAL,
+  "impact_score_3" REAL,
+  "base_score_3" REAL,
+  "base_severity_3" VARCHAR(10),
+  "access_complexity" VARCHAR(10),
+  "access_vector" VARCHAR(20),
+  "authentication" VARCHAR(10),
+  "availability_impact" VARCHAR(10),
+  "confidentiality_impact" VARCHAR(10),
+  "integrity_impact" VARCHAR(10),
+  "obtain_all_privileges" BOOLEAN,
+  "obtain_other_privileges" BOOLEAN,
+  "obtain_user_privileges" BOOLEAN,
+  "user_interaction_required" BOOLEAN,
+  "vector_string" VARCHAR(50),
+  "exploitability_score" REAL,
+  "impact_score" REAL,
+  "base_score" REAL,
+  "severity" VARCHAR(10),
+  "description" TEXT,
+  "published_date" DATE,
+  "last_modified_date" DATE
+);
+
+CREATE TABLE "security"."cpe" (
+  "cve" VARCHAR(20),
+  "cpe23uri" TEXT,
+  "vulnerable" VARCHAR(5)
+);
+
+CREATE TABLE "security"."cve_problem" (
+  "cve" VARCHAR(20),
+  "problem" TEXT
+);
+
+CREATE TABLE "security"."cwe" (
+  "cwe_id" INTEGER PRIMARY KEY,
+  "name" TEXT,
+  "description" TEXT,
+  "extended_description" TEXT,
+  "modes_of_introduction" TEXT,
+  "common_consequences" TEXT,
+  "potential_mitigations" TEXT
+);
 
 CREATE TABLE "enterprise"."permissions" (
   "enterprise_permission_id" SERIAL PRIMARY KEY,
@@ -2749,6 +3117,8 @@ CREATE TABLE "small_business_banking"."suspicious_activity_reports" (
   "supporting_documentation" TEXT
 );
 
+CREATE UNIQUE INDEX ON "security"."policies" ("name");
+
 CREATE UNIQUE INDEX ON "enterprise"."address_lines" ("enterprise_address_id", "line_number");
 
 CREATE UNIQUE INDEX ON "enterprise"."entity_addresses" ("entity_type", "entity_id", "enterprise_address_id");
@@ -2782,6 +3152,558 @@ CREATE UNIQUE INDEX ON "small_business_banking"."business_card_accounts" ("small
 CREATE UNIQUE INDEX ON "small_business_banking"."business_card_users" ("small_business_banking_business_card_user_id", "enterprise_party_id");
 
 CREATE UNIQUE INDEX ON "small_business_banking"."business_expense_categories" ("small_business_banking_business_id", "category_name");
+
+COMMENT ON TABLE "security"."devices" IS 'Table storing information about network devices.';
+
+COMMENT ON COLUMN "security"."devices"."ip_address" IS 'The unique IP address of the device. Serves as the primary key.';
+
+COMMENT ON COLUMN "security"."devices"."device_type" IS 'The type of the device (e.g., router, server, workstation).';
+
+COMMENT ON COLUMN "security"."devices"."subnet" IS 'The subnet the device belongs to.';
+
+COMMENT ON COLUMN "security"."devices"."hostname" IS 'The hostname of the device.';
+
+COMMENT ON COLUMN "security"."devices"."created_at" IS 'The timestamp when the device record was created.';
+
+COMMENT ON COLUMN "security"."devices"."updated_at" IS 'The timestamp when the device record was last updated.';
+
+COMMENT ON TABLE "security"."network_events" IS 'Table storing detailed information about network events for security monitoring and analysis.';
+
+COMMENT ON COLUMN "security"."network_events"."id" IS 'Unique identifier for the network event. Automatically incrementing.';
+
+COMMENT ON COLUMN "security"."network_events"."timestamp" IS 'Timestamp when the network event occurred.';
+
+COMMENT ON COLUMN "security"."network_events"."source_ip" IS 'Source IP address of the network event.';
+
+COMMENT ON COLUMN "security"."network_events"."source_port" IS 'Source port of the network event.';
+
+COMMENT ON COLUMN "security"."network_events"."dest_ip" IS 'Destination IP address of the network event.';
+
+COMMENT ON COLUMN "security"."network_events"."dest_port" IS 'Destination port of the network event.';
+
+COMMENT ON COLUMN "security"."network_events"."protocol" IS 'Network protocol used (e.g., TCP, UDP, ICMP).';
+
+COMMENT ON COLUMN "security"."network_events"."status" IS 'Status of the network event (e.g., success, failure, blocked).';
+
+COMMENT ON COLUMN "security"."network_events"."tcp_flag" IS 'TCP flags associated with the event, if applicable.';
+
+COMMENT ON COLUMN "security"."network_events"."sequence" IS 'TCP sequence number, if applicable.';
+
+COMMENT ON COLUMN "security"."network_events"."ack" IS 'TCP acknowledgment number, if applicable.';
+
+COMMENT ON COLUMN "security"."network_events"."window_size" IS 'TCP window size, if applicable.';
+
+COMMENT ON COLUMN "security"."network_events"."length" IS 'Length of the data packet in bytes.';
+
+COMMENT ON COLUMN "security"."network_events"."bytes_sent" IS 'Number of bytes sent during the event.';
+
+COMMENT ON COLUMN "security"."network_events"."bytes_received" IS 'Number of bytes received during the event.';
+
+COMMENT ON COLUMN "security"."network_events"."device_id" IS 'IP address of the device involved in the event, foreign key referencing the devices table.';
+
+COMMENT ON COLUMN "security"."network_events"."log_message" IS 'Detailed log message associated with the network event.';
+
+COMMENT ON COLUMN "security"."network_events"."created_at" IS 'Timestamp when the event record was created.';
+
+COMMENT ON TABLE "security"."policies" IS 'Table storing security policies and their details.';
+
+COMMENT ON COLUMN "security"."policies"."policy_id" IS 'Unique identifier for the policy.';
+
+COMMENT ON COLUMN "security"."policies"."name" IS 'Name of the policy. Must be unique.';
+
+COMMENT ON COLUMN "security"."policies"."description" IS 'Detailed description of the policy.';
+
+COMMENT ON COLUMN "security"."policies"."created_at" IS 'Timestamp when the policy was created.';
+
+COMMENT ON COLUMN "security"."policies"."updated_at" IS 'Timestamp when the policy was last updated.';
+
+COMMENT ON COLUMN "security"."policies"."active" IS 'Indicates whether the policy is currently active.';
+
+COMMENT ON TABLE "security"."policy_attributes" IS 'Table storing attributes associated with security policies. Allows for flexible policy configuration.';
+
+COMMENT ON COLUMN "security"."policy_attributes"."policy_id" IS 'Foreign key referencing the policy_id in the policies table.';
+
+COMMENT ON COLUMN "security"."policy_attributes"."attribute_name" IS 'Name of the policy attribute.';
+
+COMMENT ON COLUMN "security"."policy_attributes"."attribute_value" IS 'Value of the policy attribute.';
+
+COMMENT ON TABLE "security"."policy_rules" IS 'Table storing specific rules associated with security policies.';
+
+COMMENT ON COLUMN "security"."policy_rules"."rule_id" IS 'Unique identifier for the policy rule.';
+
+COMMENT ON COLUMN "security"."policy_rules"."policy_id" IS 'Foreign key referencing the policy_id in the policies table.';
+
+COMMENT ON COLUMN "security"."policy_rules"."rule_name" IS 'Name of the policy rule.';
+
+COMMENT ON COLUMN "security"."policy_rules"."rule_description" IS 'Detailed description of the policy rule.';
+
+COMMENT ON TABLE "security"."access_profiles" IS 'Table storing information about access profiles, defining sets of permissions or roles.';
+
+COMMENT ON COLUMN "security"."access_profiles"."access_profile_id" IS 'Unique identifier for the access profile.';
+
+COMMENT ON COLUMN "security"."access_profiles"."name" IS 'Internal name of the access profile.';
+
+COMMENT ON COLUMN "security"."access_profiles"."display_name" IS 'User-friendly name of the access profile.';
+
+COMMENT ON COLUMN "security"."access_profiles"."description" IS 'Description of the access profile.';
+
+COMMENT ON COLUMN "security"."access_profiles"."owner_id" IS 'Identifier of the owner of the access profile.';
+
+COMMENT ON TABLE "security"."account_entitlement_attributes" IS 'Table storing specific attributes related to account entitlements. Allows for granular control over account permissions and access.';
+
+COMMENT ON COLUMN "security"."account_entitlement_attributes"."account_id" IS 'Unique identifier for the account.';
+
+COMMENT ON COLUMN "security"."account_entitlement_attributes"."attribute_name" IS 'Name of the entitlement attribute.';
+
+COMMENT ON COLUMN "security"."account_entitlement_attributes"."attribute_value" IS 'Value of the entitlement attribute.';
+
+COMMENT ON TABLE "security"."accounts" IS 'Table storing information about user accounts across various systems.';
+
+COMMENT ON COLUMN "security"."accounts"."account_id" IS 'Unique identifier for the account.';
+
+COMMENT ON COLUMN "security"."accounts"."identity_id" IS 'Identifier of the associated identity.';
+
+COMMENT ON COLUMN "security"."accounts"."name" IS 'Name of the account.';
+
+COMMENT ON COLUMN "security"."accounts"."account_id_string" IS 'String representation of the account ID.';
+
+COMMENT ON COLUMN "security"."accounts"."source_id" IS 'Identifier of the source system for the account.';
+
+COMMENT ON COLUMN "security"."accounts"."disabled" IS 'Indicates if the account is disabled.';
+
+COMMENT ON COLUMN "security"."accounts"."locked" IS 'Indicates if the account is locked.';
+
+COMMENT ON COLUMN "security"."accounts"."privileged" IS 'Indicates if the account has privileged access.';
+
+COMMENT ON COLUMN "security"."accounts"."manually_correlated" IS 'Indicates if the account was manually correlated.';
+
+COMMENT ON COLUMN "security"."accounts"."password_last_set" IS 'Timestamp when the account password was last set.';
+
+COMMENT ON COLUMN "security"."accounts"."created" IS 'Timestamp when the account was created.';
+
+COMMENT ON TABLE "security"."apps" IS 'Table storing information about applications and their associations with identities and accounts.';
+
+COMMENT ON COLUMN "security"."apps"."app_id" IS 'Unique identifier for the application.';
+
+COMMENT ON COLUMN "security"."apps"."identity_id" IS 'Identifier of the associated identity.';
+
+COMMENT ON COLUMN "security"."apps"."name" IS 'Name of the application.';
+
+COMMENT ON COLUMN "security"."apps"."source_id" IS 'Identifier of the source system for the application.';
+
+COMMENT ON COLUMN "security"."apps"."account_id" IS 'Identifier of the associated account.';
+
+COMMENT ON TABLE "security"."entitlements" IS 'Table storing information about entitlements, representing permissions or access rights.';
+
+COMMENT ON COLUMN "security"."entitlements"."entitlement_id" IS 'Unique identifier for the entitlement.';
+
+COMMENT ON COLUMN "security"."entitlements"."name" IS 'Name of the entitlement.';
+
+COMMENT ON COLUMN "security"."entitlements"."display_name" IS 'User-friendly name of the entitlement.';
+
+COMMENT ON COLUMN "security"."entitlements"."description" IS 'Description of the entitlement.';
+
+COMMENT ON COLUMN "security"."entitlements"."attribute" IS 'Attribute associated with the entitlement.';
+
+COMMENT ON COLUMN "security"."entitlements"."source_id" IS 'Identifier of the source system for the entitlement.';
+
+COMMENT ON COLUMN "security"."entitlements"."value" IS 'Value of the entitlement.';
+
+COMMENT ON COLUMN "security"."entitlements"."privileged" IS 'Indicates if the entitlement is privileged.';
+
+COMMENT ON TABLE "security"."governance_groups" IS 'Table storing information about governance groups, used for managing access and permissions.';
+
+COMMENT ON COLUMN "security"."governance_groups"."group_id" IS 'Unique identifier for the governance group.';
+
+COMMENT ON COLUMN "security"."governance_groups"."name" IS 'Name of the governance group.';
+
+COMMENT ON COLUMN "security"."governance_groups"."owner_id" IS 'Identifier of the owner of the governance group.';
+
+COMMENT ON TABLE "security"."iam_logins" IS 'Table storing information about IAM logins, tracking user access to systems.';
+
+COMMENT ON COLUMN "security"."iam_logins"."login_id" IS 'Unique identifier for the IAM login.';
+
+COMMENT ON COLUMN "security"."iam_logins"."system_id" IS 'Identifier of the system where the login occurred.';
+
+COMMENT ON COLUMN "security"."iam_logins"."user_name" IS 'Username used for the login.';
+
+COMMENT ON COLUMN "security"."iam_logins"."login_time" IS 'Timestamp when the login occurred.';
+
+COMMENT ON COLUMN "security"."iam_logins"."logout_time" IS 'Timestamp when the logout occurred.';
+
+COMMENT ON COLUMN "security"."iam_logins"."login_method" IS 'Method used for the login.';
+
+COMMENT ON TABLE "security"."identities" IS 'Table storing information about user identities, representing individuals or entities.';
+
+COMMENT ON COLUMN "security"."identities"."identity_id" IS 'Unique identifier for the identity.';
+
+COMMENT ON COLUMN "security"."identities"."name" IS 'Internal name of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."display_name" IS 'User-friendly name of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."first_name" IS 'First name of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."last_name" IS 'Last name of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."email" IS 'Email address of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."phone" IS 'Phone number of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."created" IS 'Timestamp when the identity was created.';
+
+COMMENT ON COLUMN "security"."identities"."inactive" IS 'Indicates if the identity is inactive.';
+
+COMMENT ON COLUMN "security"."identities"."status" IS 'Status of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."employee_number" IS 'Employee number of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."is_manager" IS 'Indicates if the identity is a manager.';
+
+COMMENT ON COLUMN "security"."identities"."manager_id" IS 'Identifier of the manager of the identity.';
+
+COMMENT ON COLUMN "security"."identities"."authoritative_source_id" IS 'Identifier of the authoritative source for the identity.';
+
+COMMENT ON COLUMN "security"."identities"."identity_profile_id" IS 'Identifier of the identity profile associated with the identity.';
+
+COMMENT ON COLUMN "security"."identities"."modified" IS 'Timestamp when the identity was last modified.';
+
+COMMENT ON COLUMN "security"."identities"."synced" IS 'Timestamp when the identity was last synced.';
+
+COMMENT ON COLUMN "security"."identities"."is_fallback_approver" IS 'Indicates if the identity is a fallback approver.';
+
+COMMENT ON TABLE "security"."identity_access_profiles" IS 'Table linking identities to access profiles, granting specific permissions.';
+
+COMMENT ON COLUMN "security"."identity_access_profiles"."identity_id" IS 'Identifier of the associated identity.';
+
+COMMENT ON COLUMN "security"."identity_access_profiles"."access_profile_id" IS 'Identifier of the associated access profile.';
+
+COMMENT ON TABLE "security"."identity_attributes" IS 'Table storing attributes associated with identities, providing additional identity information.';
+
+COMMENT ON COLUMN "security"."identity_attributes"."identity_id" IS 'Identifier of the associated identity.';
+
+COMMENT ON COLUMN "security"."identity_attributes"."attribute_name" IS 'Name of the identity attribute.';
+
+COMMENT ON COLUMN "security"."identity_attributes"."attribute_value" IS 'Value of the identity attribute.';
+
+COMMENT ON TABLE "security"."identity_entitlements" IS 'Table linking identities to entitlements, granting specific access rights.';
+
+COMMENT ON COLUMN "security"."identity_entitlements"."identity_id" IS 'Identifier of the associated identity.';
+
+COMMENT ON COLUMN "security"."identity_entitlements"."entitlement_id" IS 'Identifier of the associated entitlement.';
+
+COMMENT ON TABLE "security"."identity_profiles" IS 'Table storing information about identity profiles, defining sets of attributes and rules for identities.';
+
+COMMENT ON COLUMN "security"."identity_profiles"."identity_profile_id" IS 'Unique identifier for the identity profile.';
+
+COMMENT ON COLUMN "security"."identity_profiles"."name" IS 'Name of the identity profile.';
+
+COMMENT ON TABLE "security"."identity_roles" IS 'Table linking identities to roles, granting specific sets of permissions.';
+
+COMMENT ON COLUMN "security"."identity_roles"."identity_id" IS 'Identifier of the associated identity.';
+
+COMMENT ON COLUMN "security"."identity_roles"."role_id" IS 'Identifier of the associated role.';
+
+COMMENT ON TABLE "security"."roles" IS 'Table storing information about roles, defining sets of permissions and access rights.';
+
+COMMENT ON COLUMN "security"."roles"."role_id" IS 'Unique identifier for the role.';
+
+COMMENT ON COLUMN "security"."roles"."name" IS 'Internal name of the role.';
+
+COMMENT ON COLUMN "security"."roles"."display_name" IS 'User-friendly name of the role.';
+
+COMMENT ON COLUMN "security"."roles"."description" IS 'Description of the role.';
+
+COMMENT ON COLUMN "security"."roles"."disabled" IS 'Indicates if the role is disabled.';
+
+COMMENT ON COLUMN "security"."roles"."owner_id" IS 'Identifier of the owner of the role.';
+
+COMMENT ON TABLE "security"."sources" IS 'Table storing information about source systems, providing data for identities and accounts.';
+
+COMMENT ON COLUMN "security"."sources"."source_id" IS 'Unique identifier for the source system.';
+
+COMMENT ON COLUMN "security"."sources"."name" IS 'Name of the source system.';
+
+COMMENT ON COLUMN "security"."sources"."type" IS 'Type of the source system.';
+
+COMMENT ON COLUMN "security"."sources"."owner_id" IS 'Identifier of the owner of the source system.';
+
+COMMENT ON TABLE "security"."file_accesses" IS 'Table storing information about file access events, tracking file usage and access patterns.';
+
+COMMENT ON COLUMN "security"."file_accesses"."access_id" IS 'Unique identifier for the file access event.';
+
+COMMENT ON COLUMN "security"."file_accesses"."system_id" IS 'Identifier of the system where the file access occurred.';
+
+COMMENT ON COLUMN "security"."file_accesses"."file_id" IS 'Identifier of the accessed file.';
+
+COMMENT ON COLUMN "security"."file_accesses"."access_type" IS 'Type of file access (e.g., read, write, execute).';
+
+COMMENT ON COLUMN "security"."file_accesses"."access_time" IS 'Timestamp when the file access occurred.';
+
+COMMENT ON COLUMN "security"."file_accesses"."execution_id" IS 'Identifier of the process execution that initiated the file access.';
+
+COMMENT ON TABLE "security"."file_threats" IS 'Table storing information about file threats, linking file hashes to threat levels and descriptions.';
+
+COMMENT ON COLUMN "security"."file_threats"."file_hash" IS 'Hash of the file, used to identify threats.';
+
+COMMENT ON COLUMN "security"."file_threats"."threat_level" IS 'Level of threat associated with the file (e.g., high, medium, low).';
+
+COMMENT ON COLUMN "security"."file_threats"."threat_description" IS 'Description of the threat associated with the file.';
+
+COMMENT ON TABLE "security"."files" IS 'Table storing information about files on systems, including file paths, hashes, and sizes.';
+
+COMMENT ON COLUMN "security"."files"."file_id" IS 'Unique identifier for the file.';
+
+COMMENT ON COLUMN "security"."files"."system_id" IS 'Identifier of the system where the file is located.';
+
+COMMENT ON COLUMN "security"."files"."file_path" IS 'Path to the file on the system.';
+
+COMMENT ON COLUMN "security"."files"."file_hash" IS 'Hash of the file, used for integrity checks.';
+
+COMMENT ON COLUMN "security"."files"."file_size" IS 'Size of the file in bytes.';
+
+COMMENT ON COLUMN "security"."files"."last_modified" IS 'Timestamp when the file was last modified.';
+
+COMMENT ON TABLE "security"."installed_applications" IS 'Table storing information about installed applications on systems, tracking software installations.';
+
+COMMENT ON COLUMN "security"."installed_applications"."system_id" IS 'Identifier of the system where the application is installed.';
+
+COMMENT ON COLUMN "security"."installed_applications"."application_name" IS 'Name of the installed application.';
+
+COMMENT ON COLUMN "security"."installed_applications"."application_version" IS 'Version of the installed application.';
+
+COMMENT ON COLUMN "security"."installed_applications"."installation_date" IS 'Timestamp when the application was installed.';
+
+COMMENT ON TABLE "security"."network_connections" IS 'Table storing information about network connections, tracking network traffic and activity.';
+
+COMMENT ON COLUMN "security"."network_connections"."connection_id" IS 'Unique identifier for the network connection.';
+
+COMMENT ON COLUMN "security"."network_connections"."system_id" IS 'Identifier of the system where the connection originated.';
+
+COMMENT ON COLUMN "security"."network_connections"."execution_id" IS 'Identifier of the process execution that initiated the connection.';
+
+COMMENT ON COLUMN "security"."network_connections"."connection_type" IS 'Type of network connection (e.g., TCP, UDP).';
+
+COMMENT ON COLUMN "security"."network_connections"."protocol" IS 'Network protocol used for the connection.';
+
+COMMENT ON COLUMN "security"."network_connections"."local_ip" IS 'Local IP address of the connection.';
+
+COMMENT ON COLUMN "security"."network_connections"."local_port" IS 'Local port number of the connection.';
+
+COMMENT ON COLUMN "security"."network_connections"."remote_ip" IS 'Remote IP address of the connection.';
+
+COMMENT ON COLUMN "security"."network_connections"."remote_port" IS 'Remote port number of the connection.';
+
+COMMENT ON COLUMN "security"."network_connections"."start_time" IS 'Timestamp when the connection started.';
+
+COMMENT ON COLUMN "security"."network_connections"."end_time" IS 'Timestamp when the connection ended.';
+
+COMMENT ON TABLE "security"."open_ports" IS 'Table storing information about open ports on systems, tracking network services and potential vulnerabilities.';
+
+COMMENT ON COLUMN "security"."open_ports"."system_id" IS 'Identifier of the system with the open port.';
+
+COMMENT ON COLUMN "security"."open_ports"."port_number" IS 'Port number that is open.';
+
+COMMENT ON COLUMN "security"."open_ports"."protocol" IS 'Network protocol associated with the open port.';
+
+COMMENT ON TABLE "security"."process_executions" IS 'Table storing information about process executions, tracking application activity and system behavior.';
+
+COMMENT ON COLUMN "security"."process_executions"."execution_id" IS 'Unique identifier for the process execution.';
+
+COMMENT ON COLUMN "security"."process_executions"."system_id" IS 'Identifier of the system where the process was executed.';
+
+COMMENT ON COLUMN "security"."process_executions"."process_name" IS 'Name of the executed process.';
+
+COMMENT ON COLUMN "security"."process_executions"."process_id" IS 'Process ID of the executed process.';
+
+COMMENT ON COLUMN "security"."process_executions"."parent_process_id" IS 'Process ID of the parent process.';
+
+COMMENT ON COLUMN "security"."process_executions"."start_time" IS 'Timestamp when the process execution started.';
+
+COMMENT ON COLUMN "security"."process_executions"."end_time" IS 'Timestamp when the process execution ended.';
+
+COMMENT ON COLUMN "security"."process_executions"."command_line" IS 'Command line used to execute the process.';
+
+COMMENT ON COLUMN "security"."process_executions"."user_name" IS 'Username of the user who executed the process.';
+
+COMMENT ON TABLE "security"."running_services" IS 'Table storing information about running services on systems, tracking system services and their states.';
+
+COMMENT ON COLUMN "security"."running_services"."system_id" IS 'Identifier of the system with the running service.';
+
+COMMENT ON COLUMN "security"."running_services"."service_name" IS 'Name of the running service.';
+
+COMMENT ON COLUMN "security"."running_services"."start_time" IS 'Timestamp when the service started running.';
+
+COMMENT ON COLUMN "security"."running_services"."status" IS 'Status of the running service (e.g., running, stopped).';
+
+COMMENT ON TABLE "security"."system_stats" IS 'Table storing system statistics, tracking resource usage and performance metrics.';
+
+COMMENT ON COLUMN "security"."system_stats"."stat_id" IS 'Unique identifier for the system statistics record.';
+
+COMMENT ON COLUMN "security"."system_stats"."system_id" IS 'Identifier of the system for which statistics are recorded.';
+
+COMMENT ON COLUMN "security"."system_stats"."cpu_usage_percent" IS 'CPU usage percentage.';
+
+COMMENT ON COLUMN "security"."system_stats"."memory_usage_gb" IS 'Memory usage in gigabytes.';
+
+COMMENT ON COLUMN "security"."system_stats"."memory_total_gb" IS 'Total memory in gigabytes.';
+
+COMMENT ON COLUMN "security"."system_stats"."disk_free_gb" IS 'Free disk space in gigabytes.';
+
+COMMENT ON COLUMN "security"."system_stats"."disk_total_gb" IS 'Total disk space in gigabytes.';
+
+COMMENT ON COLUMN "security"."system_stats"."timestamp" IS 'Timestamp when the statistics were recorded.';
+
+COMMENT ON TABLE "security"."systems" IS 'Table storing information about systems, including hardware, software, and status details.';
+
+COMMENT ON COLUMN "security"."systems"."system_id" IS 'Unique identifier for the system.';
+
+COMMENT ON COLUMN "security"."systems"."hostname" IS 'Hostname of the system.';
+
+COMMENT ON COLUMN "security"."systems"."agent_id" IS 'Identifier of the agent installed on the system.';
+
+COMMENT ON COLUMN "security"."systems"."ip_address_internal" IS 'Internal IP address of the system.';
+
+COMMENT ON COLUMN "security"."systems"."ip_address_external" IS 'External IP address of the system.';
+
+COMMENT ON COLUMN "security"."systems"."mac_address" IS 'MAC address of the system.';
+
+COMMENT ON COLUMN "security"."systems"."system_type" IS 'Type of the system (e.g., server, workstation).';
+
+COMMENT ON COLUMN "security"."systems"."os" IS 'Operating system of the system.';
+
+COMMENT ON COLUMN "security"."systems"."os_version" IS 'Operating system version.';
+
+COMMENT ON COLUMN "security"."systems"."last_seen" IS 'Timestamp when the system was last seen.';
+
+COMMENT ON COLUMN "security"."systems"."agent_version" IS 'Version of the agent installed on the system.';
+
+COMMENT ON COLUMN "security"."systems"."agent_status" IS 'Status of the agent installed on the system.';
+
+COMMENT ON COLUMN "security"."systems"."patch_status" IS 'Status of system patches.';
+
+COMMENT ON COLUMN "security"."systems"."last_patched" IS 'Timestamp when the system was last patched.';
+
+COMMENT ON COLUMN "security"."systems"."compliance" IS 'Compliance status of the system.';
+
+COMMENT ON COLUMN "security"."systems"."checked_out_date" IS 'Date when the system was checked out.';
+
+COMMENT ON COLUMN "security"."systems"."asset_owner_name" IS 'Name of the asset owner.';
+
+COMMENT ON COLUMN "security"."systems"."asset_owner_email" IS 'Email of the asset owner.';
+
+COMMENT ON COLUMN "security"."systems"."patch_level" IS 'Patch level of the system.';
+
+COMMENT ON COLUMN "security"."systems"."patch_update_available" IS 'Indicates if patch updates are available.';
+
+COMMENT ON TABLE "security"."usb_device_usage" IS 'Table storing information about USB device usage, tracking connection and disconnection times.';
+
+COMMENT ON COLUMN "security"."usb_device_usage"."usage_id" IS 'Unique identifier for the USB device usage record.';
+
+COMMENT ON COLUMN "security"."usb_device_usage"."system_id" IS 'Identifier of the system where the USB device was used.';
+
+COMMENT ON COLUMN "security"."usb_device_usage"."device_name" IS 'Name of the USB device.';
+
+COMMENT ON COLUMN "security"."usb_device_usage"."device_type" IS 'Type of the USB device.';
+
+COMMENT ON COLUMN "security"."usb_device_usage"."connection_time" IS 'Timestamp when the USB device was connected.';
+
+COMMENT ON COLUMN "security"."usb_device_usage"."disconnection_time" IS 'Timestamp when the USB device was disconnected.';
+
+COMMENT ON TABLE "security"."cvss" IS 'Stores Common Vulnerability Scoring System (CVSS) metrics for CVEs, including both CVSS v2 and v3.';
+
+COMMENT ON COLUMN "security"."cvss"."cve" IS 'Common Vulnerabilities and Exposures identifier. Primary key.';
+
+COMMENT ON COLUMN "security"."cvss"."attack_complexity_3" IS 'CVSS v3 Attack Complexity metric.';
+
+COMMENT ON COLUMN "security"."cvss"."attack_vector_3" IS 'CVSS v3 Attack Vector metric.';
+
+COMMENT ON COLUMN "security"."cvss"."availability_impact_3" IS 'CVSS v3 Availability Impact metric.';
+
+COMMENT ON COLUMN "security"."cvss"."confidentiality_impact_3" IS 'CVSS v3 Confidentiality Impact metric.';
+
+COMMENT ON COLUMN "security"."cvss"."integrity_impact_3" IS 'CVSS v3 Integrity Impact metric.';
+
+COMMENT ON COLUMN "security"."cvss"."privileges_required_3" IS 'CVSS v3 Privileges Required metric.';
+
+COMMENT ON COLUMN "security"."cvss"."scope_3" IS 'CVSS v3 Scope metric.';
+
+COMMENT ON COLUMN "security"."cvss"."user_interaction_3" IS 'CVSS v3 User Interaction metric.';
+
+COMMENT ON COLUMN "security"."cvss"."vector_string_3" IS 'CVSS v3 Vector String.';
+
+COMMENT ON COLUMN "security"."cvss"."exploitability_score_3" IS 'CVSS v3 Exploitability Score.';
+
+COMMENT ON COLUMN "security"."cvss"."impact_score_3" IS 'CVSS v3 Impact Score.';
+
+COMMENT ON COLUMN "security"."cvss"."base_score_3" IS 'CVSS v3 Base Score.';
+
+COMMENT ON COLUMN "security"."cvss"."base_severity_3" IS 'CVSS v3 Base Severity.';
+
+COMMENT ON COLUMN "security"."cvss"."access_complexity" IS 'CVSS v2 Access Complexity metric.';
+
+COMMENT ON COLUMN "security"."cvss"."access_vector" IS 'CVSS v2 Access Vector metric.';
+
+COMMENT ON COLUMN "security"."cvss"."authentication" IS 'CVSS v2 Authentication metric.';
+
+COMMENT ON COLUMN "security"."cvss"."availability_impact" IS 'CVSS v2 Availability Impact metric.';
+
+COMMENT ON COLUMN "security"."cvss"."confidentiality_impact" IS 'CVSS v2 Confidentiality Impact metric.';
+
+COMMENT ON COLUMN "security"."cvss"."integrity_impact" IS 'CVSS v2 Integrity Impact metric.';
+
+COMMENT ON COLUMN "security"."cvss"."obtain_all_privileges" IS 'CVSS v2 Obtain All Privileges metric.';
+
+COMMENT ON COLUMN "security"."cvss"."obtain_other_privileges" IS 'CVSS v2 Obtain Other Privileges metric.';
+
+COMMENT ON COLUMN "security"."cvss"."obtain_user_privileges" IS 'CVSS v2 Obtain User Privileges metric.';
+
+COMMENT ON COLUMN "security"."cvss"."user_interaction_required" IS 'CVSS v2 User Interaction Required metric.';
+
+COMMENT ON COLUMN "security"."cvss"."vector_string" IS 'CVSS v2 Vector String.';
+
+COMMENT ON COLUMN "security"."cvss"."exploitability_score" IS 'CVSS v2 Exploitability Score.';
+
+COMMENT ON COLUMN "security"."cvss"."impact_score" IS 'CVSS v2 Impact Score.';
+
+COMMENT ON COLUMN "security"."cvss"."base_score" IS 'CVSS v2 Base Score.';
+
+COMMENT ON COLUMN "security"."cvss"."severity" IS 'CVSS v2 Severity.';
+
+COMMENT ON COLUMN "security"."cvss"."description" IS 'CVE description.';
+
+COMMENT ON COLUMN "security"."cvss"."published_date" IS 'CVE publication date.';
+
+COMMENT ON COLUMN "security"."cvss"."last_modified_date" IS 'CVE last modified date.';
+
+COMMENT ON TABLE "security"."cpe" IS 'Stores Common Platform Enumeration (CPE) information associated with CVEs.';
+
+COMMENT ON COLUMN "security"."cpe"."cve" IS 'Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.';
+
+COMMENT ON COLUMN "security"."cpe"."cpe23uri" IS 'CPE 2.3 URI string.';
+
+COMMENT ON COLUMN "security"."cpe"."vulnerable" IS 'Indicates if the CPE is vulnerable to the CVE.';
+
+COMMENT ON TABLE "security"."cve_problem" IS 'Stores problem descriptions associated with CVEs.';
+
+COMMENT ON COLUMN "security"."cve_problem"."cve" IS 'Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.';
+
+COMMENT ON COLUMN "security"."cve_problem"."problem" IS 'Problem description related to the CVE.';
+
+COMMENT ON TABLE "security"."cwe" IS 'Stores Common Weakness Enumeration (CWE) information.';
+
+COMMENT ON COLUMN "security"."cwe"."cwe_id" IS 'Common Weakness Enumeration identifier. Primary key.';
+
+COMMENT ON COLUMN "security"."cwe"."name" IS 'CWE name.';
+
+COMMENT ON COLUMN "security"."cwe"."description" IS 'CWE description.';
+
+COMMENT ON COLUMN "security"."cwe"."extended_description" IS 'Extended CWE description.';
+
+COMMENT ON COLUMN "security"."cwe"."modes_of_introduction" IS 'Modes of introduction for the CWE.';
+
+COMMENT ON COLUMN "security"."cwe"."common_consequences" IS 'Common consequences of the CWE.';
+
+COMMENT ON COLUMN "security"."cwe"."potential_mitigations" IS 'Potential mitigations for the CWE.';
 
 COMMENT ON TABLE "enterprise"."permissions" IS 'Defines all possible permission types that can be granted in the system';
 
@@ -7713,17 +8635,41 @@ ALTER TABLE "consumer_lending"."loan_applications" ADD FOREIGN KEY ("officer_id"
 
 ALTER TABLE "consumer_lending"."loan_applications" ADD FOREIGN KEY ("branch_id") REFERENCES "enterprise"."buildings" ("enterprise_building_id");
 
+ALTER TABLE "consumer_lending"."application_applicants" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
+ALTER TABLE "consumer_lending"."application_applicants" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
+
 ALTER TABLE "consumer_lending"."applicants" ADD FOREIGN KEY ("current_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
 ALTER TABLE "consumer_lending"."applicants" ADD FOREIGN KEY ("mailing_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
 ALTER TABLE "consumer_lending"."applicants" ADD FOREIGN KEY ("previous_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
+ALTER TABLE "consumer_lending"."applicant_employments" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
+
 ALTER TABLE "consumer_lending"."applicant_employments" ADD FOREIGN KEY ("enterprise_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
+
+ALTER TABLE "consumer_lending"."applicant_incomes" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
+
+ALTER TABLE "consumer_lending"."applicant_assets" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
 ALTER TABLE "consumer_lending"."applicant_assets" ADD FOREIGN KEY ("property_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
+ALTER TABLE "consumer_lending"."applicant_liabilities" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
+
+ALTER TABLE "consumer_lending"."credit_reports" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
+ALTER TABLE "consumer_lending"."credit_reports" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
+
+ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
+ALTER TABLE "consumer_lending"."adverse_action_notices" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
+ALTER TABLE "consumer_lending"."vehicles" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
 ALTER TABLE "consumer_lending"."vehicles" ADD FOREIGN KEY ("dealer_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
+
+ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
 ALTER TABLE "consumer_lending"."payment_schedules" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
 
@@ -7763,6 +8709,8 @@ ALTER TABLE "consumer_lending"."reg_z_disclosures" ADD FOREIGN KEY ("loan_accoun
 
 ALTER TABLE "consumer_lending"."adverse_action_details" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
+
 ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("submitted_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "consumer_lending"."fairlending_analysis" ADD FOREIGN KEY ("analyst") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
@@ -7774,6 +8722,8 @@ ALTER TABLE "consumer_lending"."reg_b_notices" ADD FOREIGN KEY ("user_id") REFER
 ALTER TABLE "consumer_lending"."appraisal_disclosures" ADD FOREIGN KEY ("property_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
 ALTER TABLE "consumer_lending"."appraisal_disclosures" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
 ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -7981,25 +8931,9 @@ ALTER TABLE "small_business_banking"."suspicious_activity_reports" ADD FOREIGN K
 
 ALTER TABLE "small_business_banking"."suspicious_activity_reports" ADD FOREIGN KEY ("bsa_officer_signature") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."application_applicants" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
-
-ALTER TABLE "consumer_lending"."application_applicants" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
-
-ALTER TABLE "consumer_lending"."applicant_employments" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
-
-ALTER TABLE "consumer_lending"."applicant_incomes" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
-
-ALTER TABLE "consumer_lending"."applicant_assets" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
-
-ALTER TABLE "consumer_lending"."applicant_liabilities" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
-
 ALTER TABLE "consumer_lending"."product_eligibility_criteria" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
 
 ALTER TABLE "consumer_lending"."risk_based_pricing_tiers" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
-
-ALTER TABLE "consumer_lending"."credit_reports" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
-
-ALTER TABLE "consumer_lending"."credit_reports" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
 ALTER TABLE "consumer_lending"."credit_report_tradelines" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
 
@@ -8007,19 +8941,11 @@ ALTER TABLE "consumer_lending"."credit_inquiries" ADD FOREIGN KEY ("consumer_len
 
 ALTER TABLE "consumer_lending"."public_records" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
 
-ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
-
 ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_model_id") REFERENCES "consumer_lending"."decision_models" ("consumer_lending_model_id");
 
 ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_pricing_tier_id") REFERENCES "consumer_lending"."risk_based_pricing_tiers" ("consumer_lending_pricing_tier_id");
 
 ALTER TABLE "consumer_lending"."decision_reasons" ADD FOREIGN KEY ("consumer_lending_decision_id") REFERENCES "consumer_lending"."application_decisions" ("consumer_lending_decision_id");
-
-ALTER TABLE "consumer_lending"."adverse_action_notices" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
-
-ALTER TABLE "consumer_lending"."vehicles" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
-
-ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
 ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
 
@@ -8045,8 +8971,6 @@ ALTER TABLE "consumer_lending"."adverse_action_details" ADD FOREIGN KEY ("consum
 
 ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
-ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
-
 ALTER TABLE "consumer_lending"."fairlending_analysis" ADD FOREIGN KEY ("product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
 
 ALTER TABLE "consumer_lending"."reg_b_notices" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
@@ -8054,8 +8978,6 @@ ALTER TABLE "consumer_lending"."reg_b_notices" ADD FOREIGN KEY ("consumer_lendin
 ALTER TABLE "consumer_lending"."appraisal_disclosures" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
 ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
-
-ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
 ALTER TABLE "consumer_lending"."high_cost_mortgage_tests" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
@@ -8100,3 +9022,77 @@ ALTER TABLE "credit_cards"."credit_card_applications_hmda" ADD FOREIGN KEY ("cre
 ALTER TABLE "credit_cards"."reg_z_credit_card_disclosures" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
 
 ALTER TABLE "credit_cards"."ability_to_pay_assessments" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
+
+ALTER TABLE "security"."network_events" ADD FOREIGN KEY ("device_id") REFERENCES "security"."devices" ("ip_address");
+
+ALTER TABLE "security"."policy_attributes" ADD FOREIGN KEY ("policy_id") REFERENCES "security"."policies" ("policy_id");
+
+ALTER TABLE "security"."policy_rules" ADD FOREIGN KEY ("policy_id") REFERENCES "security"."policies" ("policy_id");
+
+ALTER TABLE "security"."access_profiles" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."account_entitlement_attributes" ADD FOREIGN KEY ("account_id") REFERENCES "security"."accounts" ("account_id");
+
+ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("source_id") REFERENCES "security"."sources" ("source_id");
+
+ALTER TABLE "security"."apps" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."apps" ADD FOREIGN KEY ("source_id") REFERENCES "security"."sources" ("source_id");
+
+ALTER TABLE "security"."apps" ADD FOREIGN KEY ("account_id") REFERENCES "security"."accounts" ("account_id");
+
+ALTER TABLE "security"."entitlements" ADD FOREIGN KEY ("source_id") REFERENCES "security"."sources" ("source_id");
+
+ALTER TABLE "security"."governance_groups" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."identities" ADD FOREIGN KEY ("manager_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."identities" ADD FOREIGN KEY ("identity_profile_id") REFERENCES "security"."identity_profiles" ("identity_profile_id");
+
+ALTER TABLE "security"."identity_access_profiles" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."identity_access_profiles" ADD FOREIGN KEY ("access_profile_id") REFERENCES "security"."access_profiles" ("access_profile_id");
+
+ALTER TABLE "security"."identity_attributes" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."identity_entitlements" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."identity_entitlements" ADD FOREIGN KEY ("entitlement_id") REFERENCES "security"."entitlements" ("entitlement_id");
+
+ALTER TABLE "security"."identity_roles" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."identity_roles" ADD FOREIGN KEY ("role_id") REFERENCES "security"."roles" ("role_id");
+
+ALTER TABLE "security"."roles" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."sources" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
+
+ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("file_id") REFERENCES "security"."files" ("file_id");
+
+ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("execution_id") REFERENCES "security"."process_executions" ("execution_id");
+
+ALTER TABLE "security"."files" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."installed_applications" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("execution_id") REFERENCES "security"."process_executions" ("execution_id");
+
+ALTER TABLE "security"."open_ports" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."process_executions" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."running_services" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."system_stats" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."usb_device_usage" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+
+ALTER TABLE "security"."cpe" ADD FOREIGN KEY ("cve") REFERENCES "security"."cvss" ("cve");
+
+ALTER TABLE "security"."cve_problem" ADD FOREIGN KEY ("cve") REFERENCES "security"."cvss" ("cve");
