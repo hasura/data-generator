@@ -109,6 +109,7 @@ class DataGenerator:
         self.populated_tables = set()
         self.not_populated_tables = dict()
         self.used_faker_funcs = set()
+        self.faker_func_cache = {}  # Cache for faker_func
 
     def connect_to_db(self):
         """Establish a connection to the database and get available schemas."""
@@ -271,7 +272,7 @@ class DataGenerator:
                             self._handle_foreign_key(fk_info, table_key, column, is_nullable, values)
                         else:
                             # Generate data for regular columns
-                            self._generate_column_value(table,
+                            self._generate_column_value(table_key,
                                                         column, data_type, column_default, is_nullable,
                                                         character_maximum_length, num_precision, num_scale, values
                                                         )
@@ -1033,18 +1034,37 @@ class DataGenerator:
                                character_maximum_length, num_precision, num_scale, values):
         """Generate an appropriate value for a database column based on its type."""
         try:
-            # Convert table_key to singular
-            singular_table_key = table_key.rstrip('s') if table_key.endswith('s') else table_key
+            faker_func = None
+            cache_key = (table_key, column)
+            if cache_key in self.faker_func_cache:
+                faker_func = self.faker_func_cache[cache_key]
 
-            # Combine singular table name and column name for more context
-            context_name = f"{singular_table_key} {column}"
-            column_embedding = self.model.encode(context_name, convert_to_tensor=True)
-            cosine_scores = util.cos_sim(column_embedding, self.faker_embeddings)
-            best_match_index = cosine_scores.argmax()
-            best_match_embedding = tuple(self.faker_embeddings[best_match_index].tolist())
-            faker_func_name = self.faker_embedding_map[best_match_embedding]
-            faker_func = getattr(self.fake.unique, faker_func_name)
-            self.used_faker_funcs.add((table_key, column, faker_func_name))
+            else:
+                # Retrieve table and column descriptions from the database
+                schema, table_name = table_key.split('.')
+                table_description = self._get_table_description(schema, table_name)
+                column_description = self._get_column_description(schema, table_name, column)
+
+                # Convert table_key to singular
+                # singular_table_key = table_name.rstrip('s') if table_key.endswith('s') else table_key
+
+                # Combine singular table name and column name for more context
+                context_name = f"{column} {table_name}"
+
+
+                # Add descriptions to the context name
+                # if column_description:
+                #     context_name += f" {column_description}"
+                # if table_description:
+                #     context_name += f" {table_description}"
+
+                column_embedding = self.model.encode(context_name, convert_to_tensor=True)
+                cosine_scores = util.cos_sim(column_embedding, self.faker_embeddings)
+                best_match_index = cosine_scores.argmax()
+                best_match_embedding = tuple(self.faker_embeddings[best_match_index].tolist())
+                faker_func_name = self.faker_embedding_map[best_match_embedding]
+                faker_func = getattr(self.fake.unique, faker_func_name)
+                self.used_faker_funcs.add((table_key, column, faker_func_name))
 
             # Rest of the method remains the same
             self._generate_by_data_type(
@@ -1054,6 +1074,48 @@ class DataGenerator:
         except Exception as e:
             logger.debug(f"Error generating value for column '{column}' with type '{data_type}': {e}")
             self._handle_generation_error(is_nullable, character_maximum_length, values)
+
+    def _get_table_description(self, schema, table_name):
+        """Retrieve the description of a table."""
+        try:
+            query = """
+                SELECT description
+                FROM pg_description
+                JOIN pg_class ON pg_description.objoid = pg_class.oid
+                JOIN pg_namespace ON pg_class.relnamespace = pg_namespace.oid
+                WHERE pg_class.relname = %s
+                AND pg_namespace.nspname = %s
+            """
+            self.cur.execute(query, (table_name, schema))
+            result = self.cur.fetchone()
+            if result and result[0]:
+                return result[0]
+            return None
+        except Exception as e:
+            logger.debug(f"Error retrieving table description for {schema}.{table_name}: {e}")
+            return None
+
+    def _get_column_description(self, schema, table_name, column_name):
+        """Retrieve the description of a column."""
+        try:
+            query = """
+                SELECT description
+                FROM pg_description
+                JOIN pg_attribute ON pg_description.objoid = pg_attribute.attrelid AND pg_description.objsubid = pg_attribute.attnum
+                JOIN pg_class ON pg_attribute.attrelid = pg_class.oid
+                JOIN pg_namespace ON pg_class.relnamespace = pg_namespace.oid
+                WHERE pg_class.relname = %s
+                AND pg_namespace.nspname = %s
+                AND pg_attribute.attname = %s
+            """
+            self.cur.execute(query, (table_name, schema, column_name))
+            result = self.cur.fetchone()
+            if result and result[0]:
+                return result[0]
+            return None
+        except Exception as e:
+            logger.debug(f"Error retrieving column description for {schema}.{table_name}.{column_name}: {e}")
+            return None
 
     def _generate_by_data_type(self, data_type, faker_func, is_nullable,
                                character_maximum_length, num_precision, num_scale, values):

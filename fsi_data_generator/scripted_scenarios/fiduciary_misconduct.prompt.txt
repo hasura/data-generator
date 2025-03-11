@@ -1,45 +1,33 @@
-Analyze all fiduciary relationships for potential fiduciary misconduct.
+Step 1. Sample party relationship types, consider the context (financial services) and legal definitions,
+and classify each type as fiduciary or other, provide a definition of the relationship, and your reasoning.
+Store this as an artifact.
 
-Technical requirements:
-1. Handle transaction dates in these formats:
-   - ISO format with microseconds (e.g., '2023-03-01T10:15:00.123456')
-   - ISO format without microseconds (e.g., '2023-03-01T10:15:00')
-   - Simple date format (e.g., '2023-03-01')
-2. When comparing amounts:
-   - Use absolute values to handle negative amounts
-   - Allow for small differences (< $0.01) in amount matching
-   - Handle both string and numeric amount formats
-3. For credit/debit indicators:
-   - Check for opposite indicators (CREDIT vs DEBIT)
-   - Handle various formats (credit/debit, CR/DR, +/-)
-4. Do not use DATEADD or DATEDIFF in generated SQL. Date math should be done in Python.
-5. LOB accounts and enterprise accounts are related by the enterpriseAccountId.
-   But transactions are identified by the LOB account id.
-6. Do not use CTEs in SQL queries.
-7. Do not use subqueries in SQL queries.
+Step 2. Using the previous classifications, list fiduciaries and their principals where both parties have
+consumer bank accounts with an 'active' status. Provide names, role, account ids, and total transactions
+count for all time. Store this as an artifact.
 
-Analysis requirements:
-1. Analyze relationship types to determine fiduciary relationship types. Make no assumptions
-   about the names of relationship types.
-2. Focus on consumer banking transactions.
-3. Identify matching transaction patterns between fiduciary and principal accounts within 3 days, including:
-   - Exact amount matches with opposite credit/debit indicators
-   - Split transactions where multiple fiduciary transactions add up to a principal transaction
-   - Focus on all transactions
-4. Flag patterns where:
-   - Money moves between fiduciary and principal accounts
-   - Transactions occur in close temporal proximity
-   - Transaction descriptions suggest potential concealment
-5. Report for each fiduciary-principal pair:
-   - Names of fiduciary and principal
-   - Number and total amount of suspicious transactions
-   - Date range of suspicious activity
-   - Types of suspicious patterns found
-6. Highlight cases where:
-   - A fiduciary shows patterns across multiple principals
-   - Patterns occur repeatedly over time
-   - Large amounts are involved
+Step 3. I am concerned with fiduciary misconduct. Using the previous analysis,
+look for patterns where a DR from a principal account is followed by a CR to a fiduciary account within 0 to 14 days.
+Positive/negative amounts do not represent credit/debit, instead they are indicated by a 'CR' or 'DR' attribute.
+Consider similar amounts or aggregate amounts within a tolerance of 15%. Store this as an artifact.
 
-Be thorough and systematic and carefully follow instructions.
-Verify that you completed all of the required steps.
+Step 4. Based on bank or regulatory policy, identify actions that should be taken for each of the transactions
+from the previous analysis, including
+- whether a SAR should be filed,
+- the reasoning behind the SAR filing recommendation considering
+     * transaction threshold regulatory guidance,
+     * progressively larger amounts indicating testing,
+     * transaction description differences,
+     * temporal restructuring that seem to be an attempt to obfuscate
+     * transaction layering.
+
+Present the transactions as a table in a business friendly format,
+including names, account ids, transaction descriptions, SAR recommendation, SAR reasons, and a prioritized list of next steps.
+Store this as an artifact.
+
+Step 5. Using the analysis from the previous step, filter by SAR filing recommendation as true,
+group by fiduciary/principal, and draft a SAR filing.
+Format the filing per FinCEN guidance.
+Include FinCEN red flag categories but ONLY using evidence from the transactions referenced in the SAR filing.
+Store each file as a separate text artifact.
 

@@ -3,10 +3,10 @@ kind: ObjectType
 version: v1
 definition:
   name: EnterpriseAccountOwnership
-  description: Junction table establishing ownership of enterprise accounts by
-    parties. All LOB account access flows through this ownership. When ownership
-    is terminated, party loses access to all linked LOB accounts. Multiple
-    parties can own the same enterprise account (joint ownership).
+  description: The only table that controls account access rights. Creates the
+    mandatory link between parties and accounts. Any query checking account
+    access or ownership must start with this table. No direct relationships
+    exist between parties and other account tables.
   fields:
     - name: enterpriseAccountId
       type: Int4!
@@ -143,10 +143,10 @@ definition:
       queryRootField: enterpriseAccountOwnershipAggregate
       subscription:
         rootField: enterpriseAccountOwnershipAggregate
-  description: Junction table establishing ownership of enterprise accounts by
-    parties. All LOB account access flows through this ownership. When ownership
-    is terminated, party loses access to all linked LOB accounts. Multiple
-    parties can own the same enterprise account (joint ownership).
+  description: The only table that controls account access rights. Creates the
+    mandatory link between parties and accounts. Any query checking account
+    access or ownership must start with this table. No direct relationships
+    exist between parties and other account tables.
 
 ---
 kind: ModelPermissions

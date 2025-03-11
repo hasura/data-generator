@@ -15,11 +15,11 @@ VALUES (NOW() - INTERVAL '6 months', 'active', NOW(), 'Personal', 'Jane Smith Ma
 
 -- Enterprise Party (Consumer - John Doe)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
-VALUES ('Individual', 'John Doe', 'john.doe@example.com', '555-123-4567');
+VALUES ('individual', 'John Doe', 'john.doe@example.com', '555-123-4567');
 
 -- Enterprise Party (guardian - Jane Smith)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
-VALUES ('Individual', 'Jane Smith', 'jane.smith@example.com', '555-987-6543');
+VALUES ('individual', 'Jane Smith', 'jane.smith@example.com', '555-987-6543');
 
 -- Account Ownership - Link John Doe to his account
 INSERT INTO enterprise.account_ownership (enterprise_account_id, enterprise_party_id)
@@ -120,11 +120,11 @@ VALUES (NOW() - INTERVAL '3 months', 'active', NOW(), 'Personal', 'Bob Williams 
 
 -- Enterprise Party (Consumer)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
-VALUES ('Individual', 'Alice Johnson', 'alice.johnson@example.com', '555-555-5555');
+VALUES ('individual', 'Alice Johnson', 'alice.johnson@example.com', '555-555-5555');
 
 -- Enterprise Party (guardian)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
-VALUES ('Individual', 'Bob Williams', 'bob.williams@example.com', '555-111-2222');
+VALUES ('individual', 'Bob Williams', 'bob.williams@example.com', '555-111-2222');
 
 -- Account Ownership - Link Alice Johnson to her account
 INSERT INTO enterprise.account_ownership (enterprise_account_id, enterprise_party_id)
@@ -237,15 +237,15 @@ VALUES (NOW() - INTERVAL '5 months', 'active', NOW(), 'Personal', 'Linus Van Pel
 
 -- Enterprise Party (Consumer)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
-VALUES ('Individual', 'Charlie Brown', 'charlie.brown@example.com', '555-333-4444');
+VALUES ('individual', 'Charlie Brown', 'charlie.brown@example.com', '555-333-4444');
 
 -- Enterprise Party (guardian 1)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
-VALUES ('Individual', 'Lucy Van Pelt', 'lucy.vanpelt@example.com', '555-222-1111');
+VALUES ('individual', 'Lucy Van Pelt', 'lucy.vanpelt@example.com', '555-222-1111');
 
 -- Enterprise Party (guardian 2)
 INSERT INTO enterprise.parties (party_type, name, email_address, phone)
-VALUES ('Individual', 'Linus Van Pelt', 'linus.vanpelt@example.com', '555-777-8888');
+VALUES ('individual', 'Linus Van Pelt', 'linus.vanpelt@example.com', '555-777-8888');
 
 -- Account Ownership - Link Charlie Brown to his account
 INSERT INTO enterprise.account_ownership (enterprise_account_id, enterprise_party_id)

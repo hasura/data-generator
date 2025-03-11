@@ -1020,7 +1020,7 @@ definition:
                   type: named
                   name: varchar
             type:
-              description: Primary balance type (e.g., AVBL for available)
+              description: Primary balance type (e.g., available, closing, etc.)
               type:
                 type: named
                 name: varchar
@@ -11267,7 +11267,7 @@ definition:
                   type: named
                   name: varchar
         enterprise_account_ownership:
-          description: Junction table establishing ownership of enterprise accounts by parties. All LOB account access flows through this ownership. When ownership is terminated, party loses access to all linked LOB accounts. Multiple parties can own the same enterprise account (joint ownership).
+          description: The only table that controls account access rights. Creates the mandatory link between parties and accounts. Any query checking account access or ownership must start with this table. No direct relationships exist between parties and other account tables.
           fields:
             enterprise_account_id:
               description: References the enterprise account being owned. When ownership ends, access to all linked LOB accounts is terminated.
@@ -11285,7 +11285,7 @@ definition:
                 type: named
                 name: int4
         enterprise_accounts:
-          description: Master account record that other LOB accounts link to. Every LOB account must have a corresponding enterprise account. One enterprise account can have multiple LOB accounts.
+          description: Root account record in the account hierarchy. All other account types (consumer, mortgage, credit) are children of an enterprise account and cannot exist without it. The single source of truth for account ownership and access control.
           fields:
             account_category:
               description: Customer defined category of account (e.g., personal, business, retirement)
@@ -12187,7 +12187,7 @@ definition:
                   type: named
                   name: varchar
             type:
-              description: Primary balance type (e.g., AVBL for available)
+              description: Primary balance type (e.g., available, closing, etc.)
               type:
                 type: named
                 name: varchar
@@ -74057,7 +74057,7 @@ definition:
                 enterprise_account_id: enterprise_account_id
               foreign_collection: enterprise_accounts
         - name: enterprise_account_ownership
-          description: Junction table establishing ownership of enterprise accounts by parties. All LOB account access flows through this ownership. When ownership is terminated, party loses access to all linked LOB accounts. Multiple parties can own the same enterprise account (joint ownership).
+          description: The only table that controls account access rights. Creates the mandatory link between parties and accounts. Any query checking account access or ownership must start with this table. No direct relationships exist between parties and other account tables.
           arguments: {}
           type: enterprise_account_ownership
           uniqueness_constraints:
@@ -74074,7 +74074,7 @@ definition:
                 enterprise_party_id: enterprise_party_id
               foreign_collection: enterprise_parties
         - name: enterprise_accounts
-          description: Master account record that other LOB accounts link to. Every LOB account must have a corresponding enterprise account. One enterprise account can have multiple LOB accounts.
+          description: Root account record in the account hierarchy. All other account types (consumer, mortgage, credit) are children of an enterprise account and cannot exist without it. The single source of truth for account ownership and access control.
           arguments: {}
           type: enterprise_accounts
           uniqueness_constraints:
