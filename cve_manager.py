@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
 
-import psycopg2
-from psycopg2 import Error
-from psycopg2 import connect
-import sys
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import argparse
-import os
-from os import listdir
-from os.path import isfile, join, exists
-from os import makedirs
-import zipfile
-import json
-import requests
-import re
-import io
 import csv
 import getpass
+import io
+import json
+import os
+import re
+import sys
+import zipfile
+from os import listdir
+from os.path import isfile, join
+
+import psycopg2
+import requests
+from psycopg2 import connect
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 ##This is the Postgresql Database Schema##
 query = '''
@@ -146,9 +145,10 @@ CREATE VIEW IF NOT EXISTS security.cvss_vs_cpes AS
 #def create_database(myuser,mypassword,myhost,database, owner):
 def create_database(myuser, myhost, database, owner):
     con = None
+    cur = None
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -167,8 +167,9 @@ def create_database(myuser, myhost, database, owner):
             print("Error while creating PostgreSQL Database", error)
         finally:
             #closing database connection.
-            if (con):
-                cur.close()
+            if con:
+                if cur:
+                    cur.close()
                 con.close()
                 print("PostgreSQL connection is closed")
 
@@ -176,9 +177,10 @@ def create_database(myuser, myhost, database, owner):
 #def drop_database(myuser,mypassword,myhost,database):
 def drop_database(myuser, myhost, database):
     con = None
+    cur = None
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -191,8 +193,9 @@ def drop_database(myuser, myhost, database):
             print("Error while dropping PostgreSQL Database", error)
         finally:
             #closing database connection.
-            if (con):
-                cur.close()
+            if con:
+                if cur:
+                    cur.close()
                 con.close()
                 print("PostgreSQL connection is closed")
 
@@ -200,9 +203,10 @@ def drop_database(myuser, myhost, database):
 #def create_tables(myuser,mypassword,myhost,database):
 def create_tables(myuser, myhost, database):
     con = None
+    cursor = None
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -216,14 +220,15 @@ def create_tables(myuser, myhost, database):
             print("Error while creating PostgreSQL tables", error)
         finally:
             #closing database connection.
-            if (con):
+            if con:
                 cursor.close()
                 con.close()
                 print("PostgreSQL connection is closed")
 
 
 #Download CVEs
-def download_cves(directory=None, year=None):
+def download_cves(directory='nvd/', year=None):
+    r = None
     if not os.path.exists(directory):
         try:
             os.makedirs(directory)
@@ -257,7 +262,7 @@ def download_cves(directory=None, year=None):
 
 #processes the already downloaded in json format CVEs
 #def process_cves(directory, results, csv_file, import_db,myuser,mypassword,myhost,database):
-def process_cves(directory, csv_file, import_db, user, host, database, password, port, results='results'):
+def process_cves(directory='nvd/', results='results', csv_file=None, import_db=None, user='postgres', host='localhost', database='postgres', password=None, port=5432, server='localhost'):
     if csv_file:
         if not os.path.exists(results):
             try:
@@ -451,20 +456,20 @@ def process_cves(directory, csv_file, import_db, user, host, database, password,
                         writer_cwe.writerow([cve, problem])
             try:
                 cpe_list_length = len(cves['configurations']['nodes'])
-                if (cpe_list_length != 0):
+                if cpe_list_length != 0:
                     for i in range(0, cpe_list_length):
                         if 'children' in cves['configurations']['nodes'][i]:
                             cpe_child_list_length = len(cves['configurations']['nodes'][i]['children'])
-                            if (cpe_child_list_length != 0):
+                            if cpe_child_list_length != 0:
                                 for j in range(0, cpe_child_list_length):
-                                    if ('cpe_match' in cves['configurations']['nodes'][i]['children'][j]):
+                                    if 'cpe_match' in cves['configurations']['nodes'][i]['children'][j]:
                                         cpes = cves['configurations']['nodes'][i]['children'][j]['cpe_match']
                                         for cpe in cpes:
                                             if csv_file:
                                                 if 'cpe23Uri' in cpe:
                                                     writer_cpe.writerow([cve, cpe['cpe23Uri'], str(cpe['vulnerable'])])
                         else:
-                            if ('cpe_match' in cves['configurations']['nodes'][i]):
+                            if 'cpe_match' in cves['configurations']['nodes'][i]:
                                 cpes = cves['configurations']['nodes'][i]['cpe_match']
                                 for cpe in cpes:
                                     if csv_file:
@@ -472,9 +477,9 @@ def process_cves(directory, csv_file, import_db, user, host, database, password,
                                             writer_cpe.writerow([cve, cpe['cpe23Uri'], str(cpe['vulnerable'])])
                             else:
                                 cpe_inner_list_length = len(cves['configurations']['nodes'])
-                                if (cpe_inner_list_length != 0):
+                                if cpe_inner_list_length != 0:
                                     for k in range(0, cpe_inner_list_length):
-                                        if ('cpe_match' in cves['configurations']['nodes'][i]):
+                                        if 'cpe_match' in cves['configurations']['nodes'][i]:
                                             cpes = cves['configurations']['nodes'][i]['cpe_match']
                                             for cpe in cpes:
                                                 if csv_file:
@@ -489,8 +494,8 @@ def process_cves(directory, csv_file, import_db, user, host, database, password,
     if import_db:
         print('Connecting to the PostgreSQL database...')
         try:
-            con = connect(dbname=database, user=user, host=host, password=password, port=port)
-        except (Exception, psycopg2.DatabaseError) as error:
+            connect(dbname=database, user=user, host=host, password=password, port=port)
+        except (Exception, psycopg2.DatabaseError) as _error:
             mypassword = getpass.getpass('Password:')
         finally:
             try:
@@ -533,9 +538,10 @@ def process_cves(directory, csv_file, import_db, user, host, database, password,
 def truncate_database(myuser, myhost, database):
     con = None
     mypassword = None
+    cur = None
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -548,7 +554,7 @@ def truncate_database(myuser, myhost, database):
         except (Exception, psycopg2.DatabaseError) as error:
             print("Error while Truncating PostgreSQL Database", error)
         finally:
-            if (con):
+            if con:
                 cur.close()
                 con.close()
                 print("PostgreSQL connection is closed")
@@ -558,9 +564,11 @@ def truncate_database(myuser, myhost, database):
 def execute_query(myuser, myhost, database, cve, score, date, csv_on, output_folder):
     con = None
     mypassword = None
+    cves = None
+    cur = None
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -589,7 +597,7 @@ def execute_query(myuser, myhost, database, cve, score, date, csv_on, output_fol
                     if cwe.isdigit():
                         cur.execute("SELECT name FROM cwe WHERE cwe_id = " + cwe)
                         selected_cve2 = cur.fetchone()
-                        if (selected_cve2):
+                        if selected_cve2:
                             print(i[0], selected_cve2[0])
                         else:
                             print(i[0])
@@ -624,7 +632,7 @@ def execute_query(myuser, myhost, database, cve, score, date, csv_on, output_fol
         except (Exception, psycopg2.DatabaseError) as error:
             print("Error while Querying Database", error)
         finally:
-            if (con):
+            if con:
                 cur.close()
                 con.close()
                 print("\r\nPostgreSQL connection is closed")
@@ -653,13 +661,15 @@ def execute_query(myuser, myhost, database, cve, score, date, csv_on, output_fol
 def execute_query_cpe(myuser, myhost, database, cpe, score, date, csv_on, output_folder):
     con = None
     mypassword = None
+    cpes = None
+    cur = None
     if csv_on:
         cpes = []
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
         print("OK")
         exit(0)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -687,7 +697,7 @@ def execute_query_cpe(myuser, myhost, database, cpe, score, date, csv_on, output
         except (Exception, psycopg2.DatabaseError) as error:
             print("Error while Querying Database", error)
         finally:
-            if (con):
+            if con:
                 cur.close()
                 con.close()
                 print("\r\nPostgreSQL connection is closed")
@@ -714,9 +724,10 @@ def execute_query_cpe(myuser, myhost, database, cpe, score, date, csv_on, output
 def execute_query_cwe(myuser, myhost, database, cwe):
     con = None
     mypassword = None
+    cur = None
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -729,30 +740,30 @@ def execute_query_cwe(myuser, myhost, database, cwe):
                 print("CWE-" + str(selected_cwe[0]))
                 print("========")
                 print(selected_cwe[1])
-                if (selected_cwe[2]):
+                if selected_cwe[2]:
                     print(selected_cwe[2])
-                if (selected_cwe[3]):
+                if selected_cwe[3]:
                     print(selected_cwe[3])
-                if (selected_cwe[4]):
+                if selected_cwe[4]:
                     print("\r\nModes of Introduction")
                     print("--------------------")
                     print(selected_cwe[4])
-                if (selected_cwe[5]):
+                if selected_cwe[5]:
                     print("\r\nCommon Consequences")
                     print("--------------------")
                     print(selected_cwe[5])
-                if (selected_cwe[6]):
+                if selected_cwe[6]:
                     print("\r\nPotential Mitigations")
                     print("--------------------")
                     print(selected_cwe[6])
             else:
                 print("CWE-" + cwe, "not found")
-        except (Exception, psycopg2.DatabaseError) as error:
+        except (Exception, psycopg2.DatabaseError) as _error:
             print("Error while Querying Database")
             #print ("Error while Querying Database", error)
             print("Hint: Use just the number of teh CWE you are looking for, e.g.: 169")
         finally:
-            if (con):
+            if con:
                 cur.close()
                 con.close()
                 print("\r\nPostgreSQL connection is closed")
@@ -762,9 +773,10 @@ def execute_query_cwe(myuser, myhost, database, cwe):
 def cwe(myuser, myhost, database, filename):
     con = None
     mypassword = None
+    cur = None
     try:
         con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as _error:
         mypassword = getpass.getpass('Password:')
     finally:
         try:
@@ -789,7 +801,7 @@ def cwe(myuser, myhost, database, filename):
         except (Exception, psycopg2.DatabaseError) as error:
             print("Error while Querying Database", error)
         finally:
-            if (con):
+            if con:
                 cur.close()
                 con.close()
                 print("PostgreSQL connection is closed")
@@ -867,8 +879,8 @@ if __name__ == '__main__':
     if values.process:
         print("Processing downloaded data")
         #process_cves(values.input, values.results, values.csv_file, values.idb,values.user,values.password,values.server,values.database)
-        process_cves(values.input, values.results, values.csv_file, values.idb, values.user, values.server,
-                     values.database)
+        process_cves(directory=values.input, results=values.results, csv_file=values.csv_file, import_db=values.idb, user=values.user, server=values.server,
+                     database=values.database)
     if values.icwe:
         print("Importing CWE data")
         #cwe(values.user,values.password,values.host,values.database,values.icwe)
