@@ -1,0 +1,574 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityCvss
+  description: Stores Common Vulnerability Scoring System (CVSS) metrics for CVEs,
+    including both CVSS v2 and v3.
+  fields:
+    - name: accessComplexity
+      type: Varchar
+      description: CVSS v2 Access Complexity metric.
+    - name: accessVector
+      type: Varchar
+      description: CVSS v2 Access Vector metric.
+    - name: attackComplexity3
+      type: Varchar
+      description: CVSS v3 Attack Complexity metric.
+    - name: attackVector3
+      type: Varchar
+      description: CVSS v3 Attack Vector metric.
+    - name: authentication
+      type: Varchar
+      description: CVSS v2 Authentication metric.
+    - name: availabilityImpact
+      type: Varchar
+      description: CVSS v2 Availability Impact metric.
+    - name: availabilityImpact3
+      type: Varchar
+      description: CVSS v3 Availability Impact metric.
+    - name: baseScore
+      type: Float4
+      description: CVSS v2 Base Score.
+    - name: baseScore3
+      type: Float4
+      description: CVSS v3 Base Score.
+    - name: baseSeverity3
+      type: Varchar
+      description: CVSS v3 Base Severity.
+    - name: confidentialityImpact
+      type: Varchar
+      description: CVSS v2 Confidentiality Impact metric.
+    - name: confidentialityImpact3
+      type: Varchar
+      description: CVSS v3 Confidentiality Impact metric.
+    - name: cve
+      type: Varchar!
+      description: Common Vulnerabilities and Exposures identifier. Primary key.
+    - name: description
+      type: Text
+      description: CVE description.
+    - name: exploitabilityScore
+      type: Float4
+      description: CVSS v2 Exploitability Score.
+    - name: exploitabilityScore3
+      type: Float4
+      description: CVSS v3 Exploitability Score.
+    - name: impactScore
+      type: Float4
+      description: CVSS v2 Impact Score.
+    - name: impactScore3
+      type: Float4
+      description: CVSS v3 Impact Score.
+    - name: integrityImpact
+      type: Varchar
+      description: CVSS v2 Integrity Impact metric.
+    - name: integrityImpact3
+      type: Varchar
+      description: CVSS v3 Integrity Impact metric.
+    - name: lastModifiedDate
+      type: Date
+      description: CVE last modified date.
+    - name: obtainAllPrivileges
+      type: Bool
+      description: CVSS v2 Obtain All Privileges metric.
+    - name: obtainOtherPrivileges
+      type: Bool
+      description: CVSS v2 Obtain Other Privileges metric.
+    - name: obtainUserPrivileges
+      type: Bool
+      description: CVSS v2 Obtain User Privileges metric.
+    - name: privilegesRequired3
+      type: Varchar
+      description: CVSS v3 Privileges Required metric.
+    - name: publishedDate
+      type: Date
+      description: CVE publication date.
+    - name: scope3
+      type: Varchar
+      description: CVSS v3 Scope metric.
+    - name: severity
+      type: Varchar
+      description: CVSS v2 Severity.
+    - name: userInteraction3
+      type: Varchar
+      description: CVSS v3 User Interaction metric.
+    - name: userInteractionRequired
+      type: Bool
+      description: CVSS v2 User Interaction Required metric.
+    - name: vectorString
+      type: Varchar
+      description: CVSS v2 Vector String.
+    - name: vectorString3
+      type: Varchar
+      description: CVSS v3 Vector String.
+  graphql:
+    typeName: Security_SecurityCvss
+    inputTypeName: Security_SecurityCvssInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_cvss
+      fieldMapping:
+        accessComplexity:
+          column:
+            name: access_complexity
+        accessVector:
+          column:
+            name: access_vector
+        attackComplexity3:
+          column:
+            name: attack_complexity_3
+        attackVector3:
+          column:
+            name: attack_vector_3
+        authentication:
+          column:
+            name: authentication
+        availabilityImpact:
+          column:
+            name: availability_impact
+        availabilityImpact3:
+          column:
+            name: availability_impact_3
+        baseScore:
+          column:
+            name: base_score
+        baseScore3:
+          column:
+            name: base_score_3
+        baseSeverity3:
+          column:
+            name: base_severity_3
+        confidentialityImpact:
+          column:
+            name: confidentiality_impact
+        confidentialityImpact3:
+          column:
+            name: confidentiality_impact_3
+        cve:
+          column:
+            name: cve
+        description:
+          column:
+            name: description
+        exploitabilityScore:
+          column:
+            name: exploitability_score
+        exploitabilityScore3:
+          column:
+            name: exploitability_score_3
+        impactScore:
+          column:
+            name: impact_score
+        impactScore3:
+          column:
+            name: impact_score_3
+        integrityImpact:
+          column:
+            name: integrity_impact
+        integrityImpact3:
+          column:
+            name: integrity_impact_3
+        lastModifiedDate:
+          column:
+            name: last_modified_date
+        obtainAllPrivileges:
+          column:
+            name: obtain_all_privileges
+        obtainOtherPrivileges:
+          column:
+            name: obtain_other_privileges
+        obtainUserPrivileges:
+          column:
+            name: obtain_user_privileges
+        privilegesRequired3:
+          column:
+            name: privileges_required_3
+        publishedDate:
+          column:
+            name: published_date
+        scope3:
+          column:
+            name: scope_3
+        severity:
+          column:
+            name: severity
+        userInteraction3:
+          column:
+            name: user_interaction_3
+        userInteractionRequired:
+          column:
+            name: user_interaction_required
+        vectorString:
+          column:
+            name: vector_string
+        vectorString3:
+          column:
+            name: vector_string_3
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityCvss
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accessComplexity
+          - accessVector
+          - attackComplexity3
+          - attackVector3
+          - authentication
+          - availabilityImpact
+          - availabilityImpact3
+          - baseScore
+          - baseScore3
+          - baseSeverity3
+          - confidentialityImpact
+          - confidentialityImpact3
+          - cve
+          - description
+          - exploitabilityScore
+          - exploitabilityScore3
+          - impactScore
+          - impactScore3
+          - integrityImpact
+          - integrityImpact3
+          - lastModifiedDate
+          - obtainAllPrivileges
+          - obtainOtherPrivileges
+          - obtainUserPrivileges
+          - privilegesRequired3
+          - publishedDate
+          - scope3
+          - severity
+          - userInteraction3
+          - userInteractionRequired
+          - vectorString
+          - vectorString3
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityCvssBoolExp
+  operand:
+    object:
+      type: SecurityCvss
+      comparableFields:
+        - fieldName: accessComplexity
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: accessVector
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: attackComplexity3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: attackVector3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: authentication
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: availabilityImpact
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: availabilityImpact3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: baseScore
+          booleanExpressionType: Float4BoolExp
+        - fieldName: baseScore3
+          booleanExpressionType: Float4BoolExp
+        - fieldName: baseSeverity3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: confidentialityImpact
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: confidentialityImpact3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: cve
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: exploitabilityScore
+          booleanExpressionType: Float4BoolExp
+        - fieldName: exploitabilityScore3
+          booleanExpressionType: Float4BoolExp
+        - fieldName: impactScore
+          booleanExpressionType: Float4BoolExp
+        - fieldName: impactScore3
+          booleanExpressionType: Float4BoolExp
+        - fieldName: integrityImpact
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: integrityImpact3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lastModifiedDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: obtainAllPrivileges
+          booleanExpressionType: BoolBoolExp
+        - fieldName: obtainOtherPrivileges
+          booleanExpressionType: BoolBoolExp
+        - fieldName: obtainUserPrivileges
+          booleanExpressionType: BoolBoolExp
+        - fieldName: privilegesRequired3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: publishedDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: scope3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: severity
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: userInteraction3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: userInteractionRequired
+          booleanExpressionType: BoolBoolExp
+        - fieldName: vectorString
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: vectorString3
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: securityCpes
+        - relationshipName: securityCveProblems
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityCvssBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityCvssAggExp
+  operand:
+    object:
+      aggregatedType: SecurityCvss
+      aggregatableFields:
+        - fieldName: accessComplexity
+          aggregateExpression: VarcharAggExp
+        - fieldName: accessVector
+          aggregateExpression: VarcharAggExp
+        - fieldName: attackComplexity3
+          aggregateExpression: VarcharAggExp
+        - fieldName: attackVector3
+          aggregateExpression: VarcharAggExp
+        - fieldName: authentication
+          aggregateExpression: VarcharAggExp
+        - fieldName: availabilityImpact
+          aggregateExpression: VarcharAggExp
+        - fieldName: availabilityImpact3
+          aggregateExpression: VarcharAggExp
+        - fieldName: baseScore
+          aggregateExpression: Float4AggExp
+        - fieldName: baseScore3
+          aggregateExpression: Float4AggExp
+        - fieldName: baseSeverity3
+          aggregateExpression: VarcharAggExp
+        - fieldName: confidentialityImpact
+          aggregateExpression: VarcharAggExp
+        - fieldName: confidentialityImpact3
+          aggregateExpression: VarcharAggExp
+        - fieldName: cve
+          aggregateExpression: VarcharAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: exploitabilityScore
+          aggregateExpression: Float4AggExp
+        - fieldName: exploitabilityScore3
+          aggregateExpression: Float4AggExp
+        - fieldName: impactScore
+          aggregateExpression: Float4AggExp
+        - fieldName: impactScore3
+          aggregateExpression: Float4AggExp
+        - fieldName: integrityImpact
+          aggregateExpression: VarcharAggExp
+        - fieldName: integrityImpact3
+          aggregateExpression: VarcharAggExp
+        - fieldName: lastModifiedDate
+          aggregateExpression: DateAggExp
+        - fieldName: obtainAllPrivileges
+          aggregateExpression: BoolAggExp
+        - fieldName: obtainOtherPrivileges
+          aggregateExpression: BoolAggExp
+        - fieldName: obtainUserPrivileges
+          aggregateExpression: BoolAggExp
+        - fieldName: privilegesRequired3
+          aggregateExpression: VarcharAggExp
+        - fieldName: publishedDate
+          aggregateExpression: DateAggExp
+        - fieldName: scope3
+          aggregateExpression: VarcharAggExp
+        - fieldName: severity
+          aggregateExpression: VarcharAggExp
+        - fieldName: userInteraction3
+          aggregateExpression: VarcharAggExp
+        - fieldName: userInteractionRequired
+          aggregateExpression: BoolAggExp
+        - fieldName: vectorString
+          aggregateExpression: VarcharAggExp
+        - fieldName: vectorString3
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityCvssAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityCvssOrderByExp
+  operand:
+    object:
+      orderedType: SecurityCvss
+      orderableFields:
+        - fieldName: accessComplexity
+          orderByExpression: VarcharOrderByExp
+        - fieldName: accessVector
+          orderByExpression: VarcharOrderByExp
+        - fieldName: attackComplexity3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: attackVector3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: authentication
+          orderByExpression: VarcharOrderByExp
+        - fieldName: availabilityImpact
+          orderByExpression: VarcharOrderByExp
+        - fieldName: availabilityImpact3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: baseScore
+          orderByExpression: Float4OrderByExp
+        - fieldName: baseScore3
+          orderByExpression: Float4OrderByExp
+        - fieldName: baseSeverity3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: confidentialityImpact
+          orderByExpression: VarcharOrderByExp
+        - fieldName: confidentialityImpact3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: cve
+          orderByExpression: VarcharOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: exploitabilityScore
+          orderByExpression: Float4OrderByExp
+        - fieldName: exploitabilityScore3
+          orderByExpression: Float4OrderByExp
+        - fieldName: impactScore
+          orderByExpression: Float4OrderByExp
+        - fieldName: impactScore3
+          orderByExpression: Float4OrderByExp
+        - fieldName: integrityImpact
+          orderByExpression: VarcharOrderByExp
+        - fieldName: integrityImpact3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lastModifiedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: obtainAllPrivileges
+          orderByExpression: BoolOrderByExp
+        - fieldName: obtainOtherPrivileges
+          orderByExpression: BoolOrderByExp
+        - fieldName: obtainUserPrivileges
+          orderByExpression: BoolOrderByExp
+        - fieldName: privilegesRequired3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: publishedDate
+          orderByExpression: DateOrderByExp
+        - fieldName: scope3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: severity
+          orderByExpression: VarcharOrderByExp
+        - fieldName: userInteraction3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: userInteractionRequired
+          orderByExpression: BoolOrderByExp
+        - fieldName: vectorString
+          orderByExpression: VarcharOrderByExp
+        - fieldName: vectorString3
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_SecurityCvssOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityCvss
+  objectType: SecurityCvss
+  source:
+    dataConnectorName: security
+    collection: security_cvss
+  filterExpressionType: SecurityCvssBoolExp
+  aggregateExpression: SecurityCvssAggExp
+  orderByExpression: SecurityCvssOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityCvss
+      subscription:
+        rootField: securityCvss
+    selectUniques:
+      - queryRootField: securityCvssByCve
+        uniqueIdentifier:
+          - cve
+        subscription:
+          rootField: securityCvssByCve
+    filterInputTypeName: Security_SecurityCvssFilterInput
+    aggregate:
+      queryRootField: securityCvssAggregate
+      subscription:
+        rootField: securityCvssAggregate
+  description: Stores Common Vulnerability Scoring System (CVSS) metrics for CVEs,
+    including both CVSS v2 and v3.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityCvss
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityCpes
+  sourceType: SecurityCvss
+  target:
+    model:
+      name: SecurityCpe
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityCpeAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cve
+      target:
+        modelField:
+          - fieldName: cve
+  graphql:
+    aggregateFieldName: securityCpesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityCveProblems
+  sourceType: SecurityCvss
+  target:
+    model:
+      name: SecurityCveProblem
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityCveProblemAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cve
+      target:
+        modelField:
+          - fieldName: cve
+  graphql:
+    aggregateFieldName: securityCveProblemsAggregate
+

@@ -1,0 +1,177 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityIdentityAccessProfiles
+  description: Table linking identities to access profiles, granting specific permissions.
+  fields:
+    - name: securityAccessProfileId
+      type: Uuid!
+      description: Identifier of the associated access profile.
+    - name: securityIdentityId
+      type: Uuid!
+      description: Identifier of the associated identity.
+  graphql:
+    typeName: Security_SecurityIdentityAccessProfiles
+    inputTypeName: Security_SecurityIdentityAccessProfilesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_identity_access_profiles
+      fieldMapping:
+        securityAccessProfileId:
+          column:
+            name: security_access_profile_id
+        securityIdentityId:
+          column:
+            name: security_identity_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityIdentityAccessProfiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - securityAccessProfileId
+          - securityIdentityId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityIdentityAccessProfilesBoolExp
+  operand:
+    object:
+      type: SecurityIdentityAccessProfiles
+      comparableFields:
+        - fieldName: securityAccessProfileId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityIdentityId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityAccessProfile
+        - relationshipName: securityIdentity
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityIdentityAccessProfilesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityIdentityAccessProfilesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityIdentityAccessProfiles
+      aggregatableFields:
+        - fieldName: securityAccessProfileId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityIdentityId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityIdentityAccessProfilesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityIdentityAccessProfilesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityIdentityAccessProfiles
+      orderableFields:
+        - fieldName: securityAccessProfileId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityIdentityId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securityAccessProfile
+        - relationshipName: securityIdentity
+  graphql:
+    expressionTypeName: Security_SecurityIdentityAccessProfilesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityIdentityAccessProfiles
+  objectType: SecurityIdentityAccessProfiles
+  source:
+    dataConnectorName: security
+    collection: security_identity_access_profiles
+  filterExpressionType: SecurityIdentityAccessProfilesBoolExp
+  aggregateExpression: SecurityIdentityAccessProfilesAggExp
+  orderByExpression: SecurityIdentityAccessProfilesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityIdentityAccessProfiles
+      subscription:
+        rootField: securityIdentityAccessProfiles
+    selectUniques:
+      - queryRootField: securityIdentityAccessProfilesByIdentityAccessProfilesPkey
+        uniqueIdentifier:
+          - securityAccessProfileId
+          - securityIdentityId
+        subscription:
+          rootField: securityIdentityAccessProfilesByIdentityAccessProfilesPkey
+    filterInputTypeName: Security_SecurityIdentityAccessProfilesFilterInput
+    aggregate:
+      queryRootField: securityIdentityAccessProfilesAggregate
+      subscription:
+        rootField: securityIdentityAccessProfilesAggregate
+  description: Table linking identities to access profiles, granting specific permissions.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityIdentityAccessProfiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityAccessProfile
+  sourceType: SecurityIdentityAccessProfiles
+  target:
+    model:
+      name: SecurityAccessProfiles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityAccessProfileId
+      target:
+        modelField:
+          - fieldName: securityAccessProfileId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityIdentity
+  sourceType: SecurityIdentityAccessProfiles
+  target:
+    model:
+      name: SecurityIdentities
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityIdentityId
+      target:
+        modelField:
+          - fieldName: securityIdentityId
+

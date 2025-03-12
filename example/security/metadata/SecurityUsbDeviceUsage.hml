@@ -1,0 +1,210 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityUsbDeviceUsage
+  description: Table storing information about USB device usage, tracking
+    connection and disconnection times.
+  fields:
+    - name: connectionTime
+      type: Timestamp
+      description: Timestamp when the USB device was connected.
+    - name: deviceName
+      type: Varchar
+      description: Name of the USB device.
+    - name: deviceType
+      type: Varchar
+      description: Type of the USB device.
+    - name: disconnectionTime
+      type: Timestamp
+      description: Timestamp when the USB device was disconnected.
+    - name: securitySystemId
+      type: Uuid!
+      description: Identifier of the system where the USB device was used.
+    - name: securityUsbDeviceUsageId
+      type: Uuid!
+      description: Unique identifier for the USB device usage record.
+  graphql:
+    typeName: Security_SecurityUsbDeviceUsage
+    inputTypeName: Security_SecurityUsbDeviceUsageInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_usb_device_usage
+      fieldMapping:
+        connectionTime:
+          column:
+            name: connection_time
+        deviceName:
+          column:
+            name: device_name
+        deviceType:
+          column:
+            name: device_type
+        disconnectionTime:
+          column:
+            name: disconnection_time
+        securitySystemId:
+          column:
+            name: security_system_id
+        securityUsbDeviceUsageId:
+          column:
+            name: security_usb_device_usage_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityUsbDeviceUsage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - connectionTime
+          - deviceName
+          - deviceType
+          - disconnectionTime
+          - securitySystemId
+          - securityUsbDeviceUsageId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityUsbDeviceUsageBoolExp
+  operand:
+    object:
+      type: SecurityUsbDeviceUsage
+      comparableFields:
+        - fieldName: connectionTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: deviceName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: deviceType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: disconnectionTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: securitySystemId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityUsbDeviceUsageId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securitySystem
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityUsbDeviceUsageBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityUsbDeviceUsageAggExp
+  operand:
+    object:
+      aggregatedType: SecurityUsbDeviceUsage
+      aggregatableFields:
+        - fieldName: connectionTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: deviceName
+          aggregateExpression: VarcharAggExp
+        - fieldName: deviceType
+          aggregateExpression: VarcharAggExp
+        - fieldName: disconnectionTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: securitySystemId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityUsbDeviceUsageId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityUsbDeviceUsageAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityUsbDeviceUsageOrderByExp
+  operand:
+    object:
+      orderedType: SecurityUsbDeviceUsage
+      orderableFields:
+        - fieldName: connectionTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: deviceName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: deviceType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: disconnectionTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: securitySystemId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityUsbDeviceUsageId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securitySystem
+  graphql:
+    expressionTypeName: Security_SecurityUsbDeviceUsageOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityUsbDeviceUsage
+  objectType: SecurityUsbDeviceUsage
+  source:
+    dataConnectorName: security
+    collection: security_usb_device_usage
+  filterExpressionType: SecurityUsbDeviceUsageBoolExp
+  aggregateExpression: SecurityUsbDeviceUsageAggExp
+  orderByExpression: SecurityUsbDeviceUsageOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityUsbDeviceUsage
+      subscription:
+        rootField: securityUsbDeviceUsage
+    selectUniques:
+      - queryRootField: securityUsbDeviceUsageBySecurityUsbDeviceUsageId
+        uniqueIdentifier:
+          - securityUsbDeviceUsageId
+        subscription:
+          rootField: securityUsbDeviceUsageBySecurityUsbDeviceUsageId
+    filterInputTypeName: Security_SecurityUsbDeviceUsageFilterInput
+    aggregate:
+      queryRootField: securityUsbDeviceUsageAggregate
+      subscription:
+        rootField: securityUsbDeviceUsageAggregate
+  description: Table storing information about USB device usage, tracking
+    connection and disconnection times.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityUsbDeviceUsage
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySystem
+  sourceType: SecurityUsbDeviceUsage
+  target:
+    model:
+      name: SecuritySystems
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySystemId
+      target:
+        modelField:
+          - fieldName: securitySystemId
+

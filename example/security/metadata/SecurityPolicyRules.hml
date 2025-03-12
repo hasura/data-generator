@@ -1,0 +1,182 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityPolicyRules
+  description: Table storing specific rules associated with security policies.
+  fields:
+    - name: ruleDescription
+      type: Text!
+      description: Detailed description of the policy rule.
+    - name: ruleName
+      type: Varchar!
+      description: Name of the policy rule.
+    - name: securityPolicyId
+      type: Uuid
+      description: Foreign key referencing the policy_id in the policies table.
+    - name: securityPolicyRuleId
+      type: Uuid!
+      description: Unique identifier for the policy rule.
+  graphql:
+    typeName: Security_SecurityPolicyRules
+    inputTypeName: Security_SecurityPolicyRulesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_policy_rules
+      fieldMapping:
+        ruleDescription:
+          column:
+            name: rule_description
+        ruleName:
+          column:
+            name: rule_name
+        securityPolicyId:
+          column:
+            name: security_policy_id
+        securityPolicyRuleId:
+          column:
+            name: security_policy_rule_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityPolicyRules
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - ruleDescription
+          - ruleName
+          - securityPolicyId
+          - securityPolicyRuleId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityPolicyRulesBoolExp
+  operand:
+    object:
+      type: SecurityPolicyRules
+      comparableFields:
+        - fieldName: ruleDescription
+          booleanExpressionType: TextBoolExp
+        - fieldName: ruleName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityPolicyId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityPolicyRuleId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityPolicy
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityPolicyRulesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityPolicyRulesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityPolicyRules
+      aggregatableFields:
+        - fieldName: ruleDescription
+          aggregateExpression: TextAggExp
+        - fieldName: ruleName
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityPolicyId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityPolicyRuleId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityPolicyRulesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityPolicyRulesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityPolicyRules
+      orderableFields:
+        - fieldName: ruleDescription
+          orderByExpression: TextOrderByExp
+        - fieldName: ruleName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityPolicyId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityPolicyRuleId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securityPolicy
+  graphql:
+    expressionTypeName: Security_SecurityPolicyRulesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityPolicyRules
+  objectType: SecurityPolicyRules
+  source:
+    dataConnectorName: security
+    collection: security_policy_rules
+  filterExpressionType: SecurityPolicyRulesBoolExp
+  aggregateExpression: SecurityPolicyRulesAggExp
+  orderByExpression: SecurityPolicyRulesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityPolicyRules
+      subscription:
+        rootField: securityPolicyRules
+    selectUniques:
+      - queryRootField: securityPolicyRulesBySecurityPolicyRuleId
+        uniqueIdentifier:
+          - securityPolicyRuleId
+        subscription:
+          rootField: securityPolicyRulesBySecurityPolicyRuleId
+    filterInputTypeName: Security_SecurityPolicyRulesFilterInput
+    aggregate:
+      queryRootField: securityPolicyRulesAggregate
+      subscription:
+        rootField: securityPolicyRulesAggregate
+  description: Table storing specific rules associated with security policies.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityPolicyRules
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityPolicy
+  sourceType: SecurityPolicyRules
+  target:
+    model:
+      name: SecurityPolicies
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityPolicyId
+      target:
+        modelField:
+          - fieldName: securityPolicyId
+

@@ -1,0 +1,185 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityInstalledApplications
+  description: Table storing information about installed applications on systems,
+    tracking software installations.
+  fields:
+    - name: applicationVersion
+      type: Varchar
+      description: Version of the installed application.
+    - name: installationDate
+      type: Timestamp
+      description: Timestamp when the application was installed.
+    - name: installedApplicationName
+      type: Varchar!
+      description: Name of the installed application.
+    - name: securitySystemId
+      type: Uuid!
+      description: Identifier of the system where the application is installed.
+  graphql:
+    typeName: Security_SecurityInstalledApplications
+    inputTypeName: Security_SecurityInstalledApplicationsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_installed_applications
+      fieldMapping:
+        applicationVersion:
+          column:
+            name: application_version
+        installationDate:
+          column:
+            name: installation_date
+        installedApplicationName:
+          column:
+            name: installed_application_name
+        securitySystemId:
+          column:
+            name: security_system_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityInstalledApplications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - applicationVersion
+          - installationDate
+          - installedApplicationName
+          - securitySystemId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityInstalledApplicationsBoolExp
+  operand:
+    object:
+      type: SecurityInstalledApplications
+      comparableFields:
+        - fieldName: applicationVersion
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: installationDate
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: installedApplicationName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securitySystemId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securitySystem
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityInstalledApplicationsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityInstalledApplicationsAggExp
+  operand:
+    object:
+      aggregatedType: SecurityInstalledApplications
+      aggregatableFields:
+        - fieldName: applicationVersion
+          aggregateExpression: VarcharAggExp
+        - fieldName: installationDate
+          aggregateExpression: TimestampAggExp
+        - fieldName: installedApplicationName
+          aggregateExpression: VarcharAggExp
+        - fieldName: securitySystemId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityInstalledApplicationsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityInstalledApplicationsOrderByExp
+  operand:
+    object:
+      orderedType: SecurityInstalledApplications
+      orderableFields:
+        - fieldName: applicationVersion
+          orderByExpression: VarcharOrderByExp
+        - fieldName: installationDate
+          orderByExpression: TimestampOrderByExp
+        - fieldName: installedApplicationName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securitySystemId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securitySystem
+  graphql:
+    expressionTypeName: Security_SecurityInstalledApplicationsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityInstalledApplications
+  objectType: SecurityInstalledApplications
+  source:
+    dataConnectorName: security
+    collection: security_installed_applications
+  filterExpressionType: SecurityInstalledApplicationsBoolExp
+  aggregateExpression: SecurityInstalledApplicationsAggExp
+  orderByExpression: SecurityInstalledApplicationsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityInstalledApplications
+      subscription:
+        rootField: securityInstalledApplications
+    selectUniques:
+      - queryRootField: securityInstalledApplicationsByInstalledApplicationsPkey
+        uniqueIdentifier:
+          - installedApplicationName
+          - securitySystemId
+        subscription:
+          rootField: securityInstalledApplicationsByInstalledApplicationsPkey
+    filterInputTypeName: Security_SecurityInstalledApplicationsFilterInput
+    aggregate:
+      queryRootField: securityInstalledApplicationsAggregate
+      subscription:
+        rootField: securityInstalledApplicationsAggregate
+  description: Table storing information about installed applications on systems,
+    tracking software installations.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityInstalledApplications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySystem
+  sourceType: SecurityInstalledApplications
+  target:
+    model:
+      name: SecuritySystems
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySystemId
+      target:
+        modelField:
+          - fieldName: securitySystemId
+

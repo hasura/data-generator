@@ -1,0 +1,236 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecuritySystemStats
+  description: Table storing system statistics, tracking resource usage and
+    performance metrics.
+  fields:
+    - name: cpuUsagePercent
+      type: Int4
+      description: CPU usage percentage.
+    - name: diskFreeGb
+      type: Int4
+      description: Free disk space in gigabytes.
+    - name: diskTotalGb
+      type: Int4
+      description: Total disk space in gigabytes.
+    - name: memoryTotalGb
+      type: Int4
+      description: Total memory in gigabytes.
+    - name: memoryUsageGb
+      type: Numeric
+      description: Memory usage in gigabytes.
+    - name: securitySystemId
+      type: Uuid!
+      description: Identifier of the system for which statistics are recorded.
+    - name: securitySystemStatId
+      type: Uuid!
+      description: Unique identifier for the system statistics record.
+    - name: timestamp
+      type: Timestamp
+      description: Timestamp when the statistics were recorded.
+  graphql:
+    typeName: Security_SecuritySystemStats
+    inputTypeName: Security_SecuritySystemStatsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_system_stats
+      fieldMapping:
+        cpuUsagePercent:
+          column:
+            name: cpu_usage_percent
+        diskFreeGb:
+          column:
+            name: disk_free_gb
+        diskTotalGb:
+          column:
+            name: disk_total_gb
+        memoryTotalGb:
+          column:
+            name: memory_total_gb
+        memoryUsageGb:
+          column:
+            name: memory_usage_gb
+        securitySystemId:
+          column:
+            name: security_system_id
+        securitySystemStatId:
+          column:
+            name: security_system_stat_id
+        timestamp:
+          column:
+            name: timestamp
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecuritySystemStats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cpuUsagePercent
+          - diskFreeGb
+          - diskTotalGb
+          - memoryTotalGb
+          - memoryUsageGb
+          - securitySystemId
+          - securitySystemStatId
+          - timestamp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecuritySystemStatsBoolExp
+  operand:
+    object:
+      type: SecuritySystemStats
+      comparableFields:
+        - fieldName: cpuUsagePercent
+          booleanExpressionType: Int4BoolExp
+        - fieldName: diskFreeGb
+          booleanExpressionType: Int4BoolExp
+        - fieldName: diskTotalGb
+          booleanExpressionType: Int4BoolExp
+        - fieldName: memoryTotalGb
+          booleanExpressionType: Int4BoolExp
+        - fieldName: memoryUsageGb
+          booleanExpressionType: NumericBoolExp
+        - fieldName: securitySystemId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securitySystemStatId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: timestamp
+          booleanExpressionType: TimestampBoolExp
+      comparableRelationships:
+        - relationshipName: securitySystem
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecuritySystemStatsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecuritySystemStatsAggExp
+  operand:
+    object:
+      aggregatedType: SecuritySystemStats
+      aggregatableFields:
+        - fieldName: cpuUsagePercent
+          aggregateExpression: Int4AggExp
+        - fieldName: diskFreeGb
+          aggregateExpression: Int4AggExp
+        - fieldName: diskTotalGb
+          aggregateExpression: Int4AggExp
+        - fieldName: memoryTotalGb
+          aggregateExpression: Int4AggExp
+        - fieldName: memoryUsageGb
+          aggregateExpression: NumericAggExp
+        - fieldName: securitySystemId
+          aggregateExpression: UuidAggExp
+        - fieldName: securitySystemStatId
+          aggregateExpression: UuidAggExp
+        - fieldName: timestamp
+          aggregateExpression: TimestampAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecuritySystemStatsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecuritySystemStatsOrderByExp
+  operand:
+    object:
+      orderedType: SecuritySystemStats
+      orderableFields:
+        - fieldName: cpuUsagePercent
+          orderByExpression: Int4OrderByExp
+        - fieldName: diskFreeGb
+          orderByExpression: Int4OrderByExp
+        - fieldName: diskTotalGb
+          orderByExpression: Int4OrderByExp
+        - fieldName: memoryTotalGb
+          orderByExpression: Int4OrderByExp
+        - fieldName: memoryUsageGb
+          orderByExpression: NumericOrderByExp
+        - fieldName: securitySystemId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securitySystemStatId
+          orderByExpression: UuidOrderByExp
+        - fieldName: timestamp
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships:
+        - relationshipName: securitySystem
+  graphql:
+    expressionTypeName: Security_SecuritySystemStatsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecuritySystemStats
+  objectType: SecuritySystemStats
+  source:
+    dataConnectorName: security
+    collection: security_system_stats
+  filterExpressionType: SecuritySystemStatsBoolExp
+  aggregateExpression: SecuritySystemStatsAggExp
+  orderByExpression: SecuritySystemStatsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securitySystemStats
+      subscription:
+        rootField: securitySystemStats
+    selectUniques:
+      - queryRootField: securitySystemStatsBySecuritySystemStatId
+        uniqueIdentifier:
+          - securitySystemStatId
+        subscription:
+          rootField: securitySystemStatsBySecuritySystemStatId
+    filterInputTypeName: Security_SecuritySystemStatsFilterInput
+    aggregate:
+      queryRootField: securitySystemStatsAggregate
+      subscription:
+        rootField: securitySystemStatsAggregate
+  description: Table storing system statistics, tracking resource usage and
+    performance metrics.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecuritySystemStats
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySystem
+  sourceType: SecuritySystemStats
+  target:
+    model:
+      name: SecuritySystems
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySystemId
+      target:
+        modelField:
+          - fieldName: securitySystemId
+

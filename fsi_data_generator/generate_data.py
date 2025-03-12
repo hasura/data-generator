@@ -327,6 +327,7 @@ def generate_banking_data():
 
         # Step 5: Download CVEs and upload them to database
         cve_manager.download_cves()
+        cve_manager.cwe(**conn_params)
         cve_manager.process_cves(csv_file=True, import_db=True, **conn_params)
 
         print("\nDataGenerator completed successfully!")

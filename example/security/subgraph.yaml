@@ -1,0 +1,20 @@
+kind: Subgraph
+version: v2
+definition:
+  name: security
+  generator:
+    rootPath: .
+    graphqlTypeNamePrefix: Security_
+    namingConvention: graphql
+  includePaths:
+    - metadata
+  envMapping:
+    SECURITY_SECURITY_AUTHORIZATION_HEADER:
+      fromEnv: SECURITY_SECURITY_AUTHORIZATION_HEADER
+    SECURITY_SECURITY_READ_URL:
+      fromEnv: SECURITY_SECURITY_READ_URL
+    SECURITY_SECURITY_WRITE_URL:
+      fromEnv: SECURITY_SECURITY_WRITE_URL
+  connectors:
+    - path: connector/security/connector.yaml
+      connectorLinkName: security

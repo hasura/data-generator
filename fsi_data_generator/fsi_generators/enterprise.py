@@ -3,7 +3,7 @@ from faker import Faker
 from fsi_data_generator.fsi_generators.generate_currency_code import generate_currency
 from fsi_data_generator.fsi_generators.generate_random_date_between import generate_random_date_between
 from fsi_data_generator.fsi_generators.text_list import text_list
-from fsi_data_generator.fsi_generators.unique_text_list import unique_text_list
+from fsi_data_generator.fsi_generators.unique_list import unique_list
 from fsi_data_generator.fsi_generators.wildcards import three_word_tuple, fake_leis
 from fsi_data_generator.fsi_text.____legal_structure import ____legal_structure
 from fsi_data_generator.fsi_text.enterprise__accounts__description import enterprise__accounts__description
@@ -85,5 +85,5 @@ def enterprise(_dg):
         ('enterprise\\.associates', '^release_date$', release_date),
         ('enterprise\\.buildings', '^building_name$', text_list(three_word_tuple)),
         ('enterprise\\.departments', '^department_name$',
-         unique_text_list(tuple(enterprise__departments__department_name))),
+         unique_list(tuple(enterprise__departments__department_name))),
     ]

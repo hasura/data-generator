@@ -1,0 +1,295 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityNetworkConnections
+  description: Table storing information about network connections, tracking
+    network traffic and activity.
+  fields:
+    - name: connectionType
+      type: Varchar
+      description: Type of network connection (e.g., TCP, UDP).
+    - name: endTime
+      type: Timestamp
+      description: Timestamp when the connection ended.
+    - name: localIp
+      type: Varchar
+      description: Local IP address of the connection.
+    - name: localPort
+      type: Int4
+      description: Local port number of the connection.
+    - name: protocol
+      type: Varchar
+      description: Network protocol used for the connection.
+    - name: remoteIp
+      type: Varchar
+      description: Remote IP address of the connection.
+    - name: remotePort
+      type: Int4
+      description: Remote port number of the connection.
+    - name: securityNetworkConnectionId
+      type: Uuid!
+      description: Unique identifier for the network connection.
+    - name: securityProcessExecutionId
+      type: Uuid!
+      description: Identifier of the process execution that initiated the connection.
+    - name: securitySystemId
+      type: Uuid!
+      description: Identifier of the system where the connection originated.
+    - name: startTime
+      type: Timestamp
+      description: Timestamp when the connection started.
+  graphql:
+    typeName: Security_SecurityNetworkConnections
+    inputTypeName: Security_SecurityNetworkConnectionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_network_connections
+      fieldMapping:
+        connectionType:
+          column:
+            name: connection_type
+        endTime:
+          column:
+            name: end_time
+        localIp:
+          column:
+            name: local_ip
+        localPort:
+          column:
+            name: local_port
+        protocol:
+          column:
+            name: protocol
+        remoteIp:
+          column:
+            name: remote_ip
+        remotePort:
+          column:
+            name: remote_port
+        securityNetworkConnectionId:
+          column:
+            name: security_network_connection_id
+        securityProcessExecutionId:
+          column:
+            name: security_process_execution_id
+        securitySystemId:
+          column:
+            name: security_system_id
+        startTime:
+          column:
+            name: start_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityNetworkConnections
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - connectionType
+          - endTime
+          - localIp
+          - localPort
+          - protocol
+          - remoteIp
+          - remotePort
+          - securityNetworkConnectionId
+          - securityProcessExecutionId
+          - securitySystemId
+          - startTime
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityNetworkConnectionsBoolExp
+  operand:
+    object:
+      type: SecurityNetworkConnections
+      comparableFields:
+        - fieldName: connectionType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: endTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: localIp
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: localPort
+          booleanExpressionType: Int4BoolExp
+        - fieldName: protocol
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: remoteIp
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: remotePort
+          booleanExpressionType: Int4BoolExp
+        - fieldName: securityNetworkConnectionId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityProcessExecutionId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securitySystemId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: startTime
+          booleanExpressionType: TimestampBoolExp
+      comparableRelationships:
+        - relationshipName: securityProcessExecution
+        - relationshipName: securitySystem
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityNetworkConnectionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityNetworkConnectionsAggExp
+  operand:
+    object:
+      aggregatedType: SecurityNetworkConnections
+      aggregatableFields:
+        - fieldName: connectionType
+          aggregateExpression: VarcharAggExp
+        - fieldName: endTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: localIp
+          aggregateExpression: VarcharAggExp
+        - fieldName: localPort
+          aggregateExpression: Int4AggExp
+        - fieldName: protocol
+          aggregateExpression: VarcharAggExp
+        - fieldName: remoteIp
+          aggregateExpression: VarcharAggExp
+        - fieldName: remotePort
+          aggregateExpression: Int4AggExp
+        - fieldName: securityNetworkConnectionId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityProcessExecutionId
+          aggregateExpression: UuidAggExp
+        - fieldName: securitySystemId
+          aggregateExpression: UuidAggExp
+        - fieldName: startTime
+          aggregateExpression: TimestampAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityNetworkConnectionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityNetworkConnectionsOrderByExp
+  operand:
+    object:
+      orderedType: SecurityNetworkConnections
+      orderableFields:
+        - fieldName: connectionType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: endTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: localIp
+          orderByExpression: VarcharOrderByExp
+        - fieldName: localPort
+          orderByExpression: Int4OrderByExp
+        - fieldName: protocol
+          orderByExpression: VarcharOrderByExp
+        - fieldName: remoteIp
+          orderByExpression: VarcharOrderByExp
+        - fieldName: remotePort
+          orderByExpression: Int4OrderByExp
+        - fieldName: securityNetworkConnectionId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityProcessExecutionId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securitySystemId
+          orderByExpression: UuidOrderByExp
+        - fieldName: startTime
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships:
+        - relationshipName: securityProcessExecution
+        - relationshipName: securitySystem
+  graphql:
+    expressionTypeName: Security_SecurityNetworkConnectionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityNetworkConnections
+  objectType: SecurityNetworkConnections
+  source:
+    dataConnectorName: security
+    collection: security_network_connections
+  filterExpressionType: SecurityNetworkConnectionsBoolExp
+  aggregateExpression: SecurityNetworkConnectionsAggExp
+  orderByExpression: SecurityNetworkConnectionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityNetworkConnections
+      subscription:
+        rootField: securityNetworkConnections
+    selectUniques:
+      - queryRootField: securityNetworkConnectionsBySecurityNetworkConnectionId
+        uniqueIdentifier:
+          - securityNetworkConnectionId
+        subscription:
+          rootField: securityNetworkConnectionsBySecurityNetworkConnectionId
+    filterInputTypeName: Security_SecurityNetworkConnectionsFilterInput
+    aggregate:
+      queryRootField: securityNetworkConnectionsAggregate
+      subscription:
+        rootField: securityNetworkConnectionsAggregate
+  description: Table storing information about network connections, tracking
+    network traffic and activity.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityNetworkConnections
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityProcessExecution
+  sourceType: SecurityNetworkConnections
+  target:
+    model:
+      name: SecurityProcessExecutions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityProcessExecutionId
+      target:
+        modelField:
+          - fieldName: securityProcessExecutionId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySystem
+  sourceType: SecurityNetworkConnections
+  target:
+    model:
+      name: SecuritySystems
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySystemId
+      target:
+        modelField:
+          - fieldName: securitySystemId
+

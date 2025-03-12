@@ -1,0 +1,173 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityAccountEntitlementAttributes
+  description: Table storing specific attributes related to account entitlements.
+    Allows for granular control over account permissions and access.
+  fields:
+    - name: attributeName
+      type: Varchar!
+      description: Name of the entitlement attribute.
+    - name: attributeValue
+      type: Varchar!
+      description: Value of the entitlement attribute.
+    - name: securityAccountId
+      type: Uuid!
+      description: Unique identifier for the account.
+  graphql:
+    typeName: Security_SecurityAccountEntitlementAttributes
+    inputTypeName: Security_SecurityAccountEntitlementAttributesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_account_entitlement_attributes
+      fieldMapping:
+        attributeName:
+          column:
+            name: attribute_name
+        attributeValue:
+          column:
+            name: attribute_value
+        securityAccountId:
+          column:
+            name: security_account_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityAccountEntitlementAttributes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - attributeName
+          - attributeValue
+          - securityAccountId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityAccountEntitlementAttributesBoolExp
+  operand:
+    object:
+      type: SecurityAccountEntitlementAttributes
+      comparableFields:
+        - fieldName: attributeName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: attributeValue
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityAccountId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityAccount
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityAccountEntitlementAttributesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityAccountEntitlementAttributesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityAccountEntitlementAttributes
+      aggregatableFields:
+        - fieldName: attributeName
+          aggregateExpression: VarcharAggExp
+        - fieldName: attributeValue
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityAccountId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityAccountEntitlementAttributesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityAccountEntitlementAttributesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityAccountEntitlementAttributes
+      orderableFields:
+        - fieldName: attributeName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: attributeValue
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityAccountId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securityAccount
+  graphql:
+    expressionTypeName: Security_SecurityAccountEntitlementAttributesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityAccountEntitlementAttributes
+  objectType: SecurityAccountEntitlementAttributes
+  source:
+    dataConnectorName: security
+    collection: security_account_entitlement_attributes
+  filterExpressionType: SecurityAccountEntitlementAttributesBoolExp
+  aggregateExpression: SecurityAccountEntitlementAttributesAggExp
+  orderByExpression: SecurityAccountEntitlementAttributesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityAccountEntitlementAttributes
+      subscription:
+        rootField: securityAccountEntitlementAttributes
+    selectUniques:
+      - queryRootField: securityAccountEntitlementAttributesByAccountEntitlementAttributesPkey
+        uniqueIdentifier:
+          - attributeName
+          - attributeValue
+          - securityAccountId
+        subscription:
+          rootField: securityAccountEntitlementAttributesByAccountEntitlementAttributesPkey
+    filterInputTypeName: Security_SecurityAccountEntitlementAttributesFilterInput
+    aggregate:
+      queryRootField: securityAccountEntitlementAttributesAggregate
+      subscription:
+        rootField: securityAccountEntitlementAttributesAggregate
+  description: Table storing specific attributes related to account entitlements.
+    Allows for granular control over account permissions and access.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityAccountEntitlementAttributes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityAccount
+  sourceType: SecurityAccountEntitlementAttributes
+  target:
+    model:
+      name: SecurityAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityAccountId
+      target:
+        modelField:
+          - fieldName: securityAccountId
+

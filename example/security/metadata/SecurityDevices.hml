@@ -1,0 +1,211 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityDevices
+  description: Table storing information about network devices.
+  fields:
+    - name: createdAt
+      type: Timestamp
+      description: The timestamp when the device record was created.
+    - name: deviceType
+      type: Varchar!
+      description: The type of the device (e.g., router, server, workstation).
+    - name: hostname
+      type: Varchar
+      description: The hostname of the device.
+    - name: securityDeviceId
+      type: Inet!
+      description: The unique IP address of the device. Serves as the primary key.
+    - name: subnet
+      type: Varchar
+      description: The subnet the device belongs to.
+    - name: updatedAt
+      type: Timestamp
+      description: The timestamp when the device record was last updated.
+  graphql:
+    typeName: Security_SecurityDevices
+    inputTypeName: Security_SecurityDevicesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_devices
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        deviceType:
+          column:
+            name: device_type
+        hostname:
+          column:
+            name: hostname
+        securityDeviceId:
+          column:
+            name: security_device_id
+        subnet:
+          column:
+            name: subnet
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityDevices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - deviceType
+          - hostname
+          - securityDeviceId
+          - subnet
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityDevicesBoolExp
+  operand:
+    object:
+      type: SecurityDevices
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: deviceType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: hostname
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityDeviceId
+          booleanExpressionType: InetBoolExp
+        - fieldName: subnet
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampBoolExp
+      comparableRelationships:
+        - relationshipName: securityNetworkEvents
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityDevicesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityDevicesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityDevices
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampAggExp
+        - fieldName: deviceType
+          aggregateExpression: VarcharAggExp
+        - fieldName: hostname
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityDeviceId
+          aggregateExpression: InetAggExp
+        - fieldName: subnet
+          aggregateExpression: VarcharAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityDevicesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityDevicesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityDevices
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: deviceType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: hostname
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityDeviceId
+          orderByExpression: InetOrderByExp
+        - fieldName: subnet
+          orderByExpression: VarcharOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_SecurityDevicesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityDevices
+  objectType: SecurityDevices
+  source:
+    dataConnectorName: security
+    collection: security_devices
+  filterExpressionType: SecurityDevicesBoolExp
+  aggregateExpression: SecurityDevicesAggExp
+  orderByExpression: SecurityDevicesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityDevices
+      subscription:
+        rootField: securityDevices
+    selectUniques:
+      - queryRootField: securityDevicesBySecurityDeviceId
+        uniqueIdentifier:
+          - securityDeviceId
+        subscription:
+          rootField: securityDevicesBySecurityDeviceId
+    filterInputTypeName: Security_SecurityDevicesFilterInput
+    aggregate:
+      queryRootField: securityDevicesAggregate
+      subscription:
+        rootField: securityDevicesAggregate
+  description: Table storing information about network devices.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityDevices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityNetworkEvents
+  sourceType: SecurityDevices
+  target:
+    model:
+      name: SecurityNetworkEvents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityNetworkEventsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityDeviceId
+      target:
+        modelField:
+          - fieldName: securityDeviceId
+  graphql:
+    aggregateFieldName: securityNetworkEventsAggregate
+

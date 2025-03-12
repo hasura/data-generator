@@ -3,6 +3,7 @@ import logging
 import os
 import random
 import re
+from typing import Dict, List
 
 import faker
 import networkx as nx
@@ -53,7 +54,7 @@ class DataGenerator:
     and using vector search for intelligent Faker provider selection.
     Skips auto-generated columns like SERIAL primary keys.
     """
-
+    inserted_pks: Dict[str, List] = {}
     def __init__(self, conn_params, schemas=None, exclude_schemas=None, exclusions=None, custom_generators=None,
                  batch_size=100):
         """

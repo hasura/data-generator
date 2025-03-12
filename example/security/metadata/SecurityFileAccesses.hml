@@ -1,0 +1,250 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityFileAccesses
+  description: Table storing information about file access events, tracking file
+    usage and access patterns.
+  fields:
+    - name: accessTime
+      type: Timestamp
+      description: Timestamp when the file access occurred.
+    - name: accessType
+      type: Varchar
+      description: Type of file access (e.g., read, write, execute).
+    - name: securityFileAccessId
+      type: Uuid!
+      description: Unique identifier for the file access event.
+    - name: securityFileId
+      type: Uuid!
+      description: Identifier of the accessed file.
+    - name: securityProcessExecutionId
+      type: Uuid!
+      description: Identifier of the process execution that initiated the file access.
+    - name: securitySystemId
+      type: Uuid!
+      description: Identifier of the system where the file access occurred.
+  graphql:
+    typeName: Security_SecurityFileAccesses
+    inputTypeName: Security_SecurityFileAccessesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_file_accesses
+      fieldMapping:
+        accessTime:
+          column:
+            name: access_time
+        accessType:
+          column:
+            name: access_type
+        securityFileAccessId:
+          column:
+            name: security_file_access_id
+        securityFileId:
+          column:
+            name: security_file_id
+        securityProcessExecutionId:
+          column:
+            name: security_process_execution_id
+        securitySystemId:
+          column:
+            name: security_system_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityFileAccesses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accessTime
+          - accessType
+          - securityFileAccessId
+          - securityFileId
+          - securityProcessExecutionId
+          - securitySystemId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityFileAccessesBoolExp
+  operand:
+    object:
+      type: SecurityFileAccesses
+      comparableFields:
+        - fieldName: accessTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: accessType
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityFileAccessId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityFileId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityProcessExecutionId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securitySystemId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityFile
+        - relationshipName: securityProcessExecution
+        - relationshipName: securitySystem
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityFileAccessesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityFileAccessesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityFileAccesses
+      aggregatableFields:
+        - fieldName: accessTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: accessType
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityFileAccessId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityFileId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityProcessExecutionId
+          aggregateExpression: UuidAggExp
+        - fieldName: securitySystemId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityFileAccessesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityFileAccessesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityFileAccesses
+      orderableFields:
+        - fieldName: accessTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: accessType
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityFileAccessId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityFileId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityProcessExecutionId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securitySystemId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securityFile
+        - relationshipName: securityProcessExecution
+        - relationshipName: securitySystem
+  graphql:
+    expressionTypeName: Security_SecurityFileAccessesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityFileAccesses
+  objectType: SecurityFileAccesses
+  source:
+    dataConnectorName: security
+    collection: security_file_accesses
+  filterExpressionType: SecurityFileAccessesBoolExp
+  aggregateExpression: SecurityFileAccessesAggExp
+  orderByExpression: SecurityFileAccessesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityFileAccesses
+      subscription:
+        rootField: securityFileAccesses
+    selectUniques:
+      - queryRootField: securityFileAccessesBySecurityFileAccessId
+        uniqueIdentifier:
+          - securityFileAccessId
+        subscription:
+          rootField: securityFileAccessesBySecurityFileAccessId
+    filterInputTypeName: Security_SecurityFileAccessesFilterInput
+    aggregate:
+      queryRootField: securityFileAccessesAggregate
+      subscription:
+        rootField: securityFileAccessesAggregate
+  description: Table storing information about file access events, tracking file
+    usage and access patterns.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityFileAccesses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityFile
+  sourceType: SecurityFileAccesses
+  target:
+    model:
+      name: SecurityFiles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityFileId
+      target:
+        modelField:
+          - fieldName: securityFileId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityProcessExecution
+  sourceType: SecurityFileAccesses
+  target:
+    model:
+      name: SecurityProcessExecutions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityProcessExecutionId
+      target:
+        modelField:
+          - fieldName: securityProcessExecutionId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySystem
+  sourceType: SecurityFileAccesses
+  target:
+    model:
+      name: SecuritySystems
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySystemId
+      target:
+        modelField:
+          - fieldName: securitySystemId
+

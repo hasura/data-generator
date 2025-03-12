@@ -21,6 +21,9 @@ definition:
     - name: consumerLendingAnalysisId
       type: Int4!
       description: Unique identifier for analysis record
+    - name: consumerLendingLoanProductId
+      type: Int4!
+      description: Loan product analyzed if specific product
     - name: controlGroup
       type: Varchar!
       description: Reference group for comparison
@@ -39,9 +42,6 @@ definition:
     - name: pValue
       type: Numeric
       description: Statistical significance level
-    - name: productId
-      type: Int4
-      description: Loan product analyzed if specific product
     - name: protectedClass
       type: Varchar!
       description: Race, Ethnicity, Sex, Age, etc.
@@ -94,6 +94,9 @@ definition:
         consumerLendingAnalysisId:
           column:
             name: consumer_lending_analysis_id
+        consumerLendingLoanProductId:
+          column:
+            name: consumer_lending_loan_product_id
         controlGroup:
           column:
             name: control_group
@@ -112,9 +115,6 @@ definition:
         pValue:
           column:
             name: p_value
-        productId:
-          column:
-            name: product_id
         protectedClass:
           column:
             name: protected_class
@@ -160,13 +160,13 @@ definition:
           - analysisType
           - analyst
           - consumerLendingAnalysisId
+          - consumerLendingLoanProductId
           - controlGroup
           - controlsApplied
           - disparityRatio
           - findings
           - outcomeVariable
           - pValue
-          - productId
           - protectedClass
           - reportPath
           - reviewer
@@ -197,6 +197,8 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingAnalysisId
           booleanExpressionType: Int4BoolExp
+        - fieldName: consumerLendingLoanProductId
+          booleanExpressionType: Int4BoolExp
         - fieldName: controlGroup
           booleanExpressionType: VarcharBoolExp
         - fieldName: controlsApplied
@@ -209,8 +211,6 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: pValue
           booleanExpressionType: NumericBoolExp
-        - fieldName: productId
-          booleanExpressionType: Int4BoolExp
         - fieldName: protectedClass
           booleanExpressionType: VarcharBoolExp
         - fieldName: reportPath
@@ -259,6 +259,8 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingAnalysisId
           aggregateExpression: Int4AggExp
+        - fieldName: consumerLendingLoanProductId
+          aggregateExpression: Int4AggExp
         - fieldName: controlGroup
           aggregateExpression: VarcharAggExp
         - fieldName: controlsApplied
@@ -271,8 +273,6 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: pValue
           aggregateExpression: NumericAggExp
-        - fieldName: productId
-          aggregateExpression: Int4AggExp
         - fieldName: protectedClass
           aggregateExpression: VarcharAggExp
         - fieldName: reportPath
@@ -317,6 +317,8 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingAnalysisId
           orderByExpression: Int4OrderByExp
+        - fieldName: consumerLendingLoanProductId
+          orderByExpression: Int4OrderByExp
         - fieldName: controlGroup
           orderByExpression: VarcharOrderByExp
         - fieldName: controlsApplied
@@ -329,8 +331,6 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: pValue
           orderByExpression: NumericOrderByExp
-        - fieldName: productId
-          orderByExpression: Int4OrderByExp
         - fieldName: protectedClass
           orderByExpression: VarcharOrderByExp
         - fieldName: reportPath
@@ -411,7 +411,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: productId
+          - fieldName: consumerLendingLoanProductId
       target:
         modelField:
           - fieldName: consumerLendingLoanProductId

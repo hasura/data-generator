@@ -1,0 +1,237 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityApps
+  description: Table storing information about applications and their associations
+    with identities and accounts.
+  fields:
+    - name: name
+      type: Varchar
+      description: Name of the application.
+    - name: securityAccountId
+      type: Uuid
+      description: Identifier of the associated account.
+    - name: securityAppId
+      type: Uuid!
+      description: Unique identifier for the application.
+    - name: securityIdentityId
+      type: Uuid
+      description: Identifier of the associated identity.
+    - name: securitySourceId
+      type: Uuid
+      description: Identifier of the source system for the application.
+  graphql:
+    typeName: Security_SecurityApps
+    inputTypeName: Security_SecurityAppsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_apps
+      fieldMapping:
+        name:
+          column:
+            name: name
+        securityAccountId:
+          column:
+            name: security_account_id
+        securityAppId:
+          column:
+            name: security_app_id
+        securityIdentityId:
+          column:
+            name: security_identity_id
+        securitySourceId:
+          column:
+            name: security_source_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityApps
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - name
+          - securityAccountId
+          - securityAppId
+          - securityIdentityId
+          - securitySourceId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityAppsBoolExp
+  operand:
+    object:
+      type: SecurityApps
+      comparableFields:
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityAccountId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityAppId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityIdentityId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securitySourceId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityAccount
+        - relationshipName: securityIdentity
+        - relationshipName: securitySource
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityAppsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityAppsAggExp
+  operand:
+    object:
+      aggregatedType: SecurityApps
+      aggregatableFields:
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityAccountId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityAppId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityIdentityId
+          aggregateExpression: UuidAggExp
+        - fieldName: securitySourceId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityAppsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityAppsOrderByExp
+  operand:
+    object:
+      orderedType: SecurityApps
+      orderableFields:
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityAccountId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityAppId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityIdentityId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securitySourceId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securityAccount
+        - relationshipName: securityIdentity
+        - relationshipName: securitySource
+  graphql:
+    expressionTypeName: Security_SecurityAppsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityApps
+  objectType: SecurityApps
+  source:
+    dataConnectorName: security
+    collection: security_apps
+  filterExpressionType: SecurityAppsBoolExp
+  aggregateExpression: SecurityAppsAggExp
+  orderByExpression: SecurityAppsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityApps
+      subscription:
+        rootField: securityApps
+    selectUniques:
+      - queryRootField: securityAppsBySecurityAppId
+        uniqueIdentifier:
+          - securityAppId
+        subscription:
+          rootField: securityAppsBySecurityAppId
+    filterInputTypeName: Security_SecurityAppsFilterInput
+    aggregate:
+      queryRootField: securityAppsAggregate
+      subscription:
+        rootField: securityAppsAggregate
+  description: Table storing information about applications and their associations
+    with identities and accounts.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityApps
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityAccount
+  sourceType: SecurityApps
+  target:
+    model:
+      name: SecurityAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityAccountId
+      target:
+        modelField:
+          - fieldName: securityAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityIdentity
+  sourceType: SecurityApps
+  target:
+    model:
+      name: SecurityIdentities
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityIdentityId
+      target:
+        modelField:
+          - fieldName: securityIdentityId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySource
+  sourceType: SecurityApps
+  target:
+    model:
+      name: SecuritySources
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySourceId
+      target:
+        modelField:
+          - fieldName: securitySourceId
+

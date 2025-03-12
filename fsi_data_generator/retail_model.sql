@@ -23,8 +23,15 @@ CREATE TYPE "security"."tcp_flag_type" AS ENUM (
   'CWR'
 );
 
+CREATE TYPE "security"."environment" AS ENUM (
+  'production',
+  'preproduction',
+  'qa',
+  'development'
+);
+
 CREATE TABLE "security"."devices" (
-  "ip_address" INET PRIMARY KEY NOT NULL,
+  "security_device_id" INET PRIMARY KEY NOT NULL,
   "device_type" VARCHAR(50) NOT NULL,
   "subnet" VARCHAR(50),
   "hostname" VARCHAR(100),
@@ -33,7 +40,7 @@ CREATE TABLE "security"."devices" (
 );
 
 CREATE TABLE "security"."network_events" (
-  "id" BIGSERIAL PRIMARY KEY NOT NULL,
+  "security_network_event_id" BIGSERIAL PRIMARY KEY NOT NULL,
   "timestamp" TIMESTAMP(6) NOT NULL,
   "source_ip" INET NOT NULL,
   "source_port" INTEGER NOT NULL,
@@ -48,13 +55,13 @@ CREATE TABLE "security"."network_events" (
   "length" INTEGER NOT NULL DEFAULT 0,
   "bytes_sent" INTEGER NOT NULL DEFAULT 0,
   "bytes_received" INTEGER NOT NULL DEFAULT 0,
-  "device_id" INET NOT NULL,
+  "security_device_id" INET NOT NULL,
   "log_message" TEXT,
   "created_at" TIMESTAMP(6) DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "security"."policies" (
-  "policy_id" UUID PRIMARY KEY NOT NULL,
+  "security_policy_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200) UNIQUE NOT NULL,
   "description" TEXT NOT NULL,
   "created_at" TIMESTAMP(6) DEFAULT (CURRENT_TIMESTAMP),
@@ -63,40 +70,40 @@ CREATE TABLE "security"."policies" (
 );
 
 CREATE TABLE "security"."policy_attributes" (
-  "policy_id" UUID NOT NULL,
+  "security_policy_id" UUID NOT NULL,
   "attribute_name" VARCHAR(200) NOT NULL,
   "attribute_value" VARCHAR(200),
-  PRIMARY KEY ("policy_id", "attribute_name")
+  PRIMARY KEY ("security_policy_id", "attribute_name")
 );
 
 CREATE TABLE "security"."policy_rules" (
-  "rule_id" UUID PRIMARY KEY NOT NULL,
-  "policy_id" UUID,
+  "security_policy_rule_id" UUID PRIMARY KEY NOT NULL,
+  "security_policy_id" UUID,
   "rule_name" VARCHAR(200) NOT NULL,
   "rule_description" TEXT NOT NULL
 );
 
 CREATE TABLE "security"."access_profiles" (
-  "access_profile_id" UUID PRIMARY KEY NOT NULL,
+  "security_access_profile_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200),
   "display_name" VARCHAR(200),
   "description" VARCHAR(200),
-  "owner_id" UUID
+  "owner_id" INTEGER
 );
 
 CREATE TABLE "security"."account_entitlement_attributes" (
-  "account_id" UUID NOT NULL,
+  "security_account_id" UUID NOT NULL,
   "attribute_name" VARCHAR(200) NOT NULL,
   "attribute_value" VARCHAR(200) NOT NULL,
-  PRIMARY KEY ("account_id", "attribute_name", "attribute_value")
+  PRIMARY KEY ("security_account_id", "attribute_name", "attribute_value")
 );
 
 CREATE TABLE "security"."accounts" (
-  "account_id" UUID PRIMARY KEY NOT NULL,
-  "identity_id" UUID,
+  "security_account_id" UUID PRIMARY KEY NOT NULL,
+  "security_identity_id" UUID,
   "name" VARCHAR(200),
   "account_id_string" VARCHAR(200),
-  "source_id" UUID,
+  "security_source_id" UUID,
   "disabled" BOOLEAN,
   "locked" BOOLEAN,
   "privileged" BOOLEAN,
@@ -106,32 +113,32 @@ CREATE TABLE "security"."accounts" (
 );
 
 CREATE TABLE "security"."apps" (
-  "app_id" UUID PRIMARY KEY NOT NULL,
-  "identity_id" UUID,
+  "security_app_id" UUID PRIMARY KEY NOT NULL,
+  "security_identity_id" UUID,
   "name" VARCHAR(200),
-  "source_id" UUID,
-  "account_id" UUID
+  "security_source_id" UUID,
+  "security_account_id" UUID
 );
 
 CREATE TABLE "security"."entitlements" (
-  "entitlement_id" UUID PRIMARY KEY NOT NULL,
+  "security_entitlement_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200),
   "display_name" VARCHAR(200),
   "description" VARCHAR(200),
   "attribute" VARCHAR(200),
-  "source_id" UUID,
+  "security_source_id" UUID,
   "value" VARCHAR(200),
   "privileged" BOOLEAN
 );
 
 CREATE TABLE "security"."governance_groups" (
-  "group_id" UUID PRIMARY KEY NOT NULL,
+  "security_governance_group_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200),
-  "owner_id" UUID
+  "owner_id" integer
 );
 
 CREATE TABLE "security"."iam_logins" (
-  "login_id" UUID PRIMARY KEY NOT NULL,
+  "security_login_id" UUID PRIMARY KEY NOT NULL,
   "system_id" UUID,
   "user_name" VARCHAR(200),
   "login_time" TIMESTAMP(6),
@@ -140,90 +147,85 @@ CREATE TABLE "security"."iam_logins" (
 );
 
 CREATE TABLE "security"."identities" (
-  "identity_id" UUID PRIMARY KEY NOT NULL,
+  "security_identity_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200),
   "display_name" VARCHAR(200),
-  "first_name" VARCHAR(200),
-  "last_name" VARCHAR(200),
-  "email" VARCHAR(200),
-  "phone" VARCHAR(200),
+  "owner" INTEGER,
+  "service_account" BOOL DEFAULT false,
+  "environment" security.environment,
   "created" TIMESTAMP(6),
   "inactive" BOOLEAN,
   "status" VARCHAR(200),
-  "employee_number" VARCHAR(200),
-  "is_manager" BOOLEAN,
-  "manager_id" UUID,
-  "authoritative_source_id" UUID,
-  "identity_profile_id" UUID,
+  "security_identity_profile_id" UUID,
   "modified" TIMESTAMP(6),
   "synced" TIMESTAMP(6),
   "is_fallback_approver" BOOLEAN
 );
 
 CREATE TABLE "security"."identity_access_profiles" (
-  "identity_id" UUID NOT NULL,
-  "access_profile_id" UUID NOT NULL,
-  PRIMARY KEY ("identity_id", "access_profile_id")
+  "security_identity_id" UUID NOT NULL,
+  "security_access_profile_id" UUID NOT NULL,
+  PRIMARY KEY ("security_identity_id", "security_access_profile_id")
 );
 
 CREATE TABLE "security"."identity_attributes" (
-  "identity_id" UUID NOT NULL,
+  "security_identity_id" UUID NOT NULL,
   "attribute_name" VARCHAR(200) NOT NULL,
   "attribute_value" VARCHAR(200),
-  PRIMARY KEY ("identity_id", "attribute_name")
+  PRIMARY KEY ("security_identity_id", "attribute_name")
 );
 
 CREATE TABLE "security"."identity_entitlements" (
-  "identity_id" UUID NOT NULL,
-  "entitlement_id" UUID NOT NULL,
-  PRIMARY KEY ("identity_id", "entitlement_id")
+  "security_identity_id" UUID NOT NULL,
+  "security_entitlement_id" UUID NOT NULL,
+  PRIMARY KEY ("security_identity_id", "security_entitlement_id")
 );
 
 CREATE TABLE "security"."identity_profiles" (
-  "identity_profile_id" UUID PRIMARY KEY NOT NULL,
+  "security_identity_profile_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200)
 );
 
 CREATE TABLE "security"."identity_roles" (
-  "identity_id" UUID NOT NULL,
-  "role_id" UUID NOT NULL,
-  PRIMARY KEY ("identity_id", "role_id")
+  "security_identity_id" UUID NOT NULL,
+  "security_role_id" UUID NOT NULL,
+  PRIMARY KEY ("security_identity_id", "security_role_id")
 );
 
 CREATE TABLE "security"."roles" (
-  "role_id" UUID PRIMARY KEY NOT NULL,
+  "security_role_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200),
   "display_name" VARCHAR(200),
   "description" VARCHAR(200),
   "disabled" BOOLEAN,
-  "owner_id" UUID
+  "owner_id" INTEGER
 );
 
 CREATE TABLE "security"."sources" (
-  "source_id" UUID PRIMARY KEY NOT NULL,
+  "security_source_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200),
   "type" VARCHAR(200),
-  "owner_id" UUID
+  "owner_id" INTEGER
 );
 
 CREATE TABLE "security"."file_accesses" (
-  "access_id" UUID PRIMARY KEY NOT NULL,
-  "system_id" UUID NOT NULL,
-  "file_id" UUID NOT NULL,
+  "security_file_access_id" UUID PRIMARY KEY NOT NULL,
+  "security_system_id" UUID NOT NULL,
+  "security_file_id" UUID NOT NULL,
   "access_type" VARCHAR(10),
   "access_time" TIMESTAMP(6),
-  "execution_id" UUID NOT NULL
+  "security_process_execution_id" UUID NOT NULL
 );
 
 CREATE TABLE "security"."file_threats" (
-  "file_hash" VARCHAR(64) PRIMARY KEY NOT NULL,
+  "security_file_threat_hash" VARCHAR(64) PRIMARY KEY NOT NULL,
   "threat_level" VARCHAR(10),
   "threat_description" TEXT
 );
 
 CREATE TABLE "security"."files" (
-  "file_id" UUID PRIMARY KEY NOT NULL,
-  "system_id" UUID NOT NULL,
+  "security_file_id" UUID PRIMARY KEY NOT NULL,
+  "security_system_id" UUID NOT NULL,
   "file_path" TEXT,
   "file_hash" VARCHAR(64),
   "file_size" BIGINT,
@@ -231,17 +233,17 @@ CREATE TABLE "security"."files" (
 );
 
 CREATE TABLE "security"."installed_applications" (
-  "system_id" UUID NOT NULL,
-  "application_name" VARCHAR(100) NOT NULL,
+  "security_system_id" UUID NOT NULL,
+  "installed_application_name" VARCHAR(100) NOT NULL,
   "application_version" VARCHAR(50),
   "installation_date" TIMESTAMP(6),
-  PRIMARY KEY ("system_id", "application_name")
+  PRIMARY KEY ("security_system_id", "installed_application_name")
 );
 
 CREATE TABLE "security"."network_connections" (
-  "connection_id" UUID PRIMARY KEY NOT NULL,
-  "system_id" UUID NOT NULL,
-  "execution_id" UUID NOT NULL,
+  "security_network_connection_id" UUID PRIMARY KEY NOT NULL,
+  "security_system_id" UUID NOT NULL,
+  "security_process_execution_id" UUID NOT NULL,
   "connection_type" VARCHAR(10),
   "protocol" VARCHAR(10),
   "local_ip" VARCHAR(15),
@@ -253,15 +255,15 @@ CREATE TABLE "security"."network_connections" (
 );
 
 CREATE TABLE "security"."open_ports" (
-  "system_id" UUID NOT NULL,
+  "security_system_id" UUID NOT NULL,
   "port_number" INTEGER NOT NULL,
   "protocol" VARCHAR(10) NOT NULL,
-  PRIMARY KEY ("system_id", "port_number", "protocol")
+  PRIMARY KEY ("security_system_id", "port_number", "protocol")
 );
 
 CREATE TABLE "security"."process_executions" (
-  "execution_id" UUID PRIMARY KEY NOT NULL,
-  "system_id" UUID NOT NULL,
+  "security_process_execution_id" UUID PRIMARY KEY NOT NULL,
+  "security_system_id" UUID NOT NULL,
   "process_name" VARCHAR(255),
   "process_id" INTEGER,
   "parent_process_id" INTEGER,
@@ -272,16 +274,16 @@ CREATE TABLE "security"."process_executions" (
 );
 
 CREATE TABLE "security"."running_services" (
-  "system_id" UUID NOT NULL,
-  "service_name" VARCHAR(100) NOT NULL,
+  "security_system_id" UUID NOT NULL,
+  "running_service_name" VARCHAR(100) NOT NULL,
   "start_time" TIMESTAMP(6),
   "status" VARCHAR(20),
-  PRIMARY KEY ("system_id", "service_name")
+  PRIMARY KEY ("security_system_id", "running_service_name")
 );
 
 CREATE TABLE "security"."system_stats" (
-  "stat_id" UUID PRIMARY KEY NOT NULL,
-  "system_id" UUID NOT NULL,
+  "security_system_stat_id" UUID PRIMARY KEY NOT NULL,
+  "security_system_id" UUID NOT NULL,
   "cpu_usage_percent" INTEGER,
   "memory_usage_gb" NUMERIC(5,1),
   "memory_total_gb" INTEGER,
@@ -291,7 +293,7 @@ CREATE TABLE "security"."system_stats" (
 );
 
 CREATE TABLE "security"."systems" (
-  "system_id" UUID PRIMARY KEY NOT NULL,
+  "security_system_id" UUID PRIMARY KEY NOT NULL,
   "hostname" VARCHAR(255),
   "agent_id" VARCHAR(36),
   "ip_address_internal" VARCHAR(15),
@@ -314,8 +316,8 @@ CREATE TABLE "security"."systems" (
 );
 
 CREATE TABLE "security"."usb_device_usage" (
-  "usage_id" UUID PRIMARY KEY NOT NULL,
-  "system_id" UUID NOT NULL,
+  "security_usb_device_usage_id" UUID PRIMARY KEY NOT NULL,
+  "security_system_id" UUID NOT NULL,
   "device_name" VARCHAR(100),
   "device_type" VARCHAR(50),
   "connection_time" TIMESTAMP(6),
@@ -365,7 +367,8 @@ CREATE TABLE "security"."cpe" (
 
 CREATE TABLE "security"."cve_problem" (
   "cve" VARCHAR(20),
-  "problem" TEXT
+  "problem" TEXT,
+  "cwe_id" INTEGER
 );
 
 CREATE TABLE "security"."cwe" (
@@ -2027,7 +2030,7 @@ CREATE TABLE "consumer_lending"."fairlending_analysis" (
   "consumer_lending_analysis_id" SERIAL PRIMARY KEY,
   "analysis_date" DATE NOT NULL,
   "analysis_type" VARCHAR(50) NOT NULL,
-  "product_id" INTEGER,
+  "consumer_lending_loan_product_id" INTEGER NOT NULL,
   "time_period_start" DATE NOT NULL,
   "time_period_end" DATE NOT NULL,
   "protected_class" VARCHAR(50) NOT NULL,
@@ -2193,7 +2196,7 @@ CREATE TABLE "credit_cards"."fraud_cases" (
 CREATE TABLE "credit_cards"."fraud_transactions" (
   "credit_cards_fraud_transaction_id" SERIAL PRIMARY KEY,
   "credit_cards_case_id" INTEGER NOT NULL,
-  "transaction_id" INTEGER NOT NULL,
+  "credit_cards_transaction_id" INTEGER NOT NULL,
   "is_confirmed_fraud" BOOLEAN NOT NULL DEFAULT true
 );
 
@@ -3155,7 +3158,7 @@ CREATE UNIQUE INDEX ON "small_business_banking"."business_expense_categories" ("
 
 COMMENT ON TABLE "security"."devices" IS 'Table storing information about network devices.';
 
-COMMENT ON COLUMN "security"."devices"."ip_address" IS 'The unique IP address of the device. Serves as the primary key.';
+COMMENT ON COLUMN "security"."devices"."security_device_id" IS 'The unique IP address of the device. Serves as the primary key.';
 
 COMMENT ON COLUMN "security"."devices"."device_type" IS 'The type of the device (e.g., router, server, workstation).';
 
@@ -3169,7 +3172,7 @@ COMMENT ON COLUMN "security"."devices"."updated_at" IS 'The timestamp when the d
 
 COMMENT ON TABLE "security"."network_events" IS 'Table storing detailed information about network events for security monitoring and analysis.';
 
-COMMENT ON COLUMN "security"."network_events"."id" IS 'Unique identifier for the network event. Automatically incrementing.';
+COMMENT ON COLUMN "security"."network_events"."security_network_event_id" IS 'Unique identifier for the network event. Automatically incrementing.';
 
 COMMENT ON COLUMN "security"."network_events"."timestamp" IS 'Timestamp when the network event occurred.';
 
@@ -3199,7 +3202,7 @@ COMMENT ON COLUMN "security"."network_events"."bytes_sent" IS 'Number of bytes s
 
 COMMENT ON COLUMN "security"."network_events"."bytes_received" IS 'Number of bytes received during the event.';
 
-COMMENT ON COLUMN "security"."network_events"."device_id" IS 'IP address of the device involved in the event, foreign key referencing the devices table.';
+COMMENT ON COLUMN "security"."network_events"."security_device_id" IS 'IP address of the device involved in the event, foreign key referencing the devices table.';
 
 COMMENT ON COLUMN "security"."network_events"."log_message" IS 'Detailed log message associated with the network event.';
 
@@ -3207,7 +3210,7 @@ COMMENT ON COLUMN "security"."network_events"."created_at" IS 'Timestamp when th
 
 COMMENT ON TABLE "security"."policies" IS 'Table storing security policies and their details.';
 
-COMMENT ON COLUMN "security"."policies"."policy_id" IS 'Unique identifier for the policy.';
+COMMENT ON COLUMN "security"."policies"."security_policy_id" IS 'Unique identifier for the policy.';
 
 COMMENT ON COLUMN "security"."policies"."name" IS 'Name of the policy. Must be unique.';
 
@@ -3221,7 +3224,7 @@ COMMENT ON COLUMN "security"."policies"."active" IS 'Indicates whether the polic
 
 COMMENT ON TABLE "security"."policy_attributes" IS 'Table storing attributes associated with security policies. Allows for flexible policy configuration.';
 
-COMMENT ON COLUMN "security"."policy_attributes"."policy_id" IS 'Foreign key referencing the policy_id in the policies table.';
+COMMENT ON COLUMN "security"."policy_attributes"."security_policy_id" IS 'Foreign key referencing the policy_id in the policies table.';
 
 COMMENT ON COLUMN "security"."policy_attributes"."attribute_name" IS 'Name of the policy attribute.';
 
@@ -3229,9 +3232,9 @@ COMMENT ON COLUMN "security"."policy_attributes"."attribute_value" IS 'Value of 
 
 COMMENT ON TABLE "security"."policy_rules" IS 'Table storing specific rules associated with security policies.';
 
-COMMENT ON COLUMN "security"."policy_rules"."rule_id" IS 'Unique identifier for the policy rule.';
+COMMENT ON COLUMN "security"."policy_rules"."security_policy_rule_id" IS 'Unique identifier for the policy rule.';
 
-COMMENT ON COLUMN "security"."policy_rules"."policy_id" IS 'Foreign key referencing the policy_id in the policies table.';
+COMMENT ON COLUMN "security"."policy_rules"."security_policy_id" IS 'Foreign key referencing the policy_id in the policies table.';
 
 COMMENT ON COLUMN "security"."policy_rules"."rule_name" IS 'Name of the policy rule.';
 
@@ -3239,7 +3242,7 @@ COMMENT ON COLUMN "security"."policy_rules"."rule_description" IS 'Detailed desc
 
 COMMENT ON TABLE "security"."access_profiles" IS 'Table storing information about access profiles, defining sets of permissions or roles.';
 
-COMMENT ON COLUMN "security"."access_profiles"."access_profile_id" IS 'Unique identifier for the access profile.';
+COMMENT ON COLUMN "security"."access_profiles"."security_access_profile_id" IS 'Unique identifier for the access profile.';
 
 COMMENT ON COLUMN "security"."access_profiles"."name" IS 'Internal name of the access profile.';
 
@@ -3251,7 +3254,7 @@ COMMENT ON COLUMN "security"."access_profiles"."owner_id" IS 'Identifier of the 
 
 COMMENT ON TABLE "security"."account_entitlement_attributes" IS 'Table storing specific attributes related to account entitlements. Allows for granular control over account permissions and access.';
 
-COMMENT ON COLUMN "security"."account_entitlement_attributes"."account_id" IS 'Unique identifier for the account.';
+COMMENT ON COLUMN "security"."account_entitlement_attributes"."security_account_id" IS 'Unique identifier for the account.';
 
 COMMENT ON COLUMN "security"."account_entitlement_attributes"."attribute_name" IS 'Name of the entitlement attribute.';
 
@@ -3259,15 +3262,15 @@ COMMENT ON COLUMN "security"."account_entitlement_attributes"."attribute_value" 
 
 COMMENT ON TABLE "security"."accounts" IS 'Table storing information about user accounts across various systems.';
 
-COMMENT ON COLUMN "security"."accounts"."account_id" IS 'Unique identifier for the account.';
+COMMENT ON COLUMN "security"."accounts"."security_account_id" IS 'Unique identifier for the account.';
 
-COMMENT ON COLUMN "security"."accounts"."identity_id" IS 'Identifier of the associated identity.';
+COMMENT ON COLUMN "security"."accounts"."security_identity_id" IS 'Identifier of the associated identity.';
 
 COMMENT ON COLUMN "security"."accounts"."name" IS 'Name of the account.';
 
 COMMENT ON COLUMN "security"."accounts"."account_id_string" IS 'String representation of the account ID.';
 
-COMMENT ON COLUMN "security"."accounts"."source_id" IS 'Identifier of the source system for the account.';
+COMMENT ON COLUMN "security"."accounts"."security_source_id" IS 'Identifier of the source system for the account.';
 
 COMMENT ON COLUMN "security"."accounts"."disabled" IS 'Indicates if the account is disabled.';
 
@@ -3283,19 +3286,19 @@ COMMENT ON COLUMN "security"."accounts"."created" IS 'Timestamp when the account
 
 COMMENT ON TABLE "security"."apps" IS 'Table storing information about applications and their associations with identities and accounts.';
 
-COMMENT ON COLUMN "security"."apps"."app_id" IS 'Unique identifier for the application.';
+COMMENT ON COLUMN "security"."apps"."security_app_id" IS 'Unique identifier for the application.';
 
-COMMENT ON COLUMN "security"."apps"."identity_id" IS 'Identifier of the associated identity.';
+COMMENT ON COLUMN "security"."apps"."security_identity_id" IS 'Identifier of the associated identity.';
 
 COMMENT ON COLUMN "security"."apps"."name" IS 'Name of the application.';
 
-COMMENT ON COLUMN "security"."apps"."source_id" IS 'Identifier of the source system for the application.';
+COMMENT ON COLUMN "security"."apps"."security_source_id" IS 'Identifier of the source system for the application.';
 
-COMMENT ON COLUMN "security"."apps"."account_id" IS 'Identifier of the associated account.';
+COMMENT ON COLUMN "security"."apps"."security_account_id" IS 'Identifier of the associated account.';
 
 COMMENT ON TABLE "security"."entitlements" IS 'Table storing information about entitlements, representing permissions or access rights.';
 
-COMMENT ON COLUMN "security"."entitlements"."entitlement_id" IS 'Unique identifier for the entitlement.';
+COMMENT ON COLUMN "security"."entitlements"."security_entitlement_id" IS 'Unique identifier for the entitlement.';
 
 COMMENT ON COLUMN "security"."entitlements"."name" IS 'Name of the entitlement.';
 
@@ -3305,7 +3308,7 @@ COMMENT ON COLUMN "security"."entitlements"."description" IS 'Description of the
 
 COMMENT ON COLUMN "security"."entitlements"."attribute" IS 'Attribute associated with the entitlement.';
 
-COMMENT ON COLUMN "security"."entitlements"."source_id" IS 'Identifier of the source system for the entitlement.';
+COMMENT ON COLUMN "security"."entitlements"."security_source_id" IS 'Identifier of the source system for the entitlement.';
 
 COMMENT ON COLUMN "security"."entitlements"."value" IS 'Value of the entitlement.';
 
@@ -3313,7 +3316,7 @@ COMMENT ON COLUMN "security"."entitlements"."privileged" IS 'Indicates if the en
 
 COMMENT ON TABLE "security"."governance_groups" IS 'Table storing information about governance groups, used for managing access and permissions.';
 
-COMMENT ON COLUMN "security"."governance_groups"."group_id" IS 'Unique identifier for the governance group.';
+COMMENT ON COLUMN "security"."governance_groups"."security_governance_group_id" IS 'Unique identifier for the governance group.';
 
 COMMENT ON COLUMN "security"."governance_groups"."name" IS 'Name of the governance group.';
 
@@ -3321,7 +3324,7 @@ COMMENT ON COLUMN "security"."governance_groups"."owner_id" IS 'Identifier of th
 
 COMMENT ON TABLE "security"."iam_logins" IS 'Table storing information about IAM logins, tracking user access to systems.';
 
-COMMENT ON COLUMN "security"."iam_logins"."login_id" IS 'Unique identifier for the IAM login.';
+COMMENT ON COLUMN "security"."iam_logins"."security_login_id" IS 'Unique identifier for the IAM login.';
 
 COMMENT ON COLUMN "security"."iam_logins"."system_id" IS 'Identifier of the system where the login occurred.';
 
@@ -3335,19 +3338,15 @@ COMMENT ON COLUMN "security"."iam_logins"."login_method" IS 'Method used for the
 
 COMMENT ON TABLE "security"."identities" IS 'Table storing information about user identities, representing individuals or entities.';
 
-COMMENT ON COLUMN "security"."identities"."identity_id" IS 'Unique identifier for the identity.';
+COMMENT ON COLUMN "security"."identities"."security_identity_id" IS 'Unique identifier for the identity.';
 
 COMMENT ON COLUMN "security"."identities"."name" IS 'Internal name of the identity.';
 
 COMMENT ON COLUMN "security"."identities"."display_name" IS 'User-friendly name of the identity.';
 
-COMMENT ON COLUMN "security"."identities"."first_name" IS 'First name of the identity.';
+COMMENT ON COLUMN "security"."identities"."service_account" IS 'If false than access is considered to be on behalf of the owner, otherwise this is service account used for system to system automation';
 
-COMMENT ON COLUMN "security"."identities"."last_name" IS 'Last name of the identity.';
-
-COMMENT ON COLUMN "security"."identities"."email" IS 'Email address of the identity.';
-
-COMMENT ON COLUMN "security"."identities"."phone" IS 'Phone number of the identity.';
+COMMENT ON COLUMN "security"."identities"."environment" IS 'Identifies access to an environment e.g production, development, etc.';
 
 COMMENT ON COLUMN "security"."identities"."created" IS 'Timestamp when the identity was created.';
 
@@ -3355,15 +3354,7 @@ COMMENT ON COLUMN "security"."identities"."inactive" IS 'Indicates if the identi
 
 COMMENT ON COLUMN "security"."identities"."status" IS 'Status of the identity.';
 
-COMMENT ON COLUMN "security"."identities"."employee_number" IS 'Employee number of the identity.';
-
-COMMENT ON COLUMN "security"."identities"."is_manager" IS 'Indicates if the identity is a manager.';
-
-COMMENT ON COLUMN "security"."identities"."manager_id" IS 'Identifier of the manager of the identity.';
-
-COMMENT ON COLUMN "security"."identities"."authoritative_source_id" IS 'Identifier of the authoritative source for the identity.';
-
-COMMENT ON COLUMN "security"."identities"."identity_profile_id" IS 'Identifier of the identity profile associated with the identity.';
+COMMENT ON COLUMN "security"."identities"."security_identity_profile_id" IS 'Identifier of the identity profile associated with the identity.';
 
 COMMENT ON COLUMN "security"."identities"."modified" IS 'Timestamp when the identity was last modified.';
 
@@ -3373,13 +3364,13 @@ COMMENT ON COLUMN "security"."identities"."is_fallback_approver" IS 'Indicates i
 
 COMMENT ON TABLE "security"."identity_access_profiles" IS 'Table linking identities to access profiles, granting specific permissions.';
 
-COMMENT ON COLUMN "security"."identity_access_profiles"."identity_id" IS 'Identifier of the associated identity.';
+COMMENT ON COLUMN "security"."identity_access_profiles"."security_identity_id" IS 'Identifier of the associated identity.';
 
-COMMENT ON COLUMN "security"."identity_access_profiles"."access_profile_id" IS 'Identifier of the associated access profile.';
+COMMENT ON COLUMN "security"."identity_access_profiles"."security_access_profile_id" IS 'Identifier of the associated access profile.';
 
 COMMENT ON TABLE "security"."identity_attributes" IS 'Table storing attributes associated with identities, providing additional identity information.';
 
-COMMENT ON COLUMN "security"."identity_attributes"."identity_id" IS 'Identifier of the associated identity.';
+COMMENT ON COLUMN "security"."identity_attributes"."security_identity_id" IS 'Identifier of the associated identity.';
 
 COMMENT ON COLUMN "security"."identity_attributes"."attribute_name" IS 'Name of the identity attribute.';
 
@@ -3387,25 +3378,25 @@ COMMENT ON COLUMN "security"."identity_attributes"."attribute_value" IS 'Value o
 
 COMMENT ON TABLE "security"."identity_entitlements" IS 'Table linking identities to entitlements, granting specific access rights.';
 
-COMMENT ON COLUMN "security"."identity_entitlements"."identity_id" IS 'Identifier of the associated identity.';
+COMMENT ON COLUMN "security"."identity_entitlements"."security_identity_id" IS 'Identifier of the associated identity.';
 
-COMMENT ON COLUMN "security"."identity_entitlements"."entitlement_id" IS 'Identifier of the associated entitlement.';
+COMMENT ON COLUMN "security"."identity_entitlements"."security_entitlement_id" IS 'Identifier of the associated entitlement.';
 
 COMMENT ON TABLE "security"."identity_profiles" IS 'Table storing information about identity profiles, defining sets of attributes and rules for identities.';
 
-COMMENT ON COLUMN "security"."identity_profiles"."identity_profile_id" IS 'Unique identifier for the identity profile.';
+COMMENT ON COLUMN "security"."identity_profiles"."security_identity_profile_id" IS 'Unique identifier for the identity profile.';
 
 COMMENT ON COLUMN "security"."identity_profiles"."name" IS 'Name of the identity profile.';
 
 COMMENT ON TABLE "security"."identity_roles" IS 'Table linking identities to roles, granting specific sets of permissions.';
 
-COMMENT ON COLUMN "security"."identity_roles"."identity_id" IS 'Identifier of the associated identity.';
+COMMENT ON COLUMN "security"."identity_roles"."security_identity_id" IS 'Identifier of the associated identity.';
 
-COMMENT ON COLUMN "security"."identity_roles"."role_id" IS 'Identifier of the associated role.';
+COMMENT ON COLUMN "security"."identity_roles"."security_role_id" IS 'Identifier of the associated role.';
 
 COMMENT ON TABLE "security"."roles" IS 'Table storing information about roles, defining sets of permissions and access rights.';
 
-COMMENT ON COLUMN "security"."roles"."role_id" IS 'Unique identifier for the role.';
+COMMENT ON COLUMN "security"."roles"."security_role_id" IS 'Unique identifier for the role.';
 
 COMMENT ON COLUMN "security"."roles"."name" IS 'Internal name of the role.';
 
@@ -3419,7 +3410,7 @@ COMMENT ON COLUMN "security"."roles"."owner_id" IS 'Identifier of the owner of t
 
 COMMENT ON TABLE "security"."sources" IS 'Table storing information about source systems, providing data for identities and accounts.';
 
-COMMENT ON COLUMN "security"."sources"."source_id" IS 'Unique identifier for the source system.';
+COMMENT ON COLUMN "security"."sources"."security_source_id" IS 'Unique identifier for the source system.';
 
 COMMENT ON COLUMN "security"."sources"."name" IS 'Name of the source system.';
 
@@ -3429,21 +3420,21 @@ COMMENT ON COLUMN "security"."sources"."owner_id" IS 'Identifier of the owner of
 
 COMMENT ON TABLE "security"."file_accesses" IS 'Table storing information about file access events, tracking file usage and access patterns.';
 
-COMMENT ON COLUMN "security"."file_accesses"."access_id" IS 'Unique identifier for the file access event.';
+COMMENT ON COLUMN "security"."file_accesses"."security_file_access_id" IS 'Unique identifier for the file access event.';
 
-COMMENT ON COLUMN "security"."file_accesses"."system_id" IS 'Identifier of the system where the file access occurred.';
+COMMENT ON COLUMN "security"."file_accesses"."security_system_id" IS 'Identifier of the system where the file access occurred.';
 
-COMMENT ON COLUMN "security"."file_accesses"."file_id" IS 'Identifier of the accessed file.';
+COMMENT ON COLUMN "security"."file_accesses"."security_file_id" IS 'Identifier of the accessed file.';
 
 COMMENT ON COLUMN "security"."file_accesses"."access_type" IS 'Type of file access (e.g., read, write, execute).';
 
 COMMENT ON COLUMN "security"."file_accesses"."access_time" IS 'Timestamp when the file access occurred.';
 
-COMMENT ON COLUMN "security"."file_accesses"."execution_id" IS 'Identifier of the process execution that initiated the file access.';
+COMMENT ON COLUMN "security"."file_accesses"."security_process_execution_id" IS 'Identifier of the process execution that initiated the file access.';
 
 COMMENT ON TABLE "security"."file_threats" IS 'Table storing information about file threats, linking file hashes to threat levels and descriptions.';
 
-COMMENT ON COLUMN "security"."file_threats"."file_hash" IS 'Hash of the file, used to identify threats.';
+COMMENT ON COLUMN "security"."file_threats"."security_file_threat_hash" IS 'Hash of the file, used to identify threats.';
 
 COMMENT ON COLUMN "security"."file_threats"."threat_level" IS 'Level of threat associated with the file (e.g., high, medium, low).';
 
@@ -3451,9 +3442,9 @@ COMMENT ON COLUMN "security"."file_threats"."threat_description" IS 'Description
 
 COMMENT ON TABLE "security"."files" IS 'Table storing information about files on systems, including file paths, hashes, and sizes.';
 
-COMMENT ON COLUMN "security"."files"."file_id" IS 'Unique identifier for the file.';
+COMMENT ON COLUMN "security"."files"."security_file_id" IS 'Unique identifier for the file.';
 
-COMMENT ON COLUMN "security"."files"."system_id" IS 'Identifier of the system where the file is located.';
+COMMENT ON COLUMN "security"."files"."security_system_id" IS 'Identifier of the system where the file is located.';
 
 COMMENT ON COLUMN "security"."files"."file_path" IS 'Path to the file on the system.';
 
@@ -3465,9 +3456,9 @@ COMMENT ON COLUMN "security"."files"."last_modified" IS 'Timestamp when the file
 
 COMMENT ON TABLE "security"."installed_applications" IS 'Table storing information about installed applications on systems, tracking software installations.';
 
-COMMENT ON COLUMN "security"."installed_applications"."system_id" IS 'Identifier of the system where the application is installed.';
+COMMENT ON COLUMN "security"."installed_applications"."security_system_id" IS 'Identifier of the system where the application is installed.';
 
-COMMENT ON COLUMN "security"."installed_applications"."application_name" IS 'Name of the installed application.';
+COMMENT ON COLUMN "security"."installed_applications"."installed_application_name" IS 'Name of the installed application.';
 
 COMMENT ON COLUMN "security"."installed_applications"."application_version" IS 'Version of the installed application.';
 
@@ -3475,11 +3466,11 @@ COMMENT ON COLUMN "security"."installed_applications"."installation_date" IS 'Ti
 
 COMMENT ON TABLE "security"."network_connections" IS 'Table storing information about network connections, tracking network traffic and activity.';
 
-COMMENT ON COLUMN "security"."network_connections"."connection_id" IS 'Unique identifier for the network connection.';
+COMMENT ON COLUMN "security"."network_connections"."security_network_connection_id" IS 'Unique identifier for the network connection.';
 
-COMMENT ON COLUMN "security"."network_connections"."system_id" IS 'Identifier of the system where the connection originated.';
+COMMENT ON COLUMN "security"."network_connections"."security_system_id" IS 'Identifier of the system where the connection originated.';
 
-COMMENT ON COLUMN "security"."network_connections"."execution_id" IS 'Identifier of the process execution that initiated the connection.';
+COMMENT ON COLUMN "security"."network_connections"."security_process_execution_id" IS 'Identifier of the process execution that initiated the connection.';
 
 COMMENT ON COLUMN "security"."network_connections"."connection_type" IS 'Type of network connection (e.g., TCP, UDP).';
 
@@ -3499,7 +3490,7 @@ COMMENT ON COLUMN "security"."network_connections"."end_time" IS 'Timestamp when
 
 COMMENT ON TABLE "security"."open_ports" IS 'Table storing information about open ports on systems, tracking network services and potential vulnerabilities.';
 
-COMMENT ON COLUMN "security"."open_ports"."system_id" IS 'Identifier of the system with the open port.';
+COMMENT ON COLUMN "security"."open_ports"."security_system_id" IS 'Identifier of the system with the open port.';
 
 COMMENT ON COLUMN "security"."open_ports"."port_number" IS 'Port number that is open.';
 
@@ -3507,9 +3498,9 @@ COMMENT ON COLUMN "security"."open_ports"."protocol" IS 'Network protocol associ
 
 COMMENT ON TABLE "security"."process_executions" IS 'Table storing information about process executions, tracking application activity and system behavior.';
 
-COMMENT ON COLUMN "security"."process_executions"."execution_id" IS 'Unique identifier for the process execution.';
+COMMENT ON COLUMN "security"."process_executions"."security_process_execution_id" IS 'Unique identifier for the process execution.';
 
-COMMENT ON COLUMN "security"."process_executions"."system_id" IS 'Identifier of the system where the process was executed.';
+COMMENT ON COLUMN "security"."process_executions"."security_system_id" IS 'Identifier of the system where the process was executed.';
 
 COMMENT ON COLUMN "security"."process_executions"."process_name" IS 'Name of the executed process.';
 
@@ -3527,9 +3518,9 @@ COMMENT ON COLUMN "security"."process_executions"."user_name" IS 'Username of th
 
 COMMENT ON TABLE "security"."running_services" IS 'Table storing information about running services on systems, tracking system services and their states.';
 
-COMMENT ON COLUMN "security"."running_services"."system_id" IS 'Identifier of the system with the running service.';
+COMMENT ON COLUMN "security"."running_services"."security_system_id" IS 'Identifier of the system with the running service.';
 
-COMMENT ON COLUMN "security"."running_services"."service_name" IS 'Name of the running service.';
+COMMENT ON COLUMN "security"."running_services"."running_service_name" IS 'Name of the running service.';
 
 COMMENT ON COLUMN "security"."running_services"."start_time" IS 'Timestamp when the service started running.';
 
@@ -3537,9 +3528,9 @@ COMMENT ON COLUMN "security"."running_services"."status" IS 'Status of the runni
 
 COMMENT ON TABLE "security"."system_stats" IS 'Table storing system statistics, tracking resource usage and performance metrics.';
 
-COMMENT ON COLUMN "security"."system_stats"."stat_id" IS 'Unique identifier for the system statistics record.';
+COMMENT ON COLUMN "security"."system_stats"."security_system_stat_id" IS 'Unique identifier for the system statistics record.';
 
-COMMENT ON COLUMN "security"."system_stats"."system_id" IS 'Identifier of the system for which statistics are recorded.';
+COMMENT ON COLUMN "security"."system_stats"."security_system_id" IS 'Identifier of the system for which statistics are recorded.';
 
 COMMENT ON COLUMN "security"."system_stats"."cpu_usage_percent" IS 'CPU usage percentage.';
 
@@ -3555,7 +3546,7 @@ COMMENT ON COLUMN "security"."system_stats"."timestamp" IS 'Timestamp when the s
 
 COMMENT ON TABLE "security"."systems" IS 'Table storing information about systems, including hardware, software, and status details.';
 
-COMMENT ON COLUMN "security"."systems"."system_id" IS 'Unique identifier for the system.';
+COMMENT ON COLUMN "security"."systems"."security_system_id" IS 'Unique identifier for the system.';
 
 COMMENT ON COLUMN "security"."systems"."hostname" IS 'Hostname of the system.';
 
@@ -3597,9 +3588,9 @@ COMMENT ON COLUMN "security"."systems"."patch_update_available" IS 'Indicates if
 
 COMMENT ON TABLE "security"."usb_device_usage" IS 'Table storing information about USB device usage, tracking connection and disconnection times.';
 
-COMMENT ON COLUMN "security"."usb_device_usage"."usage_id" IS 'Unique identifier for the USB device usage record.';
+COMMENT ON COLUMN "security"."usb_device_usage"."security_usb_device_usage_id" IS 'Unique identifier for the USB device usage record.';
 
-COMMENT ON COLUMN "security"."usb_device_usage"."system_id" IS 'Identifier of the system where the USB device was used.';
+COMMENT ON COLUMN "security"."usb_device_usage"."security_system_id" IS 'Identifier of the system where the USB device was used.';
 
 COMMENT ON COLUMN "security"."usb_device_usage"."device_name" IS 'Name of the USB device.';
 
@@ -3688,6 +3679,8 @@ COMMENT ON TABLE "security"."cve_problem" IS 'Stores problem descriptions associ
 COMMENT ON COLUMN "security"."cve_problem"."cve" IS 'Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.';
 
 COMMENT ON COLUMN "security"."cve_problem"."problem" IS 'Problem description related to the CVE.';
+
+COMMENT ON COLUMN "security"."cve_problem"."cwe_id" IS 'A reference to the related Common Weakness Enumeration, if it exists';
 
 COMMENT ON TABLE "security"."cwe" IS 'Stores Common Weakness Enumeration (CWE) information.';
 
@@ -6499,7 +6492,7 @@ COMMENT ON COLUMN "consumer_lending"."fairlending_analysis"."analysis_date" IS '
 
 COMMENT ON COLUMN "consumer_lending"."fairlending_analysis"."analysis_type" IS 'Pricing, Underwriting, Marketing';
 
-COMMENT ON COLUMN "consumer_lending"."fairlending_analysis"."product_id" IS 'Loan product analyzed if specific product';
+COMMENT ON COLUMN "consumer_lending"."fairlending_analysis"."consumer_lending_loan_product_id" IS 'Loan product analyzed if specific product';
 
 COMMENT ON COLUMN "consumer_lending"."fairlending_analysis"."time_period_start" IS 'Start of analysis period';
 
@@ -6799,7 +6792,7 @@ COMMENT ON COLUMN "credit_cards"."fraud_transactions"."credit_cards_fraud_transa
 
 COMMENT ON COLUMN "credit_cards"."fraud_transactions"."credit_cards_case_id" IS 'Reference to fraud_cases';
 
-COMMENT ON COLUMN "credit_cards"."fraud_transactions"."transaction_id" IS 'Reference to transactions';
+COMMENT ON COLUMN "credit_cards"."fraud_transactions"."credit_cards_transaction_id" IS 'Reference to transactions';
 
 COMMENT ON COLUMN "credit_cards"."fraud_transactions"."is_confirmed_fraud" IS 'Whether transaction is confirmed fraudulent';
 
@@ -8657,11 +8650,27 @@ ALTER TABLE "consumer_lending"."applicant_assets" ADD FOREIGN KEY ("property_add
 
 ALTER TABLE "consumer_lending"."applicant_liabilities" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
+ALTER TABLE "consumer_lending"."product_eligibility_criteria" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+
+ALTER TABLE "consumer_lending"."risk_based_pricing_tiers" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+
 ALTER TABLE "consumer_lending"."credit_reports" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
 ALTER TABLE "consumer_lending"."credit_reports" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
+ALTER TABLE "consumer_lending"."credit_report_tradelines" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
+
+ALTER TABLE "consumer_lending"."credit_inquiries" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
+
+ALTER TABLE "consumer_lending"."public_records" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
+
 ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
+ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_model_id") REFERENCES "consumer_lending"."decision_models" ("consumer_lending_model_id");
+
+ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_pricing_tier_id") REFERENCES "consumer_lending"."risk_based_pricing_tiers" ("consumer_lending_pricing_tier_id");
+
+ALTER TABLE "consumer_lending"."decision_reasons" ADD FOREIGN KEY ("consumer_lending_decision_id") REFERENCES "consumer_lending"."application_decisions" ("consumer_lending_decision_id");
 
 ALTER TABLE "consumer_lending"."adverse_action_notices" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
@@ -8671,7 +8680,11 @@ ALTER TABLE "consumer_lending"."vehicles" ADD FOREIGN KEY ("dealer_address_id") 
 
 ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
+ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+
 ALTER TABLE "consumer_lending"."payment_schedules" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+
+ALTER TABLE "consumer_lending"."payment_schedules" ADD FOREIGN KEY ("actual_payment_id") REFERENCES "consumer_lending"."loan_payments" ("consumer_lending_payment_id");
 
 ALTER TABLE "consumer_lending"."disbursements" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
 
@@ -8681,7 +8694,11 @@ ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("consumer_lending_lo
 
 ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("waived_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("consumer_lending_payment_id") REFERENCES "consumer_lending"."loan_payments" ("consumer_lending_payment_id");
+
 ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+
+ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("vehicle_id") REFERENCES "consumer_lending"."vehicles" ("vehicle_id");
 
 ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("property_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
@@ -8689,7 +8706,13 @@ ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("deposit_accou
 
 ALTER TABLE "consumer_lending"."loan_insurance" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
 
+ALTER TABLE "consumer_lending"."loan_insurance" ADD FOREIGN KEY ("consumer_lending_collateral_id") REFERENCES "consumer_lending"."loan_collateral" ("consumer_lending_collateral_id");
+
+ALTER TABLE "consumer_lending"."loan_documents" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
 ALTER TABLE "consumer_lending"."loan_documents" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+
+ALTER TABLE "consumer_lending"."loan_communications" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
 ALTER TABLE "consumer_lending"."loan_communications" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
 
@@ -8697,7 +8720,11 @@ ALTER TABLE "consumer_lending"."loan_statements" ADD FOREIGN KEY ("loan_account_
 
 ALTER TABLE "consumer_lending"."collection_accounts" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
 
+ALTER TABLE "consumer_lending"."collection_actions" ADD FOREIGN KEY ("consumer_lending_collection_id") REFERENCES "consumer_lending"."collection_accounts" ("consumer_lending_collection_id");
+
 ALTER TABLE "consumer_lending"."collection_actions" ADD FOREIGN KEY ("action_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_lending"."payment_arrangements" ADD FOREIGN KEY ("consumer_lending_collection_id") REFERENCES "consumer_lending"."collection_accounts" ("consumer_lending_collection_id");
 
 ALTER TABLE "consumer_lending"."payment_arrangements" ADD FOREIGN KEY ("approved_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -8705,29 +8732,49 @@ ALTER TABLE "consumer_lending"."loan_modifications" ADD FOREIGN KEY ("loan_accou
 
 ALTER TABLE "consumer_lending"."loan_modifications" ADD FOREIGN KEY ("approved_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "consumer_lending"."reg_z_disclosures" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
 ALTER TABLE "consumer_lending"."reg_z_disclosures" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
 
+ALTER TABLE "consumer_lending"."adverse_action_details" ADD FOREIGN KEY ("consumer_lending_notice_id") REFERENCES "consumer_lending"."adverse_action_notices" ("consumer_lending_notice_id");
+
 ALTER TABLE "consumer_lending"."adverse_action_details" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
 ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
 ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("submitted_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "consumer_lending"."fairlending_analysis" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+
 ALTER TABLE "consumer_lending"."fairlending_analysis" ADD FOREIGN KEY ("analyst") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "consumer_lending"."fairlending_analysis" ADD FOREIGN KEY ("reviewer") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "consumer_lending"."reg_b_notices" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
 ALTER TABLE "consumer_lending"."reg_b_notices" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_lending"."appraisal_disclosures" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
 ALTER TABLE "consumer_lending"."appraisal_disclosures" ADD FOREIGN KEY ("property_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
 ALTER TABLE "consumer_lending"."appraisal_disclosures" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
 ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("consumer_lending_applicant_id") REFERENCES "consumer_lending"."applicants" ("consumer_lending_applicant_id");
 
 ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "consumer_lending"."high_cost_mortgage_tests" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
 ALTER TABLE "consumer_lending"."high_cost_mortgage_tests" ADD FOREIGN KEY ("user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+
+ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
 
 ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("remediated_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -8739,25 +8786,47 @@ ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("enterpr
 
 ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("related_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
+ALTER TABLE "credit_cards"."fraud_cases" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
+
 ALTER TABLE "credit_cards"."fraud_cases" ADD FOREIGN KEY ("credit_cards_card_id") REFERENCES "credit_cards"."cards" ("credit_cards_card_id");
 
 ALTER TABLE "credit_cards"."fraud_cases" ADD FOREIGN KEY ("investigator_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "credit_cards"."fraud_transactions" ADD FOREIGN KEY ("credit_cards_case_id") REFERENCES "credit_cards"."fraud_cases" ("credit_cards_case_id");
+
+ALTER TABLE "credit_cards"."fraud_transactions" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
 
 ALTER TABLE "credit_cards"."security_blocks" ADD FOREIGN KEY ("credit_cards_card_id") REFERENCES "credit_cards"."cards" ("credit_cards_card_id");
 
 ALTER TABLE "credit_cards"."security_blocks" ADD FOREIGN KEY ("removed_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
+ALTER TABLE "credit_cards"."credit_card_applications_hmda" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
+
+ALTER TABLE "credit_cards"."reg_z_credit_card_disclosures" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
+
 ALTER TABLE "credit_cards"."reg_z_credit_card_disclosures" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
+
+ALTER TABLE "credit_cards"."ability_to_pay_assessments" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
 
 ALTER TABLE "credit_cards"."ability_to_pay_assessments" ADD FOREIGN KEY ("performed_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "credit_cards"."consumer_complaints" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
+ALTER TABLE "credit_cards"."card_product_features" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
+
+ALTER TABLE "credit_cards"."card_product_reward_categories" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
+
 ALTER TABLE "credit_cards"."applications" ADD FOREIGN KEY ("customer_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
+
+ALTER TABLE "credit_cards"."applications" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
 
 ALTER TABLE "credit_cards"."card_accounts" ADD FOREIGN KEY ("customer_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
 
 ALTER TABLE "credit_cards"."card_accounts" ADD FOREIGN KEY ("enterprise_account_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
+
+ALTER TABLE "credit_cards"."card_accounts" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
+
+ALTER TABLE "credit_cards"."card_accounts" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
 
 ALTER TABLE "credit_cards"."cards" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
@@ -8775,9 +8844,17 @@ ALTER TABLE "credit_cards"."statements" ADD FOREIGN KEY ("credit_cards_card_acco
 
 ALTER TABLE "credit_cards"."fees" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
+ALTER TABLE "credit_cards"."fees" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
+
+ALTER TABLE "credit_cards"."fees" ADD FOREIGN KEY ("credit_cards_statement_id") REFERENCES "credit_cards"."statements" ("credit_cards_statement_id");
+
 ALTER TABLE "credit_cards"."interest_charges" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
+ALTER TABLE "credit_cards"."interest_charges" ADD FOREIGN KEY ("credit_cards_statement_id") REFERENCES "credit_cards"."statements" ("credit_cards_statement_id");
+
 ALTER TABLE "credit_cards"."rewards" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
+
+ALTER TABLE "credit_cards"."rewards" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
 
 ALTER TABLE "credit_cards"."reward_redemptions" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
@@ -8787,9 +8864,15 @@ ALTER TABLE "credit_cards"."promotional_offers" ADD FOREIGN KEY ("credit_cards_c
 
 ALTER TABLE "credit_cards"."balance_transfers" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
+ALTER TABLE "credit_cards"."balance_transfers" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
+
+ALTER TABLE "credit_cards"."balance_transfers" ADD FOREIGN KEY ("credit_cards_offer_id") REFERENCES "credit_cards"."promotional_offers" ("credit_cards_offer_id");
+
 ALTER TABLE "credit_cards"."payment_methods" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
 ALTER TABLE "credit_cards"."autopay_settings" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
+
+ALTER TABLE "credit_cards"."autopay_settings" ADD FOREIGN KEY ("credit_cards_payment_method_id") REFERENCES "credit_cards"."payment_methods" ("credit_cards_payment_method_id");
 
 ALTER TABLE "credit_cards"."credit_limit_changes" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
@@ -8798,6 +8881,8 @@ ALTER TABLE "credit_cards"."credit_limit_changes" ADD FOREIGN KEY ("approved_by"
 ALTER TABLE "credit_cards"."card_alerts" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
 ALTER TABLE "credit_cards"."card_alerts" ADD FOREIGN KEY ("credit_cards_card_id") REFERENCES "credit_cards"."cards" ("credit_cards_card_id");
+
+ALTER TABLE "credit_cards"."disputed_transactions" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
 
 ALTER TABLE "credit_cards"."disputed_transactions" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
@@ -8931,168 +9016,78 @@ ALTER TABLE "small_business_banking"."suspicious_activity_reports" ADD FOREIGN K
 
 ALTER TABLE "small_business_banking"."suspicious_activity_reports" ADD FOREIGN KEY ("bsa_officer_signature") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."product_eligibility_criteria" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+ALTER TABLE "security"."network_events" ADD FOREIGN KEY ("security_device_id") REFERENCES "security"."devices" ("security_device_id");
 
-ALTER TABLE "consumer_lending"."risk_based_pricing_tiers" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+ALTER TABLE "security"."policy_attributes" ADD FOREIGN KEY ("security_policy_id") REFERENCES "security"."policies" ("security_policy_id");
 
-ALTER TABLE "consumer_lending"."credit_report_tradelines" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
+ALTER TABLE "security"."policy_rules" ADD FOREIGN KEY ("security_policy_id") REFERENCES "security"."policies" ("security_policy_id");
 
-ALTER TABLE "consumer_lending"."credit_inquiries" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
+ALTER TABLE "security"."access_profiles" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."public_records" ADD FOREIGN KEY ("consumer_lending_credit_report_id") REFERENCES "consumer_lending"."credit_reports" ("consumer_lending_credit_report_id");
+ALTER TABLE "security"."account_entitlement_attributes" ADD FOREIGN KEY ("security_account_id") REFERENCES "security"."accounts" ("security_account_id");
 
-ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_model_id") REFERENCES "consumer_lending"."decision_models" ("consumer_lending_model_id");
+ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
 
-ALTER TABLE "consumer_lending"."application_decisions" ADD FOREIGN KEY ("consumer_lending_pricing_tier_id") REFERENCES "consumer_lending"."risk_based_pricing_tiers" ("consumer_lending_pricing_tier_id");
+ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("security_source_id") REFERENCES "security"."sources" ("security_source_id");
 
-ALTER TABLE "consumer_lending"."decision_reasons" ADD FOREIGN KEY ("consumer_lending_decision_id") REFERENCES "consumer_lending"."application_decisions" ("consumer_lending_decision_id");
+ALTER TABLE "security"."apps" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
 
-ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+ALTER TABLE "security"."apps" ADD FOREIGN KEY ("security_source_id") REFERENCES "security"."sources" ("security_source_id");
 
-ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("consumer_lending_payment_id") REFERENCES "consumer_lending"."loan_payments" ("consumer_lending_payment_id");
+ALTER TABLE "security"."apps" ADD FOREIGN KEY ("security_account_id") REFERENCES "security"."accounts" ("security_account_id");
 
-ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("vehicle_id") REFERENCES "consumer_lending"."vehicles" ("vehicle_id");
+ALTER TABLE "security"."entitlements" ADD FOREIGN KEY ("security_source_id") REFERENCES "security"."sources" ("security_source_id");
 
-ALTER TABLE "consumer_lending"."loan_insurance" ADD FOREIGN KEY ("consumer_lending_collateral_id") REFERENCES "consumer_lending"."loan_collateral" ("consumer_lending_collateral_id");
+ALTER TABLE "security"."governance_groups" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."payment_schedules" ADD FOREIGN KEY ("actual_payment_id") REFERENCES "consumer_lending"."loan_payments" ("consumer_lending_payment_id");
+ALTER TABLE "security"."identities" ADD FOREIGN KEY ("owner") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."loan_documents" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."identities" ADD FOREIGN KEY ("security_identity_profile_id") REFERENCES "security"."identity_profiles" ("security_identity_profile_id");
 
-ALTER TABLE "consumer_lending"."loan_communications" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."identity_access_profiles" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
 
-ALTER TABLE "consumer_lending"."collection_actions" ADD FOREIGN KEY ("consumer_lending_collection_id") REFERENCES "consumer_lending"."collection_accounts" ("consumer_lending_collection_id");
+ALTER TABLE "security"."identity_access_profiles" ADD FOREIGN KEY ("security_access_profile_id") REFERENCES "security"."access_profiles" ("security_access_profile_id");
 
-ALTER TABLE "consumer_lending"."payment_arrangements" ADD FOREIGN KEY ("consumer_lending_collection_id") REFERENCES "consumer_lending"."collection_accounts" ("consumer_lending_collection_id");
+ALTER TABLE "security"."identity_attributes" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
 
-ALTER TABLE "consumer_lending"."reg_z_disclosures" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."identity_entitlements" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
 
-ALTER TABLE "consumer_lending"."adverse_action_details" ADD FOREIGN KEY ("consumer_lending_notice_id") REFERENCES "consumer_lending"."adverse_action_notices" ("consumer_lending_notice_id");
+ALTER TABLE "security"."identity_entitlements" ADD FOREIGN KEY ("security_entitlement_id") REFERENCES "security"."entitlements" ("security_entitlement_id");
 
-ALTER TABLE "consumer_lending"."ecoa_monitoring" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."identity_roles" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
 
-ALTER TABLE "consumer_lending"."fairlending_analysis" ADD FOREIGN KEY ("product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
+ALTER TABLE "security"."identity_roles" ADD FOREIGN KEY ("security_role_id") REFERENCES "security"."roles" ("security_role_id");
 
-ALTER TABLE "consumer_lending"."reg_b_notices" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."roles" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."appraisal_disclosures" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."sources" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."military_lending_checks" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "consumer_lending"."high_cost_mortgage_tests" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("security_file_id") REFERENCES "security"."files" ("security_file_id");
 
-ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
+ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("security_process_execution_id") REFERENCES "security"."process_executions" ("security_process_execution_id");
 
-ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "security"."files" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "credit_cards"."card_product_features" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
+ALTER TABLE "security"."installed_applications" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "credit_cards"."card_product_reward_categories" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
+ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "credit_cards"."applications" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
+ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("security_process_execution_id") REFERENCES "security"."process_executions" ("security_process_execution_id");
 
-ALTER TABLE "credit_cards"."card_accounts" ADD FOREIGN KEY ("credit_cards_product_id") REFERENCES "credit_cards"."card_products" ("credit_cards_product_id");
+ALTER TABLE "security"."open_ports" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "credit_cards"."card_accounts" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
+ALTER TABLE "security"."process_executions" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "credit_cards"."fees" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
+ALTER TABLE "security"."running_services" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "credit_cards"."fees" ADD FOREIGN KEY ("credit_cards_statement_id") REFERENCES "credit_cards"."statements" ("credit_cards_statement_id");
+ALTER TABLE "security"."system_stats" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
-ALTER TABLE "credit_cards"."interest_charges" ADD FOREIGN KEY ("credit_cards_statement_id") REFERENCES "credit_cards"."statements" ("credit_cards_statement_id");
-
-ALTER TABLE "credit_cards"."rewards" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
-
-ALTER TABLE "credit_cards"."balance_transfers" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
-
-ALTER TABLE "credit_cards"."balance_transfers" ADD FOREIGN KEY ("credit_cards_offer_id") REFERENCES "credit_cards"."promotional_offers" ("credit_cards_offer_id");
-
-ALTER TABLE "credit_cards"."autopay_settings" ADD FOREIGN KEY ("credit_cards_payment_method_id") REFERENCES "credit_cards"."payment_methods" ("credit_cards_payment_method_id");
-
-ALTER TABLE "credit_cards"."disputed_transactions" ADD FOREIGN KEY ("credit_cards_transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
-
-ALTER TABLE "credit_cards"."fraud_cases" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
-
-ALTER TABLE "credit_cards"."fraud_transactions" ADD FOREIGN KEY ("credit_cards_case_id") REFERENCES "credit_cards"."fraud_cases" ("credit_cards_case_id");
-
-ALTER TABLE "credit_cards"."fraud_transactions" ADD FOREIGN KEY ("transaction_id") REFERENCES "credit_cards"."transactions" ("credit_cards_transaction_id");
-
-ALTER TABLE "credit_cards"."credit_card_applications_hmda" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
-
-ALTER TABLE "credit_cards"."reg_z_credit_card_disclosures" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
-
-ALTER TABLE "credit_cards"."ability_to_pay_assessments" ADD FOREIGN KEY ("credit_cards_application_id") REFERENCES "credit_cards"."applications" ("credit_cards_application_id");
-
-ALTER TABLE "security"."network_events" ADD FOREIGN KEY ("device_id") REFERENCES "security"."devices" ("ip_address");
-
-ALTER TABLE "security"."policy_attributes" ADD FOREIGN KEY ("policy_id") REFERENCES "security"."policies" ("policy_id");
-
-ALTER TABLE "security"."policy_rules" ADD FOREIGN KEY ("policy_id") REFERENCES "security"."policies" ("policy_id");
-
-ALTER TABLE "security"."access_profiles" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."account_entitlement_attributes" ADD FOREIGN KEY ("account_id") REFERENCES "security"."accounts" ("account_id");
-
-ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("source_id") REFERENCES "security"."sources" ("source_id");
-
-ALTER TABLE "security"."apps" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."apps" ADD FOREIGN KEY ("source_id") REFERENCES "security"."sources" ("source_id");
-
-ALTER TABLE "security"."apps" ADD FOREIGN KEY ("account_id") REFERENCES "security"."accounts" ("account_id");
-
-ALTER TABLE "security"."entitlements" ADD FOREIGN KEY ("source_id") REFERENCES "security"."sources" ("source_id");
-
-ALTER TABLE "security"."governance_groups" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."identities" ADD FOREIGN KEY ("manager_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."identities" ADD FOREIGN KEY ("identity_profile_id") REFERENCES "security"."identity_profiles" ("identity_profile_id");
-
-ALTER TABLE "security"."identity_access_profiles" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."identity_access_profiles" ADD FOREIGN KEY ("access_profile_id") REFERENCES "security"."access_profiles" ("access_profile_id");
-
-ALTER TABLE "security"."identity_attributes" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."identity_entitlements" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."identity_entitlements" ADD FOREIGN KEY ("entitlement_id") REFERENCES "security"."entitlements" ("entitlement_id");
-
-ALTER TABLE "security"."identity_roles" ADD FOREIGN KEY ("identity_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."identity_roles" ADD FOREIGN KEY ("role_id") REFERENCES "security"."roles" ("role_id");
-
-ALTER TABLE "security"."roles" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."sources" ADD FOREIGN KEY ("owner_id") REFERENCES "security"."identities" ("identity_id");
-
-ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("file_id") REFERENCES "security"."files" ("file_id");
-
-ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("execution_id") REFERENCES "security"."process_executions" ("execution_id");
-
-ALTER TABLE "security"."files" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."installed_applications" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("execution_id") REFERENCES "security"."process_executions" ("execution_id");
-
-ALTER TABLE "security"."open_ports" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."process_executions" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."running_services" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."system_stats" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
-
-ALTER TABLE "security"."usb_device_usage" ADD FOREIGN KEY ("system_id") REFERENCES "security"."systems" ("system_id");
+ALTER TABLE "security"."usb_device_usage" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
 
 ALTER TABLE "security"."cpe" ADD FOREIGN KEY ("cve") REFERENCES "security"."cvss" ("cve");
 
 ALTER TABLE "security"."cve_problem" ADD FOREIGN KEY ("cve") REFERENCES "security"."cvss" ("cve");
+
+ALTER TABLE "security"."cve_problem" ADD FOREIGN KEY ("cwe_id") REFERENCES "security"."cwe" ("cwe_id");

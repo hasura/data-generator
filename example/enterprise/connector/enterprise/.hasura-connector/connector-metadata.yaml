@@ -1,6 +1,6 @@
 packagingDefinition:
   type: PrebuiltDockerImage
-  dockerImage: ghcr.io/hasura/ndc-postgres:v2.1.0
+  dockerImage: ghcr.io/hasura/ndc-postgres:v2.1.1
 supportedEnvironmentVariables:
   - name: CONNECTION_URI
     description: The PostgreSQL connection URI
@@ -19,7 +19,7 @@ commands:
 cliPlugin:
   type: null
   name: ndc-postgres
-  version: v2.1.0
+  version: v2.1.1
 dockerComposeWatch:
   - path: ./
     action: sync+restart
@@ -35,6 +35,15 @@ nativeToolchainDefinition:
       powershell: |-
         $ErrorActionPreference = "Stop"
         $env:HASURA_CONFIGURATION_DIRECTORY="$env:HASURA_PLUGIN_CONNECTOR_CONTEXT_PATH"; & "$env:HASURA_DDN_NATIVE_CONNECTOR_DIR\ndc-postgres.exe" serve
+    watch:
+      type: ShellScript
+      bash: |-
+        #!/usr/bin/env bash
+        echo "Watch is not supported for this connector"
+        exit 1
+      powershell: |-
+        Write-Output "Watch is not supported for this connector"
+        exit 1
     update:
       type: ShellScript
       bash: |-

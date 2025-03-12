@@ -5724,6 +5724,14 @@
             "hasDefault": "hasDefault",
             "description": "Unique identifier for analysis record"
           },
+          "consumer_lending_loan_product_id": {
+            "name": "consumer_lending_loan_product_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Loan product analyzed if specific product"
+          },
           "control_group": {
             "name": "control_group",
             "type": {
@@ -5771,14 +5779,6 @@
             },
             "nullable": "nullable",
             "description": "Statistical significance level"
-          },
-          "product_id": {
-            "name": "product_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": "Loan product analyzed if specific product"
           },
           "protected_class": {
             "name": "protected_class",
@@ -5874,11 +5874,11 @@
               "analyst": "enterprise_associate_id"
             }
           },
-          "fairlending_analysis_product_id_fkey": {
+          "fairlending_analysis_consumer_lending_loan_product_id_fkey": {
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_products",
             "columnMapping": {
-              "product_id": "consumer_lending_loan_product_id"
+              "consumer_lending_loan_product_id": "consumer_lending_loan_product_id"
             }
           },
           "fairlending_analysis_reviewer_fkey": {
@@ -11614,6 +11614,14 @@
             "hasDefault": "hasDefault",
             "description": "Auto-incrementing identifier for each linked transaction"
           },
+          "credit_cards_transaction_id": {
+            "name": "credit_cards_transaction_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Reference to transactions"
+          },
           "is_confirmed_fraud": {
             "name": "is_confirmed_fraud",
             "type": {
@@ -11622,14 +11630,6 @@
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
             "description": "Whether transaction is confirmed fraudulent"
-          },
-          "transaction_id": {
-            "name": "transaction_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": "Reference to transactions"
           }
         },
         "uniquenessConstraints": {
@@ -11645,11 +11645,11 @@
               "credit_cards_case_id": "credit_cards_case_id"
             }
           },
-          "fraud_transactions_transaction_id_fkey": {
+          "fraud_transactions_credit_cards_transaction_id_fkey": {
             "foreignSchema": "credit_cards",
             "foreignTable": "transactions",
             "columnMapping": {
-              "transaction_id": "credit_cards_transaction_id"
+              "credit_cards_transaction_id": "credit_cards_transaction_id"
             }
           }
         },
@@ -18129,6 +18129,2667 @@
         },
         "description": "Manages ongoing servicing of closed mortgage loans"
       },
+      "security_access_profiles": {
+        "schemaName": "security",
+        "tableName": "access_profiles",
+        "columns": {
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Description of the access profile."
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "User-friendly name of the access profile."
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Internal name of the access profile."
+          },
+          "owner_id": {
+            "name": "owner_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the owner of the access profile."
+          },
+          "security_access_profile_id": {
+            "name": "security_access_profile_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the access profile."
+          }
+        },
+        "uniquenessConstraints": {
+          "access_profiles_pkey": [
+            "security_access_profile_id"
+          ]
+        },
+        "foreignRelations": {
+          "access_profiles_owner_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "owner_id": "enterprise_associate_id"
+            }
+          }
+        },
+        "description": "Table storing information about access profiles, defining sets of permissions or roles."
+      },
+      "security_account_entitlement_attributes": {
+        "schemaName": "security",
+        "tableName": "account_entitlement_attributes",
+        "columns": {
+          "attribute_name": {
+            "name": "attribute_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Name of the entitlement attribute."
+          },
+          "attribute_value": {
+            "name": "attribute_value",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Value of the entitlement attribute."
+          },
+          "security_account_id": {
+            "name": "security_account_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the account."
+          }
+        },
+        "uniquenessConstraints": {
+          "account_entitlement_attributes_pkey": [
+            "attribute_name",
+            "attribute_value",
+            "security_account_id"
+          ]
+        },
+        "foreignRelations": {
+          "account_entitlement_attributes_security_account_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "security_account_id": "security_account_id"
+            }
+          }
+        },
+        "description": "Table storing specific attributes related to account entitlements. Allows for granular control over account permissions and access."
+      },
+      "security_accounts": {
+        "schemaName": "security",
+        "tableName": "accounts",
+        "columns": {
+          "account_id_string": {
+            "name": "account_id_string",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "String representation of the account ID."
+          },
+          "created": {
+            "name": "created",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the account was created."
+          },
+          "disabled": {
+            "name": "disabled",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the account is disabled."
+          },
+          "locked": {
+            "name": "locked",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the account is locked."
+          },
+          "manually_correlated": {
+            "name": "manually_correlated",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the account was manually correlated."
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the account."
+          },
+          "password_last_set": {
+            "name": "password_last_set",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the account password was last set."
+          },
+          "privileged": {
+            "name": "privileged",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the account has privileged access."
+          },
+          "security_account_id": {
+            "name": "security_account_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the account."
+          },
+          "security_identity_id": {
+            "name": "security_identity_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the associated identity."
+          },
+          "security_source_id": {
+            "name": "security_source_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the source system for the account."
+          }
+        },
+        "uniquenessConstraints": {
+          "accounts_pkey": [
+            "security_account_id"
+          ]
+        },
+        "foreignRelations": {
+          "accounts_security_identity_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "identities",
+            "columnMapping": {
+              "security_identity_id": "security_identity_id"
+            }
+          },
+          "accounts_security_source_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "sources",
+            "columnMapping": {
+              "security_source_id": "security_source_id"
+            }
+          }
+        },
+        "description": "Table storing information about user accounts across various systems."
+      },
+      "security_apps": {
+        "schemaName": "security",
+        "tableName": "apps",
+        "columns": {
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the application."
+          },
+          "security_account_id": {
+            "name": "security_account_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the associated account."
+          },
+          "security_app_id": {
+            "name": "security_app_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the application."
+          },
+          "security_identity_id": {
+            "name": "security_identity_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the associated identity."
+          },
+          "security_source_id": {
+            "name": "security_source_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the source system for the application."
+          }
+        },
+        "uniquenessConstraints": {
+          "apps_pkey": [
+            "security_app_id"
+          ]
+        },
+        "foreignRelations": {
+          "apps_security_account_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "security_account_id": "security_account_id"
+            }
+          },
+          "apps_security_identity_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "identities",
+            "columnMapping": {
+              "security_identity_id": "security_identity_id"
+            }
+          },
+          "apps_security_source_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "sources",
+            "columnMapping": {
+              "security_source_id": "security_source_id"
+            }
+          }
+        },
+        "description": "Table storing information about applications and their associations with identities and accounts."
+      },
+      "security_cpe": {
+        "schemaName": "security",
+        "tableName": "cpe",
+        "columns": {
+          "cpe23uri": {
+            "name": "cpe23uri",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "CPE 2.3 URI string."
+          },
+          "cve": {
+            "name": "cve",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve."
+          },
+          "vulnerable": {
+            "name": "vulnerable",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the CPE is vulnerable to the CVE."
+          }
+        },
+        "uniquenessConstraints": {},
+        "foreignRelations": {
+          "cpe_cve_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "cvss",
+            "columnMapping": {
+              "cve": "cve"
+            }
+          }
+        },
+        "description": "Stores Common Platform Enumeration (CPE) information associated with CVEs."
+      },
+      "security_cve_problem": {
+        "schemaName": "security",
+        "tableName": "cve_problem",
+        "columns": {
+          "cve": {
+            "name": "cve",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve."
+          },
+          "cwe_id": {
+            "name": "cwe_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "A reference to the related Common Weakness Enumeration, if it exists"
+          },
+          "problem": {
+            "name": "problem",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Problem description related to the CVE."
+          }
+        },
+        "uniquenessConstraints": {},
+        "foreignRelations": {
+          "cve_problem_cve_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "cvss",
+            "columnMapping": {
+              "cve": "cve"
+            }
+          },
+          "cve_problem_cwe_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "cwe",
+            "columnMapping": {
+              "cwe_id": "cwe_id"
+            }
+          }
+        },
+        "description": "Stores problem descriptions associated with CVEs."
+      },
+      "security_cvss": {
+        "schemaName": "security",
+        "tableName": "cvss",
+        "columns": {
+          "access_complexity": {
+            "name": "access_complexity",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Access Complexity metric."
+          },
+          "access_vector": {
+            "name": "access_vector",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Access Vector metric."
+          },
+          "attack_complexity_3": {
+            "name": "attack_complexity_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Attack Complexity metric."
+          },
+          "attack_vector_3": {
+            "name": "attack_vector_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Attack Vector metric."
+          },
+          "authentication": {
+            "name": "authentication",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Authentication metric."
+          },
+          "availability_impact": {
+            "name": "availability_impact",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Availability Impact metric."
+          },
+          "availability_impact_3": {
+            "name": "availability_impact_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Availability Impact metric."
+          },
+          "base_score": {
+            "name": "base_score",
+            "type": {
+              "scalarType": "float4"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Base Score."
+          },
+          "base_score_3": {
+            "name": "base_score_3",
+            "type": {
+              "scalarType": "float4"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Base Score."
+          },
+          "base_severity_3": {
+            "name": "base_severity_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Base Severity."
+          },
+          "confidentiality_impact": {
+            "name": "confidentiality_impact",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Confidentiality Impact metric."
+          },
+          "confidentiality_impact_3": {
+            "name": "confidentiality_impact_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Confidentiality Impact metric."
+          },
+          "cve": {
+            "name": "cve",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Common Vulnerabilities and Exposures identifier. Primary key."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "CVE description."
+          },
+          "exploitability_score": {
+            "name": "exploitability_score",
+            "type": {
+              "scalarType": "float4"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Exploitability Score."
+          },
+          "exploitability_score_3": {
+            "name": "exploitability_score_3",
+            "type": {
+              "scalarType": "float4"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Exploitability Score."
+          },
+          "impact_score": {
+            "name": "impact_score",
+            "type": {
+              "scalarType": "float4"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Impact Score."
+          },
+          "impact_score_3": {
+            "name": "impact_score_3",
+            "type": {
+              "scalarType": "float4"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Impact Score."
+          },
+          "integrity_impact": {
+            "name": "integrity_impact",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Integrity Impact metric."
+          },
+          "integrity_impact_3": {
+            "name": "integrity_impact_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Integrity Impact metric."
+          },
+          "last_modified_date": {
+            "name": "last_modified_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "CVE last modified date."
+          },
+          "obtain_all_privileges": {
+            "name": "obtain_all_privileges",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Obtain All Privileges metric."
+          },
+          "obtain_other_privileges": {
+            "name": "obtain_other_privileges",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Obtain Other Privileges metric."
+          },
+          "obtain_user_privileges": {
+            "name": "obtain_user_privileges",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Obtain User Privileges metric."
+          },
+          "privileges_required_3": {
+            "name": "privileges_required_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Privileges Required metric."
+          },
+          "published_date": {
+            "name": "published_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "CVE publication date."
+          },
+          "scope_3": {
+            "name": "scope_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Scope metric."
+          },
+          "severity": {
+            "name": "severity",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Severity."
+          },
+          "user_interaction_3": {
+            "name": "user_interaction_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 User Interaction metric."
+          },
+          "user_interaction_required": {
+            "name": "user_interaction_required",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 User Interaction Required metric."
+          },
+          "vector_string": {
+            "name": "vector_string",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v2 Vector String."
+          },
+          "vector_string_3": {
+            "name": "vector_string_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "CVSS v3 Vector String."
+          }
+        },
+        "uniquenessConstraints": {
+          "cvss_pkey": [
+            "cve"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Stores Common Vulnerability Scoring System (CVSS) metrics for CVEs, including both CVSS v2 and v3."
+      },
+      "security_cwe": {
+        "schemaName": "security",
+        "tableName": "cwe",
+        "columns": {
+          "common_consequences": {
+            "name": "common_consequences",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Common consequences of the CWE."
+          },
+          "cwe_id": {
+            "name": "cwe_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Common Weakness Enumeration identifier. Primary key."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "CWE description."
+          },
+          "extended_description": {
+            "name": "extended_description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Extended CWE description."
+          },
+          "modes_of_introduction": {
+            "name": "modes_of_introduction",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Modes of introduction for the CWE."
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "CWE name."
+          },
+          "potential_mitigations": {
+            "name": "potential_mitigations",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Potential mitigations for the CWE."
+          }
+        },
+        "uniquenessConstraints": {
+          "cwe_pkey": [
+            "cwe_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Stores Common Weakness Enumeration (CWE) information."
+      },
+      "security_devices": {
+        "schemaName": "security",
+        "tableName": "devices",
+        "columns": {
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "The timestamp when the device record was created."
+          },
+          "device_type": {
+            "name": "device_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "The type of the device (e.g., router, server, workstation)."
+          },
+          "hostname": {
+            "name": "hostname",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "The hostname of the device."
+          },
+          "security_device_id": {
+            "name": "security_device_id",
+            "type": {
+              "scalarType": "inet"
+            },
+            "nullable": "nonNullable",
+            "description": "The unique IP address of the device. Serves as the primary key."
+          },
+          "subnet": {
+            "name": "subnet",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "The subnet the device belongs to."
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "The timestamp when the device record was last updated."
+          }
+        },
+        "uniquenessConstraints": {
+          "devices_pkey": [
+            "security_device_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table storing information about network devices."
+      },
+      "security_entitlements": {
+        "schemaName": "security",
+        "tableName": "entitlements",
+        "columns": {
+          "attribute": {
+            "name": "attribute",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Attribute associated with the entitlement."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Description of the entitlement."
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "User-friendly name of the entitlement."
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the entitlement."
+          },
+          "privileged": {
+            "name": "privileged",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the entitlement is privileged."
+          },
+          "security_entitlement_id": {
+            "name": "security_entitlement_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the entitlement."
+          },
+          "security_source_id": {
+            "name": "security_source_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the source system for the entitlement."
+          },
+          "value": {
+            "name": "value",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Value of the entitlement."
+          }
+        },
+        "uniquenessConstraints": {
+          "entitlements_pkey": [
+            "security_entitlement_id"
+          ]
+        },
+        "foreignRelations": {
+          "entitlements_security_source_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "sources",
+            "columnMapping": {
+              "security_source_id": "security_source_id"
+            }
+          }
+        },
+        "description": "Table storing information about entitlements, representing permissions or access rights."
+      },
+      "security_file_accesses": {
+        "schemaName": "security",
+        "tableName": "file_accesses",
+        "columns": {
+          "access_time": {
+            "name": "access_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the file access occurred."
+          },
+          "access_type": {
+            "name": "access_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of file access (e.g., read, write, execute)."
+          },
+          "security_file_access_id": {
+            "name": "security_file_access_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the file access event."
+          },
+          "security_file_id": {
+            "name": "security_file_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the accessed file."
+          },
+          "security_process_execution_id": {
+            "name": "security_process_execution_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the process execution that initiated the file access."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the file access occurred."
+          }
+        },
+        "uniquenessConstraints": {
+          "file_accesses_pkey": [
+            "security_file_access_id"
+          ]
+        },
+        "foreignRelations": {
+          "file_accesses_security_file_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "files",
+            "columnMapping": {
+              "security_file_id": "security_file_id"
+            }
+          },
+          "file_accesses_security_process_execution_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "process_executions",
+            "columnMapping": {
+              "security_process_execution_id": "security_process_execution_id"
+            }
+          },
+          "file_accesses_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about file access events, tracking file usage and access patterns."
+      },
+      "security_file_threats": {
+        "schemaName": "security",
+        "tableName": "file_threats",
+        "columns": {
+          "security_file_threat_hash": {
+            "name": "security_file_threat_hash",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Hash of the file, used to identify threats."
+          },
+          "threat_description": {
+            "name": "threat_description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Description of the threat associated with the file."
+          },
+          "threat_level": {
+            "name": "threat_level",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Level of threat associated with the file (e.g., high, medium, low)."
+          }
+        },
+        "uniquenessConstraints": {
+          "file_threats_pkey": [
+            "security_file_threat_hash"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table storing information about file threats, linking file hashes to threat levels and descriptions."
+      },
+      "security_files": {
+        "schemaName": "security",
+        "tableName": "files",
+        "columns": {
+          "file_hash": {
+            "name": "file_hash",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Hash of the file, used for integrity checks."
+          },
+          "file_path": {
+            "name": "file_path",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Path to the file on the system."
+          },
+          "file_size": {
+            "name": "file_size",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": "Size of the file in bytes."
+          },
+          "last_modified": {
+            "name": "last_modified",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the file was last modified."
+          },
+          "security_file_id": {
+            "name": "security_file_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the file."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the file is located."
+          }
+        },
+        "uniquenessConstraints": {
+          "files_pkey": [
+            "security_file_id"
+          ]
+        },
+        "foreignRelations": {
+          "files_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about files on systems, including file paths, hashes, and sizes."
+      },
+      "security_governance_groups": {
+        "schemaName": "security",
+        "tableName": "governance_groups",
+        "columns": {
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the governance group."
+          },
+          "owner_id": {
+            "name": "owner_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the owner of the governance group."
+          },
+          "security_governance_group_id": {
+            "name": "security_governance_group_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the governance group."
+          }
+        },
+        "uniquenessConstraints": {
+          "governance_groups_pkey": [
+            "security_governance_group_id"
+          ]
+        },
+        "foreignRelations": {
+          "governance_groups_owner_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "owner_id": "enterprise_associate_id"
+            }
+          }
+        },
+        "description": "Table storing information about governance groups, used for managing access and permissions."
+      },
+      "security_iam_logins": {
+        "schemaName": "security",
+        "tableName": "iam_logins",
+        "columns": {
+          "login_method": {
+            "name": "login_method",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Method used for the login."
+          },
+          "login_time": {
+            "name": "login_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the login occurred."
+          },
+          "logout_time": {
+            "name": "logout_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the logout occurred."
+          },
+          "security_login_id": {
+            "name": "security_login_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the IAM login."
+          },
+          "system_id": {
+            "name": "system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the system where the login occurred."
+          },
+          "user_name": {
+            "name": "user_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Username used for the login."
+          }
+        },
+        "uniquenessConstraints": {
+          "iam_logins_pkey": [
+            "security_login_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table storing information about IAM logins, tracking user access to systems."
+      },
+      "security_identities": {
+        "schemaName": "security",
+        "tableName": "identities",
+        "columns": {
+          "created": {
+            "name": "created",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the identity was created."
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "User-friendly name of the identity."
+          },
+          "environment": {
+            "name": "environment",
+            "type": {
+              "scalarType": "security_environment"
+            },
+            "nullable": "nullable",
+            "description": "Identifies access to an environment e.g production, development, etc."
+          },
+          "inactive": {
+            "name": "inactive",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the identity is inactive."
+          },
+          "is_fallback_approver": {
+            "name": "is_fallback_approver",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the identity is a fallback approver."
+          },
+          "modified": {
+            "name": "modified",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the identity was last modified."
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Internal name of the identity."
+          },
+          "owner": {
+            "name": "owner",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "security_identity_id": {
+            "name": "security_identity_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the identity."
+          },
+          "security_identity_profile_id": {
+            "name": "security_identity_profile_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the identity profile associated with the identity."
+          },
+          "service_account": {
+            "name": "service_account",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "If false than access is considered to be on behalf of the owner, otherwise this is service account used for system to system automation"
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Status of the identity."
+          },
+          "synced": {
+            "name": "synced",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the identity was last synced."
+          }
+        },
+        "uniquenessConstraints": {
+          "identities_pkey": [
+            "security_identity_id"
+          ]
+        },
+        "foreignRelations": {
+          "identities_owner_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "owner": "enterprise_associate_id"
+            }
+          },
+          "identities_security_identity_profile_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "identity_profiles",
+            "columnMapping": {
+              "security_identity_profile_id": "security_identity_profile_id"
+            }
+          }
+        },
+        "description": "Table storing information about user identities, representing individuals or entities."
+      },
+      "security_identity_access_profiles": {
+        "schemaName": "security",
+        "tableName": "identity_access_profiles",
+        "columns": {
+          "security_access_profile_id": {
+            "name": "security_access_profile_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the associated access profile."
+          },
+          "security_identity_id": {
+            "name": "security_identity_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the associated identity."
+          }
+        },
+        "uniquenessConstraints": {
+          "identity_access_profiles_pkey": [
+            "security_access_profile_id",
+            "security_identity_id"
+          ]
+        },
+        "foreignRelations": {
+          "identity_access_profiles_security_access_profile_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "access_profiles",
+            "columnMapping": {
+              "security_access_profile_id": "security_access_profile_id"
+            }
+          },
+          "identity_access_profiles_security_identity_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "identities",
+            "columnMapping": {
+              "security_identity_id": "security_identity_id"
+            }
+          }
+        },
+        "description": "Table linking identities to access profiles, granting specific permissions."
+      },
+      "security_identity_attributes": {
+        "schemaName": "security",
+        "tableName": "identity_attributes",
+        "columns": {
+          "attribute_name": {
+            "name": "attribute_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Name of the identity attribute."
+          },
+          "attribute_value": {
+            "name": "attribute_value",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Value of the identity attribute."
+          },
+          "security_identity_id": {
+            "name": "security_identity_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the associated identity."
+          }
+        },
+        "uniquenessConstraints": {
+          "identity_attributes_pkey": [
+            "attribute_name",
+            "security_identity_id"
+          ]
+        },
+        "foreignRelations": {
+          "identity_attributes_security_identity_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "identities",
+            "columnMapping": {
+              "security_identity_id": "security_identity_id"
+            }
+          }
+        },
+        "description": "Table storing attributes associated with identities, providing additional identity information."
+      },
+      "security_identity_entitlements": {
+        "schemaName": "security",
+        "tableName": "identity_entitlements",
+        "columns": {
+          "security_entitlement_id": {
+            "name": "security_entitlement_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the associated entitlement."
+          },
+          "security_identity_id": {
+            "name": "security_identity_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the associated identity."
+          }
+        },
+        "uniquenessConstraints": {
+          "identity_entitlements_pkey": [
+            "security_entitlement_id",
+            "security_identity_id"
+          ]
+        },
+        "foreignRelations": {
+          "identity_entitlements_security_entitlement_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "entitlements",
+            "columnMapping": {
+              "security_entitlement_id": "security_entitlement_id"
+            }
+          },
+          "identity_entitlements_security_identity_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "identities",
+            "columnMapping": {
+              "security_identity_id": "security_identity_id"
+            }
+          }
+        },
+        "description": "Table linking identities to entitlements, granting specific access rights."
+      },
+      "security_identity_profiles": {
+        "schemaName": "security",
+        "tableName": "identity_profiles",
+        "columns": {
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the identity profile."
+          },
+          "security_identity_profile_id": {
+            "name": "security_identity_profile_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the identity profile."
+          }
+        },
+        "uniquenessConstraints": {
+          "identity_profiles_pkey": [
+            "security_identity_profile_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table storing information about identity profiles, defining sets of attributes and rules for identities."
+      },
+      "security_identity_roles": {
+        "schemaName": "security",
+        "tableName": "identity_roles",
+        "columns": {
+          "security_identity_id": {
+            "name": "security_identity_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the associated identity."
+          },
+          "security_role_id": {
+            "name": "security_role_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the associated role."
+          }
+        },
+        "uniquenessConstraints": {
+          "identity_roles_pkey": [
+            "security_identity_id",
+            "security_role_id"
+          ]
+        },
+        "foreignRelations": {
+          "identity_roles_security_identity_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "identities",
+            "columnMapping": {
+              "security_identity_id": "security_identity_id"
+            }
+          },
+          "identity_roles_security_role_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "roles",
+            "columnMapping": {
+              "security_role_id": "security_role_id"
+            }
+          }
+        },
+        "description": "Table linking identities to roles, granting specific sets of permissions."
+      },
+      "security_installed_applications": {
+        "schemaName": "security",
+        "tableName": "installed_applications",
+        "columns": {
+          "application_version": {
+            "name": "application_version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Version of the installed application."
+          },
+          "installation_date": {
+            "name": "installation_date",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the application was installed."
+          },
+          "installed_application_name": {
+            "name": "installed_application_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Name of the installed application."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the application is installed."
+          }
+        },
+        "uniquenessConstraints": {
+          "installed_applications_pkey": [
+            "installed_application_name",
+            "security_system_id"
+          ]
+        },
+        "foreignRelations": {
+          "installed_applications_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about installed applications on systems, tracking software installations."
+      },
+      "security_network_connections": {
+        "schemaName": "security",
+        "tableName": "network_connections",
+        "columns": {
+          "connection_type": {
+            "name": "connection_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of network connection (e.g., TCP, UDP)."
+          },
+          "end_time": {
+            "name": "end_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the connection ended."
+          },
+          "local_ip": {
+            "name": "local_ip",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Local IP address of the connection."
+          },
+          "local_port": {
+            "name": "local_port",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Local port number of the connection."
+          },
+          "protocol": {
+            "name": "protocol",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Network protocol used for the connection."
+          },
+          "remote_ip": {
+            "name": "remote_ip",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Remote IP address of the connection."
+          },
+          "remote_port": {
+            "name": "remote_port",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Remote port number of the connection."
+          },
+          "security_network_connection_id": {
+            "name": "security_network_connection_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the network connection."
+          },
+          "security_process_execution_id": {
+            "name": "security_process_execution_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the process execution that initiated the connection."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the connection originated."
+          },
+          "start_time": {
+            "name": "start_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the connection started."
+          }
+        },
+        "uniquenessConstraints": {
+          "network_connections_pkey": [
+            "security_network_connection_id"
+          ]
+        },
+        "foreignRelations": {
+          "network_connections_security_process_execution_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "process_executions",
+            "columnMapping": {
+              "security_process_execution_id": "security_process_execution_id"
+            }
+          },
+          "network_connections_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about network connections, tracking network traffic and activity."
+      },
+      "security_network_events": {
+        "schemaName": "security",
+        "tableName": "network_events",
+        "columns": {
+          "ack": {
+            "name": "ack",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": "TCP acknowledgment number, if applicable."
+          },
+          "bytes_received": {
+            "name": "bytes_received",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Number of bytes received during the event."
+          },
+          "bytes_sent": {
+            "name": "bytes_sent",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Number of bytes sent during the event."
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "Timestamp when the event record was created."
+          },
+          "dest_ip": {
+            "name": "dest_ip",
+            "type": {
+              "scalarType": "inet"
+            },
+            "nullable": "nonNullable",
+            "description": "Destination IP address of the network event."
+          },
+          "dest_port": {
+            "name": "dest_port",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Destination port of the network event."
+          },
+          "length": {
+            "name": "length",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Length of the data packet in bytes."
+          },
+          "log_message": {
+            "name": "log_message",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Detailed log message associated with the network event."
+          },
+          "protocol": {
+            "name": "protocol",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Network protocol used (e.g., TCP, UDP, ICMP)."
+          },
+          "security_device_id": {
+            "name": "security_device_id",
+            "type": {
+              "scalarType": "inet"
+            },
+            "nullable": "nonNullable",
+            "description": "IP address of the device involved in the event, foreign key referencing the devices table."
+          },
+          "security_network_event_id": {
+            "name": "security_network_event_id",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Unique identifier for the network event. Automatically incrementing."
+          },
+          "sequence": {
+            "name": "sequence",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": "TCP sequence number, if applicable."
+          },
+          "source_ip": {
+            "name": "source_ip",
+            "type": {
+              "scalarType": "inet"
+            },
+            "nullable": "nonNullable",
+            "description": "Source IP address of the network event."
+          },
+          "source_port": {
+            "name": "source_port",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Source port of the network event."
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Status of the network event (e.g., success, failure, blocked)."
+          },
+          "tcp_flag": {
+            "name": "tcp_flag",
+            "type": {
+              "scalarType": "security_tcp_flag_type"
+            },
+            "nullable": "nullable",
+            "description": "TCP flags associated with the event, if applicable."
+          },
+          "timestamp": {
+            "name": "timestamp",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "description": "Timestamp when the network event occurred."
+          },
+          "window_size": {
+            "name": "window_size",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "TCP window size, if applicable."
+          }
+        },
+        "uniquenessConstraints": {
+          "network_events_pkey": [
+            "security_network_event_id"
+          ]
+        },
+        "foreignRelations": {
+          "network_events_security_device_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "devices",
+            "columnMapping": {
+              "security_device_id": "security_device_id"
+            }
+          }
+        },
+        "description": "Table storing detailed information about network events for security monitoring and analysis."
+      },
+      "security_open_ports": {
+        "schemaName": "security",
+        "tableName": "open_ports",
+        "columns": {
+          "port_number": {
+            "name": "port_number",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Port number that is open."
+          },
+          "protocol": {
+            "name": "protocol",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Network protocol associated with the open port."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system with the open port."
+          }
+        },
+        "uniquenessConstraints": {
+          "open_ports_pkey": [
+            "port_number",
+            "protocol",
+            "security_system_id"
+          ]
+        },
+        "foreignRelations": {
+          "open_ports_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about open ports on systems, tracking network services and potential vulnerabilities."
+      },
+      "security_policies": {
+        "schemaName": "security",
+        "tableName": "policies",
+        "columns": {
+          "active": {
+            "name": "active",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "Indicates whether the policy is currently active."
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "Timestamp when the policy was created."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "Detailed description of the policy."
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Name of the policy. Must be unique."
+          },
+          "security_policy_id": {
+            "name": "security_policy_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the policy."
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "Timestamp when the policy was last updated."
+          }
+        },
+        "uniquenessConstraints": {
+          "policies_name_key": [
+            "name"
+          ],
+          "policies_pkey": [
+            "security_policy_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table storing security policies and their details."
+      },
+      "security_policy_attributes": {
+        "schemaName": "security",
+        "tableName": "policy_attributes",
+        "columns": {
+          "attribute_name": {
+            "name": "attribute_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Name of the policy attribute."
+          },
+          "attribute_value": {
+            "name": "attribute_value",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Value of the policy attribute."
+          },
+          "security_policy_id": {
+            "name": "security_policy_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Foreign key referencing the policy_id in the policies table."
+          }
+        },
+        "uniquenessConstraints": {
+          "policy_attributes_pkey": [
+            "attribute_name",
+            "security_policy_id"
+          ]
+        },
+        "foreignRelations": {
+          "policy_attributes_security_policy_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "policies",
+            "columnMapping": {
+              "security_policy_id": "security_policy_id"
+            }
+          }
+        },
+        "description": "Table storing attributes associated with security policies. Allows for flexible policy configuration."
+      },
+      "security_policy_rules": {
+        "schemaName": "security",
+        "tableName": "policy_rules",
+        "columns": {
+          "rule_description": {
+            "name": "rule_description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "Detailed description of the policy rule."
+          },
+          "rule_name": {
+            "name": "rule_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Name of the policy rule."
+          },
+          "security_policy_id": {
+            "name": "security_policy_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Foreign key referencing the policy_id in the policies table."
+          },
+          "security_policy_rule_id": {
+            "name": "security_policy_rule_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the policy rule."
+          }
+        },
+        "uniquenessConstraints": {
+          "policy_rules_pkey": [
+            "security_policy_rule_id"
+          ]
+        },
+        "foreignRelations": {
+          "policy_rules_security_policy_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "policies",
+            "columnMapping": {
+              "security_policy_id": "security_policy_id"
+            }
+          }
+        },
+        "description": "Table storing specific rules associated with security policies."
+      },
+      "security_process_executions": {
+        "schemaName": "security",
+        "tableName": "process_executions",
+        "columns": {
+          "command_line": {
+            "name": "command_line",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Command line used to execute the process."
+          },
+          "end_time": {
+            "name": "end_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the process execution ended."
+          },
+          "parent_process_id": {
+            "name": "parent_process_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Process ID of the parent process."
+          },
+          "process_id": {
+            "name": "process_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Process ID of the executed process."
+          },
+          "process_name": {
+            "name": "process_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the executed process."
+          },
+          "security_process_execution_id": {
+            "name": "security_process_execution_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the process execution."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the process was executed."
+          },
+          "start_time": {
+            "name": "start_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the process execution started."
+          },
+          "user_name": {
+            "name": "user_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Username of the user who executed the process."
+          }
+        },
+        "uniquenessConstraints": {
+          "process_executions_pkey": [
+            "security_process_execution_id"
+          ]
+        },
+        "foreignRelations": {
+          "process_executions_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about process executions, tracking application activity and system behavior."
+      },
+      "security_roles": {
+        "schemaName": "security",
+        "tableName": "roles",
+        "columns": {
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Description of the role."
+          },
+          "disabled": {
+            "name": "disabled",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if the role is disabled."
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "User-friendly name of the role."
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Internal name of the role."
+          },
+          "owner_id": {
+            "name": "owner_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the owner of the role."
+          },
+          "security_role_id": {
+            "name": "security_role_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the role."
+          }
+        },
+        "uniquenessConstraints": {
+          "roles_pkey": [
+            "security_role_id"
+          ]
+        },
+        "foreignRelations": {
+          "roles_owner_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "owner_id": "enterprise_associate_id"
+            }
+          }
+        },
+        "description": "Table storing information about roles, defining sets of permissions and access rights."
+      },
+      "security_running_services": {
+        "schemaName": "security",
+        "tableName": "running_services",
+        "columns": {
+          "running_service_name": {
+            "name": "running_service_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Name of the running service."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system with the running service."
+          },
+          "start_time": {
+            "name": "start_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the service started running."
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Status of the running service (e.g., running, stopped)."
+          }
+        },
+        "uniquenessConstraints": {
+          "running_services_pkey": [
+            "running_service_name",
+            "security_system_id"
+          ]
+        },
+        "foreignRelations": {
+          "running_services_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about running services on systems, tracking system services and their states."
+      },
+      "security_sources": {
+        "schemaName": "security",
+        "tableName": "sources",
+        "columns": {
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the source system."
+          },
+          "owner_id": {
+            "name": "owner_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the owner of the source system."
+          },
+          "security_source_id": {
+            "name": "security_source_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the source system."
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of the source system."
+          }
+        },
+        "uniquenessConstraints": {
+          "sources_pkey": [
+            "security_source_id"
+          ]
+        },
+        "foreignRelations": {
+          "sources_owner_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "owner_id": "enterprise_associate_id"
+            }
+          }
+        },
+        "description": "Table storing information about source systems, providing data for identities and accounts."
+      },
+      "security_system_stats": {
+        "schemaName": "security",
+        "tableName": "system_stats",
+        "columns": {
+          "cpu_usage_percent": {
+            "name": "cpu_usage_percent",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "CPU usage percentage."
+          },
+          "disk_free_gb": {
+            "name": "disk_free_gb",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Free disk space in gigabytes."
+          },
+          "disk_total_gb": {
+            "name": "disk_total_gb",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Total disk space in gigabytes."
+          },
+          "memory_total_gb": {
+            "name": "memory_total_gb",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Total memory in gigabytes."
+          },
+          "memory_usage_gb": {
+            "name": "memory_usage_gb",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Memory usage in gigabytes."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system for which statistics are recorded."
+          },
+          "security_system_stat_id": {
+            "name": "security_system_stat_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the system statistics record."
+          },
+          "timestamp": {
+            "name": "timestamp",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the statistics were recorded."
+          }
+        },
+        "uniquenessConstraints": {
+          "system_stats_pkey": [
+            "security_system_stat_id"
+          ]
+        },
+        "foreignRelations": {
+          "system_stats_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing system statistics, tracking resource usage and performance metrics."
+      },
+      "security_systems": {
+        "schemaName": "security",
+        "tableName": "systems",
+        "columns": {
+          "agent_id": {
+            "name": "agent_id",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the agent installed on the system."
+          },
+          "agent_status": {
+            "name": "agent_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Status of the agent installed on the system."
+          },
+          "agent_version": {
+            "name": "agent_version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Version of the agent installed on the system."
+          },
+          "asset_owner_email": {
+            "name": "asset_owner_email",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Email of the asset owner."
+          },
+          "asset_owner_name": {
+            "name": "asset_owner_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the asset owner."
+          },
+          "checked_out_date": {
+            "name": "checked_out_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Date when the system was checked out."
+          },
+          "compliance": {
+            "name": "compliance",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Compliance status of the system."
+          },
+          "hostname": {
+            "name": "hostname",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Hostname of the system."
+          },
+          "ip_address_external": {
+            "name": "ip_address_external",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "External IP address of the system."
+          },
+          "ip_address_internal": {
+            "name": "ip_address_internal",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Internal IP address of the system."
+          },
+          "last_patched": {
+            "name": "last_patched",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the system was last patched."
+          },
+          "last_seen": {
+            "name": "last_seen",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the system was last seen."
+          },
+          "mac_address": {
+            "name": "mac_address",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "MAC address of the system."
+          },
+          "os": {
+            "name": "os",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Operating system of the system."
+          },
+          "os_version": {
+            "name": "os_version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Operating system version."
+          },
+          "patch_level": {
+            "name": "patch_level",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Patch level of the system."
+          },
+          "patch_status": {
+            "name": "patch_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Status of system patches."
+          },
+          "patch_update_available": {
+            "name": "patch_update_available",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if patch updates are available."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the system."
+          },
+          "system_type": {
+            "name": "system_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of the system (e.g., server, workstation)."
+          }
+        },
+        "uniquenessConstraints": {
+          "systems_pkey": [
+            "security_system_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table storing information about systems, including hardware, software, and status details."
+      },
+      "security_usb_device_usage": {
+        "schemaName": "security",
+        "tableName": "usb_device_usage",
+        "columns": {
+          "connection_time": {
+            "name": "connection_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the USB device was connected."
+          },
+          "device_name": {
+            "name": "device_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the USB device."
+          },
+          "device_type": {
+            "name": "device_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of the USB device."
+          },
+          "disconnection_time": {
+            "name": "disconnection_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the USB device was disconnected."
+          },
+          "security_system_id": {
+            "name": "security_system_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the USB device was used."
+          },
+          "security_usb_device_usage_id": {
+            "name": "security_usb_device_usage_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the USB device usage record."
+          }
+        },
+        "uniquenessConstraints": {
+          "usb_device_usage_pkey": [
+            "security_usb_device_usage_id"
+          ]
+        },
+        "foreignRelations": {
+          "usb_device_usage_security_system_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "systems",
+            "columnMapping": {
+              "security_system_id": "security_system_id"
+            }
+          }
+        },
+        "description": "Table storing information about USB device usage, tracking connection and disconnection times."
+      },
       "small_business_banking_account_signatories": {
         "schemaName": "small_business_banking",
         "tableName": "account_signatories",
@@ -22695,6 +25356,264 @@
           },
           "typeRepresentation": "date"
         },
+        "float4": {
+          "typeName": "float4",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "float8"
+            },
+            "max": {
+              "returnType": "float4"
+            },
+            "min": {
+              "returnType": "float4"
+            },
+            "stddev": {
+              "returnType": "float8"
+            },
+            "stddev_pop": {
+              "returnType": "float8"
+            },
+            "stddev_samp": {
+              "returnType": "float8"
+            },
+            "sum": {
+              "returnType": "float4"
+            },
+            "var_pop": {
+              "returnType": "float8"
+            },
+            "var_samp": {
+              "returnType": "float8"
+            },
+            "variance": {
+              "returnType": "float8"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "float4",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "float4",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "float4",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "float4",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "float4",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "float4",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "float4",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "float32"
+        },
+        "float8": {
+          "typeName": "float8",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "float8"
+            },
+            "max": {
+              "returnType": "float8"
+            },
+            "min": {
+              "returnType": "float8"
+            },
+            "stddev": {
+              "returnType": "float8"
+            },
+            "stddev_pop": {
+              "returnType": "float8"
+            },
+            "stddev_samp": {
+              "returnType": "float8"
+            },
+            "sum": {
+              "returnType": "float8"
+            },
+            "var_pop": {
+              "returnType": "float8"
+            },
+            "var_samp": {
+              "returnType": "float8"
+            },
+            "variance": {
+              "returnType": "float8"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "float8",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "float8",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "float8",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "float8",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "float8",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "float8",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "float8",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "float64"
+        },
+        "inet": {
+          "typeName": "inet",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "inet"
+            },
+            "min": {
+              "returnType": "inet"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "inet",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "inet",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": true
+            },
+            "inet_same_family": {
+              "operatorName": "inet_same_family",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": false
+            },
+            "network_overlap": {
+              "operatorName": "network_overlap",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": false
+            },
+            "network_sub": {
+              "operatorName": "network_sub",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": false
+            },
+            "network_subeq": {
+              "operatorName": "network_subeq",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": false
+            },
+            "network_sup": {
+              "operatorName": "network_sup",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": false
+            },
+            "network_supeq": {
+              "operatorName": "network_supeq",
+              "operatorKind": "custom",
+              "argumentType": "inet",
+              "isInfix": false
+            }
+          },
+          "typeRepresentation": null
+        },
         "int4": {
           "typeName": "int4",
           "schemaName": "pg_catalog",
@@ -23028,6 +25947,140 @@
           },
           "typeRepresentation": "bigDecimalAsString"
         },
+        "security_environment": {
+          "typeName": "environment",
+          "schemaName": "security",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "security_environment"
+            },
+            "min": {
+              "returnType": "security_environment"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "security_environment",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "security_environment",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "security_environment",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "security_environment",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "security_environment",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "security_environment",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "security_environment",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "production",
+              "preproduction",
+              "qa",
+              "development"
+            ]
+          }
+        },
+        "security_tcp_flag_type": {
+          "typeName": "tcp_flag_type",
+          "schemaName": "security",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "security_tcp_flag_type"
+            },
+            "min": {
+              "returnType": "security_tcp_flag_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "security_tcp_flag_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "security_tcp_flag_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "security_tcp_flag_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "security_tcp_flag_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "security_tcp_flag_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "security_tcp_flag_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "security_tcp_flag_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SYN",
+              "ACK",
+              "FIN",
+              "RST",
+              "PSH",
+              "URG",
+              "ECE",
+              "CWR"
+            ]
+          }
+        },
         "text": {
           "typeName": "text",
           "schemaName": "pg_catalog",
@@ -23261,6 +26314,57 @@
             }
           },
           "typeRepresentation": "timestamptz"
+        },
+        "uuid": {
+          "typeName": "uuid",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {},
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "uuid",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "uuid",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "uUID"
         },
         "varchar": {
           "typeName": "varchar",

@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS security.cve_problem (
     cve character(20) NOT NULL,
     -- Problem description related to the CVE.
     problem text
+    cwe_id integer
 );
 
 -- Stores Common Weakness Enumeration (CWE) information.
@@ -496,11 +497,11 @@ def process_cves(directory='nvd/', results='results', csv_file=None, import_db=N
         try:
             connect(dbname=database, user=user, host=host, password=password, port=port)
         except (Exception, psycopg2.DatabaseError) as _error:
-            mypassword = getpass.getpass('Password:')
+            password = getpass.getpass('Password:')
         finally:
             try:
                 conn = psycopg2.connect(
-                    "dbname='" + database + "' user='" + user + "' host='" + host + "' password='" + mypassword + "' options='-c search_path=security'")
+                    "dbname='" + database + "' user='" + user + "' host='" + host + "' password='" + password + "' options='-c search_path=security'")
             except psycopg2.Error as e:
                 print("I am unable to connect to the database. Error:", e)
                 print("Exiting")
@@ -519,11 +520,22 @@ def process_cves(directory='nvd/', results='results', csv_file=None, import_db=N
             conn.commit()
             f.close()
             filename = results + "cve_related_problems.csv"
-            with open(filename, 'r') as f:
+            with open(filename, 'r', encoding='utf8') as f:
                 print("importing CVE-related problems")
                 f.readline()
-                cur.copy_from(f, 'cve_problem', sep='\t', columns=('cve', 'problem'))
+                data = csv.reader(f, delimiter='\t')
+                temp_output = io.StringIO()
+                temp_writer = csv.writer(temp_output, delimiter='\t')
+                for row in data:
+                    cve = row[0]
+                    problem = row[1]
+                    match = re.search(r'\d+', problem)
+                    cwe_id = int(match.group(0)) if match else None
+                    temp_writer.writerow([cve, problem, cwe_id])
+                temp_output.seek(0)
+                cur.copy_from(temp_output, 'cve_problem', sep='\t', columns=('cve', 'problem', 'cwe_id'))
             conn.commit()
+            f.close()
             f.close()
             filename = results + "cve_cpes.csv"
             with open(filename, 'r') as f:
@@ -770,41 +782,76 @@ def execute_query_cwe(myuser, myhost, database, cwe):
 
 
 #def cwe(myuser,mypassword,myhost,database,filename):
-def cwe(myuser, myhost, database, filename):
+def cwe(user, host, database, password=None, port=5432):
     con = None
-    mypassword = None
     cur = None
+    cwe_url = "https://cwe.mitre.org/data/csv/2000.csv.zip"
+    local_zip_file = "cwe.csv.zip"
+    extracted_csv_file = "cwe.csv"
+
     try:
-        con = connect(dbname=database, user=myuser, host=myhost)
-    except (Exception, psycopg2.DatabaseError) as _error:
-        mypassword = getpass.getpass('Password:')
-    finally:
+        # Download the CWE CSV zip file
+        response = requests.get(cwe_url, stream=True)
+        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+
+        with open(local_zip_file, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+        # Extract the CSV file from the zip archive
+        with zipfile.ZipFile(local_zip_file, 'r') as zip_ref:
+            extracted_files = zip_ref.namelist()
+            if not extracted_files:
+                raise Exception("Zip file is empty")
+            extracted_csv_file = extracted_files[0]  # Take the first file found.
+            zip_ref.extractall()
+
+        # Connect to the database
         try:
-            con = connect(dbname=database, user=myuser, host=myhost, password=mypassword)
-            cur = con.cursor()
-            with open(filename, 'r') as f:
-                print("importing cwe")
-                reader = csv.reader(f)
-                header_row = next(reader)
-                cwe = io.StringIO()
-                writer_cwe = csv.writer(cwe)
-                writer_cwe.writerow(["cwe_id", "name", "description", "extended_decription", "modes_of_introduction",
-                                     "common_consequences", "potential_mitigations"])
-                for row in reader:
-                    writer_cwe.writerow([row[0], row[1], row[4], row[5], row[11], row[14], row[16]])
-                cwe.seek(0)
-                cwe.readline()
-                cur.copy_expert(
-                    """COPY cwe(cwe_id, name, description, extended_description, modes_of_introduction, common_consequences, potential_mitigations) FROM STDIN WITH (FORMAT CSV)""",
-                    cwe)
-                con.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print("Error while Querying Database", error)
-        finally:
-            if con:
-                cur.close()
-                con.close()
-                print("PostgreSQL connection is closed")
+            con = psycopg2.connect(dbname=database, user=user, host=host, password=password, port=port, options='-c search_path=security')
+        except (Exception, psycopg2.DatabaseError) as _error:
+            password = getpass.getpass('Password:')
+            con = psycopg2.connect(dbname=database, user=user, host=host, password=password, port=port, options='-c search_path=security')
+
+        cur = con.cursor()
+
+        # Import the CWE data from the extracted CSV file
+        with open(extracted_csv_file, 'r', encoding='utf-8') as f:
+            print("Importing CWE data")
+            reader = csv.reader(f)
+            header_row = next(reader)
+            cwe_data = io.StringIO()
+            writer_cwe = csv.writer(cwe_data)
+            writer_cwe.writerow(["cwe_id", "name", "description", "extended_description", "modes_of_introduction",
+                                 "common_consequences", "potential_mitigations"])
+            for row in reader:
+                writer_cwe.writerow([row[0], row[1], row[4], row[5], row[11], row[14], row[16]])
+            cwe_data.seek(0)
+            cwe_data.readline()
+            cur.copy_expert(
+                """COPY cwe(cwe_id, name, description, extended_description, modes_of_introduction, common_consequences, potential_mitigations) FROM STDIN WITH (FORMAT CSV)""",
+                cwe_data)
+            con.commit()
+
+        print("CWE data imported successfully.")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading CWE file: {e}")
+    except zipfile.BadZipFile:
+        print("Error: downloaded file is not a valid zip file.")
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(f"Error while importing CWE data: {error}")
+    finally:
+        if con:
+            cur.close()
+            con.close()
+            print("PostgreSQL connection is closed")
+
+        # Clean up the downloaded and extracted files
+        if os.path.exists(local_zip_file):
+            os.remove(local_zip_file)
+        if os.path.exists(extracted_csv_file):
+            os.remove(extracted_csv_file)
 
 
 if __name__ == '__main__':

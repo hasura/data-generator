@@ -1,0 +1,185 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityRunningServices
+  description: Table storing information about running services on systems,
+    tracking system services and their states.
+  fields:
+    - name: runningServiceName
+      type: Varchar!
+      description: Name of the running service.
+    - name: securitySystemId
+      type: Uuid!
+      description: Identifier of the system with the running service.
+    - name: startTime
+      type: Timestamp
+      description: Timestamp when the service started running.
+    - name: status
+      type: Varchar
+      description: Status of the running service (e.g., running, stopped).
+  graphql:
+    typeName: Security_SecurityRunningServices
+    inputTypeName: Security_SecurityRunningServicesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_running_services
+      fieldMapping:
+        runningServiceName:
+          column:
+            name: running_service_name
+        securitySystemId:
+          column:
+            name: security_system_id
+        startTime:
+          column:
+            name: start_time
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityRunningServices
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - runningServiceName
+          - securitySystemId
+          - startTime
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityRunningServicesBoolExp
+  operand:
+    object:
+      type: SecurityRunningServices
+      comparableFields:
+        - fieldName: runningServiceName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securitySystemId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: startTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: securitySystem
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityRunningServicesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityRunningServicesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityRunningServices
+      aggregatableFields:
+        - fieldName: runningServiceName
+          aggregateExpression: VarcharAggExp
+        - fieldName: securitySystemId
+          aggregateExpression: UuidAggExp
+        - fieldName: startTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityRunningServicesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityRunningServicesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityRunningServices
+      orderableFields:
+        - fieldName: runningServiceName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securitySystemId
+          orderByExpression: UuidOrderByExp
+        - fieldName: startTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: securitySystem
+  graphql:
+    expressionTypeName: Security_SecurityRunningServicesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityRunningServices
+  objectType: SecurityRunningServices
+  source:
+    dataConnectorName: security
+    collection: security_running_services
+  filterExpressionType: SecurityRunningServicesBoolExp
+  aggregateExpression: SecurityRunningServicesAggExp
+  orderByExpression: SecurityRunningServicesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityRunningServices
+      subscription:
+        rootField: securityRunningServices
+    selectUniques:
+      - queryRootField: securityRunningServicesByRunningServicesPkey
+        uniqueIdentifier:
+          - runningServiceName
+          - securitySystemId
+        subscription:
+          rootField: securityRunningServicesByRunningServicesPkey
+    filterInputTypeName: Security_SecurityRunningServicesFilterInput
+    aggregate:
+      queryRootField: securityRunningServicesAggregate
+      subscription:
+        rootField: securityRunningServicesAggregate
+  description: Table storing information about running services on systems,
+    tracking system services and their states.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityRunningServices
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySystem
+  sourceType: SecurityRunningServices
+  target:
+    model:
+      name: SecuritySystems
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySystemId
+      target:
+        modelField:
+          - fieldName: securitySystemId
+

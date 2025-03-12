@@ -1,0 +1,177 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityIdentityRoles
+  description: Table linking identities to roles, granting specific sets of permissions.
+  fields:
+    - name: securityIdentityId
+      type: Uuid!
+      description: Identifier of the associated identity.
+    - name: securityRoleId
+      type: Uuid!
+      description: Identifier of the associated role.
+  graphql:
+    typeName: Security_SecurityIdentityRoles
+    inputTypeName: Security_SecurityIdentityRolesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_identity_roles
+      fieldMapping:
+        securityIdentityId:
+          column:
+            name: security_identity_id
+        securityRoleId:
+          column:
+            name: security_role_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityIdentityRoles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - securityIdentityId
+          - securityRoleId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityIdentityRolesBoolExp
+  operand:
+    object:
+      type: SecurityIdentityRoles
+      comparableFields:
+        - fieldName: securityIdentityId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityRoleId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityIdentity
+        - relationshipName: securityRole
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityIdentityRolesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityIdentityRolesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityIdentityRoles
+      aggregatableFields:
+        - fieldName: securityIdentityId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityRoleId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityIdentityRolesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityIdentityRolesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityIdentityRoles
+      orderableFields:
+        - fieldName: securityIdentityId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityRoleId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: securityIdentity
+        - relationshipName: securityRole
+  graphql:
+    expressionTypeName: Security_SecurityIdentityRolesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityIdentityRoles
+  objectType: SecurityIdentityRoles
+  source:
+    dataConnectorName: security
+    collection: security_identity_roles
+  filterExpressionType: SecurityIdentityRolesBoolExp
+  aggregateExpression: SecurityIdentityRolesAggExp
+  orderByExpression: SecurityIdentityRolesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityIdentityRoles
+      subscription:
+        rootField: securityIdentityRoles
+    selectUniques:
+      - queryRootField: securityIdentityRolesByIdentityRolesPkey
+        uniqueIdentifier:
+          - securityIdentityId
+          - securityRoleId
+        subscription:
+          rootField: securityIdentityRolesByIdentityRolesPkey
+    filterInputTypeName: Security_SecurityIdentityRolesFilterInput
+    aggregate:
+      queryRootField: securityIdentityRolesAggregate
+      subscription:
+        rootField: securityIdentityRolesAggregate
+  description: Table linking identities to roles, granting specific sets of permissions.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityIdentityRoles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityIdentity
+  sourceType: SecurityIdentityRoles
+  target:
+    model:
+      name: SecurityIdentities
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityIdentityId
+      target:
+        modelField:
+          - fieldName: securityIdentityId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityRole
+  sourceType: SecurityIdentityRoles
+  target:
+    model:
+      name: SecurityRoles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityRoleId
+      target:
+        modelField:
+          - fieldName: securityRoleId
+

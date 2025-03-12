@@ -1,0 +1,295 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityProcessExecutions
+  description: Table storing information about process executions, tracking
+    application activity and system behavior.
+  fields:
+    - name: commandLine
+      type: Text
+      description: Command line used to execute the process.
+    - name: endTime
+      type: Timestamp
+      description: Timestamp when the process execution ended.
+    - name: parentProcessId
+      type: Int4
+      description: Process ID of the parent process.
+    - name: processId
+      type: Int4
+      description: Process ID of the executed process.
+    - name: processName
+      type: Varchar
+      description: Name of the executed process.
+    - name: securityProcessExecutionId
+      type: Uuid!
+      description: Unique identifier for the process execution.
+    - name: securitySystemId
+      type: Uuid!
+      description: Identifier of the system where the process was executed.
+    - name: startTime
+      type: Timestamp
+      description: Timestamp when the process execution started.
+    - name: userName
+      type: Varchar
+      description: Username of the user who executed the process.
+  graphql:
+    typeName: Security_SecurityProcessExecutions
+    inputTypeName: Security_SecurityProcessExecutionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_process_executions
+      fieldMapping:
+        commandLine:
+          column:
+            name: command_line
+        endTime:
+          column:
+            name: end_time
+        parentProcessId:
+          column:
+            name: parent_process_id
+        processId:
+          column:
+            name: process_id
+        processName:
+          column:
+            name: process_name
+        securityProcessExecutionId:
+          column:
+            name: security_process_execution_id
+        securitySystemId:
+          column:
+            name: security_system_id
+        startTime:
+          column:
+            name: start_time
+        userName:
+          column:
+            name: user_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityProcessExecutions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - commandLine
+          - endTime
+          - parentProcessId
+          - processId
+          - processName
+          - securityProcessExecutionId
+          - securitySystemId
+          - startTime
+          - userName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityProcessExecutionsBoolExp
+  operand:
+    object:
+      type: SecurityProcessExecutions
+      comparableFields:
+        - fieldName: commandLine
+          booleanExpressionType: TextBoolExp
+        - fieldName: endTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: parentProcessId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: processId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: processName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityProcessExecutionId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securitySystemId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: startTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: userName
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: securityFileAccesses
+        - relationshipName: securityNetworkConnections
+        - relationshipName: securitySystem
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityProcessExecutionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityProcessExecutionsAggExp
+  operand:
+    object:
+      aggregatedType: SecurityProcessExecutions
+      aggregatableFields:
+        - fieldName: commandLine
+          aggregateExpression: TextAggExp
+        - fieldName: endTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: parentProcessId
+          aggregateExpression: Int4AggExp
+        - fieldName: processId
+          aggregateExpression: Int4AggExp
+        - fieldName: processName
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityProcessExecutionId
+          aggregateExpression: UuidAggExp
+        - fieldName: securitySystemId
+          aggregateExpression: UuidAggExp
+        - fieldName: startTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: userName
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityProcessExecutionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityProcessExecutionsOrderByExp
+  operand:
+    object:
+      orderedType: SecurityProcessExecutions
+      orderableFields:
+        - fieldName: commandLine
+          orderByExpression: TextOrderByExp
+        - fieldName: endTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: parentProcessId
+          orderByExpression: Int4OrderByExp
+        - fieldName: processId
+          orderByExpression: Int4OrderByExp
+        - fieldName: processName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityProcessExecutionId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securitySystemId
+          orderByExpression: UuidOrderByExp
+        - fieldName: startTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: userName
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: securitySystem
+  graphql:
+    expressionTypeName: Security_SecurityProcessExecutionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityProcessExecutions
+  objectType: SecurityProcessExecutions
+  source:
+    dataConnectorName: security
+    collection: security_process_executions
+  filterExpressionType: SecurityProcessExecutionsBoolExp
+  aggregateExpression: SecurityProcessExecutionsAggExp
+  orderByExpression: SecurityProcessExecutionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityProcessExecutions
+      subscription:
+        rootField: securityProcessExecutions
+    selectUniques:
+      - queryRootField: securityProcessExecutionsBySecurityProcessExecutionId
+        uniqueIdentifier:
+          - securityProcessExecutionId
+        subscription:
+          rootField: securityProcessExecutionsBySecurityProcessExecutionId
+    filterInputTypeName: Security_SecurityProcessExecutionsFilterInput
+    aggregate:
+      queryRootField: securityProcessExecutionsAggregate
+      subscription:
+        rootField: securityProcessExecutionsAggregate
+  description: Table storing information about process executions, tracking
+    application activity and system behavior.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityProcessExecutions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityFileAccesses
+  sourceType: SecurityProcessExecutions
+  target:
+    model:
+      name: SecurityFileAccesses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityFileAccessesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityProcessExecutionId
+      target:
+        modelField:
+          - fieldName: securityProcessExecutionId
+  graphql:
+    aggregateFieldName: securityFileAccessesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityNetworkConnections
+  sourceType: SecurityProcessExecutions
+  target:
+    model:
+      name: SecurityNetworkConnections
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityNetworkConnectionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityProcessExecutionId
+      target:
+        modelField:
+          - fieldName: securityProcessExecutionId
+  graphql:
+    aggregateFieldName: securityNetworkConnectionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySystem
+  sourceType: SecurityProcessExecutions
+  target:
+    model:
+      name: SecuritySystems
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securitySystemId
+      target:
+        modelField:
+          - fieldName: securitySystemId
+

@@ -11,12 +11,12 @@ definition:
     - name: creditCardsFraudTransactionId
       type: Int4!
       description: Auto-incrementing identifier for each linked transaction
+    - name: creditCardsTransactionId
+      type: Int4!
+      description: Reference to transactions
     - name: isConfirmedFraud
       type: Bool!
       description: Whether transaction is confirmed fraudulent
-    - name: transactionId
-      type: Int4!
-      description: Reference to transactions
   graphql:
     typeName: CreditCards_CreditCardsFraudTransactions
     inputTypeName: CreditCards_CreditCardsFraudTransactionsInput
@@ -30,12 +30,12 @@ definition:
         creditCardsFraudTransactionId:
           column:
             name: credit_cards_fraud_transaction_id
+        creditCardsTransactionId:
+          column:
+            name: credit_cards_transaction_id
         isConfirmedFraud:
           column:
             name: is_confirmed_fraud
-        transactionId:
-          column:
-            name: transaction_id
 
 ---
 kind: TypePermissions
@@ -48,8 +48,8 @@ definition:
         allowedFields:
           - creditCardsCaseId
           - creditCardsFraudTransactionId
+          - creditCardsTransactionId
           - isConfirmedFraud
-          - transactionId
 
 ---
 kind: BooleanExpressionType
@@ -64,10 +64,10 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: creditCardsFraudTransactionId
           booleanExpressionType: Int4BoolExp
+        - fieldName: creditCardsTransactionId
+          booleanExpressionType: Int4BoolExp
         - fieldName: isConfirmedFraud
           booleanExpressionType: BoolBoolExp
-        - fieldName: transactionId
-          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: creditCardsFraudCase
         - relationshipName: creditCardsTransaction
@@ -91,10 +91,10 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: creditCardsFraudTransactionId
           aggregateExpression: Int4AggExp
+        - fieldName: creditCardsTransactionId
+          aggregateExpression: Int4AggExp
         - fieldName: isConfirmedFraud
           aggregateExpression: BoolAggExp
-        - fieldName: transactionId
-          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
@@ -113,10 +113,10 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: creditCardsFraudTransactionId
           orderByExpression: Int4OrderByExp
+        - fieldName: creditCardsTransactionId
+          orderByExpression: Int4OrderByExp
         - fieldName: isConfirmedFraud
           orderByExpression: BoolOrderByExp
-        - fieldName: transactionId
-          orderByExpression: Int4OrderByExp
       orderableRelationships:
         - relationshipName: creditCardsFraudCase
         - relationshipName: creditCardsTransaction
@@ -195,7 +195,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: transactionId
+          - fieldName: creditCardsTransactionId
       target:
         modelField:
           - fieldName: creditCardsTransactionId

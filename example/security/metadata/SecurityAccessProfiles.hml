@@ -1,0 +1,200 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityAccessProfiles
+  description: Table storing information about access profiles, defining sets of
+    permissions or roles.
+  fields:
+    - name: description
+      type: Varchar
+      description: Description of the access profile.
+    - name: displayName
+      type: Varchar
+      description: User-friendly name of the access profile.
+    - name: name
+      type: Varchar
+      description: Internal name of the access profile.
+    - name: ownerId
+      type: Int4
+      description: Identifier of the owner of the access profile.
+    - name: securityAccessProfileId
+      type: Uuid!
+      description: Unique identifier for the access profile.
+  graphql:
+    typeName: Security_SecurityAccessProfiles
+    inputTypeName: Security_SecurityAccessProfilesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_access_profiles
+      fieldMapping:
+        description:
+          column:
+            name: description
+        displayName:
+          column:
+            name: display_name
+        name:
+          column:
+            name: name
+        ownerId:
+          column:
+            name: owner_id
+        securityAccessProfileId:
+          column:
+            name: security_access_profile_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityAccessProfiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - displayName
+          - name
+          - ownerId
+          - securityAccessProfileId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityAccessProfilesBoolExp
+  operand:
+    object:
+      type: SecurityAccessProfiles
+      comparableFields:
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: displayName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: ownerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: securityAccessProfileId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityIdentityAccessProfiles
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityAccessProfilesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityAccessProfilesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityAccessProfiles
+      aggregatableFields:
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: displayName
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: ownerId
+          aggregateExpression: Int4AggExp
+        - fieldName: securityAccessProfileId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityAccessProfilesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityAccessProfilesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityAccessProfiles
+      orderableFields:
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: displayName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: ownerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: securityAccessProfileId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_SecurityAccessProfilesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityAccessProfiles
+  objectType: SecurityAccessProfiles
+  source:
+    dataConnectorName: security
+    collection: security_access_profiles
+  filterExpressionType: SecurityAccessProfilesBoolExp
+  aggregateExpression: SecurityAccessProfilesAggExp
+  orderByExpression: SecurityAccessProfilesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityAccessProfiles
+      subscription:
+        rootField: securityAccessProfiles
+    selectUniques:
+      - queryRootField: securityAccessProfilesBySecurityAccessProfileId
+        uniqueIdentifier:
+          - securityAccessProfileId
+        subscription:
+          rootField: securityAccessProfilesBySecurityAccessProfileId
+    filterInputTypeName: Security_SecurityAccessProfilesFilterInput
+    aggregate:
+      queryRootField: securityAccessProfilesAggregate
+      subscription:
+        rootField: securityAccessProfilesAggregate
+  description: Table storing information about access profiles, defining sets of
+    permissions or roles.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityAccessProfiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityIdentityAccessProfiles
+  sourceType: SecurityAccessProfiles
+  target:
+    model:
+      name: SecurityIdentityAccessProfiles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityIdentityAccessProfilesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityAccessProfileId
+      target:
+        modelField:
+          - fieldName: securityAccessProfileId
+  graphql:
+    aggregateFieldName: securityIdentityAccessProfilesAggregate
+

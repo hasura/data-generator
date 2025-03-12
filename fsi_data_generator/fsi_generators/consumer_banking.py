@@ -4,7 +4,7 @@ from fsi_data_generator.fsi_generators.consumer_banking_generate_transaction_fee
 from fsi_data_generator.fsi_generators.generate_transactions_and_balances import generate_fake_balance, \
     generate_fake_transaction
 from fsi_data_generator.fsi_generators.text_list import text_list
-from fsi_data_generator.fsi_generators.unique_text_list import unique_text_list
+from fsi_data_generator.fsi_generators.unique_list import unique_list
 from fsi_data_generator.fsi_text.consumer_banking__beneficiaries__supplementary_data import \
     consumer_banking__beneficiaries__supplementary_data
 from fsi_data_generator.fsi_text.consumer_banking__customer_interactions__description import \
@@ -126,6 +126,6 @@ def consumer_banking(dg):
                 "immutable"
             ])),
         ('consumer_banking\\.standing_orders', '^supplementary_data$', text_list(consumer_banking__standing_orders__supplementary_data)),
-        ('consumer_banking\\.products', '^product_type$', unique_text_list(tuple(consumer_banking__products__product_type))),
+        ('consumer_banking\\.products', '^product_type$', unique_list(tuple(consumer_banking__products__product_type))),
         ('consumer_banking\\.account_access_consents', '^status$', text_list(["active", "revoked"])),
     ]

@@ -1,0 +1,213 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityRoles
+  description: Table storing information about roles, defining sets of permissions
+    and access rights.
+  fields:
+    - name: description
+      type: Varchar
+      description: Description of the role.
+    - name: disabled
+      type: Bool
+      description: Indicates if the role is disabled.
+    - name: displayName
+      type: Varchar
+      description: User-friendly name of the role.
+    - name: name
+      type: Varchar
+      description: Internal name of the role.
+    - name: ownerId
+      type: Int4
+      description: Identifier of the owner of the role.
+    - name: securityRoleId
+      type: Uuid!
+      description: Unique identifier for the role.
+  graphql:
+    typeName: Security_SecurityRoles
+    inputTypeName: Security_SecurityRolesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_roles
+      fieldMapping:
+        description:
+          column:
+            name: description
+        disabled:
+          column:
+            name: disabled
+        displayName:
+          column:
+            name: display_name
+        name:
+          column:
+            name: name
+        ownerId:
+          column:
+            name: owner_id
+        securityRoleId:
+          column:
+            name: security_role_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityRoles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - disabled
+          - displayName
+          - name
+          - ownerId
+          - securityRoleId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityRolesBoolExp
+  operand:
+    object:
+      type: SecurityRoles
+      comparableFields:
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: disabled
+          booleanExpressionType: BoolBoolExp
+        - fieldName: displayName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: ownerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: securityRoleId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityIdentityRoles
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityRolesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityRolesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityRoles
+      aggregatableFields:
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: disabled
+          aggregateExpression: BoolAggExp
+        - fieldName: displayName
+          aggregateExpression: VarcharAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: ownerId
+          aggregateExpression: Int4AggExp
+        - fieldName: securityRoleId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityRolesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityRolesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityRoles
+      orderableFields:
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: disabled
+          orderByExpression: BoolOrderByExp
+        - fieldName: displayName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: ownerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: securityRoleId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_SecurityRolesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityRoles
+  objectType: SecurityRoles
+  source:
+    dataConnectorName: security
+    collection: security_roles
+  filterExpressionType: SecurityRolesBoolExp
+  aggregateExpression: SecurityRolesAggExp
+  orderByExpression: SecurityRolesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityRoles
+      subscription:
+        rootField: securityRoles
+    selectUniques:
+      - queryRootField: securityRolesBySecurityRoleId
+        uniqueIdentifier:
+          - securityRoleId
+        subscription:
+          rootField: securityRolesBySecurityRoleId
+    filterInputTypeName: Security_SecurityRolesFilterInput
+    aggregate:
+      queryRootField: securityRolesAggregate
+      subscription:
+        rootField: securityRolesAggregate
+  description: Table storing information about roles, defining sets of permissions
+    and access rights.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityRoles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityIdentityRoles
+  sourceType: SecurityRoles
+  target:
+    model:
+      name: SecurityIdentityRoles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityIdentityRolesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityRoleId
+      target:
+        modelField:
+          - fieldName: securityRoleId
+  graphql:
+    aggregateFieldName: securityIdentityRolesAggregate
+

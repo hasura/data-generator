@@ -1,0 +1,239 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityPolicies
+  description: Table storing security policies and their details.
+  fields:
+    - name: active
+      type: Bool
+      description: Indicates whether the policy is currently active.
+    - name: createdAt
+      type: Timestamp
+      description: Timestamp when the policy was created.
+    - name: description
+      type: Text!
+      description: Detailed description of the policy.
+    - name: name
+      type: Varchar!
+      description: Name of the policy. Must be unique.
+    - name: securityPolicyId
+      type: Uuid!
+      description: Unique identifier for the policy.
+    - name: updatedAt
+      type: Timestamp
+      description: Timestamp when the policy was last updated.
+  graphql:
+    typeName: Security_SecurityPolicies
+    inputTypeName: Security_SecurityPoliciesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_policies
+      fieldMapping:
+        active:
+          column:
+            name: active
+        createdAt:
+          column:
+            name: created_at
+        description:
+          column:
+            name: description
+        name:
+          column:
+            name: name
+        securityPolicyId:
+          column:
+            name: security_policy_id
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityPolicies
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - active
+          - createdAt
+          - description
+          - name
+          - securityPolicyId
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityPoliciesBoolExp
+  operand:
+    object:
+      type: SecurityPolicies
+      comparableFields:
+        - fieldName: active
+          booleanExpressionType: BoolBoolExp
+        - fieldName: createdAt
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityPolicyId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestampBoolExp
+      comparableRelationships:
+        - relationshipName: securityPolicyAttributes
+        - relationshipName: securityPolicyRules
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityPoliciesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityPoliciesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityPolicies
+      aggregatableFields:
+        - fieldName: active
+          aggregateExpression: BoolAggExp
+        - fieldName: createdAt
+          aggregateExpression: TimestampAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityPolicyId
+          aggregateExpression: UuidAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestampAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityPoliciesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityPoliciesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityPolicies
+      orderableFields:
+        - fieldName: active
+          orderByExpression: BoolOrderByExp
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityPolicyId
+          orderByExpression: UuidOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_SecurityPoliciesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityPolicies
+  objectType: SecurityPolicies
+  source:
+    dataConnectorName: security
+    collection: security_policies
+  filterExpressionType: SecurityPoliciesBoolExp
+  aggregateExpression: SecurityPoliciesAggExp
+  orderByExpression: SecurityPoliciesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityPolicies
+      subscription:
+        rootField: securityPolicies
+    selectUniques:
+      - queryRootField: securityPoliciesByName
+        uniqueIdentifier:
+          - name
+        subscription:
+          rootField: securityPoliciesByName
+      - queryRootField: securityPoliciesBySecurityPolicyId
+        uniqueIdentifier:
+          - securityPolicyId
+        subscription:
+          rootField: securityPoliciesBySecurityPolicyId
+    filterInputTypeName: Security_SecurityPoliciesFilterInput
+    aggregate:
+      queryRootField: securityPoliciesAggregate
+      subscription:
+        rootField: securityPoliciesAggregate
+  description: Table storing security policies and their details.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityPolicies
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityPolicyAttributes
+  sourceType: SecurityPolicies
+  target:
+    model:
+      name: SecurityPolicyAttributes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityPolicyAttributesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityPolicyId
+      target:
+        modelField:
+          - fieldName: securityPolicyId
+  graphql:
+    aggregateFieldName: securityPolicyAttributesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityPolicyRules
+  sourceType: SecurityPolicies
+  target:
+    model:
+      name: SecurityPolicyRules
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityPolicyRulesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityPolicyId
+      target:
+        modelField:
+          - fieldName: securityPolicyId
+  graphql:
+    aggregateFieldName: securityPolicyRulesAggregate
+

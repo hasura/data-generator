@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityIdentityProfiles
+  description: Table storing information about identity profiles, defining sets of
+    attributes and rules for identities.
+  fields:
+    - name: name
+      type: Varchar
+      description: Name of the identity profile.
+    - name: securityIdentityProfileId
+      type: Uuid!
+      description: Unique identifier for the identity profile.
+  graphql:
+    typeName: Security_SecurityIdentityProfiles
+    inputTypeName: Security_SecurityIdentityProfilesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_identity_profiles
+      fieldMapping:
+        name:
+          column:
+            name: name
+        securityIdentityProfileId:
+          column:
+            name: security_identity_profile_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityIdentityProfiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - name
+          - securityIdentityProfileId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityIdentityProfilesBoolExp
+  operand:
+    object:
+      type: SecurityIdentityProfiles
+      comparableFields:
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: securityIdentityProfileId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: securityIdentities
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityIdentityProfilesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityIdentityProfilesAggExp
+  operand:
+    object:
+      aggregatedType: SecurityIdentityProfiles
+      aggregatableFields:
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+        - fieldName: securityIdentityProfileId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityIdentityProfilesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityIdentityProfilesOrderByExp
+  operand:
+    object:
+      orderedType: SecurityIdentityProfiles
+      orderableFields:
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+        - fieldName: securityIdentityProfileId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_SecurityIdentityProfilesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityIdentityProfiles
+  objectType: SecurityIdentityProfiles
+  source:
+    dataConnectorName: security
+    collection: security_identity_profiles
+  filterExpressionType: SecurityIdentityProfilesBoolExp
+  aggregateExpression: SecurityIdentityProfilesAggExp
+  orderByExpression: SecurityIdentityProfilesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityIdentityProfiles
+      subscription:
+        rootField: securityIdentityProfiles
+    selectUniques:
+      - queryRootField: securityIdentityProfilesBySecurityIdentityProfileId
+        uniqueIdentifier:
+          - securityIdentityProfileId
+        subscription:
+          rootField: securityIdentityProfilesBySecurityIdentityProfileId
+    filterInputTypeName: Security_SecurityIdentityProfilesFilterInput
+    aggregate:
+      queryRootField: securityIdentityProfilesAggregate
+      subscription:
+        rootField: securityIdentityProfilesAggregate
+  description: Table storing information about identity profiles, defining sets of
+    attributes and rules for identities.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityIdentityProfiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityIdentities
+  sourceType: SecurityIdentityProfiles
+  target:
+    model:
+      name: SecurityIdentities
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityIdentitiesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityIdentityProfileId
+      target:
+        modelField:
+          - fieldName: securityIdentityProfileId
+  graphql:
+    aggregateFieldName: securityIdentitiesAggregate
+

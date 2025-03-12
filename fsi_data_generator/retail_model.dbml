@@ -1431,8 +1431,8 @@ Table consumer_lending.loan_applications {
 
 Table "consumer_lending"."application_applicants" {
   "consumer_lending_application_applicant_id" SERIAL [pk, increment, note: "Unique identifier for application-applicant relationship"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "applicant_type" VARCHAR(20) [not null, note: "Primary, Co-Applicant, Guarantor"]
   "relationship_to_primary" VARCHAR(50) [note: "Spouse, Relative, Friend, etc."]
   "contribution_percentage" NUMERIC(5,2) [note: "Percentage of loan responsibility"]
@@ -1468,7 +1468,7 @@ Table "consumer_lending"."applicants" {
 
 Table "consumer_lending"."applicant_employments" {
   "consumer_lending_employment_id" SERIAL [pk, increment, note: "Unique identifier for employment record"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "employer_name" VARCHAR(150) [not null, note: "Name of employer"]
   "position" VARCHAR(100) [not null, note: "Job title or position"]
   "enterprise_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses for employer location"]
@@ -1485,7 +1485,7 @@ Table "consumer_lending"."applicant_employments" {
 
 Table "consumer_lending"."applicant_incomes" {
   "consumer_lending_income_id" SERIAL [pk, increment, note: "Unique identifier for income record"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "income_type" VARCHAR(50) [not null, note: "Salary, Self-employment, Rental, Alimony, etc."]
   "amount" NUMERIC(18,2) [not null, note: "Income amount"]
   "frequency" VARCHAR(20) [not null, note: "Monthly, Annual, etc."]
@@ -1497,7 +1497,7 @@ Table "consumer_lending"."applicant_incomes" {
 
 Table "consumer_lending"."applicant_assets" {
   "consumer_lending_asset_id" SERIAL [pk, increment, note: "Unique identifier for asset record"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "asset_type" VARCHAR(50) [not null, note: "Checking, Savings, Investments, Property"]
   "institution_name" VARCHAR(100) [note: "Financial institution holding the asset"]
   "account_number" VARCHAR(50) [note: "Account number, stored encrypted"]
@@ -1511,7 +1511,7 @@ Table "consumer_lending"."applicant_assets" {
 
 Table "consumer_lending"."applicant_liabilities" {
   "consumer_lending_liability_id" SERIAL [pk, increment, note: "Unique identifier for liability record"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "liability_type" VARCHAR(50) [not null, note: "Credit Card, Auto Loan, Student Loan"]
   "creditor_name" VARCHAR(100) [not null, note: "Name of creditor"]
   "account_number" VARCHAR(50) [note: "Account number, stored encrypted"]
@@ -1555,7 +1555,7 @@ Table "consumer_lending"."loan_products" [note: "Contains definitions of loan pr
 
 Table "consumer_lending"."product_eligibility_criteria" {
   "consumer_lending_criteria_id" SERIAL [pk, increment, note: "Unique identifier for eligibility criteria"]
-  "consumer_lending_loan_product_id" INTEGER [not null, note: "Reference to loan product"]
+  "consumer_lending_loan_product_id" INTEGER [not null, ref: > consumer_lending.loan_products.consumer_lending_loan_product_id, note: "Reference to loan product"]
   "criteria_type" VARCHAR(50) [not null, note: "Credit Score, Income, DTI, Employment"]
   "min_value" VARCHAR(50) [note: "Minimum value for eligibility"]
   "max_value" VARCHAR(50) [note: "Maximum value for eligibility"]
@@ -1567,7 +1567,7 @@ Table "consumer_lending"."product_eligibility_criteria" {
 
 Table "consumer_lending"."risk_based_pricing_tiers" {
   "consumer_lending_pricing_tier_id" SERIAL [pk, increment, note: "Unique identifier for pricing tier"]
-  "consumer_lending_loan_product_id" INTEGER [not null, note: "Reference to loan product"]
+  "consumer_lending_loan_product_id" INTEGER [not null, ref: > consumer_lending.loan_products.consumer_lending_loan_product_id, note: "Reference to loan product"]
   "tier_name" VARCHAR(50) [not null, note: "A, B, C, D, etc."]
   "min_credit_score" INTEGER [note: "Minimum credit score for this tier"]
   "max_credit_score" INTEGER [note: "Maximum credit score for this tier"]
@@ -1582,8 +1582,8 @@ Table "consumer_lending"."risk_based_pricing_tiers" {
 
 Table "consumer_lending"."credit_reports" {
   "consumer_lending_credit_report_id" SERIAL [pk, increment, note: "Unique identifier for credit report"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "report_date" TIMESTAMP [not null, note: "When report was pulled"]
   "expiration_date" DATE [not null, note: "When report expires"]
   "credit_score" INTEGER [note: "Primary credit score from report"]
@@ -1598,7 +1598,7 @@ Table "consumer_lending"."credit_reports" {
 
 Table "consumer_lending"."credit_report_tradelines" {
   "consumer_lending_tradeline_id" SERIAL [pk, increment, note: "Unique identifier for tradeline"]
-  "consumer_lending_credit_report_id" INTEGER [not null, note: "Reference to credit report"]
+  "consumer_lending_credit_report_id" INTEGER [not null, ref: > consumer_lending.credit_reports.consumer_lending_credit_report_id, note: "Reference to credit report"]
   "account_type" VARCHAR(50) [not null, note: "Mortgage, Installment, Revolving, etc."]
   "creditor_name" VARCHAR(100) [not null, note: "Name of creditor"]
   "account_number" VARCHAR(50) [note: "Masked account number"]
@@ -1617,7 +1617,7 @@ Table "consumer_lending"."credit_report_tradelines" {
 
 Table "consumer_lending"."credit_inquiries" {
   "consumer_lending_inquiry_id" SERIAL [pk, increment, note: "Unique identifier for inquiry record"]
-  "consumer_lending_credit_report_id" INTEGER [not null, note: "Reference to credit report"]
+  "consumer_lending_credit_report_id" INTEGER [not null, ref: > consumer_lending.credit_reports.consumer_lending_credit_report_id, note: "Reference to credit report"]
   "inquiry_date" DATE [not null, note: "Date of credit inquiry"]
   "creditor_name" VARCHAR(100) [not null, note: "Institution that made inquiry"]
   "inquiry_type" VARCHAR(50) [note: "Hard inquiry, soft inquiry"]
@@ -1627,7 +1627,7 @@ Table "consumer_lending"."credit_inquiries" {
 
 Table "consumer_lending"."public_records" {
   "consumer_lending_record_id" SERIAL [pk, increment, note: "Unique identifier for public record"]
-  "consumer_lending_credit_report_id" INTEGER [not null, note: "Reference to credit report"]
+  "consumer_lending_credit_report_id" INTEGER [not null, ref: > consumer_lending.credit_reports.consumer_lending_credit_report_id, note: "Reference to credit report"]
   "record_type" VARCHAR(50) [not null, note: "Bankruptcy, Lien, Judgment"]
   "status" VARCHAR(50) [not null, note: "Active, Satisfied, Discharged"]
   "filing_date" DATE [not null, note: "Date record was filed"]
@@ -1652,14 +1652,14 @@ Table "consumer_lending"."decision_models" {
 
 Table "consumer_lending"."application_decisions" {
   "consumer_lending_decision_id" SERIAL [pk, increment, note: "Unique identifier for decision"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
+  "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "decision_type" VARCHAR(50) [not null, note: "Prequalification, Initial, Final"]
   "decision_result" VARCHAR(20) [not null, note: "Approved, Denied, Pending Review"]
   "decision_date_time" TIMESTAMP [not null, note: "When decision was made"]
   "decision_by" VARCHAR(50) [note: "User ID or System that made decision"]
-  "consumer_lending_model_id" INTEGER [note: "Reference to decision model used"]
+  "consumer_lending_model_id" INTEGER [ref: > consumer_lending.decision_models.consumer_lending_model_id, note: "Reference to decision model used"]
   "decision_score" NUMERIC(10,2) [note: "Numeric score from decision model"]
-  "consumer_lending_pricing_tier_id" INTEGER [note: "Reference to pricing tier if approved"]
+  "consumer_lending_pricing_tier_id" INTEGER [ref: > consumer_lending.risk_based_pricing_tiers.consumer_lending_pricing_tier_id, note: "Reference to pricing tier if approved"]
   "approved_amount" NUMERIC(18,2) [note: "Approved loan amount"]
   "approved_term_months" INTEGER [note: "Approved loan term in months"]
   "approved_interest_rate" NUMERIC(6,3) [note: "Approved interest rate"]
@@ -1673,7 +1673,7 @@ Table "consumer_lending"."application_decisions" {
 
 Table "consumer_lending"."decision_reasons" {
   "consumer_lending_decision_reason_id" SERIAL [pk, increment, note: "Unique identifier for decision reason"]
-  "consumer_lending_decision_id" INTEGER [not null, note: "Reference to application decision"]
+  "consumer_lending_decision_id" INTEGER [not null, ref: > consumer_lending.application_decisions.consumer_lending_decision_id, note: "Reference to application decision"]
   "reason_code" VARCHAR(20) [not null, note: "Standard reason code"]
   "reason_description" VARCHAR(255) [not null, note: "Description of reason"]
   "sequence" INTEGER [not null, note: "Order of importance for reason"]
@@ -1683,7 +1683,7 @@ Table "consumer_lending"."decision_reasons" {
 
 Table "consumer_lending"."adverse_action_notices" {
   "consumer_lending_notice_id" SERIAL [pk, increment, note: "Unique identifier for notice"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
+  "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "generated_date" TIMESTAMP [not null, note: "When notice was generated"]
   "sent_date" TIMESTAMP [note: "When notice was sent to applicant"]
   "delivery_method" VARCHAR(50) [not null, note: "Email, Mail, Portal"]
@@ -1695,7 +1695,7 @@ Table "consumer_lending"."adverse_action_notices" {
 
 Table "consumer_lending"."vehicles" {
   "vehicle_id" SERIAL [pk, increment, note: "Unique identifier for vehicle"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
+  "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "year" INTEGER [not null, note: "Vehicle model year"]
   "make" VARCHAR(50) [not null, note: "Vehicle manufacturer"]
   "model" VARCHAR(50) [not null, note: "Vehicle model"]
@@ -1719,8 +1719,8 @@ Table "consumer_lending"."vehicles" {
 
 Table "consumer_lending"."loan_accounts" {
   "loan_account_id" SERIAL [pk, increment, note: "Unique identifier for loan account"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
-  "consumer_lending_loan_product_id" INTEGER [not null, note: "Reference to loan product"]
+  "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
+  "consumer_lending_loan_product_id" INTEGER [not null, ref: > consumer_lending.loan_products.consumer_lending_loan_product_id, note: "Reference to loan product"]
   "account_number" VARCHAR(30) [not null, unique, note: "Customer-facing account number"]
   "status" VARCHAR(20) [not null, note: "Active, Paid Off, Charged Off, etc."]
   "origination_date" DATE [not null, note: "Date loan was originated"]
@@ -1767,7 +1767,7 @@ Table "consumer_lending"."payment_schedules" {
   "ending_balance" NUMERIC(18,2) [not null, note: "Principal balance after payment"]
   "status" VARCHAR(20) [not null, note: "Scheduled, Paid, Past Due"]
   "actual_payment_date" DATE [note: "Date payment was actually made"]
-  "actual_payment_id" INTEGER [note: "Reference to loan_payments if paid"]
+  "actual_payment_id" INTEGER [ref: > consumer_lending.loan_payments.consumer_lending_payment_id, note: "Reference to loan_payments if paid"]
 
   Indexes {
     (consumer_lending_loan_account_id, payment_number) [unique, note: "Ensures unique payment numbers per loan"]
@@ -1826,7 +1826,7 @@ Table "consumer_lending"."loan_fees" {
   "waived_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who waived the fee"]
   "waiver_reason" VARCHAR(255) [note: "Reason fee was waived"]
   "paid_date" DATE [note: "Date fee was paid"]
-  "consumer_lending_payment_id" INTEGER [note: "Reference to loan_payments if paid"]
+  "consumer_lending_payment_id" INTEGER [ref: > consumer_lending.loan_payments.consumer_lending_payment_id, note: "Reference to loan_payments if paid"]
 
   note: "Tracks fees charged to loan accounts, including fee type, amount, status, and payment details."
 }
@@ -1838,7 +1838,7 @@ Table "consumer_lending"."loan_collateral" {
   "description" VARCHAR(255) [not null, note: "Description of collateral"]
   "value" NUMERIC(18,2) [not null, note: "Estimated value of collateral"]
   "valuation_date" DATE [not null, note: "Date of valuation"]
-  "vehicle_id" INTEGER [note: "Reference to vehicles table if applicable"]
+  "vehicle_id" INTEGER [ref: > consumer_lending.vehicles.vehicle_id, note: "Reference to vehicles table if applicable"]
   "property_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses if property"]
   "deposit_account_id" INTEGER [ref: > enterprise.accounts.enterprise_account_id, note: "Reference to enterprise.accounts if deposit"]
   "lien_position" INTEGER [note: "Priority of lien"]
@@ -1853,7 +1853,7 @@ Table "consumer_lending"."loan_collateral" {
 Table "consumer_lending"."loan_insurance" {
   "consumer_lending_insurance_id" SERIAL [pk, increment, note: "Unique identifier for insurance record"]
   "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
-  "consumer_lending_collateral_id" INTEGER [note: "Reference to loan_collateral if associated with specific collateral"]
+  "consumer_lending_collateral_id" INTEGER [ref: > consumer_lending.loan_collateral.consumer_lending_collateral_id, note: "Reference to loan_collateral if associated with specific collateral"]
   "insurance_type" VARCHAR(50) [not null, note: "Auto, Hazard, Credit Life, Disability"]
   "carrier_name" VARCHAR(100) [not null, note: "Name of insurance company"]
   "policy_number" VARCHAR(50) [not null, note: "Insurance policy number"]
@@ -1870,7 +1870,7 @@ Table "consumer_lending"."loan_insurance" {
 
 Table "consumer_lending"."loan_documents" {
   "consumer_lending_document_id" SERIAL [pk, increment, note: "Unique identifier for document"]
-  "consumer_lending_application_id" INTEGER [note: "Reference to loan application if applicable"]
+  "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
   "document_type" VARCHAR(50) [not null, note: "Application, Contract, Statement, etc."]
   "document_name" VARCHAR(255) [not null, note: "File name or title"]
@@ -1887,7 +1887,7 @@ Table "consumer_lending"."loan_documents" {
 
 Table "consumer_lending"."loan_communications" {
   "consumer_lending_communication_id" SERIAL [pk, increment, note: "Unique identifier for communication"]
-  "consumer_lending_application_id" INTEGER [note: "Reference to loan application if applicable"]
+  "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
   "communication_date" TIMESTAMP [not null, note: "Date/time of communication"]
   "communication_type" VARCHAR(30) [not null, note: "Email, Letter, Phone Call, Text"]
@@ -1947,7 +1947,7 @@ Table "consumer_lending"."collection_accounts" {
 
 Table "consumer_lending"."collection_actions" {
   "consumer_lending_action_id" SERIAL [pk, increment, note: "Unique identifier for collection action"]
-  "consumer_lending_collection_id" INTEGER [not null, note: "Reference to collection account"]
+  "consumer_lending_collection_id" INTEGER [not null, ref: > consumer_lending.collection_accounts.consumer_lending_collection_id, note: "Reference to collection account"]
   "action_date" TIMESTAMP [not null, note: "Date/time action was taken"]
   "action_type" VARCHAR(50) [not null, note: "Call, Letter, Email, Field Visit"]
   "action_result" VARCHAR(50) [note: "Contact Made, Left Message, No Answer"]
@@ -1963,7 +1963,7 @@ Table "consumer_lending"."collection_actions" {
 
 Table "consumer_lending"."payment_arrangements" {
   "consumer_lending_arrangement_id" SERIAL [pk, increment, note: "Unique identifier for payment arrangement"]
-  "consumer_lending_collection_id" INTEGER [not null, note: "Reference to collection account"]
+  "consumer_lending_collection_id" INTEGER [not null, ref: > consumer_lending.collection_accounts.consumer_lending_collection_id, note: "Reference to collection account"]
   "arrangement_date" DATE [not null, note: "Date arrangement was created"]
   "status" VARCHAR(20) [not null, note: "Active, Completed, Broken"]
   "total_amount" NUMERIC(18,2) [not null, note: "Total amount to be paid"]
@@ -2001,7 +2001,7 @@ Table "consumer_lending"."loan_modifications" {
 
 Table "consumer_lending"."reg_z_disclosures" {
   "consumer_lending_disclosure_id" SERIAL [pk, increment, note: "Unique identifier for disclosure"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
+  "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if originated"]
   "disclosure_type" VARCHAR(50) [not null, note: "Initial TIL, Loan Estimate, Closing Disclosure, Change in Terms"]
   "disclosure_date" TIMESTAMP [not null, note: "Date disclosure was generated"]
@@ -2026,7 +2026,7 @@ Table "consumer_lending"."reg_z_disclosures" {
 
 Table "consumer_lending"."adverse_action_details" {
   "consumer_lending_adverse_action_id" SERIAL [pk, increment, note: "Unique identifier for adverse action record"]
-  "consumer_lending_notice_id" INTEGER [not null, note: "Reference to adverse_action_notices"]
+  "consumer_lending_notice_id" INTEGER [not null, ref: > consumer_lending.adverse_action_notices.consumer_lending_notice_id, note: "Reference to adverse_action_notices"]
   "ecoa_reason_code" VARCHAR(10) [not null, note: "Standard ECOA reason code"]
   "fcra_reason_code" VARCHAR(10) [note: "Standard FCRA reason code if applicable"]
   "reason_description" VARCHAR(255) [not null, note: "Description of reason for adverse action"]
@@ -2044,8 +2044,8 @@ Table "consumer_lending"."adverse_action_details" {
 
 Table "consumer_lending"."ecoa_monitoring" {
   "consumer_lending_monitoring_id" SERIAL [pk, increment, note: "Unique identifier for monitoring record"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "ethnicity" VARCHAR(50) [note: "Self-reported ethnicity"]
   "race" VARCHAR(50) [note: "Self-reported race"]
   "sex" VARCHAR(10) [note: "Self-reported sex"]
@@ -2065,7 +2065,7 @@ Table "consumer_lending"."fairlending_analysis" {
   "consumer_lending_analysis_id" SERIAL [pk, increment, note: "Unique identifier for analysis record"]
   "analysis_date" DATE [not null, note: "Date analysis was performed"]
   "analysis_type" VARCHAR(50) [not null, note: "Pricing, Underwriting, Marketing"]
-  "product_id" INTEGER [note: "Loan product analyzed if specific product"]
+  "consumer_lending_loan_product_id" INTEGER [not null, ref: > consumer_lending.loan_products.consumer_lending_loan_product_id, note: "Loan product analyzed if specific product"]
   "time_period_start" DATE [not null, note: "Start of analysis period"]
   "time_period_end" DATE [not null, note: "End of analysis period"]
   "protected_class" VARCHAR(50) [not null, note: "Race, Ethnicity, Sex, Age, etc."]
@@ -2090,7 +2090,7 @@ Table "consumer_lending"."fairlending_analysis" {
 
 Table "consumer_lending"."reg_b_notices" {
   "consumer_lending_notice_id" SERIAL [pk, increment, note: "Unique identifier for Reg B notice"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
+  "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "notice_type" VARCHAR(50) [not null, note: "Incompleteness, Counteroffer, Notice of Action Taken"]
   "generated_date" TIMESTAMP [not null, note: "Date notice was generated"]
   "sent_date" TIMESTAMP [not null, note: "Date notice was sent"]
@@ -2107,7 +2107,7 @@ Table "consumer_lending"."reg_b_notices" {
 
 Table "consumer_lending"."appraisal_disclosures" {
   "consumer_lending_disclosure_id" SERIAL [pk, increment, note: "Unique identifier for appraisal disclosure"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
+  "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "property_address_id" INTEGER [not null, ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses"]
   "disclosure_type" VARCHAR(50) [not null, note: "Initial Disclosure, Final Disclosure"]
   "disclosure_date" TIMESTAMP [not null, note: "Date disclosure was generated"]
@@ -2128,8 +2128,8 @@ Table "consumer_lending"."appraisal_disclosures" {
 
 Table "consumer_lending"."military_lending_checks" {
   "consumer_lending_check_id" SERIAL [pk, increment, note: "Unique identifier for MLA check"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
-  "consumer_lending_applicant_id" INTEGER [not null, note: "Reference to applicant"]
+  "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
+  "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
   "check_date" TIMESTAMP [not null, note: "Date MLA status was checked"]
   "covered_borrower" BOOLEAN [not null, note: "Whether applicant is a covered borrower"]
   "verification_method" VARCHAR(50) [not null, note: "MLA Database, Credit Report Flag"]
@@ -2145,7 +2145,7 @@ Table "consumer_lending"."military_lending_checks" {
 
 Table "consumer_lending"."high_cost_mortgage_tests" {
   "consumer_lending_test_id" SERIAL [pk, increment, note: "Unique identifier for HOEPA test"]
-  "consumer_lending_application_id" INTEGER [not null, note: "Reference to loan application"]
+  "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "test_date" DATE [not null, note: "Date test was performed"]
   "test_type" VARCHAR(30) [not null, note: "APR Test, Points and Fees Test"]
   "loan_amount" NUMERIC(18,2) [not null, note: "Amount used for test"]
@@ -2166,8 +2166,8 @@ Table "consumer_lending"."high_cost_mortgage_tests" {
 
 Table "consumer_lending"."compliance_exceptions" {
   "consumer_lending_exception_id" SERIAL [pk, increment, note: "Unique identifier for exception"]
-  "consumer_lending_application_id" INTEGER [note: "Reference to loan application if applicable"]
-  "loan_account_id" INTEGER [note: "Reference to loan account if applicable"]
+  "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
+  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
   "exception_date" TIMESTAMP [not null, note: "Date exception was identified"]
   "exception_type" VARCHAR(50) [not null, note: "Documentation, Disclosure, Timing, etc."]
   "regulation" VARCHAR(50) [not null, note: "Reg Z, Reg B, FCRA, etc."]
@@ -2314,7 +2314,7 @@ Table "credit_cards"."card_products" {
 
 Table "credit_cards"."fraud_cases" {
   "credit_cards_case_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each fraud case"]
-  "credit_cards_card_account_id" INTEGER [not null, note: "Reference to card_accounts"]
+  "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
   "credit_cards_card_id" INTEGER [ref: > credit_cards.cards.credit_cards_card_id, note: "Reference to specific card if applicable"]
   "report_date" TIMESTAMP [not null, note: "Date and time fraud was reported"]
   "case_type" VARCHAR(30) [not null, note: "Type of fraud (Card Fraud, Account Takeover, Application Fraud)"]
@@ -2334,8 +2334,8 @@ Table "credit_cards"."fraud_cases" {
 
 Table "credit_cards"."fraud_transactions" {
   "credit_cards_fraud_transaction_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each linked transaction"]
-  "credit_cards_case_id" INTEGER [not null, note: "Reference to fraud_cases"]
-  "transaction_id" INTEGER [not null, note: "Reference to transactions"]
+  "credit_cards_case_id" INTEGER [not null, ref: > credit_cards.fraud_cases.credit_cards_case_id, note: "Reference to fraud_cases"]
+  "credit_cards_transaction_id" INTEGER [not null, ref: > credit_cards.transactions.credit_cards_transaction_id, note: "Reference to transactions"]
   "is_confirmed_fraud" BOOLEAN [not null, default: true, note: "Whether transaction is confirmed fraudulent"]
 
   note: "Junction table linking fraud cases to specific transactions"
@@ -2360,7 +2360,7 @@ Table "credit_cards"."security_blocks" {
 
 Table "credit_cards"."credit_card_applications_hmda" {
   "credit_cards_record_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each HMDA record"]
-  "credit_cards_application_id" INTEGER [not null, note: "Reference to applications"]
+  "credit_cards_application_id" INTEGER [not null, ref: > credit_cards.applications.credit_cards_application_id, note: "Reference to applications"]
   "reporting_year" INTEGER [not null, note: "Year for HMDA reporting"]
   "ethnicity" VARCHAR(20) [note: "Applicant's ethnicity per HMDA categories"]
   "race" VARCHAR(20) [note: "Applicant's race per HMDA categories"]
@@ -2380,7 +2380,7 @@ Table "credit_cards"."credit_card_applications_hmda" {
 
 Table "credit_cards"."reg_z_credit_card_disclosures" {
   "credit_cards_disclosure_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each disclosure"]
-  "credit_cards_application_id" INTEGER [note: "Reference to applications if pre-account opening"]
+  "credit_cards_application_id" INTEGER [ref: > credit_cards.applications.credit_cards_application_id, note: "Reference to applications if pre-account opening"]
   "credit_cards_card_account_id" INTEGER [ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts if post-account opening"]
   "disclosure_type" VARCHAR(50) [not null, note: "Type of Reg Z disclosure (Solicitation, Application, Account-Opening, Periodic Statement)"]
   "disclosure_date" TIMESTAMP [not null, note: "Date disclosure was generated"]
@@ -2402,7 +2402,7 @@ Table "credit_cards"."reg_z_credit_card_disclosures" {
 
 Table "credit_cards"."ability_to_pay_assessments" {
   "credit_cards_assessment_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each assessment"]
-  "credit_cards_application_id" INTEGER [not null, note: "Reference to applications"]
+  "credit_cards_application_id" INTEGER [not null, ref: > credit_cards.applications.credit_cards_application_id, note: "Reference to applications"]
   "assessment_date" DATE [not null, note: "Date of ability to pay assessment"]
   "income_verified" BOOLEAN [not null, note: "Whether income was verified"]
   "income_source" VARCHAR(50) [not null, note: "Source of income verification"]
@@ -2440,7 +2440,7 @@ Table "credit_cards"."consumer_complaints" {
 
 Table "credit_cards"."card_product_features" {
   "credit_cards_feature_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each feature"]
-  "credit_cards_product_id" INTEGER [not null, note: "Reference to card_products"]
+  "credit_cards_product_id" INTEGER [not null, ref: > credit_cards.card_products.credit_cards_product_id, note: "Reference to card_products"]
   "feature_name" VARCHAR(100) [not null, note: "Name of the feature"]
   "feature_description" TEXT [not null, note: "Detailed description of the feature"]
   "is_premium" BOOLEAN [not null, default: false, note: "Whether this is a premium feature"]
@@ -2453,7 +2453,7 @@ Table "credit_cards"."card_product_features" {
 
 Table "credit_cards"."card_product_reward_categories" {
   "credit_cards_category_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each reward category"]
-  "credit_cards_product_id" INTEGER [not null, note: "Reference to card_products"]
+  "credit_cards_product_id" INTEGER [not null, ref: > credit_cards.card_products.credit_cards_product_id, note: "Reference to card_products"]
   "category_name" VARCHAR(50) [not null, note: "Category name (e.g., Dining, Travel, Gas)"]
   "reward_rate" NUMERIC(5,2) [not null, note: "Reward rate for this category (e.g., 3% cashback)"]
   "is_quarterly" BOOLEAN [not null, default: false, note: "Whether category rotates quarterly"]
@@ -2469,7 +2469,7 @@ Table "credit_cards"."card_product_reward_categories" {
 Table "credit_cards"."applications" {
   "credit_cards_application_id" INTEGER [pk, note: "Unique identifier for card application"]
   "customer_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "Reference to enterprise.accounts"]
-  "credit_cards_product_id" INTEGER [not null, note: "Reference to card_products"]
+  "credit_cards_product_id" INTEGER [not null, ref: > credit_cards.card_products.credit_cards_product_id, note: "Reference to card_products"]
   "application_date" TIMESTAMP [not null, note: "When application was submitted"]
   "application_channel" VARCHAR(30) [not null, note: "Channel used for application (Online, Branch, Mail, Phone)"]
   "status" VARCHAR(20) [not null, note: "Current status (Pending, Approved, Denied, Canceled)"]
@@ -2499,8 +2499,8 @@ Table "credit_cards"."card_accounts" {
   "credit_cards_card_account_id" SERIAL [pk, increment, note: "Unique identifier for card account"]
   "customer_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "Reference to enterprise.accounts"]
   "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "Reference to enterprise.accounts - the main account record"]
-  "credit_cards_product_id" INTEGER [not null, note: "Reference to card_products"]
-  "credit_cards_application_id" INTEGER [note: "Reference to original application if applicable"]
+  "credit_cards_product_id" INTEGER [not null, ref: > credit_cards.card_products.credit_cards_product_id, note: "Reference to card_products"]
+  "credit_cards_application_id" INTEGER [ref: > credit_cards.applications.credit_cards_application_id, note: "Reference to original application if applicable"]
   "account_number" VARCHAR(30) [not null, unique, note: "Masked account number"]
   "opened_date" DATE [not null, note: "When account was opened"]
   "status" VARCHAR(20) [not null, note: "Account status (Active, Inactive, Closed, Suspended)"]
@@ -2627,14 +2627,14 @@ Table "credit_cards"."statements" {
 Table "credit_cards"."fees" {
   "credit_cards_fee_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each fee"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
-  "credit_cards_transaction_id" INTEGER [note: "Reference to transactions if associated with specific transaction"]
+  "credit_cards_transaction_id" INTEGER [ref: > credit_cards.transactions.credit_cards_transaction_id, note: "Reference to transactions if associated with specific transaction"]
   "fee_type" VARCHAR(30) [not null, note: "Type of fee (Annual, Late Payment, Cash Advance, Foreign Transaction, etc.)"]
   "amount" NUMERIC(10,2) [not null, note: "Fee amount"]
   "description" VARCHAR(100) [note: "Description of fee"]
   "date_assessed" DATE [not null, note: "Date fee was charged"]
   "waived" BOOLEAN [not null, default: false, note: "Whether fee was waived"]
   "waiver_reason" VARCHAR(100) [note: "Reason fee was waived if applicable"]
-  "credit_cards_statement_id" INTEGER [note: "Reference to statements if included in statement"]
+  "credit_cards_statement_id" INTEGER [ref: > credit_cards.statements.credit_cards_statement_id, note: "Reference to statements if included in statement"]
 
   note: "Tracks fees charged to card accounts"
 }
@@ -2648,7 +2648,7 @@ Table "credit_cards"."interest_charges" {
   "days_in_period" INTEGER [not null, note: "Number of days interest was calculated for"]
   "amount" NUMERIC(10,2) [not null, note: "Interest amount charged"]
   "date_assessed" DATE [not null, note: "Date interest was charged"]
-  "credit_cards_statement_id" INTEGER [not null, note: "Reference to statements"]
+  "credit_cards_statement_id" INTEGER [not null, ref: > credit_cards.statements.credit_cards_statement_id,  note: "Reference to statements"]
 
   note: "Tracks interest charges applied to card accounts"
 }
@@ -2656,7 +2656,7 @@ Table "credit_cards"."interest_charges" {
 Table "credit_cards"."rewards" {
   "credit_cards_reward_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each reward record"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
-  "credit_cards_transaction_id" INTEGER [note: "Reference to transactions if earned from transaction"]
+  "credit_cards_transaction_id" INTEGER [ref: > credit_cards.transactions.credit_cards_transaction_id, note: "Reference to transactions if earned from transaction"]
   "reward_type" VARCHAR(30) [not null, note: "Type of reward (Points, Cashback, Miles)"]
   "amount" NUMERIC(10,2) [not null, note: "Amount of reward earned or redeemed"]
   "event_type" VARCHAR(20) [not null, note: "Earned, Bonus, Redeemed, Expired, Adjusted"]
@@ -2705,8 +2705,8 @@ Table "credit_cards"."promotional_offers" {
 Table "credit_cards"."balance_transfers" {
   "credit_cards_transfer_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each balance transfer"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
-  "credit_cards_transaction_id" INTEGER [note: "Reference to transactions"]
-  "credit_cards_offer_id" INTEGER [note: "Reference to promotional_offers if applicable"]
+  "credit_cards_transaction_id" INTEGER [ref: > credit_cards.transactions.credit_cards_transaction_id, note: "Reference to transactions"]
+  "credit_cards_offer_id" INTEGER [ref: > credit_cards.promotional_offers.credit_cards_offer_id, note: "Reference to promotional_offers if applicable"]
   "creditor_name" VARCHAR(100) [not null, note: "Name of creditor being paid"]
   "account_number" VARCHAR(30) [note: "Account number at other creditor, masked"]
   "transfer_amount" NUMERIC(10,2) [not null, note: "Amount transferred"]
@@ -2742,7 +2742,7 @@ Table "credit_cards"."payment_methods" {
 Table "credit_cards"."autopay_settings" {
   "credit_cards_autopay_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each autopay setup"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
-  "credit_cards_payment_method_id" INTEGER [not null, note: "Reference to payment_methods"]
+  "credit_cards_payment_method_id" INTEGER [not null, ref: > credit_cards.payment_methods.credit_cards_payment_method_id, note: "Reference to payment_methods"]
   "status" VARCHAR(20) [not null, note: "Status of autopay (Active, Inactive)"]
   "payment_option" VARCHAR(30) [not null, note: "What to pay (Minimum, Statement Balance, Current Balance, Fixed Amount)"]
   "fixed_amount" NUMERIC(10,2) [note: "Fixed amount if applicable"]
@@ -2787,7 +2787,7 @@ Table "credit_cards"."card_alerts" {
 
 Table "credit_cards"."disputed_transactions" {
   "credit_cards_dispute_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each dispute"]
-  "credit_cards_transaction_id" INTEGER [not null, note: "Reference to transactions"]
+  "credit_cards_transaction_id" INTEGER [not null, ref: > credit_cards.transactions.credit_cards_transaction_id, note: "Reference to transactions"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
   "dispute_date" TIMESTAMP [not null, note: "Date and time dispute was filed"]
   "dispute_reason" VARCHAR(50) [not null, note: "Reason for dispute (Fraud, Product Issue, Duplicate Charge, etc.)"]
@@ -3536,71 +3536,473 @@ TableGroup AMLAndKYC {
   "small_business_banking"."suspicious_activity_reports"
 }
 
-
 //
-// REFERENCES
+// SECURITY
 //
 
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."application_applicants"."consumer_lending_application_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."application_applicants"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_employments"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_incomes"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_assets"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."applicant_liabilities"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."product_eligibility_criteria"."consumer_lending_loan_product_id"
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."risk_based_pricing_tiers"."consumer_lending_loan_product_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."credit_reports"."consumer_lending_application_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."credit_reports"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."credit_report_tradelines"."consumer_lending_credit_report_id"
-Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."credit_inquiries"."consumer_lending_credit_report_id"
-Ref:"consumer_lending"."credit_reports"."consumer_lending_credit_report_id" < "consumer_lending"."public_records"."consumer_lending_credit_report_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."application_decisions"."consumer_lending_application_id"
-Ref:"consumer_lending"."decision_models"."consumer_lending_model_id" < "consumer_lending"."application_decisions"."consumer_lending_model_id"
-Ref:"consumer_lending"."risk_based_pricing_tiers"."consumer_lending_pricing_tier_id" < "consumer_lending"."application_decisions"."consumer_lending_pricing_tier_id"
-Ref:"consumer_lending"."application_decisions"."consumer_lending_decision_id" < "consumer_lending"."decision_reasons"."consumer_lending_decision_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."adverse_action_notices"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."vehicles"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_accounts"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."loan_accounts"."consumer_lending_loan_product_id"
-Ref:"consumer_lending"."loan_payments"."consumer_lending_payment_id" < "consumer_lending"."loan_fees"."consumer_lending_payment_id"
-Ref:"consumer_lending"."vehicles"."vehicle_id" < "consumer_lending"."loan_collateral"."vehicle_id"
-Ref:"consumer_lending"."loan_collateral"."consumer_lending_collateral_id" < "consumer_lending"."loan_insurance"."consumer_lending_collateral_id"
-Ref:"consumer_lending"."loan_payments"."consumer_lending_payment_id" < "consumer_lending"."payment_schedules"."actual_payment_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_documents"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."loan_communications"."consumer_lending_application_id"
-Ref:"consumer_lending"."collection_accounts"."consumer_lending_collection_id" < "consumer_lending"."collection_actions"."consumer_lending_collection_id"
-Ref:"consumer_lending"."collection_accounts"."consumer_lending_collection_id" < "consumer_lending"."payment_arrangements"."consumer_lending_collection_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."reg_z_disclosures"."consumer_lending_application_id"
-Ref:"consumer_lending"."adverse_action_notices"."consumer_lending_notice_id" < "consumer_lending"."adverse_action_details"."consumer_lending_notice_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."ecoa_monitoring"."consumer_lending_application_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."ecoa_monitoring"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."loan_products"."consumer_lending_loan_product_id" < "consumer_lending"."fairlending_analysis"."product_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."reg_b_notices"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."appraisal_disclosures"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."military_lending_checks"."consumer_lending_application_id"
-Ref:"consumer_lending"."applicants"."consumer_lending_applicant_id" < "consumer_lending"."military_lending_checks"."consumer_lending_applicant_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."high_cost_mortgage_tests"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_applications"."consumer_lending_application_id" < "consumer_lending"."compliance_exceptions"."consumer_lending_application_id"
-Ref:"consumer_lending"."loan_accounts"."loan_account_id" < "consumer_lending"."compliance_exceptions"."loan_account_id"
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_product_features"."credit_cards_product_id"
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_product_reward_categories"."credit_cards_product_id"
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."applications"."credit_cards_product_id"
-Ref:"credit_cards"."card_products"."credit_cards_product_id" < "credit_cards"."card_accounts"."credit_cards_product_id"
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."card_accounts"."credit_cards_application_id"
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."fees"."credit_cards_transaction_id"
-Ref:"credit_cards"."statements"."credit_cards_statement_id" < "credit_cards"."fees"."credit_cards_statement_id"
-Ref:"credit_cards"."statements"."credit_cards_statement_id" < "credit_cards"."interest_charges"."credit_cards_statement_id"
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."rewards"."credit_cards_transaction_id"
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."balance_transfers"."credit_cards_transaction_id"
-Ref:"credit_cards"."promotional_offers"."credit_cards_offer_id" < "credit_cards"."balance_transfers"."credit_cards_offer_id"
-Ref:"credit_cards"."payment_methods"."credit_cards_payment_method_id" < "credit_cards"."autopay_settings"."credit_cards_payment_method_id"
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."disputed_transactions"."credit_cards_transaction_id"
-Ref:"credit_cards"."card_accounts"."credit_cards_card_account_id" < "credit_cards"."fraud_cases"."credit_cards_card_account_id"
-Ref:"credit_cards"."fraud_cases"."credit_cards_case_id" < "credit_cards"."fraud_transactions"."credit_cards_case_id"
-Ref:"credit_cards"."transactions"."credit_cards_transaction_id" < "credit_cards"."fraud_transactions"."transaction_id"
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."credit_card_applications_hmda"."credit_cards_application_id"
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."reg_z_credit_card_disclosures"."credit_cards_application_id"
-Ref:"credit_cards"."applications"."credit_cards_application_id" < "credit_cards"."ability_to_pay_assessments"."credit_cards_application_id"
+
+Table "security"."devices" {
+  "ip_address" INET [not null, pk, note: 'The unique IP address of the device. Serves as the primary key.']
+  "device_type" VARCHAR(50) [not null, note: 'The type of the device (e.g., router, server, workstation).']
+  "subnet" VARCHAR(50) [note: 'The subnet the device belongs to.']
+  "hostname" VARCHAR(100) [note: 'The hostname of the device.']
+  "created_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'The timestamp when the device record was created.']
+  "updated_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'The timestamp when the device record was last updated.']
+
+  Note: 'Table storing information about network devices.'
+}
+
+Enum "security"."tcp_flag_type" {
+  SYN
+  ACK
+  FIN
+  RST
+  PSH
+  URG
+  ECE
+  CWR
+}
+
+Table "security"."network_events" {
+  "id" BIGSERIAL [not null, increment, pk, note: 'Unique identifier for the network event. Automatically incrementing.']
+  "timestamp" TIMESTAMP(6) [not null, note: 'Timestamp when the network event occurred.']
+  "source_ip" INET [not null, note: 'Source IP address of the network event.']
+  "source_port" INTEGER [not null, note: 'Source port of the network event.']
+  "dest_ip" INET [not null, note: 'Destination IP address of the network event.']
+  "dest_port" INTEGER [not null, note: 'Destination port of the network event.']
+  "protocol" VARCHAR(20) [not null, note: 'Network protocol used (e.g., TCP, UDP, ICMP).']
+  "status" VARCHAR(50) [not null, note: 'Status of the network event (e.g., success, failure, blocked).']
+  "tcp_flag" security.tcp_flag_type [note: 'TCP flags associated with the event, if applicable.']
+  "sequence" BIGINT [note: 'TCP sequence number, if applicable.']
+  "ack" BIGINT [note: 'TCP acknowledgment number, if applicable.']
+  "window_size" INTEGER [note: 'TCP window size, if applicable.']
+  "length" INTEGER [not null, default: 0, note: 'Length of the data packet in bytes.']
+  "bytes_sent" INTEGER [not null, default: 0, note: 'Number of bytes sent during the event.']
+  "bytes_received" INTEGER [not null, default: 0, note: 'Number of bytes received during the event.']
+  "device_id" INET [not null, ref: > security.devices.ip_address, note: 'IP address of the device involved in the event, foreign key referencing the devices table.']
+  "log_message" TEXT [note: 'Detailed log message associated with the network event.']
+  "created_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the event record was created.']
+
+  Note: 'Table storing detailed information about network events for security monitoring and analysis.'
+}
+
+Table "security"."policies" {
+  "policy_id" UUID [not null, pk, note: 'Unique identifier for the policy.']
+  "name" VARCHAR(200) [not null, unique, note: 'Name of the policy. Must be unique.']
+  "description" TEXT [not null, note: 'Detailed description of the policy.']
+  "created_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the policy was created.']
+  "updated_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the policy was last updated.']
+  "active" BOOLEAN [default: true, note: 'Indicates whether the policy is currently active.']
+
+  Indexes {
+    name [unique, note: 'Unique index on policy name.']
+  }
+
+  Note: 'Table storing security policies and their details.'
+}
+
+Table "security"."policy_attributes" {
+  "policy_id" UUID [not null, ref: > security.policies.policy_id, note: 'Foreign key referencing the policy_id in the policies table.']
+  "attribute_name" VARCHAR(200) [not null, note: 'Name of the policy attribute.']
+  "attribute_value" VARCHAR(200) [note: 'Value of the policy attribute.']
+
+  Indexes {
+    (policy_id, attribute_name) [pk, note: 'Composite primary key on policy_id and attribute_name. Ensures uniqueness of attributes per policy.']
+  }
+
+  Note: 'Table storing attributes associated with security policies. Allows for flexible policy configuration.'
+}
+
+Table "security"."policy_rules" {
+  "rule_id" UUID [not null, pk, note: 'Unique identifier for the policy rule.']
+  "policy_id" UUID [ref: > security.policies.policy_id, note: 'Foreign key referencing the policy_id in the policies table.']
+  "rule_name" VARCHAR(200) [not null, note: 'Name of the policy rule.']
+  "rule_description" TEXT [not null, note: 'Detailed description of the policy rule.']
+
+  Note: 'Table storing specific rules associated with security policies.'
+}
+
+Table "security"."access_profiles" {
+  "access_profile_id" UUID [not null, pk, note: 'Unique identifier for the access profile.']
+  "name" VARCHAR(200) [note: 'Internal name of the access profile.']
+  "display_name" VARCHAR(200) [note: 'User-friendly name of the access profile.']
+  "description" VARCHAR(200) [note: 'Description of the access profile.']
+  "owner_id" UUID [note: 'Identifier of the owner of the access profile.', ref: > "security"."identities"."identity_id"]
+
+  Note: 'Table storing information about access profiles, defining sets of permissions or roles.'
+}
+
+Table "security"."account_entitlement_attributes" {
+  "account_id" UUID [not null, note: 'Unique identifier for the account.', ref: > "security"."accounts"."account_id"]
+  "attribute_name" VARCHAR(200) [not null, note: 'Name of the entitlement attribute.']
+  "attribute_value" VARCHAR(200) [not null, note: 'Value of the entitlement attribute.']
+
+  Indexes {
+    (account_id, attribute_name, attribute_value) [pk, note: 'Composite primary key on account_id, attribute_name, and attribute_value. Ensures uniqueness of entitlement attributes per account.']
+  }
+
+  Note: 'Table storing specific attributes related to account entitlements. Allows for granular control over account permissions and access.'
+}
+
+Table "security"."accounts" {
+  "account_id" UUID [not null, pk, note: 'Unique identifier for the account.']
+  "identity_id" UUID [note: 'Identifier of the associated identity.', ref: > "security"."identities"."identity_id"]
+  "name" VARCHAR(200) [note: 'Name of the account.']
+  "account_id_string" VARCHAR(200) [note: 'String representation of the account ID.']
+  "source_id" UUID [note: 'Identifier of the source system for the account.', ref: > "security"."sources"."source_id"]
+  "disabled" BOOLEAN [note: 'Indicates if the account is disabled.']
+  "locked" BOOLEAN [note: 'Indicates if the account is locked.']
+  "privileged" BOOLEAN [note: 'Indicates if the account has privileged access.']
+  "manually_correlated" BOOLEAN [note: 'Indicates if the account was manually correlated.']
+  "password_last_set" TIMESTAMP(6) [note: 'Timestamp when the account password was last set.']
+  "created" TIMESTAMP(6) [note: 'Timestamp when the account was created.']
+
+  Note: 'Table storing information about user accounts across various systems.'
+}
+
+Table "security"."apps" {
+  "app_id" UUID [not null, pk, note: 'Unique identifier for the application.']
+  "identity_id" UUID [note: 'Identifier of the associated identity.', ref: > "security"."identities"."identity_id"]
+  "name" VARCHAR(200) [note: 'Name of the application.']
+  "source_id" UUID [note: 'Identifier of the source system for the application.', ref: > "security"."sources"."source_id"]
+  "account_id" UUID [note: 'Identifier of the associated account.', ref: > "security"."accounts"."account_id"]
+
+  Note: 'Table storing information about applications and their associations with identities and accounts.'
+}
+
+Table "security"."entitlements" {
+  "entitlement_id" UUID [not null, pk, note: 'Unique identifier for the entitlement.']
+  "name" VARCHAR(200) [note: 'Name of the entitlement.']
+  "display_name" VARCHAR(200) [note: 'User-friendly name of the entitlement.']
+  "description" VARCHAR(200) [note: 'Description of the entitlement.']
+  "attribute" VARCHAR(200) [note: 'Attribute associated with the entitlement.']
+  "source_id" UUID [note: 'Identifier of the source system for the entitlement.', ref: > "security"."sources"."source_id"]
+  "value" VARCHAR(200) [note: 'Value of the entitlement.']
+  "privileged" BOOLEAN [note: 'Indicates if the entitlement is privileged.']
+
+  Note: 'Table storing information about entitlements, representing permissions or access rights.'
+}
+
+Table "security"."governance_groups" {
+  "group_id" UUID [not null, pk, note: 'Unique identifier for the governance group.']
+  "name" VARCHAR(200) [note: 'Name of the governance group.']
+  "owner_id" UUID [note: 'Identifier of the owner of the governance group.', ref: > "security"."identities"."identity_id"]
+
+  Note: 'Table storing information about governance groups, used for managing access and permissions.'
+}
+
+Table "security"."iam_logins" {
+  "login_id" UUID [not null, pk, note: 'Unique identifier for the IAM login.']
+  "system_id" UUID [note: 'Identifier of the system where the login occurred.']
+  "user_name" VARCHAR(200) [note: 'Username used for the login.']
+  "login_time" TIMESTAMP(6) [note: 'Timestamp when the login occurred.']
+  "logout_time" TIMESTAMP(6) [note: 'Timestamp when the logout occurred.']
+  "login_method" VARCHAR(200) [note: 'Method used for the login.']
+
+  Note: 'Table storing information about IAM logins, tracking user access to systems.'
+}
+
+Table "security"."identities" {
+  "identity_id" UUID [not null, pk, note: 'Unique identifier for the identity.']
+  "name" VARCHAR(200) [note: 'Internal name of the identity.']
+  "display_name" VARCHAR(200) [note: 'User-friendly name of the identity.']
+  "first_name" VARCHAR(200) [note: 'First name of the identity.']
+  "last_name" VARCHAR(200) [note: 'Last name of the identity.']
+  "email" VARCHAR(200) [note: 'Email address of the identity.']
+  "phone" VARCHAR(200) [note: 'Phone number of the identity.']
+  "created" TIMESTAMP(6) [note: 'Timestamp when the identity was created.']
+  "inactive" BOOLEAN [note: 'Indicates if the identity is inactive.']
+  "status" VARCHAR(200) [note: 'Status of the identity.']
+  "employee_number" VARCHAR(200) [note: 'Employee number of the identity.']
+  "is_manager" BOOLEAN [note: 'Indicates if the identity is a manager.']
+  "manager_id" UUID [note: 'Identifier of the manager of the identity.', ref: > "security"."identities"."identity_id"]
+  "authoritative_source_id" UUID [note: 'Identifier of the authoritative source for the identity.']
+  "identity_profile_id" UUID [note: 'Identifier of the identity profile associated with the identity.', ref: > "security"."identity_profiles"."identity_profile_id"]
+  "modified" TIMESTAMP(6) [note: 'Timestamp when the identity was last modified.']
+  "synced" TIMESTAMP(6) [note: 'Timestamp when the identity was last synced.']
+  "is_fallback_approver" BOOLEAN [note: 'Indicates if the identity is a fallback approver.']
+
+  Note: 'Table storing information about user identities, representing individuals or entities.'
+}
+
+Table "security"."identity_access_profiles" {
+  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
+  "access_profile_id" UUID [not null, ref: > "security"."access_profiles"."access_profile_id", note: 'Identifier of the associated access profile.']
+
+  Indexes {
+    (identity_id, access_profile_id) [pk, note: 'Composite primary key on identity_id and access_profile_id. Ensures unique association.']
+  }
+
+  Note: 'Table linking identities to access profiles, granting specific permissions.'
+}
+
+Table "security"."identity_attributes" {
+  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
+  "attribute_name" VARCHAR(200) [not null, note: 'Name of the identity attribute.']
+  "attribute_value" VARCHAR(200) [note: 'Value of the identity attribute.']
+
+  Indexes {
+    (identity_id, attribute_name) [pk, note: 'Composite primary key on identity_id and attribute_name. Ensures unique attributes per identity.']
+  }
+
+  Note: 'Table storing attributes associated with identities, providing additional identity information.'
+}
+
+Table "security"."identity_entitlements" {
+  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
+  "entitlement_id" UUID [not null, ref: > "security"."entitlements"."entitlement_id", note: 'Identifier of the associated entitlement.']
+
+  Indexes {
+    (identity_id, entitlement_id) [pk, note: 'Composite primary key on identity_id and entitlement_id. Ensures unique entitlement assignments.']
+  }
+
+  Note: 'Table linking identities to entitlements, granting specific access rights.'
+}
+
+Table "security"."identity_profiles" {
+  "identity_profile_id" UUID [not null, pk, note: 'Unique identifier for the identity profile.']
+  "name" VARCHAR(200) [note: 'Name of the identity profile.']
+
+  Note: 'Table storing information about identity profiles, defining sets of attributes and rules for identities.'
+}
+
+Table "security"."identity_roles" {
+  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
+  "role_id" UUID [not null, ref: > "security"."roles"."role_id", note: 'Identifier of the associated role.']
+
+  Indexes {
+    (identity_id, role_id) [pk, note: 'Composite primary key on identity_id and role_id. Ensures unique role assignments.']
+  }
+
+  Note: 'Table linking identities to roles, granting specific sets of permissions.'
+}
+
+Table "security"."roles" {
+  "role_id" UUID [not null, pk, note: 'Unique identifier for the role.']
+  "name" VARCHAR(200) [note: 'Internal name of the role.']
+  "display_name" VARCHAR(200) [note: 'User-friendly name of the role.']
+  "description" VARCHAR(200) [note: 'Description of the role.']
+  "disabled" BOOLEAN [note: 'Indicates if the role is disabled.']
+  "owner_id" UUID [note: 'Identifier of the owner of the role.', ref: > "security"."identities"."identity_id"]
+
+  Note: 'Table storing information about roles, defining sets of permissions and access rights.'
+}
+
+Table "security"."sources" {
+  "source_id" UUID [not null, pk, note: 'Unique identifier for the source system.']
+  "name" VARCHAR(200) [note: 'Name of the source system.']
+  "type" VARCHAR(200) [note: 'Type of the source system.']
+  "owner_id" UUID [note: 'Identifier of the owner of the source system.', ref: > "security"."identities"."identity_id"]
+
+  Note: 'Table storing information about source systems, providing data for identities and accounts.'
+}
 
 
+Table "security"."file_accesses" {
+  "access_id" UUID [not null, pk, note: 'Unique identifier for the file access event.']
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the file access occurred.']
+  "file_id" UUID [not null, ref: > "security"."files"."file_id", note: 'Identifier of the accessed file.']
+  "access_type" VARCHAR(10) [note: 'Type of file access (e.g., read, write, execute).']
+  "access_time" TIMESTAMP(6) [note: 'Timestamp when the file access occurred.']
+  "execution_id" UUID [not null, ref: > "security"."process_executions"."execution_id", note: 'Identifier of the process execution that initiated the file access.']
 
+  Note: 'Table storing information about file access events, tracking file usage and access patterns.'
+}
+
+Table "security"."file_threats" {
+  "file_hash" VARCHAR(64) [not null, pk, note: 'Hash of the file, used to identify threats.']
+  "threat_level" VARCHAR(10) [note: 'Level of threat associated with the file (e.g., high, medium, low).']
+  "threat_description" TEXT [note: 'Description of the threat associated with the file.']
+
+  Note: 'Table storing information about file threats, linking file hashes to threat levels and descriptions.'
+}
+
+Table "security"."files" {
+  "file_id" UUID [not null, pk, note: 'Unique identifier for the file.']
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the file is located.']
+  "file_path" TEXT [note: 'Path to the file on the system.']
+  "file_hash" VARCHAR(64) [note: 'Hash of the file, used for integrity checks.']
+  "file_size" BIGINT [note: 'Size of the file in bytes.']
+  "last_modified" TIMESTAMP(6) [note: 'Timestamp when the file was last modified.']
+
+  Note: 'Table storing information about files on systems, including file paths, hashes, and sizes.'
+}
+
+Table "security"."installed_applications" {
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the application is installed.']
+  "application_name" VARCHAR(100) [not null, note: 'Name of the installed application.']
+  "application_version" VARCHAR(50) [note: 'Version of the installed application.']
+  "installation_date" TIMESTAMP(6) [note: 'Timestamp when the application was installed.']
+
+  Indexes {
+    (system_id, application_name) [pk, note: 'Composite primary key on system_id and application_name. Ensures unique application installations.']
+  }
+
+  Note: 'Table storing information about installed applications on systems, tracking software installations.'
+}
+
+Table "security"."network_connections" {
+  "connection_id" UUID [not null, pk, note: 'Unique identifier for the network connection.']
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the connection originated.']
+  "execution_id" UUID [not null, ref: > "security"."process_executions"."execution_id", note: 'Identifier of the process execution that initiated the connection.']
+  "connection_type" VARCHAR(10) [note: 'Type of network connection (e.g., TCP, UDP).']
+  "protocol" VARCHAR(10) [note: 'Network protocol used for the connection.']
+  "local_ip" VARCHAR(15) [note: 'Local IP address of the connection.']
+  "local_port" INTEGER [note: 'Local port number of the connection.']
+  "remote_ip" VARCHAR(15) [note: 'Remote IP address of the connection.']
+  "remote_port" INTEGER [note: 'Remote port number of the connection.']
+  "start_time" TIMESTAMP(6) [note: 'Timestamp when the connection started.']
+  "end_time" TIMESTAMP(6) [note: 'Timestamp when the connection ended.']
+
+  Note: 'Table storing information about network connections, tracking network traffic and activity.'
+}
+
+Table "security"."open_ports" {
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system with the open port.']
+  "port_number" INTEGER [not null, note: 'Port number that is open.']
+  "protocol" VARCHAR(10) [not null, note: 'Network protocol associated with the open port.']
+
+  Indexes {
+    (system_id, port_number, protocol) [pk, note: 'Composite primary key on system_id, port_number, and protocol. Ensures unique open ports.']
+  }
+
+  Note: 'Table storing information about open ports on systems, tracking network services and potential vulnerabilities.'
+}
+
+Table "security"."process_executions" {
+  "execution_id" UUID [not null, pk, note: 'Unique identifier for the process execution.']
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the process was executed.']
+  "process_name" VARCHAR(255) [note: 'Name of the executed process.']
+  "process_id" INTEGER [note: 'Process ID of the executed process.']
+  "parent_process_id" INTEGER [note: 'Process ID of the parent process.']
+  "start_time" TIMESTAMP(6) [note: 'Timestamp when the process execution started.']
+  "end_time" TIMESTAMP(6) [note: 'Timestamp when the process execution ended.']
+  "command_line" TEXT [note: 'Command line used to execute the process.']
+  "user_name" VARCHAR(50) [note: 'Username of the user who executed the process.']
+
+  Note: 'Table storing information about process executions, tracking application activity and system behavior.'
+}
+
+Table "security"."running_services" {
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system with the running service.']
+  "service_name" VARCHAR(100) [not null, note: 'Name of the running service.']
+  "start_time" TIMESTAMP(6) [note: 'Timestamp when the service started running.']
+  "status" VARCHAR(20) [note: 'Status of the running service (e.g., running, stopped).']
+
+  Indexes {
+    (system_id, service_name) [pk, note: 'Composite primary key on system_id and service_name. Ensures unique running services.']
+  }
+
+  Note: 'Table storing information about running services on systems, tracking system services and their states.'
+}
+
+Table "security"."system_stats" {
+  "stat_id" UUID [not null, pk, note: 'Unique identifier for the system statistics record.']
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system for which statistics are recorded.']
+  "cpu_usage_percent" INTEGER [note: 'CPU usage percentage.']
+  "memory_usage_gb" NUMERIC(5,1) [note: 'Memory usage in gigabytes.']
+  "memory_total_gb" INTEGER [note: 'Total memory in gigabytes.']
+  "disk_free_gb" INTEGER [note: 'Free disk space in gigabytes.']
+  "disk_total_gb" INTEGER [note: 'Total disk space in gigabytes.']
+  "timestamp" TIMESTAMP(6) [note: 'Timestamp when the statistics were recorded.']
+
+  Note: 'Table storing system statistics, tracking resource usage and performance metrics.'
+}
+
+
+Table "security"."systems" {
+  "system_id" UUID [not null, pk, note: 'Unique identifier for the system.']
+  "hostname" VARCHAR(255) [note: 'Hostname of the system.']
+  "agent_id" VARCHAR(36) [note: 'Identifier of the agent installed on the system.']
+  "ip_address_internal" VARCHAR(15) [note: 'Internal IP address of the system.']
+  "ip_address_external" VARCHAR(15) [note: 'External IP address of the system.']
+  "mac_address" VARCHAR(17) [note: 'MAC address of the system.']
+  "system_type" VARCHAR(50) [note: 'Type of the system (e.g., server, workstation).']
+  "os" VARCHAR(50) [note: 'Operating system of the system.']
+  "os_version" VARCHAR(100) [note: 'Operating system version.']
+  "last_seen" TIMESTAMP(6) [note: 'Timestamp when the system was last seen.']
+  "agent_version" VARCHAR(50) [note: 'Version of the agent installed on the system.']
+  "agent_status" VARCHAR(20) [note: 'Status of the agent installed on the system.']
+  "patch_status" VARCHAR(20) [note: 'Status of system patches.']
+  "last_patched" TIMESTAMP(6) [note: 'Timestamp when the system was last patched.']
+  "compliance" VARCHAR(20) [note: 'Compliance status of the system.']
+  "checked_out_date" DATE [note: 'Date when the system was checked out.']
+  "asset_owner_name" VARCHAR(50) [note: 'Name of the asset owner.']
+  "asset_owner_email" VARCHAR(50) [note: 'Email of the asset owner.']
+  "patch_level" VARCHAR(50) [note: 'Patch level of the system.']
+  "patch_update_available" BOOLEAN [note: 'Indicates if patch updates are available.']
+
+  Note: 'Table storing information about systems, including hardware, software, and status details.'
+}
+
+Table "security"."usb_device_usage" {
+  "usage_id" UUID [not null, pk, note: 'Unique identifier for the USB device usage record.']
+  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the USB device was used.']
+  "device_name" VARCHAR(100) [note: 'Name of the USB device.']
+  "device_type" VARCHAR(50) [note: 'Type of the USB device.']
+  "connection_time" TIMESTAMP(6) [note: 'Timestamp when the USB device was connected.']
+  "disconnection_time" TIMESTAMP(6) [note: 'Timestamp when the USB device was disconnected.']
+
+  Note: 'Table storing information about USB device usage, tracking connection and disconnection times.'
+}
+
+
+Table "security"."cvss" {
+  "cve" VARCHAR(20) [pk, note: 'Common Vulnerabilities and Exposures identifier. Primary key.']
+  "attack_complexity_3" VARCHAR(5) [note: 'CVSS v3 Attack Complexity metric.']
+  "attack_vector_3" VARCHAR(20) [note: 'CVSS v3 Attack Vector metric.']
+  "availability_impact_3" VARCHAR(5) [note: 'CVSS v3 Availability Impact metric.']
+  "confidentiality_impact_3" VARCHAR(5) [note: 'CVSS v3 Confidentiality Impact metric.']
+  "integrity_impact_3" VARCHAR(5) [note: 'CVSS v3 Integrity Impact metric.']
+  "privileges_required_3" VARCHAR(5) [note: 'CVSS v3 Privileges Required metric.']
+  "scope_3" VARCHAR(10) [note: 'CVSS v3 Scope metric.']
+  "user_interaction_3" VARCHAR(10) [note: 'CVSS v3 User Interaction metric.']
+  "vector_string_3" VARCHAR(50) [note: 'CVSS v3 Vector String.']
+  "exploitability_score_3" REAL [note: 'CVSS v3 Exploitability Score.']
+  "impact_score_3" REAL [note: 'CVSS v3 Impact Score.']
+  "base_score_3" REAL [note: 'CVSS v3 Base Score.']
+  "base_severity_3" VARCHAR(10) [note: 'CVSS v3 Base Severity.']
+  "access_complexity" VARCHAR(10) [note: 'CVSS v2 Access Complexity metric.']
+  "access_vector" VARCHAR(20) [note: 'CVSS v2 Access Vector metric.']
+  "authentication" VARCHAR(10) [note: 'CVSS v2 Authentication metric.']
+  "availability_impact" VARCHAR(10) [note: 'CVSS v2 Availability Impact metric.']
+  "confidentiality_impact" VARCHAR(10) [note: 'CVSS v2 Confidentiality Impact metric.']
+  "integrity_impact" VARCHAR(10) [note: 'CVSS v2 Integrity Impact metric.']
+  "obtain_all_privileges" BOOLEAN [note: 'CVSS v2 Obtain All Privileges metric.']
+  "obtain_other_privileges" BOOLEAN [note: 'CVSS v2 Obtain Other Privileges metric.']
+  "obtain_user_privileges" BOOLEAN [note: 'CVSS v2 Obtain User Privileges metric.']
+  "user_interaction_required" BOOLEAN [note: 'CVSS v2 User Interaction Required metric.']
+  "vector_string" VARCHAR(50) [note: 'CVSS v2 Vector String.']
+  "exploitability_score" REAL [note: 'CVSS v2 Exploitability Score.']
+  "impact_score" REAL [note: 'CVSS v2 Impact Score.']
+  "base_score" REAL [note: 'CVSS v2 Base Score.']
+  "severity" VARCHAR(10) [note: 'CVSS v2 Severity.']
+  "description" TEXT [note: 'CVE description.']
+  "published_date" DATE [note: 'CVE publication date.']
+  "last_modified_date" DATE [note: 'CVE last modified date.']
+  note: 'Stores Common Vulnerability Scoring System (CVSS) metrics for CVEs, including both CVSS v2 and v3.'
+}
+
+Table "security"."cpe" {
+  "cve" VARCHAR(20) [ref: > "security"."cvss"."cve", note: 'Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.']
+  "cpe23uri" TEXT [note: 'CPE 2.3 URI string.']
+  "vulnerable" VARCHAR(5) [note: 'Indicates if the CPE is vulnerable to the CVE.']
+  note: 'Stores Common Platform Enumeration (CPE) information associated with CVEs.'
+}
+
+Table "security"."cve_problem" {
+  "cve" VARCHAR(20) [ref: > "security"."cvss"."cve", note: 'Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.']
+  "problem" TEXT [note: 'Problem description related to the CVE.']
+  note: 'Stores problem descriptions associated with CVEs.'
+}
+
+Table "security"."cwe" {
+  "cwe_id" INTEGER [pk, note: 'Common Weakness Enumeration identifier. Primary key.']
+  "name" TEXT [note: 'CWE name.']
+  "description" TEXT [note: 'CWE description.']
+  "extended_description" TEXT [note: 'Extended CWE description.']
+  "modes_of_introduction" TEXT [note: 'Modes of introduction for the CWE.']
+  "common_consequences" TEXT [note: 'Common consequences of the CWE.']
+  "potential_mitigations" TEXT [note: 'Potential mitigations for the CWE.']
+  note: 'Stores Common Weakness Enumeration (CWE) information.'
+}
