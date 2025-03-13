@@ -315,7 +315,43 @@ def generate_banking_data():
             "consumer_lending.appraisal_disclosures": 500,
             "consumer_lending.military_lending_checks": 500,
             "consumer_lending.high_cost_mortgage_tests": 200,
-            "consumer_lending.compliance_exceptions": 200
+            "consumer_lending.compliance_exceptions": 200,
+            "consumer_banking.customer_interactions": 1000,  # Consistent with other interaction/communication counts
+            "security.devices": 50,  # A small set of devices to represent network infrastructure
+            "security.network_events": 10000,  # High volume of events for demo purposes
+            "security.policies": 20,  # A small number of security policies
+            "security.policy_attributes": 100,  # Attributes for the policies
+            "security.policy_rules": 50,  # Rules associated with policies
+            "security.access_profiles": 30,  # Access profiles defining permissions
+            "security.account_entitlement_attributes": 500,  # Attributes for account entitlements
+            "security.accounts": 500,  # Accounts in the security system
+            "security.apps": 100,  # Applications within the security context
+            "security.entitlements": 200,  # Permissions or access rights
+            "security.governance_groups": 10,  # Governance groups for access management
+            "security.iam_logins": 2000,  # Logins to the IAM system
+            "security.identities": 500,  # User identities in the system
+            "security.identity_access_profiles": 500,  # Links between identities and profiles
+            "security.identity_attributes": 1000,  # Attributes for identities
+            "security.identity_entitlements": 1000,  # Links between identities and entitlements
+            "security.identity_profiles": 20,  # Profiles defining identity attributes
+            "security.identity_roles": 500,  # Links between identities and roles
+            "security.roles": 50,  # Security roles
+            "security.sources": 10,  # Source systems for identities and accounts
+            "security.file_accesses": 2000,  # File access events
+            "security.file_threats": 20,  # Known file threats
+            "security.files": 500,  # Files on the systems
+            "security.installed_applications": 500,  # Installed applications
+            "security.network_connections": 5000,  # Network connection records
+            "security.open_ports": 200,  # Open ports on systems
+            "security.process_executions": 5000,  # Process execution records
+            "security.running_services": 200,  # Running services on systems
+            "security.system_stats": 5000,  # System statistics
+            "security.systems": 50,  # Systems being monitored
+            "security.usb_device_usage": 200,  # USB device usage records
+            "security.cvss": 100,  # CVSS vulnerability data
+            "security.cpe": 200,  # CPE data related to vulnerabilities
+            "security.cve_problem": 100,  # Problem descriptions for CVEs
+            "security.cwe": 20,  # CWE data
         })
 
         # Step 4: Execute any scripted scenarios from SQL files

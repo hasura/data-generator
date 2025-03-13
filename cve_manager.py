@@ -519,24 +519,46 @@ def process_cves(directory='nvd/', results='results', csv_file=None, import_db=N
                 cur.copy_from(output, 'cvss', sep='\t', null="")
             conn.commit()
             f.close()
-            filename = results + "cve_related_problems.csv"
-            with open(filename, 'r', encoding='utf8') as f:
-                print("importing CVE-related problems")
-                f.readline()
-                data = csv.reader(f, delimiter='\t')
-                temp_output = io.StringIO()
-                temp_writer = csv.writer(temp_output, delimiter='\t')
-                for row in data:
-                    cve = row[0]
-                    problem = row[1]
+
+            def insert_cve_problem(conn, cve, problem):
+                """Inserts a single CVE-problem row, committing after each insert."""
+                try:
+                    cur = conn.cursor()
                     match = re.search(r'\d+', problem)
                     cwe_id = int(match.group(0)) if match else None
-                    temp_writer.writerow([cve, problem, cwe_id])
-                temp_output.seek(0)
-                cur.copy_from(temp_output, 'cve_problem', sep='\t', columns=('cve', 'problem', 'cwe_id'))
-            conn.commit()
+
+                    cur.execute("INSERT INTO cve_problem (cve, problem, cwe_id) VALUES (%s, %s, %s)",
+                                (cve, problem, cwe_id))
+                    conn.commit()
+                    cur.close()
+                except psycopg2.Error as e:
+                    conn.rollback()
+                    print(f"Error inserting row ({cve}, {problem}, {cwe_id}): {e}")
+                    try:
+                        cur.close()
+                    except:
+                        pass  # if cur was never created, this will fail.
+                except AttributeError as ae:
+                    print(f"Attribute Error in insert_cve_problem: {ae}. Ensure 'conn' is a connection object.")
+
+            filename = results + "cve_related_problems.csv"
+            try:
+                with open(filename, 'r', encoding='utf8') as f:
+                    print("importing CVE-related problems")
+                    f.readline()  # Skip header
+                    for line in f:
+                        row = line.strip().split('\t')
+                        if len(row) == 2:  # Ensure the row has two elements
+                            cve, problem = row
+                            insert_cve_problem(conn, cve, problem)
+                        else:
+                            print(f"Skipping malformed row: {line.strip()}")
+            except FileNotFoundError:
+                print(f"Error: File '{filename}' not found.")
+            except Exception as e:
+                print(f"An unexpected error occurred during file processing: {e}")
             f.close()
-            f.close()
+
             filename = results + "cve_cpes.csv"
             with open(filename, 'r') as f:
                 print("importing CVEs vs CPEs")
