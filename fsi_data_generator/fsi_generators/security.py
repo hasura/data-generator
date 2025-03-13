@@ -9,6 +9,7 @@ from fsi_data_generator.fsi_generators.security__policies__name import security_
 from fsi_data_generator.fsi_generators.text_list import text_list
 from fsi_data_generator.fsi_generators.unique_list import unique_list
 from fsi_data_generator.fsi_text import ____tcp_flag
+from fsi_data_generator.fsi_text.security__apps__name import security__apps__name
 from fsi_data_generator.fsi_text.security__roles__name import security__roles__name
 from itertools import product
 fake = Faker()
@@ -71,6 +72,7 @@ def get_identity_entitlement(dg):
 
 def security(dg):
     return [
+        ('security\\.apps', '^name$', unique_list(security__apps__name)),
         ('security\\.roles','^name$', unique_list(list(security__roles__name.keys()))),
         ('security\\.roles','^display_name$', lambda a, b, c: security__roles__name[cast(str,a.get('name'))].get('display_name')),
         ('security\\.roles', '^description$', lambda a, b, c: security__roles__name[cast(str,a.get('name'))].get('responsibilities')),
