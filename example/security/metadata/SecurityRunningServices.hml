@@ -9,7 +9,7 @@ definition:
     - name: runningServiceName
       type: Varchar!
       description: Name of the running service.
-    - name: securitySystemId
+    - name: securityHostId
       type: Uuid!
       description: Identifier of the system with the running service.
     - name: startTime
@@ -28,9 +28,9 @@ definition:
         runningServiceName:
           column:
             name: running_service_name
-        securitySystemId:
+        securityHostId:
           column:
-            name: security_system_id
+            name: security_host_id
         startTime:
           column:
             name: start_time
@@ -48,7 +48,7 @@ definition:
       output:
         allowedFields:
           - runningServiceName
-          - securitySystemId
+          - securityHostId
           - startTime
           - status
 
@@ -63,14 +63,14 @@ definition:
       comparableFields:
         - fieldName: runningServiceName
           booleanExpressionType: VarcharBoolExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
         - fieldName: startTime
           booleanExpressionType: TimestampBoolExp
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   logicalOperators:
     enable: true
   isNull:
@@ -89,7 +89,7 @@ definition:
       aggregatableFields:
         - fieldName: runningServiceName
           aggregateExpression: VarcharAggExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           aggregateExpression: UuidAggExp
         - fieldName: startTime
           aggregateExpression: TimestampAggExp
@@ -111,14 +111,14 @@ definition:
       orderableFields:
         - fieldName: runningServiceName
           orderByExpression: VarcharOrderByExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
         - fieldName: startTime
           orderByExpression: TimestampOrderByExp
         - fieldName: status
           orderByExpression: VarcharOrderByExp
       orderableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   graphql:
     expressionTypeName: Security_SecurityRunningServicesOrderByExp
 
@@ -143,7 +143,7 @@ definition:
       - queryRootField: securityRunningServicesByRunningServicesPkey
         uniqueIdentifier:
           - runningServiceName
-          - securitySystemId
+          - securityHostId
         subscription:
           rootField: securityRunningServicesByRunningServicesPkey
     filterInputTypeName: Security_SecurityRunningServicesFilterInput
@@ -169,17 +169,17 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: securitySystem
+  name: securityHost
   sourceType: SecurityRunningServices
   target:
     model:
-      name: SecuritySystems
+      name: SecurityHosts
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
       target:
         modelField:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
 

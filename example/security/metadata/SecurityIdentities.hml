@@ -152,7 +152,6 @@ definition:
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: securityAccounts
-        - relationshipName: securityApps
         - relationshipName: securityIdentityProfile
         - relationshipName: securityIdentityAccessProfiles
         - relationshipName: securityIdentityAttributes
@@ -308,28 +307,6 @@ definition:
           - fieldName: securityIdentityId
   graphql:
     aggregateFieldName: securityAccountsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securityApps
-  sourceType: SecurityIdentities
-  target:
-    model:
-      name: SecurityApps
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: SecurityAppsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securityIdentityId
-      target:
-        modelField:
-          - fieldName: securityIdentityId
-  graphql:
-    aggregateFieldName: securityAppsAggregate
 
 ---
 kind: Relationship

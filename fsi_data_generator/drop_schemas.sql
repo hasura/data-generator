@@ -12,3 +12,5 @@ drop schema if exists enterprise cascade;
 
 drop schema if exists security cascade;
 
+drop schema if exists app_mgmt cascade;
+

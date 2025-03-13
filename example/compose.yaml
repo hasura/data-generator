@@ -6,6 +6,7 @@ include:
   - path: small_business_banking/connector/small_business_banking/compose.yaml
   - path: enterprise/connector/enterprise/compose.yaml
   - path: security/connector/security/compose.yaml
+  - path: app_mgmt/connector/app_mgmt/compose.yaml
 services:
   engine:
     build:
@@ -38,7 +39,7 @@ services:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
   promptql-playground:
     environment:
-      CORS_ORIGINS: ${CORS_ORIGINS:-https://console.hasura.io}
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://console.hasura.io,https://promptql.console.hasura.io}
       DDN_URL: ${HASURA_DDN_URL:-http://engine:3000/v1/sql}
       HASURA_LLM_URI: ${HASURA_LLM_URI:-https://llm.promptql.pro.hasura.io}
       OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:4317}

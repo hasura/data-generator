@@ -521,25 +521,48 @@ def process_cves(directory='nvd/', results='results', csv_file=None, import_db=N
             f.close()
 
             def insert_cve_problem(conn, cve, problem):
-                """Inserts a single CVE-problem row, committing after each insert."""
+                """Inserts a single CVE-problem row, retrying with cwe_id as NULL if a FK issue occurs."""
+                cur = None  # Initialize cursor outside the try block for proper cleanup
                 try:
                     cur = conn.cursor()
+
+                    # Extract CWE ID from the problem string
                     match = re.search(r'\d+', problem)
                     cwe_id = int(match.group(0)) if match else None
 
-                    cur.execute("INSERT INTO cve_problem (cve, problem, cwe_id) VALUES (%s, %s, %s)",
-                                (cve, problem, cwe_id))
+                    # Attempt to insert
+                    cur.execute(
+                        "INSERT INTO cve_problem (cve, problem, cwe_id) VALUES (%s, %s, %s)",
+                        (cve, problem, cwe_id))
                     conn.commit()
-                    cur.close()
-                except psycopg2.Error as e:
-                    conn.rollback()
-                    print(f"Error inserting row ({cve}, {problem}, {cwe_id}): {e}")
+                    print(f"Row inserted ({cve}, {problem}, {cwe_id})")
+
+                except psycopg2.errors.ForeignKeyViolation as e:  # Catch FK constraint error
+                    conn.rollback()  # Rollback the failed transaction
+                    print(f"Foreign key violation detected for cwe_id: {cwe_id}. Retrying with cwe_id=NULL.")
+
+                    # Retry with cwe_id set to NULL
                     try:
+                        cur.execute(
+                            "INSERT INTO cve_problem (cve, problem, cwe_id) VALUES (%s, %s, %s)",
+                            (cve, problem, None))
+                        conn.commit()
+                        print(f"Row reinserted with cwe_id=NULL for ({cve}, {problem})")
+                    except psycopg2.Error as retry_error:
+                        conn.rollback()
+                        print(f"Retry failed for ({cve}, {problem}, None): {retry_error}")
+
+                except psycopg2.Error as general_error:  # Catch other database errors
+                    conn.rollback()
+                    print(f"Database error for ({cve}, {problem}, {cwe_id}): {general_error}")
+
+                except AttributeError as ae:  # Handle invalid `conn` object
+                    print(f"Attribute error in insert_cve_problem: {ae}. Ensure 'conn' is a valid connection object.")
+
+                finally:
+                    # Ensure the cursor is closed
+                    if cur:
                         cur.close()
-                    except:
-                        pass  # if cur was never created, this will fail.
-                except AttributeError as ae:
-                    print(f"Attribute Error in insert_cve_problem: {ae}. Ensure 'conn' is a connection object.")
 
             filename = results + "cve_related_problems.csv"
             try:

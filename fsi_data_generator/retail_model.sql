@@ -1,5 +1,7 @@
 CREATE SCHEMA "security";
 
+CREATE SCHEMA "app_mgmt";
+
 CREATE SCHEMA "enterprise";
 
 CREATE SCHEMA "consumer_banking";
@@ -28,6 +30,72 @@ CREATE TYPE "security"."environment" AS ENUM (
   'preproduction',
   'qa',
   'development'
+);
+
+CREATE TYPE "security"."network_protocols" AS ENUM (
+  'TCP',
+  'UDP',
+  'ICMP',
+  'HTTP2',
+  'TLS',
+  'QUIC',
+  'SIP'
+);
+
+CREATE TYPE "app_mgmt"."application_lifecycle_status" AS ENUM (
+  'Development',
+  'Pilot',
+  'Production',
+  'Deprecated',
+  'DataMaintenance',
+  'Decommissioned',
+  'Archived'
+);
+
+CREATE TYPE "app_mgmt"."deployment_environments" AS ENUM (
+  'OnPremises',
+  'CloudPublic',
+  'CloudPrivate',
+  'CloudHybrid',
+  'Containerized',
+  'Serverless',
+  'Edge'
+);
+
+CREATE TYPE "app_mgmt"."application_types" AS ENUM (
+  'Web',
+  'Mobile',
+  'Desktop',
+  'API',
+  'Batch',
+  'Microservice',
+  'Legacy',
+  'SaaS',
+  'Database',
+  'Middleware',
+  'Embedded'
+);
+
+CREATE TYPE "app_mgmt"."dependency_types" AS ENUM (
+  'runtime',
+  'build',
+  'test',
+  'development',
+  'optional',
+  'provided',
+  'system',
+  'import',
+  'compile',
+  'annotationProcessor'
+);
+
+CREATE TYPE "app_mgmt"."criticality_levels" AS ENUM (
+  'no_impact',
+  'minimal_impact',
+  'minor_impact',
+  'moderate_impact',
+  'significant_impact',
+  'critical_impact'
 );
 
 CREATE TABLE "security"."devices" (
@@ -112,14 +180,6 @@ CREATE TABLE "security"."accounts" (
   "created" TIMESTAMP(6)
 );
 
-CREATE TABLE "security"."apps" (
-  "security_app_id" UUID PRIMARY KEY NOT NULL,
-  "security_identity_id" UUID,
-  "name" VARCHAR(200),
-  "security_source_id" UUID,
-  "security_account_id" UUID
-);
-
 CREATE TABLE "security"."entitlements" (
   "security_entitlement_id" UUID PRIMARY KEY NOT NULL,
   "name" VARCHAR(200),
@@ -201,13 +261,6 @@ CREATE TABLE "security"."roles" (
   "owner_id" INTEGER
 );
 
-CREATE TABLE "security"."sources" (
-  "security_source_id" UUID PRIMARY KEY NOT NULL,
-  "name" VARCHAR(200),
-  "type" VARCHAR(200),
-  "owner_id" INTEGER
-);
-
 CREATE TABLE "security"."file_accesses" (
   "security_file_access_id" UUID PRIMARY KEY NOT NULL,
   "security_system_id" UUID NOT NULL,
@@ -225,7 +278,7 @@ CREATE TABLE "security"."file_threats" (
 
 CREATE TABLE "security"."files" (
   "security_file_id" UUID PRIMARY KEY NOT NULL,
-  "security_system_id" UUID NOT NULL,
+  "security_host_id" UUID NOT NULL,
   "file_path" TEXT,
   "file_hash" VARCHAR(64),
   "file_size" BIGINT,
@@ -233,16 +286,16 @@ CREATE TABLE "security"."files" (
 );
 
 CREATE TABLE "security"."installed_applications" (
-  "security_system_id" UUID NOT NULL,
+  "security_host_id" UUID NOT NULL,
   "installed_application_name" VARCHAR(100) NOT NULL,
   "application_version" VARCHAR(50),
   "installation_date" TIMESTAMP(6),
-  PRIMARY KEY ("security_system_id", "installed_application_name")
+  PRIMARY KEY ("security_host_id", "installed_application_name")
 );
 
 CREATE TABLE "security"."network_connections" (
   "security_network_connection_id" UUID PRIMARY KEY NOT NULL,
-  "security_system_id" UUID NOT NULL,
+  "security_host_id" UUID NOT NULL,
   "security_process_execution_id" UUID NOT NULL,
   "connection_type" VARCHAR(10),
   "protocol" VARCHAR(10),
@@ -255,15 +308,15 @@ CREATE TABLE "security"."network_connections" (
 );
 
 CREATE TABLE "security"."open_ports" (
-  "security_system_id" UUID NOT NULL,
+  "security_host_id" UUID NOT NULL,
   "port_number" INTEGER NOT NULL,
-  "protocol" VARCHAR(10) NOT NULL,
-  PRIMARY KEY ("security_system_id", "port_number", "protocol")
+  "protocol" security.network_protocols NOT NULL,
+  PRIMARY KEY ("security_host_id", "port_number", "protocol")
 );
 
 CREATE TABLE "security"."process_executions" (
   "security_process_execution_id" UUID PRIMARY KEY NOT NULL,
-  "security_system_id" UUID NOT NULL,
+  "security_host_id" UUID NOT NULL,
   "process_name" VARCHAR(255),
   "process_id" INTEGER,
   "parent_process_id" INTEGER,
@@ -274,16 +327,16 @@ CREATE TABLE "security"."process_executions" (
 );
 
 CREATE TABLE "security"."running_services" (
-  "security_system_id" UUID NOT NULL,
+  "security_host_id" UUID NOT NULL,
   "running_service_name" VARCHAR(100) NOT NULL,
   "start_time" TIMESTAMP(6),
   "status" VARCHAR(20),
-  PRIMARY KEY ("security_system_id", "running_service_name")
+  PRIMARY KEY ("security_host_id", "running_service_name")
 );
 
 CREATE TABLE "security"."system_stats" (
   "security_system_stat_id" UUID PRIMARY KEY NOT NULL,
-  "security_system_id" UUID NOT NULL,
+  "security_host_id" UUID NOT NULL,
   "cpu_usage_percent" INTEGER,
   "memory_usage_gb" NUMERIC(5,1),
   "memory_total_gb" INTEGER,
@@ -292,8 +345,8 @@ CREATE TABLE "security"."system_stats" (
   "timestamp" TIMESTAMP(6)
 );
 
-CREATE TABLE "security"."systems" (
-  "security_system_id" UUID PRIMARY KEY NOT NULL,
+CREATE TABLE "security"."hosts" (
+  "security_host_id" UUID PRIMARY KEY NOT NULL,
   "hostname" VARCHAR(255),
   "agent_id" VARCHAR(36),
   "ip_address_internal" VARCHAR(15),
@@ -379,6 +432,121 @@ CREATE TABLE "security"."cwe" (
   "modes_of_introduction" TEXT,
   "common_consequences" TEXT,
   "potential_mitigations" TEXT
+);
+
+CREATE TABLE "app_mgmt"."architectures" (
+  "app_mgmt_architecture_id" UUID PRIMARY KEY,
+  "architecture_name" VARCHAR(255),
+  "description" TEXT,
+  "approval_date" TIMESTAMP,
+  "approved_by" INTEGER,
+  "documentation_url" VARCHAR(2048),
+  "status" VARCHAR(50),
+  "sdlc_process_id" UUID,
+  "created_by_user_id" INTEGER,
+  "modified_by_user_id" INTEGER
+);
+
+CREATE TABLE "app_mgmt"."sdlc_processes" (
+  "app_mgmt_sdlc_process_id" UUID PRIMARY KEY,
+  "process_name" VARCHAR(255),
+  "description" TEXT,
+  "process_owner" VARCHAR(255),
+  "version" VARCHAR(50),
+  "documentation_url" VARCHAR(2048),
+  "team_id" UUID
+);
+
+CREATE TABLE "app_mgmt"."applications" (
+  "app_mgmt_application_id" UUID PRIMARY KEY,
+  "application_name" VARCHAR(255),
+  "description" TEXT,
+  "application_type" app_mgmt.application_types,
+  "vendor" VARCHAR(255),
+  "version" VARCHAR(50),
+  "deployment_environment" app_mgmt.deployment_environments,
+  "operations_team_id" UUID,
+  "maintenance_team_id" UUID,
+  "application_owner_id" INTEGER,
+  "lifecycle_status" app_mgmt.application_lifecycle_status,
+  "date_deployed" TIMESTAMP,
+  "date_retired" TIMESTAMP,
+  "architecture_id" UUID,
+  "sdlc_process_id" UUID,
+  "source_code_repository" VARCHAR(2048),
+  "documentation_url" VARCHAR(2048),
+  "created_by_team_id" UUID,
+  "maintained_by_team_id" UUID,
+  "parent_application_id" UUID,
+  "created_by_user_id" INTEGER,
+  "modified_by_user_id" INTEGER,
+  "rto" INTERVAL,
+  "rpo" INTERVAL
+);
+
+CREATE TABLE "app_mgmt"."components" (
+  "app_mgmt_component_id" UUID PRIMARY KEY,
+  "component_name" VARCHAR(255),
+  "component_version" VARCHAR(50),
+  "component_type" VARCHAR(100),
+  "vendor" VARCHAR(255),
+  "license_id" UUID,
+  "description" TEXT,
+  "created_by_user_id" INTEGER,
+  "modified_by_user_id" INTEGER,
+  "package_info" TEXT,
+  "repository_url" VARCHAR(2048),
+  "namespace_or_module" VARCHAR(255)
+);
+
+CREATE TABLE "app_mgmt"."component_dependencies" (
+  "parent_component_id" UUID,
+  "child_component_id" UUID,
+  "quantity" INTEGER,
+  "dependency_type" app_mgmt.dependency_types,
+  PRIMARY KEY ("parent_component_id", "child_component_id", "dependency_type")
+);
+
+CREATE TABLE "app_mgmt"."application_components" (
+  "application_id" UUID,
+  "app_mgmt_component_id" UUID,
+  "dependency_type" app_mgmt.dependency_types,
+  PRIMARY KEY ("application_id", "app_mgmt_component_id", "dependency_type")
+);
+
+CREATE TABLE "app_mgmt"."application_relationships" (
+  "application_id_1" UUID,
+  "application_id_2" UUID,
+  "relationship_type" VARCHAR(50),
+  "criticality" app_mgmt.criticality_levels,
+  PRIMARY KEY ("application_id_1", "application_id_2", "relationship_type")
+);
+
+CREATE TABLE "app_mgmt"."licenses" (
+  "license_id" UUID PRIMARY KEY,
+  "license_name" VARCHAR(255),
+  "license_type" VARCHAR(50),
+  "license_text" TEXT
+);
+
+CREATE TABLE "app_mgmt"."application_licenses" (
+  "application_id" UUID,
+  "license_id" UUID,
+  PRIMARY KEY ("application_id", "license_id")
+);
+
+CREATE TABLE "app_mgmt"."teams" (
+  "team_id" UUID PRIMARY KEY,
+  "team_name" VARCHAR(255),
+  "description" TEXT,
+  "team_lead_id" INTEGER
+);
+
+CREATE TABLE "app_mgmt"."team_members" (
+  "team_id" UUID,
+  "associate_id" INTEGER,
+  "function" VARCHAR(255),
+  PRIMARY KEY ("team_id", "associate_id")
 );
 
 CREATE TABLE "enterprise"."permissions" (
@@ -3284,18 +3452,6 @@ COMMENT ON COLUMN "security"."accounts"."password_last_set" IS 'Timestamp when t
 
 COMMENT ON COLUMN "security"."accounts"."created" IS 'Timestamp when the account was created.';
 
-COMMENT ON TABLE "security"."apps" IS 'Table storing information about applications and their associations with identities and accounts.';
-
-COMMENT ON COLUMN "security"."apps"."security_app_id" IS 'Unique identifier for the application.';
-
-COMMENT ON COLUMN "security"."apps"."security_identity_id" IS 'Identifier of the associated identity.';
-
-COMMENT ON COLUMN "security"."apps"."name" IS 'Name of the application.';
-
-COMMENT ON COLUMN "security"."apps"."security_source_id" IS 'Identifier of the source system for the application.';
-
-COMMENT ON COLUMN "security"."apps"."security_account_id" IS 'Identifier of the associated account.';
-
 COMMENT ON TABLE "security"."entitlements" IS 'Table storing information about entitlements, representing permissions or access rights.';
 
 COMMENT ON COLUMN "security"."entitlements"."security_entitlement_id" IS 'Unique identifier for the entitlement.';
@@ -3408,16 +3564,6 @@ COMMENT ON COLUMN "security"."roles"."disabled" IS 'Indicates if the role is dis
 
 COMMENT ON COLUMN "security"."roles"."owner_id" IS 'Identifier of the owner of the role.';
 
-COMMENT ON TABLE "security"."sources" IS 'Table storing information about source systems, providing data for identities and accounts.';
-
-COMMENT ON COLUMN "security"."sources"."security_source_id" IS 'Unique identifier for the source system.';
-
-COMMENT ON COLUMN "security"."sources"."name" IS 'Name of the source system.';
-
-COMMENT ON COLUMN "security"."sources"."type" IS 'Type of the source system.';
-
-COMMENT ON COLUMN "security"."sources"."owner_id" IS 'Identifier of the owner of the source system.';
-
 COMMENT ON TABLE "security"."file_accesses" IS 'Table storing information about file access events, tracking file usage and access patterns.';
 
 COMMENT ON COLUMN "security"."file_accesses"."security_file_access_id" IS 'Unique identifier for the file access event.';
@@ -3444,7 +3590,7 @@ COMMENT ON TABLE "security"."files" IS 'Table storing information about files on
 
 COMMENT ON COLUMN "security"."files"."security_file_id" IS 'Unique identifier for the file.';
 
-COMMENT ON COLUMN "security"."files"."security_system_id" IS 'Identifier of the system where the file is located.';
+COMMENT ON COLUMN "security"."files"."security_host_id" IS 'Identifier of the system where the file is located.';
 
 COMMENT ON COLUMN "security"."files"."file_path" IS 'Path to the file on the system.';
 
@@ -3454,9 +3600,9 @@ COMMENT ON COLUMN "security"."files"."file_size" IS 'Size of the file in bytes.'
 
 COMMENT ON COLUMN "security"."files"."last_modified" IS 'Timestamp when the file was last modified.';
 
-COMMENT ON TABLE "security"."installed_applications" IS 'Table storing information about installed applications on systems, tracking software installations.';
+COMMENT ON TABLE "security"."installed_applications" IS 'Table storing information about installed applications on servers, tracking software installations.';
 
-COMMENT ON COLUMN "security"."installed_applications"."security_system_id" IS 'Identifier of the system where the application is installed.';
+COMMENT ON COLUMN "security"."installed_applications"."security_host_id" IS 'Identifier of the system where the application is installed.';
 
 COMMENT ON COLUMN "security"."installed_applications"."installed_application_name" IS 'Name of the installed application.';
 
@@ -3468,7 +3614,7 @@ COMMENT ON TABLE "security"."network_connections" IS 'Table storing information 
 
 COMMENT ON COLUMN "security"."network_connections"."security_network_connection_id" IS 'Unique identifier for the network connection.';
 
-COMMENT ON COLUMN "security"."network_connections"."security_system_id" IS 'Identifier of the system where the connection originated.';
+COMMENT ON COLUMN "security"."network_connections"."security_host_id" IS 'Identifier of the system where the connection originated.';
 
 COMMENT ON COLUMN "security"."network_connections"."security_process_execution_id" IS 'Identifier of the process execution that initiated the connection.';
 
@@ -3490,7 +3636,7 @@ COMMENT ON COLUMN "security"."network_connections"."end_time" IS 'Timestamp when
 
 COMMENT ON TABLE "security"."open_ports" IS 'Table storing information about open ports on systems, tracking network services and potential vulnerabilities.';
 
-COMMENT ON COLUMN "security"."open_ports"."security_system_id" IS 'Identifier of the system with the open port.';
+COMMENT ON COLUMN "security"."open_ports"."security_host_id" IS 'Identifier of the system with the open port.';
 
 COMMENT ON COLUMN "security"."open_ports"."port_number" IS 'Port number that is open.';
 
@@ -3500,7 +3646,7 @@ COMMENT ON TABLE "security"."process_executions" IS 'Table storing information a
 
 COMMENT ON COLUMN "security"."process_executions"."security_process_execution_id" IS 'Unique identifier for the process execution.';
 
-COMMENT ON COLUMN "security"."process_executions"."security_system_id" IS 'Identifier of the system where the process was executed.';
+COMMENT ON COLUMN "security"."process_executions"."security_host_id" IS 'Identifier of the system where the process was executed.';
 
 COMMENT ON COLUMN "security"."process_executions"."process_name" IS 'Name of the executed process.';
 
@@ -3518,7 +3664,7 @@ COMMENT ON COLUMN "security"."process_executions"."user_name" IS 'Username of th
 
 COMMENT ON TABLE "security"."running_services" IS 'Table storing information about running services on systems, tracking system services and their states.';
 
-COMMENT ON COLUMN "security"."running_services"."security_system_id" IS 'Identifier of the system with the running service.';
+COMMENT ON COLUMN "security"."running_services"."security_host_id" IS 'Identifier of the system with the running service.';
 
 COMMENT ON COLUMN "security"."running_services"."running_service_name" IS 'Name of the running service.';
 
@@ -3530,7 +3676,7 @@ COMMENT ON TABLE "security"."system_stats" IS 'Table storing system statistics, 
 
 COMMENT ON COLUMN "security"."system_stats"."security_system_stat_id" IS 'Unique identifier for the system statistics record.';
 
-COMMENT ON COLUMN "security"."system_stats"."security_system_id" IS 'Identifier of the system for which statistics are recorded.';
+COMMENT ON COLUMN "security"."system_stats"."security_host_id" IS 'Identifier of the system for which statistics are recorded.';
 
 COMMENT ON COLUMN "security"."system_stats"."cpu_usage_percent" IS 'CPU usage percentage.';
 
@@ -3544,47 +3690,47 @@ COMMENT ON COLUMN "security"."system_stats"."disk_total_gb" IS 'Total disk space
 
 COMMENT ON COLUMN "security"."system_stats"."timestamp" IS 'Timestamp when the statistics were recorded.';
 
-COMMENT ON TABLE "security"."systems" IS 'Table storing information about systems, including hardware, software, and status details.';
+COMMENT ON TABLE "security"."hosts" IS 'Table storing information about systems, including hardware, software, and status details.';
 
-COMMENT ON COLUMN "security"."systems"."security_system_id" IS 'Unique identifier for the system.';
+COMMENT ON COLUMN "security"."hosts"."security_host_id" IS 'Unique identifier for the system.';
 
-COMMENT ON COLUMN "security"."systems"."hostname" IS 'Hostname of the system.';
+COMMENT ON COLUMN "security"."hosts"."hostname" IS 'Hostname of the system.';
 
-COMMENT ON COLUMN "security"."systems"."agent_id" IS 'Identifier of the agent installed on the system.';
+COMMENT ON COLUMN "security"."hosts"."agent_id" IS 'Identifier of the agent installed on the system.';
 
-COMMENT ON COLUMN "security"."systems"."ip_address_internal" IS 'Internal IP address of the system.';
+COMMENT ON COLUMN "security"."hosts"."ip_address_internal" IS 'Internal IP address of the system.';
 
-COMMENT ON COLUMN "security"."systems"."ip_address_external" IS 'External IP address of the system.';
+COMMENT ON COLUMN "security"."hosts"."ip_address_external" IS 'External IP address of the system.';
 
-COMMENT ON COLUMN "security"."systems"."mac_address" IS 'MAC address of the system.';
+COMMENT ON COLUMN "security"."hosts"."mac_address" IS 'MAC address of the system.';
 
-COMMENT ON COLUMN "security"."systems"."system_type" IS 'Type of the system (e.g., server, workstation).';
+COMMENT ON COLUMN "security"."hosts"."system_type" IS 'Type of the system (e.g., server, workstation).';
 
-COMMENT ON COLUMN "security"."systems"."os" IS 'Operating system of the system.';
+COMMENT ON COLUMN "security"."hosts"."os" IS 'Operating system of the system.';
 
-COMMENT ON COLUMN "security"."systems"."os_version" IS 'Operating system version.';
+COMMENT ON COLUMN "security"."hosts"."os_version" IS 'Operating system version.';
 
-COMMENT ON COLUMN "security"."systems"."last_seen" IS 'Timestamp when the system was last seen.';
+COMMENT ON COLUMN "security"."hosts"."last_seen" IS 'Timestamp when the system was last seen.';
 
-COMMENT ON COLUMN "security"."systems"."agent_version" IS 'Version of the agent installed on the system.';
+COMMENT ON COLUMN "security"."hosts"."agent_version" IS 'Version of the agent installed on the system.';
 
-COMMENT ON COLUMN "security"."systems"."agent_status" IS 'Status of the agent installed on the system.';
+COMMENT ON COLUMN "security"."hosts"."agent_status" IS 'Status of the agent installed on the system.';
 
-COMMENT ON COLUMN "security"."systems"."patch_status" IS 'Status of system patches.';
+COMMENT ON COLUMN "security"."hosts"."patch_status" IS 'Status of system patches.';
 
-COMMENT ON COLUMN "security"."systems"."last_patched" IS 'Timestamp when the system was last patched.';
+COMMENT ON COLUMN "security"."hosts"."last_patched" IS 'Timestamp when the system was last patched.';
 
-COMMENT ON COLUMN "security"."systems"."compliance" IS 'Compliance status of the system.';
+COMMENT ON COLUMN "security"."hosts"."compliance" IS 'Compliance status of the system.';
 
-COMMENT ON COLUMN "security"."systems"."checked_out_date" IS 'Date when the system was checked out.';
+COMMENT ON COLUMN "security"."hosts"."checked_out_date" IS 'Date when the system was checked out.';
 
-COMMENT ON COLUMN "security"."systems"."asset_owner_name" IS 'Name of the asset owner.';
+COMMENT ON COLUMN "security"."hosts"."asset_owner_name" IS 'Name of the asset owner.';
 
-COMMENT ON COLUMN "security"."systems"."asset_owner_email" IS 'Email of the asset owner.';
+COMMENT ON COLUMN "security"."hosts"."asset_owner_email" IS 'Email of the asset owner.';
 
-COMMENT ON COLUMN "security"."systems"."patch_level" IS 'Patch level of the system.';
+COMMENT ON COLUMN "security"."hosts"."patch_level" IS 'Patch level of the system.';
 
-COMMENT ON COLUMN "security"."systems"."patch_update_available" IS 'Indicates if patch updates are available.';
+COMMENT ON COLUMN "security"."hosts"."patch_update_available" IS 'Indicates if patch updates are available.';
 
 COMMENT ON TABLE "security"."usb_device_usage" IS 'Table storing information about USB device usage, tracking connection and disconnection times.';
 
@@ -3697,6 +3843,182 @@ COMMENT ON COLUMN "security"."cwe"."modes_of_introduction" IS 'Modes of introduc
 COMMENT ON COLUMN "security"."cwe"."common_consequences" IS 'Common consequences of the CWE.';
 
 COMMENT ON COLUMN "security"."cwe"."potential_mitigations" IS 'Potential mitigations for the CWE.';
+
+COMMENT ON TABLE "app_mgmt"."architectures" IS 'Table to store approved architectural designs and their key details.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."app_mgmt_architecture_id" IS 'Unique identifier for an approved architectural design.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."architecture_name" IS 'Name given to the architectural design.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."description" IS 'Detailed explanation of the architectural design.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."approval_date" IS 'Date when the architectural design was officially approved.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."approved_by" IS 'Identifier of the employee who approved the design.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."documentation_url" IS 'Link to the full documentation for the architectural design.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."status" IS 'Current state of the architecture (e.g., approved, deprecated, proposed).';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."sdlc_process_id" IS 'Identifier for the software development lifecycle process this architecture aligns with.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."created_by_user_id" IS 'Identifier of the employee who created the architectural design.';
+
+COMMENT ON COLUMN "app_mgmt"."architectures"."modified_by_user_id" IS 'Identifier of the employee who last modified the architectural design.';
+
+COMMENT ON TABLE "app_mgmt"."sdlc_processes" IS 'Table to store software development lifecycle processes and their attributes.';
+
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."app_mgmt_sdlc_process_id" IS 'Unique identifier for a defined software development lifecycle process.';
+
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."process_name" IS 'Name of the software development lifecycle process.';
+
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."description" IS 'Description of the steps and activities within the SDLC process.';
+
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."process_owner" IS 'Name of the individual or team responsible for the SDLC process.';
+
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."version" IS 'Version number or identifier for the SDLC process.';
+
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."documentation_url" IS 'Link to the full documentation for the SDLC process.';
+
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."team_id" IS 'Identifier for the team that manages this SDLC process.';
+
+COMMENT ON TABLE "app_mgmt"."applications" IS 'Table to store comprehensive information about software applications within the organization.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."app_mgmt_application_id" IS 'Unique identifier for an application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."application_name" IS 'Name of the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."description" IS 'General description of the application''s purpose.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."application_type" IS 'Type of application (e.g., web, mobile, desktop).';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."vendor" IS 'Name of the vendor if the application is purchased.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."version" IS 'Current version of the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."deployment_environment" IS 'Environment where the application is deployed (e.g., on-premises, cloud).';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."operations_team_id" IS 'Identifier for the team responsible for the day-to-day operation of the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."maintenance_team_id" IS 'Identifier for the team responsible for maintaining the application, including updates and fixes.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."application_owner_id" IS 'Identifier for the individual responsible for communication with stakeholders, funding, budget, and strategy for the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."lifecycle_status" IS 'Current stage in the application''s lifecycle (e.g., development, production).';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."date_deployed" IS 'Date the application was deployed to its environment.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."date_retired" IS 'Date the application was retired or decommissioned.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."architecture_id" IS 'Identifier for the approved architecture the application adheres to.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."sdlc_process_id" IS 'Identifier for the SDLC process used to develop or manage the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."source_code_repository" IS 'Link to the repository where the application''s source code is stored.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."documentation_url" IS 'Link to the application''s documentation.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."created_by_team_id" IS 'Identifier for the team that initially created the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."maintained_by_team_id" IS 'Identifier for the team currently responsible for maintaining the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."parent_application_id" IS 'Identifier for a parent application if this application is a component or part of a larger system.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."created_by_user_id" IS 'Identifier of the employee who initially created the application record.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."modified_by_user_id" IS 'Identifier of the employee who last modified the application record.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."rto" IS 'Recovery Time Objective (RTO): The maximum acceptable downtime for the application.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."rpo" IS 'Recovery Point Objective (RPO): The maximum acceptable data loss for the application.';
+
+COMMENT ON TABLE "app_mgmt"."components" IS 'Table to store detailed information about software components (BOM).';
+
+COMMENT ON COLUMN "app_mgmt"."components"."app_mgmt_component_id" IS 'Unique identifier for a software component (e.g., library, module).';
+
+COMMENT ON COLUMN "app_mgmt"."components"."component_name" IS 'Name of the software component.';
+
+COMMENT ON COLUMN "app_mgmt"."components"."component_version" IS 'Version identifier for the software component.';
+
+COMMENT ON COLUMN "app_mgmt"."components"."component_type" IS 'Type of component (e.g., library, framework, API, module). Also used for language-specific categorization (e.g., java-library, npm-package).';
+
+COMMENT ON COLUMN "app_mgmt"."components"."vendor" IS 'Vendor or provider of the software component.';
+
+COMMENT ON COLUMN "app_mgmt"."components"."license_id" IS 'Identifier for the license associated with the component.';
+
+COMMENT ON COLUMN "app_mgmt"."components"."description" IS 'Description of the component''s functionality.';
+
+COMMENT ON COLUMN "app_mgmt"."components"."created_by_user_id" IS 'Identifier of the employee who initially created the component record.';
+
+COMMENT ON COLUMN "app_mgmt"."components"."modified_by_user_id" IS 'Identifier of the employee who last modified the component record.';
+
+COMMENT ON COLUMN "app_mgmt"."components"."package_info" IS 'Language-specific package information (e.g., Maven coordinates, npm package name, NuGet package ID).';
+
+COMMENT ON COLUMN "app_mgmt"."components"."repository_url" IS 'Link to the component''s repository (e.g., Maven repository, npm registry, NuGet feed).';
+
+COMMENT ON COLUMN "app_mgmt"."components"."namespace_or_module" IS 'Namespace or module name within the component (if applicable).';
+
+COMMENT ON TABLE "app_mgmt"."component_dependencies" IS 'Table to store component dependencies (BOM relationships).';
+
+COMMENT ON COLUMN "app_mgmt"."component_dependencies"."parent_component_id" IS 'Identifier for the component that depends on another component.';
+
+COMMENT ON COLUMN "app_mgmt"."component_dependencies"."child_component_id" IS 'Identifier for the component being depended upon.';
+
+COMMENT ON COLUMN "app_mgmt"."component_dependencies"."quantity" IS 'Number of times the child component is used by the parent.';
+
+COMMENT ON COLUMN "app_mgmt"."component_dependencies"."dependency_type" IS 'Type of dependency (e.g., runtime, build, test).';
+
+COMMENT ON TABLE "app_mgmt"."application_components" IS 'Table to store dependencies between applications and their software components.';
+
+COMMENT ON COLUMN "app_mgmt"."application_components"."application_id" IS 'Identifier for the application that uses the component.';
+
+COMMENT ON COLUMN "app_mgmt"."application_components"."app_mgmt_component_id" IS 'Identifier for the software component used by the application.';
+
+COMMENT ON COLUMN "app_mgmt"."application_components"."dependency_type" IS 'Type of dependency (e.g., runtime, build, test).';
+
+COMMENT ON TABLE "app_mgmt"."application_relationships" IS 'Table to store relationships between applications and their criticality levels.';
+
+COMMENT ON COLUMN "app_mgmt"."application_relationships"."application_id_1" IS 'Identifier for the first application involved in the relationship.';
+
+COMMENT ON COLUMN "app_mgmt"."application_relationships"."application_id_2" IS 'Identifier for the second application involved in the relationship.';
+
+COMMENT ON COLUMN "app_mgmt"."application_relationships"."relationship_type" IS 'Type of relationship between the applications (e.g., depends on, uses data from).';
+
+COMMENT ON COLUMN "app_mgmt"."application_relationships"."criticality" IS 'Criticality score of the relationship, indicating the impact of its failure.';
+
+COMMENT ON TABLE "app_mgmt"."licenses" IS 'Table to store information about software licenses.';
+
+COMMENT ON COLUMN "app_mgmt"."licenses"."license_id" IS 'Unique identifier for a software license.';
+
+COMMENT ON COLUMN "app_mgmt"."licenses"."license_name" IS 'Name of the software license.';
+
+COMMENT ON COLUMN "app_mgmt"."licenses"."license_type" IS 'Type of software license (e.g., MIT, GPL).';
+
+COMMENT ON COLUMN "app_mgmt"."licenses"."license_text" IS 'Full text or a summary of the software license terms.';
+
+COMMENT ON TABLE "app_mgmt"."application_licenses" IS 'Table to store associations between applications and the licenses they use.';
+
+COMMENT ON COLUMN "app_mgmt"."application_licenses"."application_id" IS 'Identifier for the application that uses the license.';
+
+COMMENT ON COLUMN "app_mgmt"."application_licenses"."license_id" IS 'Identifier for the software license used by the application.';
+
+COMMENT ON TABLE "app_mgmt"."teams" IS 'Table to store information about development and management teams, including team lead association.';
+
+COMMENT ON COLUMN "app_mgmt"."teams"."team_id" IS 'Unique identifier for a development or management team.';
+
+COMMENT ON COLUMN "app_mgmt"."teams"."team_name" IS 'Name of the team.';
+
+COMMENT ON COLUMN "app_mgmt"."teams"."description" IS 'Description of the team''s responsibilities.';
+
+COMMENT ON COLUMN "app_mgmt"."teams"."team_lead_id" IS 'Identifier of the team lead from the enterprise associates table.';
+
+COMMENT ON TABLE "app_mgmt"."team_members" IS 'Table to store the associations between teams and their members, including member functions.';
+
+COMMENT ON COLUMN "app_mgmt"."team_members"."team_id" IS 'Identifier of the team.';
+
+COMMENT ON COLUMN "app_mgmt"."team_members"."associate_id" IS 'Identifier of the team member from the enterprise associates table.';
+
+COMMENT ON COLUMN "app_mgmt"."team_members"."function" IS 'Function or role of the team member within the team.';
 
 COMMENT ON TABLE "enterprise"."permissions" IS 'Defines all possible permission types that can be granted in the system';
 
@@ -9028,15 +9350,9 @@ ALTER TABLE "security"."account_entitlement_attributes" ADD FOREIGN KEY ("securi
 
 ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
 
-ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("security_source_id") REFERENCES "security"."sources" ("security_source_id");
+ALTER TABLE "security"."accounts" ADD FOREIGN KEY ("security_source_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
 
-ALTER TABLE "security"."apps" ADD FOREIGN KEY ("security_identity_id") REFERENCES "security"."identities" ("security_identity_id");
-
-ALTER TABLE "security"."apps" ADD FOREIGN KEY ("security_source_id") REFERENCES "security"."sources" ("security_source_id");
-
-ALTER TABLE "security"."apps" ADD FOREIGN KEY ("security_account_id") REFERENCES "security"."accounts" ("security_account_id");
-
-ALTER TABLE "security"."entitlements" ADD FOREIGN KEY ("security_source_id") REFERENCES "security"."sources" ("security_source_id");
+ALTER TABLE "security"."entitlements" ADD FOREIGN KEY ("security_source_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
 
 ALTER TABLE "security"."governance_groups" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -9060,34 +9376,90 @@ ALTER TABLE "security"."identity_roles" ADD FOREIGN KEY ("security_role_id") REF
 
 ALTER TABLE "security"."roles" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "security"."sources" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
-
-ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."hosts" ("security_host_id");
 
 ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("security_file_id") REFERENCES "security"."files" ("security_file_id");
 
 ALTER TABLE "security"."file_accesses" ADD FOREIGN KEY ("security_process_execution_id") REFERENCES "security"."process_executions" ("security_process_execution_id");
 
-ALTER TABLE "security"."files" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."files" ADD FOREIGN KEY ("security_host_id") REFERENCES "security"."hosts" ("security_host_id");
 
-ALTER TABLE "security"."installed_applications" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."installed_applications" ADD FOREIGN KEY ("security_host_id") REFERENCES "security"."hosts" ("security_host_id");
 
-ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("security_host_id") REFERENCES "security"."hosts" ("security_host_id");
 
 ALTER TABLE "security"."network_connections" ADD FOREIGN KEY ("security_process_execution_id") REFERENCES "security"."process_executions" ("security_process_execution_id");
 
-ALTER TABLE "security"."open_ports" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."open_ports" ADD FOREIGN KEY ("security_host_id") REFERENCES "security"."hosts" ("security_host_id");
 
-ALTER TABLE "security"."process_executions" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."process_executions" ADD FOREIGN KEY ("security_host_id") REFERENCES "security"."hosts" ("security_host_id");
 
-ALTER TABLE "security"."running_services" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."running_services" ADD FOREIGN KEY ("security_host_id") REFERENCES "security"."hosts" ("security_host_id");
 
-ALTER TABLE "security"."system_stats" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."system_stats" ADD FOREIGN KEY ("security_host_id") REFERENCES "security"."hosts" ("security_host_id");
 
-ALTER TABLE "security"."usb_device_usage" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."systems" ("security_system_id");
+ALTER TABLE "security"."usb_device_usage" ADD FOREIGN KEY ("security_system_id") REFERENCES "security"."hosts" ("security_host_id");
 
 ALTER TABLE "security"."cpe" ADD FOREIGN KEY ("cve") REFERENCES "security"."cvss" ("cve");
 
 ALTER TABLE "security"."cve_problem" ADD FOREIGN KEY ("cve") REFERENCES "security"."cvss" ("cve");
 
 ALTER TABLE "security"."cve_problem" ADD FOREIGN KEY ("cwe_id") REFERENCES "security"."cwe" ("cwe_id");
+
+ALTER TABLE "app_mgmt"."architectures" ADD FOREIGN KEY ("approved_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."architectures" ADD FOREIGN KEY ("sdlc_process_id") REFERENCES "app_mgmt"."sdlc_processes" ("app_mgmt_sdlc_process_id");
+
+ALTER TABLE "app_mgmt"."architectures" ADD FOREIGN KEY ("created_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."architectures" ADD FOREIGN KEY ("modified_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."sdlc_processes" ADD FOREIGN KEY ("team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("operations_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("maintenance_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("application_owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("architecture_id") REFERENCES "app_mgmt"."architectures" ("app_mgmt_architecture_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("sdlc_process_id") REFERENCES "app_mgmt"."sdlc_processes" ("app_mgmt_sdlc_process_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("created_by_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("maintained_by_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("parent_application_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("created_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("modified_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."components" ADD FOREIGN KEY ("license_id") REFERENCES "app_mgmt"."licenses" ("license_id");
+
+ALTER TABLE "app_mgmt"."components" ADD FOREIGN KEY ("created_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."components" ADD FOREIGN KEY ("modified_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."component_dependencies" ADD FOREIGN KEY ("parent_component_id") REFERENCES "app_mgmt"."components" ("app_mgmt_component_id");
+
+ALTER TABLE "app_mgmt"."component_dependencies" ADD FOREIGN KEY ("child_component_id") REFERENCES "app_mgmt"."components" ("app_mgmt_component_id");
+
+ALTER TABLE "app_mgmt"."application_components" ADD FOREIGN KEY ("application_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
+
+ALTER TABLE "app_mgmt"."application_components" ADD FOREIGN KEY ("app_mgmt_component_id") REFERENCES "app_mgmt"."components" ("app_mgmt_component_id");
+
+ALTER TABLE "app_mgmt"."application_relationships" ADD FOREIGN KEY ("application_id_1") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
+
+ALTER TABLE "app_mgmt"."application_relationships" ADD FOREIGN KEY ("application_id_2") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
+
+ALTER TABLE "app_mgmt"."application_licenses" ADD FOREIGN KEY ("application_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
+
+ALTER TABLE "app_mgmt"."application_licenses" ADD FOREIGN KEY ("license_id") REFERENCES "app_mgmt"."licenses" ("license_id");
+
+ALTER TABLE "app_mgmt"."teams" ADD FOREIGN KEY ("team_lead_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+
+ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("associate_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");

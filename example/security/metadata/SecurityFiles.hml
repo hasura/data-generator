@@ -21,7 +21,7 @@ definition:
     - name: securityFileId
       type: Uuid!
       description: Unique identifier for the file.
-    - name: securitySystemId
+    - name: securityHostId
       type: Uuid!
       description: Identifier of the system where the file is located.
   graphql:
@@ -46,9 +46,9 @@ definition:
         securityFileId:
           column:
             name: security_file_id
-        securitySystemId:
+        securityHostId:
           column:
-            name: security_system_id
+            name: security_host_id
 
 ---
 kind: TypePermissions
@@ -64,7 +64,7 @@ definition:
           - fileSize
           - lastModified
           - securityFileId
-          - securitySystemId
+          - securityHostId
 
 ---
 kind: BooleanExpressionType
@@ -85,11 +85,11 @@ definition:
           booleanExpressionType: TimestampBoolExp
         - fieldName: securityFileId
           booleanExpressionType: UuidBoolExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
       comparableRelationships:
         - relationshipName: securityFileAccesses
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   logicalOperators:
     enable: true
   isNull:
@@ -116,7 +116,7 @@ definition:
           aggregateExpression: TimestampAggExp
         - fieldName: securityFileId
           aggregateExpression: UuidAggExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           aggregateExpression: UuidAggExp
   count:
     enable: true
@@ -142,10 +142,10 @@ definition:
           orderByExpression: TimestampOrderByExp
         - fieldName: securityFileId
           orderByExpression: UuidOrderByExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
       orderableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   graphql:
     expressionTypeName: Security_SecurityFilesOrderByExp
 
@@ -217,17 +217,17 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: securitySystem
+  name: securityHost
   sourceType: SecurityFiles
   target:
     model:
-      name: SecuritySystems
+      name: SecurityHosts
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
       target:
         modelField:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
 

@@ -3,7 +3,7 @@
 mkdir example
 cd example
 
-ddn supergraph init . --no-subgraph --with-promptql --create-project
+ddn supergraph init . --no-subgraph --create-project
 
 ddn subgraph init consumer_banking
 ddn subgraph add --subgraph consumer_banking/subgraph.yaml --target-supergraph ./supergraph.yaml
@@ -68,14 +68,25 @@ ddn connector introspect security
 ddn model add security "security*"
 ddn relationship add security "*"
 
+ddn subgraph init app_mgmt
+ddn subgraph add --subgraph app_mgmt/subgraph.yaml --target-supergraph ./supergraph.yaml
+ddn context set subgraph app_mgmt/subgraph.yaml
+ddn codemod rename-graphql-prefixes --graphql-type-name 'App_Mgmt_'
+ddn connector init app_mgmt --hub-connector hasura/postgres -i
+ddn connector introspect app_mgmt
+ddn model add app_mgmt "app_mgmt*"
+ddn relationship add app_mgmt "*"
+
 cp ../scripts/cross_schema_relationships/small_business_banking* small_business_banking/metadata
 cp ../scripts/cross_schema_relationships/consumer_banking* consumer_banking/metadata
 cp ../scripts/cross_schema_relationships/consumer_lending* consumer_lending/metadata
 cp ../scripts/cross_schema_relationships/credit_cards* credit_cards/metadata
 cp ../scripts/cross_schema_relationships/mortgage_services* mortgage_services/metadata
 cp ../scripts/cross_schema_relationships/security* security/metadata
+cp ../scripts/cross_schema_relationships/app_mgmt* app_mgmt/metadata
 cp ../scripts/promptql_config.yaml.sample promptql_config.yaml
 
+ddn codemod enable-promptql
 ddn supergraph build local
 ddn run docker-start
 

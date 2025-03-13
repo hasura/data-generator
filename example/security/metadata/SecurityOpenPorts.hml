@@ -10,9 +10,9 @@ definition:
       type: Int4!
       description: Port number that is open.
     - name: protocol
-      type: Varchar!
+      type: SecurityNetworkProtocols!
       description: Network protocol associated with the open port.
-    - name: securitySystemId
+    - name: securityHostId
       type: Uuid!
       description: Identifier of the system with the open port.
   graphql:
@@ -28,9 +28,9 @@ definition:
         protocol:
           column:
             name: protocol
-        securitySystemId:
+        securityHostId:
           column:
-            name: security_system_id
+            name: security_host_id
 
 ---
 kind: TypePermissions
@@ -43,7 +43,7 @@ definition:
         allowedFields:
           - portNumber
           - protocol
-          - securitySystemId
+          - securityHostId
 
 ---
 kind: BooleanExpressionType
@@ -57,11 +57,11 @@ definition:
         - fieldName: portNumber
           booleanExpressionType: Int4BoolExp
         - fieldName: protocol
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: securitySystemId
+          booleanExpressionType: SecurityNetworkProtocolsBoolExp
+        - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
       comparableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   logicalOperators:
     enable: true
   isNull:
@@ -81,8 +81,8 @@ definition:
         - fieldName: portNumber
           aggregateExpression: Int4AggExp
         - fieldName: protocol
-          aggregateExpression: VarcharAggExp
-        - fieldName: securitySystemId
+          aggregateExpression: SecurityNetworkProtocolsAggExp
+        - fieldName: securityHostId
           aggregateExpression: UuidAggExp
   count:
     enable: true
@@ -101,11 +101,11 @@ definition:
         - fieldName: portNumber
           orderByExpression: Int4OrderByExp
         - fieldName: protocol
-          orderByExpression: VarcharOrderByExp
-        - fieldName: securitySystemId
+          orderByExpression: SecurityNetworkProtocolsOrderByExp
+        - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
       orderableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   graphql:
     expressionTypeName: Security_SecurityOpenPortsOrderByExp
 
@@ -131,7 +131,7 @@ definition:
         uniqueIdentifier:
           - portNumber
           - protocol
-          - securitySystemId
+          - securityHostId
         subscription:
           rootField: securityOpenPortsByOpenPortsPkey
     filterInputTypeName: Security_SecurityOpenPortsFilterInput
@@ -157,17 +157,17 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: securitySystem
+  name: securityHost
   sourceType: SecurityOpenPorts
   target:
     model:
-      name: SecuritySystems
+      name: SecurityHosts
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
       target:
         modelField:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
 

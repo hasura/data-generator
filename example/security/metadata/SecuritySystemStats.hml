@@ -21,7 +21,7 @@ definition:
     - name: memoryUsageGb
       type: Numeric
       description: Memory usage in gigabytes.
-    - name: securitySystemId
+    - name: securityHostId
       type: Uuid!
       description: Identifier of the system for which statistics are recorded.
     - name: securitySystemStatId
@@ -52,9 +52,9 @@ definition:
         memoryUsageGb:
           column:
             name: memory_usage_gb
-        securitySystemId:
+        securityHostId:
           column:
-            name: security_system_id
+            name: security_host_id
         securitySystemStatId:
           column:
             name: security_system_stat_id
@@ -76,7 +76,7 @@ definition:
           - diskTotalGb
           - memoryTotalGb
           - memoryUsageGb
-          - securitySystemId
+          - securityHostId
           - securitySystemStatId
           - timestamp
 
@@ -99,14 +99,14 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: memoryUsageGb
           booleanExpressionType: NumericBoolExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
         - fieldName: securitySystemStatId
           booleanExpressionType: UuidBoolExp
         - fieldName: timestamp
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   logicalOperators:
     enable: true
   isNull:
@@ -133,7 +133,7 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: memoryUsageGb
           aggregateExpression: NumericAggExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           aggregateExpression: UuidAggExp
         - fieldName: securitySystemStatId
           aggregateExpression: UuidAggExp
@@ -163,14 +163,14 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: memoryUsageGb
           orderByExpression: NumericOrderByExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
         - fieldName: securitySystemStatId
           orderByExpression: UuidOrderByExp
         - fieldName: timestamp
           orderByExpression: TimestampOrderByExp
       orderableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   graphql:
     expressionTypeName: Security_SecuritySystemStatsOrderByExp
 
@@ -220,17 +220,17 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: securitySystem
+  name: securityHost
   sourceType: SecuritySystemStats
   target:
     model:
-      name: SecuritySystems
+      name: SecurityHosts
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
       target:
         modelField:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
 

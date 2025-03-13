@@ -3,7 +3,7 @@ kind: ObjectType
 version: v1
 definition:
   name: SecurityInstalledApplications
-  description: Table storing information about installed applications on systems,
+  description: Table storing information about installed applications on servers,
     tracking software installations.
   fields:
     - name: applicationVersion
@@ -15,7 +15,7 @@ definition:
     - name: installedApplicationName
       type: Varchar!
       description: Name of the installed application.
-    - name: securitySystemId
+    - name: securityHostId
       type: Uuid!
       description: Identifier of the system where the application is installed.
   graphql:
@@ -34,9 +34,9 @@ definition:
         installedApplicationName:
           column:
             name: installed_application_name
-        securitySystemId:
+        securityHostId:
           column:
-            name: security_system_id
+            name: security_host_id
 
 ---
 kind: TypePermissions
@@ -50,7 +50,7 @@ definition:
           - applicationVersion
           - installationDate
           - installedApplicationName
-          - securitySystemId
+          - securityHostId
 
 ---
 kind: BooleanExpressionType
@@ -67,10 +67,10 @@ definition:
           booleanExpressionType: TimestampBoolExp
         - fieldName: installedApplicationName
           booleanExpressionType: VarcharBoolExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
       comparableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   logicalOperators:
     enable: true
   isNull:
@@ -93,7 +93,7 @@ definition:
           aggregateExpression: TimestampAggExp
         - fieldName: installedApplicationName
           aggregateExpression: VarcharAggExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           aggregateExpression: UuidAggExp
   count:
     enable: true
@@ -115,10 +115,10 @@ definition:
           orderByExpression: TimestampOrderByExp
         - fieldName: installedApplicationName
           orderByExpression: VarcharOrderByExp
-        - fieldName: securitySystemId
+        - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
       orderableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   graphql:
     expressionTypeName: Security_SecurityInstalledApplicationsOrderByExp
 
@@ -143,7 +143,7 @@ definition:
       - queryRootField: securityInstalledApplicationsByInstalledApplicationsPkey
         uniqueIdentifier:
           - installedApplicationName
-          - securitySystemId
+          - securityHostId
         subscription:
           rootField: securityInstalledApplicationsByInstalledApplicationsPkey
     filterInputTypeName: Security_SecurityInstalledApplicationsFilterInput
@@ -151,7 +151,7 @@ definition:
       queryRootField: securityInstalledApplicationsAggregate
       subscription:
         rootField: securityInstalledApplicationsAggregate
-  description: Table storing information about installed applications on systems,
+  description: Table storing information about installed applications on servers,
     tracking software installations.
 
 ---
@@ -169,17 +169,17 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: securitySystem
+  name: securityHost
   sourceType: SecurityInstalledApplications
   target:
     model:
-      name: SecuritySystems
+      name: SecurityHosts
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
       target:
         modelField:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
 

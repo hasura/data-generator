@@ -16,6 +16,986 @@
   },
   "metadata": {
     "tables": {
+      "app_mgmt_application_components": {
+        "schemaName": "app_mgmt",
+        "tableName": "application_components",
+        "columns": {
+          "app_mgmt_component_id": {
+            "name": "app_mgmt_component_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the software component used by the application."
+          },
+          "application_id": {
+            "name": "application_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the application that uses the component."
+          },
+          "dependency_type": {
+            "name": "dependency_type",
+            "type": {
+              "scalarType": "app_mgmt_dependency_types"
+            },
+            "nullable": "nonNullable",
+            "description": "Type of dependency (e.g., runtime, build, test)."
+          }
+        },
+        "uniquenessConstraints": {
+          "application_components_pkey": [
+            "app_mgmt_component_id",
+            "application_id",
+            "dependency_type"
+          ]
+        },
+        "foreignRelations": {
+          "application_components_app_mgmt_component_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "components",
+            "columnMapping": {
+              "app_mgmt_component_id": "app_mgmt_component_id"
+            }
+          },
+          "application_components_application_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
+            "columnMapping": {
+              "application_id": "app_mgmt_application_id"
+            }
+          }
+        },
+        "description": "Table to store dependencies between applications and their software components."
+      },
+      "app_mgmt_application_licenses": {
+        "schemaName": "app_mgmt",
+        "tableName": "application_licenses",
+        "columns": {
+          "application_id": {
+            "name": "application_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the application that uses the license."
+          },
+          "license_id": {
+            "name": "license_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the software license used by the application."
+          }
+        },
+        "uniquenessConstraints": {
+          "application_licenses_pkey": [
+            "application_id",
+            "license_id"
+          ]
+        },
+        "foreignRelations": {
+          "application_licenses_application_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
+            "columnMapping": {
+              "application_id": "app_mgmt_application_id"
+            }
+          },
+          "application_licenses_license_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "licenses",
+            "columnMapping": {
+              "license_id": "license_id"
+            }
+          }
+        },
+        "description": "Table to store associations between applications and the licenses they use."
+      },
+      "app_mgmt_application_relationships": {
+        "schemaName": "app_mgmt",
+        "tableName": "application_relationships",
+        "columns": {
+          "application_id_1": {
+            "name": "application_id_1",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the first application involved in the relationship."
+          },
+          "application_id_2": {
+            "name": "application_id_2",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the second application involved in the relationship."
+          },
+          "criticality": {
+            "name": "criticality",
+            "type": {
+              "scalarType": "app_mgmt_criticality_levels"
+            },
+            "nullable": "nullable",
+            "description": "Criticality score of the relationship, indicating the impact of its failure."
+          },
+          "relationship_type": {
+            "name": "relationship_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Type of relationship between the applications (e.g., depends on, uses data from)."
+          }
+        },
+        "uniquenessConstraints": {
+          "application_relationships_pkey": [
+            "application_id_1",
+            "application_id_2",
+            "relationship_type"
+          ]
+        },
+        "foreignRelations": {
+          "application_relationships_application_id_1_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
+            "columnMapping": {
+              "application_id_1": "app_mgmt_application_id"
+            }
+          },
+          "application_relationships_application_id_2_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
+            "columnMapping": {
+              "application_id_2": "app_mgmt_application_id"
+            }
+          }
+        },
+        "description": "Table to store relationships between applications and their criticality levels."
+      },
+      "app_mgmt_applications": {
+        "schemaName": "app_mgmt",
+        "tableName": "applications",
+        "columns": {
+          "app_mgmt_application_id": {
+            "name": "app_mgmt_application_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for an application."
+          },
+          "application_name": {
+            "name": "application_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the application."
+          },
+          "application_owner_id": {
+            "name": "application_owner_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the individual responsible for communication with stakeholders, funding, budget, and strategy for the application."
+          },
+          "application_type": {
+            "name": "application_type",
+            "type": {
+              "scalarType": "app_mgmt_application_types"
+            },
+            "nullable": "nullable",
+            "description": "Type of application (e.g., web, mobile, desktop)."
+          },
+          "architecture_id": {
+            "name": "architecture_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the approved architecture the application adheres to."
+          },
+          "created_by_team_id": {
+            "name": "created_by_team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the team that initially created the application."
+          },
+          "created_by_user_id": {
+            "name": "created_by_user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the employee who initially created the application record."
+          },
+          "date_deployed": {
+            "name": "date_deployed",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Date the application was deployed to its environment."
+          },
+          "date_retired": {
+            "name": "date_retired",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Date the application was retired or decommissioned."
+          },
+          "deployment_environment": {
+            "name": "deployment_environment",
+            "type": {
+              "scalarType": "app_mgmt_deployment_environments"
+            },
+            "nullable": "nullable",
+            "description": "Environment where the application is deployed (e.g., on-premises, cloud)."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "General description of the application's purpose."
+          },
+          "documentation_url": {
+            "name": "documentation_url",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Link to the application's documentation."
+          },
+          "lifecycle_status": {
+            "name": "lifecycle_status",
+            "type": {
+              "scalarType": "app_mgmt_application_lifecycle_status"
+            },
+            "nullable": "nullable",
+            "description": "Current stage in the application's lifecycle (e.g., development, production)."
+          },
+          "maintained_by_team_id": {
+            "name": "maintained_by_team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the team currently responsible for maintaining the application."
+          },
+          "maintenance_team_id": {
+            "name": "maintenance_team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the team responsible for maintaining the application, including updates and fixes."
+          },
+          "modified_by_user_id": {
+            "name": "modified_by_user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the employee who last modified the application record."
+          },
+          "operations_team_id": {
+            "name": "operations_team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the team responsible for the day-to-day operation of the application."
+          },
+          "parent_application_id": {
+            "name": "parent_application_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for a parent application if this application is a component or part of a larger system."
+          },
+          "rpo": {
+            "name": "rpo",
+            "type": {
+              "scalarType": "interval"
+            },
+            "nullable": "nullable",
+            "description": "Recovery Point Objective (RPO): The maximum acceptable data loss for the application."
+          },
+          "rto": {
+            "name": "rto",
+            "type": {
+              "scalarType": "interval"
+            },
+            "nullable": "nullable",
+            "description": "Recovery Time Objective (RTO): The maximum acceptable downtime for the application."
+          },
+          "sdlc_process_id": {
+            "name": "sdlc_process_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the SDLC process used to develop or manage the application."
+          },
+          "source_code_repository": {
+            "name": "source_code_repository",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Link to the repository where the application's source code is stored."
+          },
+          "vendor": {
+            "name": "vendor",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the vendor if the application is purchased."
+          },
+          "version": {
+            "name": "version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Current version of the application."
+          }
+        },
+        "uniquenessConstraints": {
+          "applications_pkey": [
+            "app_mgmt_application_id"
+          ]
+        },
+        "foreignRelations": {
+          "applications_application_owner_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "application_owner_id": "enterprise_associate_id"
+            }
+          },
+          "applications_architecture_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "architectures",
+            "columnMapping": {
+              "architecture_id": "app_mgmt_architecture_id"
+            }
+          },
+          "applications_created_by_team_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "teams",
+            "columnMapping": {
+              "created_by_team_id": "team_id"
+            }
+          },
+          "applications_created_by_user_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "created_by_user_id": "enterprise_associate_id"
+            }
+          },
+          "applications_maintained_by_team_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "teams",
+            "columnMapping": {
+              "maintained_by_team_id": "team_id"
+            }
+          },
+          "applications_maintenance_team_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "teams",
+            "columnMapping": {
+              "maintenance_team_id": "team_id"
+            }
+          },
+          "applications_modified_by_user_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "modified_by_user_id": "enterprise_associate_id"
+            }
+          },
+          "applications_operations_team_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "teams",
+            "columnMapping": {
+              "operations_team_id": "team_id"
+            }
+          },
+          "applications_parent_application_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
+            "columnMapping": {
+              "parent_application_id": "app_mgmt_application_id"
+            }
+          },
+          "applications_sdlc_process_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "sdlc_processes",
+            "columnMapping": {
+              "sdlc_process_id": "app_mgmt_sdlc_process_id"
+            }
+          }
+        },
+        "description": "Table to store comprehensive information about software applications within the organization."
+      },
+      "app_mgmt_architectures": {
+        "schemaName": "app_mgmt",
+        "tableName": "architectures",
+        "columns": {
+          "app_mgmt_architecture_id": {
+            "name": "app_mgmt_architecture_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for an approved architectural design."
+          },
+          "approval_date": {
+            "name": "approval_date",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Date when the architectural design was officially approved."
+          },
+          "approved_by": {
+            "name": "approved_by",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the employee who approved the design."
+          },
+          "architecture_name": {
+            "name": "architecture_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name given to the architectural design."
+          },
+          "created_by_user_id": {
+            "name": "created_by_user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the employee who created the architectural design."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Detailed explanation of the architectural design."
+          },
+          "documentation_url": {
+            "name": "documentation_url",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Link to the full documentation for the architectural design."
+          },
+          "modified_by_user_id": {
+            "name": "modified_by_user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the employee who last modified the architectural design."
+          },
+          "sdlc_process_id": {
+            "name": "sdlc_process_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the software development lifecycle process this architecture aligns with."
+          },
+          "status": {
+            "name": "status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Current state of the architecture (e.g., approved, deprecated, proposed)."
+          }
+        },
+        "uniquenessConstraints": {
+          "architectures_pkey": [
+            "app_mgmt_architecture_id"
+          ]
+        },
+        "foreignRelations": {
+          "architectures_approved_by_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "approved_by": "enterprise_associate_id"
+            }
+          },
+          "architectures_created_by_user_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "created_by_user_id": "enterprise_associate_id"
+            }
+          },
+          "architectures_modified_by_user_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "modified_by_user_id": "enterprise_associate_id"
+            }
+          },
+          "architectures_sdlc_process_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "sdlc_processes",
+            "columnMapping": {
+              "sdlc_process_id": "app_mgmt_sdlc_process_id"
+            }
+          }
+        },
+        "description": "Table to store approved architectural designs and their key details."
+      },
+      "app_mgmt_component_dependencies": {
+        "schemaName": "app_mgmt",
+        "tableName": "component_dependencies",
+        "columns": {
+          "child_component_id": {
+            "name": "child_component_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the component being depended upon."
+          },
+          "dependency_type": {
+            "name": "dependency_type",
+            "type": {
+              "scalarType": "app_mgmt_dependency_types"
+            },
+            "nullable": "nonNullable",
+            "description": "Type of dependency (e.g., runtime, build, test)."
+          },
+          "parent_component_id": {
+            "name": "parent_component_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier for the component that depends on another component."
+          },
+          "quantity": {
+            "name": "quantity",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Number of times the child component is used by the parent."
+          }
+        },
+        "uniquenessConstraints": {
+          "component_dependencies_pkey": [
+            "child_component_id",
+            "dependency_type",
+            "parent_component_id"
+          ]
+        },
+        "foreignRelations": {
+          "component_dependencies_child_component_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "components",
+            "columnMapping": {
+              "child_component_id": "app_mgmt_component_id"
+            }
+          },
+          "component_dependencies_parent_component_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "components",
+            "columnMapping": {
+              "parent_component_id": "app_mgmt_component_id"
+            }
+          }
+        },
+        "description": "Table to store component dependencies (BOM relationships)."
+      },
+      "app_mgmt_components": {
+        "schemaName": "app_mgmt",
+        "tableName": "components",
+        "columns": {
+          "app_mgmt_component_id": {
+            "name": "app_mgmt_component_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for a software component (e.g., library, module)."
+          },
+          "component_name": {
+            "name": "component_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the software component."
+          },
+          "component_type": {
+            "name": "component_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of component (e.g., library, framework, API, module). Also used for language-specific categorization (e.g., java-library, npm-package)."
+          },
+          "component_version": {
+            "name": "component_version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Version identifier for the software component."
+          },
+          "created_by_user_id": {
+            "name": "created_by_user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the employee who initially created the component record."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Description of the component's functionality."
+          },
+          "license_id": {
+            "name": "license_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the license associated with the component."
+          },
+          "modified_by_user_id": {
+            "name": "modified_by_user_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the employee who last modified the component record."
+          },
+          "namespace_or_module": {
+            "name": "namespace_or_module",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Namespace or module name within the component (if applicable)."
+          },
+          "package_info": {
+            "name": "package_info",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Language-specific package information (e.g., Maven coordinates, npm package name, NuGet package ID)."
+          },
+          "repository_url": {
+            "name": "repository_url",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Link to the component's repository (e.g., Maven repository, npm registry, NuGet feed)."
+          },
+          "vendor": {
+            "name": "vendor",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Vendor or provider of the software component."
+          }
+        },
+        "uniquenessConstraints": {
+          "components_pkey": [
+            "app_mgmt_component_id"
+          ]
+        },
+        "foreignRelations": {
+          "components_created_by_user_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "created_by_user_id": "enterprise_associate_id"
+            }
+          },
+          "components_license_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "licenses",
+            "columnMapping": {
+              "license_id": "license_id"
+            }
+          },
+          "components_modified_by_user_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "modified_by_user_id": "enterprise_associate_id"
+            }
+          }
+        },
+        "description": "Table to store detailed information about software components (BOM)."
+      },
+      "app_mgmt_licenses": {
+        "schemaName": "app_mgmt",
+        "tableName": "licenses",
+        "columns": {
+          "license_id": {
+            "name": "license_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for a software license."
+          },
+          "license_name": {
+            "name": "license_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the software license."
+          },
+          "license_text": {
+            "name": "license_text",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Full text or a summary of the software license terms."
+          },
+          "license_type": {
+            "name": "license_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of software license (e.g., MIT, GPL)."
+          }
+        },
+        "uniquenessConstraints": {
+          "licenses_pkey": [
+            "license_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table to store information about software licenses."
+      },
+      "app_mgmt_sdlc_processes": {
+        "schemaName": "app_mgmt",
+        "tableName": "sdlc_processes",
+        "columns": {
+          "app_mgmt_sdlc_process_id": {
+            "name": "app_mgmt_sdlc_process_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for a defined software development lifecycle process."
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Description of the steps and activities within the SDLC process."
+          },
+          "documentation_url": {
+            "name": "documentation_url",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Link to the full documentation for the SDLC process."
+          },
+          "process_name": {
+            "name": "process_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the software development lifecycle process."
+          },
+          "process_owner": {
+            "name": "process_owner",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the individual or team responsible for the SDLC process."
+          },
+          "team_id": {
+            "name": "team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the team that manages this SDLC process."
+          },
+          "version": {
+            "name": "version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Version number or identifier for the SDLC process."
+          }
+        },
+        "uniquenessConstraints": {
+          "sdlc_processes_pkey": [
+            "app_mgmt_sdlc_process_id"
+          ]
+        },
+        "foreignRelations": {
+          "sdlc_processes_team_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "teams",
+            "columnMapping": {
+              "team_id": "team_id"
+            }
+          }
+        },
+        "description": "Table to store software development lifecycle processes and their attributes."
+      },
+      "app_mgmt_team_members": {
+        "schemaName": "app_mgmt",
+        "tableName": "team_members",
+        "columns": {
+          "associate_id": {
+            "name": "associate_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the team member from the enterprise associates table."
+          },
+          "function": {
+            "name": "function",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Function or role of the team member within the team."
+          },
+          "team_id": {
+            "name": "team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the team."
+          }
+        },
+        "uniquenessConstraints": {
+          "team_members_pkey": [
+            "associate_id",
+            "team_id"
+          ]
+        },
+        "foreignRelations": {
+          "team_members_associate_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "associate_id": "enterprise_associate_id"
+            }
+          },
+          "team_members_team_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "teams",
+            "columnMapping": {
+              "team_id": "team_id"
+            }
+          }
+        },
+        "description": "Table to store the associations between teams and their members, including member functions."
+      },
+      "app_mgmt_teams": {
+        "schemaName": "app_mgmt",
+        "tableName": "teams",
+        "columns": {
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Description of the team's responsibilities."
+          },
+          "team_id": {
+            "name": "team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for a development or management team."
+          },
+          "team_lead_id": {
+            "name": "team_lead_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the team lead from the enterprise associates table."
+          },
+          "team_name": {
+            "name": "team_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the team."
+          }
+        },
+        "uniquenessConstraints": {
+          "teams_pkey": [
+            "team_id"
+          ]
+        },
+        "foreignRelations": {
+          "teams_team_lead_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "team_lead_id": "enterprise_associate_id"
+            }
+          }
+        },
+        "description": "Table to store information about development and management teams, including team lead association."
+      },
       "consumer_banking_account_access_consents": {
         "schemaName": "consumer_banking",
         "tableName": "account_access_consents",
@@ -18344,89 +19324,14 @@
             }
           },
           "accounts_security_source_id_fkey": {
-            "foreignSchema": "security",
-            "foreignTable": "sources",
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
             "columnMapping": {
-              "security_source_id": "security_source_id"
+              "security_source_id": "app_mgmt_application_id"
             }
           }
         },
         "description": "Table storing information about user accounts across various systems."
-      },
-      "security_apps": {
-        "schemaName": "security",
-        "tableName": "apps",
-        "columns": {
-          "name": {
-            "name": "name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Name of the application."
-          },
-          "security_account_id": {
-            "name": "security_account_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nullable",
-            "description": "Identifier of the associated account."
-          },
-          "security_app_id": {
-            "name": "security_app_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": "Unique identifier for the application."
-          },
-          "security_identity_id": {
-            "name": "security_identity_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nullable",
-            "description": "Identifier of the associated identity."
-          },
-          "security_source_id": {
-            "name": "security_source_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nullable",
-            "description": "Identifier of the source system for the application."
-          }
-        },
-        "uniquenessConstraints": {
-          "apps_pkey": [
-            "security_app_id"
-          ]
-        },
-        "foreignRelations": {
-          "apps_security_account_id_fkey": {
-            "foreignSchema": "security",
-            "foreignTable": "accounts",
-            "columnMapping": {
-              "security_account_id": "security_account_id"
-            }
-          },
-          "apps_security_identity_id_fkey": {
-            "foreignSchema": "security",
-            "foreignTable": "identities",
-            "columnMapping": {
-              "security_identity_id": "security_identity_id"
-            }
-          },
-          "apps_security_source_id_fkey": {
-            "foreignSchema": "security",
-            "foreignTable": "sources",
-            "columnMapping": {
-              "security_source_id": "security_source_id"
-            }
-          }
-        },
-        "description": "Table storing information about applications and their associations with identities and accounts."
       },
       "security_cpe": {
         "schemaName": "security",
@@ -18994,10 +19899,10 @@
         },
         "foreignRelations": {
           "entitlements_security_source_id_fkey": {
-            "foreignSchema": "security",
-            "foreignTable": "sources",
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
             "columnMapping": {
-              "security_source_id": "security_source_id"
+              "security_source_id": "app_mgmt_application_id"
             }
           }
         },
@@ -19078,9 +19983,9 @@
           },
           "file_accesses_security_system_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_system_id": "security_host_id"
             }
           }
         },
@@ -19167,8 +20072,8 @@
             "nullable": "nonNullable",
             "description": "Unique identifier for the file."
           },
-          "security_system_id": {
-            "name": "security_system_id",
+          "security_host_id": {
+            "name": "security_host_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -19182,11 +20087,11 @@
           ]
         },
         "foreignRelations": {
-          "files_security_system_id_fkey": {
+          "files_security_host_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_host_id": "security_host_id"
             }
           }
         },
@@ -19236,6 +20141,179 @@
           }
         },
         "description": "Table storing information about governance groups, used for managing access and permissions."
+      },
+      "security_hosts": {
+        "schemaName": "security",
+        "tableName": "hosts",
+        "columns": {
+          "agent_id": {
+            "name": "agent_id",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the agent installed on the system."
+          },
+          "agent_status": {
+            "name": "agent_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Status of the agent installed on the system."
+          },
+          "agent_version": {
+            "name": "agent_version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Version of the agent installed on the system."
+          },
+          "asset_owner_email": {
+            "name": "asset_owner_email",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Email of the asset owner."
+          },
+          "asset_owner_name": {
+            "name": "asset_owner_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the asset owner."
+          },
+          "checked_out_date": {
+            "name": "checked_out_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Date when the system was checked out."
+          },
+          "compliance": {
+            "name": "compliance",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Compliance status of the system."
+          },
+          "hostname": {
+            "name": "hostname",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Hostname of the system."
+          },
+          "ip_address_external": {
+            "name": "ip_address_external",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "External IP address of the system."
+          },
+          "ip_address_internal": {
+            "name": "ip_address_internal",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Internal IP address of the system."
+          },
+          "last_patched": {
+            "name": "last_patched",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the system was last patched."
+          },
+          "last_seen": {
+            "name": "last_seen",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "Timestamp when the system was last seen."
+          },
+          "mac_address": {
+            "name": "mac_address",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "MAC address of the system."
+          },
+          "os": {
+            "name": "os",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Operating system of the system."
+          },
+          "os_version": {
+            "name": "os_version",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Operating system version."
+          },
+          "patch_level": {
+            "name": "patch_level",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Patch level of the system."
+          },
+          "patch_status": {
+            "name": "patch_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Status of system patches."
+          },
+          "patch_update_available": {
+            "name": "patch_update_available",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Indicates if patch updates are available."
+          },
+          "security_host_id": {
+            "name": "security_host_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the system."
+          },
+          "system_type": {
+            "name": "system_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Type of the system (e.g., server, workstation)."
+          }
+        },
+        "uniquenessConstraints": {
+          "hosts_pkey": [
+            "security_host_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Table storing information about systems, including hardware, software, and status details."
       },
       "security_iam_logins": {
         "schemaName": "security",
@@ -19669,8 +20747,8 @@
             "nullable": "nonNullable",
             "description": "Name of the installed application."
           },
-          "security_system_id": {
-            "name": "security_system_id",
+          "security_host_id": {
+            "name": "security_host_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -19681,19 +20759,19 @@
         "uniquenessConstraints": {
           "installed_applications_pkey": [
             "installed_application_name",
-            "security_system_id"
+            "security_host_id"
           ]
         },
         "foreignRelations": {
-          "installed_applications_security_system_id_fkey": {
+          "installed_applications_security_host_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_host_id": "security_host_id"
             }
           }
         },
-        "description": "Table storing information about installed applications on systems, tracking software installations."
+        "description": "Table storing information about installed applications on servers, tracking software installations."
       },
       "security_network_connections": {
         "schemaName": "security",
@@ -19755,6 +20833,14 @@
             "nullable": "nullable",
             "description": "Remote port number of the connection."
           },
+          "security_host_id": {
+            "name": "security_host_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the connection originated."
+          },
           "security_network_connection_id": {
             "name": "security_network_connection_id",
             "type": {
@@ -19771,14 +20857,6 @@
             "nullable": "nonNullable",
             "description": "Identifier of the process execution that initiated the connection."
           },
-          "security_system_id": {
-            "name": "security_system_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": "Identifier of the system where the connection originated."
-          },
           "start_time": {
             "name": "start_time",
             "type": {
@@ -19794,18 +20872,18 @@
           ]
         },
         "foreignRelations": {
+          "network_connections_security_host_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "hosts",
+            "columnMapping": {
+              "security_host_id": "security_host_id"
+            }
+          },
           "network_connections_security_process_execution_id_fkey": {
             "foreignSchema": "security",
             "foreignTable": "process_executions",
             "columnMapping": {
               "security_process_execution_id": "security_process_execution_id"
-            }
-          },
-          "network_connections_security_system_id_fkey": {
-            "foreignSchema": "security",
-            "foreignTable": "systems",
-            "columnMapping": {
-              "security_system_id": "security_system_id"
             }
           }
         },
@@ -19996,13 +21074,13 @@
           "protocol": {
             "name": "protocol",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "security_network_protocols"
             },
             "nullable": "nonNullable",
             "description": "Network protocol associated with the open port."
           },
-          "security_system_id": {
-            "name": "security_system_id",
+          "security_host_id": {
+            "name": "security_host_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -20014,15 +21092,15 @@
           "open_ports_pkey": [
             "port_number",
             "protocol",
-            "security_system_id"
+            "security_host_id"
           ]
         },
         "foreignRelations": {
-          "open_ports_security_system_id_fkey": {
+          "open_ports_security_host_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_host_id": "security_host_id"
             }
           }
         },
@@ -20238,6 +21316,14 @@
             "nullable": "nullable",
             "description": "Name of the executed process."
           },
+          "security_host_id": {
+            "name": "security_host_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the system where the process was executed."
+          },
           "security_process_execution_id": {
             "name": "security_process_execution_id",
             "type": {
@@ -20245,14 +21331,6 @@
             },
             "nullable": "nonNullable",
             "description": "Unique identifier for the process execution."
-          },
-          "security_system_id": {
-            "name": "security_system_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": "Identifier of the system where the process was executed."
           },
           "start_time": {
             "name": "start_time",
@@ -20277,11 +21355,11 @@
           ]
         },
         "foreignRelations": {
-          "process_executions_security_system_id_fkey": {
+          "process_executions_security_host_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_host_id": "security_host_id"
             }
           }
         },
@@ -20368,8 +21446,8 @@
             "nullable": "nonNullable",
             "description": "Name of the running service."
           },
-          "security_system_id": {
-            "name": "security_system_id",
+          "security_host_id": {
+            "name": "security_host_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -20396,72 +21474,19 @@
         "uniquenessConstraints": {
           "running_services_pkey": [
             "running_service_name",
-            "security_system_id"
+            "security_host_id"
           ]
         },
         "foreignRelations": {
-          "running_services_security_system_id_fkey": {
+          "running_services_security_host_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_host_id": "security_host_id"
             }
           }
         },
         "description": "Table storing information about running services on systems, tracking system services and their states."
-      },
-      "security_sources": {
-        "schemaName": "security",
-        "tableName": "sources",
-        "columns": {
-          "name": {
-            "name": "name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Name of the source system."
-          },
-          "owner_id": {
-            "name": "owner_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": "Identifier of the owner of the source system."
-          },
-          "security_source_id": {
-            "name": "security_source_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": "Unique identifier for the source system."
-          },
-          "type": {
-            "name": "type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Type of the source system."
-          }
-        },
-        "uniquenessConstraints": {
-          "sources_pkey": [
-            "security_source_id"
-          ]
-        },
-        "foreignRelations": {
-          "sources_owner_id_fkey": {
-            "foreignSchema": "enterprise",
-            "foreignTable": "associates",
-            "columnMapping": {
-              "owner_id": "enterprise_associate_id"
-            }
-          }
-        },
-        "description": "Table storing information about source systems, providing data for identities and accounts."
       },
       "security_system_stats": {
         "schemaName": "security",
@@ -20507,8 +21532,8 @@
             "nullable": "nullable",
             "description": "Memory usage in gigabytes."
           },
-          "security_system_id": {
-            "name": "security_system_id",
+          "security_host_id": {
+            "name": "security_host_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -20538,188 +21563,15 @@
           ]
         },
         "foreignRelations": {
-          "system_stats_security_system_id_fkey": {
+          "system_stats_security_host_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_host_id": "security_host_id"
             }
           }
         },
         "description": "Table storing system statistics, tracking resource usage and performance metrics."
-      },
-      "security_systems": {
-        "schemaName": "security",
-        "tableName": "systems",
-        "columns": {
-          "agent_id": {
-            "name": "agent_id",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Identifier of the agent installed on the system."
-          },
-          "agent_status": {
-            "name": "agent_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Status of the agent installed on the system."
-          },
-          "agent_version": {
-            "name": "agent_version",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Version of the agent installed on the system."
-          },
-          "asset_owner_email": {
-            "name": "asset_owner_email",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Email of the asset owner."
-          },
-          "asset_owner_name": {
-            "name": "asset_owner_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Name of the asset owner."
-          },
-          "checked_out_date": {
-            "name": "checked_out_date",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nullable",
-            "description": "Date when the system was checked out."
-          },
-          "compliance": {
-            "name": "compliance",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Compliance status of the system."
-          },
-          "hostname": {
-            "name": "hostname",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Hostname of the system."
-          },
-          "ip_address_external": {
-            "name": "ip_address_external",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "External IP address of the system."
-          },
-          "ip_address_internal": {
-            "name": "ip_address_internal",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Internal IP address of the system."
-          },
-          "last_patched": {
-            "name": "last_patched",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "description": "Timestamp when the system was last patched."
-          },
-          "last_seen": {
-            "name": "last_seen",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "description": "Timestamp when the system was last seen."
-          },
-          "mac_address": {
-            "name": "mac_address",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "MAC address of the system."
-          },
-          "os": {
-            "name": "os",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Operating system of the system."
-          },
-          "os_version": {
-            "name": "os_version",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Operating system version."
-          },
-          "patch_level": {
-            "name": "patch_level",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Patch level of the system."
-          },
-          "patch_status": {
-            "name": "patch_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Status of system patches."
-          },
-          "patch_update_available": {
-            "name": "patch_update_available",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "description": "Indicates if patch updates are available."
-          },
-          "security_system_id": {
-            "name": "security_system_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": "Unique identifier for the system."
-          },
-          "system_type": {
-            "name": "system_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Type of the system (e.g., server, workstation)."
-          }
-        },
-        "uniquenessConstraints": {
-          "systems_pkey": [
-            "security_system_id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": "Table storing information about systems, including hardware, software, and status details."
       },
       "security_usb_device_usage": {
         "schemaName": "security",
@@ -20782,9 +21634,9 @@
         "foreignRelations": {
           "usb_device_usage_security_system_id_fkey": {
             "foreignSchema": "security",
-            "foreignTable": "systems",
+            "foreignTable": "hosts",
             "columnMapping": {
-              "security_system_id": "security_system_id"
+              "security_system_id": "security_host_id"
             }
           }
         },
@@ -25119,6 +25971,352 @@
     },
     "types": {
       "scalar": {
+        "app_mgmt_application_lifecycle_status": {
+          "typeName": "application_lifecycle_status",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_application_lifecycle_status"
+            },
+            "min": {
+              "returnType": "app_mgmt_application_lifecycle_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_application_lifecycle_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_lifecycle_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_lifecycle_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_application_lifecycle_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_lifecycle_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_lifecycle_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_lifecycle_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "Development",
+              "Pilot",
+              "Production",
+              "Deprecated",
+              "DataMaintenance",
+              "Decommissioned",
+              "Archived"
+            ]
+          }
+        },
+        "app_mgmt_application_types": {
+          "typeName": "application_types",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_application_types"
+            },
+            "min": {
+              "returnType": "app_mgmt_application_types"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_application_types",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_types",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_types",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_application_types",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_types",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_types",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_application_types",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "Web",
+              "Mobile",
+              "Desktop",
+              "API",
+              "Batch",
+              "Microservice",
+              "Legacy",
+              "SaaS",
+              "Database",
+              "Middleware",
+              "Embedded"
+            ]
+          }
+        },
+        "app_mgmt_criticality_levels": {
+          "typeName": "criticality_levels",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_criticality_levels"
+            },
+            "min": {
+              "returnType": "app_mgmt_criticality_levels"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_criticality_levels",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_criticality_levels",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_criticality_levels",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_criticality_levels",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_criticality_levels",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_criticality_levels",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_criticality_levels",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "no_impact",
+              "minimal_impact",
+              "minor_impact",
+              "moderate_impact",
+              "significant_impact",
+              "critical_impact"
+            ]
+          }
+        },
+        "app_mgmt_dependency_types": {
+          "typeName": "dependency_types",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_dependency_types"
+            },
+            "min": {
+              "returnType": "app_mgmt_dependency_types"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_dependency_types",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_dependency_types",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_dependency_types",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_dependency_types",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_dependency_types",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_dependency_types",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_dependency_types",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "runtime",
+              "build",
+              "test",
+              "development",
+              "optional",
+              "provided",
+              "system",
+              "import",
+              "compile",
+              "annotationProcessor"
+            ]
+          }
+        },
+        "app_mgmt_deployment_environments": {
+          "typeName": "deployment_environments",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_deployment_environments"
+            },
+            "min": {
+              "returnType": "app_mgmt_deployment_environments"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_deployment_environments",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_deployment_environments",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_deployment_environments",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_deployment_environments",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_deployment_environments",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_deployment_environments",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_deployment_environments",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "OnPremises",
+              "CloudPublic",
+              "CloudPrivate",
+              "CloudHybrid",
+              "Containerized",
+              "Serverless",
+              "Edge"
+            ]
+          }
+        },
         "bool": {
           "typeName": "bool",
           "schemaName": "pg_catalog",
@@ -25796,6 +26994,70 @@
           },
           "typeRepresentation": "int64AsString"
         },
+        "interval": {
+          "typeName": "interval",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "interval"
+            },
+            "max": {
+              "returnType": "interval"
+            },
+            "min": {
+              "returnType": "interval"
+            },
+            "sum": {
+              "returnType": "interval"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "interval",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": null
+        },
         "jsonb": {
           "typeName": "jsonb",
           "schemaName": "pg_catalog",
@@ -26009,6 +27271,74 @@
               "preproduction",
               "qa",
               "development"
+            ]
+          }
+        },
+        "security_network_protocols": {
+          "typeName": "network_protocols",
+          "schemaName": "security",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "security_network_protocols"
+            },
+            "min": {
+              "returnType": "security_network_protocols"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "security_network_protocols",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "security_network_protocols",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "security_network_protocols",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "security_network_protocols",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "security_network_protocols",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "security_network_protocols",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "security_network_protocols",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "TCP",
+              "UDP",
+              "ICMP",
+              "HTTP2",
+              "TLS",
+              "QUIC",
+              "SIP"
             ]
           }
         },

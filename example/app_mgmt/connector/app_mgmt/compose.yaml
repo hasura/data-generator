@@ -1,0 +1,14 @@
+services:
+  app_mgmt_app_mgmt:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.app_mgmt
+    environment:
+      CONNECTION_URI: $APP_MGMT_APP_MGMT_CONNECTION_URI
+      HASURA_SERVICE_TOKEN_SECRET: $APP_MGMT_APP_MGMT_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $APP_MGMT_APP_MGMT_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $APP_MGMT_APP_MGMT_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 7135:8080

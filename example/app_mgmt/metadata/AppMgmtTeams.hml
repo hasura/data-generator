@@ -1,0 +1,302 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AppMgmtTeams
+  description: Table to store information about development and management teams,
+    including team lead association.
+  fields:
+    - name: description
+      type: Text
+      description: Description of the team's responsibilities.
+    - name: teamId
+      type: Uuid!
+      description: Unique identifier for a development or management team.
+    - name: teamLeadId
+      type: Int4
+      description: Identifier of the team lead from the enterprise associates table.
+    - name: teamName
+      type: Varchar
+      description: Name of the team.
+  graphql:
+    typeName: App_Mgmt_AppMgmtTeams
+    inputTypeName: App_Mgmt_AppMgmtTeamsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_teams
+      fieldMapping:
+        description:
+          column:
+            name: description
+        teamId:
+          column:
+            name: team_id
+        teamLeadId:
+          column:
+            name: team_lead_id
+        teamName:
+          column:
+            name: team_name
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AppMgmtTeams
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - teamId
+          - teamLeadId
+          - teamName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtTeamsBoolExp
+  operand:
+    object:
+      type: AppMgmtTeams
+      comparableFields:
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: teamId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: teamLeadId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: teamName
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: appMgmtApplications
+        - relationshipName: appMgmtApplicationsByMaintainedByTeamId
+        - relationshipName: appMgmtApplicationsByMaintenanceTeamId
+        - relationshipName: appMgmtApplicationsByOperationsTeamId
+        - relationshipName: appMgmtSdlcProcesses
+        - relationshipName: appMgmtTeamMembers
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtTeamsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtTeamsAggExp
+  operand:
+    object:
+      aggregatedType: AppMgmtTeams
+      aggregatableFields:
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: teamId
+          aggregateExpression: UuidAggExp
+        - fieldName: teamLeadId
+          aggregateExpression: Int4AggExp
+        - fieldName: teamName
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtTeamsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtTeamsOrderByExp
+  operand:
+    object:
+      orderedType: AppMgmtTeams
+      orderableFields:
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: teamId
+          orderByExpression: UuidOrderByExp
+        - fieldName: teamLeadId
+          orderByExpression: Int4OrderByExp
+        - fieldName: teamName
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtTeamsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AppMgmtTeams
+  objectType: AppMgmtTeams
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_teams
+  filterExpressionType: AppMgmtTeamsBoolExp
+  aggregateExpression: AppMgmtTeamsAggExp
+  orderByExpression: AppMgmtTeamsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: appMgmtTeams
+      subscription:
+        rootField: appMgmtTeams
+    selectUniques:
+      - queryRootField: appMgmtTeamsByTeamId
+        uniqueIdentifier:
+          - teamId
+        subscription:
+          rootField: appMgmtTeamsByTeamId
+    filterInputTypeName: App_Mgmt_AppMgmtTeamsFilterInput
+    aggregate:
+      queryRootField: appMgmtTeamsAggregate
+      subscription:
+        rootField: appMgmtTeamsAggregate
+  description: Table to store information about development and management teams,
+    including team lead association.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AppMgmtTeams
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplications
+  sourceType: AppMgmtTeams
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: teamId
+      target:
+        modelField:
+          - fieldName: createdByTeamId
+  graphql:
+    aggregateFieldName: appMgmtApplicationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationsByMaintainedByTeamId
+  sourceType: AppMgmtTeams
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: teamId
+      target:
+        modelField:
+          - fieldName: maintainedByTeamId
+  graphql:
+    aggregateFieldName: appMgmtApplicationsByMaintainedByTeamIdAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationsByMaintenanceTeamId
+  sourceType: AppMgmtTeams
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: teamId
+      target:
+        modelField:
+          - fieldName: maintenanceTeamId
+  graphql:
+    aggregateFieldName: appMgmtApplicationsByMaintenanceTeamIdAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationsByOperationsTeamId
+  sourceType: AppMgmtTeams
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: teamId
+      target:
+        modelField:
+          - fieldName: operationsTeamId
+  graphql:
+    aggregateFieldName: appMgmtApplicationsByOperationsTeamIdAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtSdlcProcesses
+  sourceType: AppMgmtTeams
+  target:
+    model:
+      name: AppMgmtSdlcProcesses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtSdlcProcessesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: teamId
+      target:
+        modelField:
+          - fieldName: teamId
+  graphql:
+    aggregateFieldName: appMgmtSdlcProcessesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtTeamMembers
+  sourceType: AppMgmtTeams
+  target:
+    model:
+      name: AppMgmtTeamMembers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtTeamMembersAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: teamId
+      target:
+        modelField:
+          - fieldName: teamId
+  graphql:
+    aggregateFieldName: appMgmtTeamMembersAggregate
+

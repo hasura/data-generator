@@ -106,7 +106,6 @@ definition:
         - fieldName: value
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
-        - relationshipName: securitySource
         - relationshipName: securityIdentityEntitlements
   logicalOperators:
     enable: true
@@ -170,8 +169,7 @@ definition:
           orderByExpression: UuidOrderByExp
         - fieldName: value
           orderByExpression: VarcharOrderByExp
-      orderableRelationships:
-        - relationshipName: securitySource
+      orderableRelationships: []
   graphql:
     expressionTypeName: Security_SecurityEntitlementsOrderByExp
 
@@ -216,24 +214,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securitySource
-  sourceType: SecurityEntitlements
-  target:
-    model:
-      name: SecuritySources
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securitySourceId
-      target:
-        modelField:
-          - fieldName: securitySourceId
 
 ---
 kind: Relationship

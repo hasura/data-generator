@@ -27,15 +27,15 @@ definition:
     - name: remotePort
       type: Int4
       description: Remote port number of the connection.
+    - name: securityHostId
+      type: Uuid!
+      description: Identifier of the system where the connection originated.
     - name: securityNetworkConnectionId
       type: Uuid!
       description: Unique identifier for the network connection.
     - name: securityProcessExecutionId
       type: Uuid!
       description: Identifier of the process execution that initiated the connection.
-    - name: securitySystemId
-      type: Uuid!
-      description: Identifier of the system where the connection originated.
     - name: startTime
       type: Timestamp
       description: Timestamp when the connection started.
@@ -67,15 +67,15 @@ definition:
         remotePort:
           column:
             name: remote_port
+        securityHostId:
+          column:
+            name: security_host_id
         securityNetworkConnectionId:
           column:
             name: security_network_connection_id
         securityProcessExecutionId:
           column:
             name: security_process_execution_id
-        securitySystemId:
-          column:
-            name: security_system_id
         startTime:
           column:
             name: start_time
@@ -96,9 +96,9 @@ definition:
           - protocol
           - remoteIp
           - remotePort
+          - securityHostId
           - securityNetworkConnectionId
           - securityProcessExecutionId
-          - securitySystemId
           - startTime
 
 ---
@@ -124,17 +124,17 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: remotePort
           booleanExpressionType: Int4BoolExp
+        - fieldName: securityHostId
+          booleanExpressionType: UuidBoolExp
         - fieldName: securityNetworkConnectionId
           booleanExpressionType: UuidBoolExp
         - fieldName: securityProcessExecutionId
           booleanExpressionType: UuidBoolExp
-        - fieldName: securitySystemId
-          booleanExpressionType: UuidBoolExp
         - fieldName: startTime
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
+        - relationshipName: securityHost
         - relationshipName: securityProcessExecution
-        - relationshipName: securitySystem
   logicalOperators:
     enable: true
   isNull:
@@ -165,11 +165,11 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: remotePort
           aggregateExpression: Int4AggExp
+        - fieldName: securityHostId
+          aggregateExpression: UuidAggExp
         - fieldName: securityNetworkConnectionId
           aggregateExpression: UuidAggExp
         - fieldName: securityProcessExecutionId
-          aggregateExpression: UuidAggExp
-        - fieldName: securitySystemId
           aggregateExpression: UuidAggExp
         - fieldName: startTime
           aggregateExpression: TimestampAggExp
@@ -201,17 +201,17 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: remotePort
           orderByExpression: Int4OrderByExp
+        - fieldName: securityHostId
+          orderByExpression: UuidOrderByExp
         - fieldName: securityNetworkConnectionId
           orderByExpression: UuidOrderByExp
         - fieldName: securityProcessExecutionId
           orderByExpression: UuidOrderByExp
-        - fieldName: securitySystemId
-          orderByExpression: UuidOrderByExp
         - fieldName: startTime
           orderByExpression: TimestampOrderByExp
       orderableRelationships:
+        - relationshipName: securityHost
         - relationshipName: securityProcessExecution
-        - relationshipName: securitySystem
   graphql:
     expressionTypeName: Security_SecurityNetworkConnectionsOrderByExp
 
@@ -261,6 +261,24 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: securityHost
+  sourceType: SecurityNetworkConnections
+  target:
+    model:
+      name: SecurityHosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityHostId
+      target:
+        modelField:
+          - fieldName: securityHostId
+
+---
+kind: Relationship
+version: v1
+definition:
   name: securityProcessExecution
   sourceType: SecurityNetworkConnections
   target:
@@ -274,22 +292,4 @@ definition:
       target:
         modelField:
           - fieldName: securityProcessExecutionId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securitySystem
-  sourceType: SecurityNetworkConnections
-  target:
-    model:
-      name: SecuritySystems
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securitySystemId
-      target:
-        modelField:
-          - fieldName: securitySystemId
 

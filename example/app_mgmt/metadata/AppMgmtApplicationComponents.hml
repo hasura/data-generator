@@ -1,0 +1,193 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AppMgmtApplicationComponents
+  description: Table to store dependencies between applications and their software
+    components.
+  fields:
+    - name: appMgmtComponentId
+      type: Uuid!
+      description: Identifier for the software component used by the application.
+    - name: applicationId
+      type: Uuid!
+      description: Identifier for the application that uses the component.
+    - name: dependencyType
+      type: AppMgmtDependencyTypes!
+      description: Type of dependency (e.g., runtime, build, test).
+  graphql:
+    typeName: App_Mgmt_AppMgmtApplicationComponents
+    inputTypeName: App_Mgmt_AppMgmtApplicationComponentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_application_components
+      fieldMapping:
+        appMgmtComponentId:
+          column:
+            name: app_mgmt_component_id
+        applicationId:
+          column:
+            name: application_id
+        dependencyType:
+          column:
+            name: dependency_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AppMgmtApplicationComponents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appMgmtComponentId
+          - applicationId
+          - dependencyType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtApplicationComponentsBoolExp
+  operand:
+    object:
+      type: AppMgmtApplicationComponents
+      comparableFields:
+        - fieldName: appMgmtComponentId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: applicationId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: dependencyType
+          booleanExpressionType: AppMgmtDependencyTypesBoolExp
+      comparableRelationships:
+        - relationshipName: appMgmtComponent
+        - relationshipName: appMgmtApplication
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtApplicationComponentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtApplicationComponentsAggExp
+  operand:
+    object:
+      aggregatedType: AppMgmtApplicationComponents
+      aggregatableFields:
+        - fieldName: appMgmtComponentId
+          aggregateExpression: UuidAggExp
+        - fieldName: applicationId
+          aggregateExpression: UuidAggExp
+        - fieldName: dependencyType
+          aggregateExpression: AppMgmtDependencyTypesAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtApplicationComponentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtApplicationComponentsOrderByExp
+  operand:
+    object:
+      orderedType: AppMgmtApplicationComponents
+      orderableFields:
+        - fieldName: appMgmtComponentId
+          orderByExpression: UuidOrderByExp
+        - fieldName: applicationId
+          orderByExpression: UuidOrderByExp
+        - fieldName: dependencyType
+          orderByExpression: AppMgmtDependencyTypesOrderByExp
+      orderableRelationships:
+        - relationshipName: appMgmtComponent
+        - relationshipName: appMgmtApplication
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtApplicationComponentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AppMgmtApplicationComponents
+  objectType: AppMgmtApplicationComponents
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_application_components
+  filterExpressionType: AppMgmtApplicationComponentsBoolExp
+  aggregateExpression: AppMgmtApplicationComponentsAggExp
+  orderByExpression: AppMgmtApplicationComponentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: appMgmtApplicationComponents
+      subscription:
+        rootField: appMgmtApplicationComponents
+    selectUniques:
+      - queryRootField: appMgmtApplicationComponentsByApplicationComponentsPkey
+        uniqueIdentifier:
+          - appMgmtComponentId
+          - applicationId
+          - dependencyType
+        subscription:
+          rootField: appMgmtApplicationComponentsByApplicationComponentsPkey
+    filterInputTypeName: App_Mgmt_AppMgmtApplicationComponentsFilterInput
+    aggregate:
+      queryRootField: appMgmtApplicationComponentsAggregate
+      subscription:
+        rootField: appMgmtApplicationComponentsAggregate
+  description: Table to store dependencies between applications and their software
+    components.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AppMgmtApplicationComponents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtComponent
+  sourceType: AppMgmtApplicationComponents
+  target:
+    model:
+      name: AppMgmtComponents
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtComponentId
+      target:
+        modelField:
+          - fieldName: appMgmtComponentId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplication
+  sourceType: AppMgmtApplicationComponents
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: applicationId
+      target:
+        modelField:
+          - fieldName: appMgmtApplicationId
+

@@ -21,12 +21,12 @@ definition:
     - name: processName
       type: Varchar
       description: Name of the executed process.
+    - name: securityHostId
+      type: Uuid!
+      description: Identifier of the system where the process was executed.
     - name: securityProcessExecutionId
       type: Uuid!
       description: Unique identifier for the process execution.
-    - name: securitySystemId
-      type: Uuid!
-      description: Identifier of the system where the process was executed.
     - name: startTime
       type: Timestamp
       description: Timestamp when the process execution started.
@@ -55,12 +55,12 @@ definition:
         processName:
           column:
             name: process_name
+        securityHostId:
+          column:
+            name: security_host_id
         securityProcessExecutionId:
           column:
             name: security_process_execution_id
-        securitySystemId:
-          column:
-            name: security_system_id
         startTime:
           column:
             name: start_time
@@ -82,8 +82,8 @@ definition:
           - parentProcessId
           - processId
           - processName
+          - securityHostId
           - securityProcessExecutionId
-          - securitySystemId
           - startTime
           - userName
 
@@ -106,9 +106,9 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: processName
           booleanExpressionType: VarcharBoolExp
-        - fieldName: securityProcessExecutionId
+        - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
-        - fieldName: securitySystemId
+        - fieldName: securityProcessExecutionId
           booleanExpressionType: UuidBoolExp
         - fieldName: startTime
           booleanExpressionType: TimestampBoolExp
@@ -117,7 +117,7 @@ definition:
       comparableRelationships:
         - relationshipName: securityFileAccesses
         - relationshipName: securityNetworkConnections
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   logicalOperators:
     enable: true
   isNull:
@@ -144,9 +144,9 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: processName
           aggregateExpression: VarcharAggExp
-        - fieldName: securityProcessExecutionId
+        - fieldName: securityHostId
           aggregateExpression: UuidAggExp
-        - fieldName: securitySystemId
+        - fieldName: securityProcessExecutionId
           aggregateExpression: UuidAggExp
         - fieldName: startTime
           aggregateExpression: TimestampAggExp
@@ -176,16 +176,16 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: processName
           orderByExpression: VarcharOrderByExp
-        - fieldName: securityProcessExecutionId
+        - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
-        - fieldName: securitySystemId
+        - fieldName: securityProcessExecutionId
           orderByExpression: UuidOrderByExp
         - fieldName: startTime
           orderByExpression: TimestampOrderByExp
         - fieldName: userName
           orderByExpression: VarcharOrderByExp
       orderableRelationships:
-        - relationshipName: securitySystem
+        - relationshipName: securityHost
   graphql:
     expressionTypeName: Security_SecurityProcessExecutionsOrderByExp
 
@@ -279,17 +279,17 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: securitySystem
+  name: securityHost
   sourceType: SecurityProcessExecutions
   target:
     model:
-      name: SecuritySystems
+      name: SecurityHosts
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
       target:
         modelField:
-          - fieldName: securitySystemId
+          - fieldName: securityHostId
 

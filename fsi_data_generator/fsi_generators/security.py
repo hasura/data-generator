@@ -8,7 +8,7 @@ from fsi_data_generator.fsi_generators.get_random_port_with_popular_bias import 
 from fsi_data_generator.fsi_generators.security__policies__name import security__policies__name
 from fsi_data_generator.fsi_generators.text_list import text_list
 from fsi_data_generator.fsi_generators.unique_list import unique_list
-from fsi_data_generator.fsi_text import ____tcp_flag
+from fsi_data_generator.fsi_text.____tcp_flag import ____tcp_flag
 from fsi_data_generator.fsi_text.security__apps__name import security__apps__name
 from fsi_data_generator.fsi_text.security__roles__name import security__roles__name
 from itertools import product

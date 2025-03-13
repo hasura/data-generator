@@ -1,0 +1,688 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AppMgmtApplications
+  description: Table to store comprehensive information about software
+    applications within the organization.
+  fields:
+    - name: appMgmtApplicationId
+      type: Uuid!
+      description: Unique identifier for an application.
+    - name: applicationName
+      type: Varchar
+      description: Name of the application.
+    - name: applicationOwnerId
+      type: Int4
+      description: Identifier for the individual responsible for communication with
+        stakeholders, funding, budget, and strategy for the application.
+    - name: applicationType
+      type: AppMgmtApplicationTypes
+      description: Type of application (e.g., web, mobile, desktop).
+    - name: architectureId
+      type: Uuid
+      description: Identifier for the approved architecture the application adheres to.
+    - name: createdByTeamId
+      type: Uuid
+      description: Identifier for the team that initially created the application.
+    - name: createdByUserId
+      type: Int4
+      description: Identifier of the employee who initially created the application record.
+    - name: dateDeployed
+      type: Timestamp
+      description: Date the application was deployed to its environment.
+    - name: dateRetired
+      type: Timestamp
+      description: Date the application was retired or decommissioned.
+    - name: deploymentEnvironment
+      type: AppMgmtDeploymentEnvironments
+      description: Environment where the application is deployed (e.g., on-premises, cloud).
+    - name: description
+      type: Text
+      description: General description of the application's purpose.
+    - name: documentationUrl
+      type: Varchar
+      description: Link to the application's documentation.
+    - name: lifecycleStatus
+      type: AppMgmtApplicationLifecycleStatus
+      description: Current stage in the application's lifecycle (e.g., development,
+        production).
+    - name: maintainedByTeamId
+      type: Uuid
+      description: Identifier for the team currently responsible for maintaining the
+        application.
+    - name: maintenanceTeamId
+      type: Uuid
+      description: Identifier for the team responsible for maintaining the
+        application, including updates and fixes.
+    - name: modifiedByUserId
+      type: Int4
+      description: Identifier of the employee who last modified the application record.
+    - name: operationsTeamId
+      type: Uuid
+      description: Identifier for the team responsible for the day-to-day operation of
+        the application.
+    - name: parentApplicationId
+      type: Uuid
+      description: Identifier for a parent application if this application is a
+        component or part of a larger system.
+    - name: rpo
+      type: Interval
+      description: "Recovery Point Objective (RPO): The maximum acceptable data loss
+        for the application."
+    - name: rto
+      type: Interval
+      description: "Recovery Time Objective (RTO): The maximum acceptable downtime for
+        the application."
+    - name: sdlcProcessId
+      type: Uuid
+      description: Identifier for the SDLC process used to develop or manage the
+        application.
+    - name: sourceCodeRepository
+      type: Varchar
+      description: Link to the repository where the application's source code is stored.
+    - name: vendor
+      type: Varchar
+      description: Name of the vendor if the application is purchased.
+    - name: version
+      type: Varchar
+      description: Current version of the application.
+  graphql:
+    typeName: App_Mgmt_AppMgmtApplications
+    inputTypeName: App_Mgmt_AppMgmtApplicationsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_applications
+      fieldMapping:
+        appMgmtApplicationId:
+          column:
+            name: app_mgmt_application_id
+        applicationName:
+          column:
+            name: application_name
+        applicationOwnerId:
+          column:
+            name: application_owner_id
+        applicationType:
+          column:
+            name: application_type
+        architectureId:
+          column:
+            name: architecture_id
+        createdByTeamId:
+          column:
+            name: created_by_team_id
+        createdByUserId:
+          column:
+            name: created_by_user_id
+        dateDeployed:
+          column:
+            name: date_deployed
+        dateRetired:
+          column:
+            name: date_retired
+        deploymentEnvironment:
+          column:
+            name: deployment_environment
+        description:
+          column:
+            name: description
+        documentationUrl:
+          column:
+            name: documentation_url
+        lifecycleStatus:
+          column:
+            name: lifecycle_status
+        maintainedByTeamId:
+          column:
+            name: maintained_by_team_id
+        maintenanceTeamId:
+          column:
+            name: maintenance_team_id
+        modifiedByUserId:
+          column:
+            name: modified_by_user_id
+        operationsTeamId:
+          column:
+            name: operations_team_id
+        parentApplicationId:
+          column:
+            name: parent_application_id
+        rpo:
+          column:
+            name: rpo
+        rto:
+          column:
+            name: rto
+        sdlcProcessId:
+          column:
+            name: sdlc_process_id
+        sourceCodeRepository:
+          column:
+            name: source_code_repository
+        vendor:
+          column:
+            name: vendor
+        version:
+          column:
+            name: version
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AppMgmtApplications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appMgmtApplicationId
+          - applicationName
+          - applicationOwnerId
+          - applicationType
+          - architectureId
+          - createdByTeamId
+          - createdByUserId
+          - dateDeployed
+          - dateRetired
+          - deploymentEnvironment
+          - description
+          - documentationUrl
+          - lifecycleStatus
+          - maintainedByTeamId
+          - maintenanceTeamId
+          - modifiedByUserId
+          - operationsTeamId
+          - parentApplicationId
+          - rpo
+          - rto
+          - sdlcProcessId
+          - sourceCodeRepository
+          - vendor
+          - version
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtApplicationsBoolExp
+  operand:
+    object:
+      type: AppMgmtApplications
+      comparableFields:
+        - fieldName: appMgmtApplicationId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: applicationName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: applicationOwnerId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: applicationType
+          booleanExpressionType: AppMgmtApplicationTypesBoolExp
+        - fieldName: architectureId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: createdByTeamId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: createdByUserId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dateDeployed
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: dateRetired
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: deploymentEnvironment
+          booleanExpressionType: AppMgmtDeploymentEnvironmentsBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: documentationUrl
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: lifecycleStatus
+          booleanExpressionType: AppMgmtApplicationLifecycleStatusBoolExp
+        - fieldName: maintainedByTeamId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: maintenanceTeamId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: modifiedByUserId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: operationsTeamId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: parentApplicationId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: rpo
+          booleanExpressionType: IntervalBoolExp
+        - fieldName: rto
+          booleanExpressionType: IntervalBoolExp
+        - fieldName: sdlcProcessId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: sourceCodeRepository
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: vendor
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: version
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: appMgmtApplicationComponents
+        - relationshipName: appMgmtApplicationLicenses
+        - relationshipName: appMgmtApplicationRelationships
+        - relationshipName: appMgmtApplicationRelationshipsByApplicationId2
+        - relationshipName: appMgmtArchitecture
+        - relationshipName: appMgmtTeam
+        - relationshipName: appMgmtTeamByMaintainedByTeamId
+        - relationshipName: appMgmtTeamByMaintenanceTeamId
+        - relationshipName: appMgmtTeamByOperationsTeamId
+        - relationshipName: appMgmtApplication
+        - relationshipName: appMgmtApplications
+        - relationshipName: appMgmtSdlcProcess
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtApplicationsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtApplicationsAggExp
+  operand:
+    object:
+      aggregatedType: AppMgmtApplications
+      aggregatableFields:
+        - fieldName: appMgmtApplicationId
+          aggregateExpression: UuidAggExp
+        - fieldName: applicationName
+          aggregateExpression: VarcharAggExp
+        - fieldName: applicationOwnerId
+          aggregateExpression: Int4AggExp
+        - fieldName: applicationType
+          aggregateExpression: AppMgmtApplicationTypesAggExp
+        - fieldName: architectureId
+          aggregateExpression: UuidAggExp
+        - fieldName: createdByTeamId
+          aggregateExpression: UuidAggExp
+        - fieldName: createdByUserId
+          aggregateExpression: Int4AggExp
+        - fieldName: dateDeployed
+          aggregateExpression: TimestampAggExp
+        - fieldName: dateRetired
+          aggregateExpression: TimestampAggExp
+        - fieldName: deploymentEnvironment
+          aggregateExpression: AppMgmtDeploymentEnvironmentsAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: documentationUrl
+          aggregateExpression: VarcharAggExp
+        - fieldName: lifecycleStatus
+          aggregateExpression: AppMgmtApplicationLifecycleStatusAggExp
+        - fieldName: maintainedByTeamId
+          aggregateExpression: UuidAggExp
+        - fieldName: maintenanceTeamId
+          aggregateExpression: UuidAggExp
+        - fieldName: modifiedByUserId
+          aggregateExpression: Int4AggExp
+        - fieldName: operationsTeamId
+          aggregateExpression: UuidAggExp
+        - fieldName: parentApplicationId
+          aggregateExpression: UuidAggExp
+        - fieldName: rpo
+          aggregateExpression: IntervalAggExp
+        - fieldName: rto
+          aggregateExpression: IntervalAggExp
+        - fieldName: sdlcProcessId
+          aggregateExpression: UuidAggExp
+        - fieldName: sourceCodeRepository
+          aggregateExpression: VarcharAggExp
+        - fieldName: vendor
+          aggregateExpression: VarcharAggExp
+        - fieldName: version
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtApplicationsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtApplicationsOrderByExp
+  operand:
+    object:
+      orderedType: AppMgmtApplications
+      orderableFields:
+        - fieldName: appMgmtApplicationId
+          orderByExpression: UuidOrderByExp
+        - fieldName: applicationName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: applicationOwnerId
+          orderByExpression: Int4OrderByExp
+        - fieldName: applicationType
+          orderByExpression: AppMgmtApplicationTypesOrderByExp
+        - fieldName: architectureId
+          orderByExpression: UuidOrderByExp
+        - fieldName: createdByTeamId
+          orderByExpression: UuidOrderByExp
+        - fieldName: createdByUserId
+          orderByExpression: Int4OrderByExp
+        - fieldName: dateDeployed
+          orderByExpression: TimestampOrderByExp
+        - fieldName: dateRetired
+          orderByExpression: TimestampOrderByExp
+        - fieldName: deploymentEnvironment
+          orderByExpression: AppMgmtDeploymentEnvironmentsOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: documentationUrl
+          orderByExpression: VarcharOrderByExp
+        - fieldName: lifecycleStatus
+          orderByExpression: AppMgmtApplicationLifecycleStatusOrderByExp
+        - fieldName: maintainedByTeamId
+          orderByExpression: UuidOrderByExp
+        - fieldName: maintenanceTeamId
+          orderByExpression: UuidOrderByExp
+        - fieldName: modifiedByUserId
+          orderByExpression: Int4OrderByExp
+        - fieldName: operationsTeamId
+          orderByExpression: UuidOrderByExp
+        - fieldName: parentApplicationId
+          orderByExpression: UuidOrderByExp
+        - fieldName: rpo
+          orderByExpression: IntervalOrderByExp
+        - fieldName: rto
+          orderByExpression: IntervalOrderByExp
+        - fieldName: sdlcProcessId
+          orderByExpression: UuidOrderByExp
+        - fieldName: sourceCodeRepository
+          orderByExpression: VarcharOrderByExp
+        - fieldName: vendor
+          orderByExpression: VarcharOrderByExp
+        - fieldName: version
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: appMgmtArchitecture
+        - relationshipName: appMgmtTeam
+        - relationshipName: appMgmtTeamByMaintainedByTeamId
+        - relationshipName: appMgmtTeamByMaintenanceTeamId
+        - relationshipName: appMgmtTeamByOperationsTeamId
+        - relationshipName: appMgmtApplication
+        - relationshipName: appMgmtSdlcProcess
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtApplicationsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AppMgmtApplications
+  objectType: AppMgmtApplications
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_applications
+  filterExpressionType: AppMgmtApplicationsBoolExp
+  aggregateExpression: AppMgmtApplicationsAggExp
+  orderByExpression: AppMgmtApplicationsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: appMgmtApplications
+      subscription:
+        rootField: appMgmtApplications
+    selectUniques:
+      - queryRootField: appMgmtApplicationsByAppMgmtApplicationId
+        uniqueIdentifier:
+          - appMgmtApplicationId
+        subscription:
+          rootField: appMgmtApplicationsByAppMgmtApplicationId
+    filterInputTypeName: App_Mgmt_AppMgmtApplicationsFilterInput
+    aggregate:
+      queryRootField: appMgmtApplicationsAggregate
+      subscription:
+        rootField: appMgmtApplicationsAggregate
+  description: Table to store comprehensive information about software
+    applications within the organization.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AppMgmtApplications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationComponents
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtApplicationComponents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationComponentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtApplicationId
+      target:
+        modelField:
+          - fieldName: applicationId
+  graphql:
+    aggregateFieldName: appMgmtApplicationComponentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationLicenses
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtApplicationLicenses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationLicensesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtApplicationId
+      target:
+        modelField:
+          - fieldName: applicationId
+  graphql:
+    aggregateFieldName: appMgmtApplicationLicensesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationRelationships
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtApplicationRelationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationRelationshipsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtApplicationId
+      target:
+        modelField:
+          - fieldName: applicationId1
+  graphql:
+    aggregateFieldName: appMgmtApplicationRelationshipsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationRelationshipsByApplicationId2
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtApplicationRelationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationRelationshipsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtApplicationId
+      target:
+        modelField:
+          - fieldName: applicationId2
+  graphql:
+    aggregateFieldName: appMgmtApplicationRelationshipsByApplicationId2Aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtArchitecture
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtArchitectures
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: architectureId
+      target:
+        modelField:
+          - fieldName: appMgmtArchitectureId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtTeam
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtTeams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: createdByTeamId
+      target:
+        modelField:
+          - fieldName: teamId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtTeamByMaintainedByTeamId
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtTeams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: maintainedByTeamId
+      target:
+        modelField:
+          - fieldName: teamId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtTeamByMaintenanceTeamId
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtTeams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: maintenanceTeamId
+      target:
+        modelField:
+          - fieldName: teamId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtTeamByOperationsTeamId
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtTeams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operationsTeamId
+      target:
+        modelField:
+          - fieldName: teamId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplication
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: parentApplicationId
+      target:
+        modelField:
+          - fieldName: appMgmtApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplications
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtApplicationId
+      target:
+        modelField:
+          - fieldName: parentApplicationId
+  graphql:
+    aggregateFieldName: appMgmtApplicationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtSdlcProcess
+  sourceType: AppMgmtApplications
+  target:
+    model:
+      name: AppMgmtSdlcProcesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: sdlcProcessId
+      target:
+        modelField:
+          - fieldName: appMgmtSdlcProcessId
+

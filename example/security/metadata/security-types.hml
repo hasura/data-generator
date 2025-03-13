@@ -1387,6 +1387,99 @@ definition:
     expressionTypeName: Security_SecurityTcpFlagTypeOrderByExp
 
 ---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityNetworkProtocols
+  graphql:
+    typeName: Security_SecurityNetworkProtocols
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityNetworkProtocolsBoolExp
+  operand:
+    scalar:
+      type: SecurityNetworkProtocols
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityNetworkProtocols!
+        - name: _gt
+          argumentType: SecurityNetworkProtocols!
+        - name: _gte
+          argumentType: SecurityNetworkProtocols!
+        - name: _in
+          argumentType: "[SecurityNetworkProtocols!]!"
+        - name: _lt
+          argumentType: SecurityNetworkProtocols!
+        - name: _lte
+          argumentType: SecurityNetworkProtocols!
+        - name: _neq
+          argumentType: SecurityNetworkProtocols!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_network_protocols
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityNetworkProtocolsBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_network_protocols
+  representation: SecurityNetworkProtocols
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityNetworkProtocolsComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityNetworkProtocolsAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityNetworkProtocols
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityNetworkProtocols
+        - name: min
+          returnType: SecurityNetworkProtocols
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_network_protocols
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityNetworkProtocolsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityNetworkProtocolsOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityNetworkProtocols
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityNetworkProtocolsOrderByExp
+
+---
 kind: AggregateExpression
 version: v1
 definition:

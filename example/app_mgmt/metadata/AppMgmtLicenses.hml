@@ -1,0 +1,208 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AppMgmtLicenses
+  description: Table to store information about software licenses.
+  fields:
+    - name: licenseId
+      type: Uuid!
+      description: Unique identifier for a software license.
+    - name: licenseName
+      type: Varchar
+      description: Name of the software license.
+    - name: licenseText
+      type: Text
+      description: Full text or a summary of the software license terms.
+    - name: licenseType
+      type: Varchar
+      description: Type of software license (e.g., MIT, GPL).
+  graphql:
+    typeName: App_Mgmt_AppMgmtLicenses
+    inputTypeName: App_Mgmt_AppMgmtLicensesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_licenses
+      fieldMapping:
+        licenseId:
+          column:
+            name: license_id
+        licenseName:
+          column:
+            name: license_name
+        licenseText:
+          column:
+            name: license_text
+        licenseType:
+          column:
+            name: license_type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AppMgmtLicenses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - licenseId
+          - licenseName
+          - licenseText
+          - licenseType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtLicensesBoolExp
+  operand:
+    object:
+      type: AppMgmtLicenses
+      comparableFields:
+        - fieldName: licenseId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: licenseName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: licenseText
+          booleanExpressionType: TextBoolExp
+        - fieldName: licenseType
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: appMgmtApplicationLicenses
+        - relationshipName: appMgmtComponents
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtLicensesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtLicensesAggExp
+  operand:
+    object:
+      aggregatedType: AppMgmtLicenses
+      aggregatableFields:
+        - fieldName: licenseId
+          aggregateExpression: UuidAggExp
+        - fieldName: licenseName
+          aggregateExpression: VarcharAggExp
+        - fieldName: licenseText
+          aggregateExpression: TextAggExp
+        - fieldName: licenseType
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtLicensesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtLicensesOrderByExp
+  operand:
+    object:
+      orderedType: AppMgmtLicenses
+      orderableFields:
+        - fieldName: licenseId
+          orderByExpression: UuidOrderByExp
+        - fieldName: licenseName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: licenseText
+          orderByExpression: TextOrderByExp
+        - fieldName: licenseType
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtLicensesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AppMgmtLicenses
+  objectType: AppMgmtLicenses
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_licenses
+  filterExpressionType: AppMgmtLicensesBoolExp
+  aggregateExpression: AppMgmtLicensesAggExp
+  orderByExpression: AppMgmtLicensesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: appMgmtLicenses
+      subscription:
+        rootField: appMgmtLicenses
+    selectUniques:
+      - queryRootField: appMgmtLicensesByLicenseId
+        uniqueIdentifier:
+          - licenseId
+        subscription:
+          rootField: appMgmtLicensesByLicenseId
+    filterInputTypeName: App_Mgmt_AppMgmtLicensesFilterInput
+    aggregate:
+      queryRootField: appMgmtLicensesAggregate
+      subscription:
+        rootField: appMgmtLicensesAggregate
+  description: Table to store information about software licenses.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AppMgmtLicenses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationLicenses
+  sourceType: AppMgmtLicenses
+  target:
+    model:
+      name: AppMgmtApplicationLicenses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationLicensesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: licenseId
+      target:
+        modelField:
+          - fieldName: licenseId
+  graphql:
+    aggregateFieldName: appMgmtApplicationLicensesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtComponents
+  sourceType: AppMgmtLicenses
+  target:
+    model:
+      name: AppMgmtComponents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtComponentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: licenseId
+      target:
+        modelField:
+          - fieldName: licenseId
+  graphql:
+    aggregateFieldName: appMgmtComponentsAggregate
+

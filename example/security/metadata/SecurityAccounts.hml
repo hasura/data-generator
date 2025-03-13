@@ -134,8 +134,6 @@ definition:
       comparableRelationships:
         - relationshipName: securityAccountEntitlementAttributes
         - relationshipName: securityIdentity
-        - relationshipName: securitySource
-        - relationshipName: securityApps
   logicalOperators:
     enable: true
   isNull:
@@ -212,7 +210,6 @@ definition:
           orderByExpression: UuidOrderByExp
       orderableRelationships:
         - relationshipName: securityIdentity
-        - relationshipName: securitySource
   graphql:
     expressionTypeName: Security_SecurityAccountsOrderByExp
 
@@ -296,44 +293,4 @@ definition:
       target:
         modelField:
           - fieldName: securityIdentityId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securitySource
-  sourceType: SecurityAccounts
-  target:
-    model:
-      name: SecuritySources
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securitySourceId
-      target:
-        modelField:
-          - fieldName: securitySourceId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securityApps
-  sourceType: SecurityAccounts
-  target:
-    model:
-      name: SecurityApps
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: SecurityAppsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securityAccountId
-      target:
-        modelField:
-          - fieldName: securityAccountId
-  graphql:
-    aggregateFieldName: securityAppsAggregate
 
