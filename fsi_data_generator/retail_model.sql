@@ -98,6 +98,34 @@ CREATE TYPE "app_mgmt"."criticality_levels" AS ENUM (
   'critical_impact'
 );
 
+CREATE TYPE "app_mgmt"."relationship_types" AS ENUM (
+  'AUTHORIZATION',
+  'AUTHENTICATION',
+  'DATA_ACCESS',
+  'SERVICE_DEPENDENCY',
+  'API_INTEGRATION',
+  'CONFIGURATION_PROVIDER',
+  'LOGGING_SERVICE',
+  'MONITORING_SERVICE',
+  'CACHING_SERVICE',
+  'MESSAGING_QUEUE',
+  'REPORTING_SERVICE',
+  'DATA_PROCESSING',
+  'UI_EMBEDDING',
+  'WORKFLOW_TRIGGER',
+  'EVENT_SUBSCRIPTION',
+  'NOTIFICATION_SERVICE',
+  'IDENTITY_MANAGEMENT',
+  'PAYMENT_PROCESSING',
+  'STORAGE_SERVICE',
+  'SEARCH_SERVICE',
+  'SECURITY_SCANNING',
+  'AUDIT_LOGGING',
+  'RESOURCE_MANAGEMENT',
+  'TASK_SCHEDULING',
+  'CONTENT_DELIVERY'
+);
+
 CREATE TABLE "security"."devices" (
   "security_device_id" INET PRIMARY KEY NOT NULL,
   "device_type" VARCHAR(50) NOT NULL,
@@ -454,7 +482,7 @@ CREATE TABLE "app_mgmt"."sdlc_processes" (
   "process_owner" VARCHAR(255),
   "version" VARCHAR(50),
   "documentation_url" VARCHAR(2048),
-  "team_id" UUID
+  "app_mgmt_team_id" UUID
 );
 
 CREATE TABLE "app_mgmt"."applications" (
@@ -465,8 +493,9 @@ CREATE TABLE "app_mgmt"."applications" (
   "vendor" VARCHAR(255),
   "version" VARCHAR(50),
   "deployment_environment" app_mgmt.deployment_environments,
-  "operations_team_id" UUID,
-  "maintenance_team_id" UUID,
+  "operated_by_team_id" UUID,
+  "maintained_by_team_id" UUID,
+  "created_by_team_id" UUID,
   "application_owner_id" INTEGER,
   "lifecycle_status" app_mgmt.application_lifecycle_status,
   "date_deployed" TIMESTAMP,
@@ -475,8 +504,6 @@ CREATE TABLE "app_mgmt"."applications" (
   "sdlc_process_id" UUID,
   "source_code_repository" VARCHAR(2048),
   "documentation_url" VARCHAR(2048),
-  "created_by_team_id" UUID,
-  "maintained_by_team_id" UUID,
   "parent_application_id" UUID,
   "created_by_user_id" INTEGER,
   "modified_by_user_id" INTEGER,
@@ -490,7 +517,7 @@ CREATE TABLE "app_mgmt"."components" (
   "component_version" VARCHAR(50),
   "component_type" VARCHAR(100),
   "vendor" VARCHAR(255),
-  "license_id" UUID,
+  "app_mgmt_license_id" UUID,
   "description" TEXT,
   "created_by_user_id" INTEGER,
   "modified_by_user_id" INTEGER,
@@ -517,36 +544,36 @@ CREATE TABLE "app_mgmt"."application_components" (
 CREATE TABLE "app_mgmt"."application_relationships" (
   "application_id_1" UUID,
   "application_id_2" UUID,
-  "relationship_type" VARCHAR(50),
+  "relationship_type" app_mgmt.relationship_types,
   "criticality" app_mgmt.criticality_levels,
   PRIMARY KEY ("application_id_1", "application_id_2", "relationship_type")
 );
 
 CREATE TABLE "app_mgmt"."licenses" (
-  "license_id" UUID PRIMARY KEY,
+  "app_mgmt_license_id" UUID PRIMARY KEY,
   "license_name" VARCHAR(255),
   "license_type" VARCHAR(50),
   "license_text" TEXT
 );
 
 CREATE TABLE "app_mgmt"."application_licenses" (
-  "application_id" UUID,
-  "license_id" UUID,
-  PRIMARY KEY ("application_id", "license_id")
+  "app_mgmt_application_id" UUID,
+  "app_mgmt_license_id" UUID,
+  PRIMARY KEY ("app_mgmt_application_id", "app_mgmt_license_id")
 );
 
 CREATE TABLE "app_mgmt"."teams" (
-  "team_id" UUID PRIMARY KEY,
+  "app_mgmt_team_id" UUID PRIMARY KEY,
   "team_name" VARCHAR(255),
   "description" TEXT,
   "team_lead_id" INTEGER
 );
 
 CREATE TABLE "app_mgmt"."team_members" (
-  "team_id" UUID,
-  "associate_id" INTEGER,
+  "app_mgmt_team_id" UUID,
+  "enterprise_associate_id" INTEGER,
   "function" VARCHAR(255),
-  PRIMARY KEY ("team_id", "associate_id")
+  PRIMARY KEY ("app_mgmt_team_id", "enterprise_associate_id")
 );
 
 CREATE TABLE "enterprise"."permissions" (
@@ -3880,7 +3907,7 @@ COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."version" IS 'Version number or id
 
 COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."documentation_url" IS 'Link to the full documentation for the SDLC process.';
 
-COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."team_id" IS 'Identifier for the team that manages this SDLC process.';
+COMMENT ON COLUMN "app_mgmt"."sdlc_processes"."app_mgmt_team_id" IS 'Identifier for the team that manages this SDLC process.';
 
 COMMENT ON TABLE "app_mgmt"."applications" IS 'Table to store comprehensive information about software applications within the organization.';
 
@@ -3898,9 +3925,11 @@ COMMENT ON COLUMN "app_mgmt"."applications"."version" IS 'Current version of the
 
 COMMENT ON COLUMN "app_mgmt"."applications"."deployment_environment" IS 'Environment where the application is deployed (e.g., on-premises, cloud).';
 
-COMMENT ON COLUMN "app_mgmt"."applications"."operations_team_id" IS 'Identifier for the team responsible for the day-to-day operation of the application.';
+COMMENT ON COLUMN "app_mgmt"."applications"."operated_by_team_id" IS 'Identifier for the team responsible for the day-to-day operation of the application.';
 
-COMMENT ON COLUMN "app_mgmt"."applications"."maintenance_team_id" IS 'Identifier for the team responsible for maintaining the application, including updates and fixes.';
+COMMENT ON COLUMN "app_mgmt"."applications"."maintained_by_team_id" IS 'Identifier for the team responsible for maintaining the application, including updates and fixes.';
+
+COMMENT ON COLUMN "app_mgmt"."applications"."created_by_team_id" IS 'Identifier for the team that initially created the application.';
 
 COMMENT ON COLUMN "app_mgmt"."applications"."application_owner_id" IS 'Identifier for the individual responsible for communication with stakeholders, funding, budget, and strategy for the application.';
 
@@ -3917,10 +3946,6 @@ COMMENT ON COLUMN "app_mgmt"."applications"."sdlc_process_id" IS 'Identifier for
 COMMENT ON COLUMN "app_mgmt"."applications"."source_code_repository" IS 'Link to the repository where the application''s source code is stored.';
 
 COMMENT ON COLUMN "app_mgmt"."applications"."documentation_url" IS 'Link to the application''s documentation.';
-
-COMMENT ON COLUMN "app_mgmt"."applications"."created_by_team_id" IS 'Identifier for the team that initially created the application.';
-
-COMMENT ON COLUMN "app_mgmt"."applications"."maintained_by_team_id" IS 'Identifier for the team currently responsible for maintaining the application.';
 
 COMMENT ON COLUMN "app_mgmt"."applications"."parent_application_id" IS 'Identifier for a parent application if this application is a component or part of a larger system.';
 
@@ -3944,7 +3969,7 @@ COMMENT ON COLUMN "app_mgmt"."components"."component_type" IS 'Type of component
 
 COMMENT ON COLUMN "app_mgmt"."components"."vendor" IS 'Vendor or provider of the software component.';
 
-COMMENT ON COLUMN "app_mgmt"."components"."license_id" IS 'Identifier for the license associated with the component.';
+COMMENT ON COLUMN "app_mgmt"."components"."app_mgmt_license_id" IS 'Identifier for the license associated with the component.';
 
 COMMENT ON COLUMN "app_mgmt"."components"."description" IS 'Description of the component''s functionality.';
 
@@ -3988,7 +4013,7 @@ COMMENT ON COLUMN "app_mgmt"."application_relationships"."criticality" IS 'Criti
 
 COMMENT ON TABLE "app_mgmt"."licenses" IS 'Table to store information about software licenses.';
 
-COMMENT ON COLUMN "app_mgmt"."licenses"."license_id" IS 'Unique identifier for a software license.';
+COMMENT ON COLUMN "app_mgmt"."licenses"."app_mgmt_license_id" IS 'Unique identifier for a software license.';
 
 COMMENT ON COLUMN "app_mgmt"."licenses"."license_name" IS 'Name of the software license.';
 
@@ -3998,13 +4023,13 @@ COMMENT ON COLUMN "app_mgmt"."licenses"."license_text" IS 'Full text or a summar
 
 COMMENT ON TABLE "app_mgmt"."application_licenses" IS 'Table to store associations between applications and the licenses they use.';
 
-COMMENT ON COLUMN "app_mgmt"."application_licenses"."application_id" IS 'Identifier for the application that uses the license.';
+COMMENT ON COLUMN "app_mgmt"."application_licenses"."app_mgmt_application_id" IS 'Identifier for the application that uses the license.';
 
-COMMENT ON COLUMN "app_mgmt"."application_licenses"."license_id" IS 'Identifier for the software license used by the application.';
+COMMENT ON COLUMN "app_mgmt"."application_licenses"."app_mgmt_license_id" IS 'Identifier for the software license used by the application.';
 
 COMMENT ON TABLE "app_mgmt"."teams" IS 'Table to store information about development and management teams, including team lead association.';
 
-COMMENT ON COLUMN "app_mgmt"."teams"."team_id" IS 'Unique identifier for a development or management team.';
+COMMENT ON COLUMN "app_mgmt"."teams"."app_mgmt_team_id" IS 'Unique identifier for a development or management team.';
 
 COMMENT ON COLUMN "app_mgmt"."teams"."team_name" IS 'Name of the team.';
 
@@ -4014,9 +4039,9 @@ COMMENT ON COLUMN "app_mgmt"."teams"."team_lead_id" IS 'Identifier of the team l
 
 COMMENT ON TABLE "app_mgmt"."team_members" IS 'Table to store the associations between teams and their members, including member functions.';
 
-COMMENT ON COLUMN "app_mgmt"."team_members"."team_id" IS 'Identifier of the team.';
+COMMENT ON COLUMN "app_mgmt"."team_members"."app_mgmt_team_id" IS 'Identifier of the team.';
 
-COMMENT ON COLUMN "app_mgmt"."team_members"."associate_id" IS 'Identifier of the team member from the enterprise associates table.';
+COMMENT ON COLUMN "app_mgmt"."team_members"."enterprise_associate_id" IS 'Identifier of the team member from the enterprise associates table.';
 
 COMMENT ON COLUMN "app_mgmt"."team_members"."function" IS 'Function or role of the team member within the team.';
 
@@ -9414,11 +9439,13 @@ ALTER TABLE "app_mgmt"."architectures" ADD FOREIGN KEY ("created_by_user_id") RE
 
 ALTER TABLE "app_mgmt"."architectures" ADD FOREIGN KEY ("modified_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "app_mgmt"."sdlc_processes" ADD FOREIGN KEY ("team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+ALTER TABLE "app_mgmt"."sdlc_processes" ADD FOREIGN KEY ("app_mgmt_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
 
-ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("operations_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("operated_by_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
 
-ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("maintenance_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("maintained_by_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("created_by_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
 
 ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("application_owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -9426,17 +9453,13 @@ ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("architecture_id") REFERE
 
 ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("sdlc_process_id") REFERENCES "app_mgmt"."sdlc_processes" ("app_mgmt_sdlc_process_id");
 
-ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("created_by_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
-
-ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("maintained_by_team_id") REFERENCES "app_mgmt"."teams" ("team_id");
-
 ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("parent_application_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
 
 ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("created_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("modified_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "app_mgmt"."components" ADD FOREIGN KEY ("license_id") REFERENCES "app_mgmt"."licenses" ("license_id");
+ALTER TABLE "app_mgmt"."components" ADD FOREIGN KEY ("app_mgmt_license_id") REFERENCES "app_mgmt"."licenses" ("app_mgmt_license_id");
 
 ALTER TABLE "app_mgmt"."components" ADD FOREIGN KEY ("created_by_user_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -9454,12 +9477,12 @@ ALTER TABLE "app_mgmt"."application_relationships" ADD FOREIGN KEY ("application
 
 ALTER TABLE "app_mgmt"."application_relationships" ADD FOREIGN KEY ("application_id_2") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
 
-ALTER TABLE "app_mgmt"."application_licenses" ADD FOREIGN KEY ("application_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
+ALTER TABLE "app_mgmt"."application_licenses" ADD FOREIGN KEY ("app_mgmt_application_id") REFERENCES "app_mgmt"."applications" ("app_mgmt_application_id");
 
-ALTER TABLE "app_mgmt"."application_licenses" ADD FOREIGN KEY ("license_id") REFERENCES "app_mgmt"."licenses" ("license_id");
+ALTER TABLE "app_mgmt"."application_licenses" ADD FOREIGN KEY ("app_mgmt_license_id") REFERENCES "app_mgmt"."licenses" ("app_mgmt_license_id");
 
 ALTER TABLE "app_mgmt"."teams" ADD FOREIGN KEY ("team_lead_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("team_id") REFERENCES "app_mgmt"."teams" ("team_id");
+ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("app_mgmt_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
 
-ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("associate_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("enterprise_associate_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");

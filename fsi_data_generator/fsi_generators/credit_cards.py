@@ -1,6 +1,6 @@
 from faker import Faker
 
-from fsi_data_generator.fsi_generators.text_list import text_list
+from fsi_data_generator.fsi_generators.helpers.text_list import text_list
 
 fake = Faker()
 

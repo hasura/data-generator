@@ -15,7 +15,7 @@ def probability_return_string(return_value, probability):
 
     # Randomly choose to return the value based on the probability
 
-    def func(a,b,c):
+    def func(_a,_b,_c):
         return return_value if random.random() < probability else ""
 
     return func

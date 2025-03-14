@@ -1,25 +1,25 @@
 from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.consumer_banking_generate_transaction_fee import \
+from fsi_data_generator.fsi_generators.helpers.consumer_banking_generate_transaction_fee import \
     consumer_banking_generate_transaction_fee
-from fsi_data_generator.fsi_generators.generate_transactions_and_balances import generate_fake_balance, \
+from fsi_data_generator.fsi_generators.helpers.generate_transactions_and_balances import generate_fake_balance, \
     generate_fake_transaction
-from fsi_data_generator.fsi_generators.text_list import text_list
-from fsi_data_generator.fsi_generators.unique_list import unique_list
-from fsi_data_generator.fsi_text.consumer_banking__beneficiaries__supplementary_data import \
+from fsi_data_generator.fsi_generators.helpers.text_list import text_list
+from fsi_data_generator.fsi_generators.helpers.unique_list import unique_list
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__beneficiaries__supplementary_data import \
     consumer_banking__beneficiaries__supplementary_data
-from fsi_data_generator.fsi_text.consumer_banking__customer_interactions__description import \
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__customer_interactions__description import \
     consumer_banking__customer_interactions__description
-from fsi_data_generator.fsi_text.consumer_banking__customer_interactions__resolution import \
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__customer_interactions__resolution import \
     consumer_banking__customer_interactions__resolution
-from fsi_data_generator.fsi_text.consumer_banking__products__product_type import \
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__products__product_type import \
     consumer_banking__products__product_type
-from fsi_data_generator.fsi_text.consumer_banking__standing_orders__supplementary_data import \
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__standing_orders__supplementary_data import \
     consumer_banking__standing_orders__supplementary_data
-from fsi_data_generator.fsi_text.consumer_banking__statement__descriptions import \
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__statement__descriptions import \
     consumer_banking__statement__descriptions
-from fsi_data_generator.fsi_text.consumer_banking__transactions__category_purpose_code import \
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__transactions__category_purpose_code import \
     consumer_banking__transactions__category_purpose_code
-from fsi_data_generator.fsi_text.consumer_banking__transactions__payment_purpose_code import \
+from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__transactions__payment_purpose_code import \
     consumer_banking__transactions__payment_purpose_code
 from faker import Faker
 fake = Faker()
@@ -61,7 +61,7 @@ def get_product_type_by_account_id(conn, account_id):
         raise Exception(f"Error fetching product_type for account_id {account_id}: {str(e)}")
 
 def get_consumer_balance(dg: DataGenerator):
-    def get_balance(a,b,c):
+    def get_balance(a,_b,_c):
         conn = dg.conn
         account_id = a.get('consumer_banking_account_id')
         product_type = "CHECKING"
@@ -75,7 +75,7 @@ def get_consumer_balance(dg: DataGenerator):
     return get_balance
 
 def get_consumer_transaction(dg: DataGenerator):
-    def get_transaction(a,b,c):
+    def get_transaction(a,_b,_c):
         conn = dg.conn
         account_id = a.get('consumer_banking_account_id')
         product_type = "CHECKING"

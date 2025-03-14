@@ -1,85 +1,194 @@
 from faker import Faker
 
-from fsi_data_generator.fsi_generators.generate_account_number import fake_account_numbers
-from fsi_data_generator.fsi_generators.generate_ein import fake_eins
-from fsi_data_generator.fsi_generators.generate_product_code import fake_product_codes
-from fsi_data_generator.fsi_generators.text_list import text_list
-from fsi_data_generator.fsi_text.small_business_banking__adverse_action_notices__primary_reason import \
+from fsi_data_generator.fsi_generators.helpers.generate_account_number import fake_account_numbers
+from fsi_data_generator.fsi_generators.helpers.generate_ein import fake_eins
+from fsi_data_generator.fsi_generators.helpers.generate_product_code import fake_product_codes
+from fsi_data_generator.fsi_generators.helpers.text_list import text_list
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__risk_rating import \
+    small_business_banking__business_due_diligence__risk_rating
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__accounts__status import \
+    small_business_banking__accounts__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__accounts__account_type import \
+    small_business_banking__accounts__account_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_owners__role import \
+    small_business_banking__business_owners__role
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__businesses__status import \
+    small_business_banking__businesses__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__businesses__business_type import \
+    small_business_banking__businesses__business_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__credit_lines__interest_type import \
+    small_business_banking__credit_lines__interest_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loans__status import small_business_banking__loans__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loans__payment_frequency import \
+    small_business_banking__loans__payment_frequency
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loans__interest_type import \
+    small_business_banking__loans__interest_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__account_signatories__signatory_level import \
+    small_business_banking__account_signatories__signatory_level
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__products__product_type import \
+    small_business_banking__products__product_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_card_users__role import \
+    small_business_banking__business_card_users__role, small_business_banking__accounts__statement_frequency
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_card_accounts__account_type import \
+    small_business_banking__business_card_accounts__account_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__collateral__status import \
+    small_business_banking__collateral__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__collateral__collateral_type import \
+    small_business_banking__collateral__collateral_type, small_business_banking__collateral__valuation_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__credit_lines__status import \
+    small_business_banking__credit_lines__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__documents__status import \
+    small_business_banking__documents__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__documents__document_type import \
+    small_business_banking__documents__document_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__payments__status import \
+    small_business_banking__payments__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__payments__payment_type import \
+    small_business_banking__payments__payment_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__payments__payment_method import \
+    small_business_banking__payments__payment_method
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__transactions__status import \
+    small_business_banking__transactions__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__transactions__transaction_type import \
+    small_business_banking__transactions__transaction_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_cases__case_type import \
+    small_business_banking__compliance_cases__case_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_findings__status import \
+    small_business_banking__regulatory_findings__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_findings__severity import \
+    small_business_banking__regulatory_findings__severity
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_findings__finding_type import \
+    small_business_banking__regulatory_findings__finding_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_findings__source import \
+    small_business_banking__regulatory_findings__source
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__report_submissions__response_status import \
+    small_business_banking__report_submissions__response_status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__report_submissions__submission_method import \
+    small_business_banking__report_submissions__submission_method
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_reports__regulatory_agency import \
+    small_business_banking__regulatory_reports__regulatory_agency
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_reports__status import \
+    small_business_banking__regulatory_reports__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_reports__report_type import \
+    small_business_banking__regulatory_reports__report_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_risk_assessments__risk_rating import \
+    small_business_banking__business_risk_assessments__risk_rating
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_risk_assessments__assessment_type import \
+    small_business_banking__business_risk_assessments__assessment_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_requirements__verification_frequency import \
+    small_business_banking__compliance_requirements__verification_frequency
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_cases__source import \
+    small_business_banking__compliance_cases__source
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_cases__status import \
+    small_business_banking__compliance_cases__status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_cases__priority import \
+    small_business_banking__compliance_cases__priority
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__adverse_action_notices__delivery_method import \
+    small_business_banking__adverse_action_notices__delivery_method
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__credit_decisions__decision_outcome import \
+    small_business_banking__credit_decisions__decision_outcome
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__credit_decisions__decision_type import \
+    small_business_banking__credit_decisions__decision_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__diligence_type import \
+    small_business_banking__business_due_diligence__diligence_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loan_fair_lending__action_taken import \
+    small_business_banking__loan_fair_lending__action_taken
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loan_fair_lending__loan_type import \
+    small_business_banking__loan_fair_lending__loan_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__suspicious_activity_reports__suspicious_activity_type import \
+    small_business_banking__suspicious_activity_reports__suspicious_activity_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__beneficial_owner_verification__verification_status import \
+    small_business_banking__beneficial_owner_verification__verification_status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__beneficial_owner_verification__id_type import \
+    small_business_banking__beneficial_owner_verification__id_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__approval_status import \
+    small_business_banking__business_due_diligence__approval_status
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__review_frequency import \
+    small_business_banking__business_due_diligence__review_frequency
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__verification_method import \
+    small_business_banking__business_due_diligence__verification_method
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_card_accounts__expense_category_setup import \
+    small_business_banking__business_card_accounts__expense_category_setup
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_card_accounts__liability_type import \
+    small_business_banking__business_card_accounts__liability_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_card_accounts__ownership_type import \
+    small_business_banking__business_card_accounts__ownership_type
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__adverse_action_notices__primary_reason import \
     small_business_banking__adverse_action_notices__primary_reason
-from fsi_data_generator.fsi_text.small_business_banking__adverse_action_notices__score_factors import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__adverse_action_notices__score_factors import \
     small_business_banking__adverse_action_notices__score_factors
-from fsi_data_generator.fsi_text.small_business_banking__adverse_action_notices__secondary_reasons import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__adverse_action_notices__secondary_reasons import \
     small_business_banking__adverse_action_notices__secondary_reasons
-from fsi_data_generator.fsi_text.small_business_banking__beneficial_owner_verification__notes import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__beneficial_owner_verification__notes import \
     small_business_banking__beneficial_owner_verification__notes
-from fsi_data_generator.fsi_text.small_business_banking__beneficial_owner_verification__screening_results import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__beneficial_owner_verification__screening_results import \
     small_business_banking__beneficial_owner_verification__screening_results
-from fsi_data_generator.fsi_text.small_business_banking__beneficial_owner_verification__verification_method import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__beneficial_owner_verification__verification_method import \
     small_business_banking__beneficial_owner_verification__verification_method
-from fsi_data_generator.fsi_text.small_business_banking__business_card_users__merchant_category_restrictions import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_card_users__merchant_category_restrictions import \
     small_business_banking__business_card_users__merchant_category_restrictions
-from fsi_data_generator.fsi_text.small_business_banking__business_due_diligence__expected_activity import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__expected_activity import \
     small_business_banking__business_due_diligence__expected_activity
-from fsi_data_generator.fsi_text.small_business_banking__business_due_diligence__high_risk_factors import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__high_risk_factors import \
     small_business_banking__business_due_diligence__high_risk_factors
-from fsi_data_generator.fsi_text.small_business_banking__business_due_diligence__notes import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__notes import \
     small_business_banking__business_due_diligence__notes
-from fsi_data_generator.fsi_text.small_business_banking__business_due_diligence__screening_results import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__screening_results import \
     small_business_banking__business_due_diligence__screening_results
-from fsi_data_generator.fsi_text.small_business_banking__business_due_diligence__site_visit_notes import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_due_diligence__site_visit_notes import \
     small_business_banking__business_due_diligence__site_visit_notes
-from fsi_data_generator.fsi_text.small_business_banking__business_risk_assessments__mitigating_factors import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_risk_assessments__mitigating_factors import \
     small_business_banking__business_risk_assessments__mitigating_factors
-from fsi_data_generator.fsi_text.small_business_banking__business_risk_assessments__rationale import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_risk_assessments__rationale import \
     small_business_banking__business_risk_assessments__rationale
-from fsi_data_generator.fsi_text.small_business_banking__business_risk_assessments__recommended_actions import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__business_risk_assessments__recommended_actions import \
     small_business_banking__business_risk_assessments__recommended_actions
-from fsi_data_generator.fsi_text.small_business_banking__collateral__description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__collateral__description import \
     small_business_banking__collateral__description
-from fsi_data_generator.fsi_text.small_business_banking__compliance_cases__description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_cases__description import \
     small_business_banking__compliance_cases__description
-from fsi_data_generator.fsi_text.small_business_banking__compliance_cases__escalation_reason import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_cases__escalation_reason import \
     small_business_banking__compliance_cases__escalation_reason
-from fsi_data_generator.fsi_text.small_business_banking__compliance_cases__resolution import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_cases__resolution import \
     small_business_banking__compliance_cases__resolution
-from fsi_data_generator.fsi_text.small_business_banking__compliance_requirements__business_impact import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_requirements__business_impact import \
     small_business_banking__compliance_requirements__business_impact
-from fsi_data_generator.fsi_text.small_business_banking__compliance_requirements__control_measures import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_requirements__control_measures import \
     small_business_banking__compliance_requirements__control_measures
-from fsi_data_generator.fsi_text.small_business_banking__compliance_requirements__description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_requirements__description import \
     small_business_banking__compliance_requirements__description
-from fsi_data_generator.fsi_text.small_business_banking__compliance_requirements__verification_procedure import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__compliance_requirements__verification_procedure import \
     small_business_banking__compliance_requirements__verification_procedure
-from fsi_data_generator.fsi_text.small_business_banking__credit_decisions__decision_factors import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__credit_decisions__decision_factors import \
     small_business_banking__credit_decisions__decision_factors
-from fsi_data_generator.fsi_text.small_business_banking__credit_decisions__exception_reason import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__credit_decisions__exception_reason import \
     small_business_banking__credit_decisions__exception_reason
-from fsi_data_generator.fsi_text.small_business_banking__loan_fair_lending__denial_reason_1 import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loan_fair_lending__denial_reason_1 import \
     small_business_banking__loan_fair_lending__denial_reason_1
-from fsi_data_generator.fsi_text.small_business_banking__loan_fair_lending__denial_reason_2 import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loan_fair_lending__denial_reason_2 import \
     small_business_banking__loan_fair_lending__denial_reason_2
-from fsi_data_generator.fsi_text.small_business_banking__loan_fair_lending__denial_reason_3 import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loan_fair_lending__denial_reason_3 import \
     small_business_banking__loan_fair_lending__denial_reason_3
-from fsi_data_generator.fsi_text.small_business_banking__loan_fair_lending__denial_reason_4 import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loan_fair_lending__denial_reason_4 import \
     small_business_banking__loan_fair_lending__denial_reason_4
-from fsi_data_generator.fsi_text.small_business_banking__loans__purpose import small_business_banking__loans__purpose
-from fsi_data_generator.fsi_text.small_business_banking__products__description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__loans__purpose import small_business_banking__loans__purpose
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__products__description import \
     small_business_banking__products__description
-from fsi_data_generator.fsi_text.small_business_banking__regulatory_findings__corrective_action_description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_findings__corrective_action_description import \
     small_business_banking__regulatory_findings__corrective_action_description
-from fsi_data_generator.fsi_text.small_business_banking__regulatory_findings__description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_findings__description import \
     small_business_banking__regulatory_findings__description
-from fsi_data_generator.fsi_text.small_business_banking__regulatory_findings__resolution_description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_findings__resolution_description import \
     small_business_banking__regulatory_findings__resolution_description
-from fsi_data_generator.fsi_text.small_business_banking__regulatory_reports__notes import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__regulatory_reports__notes import \
     small_business_banking__regulatory_reports__notes
-from fsi_data_generator.fsi_text.small_business_banking__suspicious_activity_reports__law_enforcement_contact_name import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__suspicious_activity_reports__law_enforcement_contact_name import \
     small_business_banking__suspicious_activity_reports__law_enforcement_contact_name
-from fsi_data_generator.fsi_text.small_business_banking__suspicious_activity_reports__other_description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__suspicious_activity_reports__other_description import \
     small_business_banking__suspicious_activity_reports__other_description
-from fsi_data_generator.fsi_text.small_business_banking__suspicious_activity_reports__supporting_documentation import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__suspicious_activity_reports__supporting_documentation import \
     small_business_banking__suspicious_activity_reports__supporting_documentation
-from fsi_data_generator.fsi_text.small_business_banking__suspicious_activity_reports__suspicious_activity_description import \
+from fsi_data_generator.fsi_text.small_business_banking.small_business_banking__suspicious_activity_reports__suspicious_activity_description import \
     small_business_banking__suspicious_activity_reports__suspicious_activity_description
 
 fake = Faker()
@@ -94,8 +203,7 @@ def small_business_banking(dg):
         ('small_business_banking\\.beneficial_owner_verification', '^screening_results$',
          text_list(small_business_banking__beneficial_owner_verification__screening_results)),
         ('small_business_banking\\.beneficial_owner_verification', '^verification_method$',
-         text_list(
-             small_business_banking__beneficial_owner_verification__verification_method)),
+         text_list(small_business_banking__beneficial_owner_verification__verification_method)),
         ('small_business_banking\\.business_due_diligence', '^notes$',
          text_list(small_business_banking__business_due_diligence__notes)),
         ('small_business_banking\\.business_due_diligence', '^site_visit_notes$',
@@ -186,697 +294,132 @@ def small_business_banking(dg):
          text_list(small_business_banking__products__description)),
         ('small_business_banking\\.loans', '^purpose$',
          text_list(small_business_banking__loans__purpose)),
-        # business_card_accounts.ownership_type
-        ('small_business_banking\\.business_card_accounts', '^ownership_type$', text_list([
-            "sole proprietor",
-            "partnership",
-            "corporation"
-        ])),
-        # business_card_accounts.liability_type
+        ('small_business_banking\\.business_card_accounts', '^ownership_type$',
+         text_list(small_business_banking__business_card_accounts__ownership_type)),
         ('small_business_banking\\.business_card_accounts', '^liability_type$',
-         text_list([
-             "business liability",
-             "joint liability",
-             "personal liability"
-         ])),
-        # business_card_accounts.expense_category_setup
+         text_list(small_business_banking__business_card_accounts__liability_type)),
         ('small_business_banking\\.business_card_accounts', '^expense_category_setup$',
-         text_list([
-             "standard",
-             "custom"
-         ])),
-        # business_due_diligence.verification_method
+         text_list(small_business_banking__business_card_accounts__expense_category_setup)),
         ('small_business_banking\\.business_due_diligence', '^verification_method$',
-         text_list([
-             "documents",
-             "database",
-             "site visit",
-             "third-party"
-         ])),
-        # business_due_diligence.review_frequency
+         text_list(small_business_banking__business_due_diligence__verification_method)),
         ('small_business_banking\\.business_due_diligence', '^review_frequency$',
-         text_list([
-             "monthly",
-             "quarterly",
-             "annual"
-         ])),
-        # business_due_diligence.approval_status
+         text_list(small_business_banking__business_due_diligence__review_frequency)),
         ('small_business_banking\\.business_due_diligence', '^approval_status$',
-         text_list([
-             "pending",
-             "approved",
-             "rejected"
-         ])),
-        # beneficial_owner_verification.verification_method
-        ('small_business_banking\\.beneficial_owner_verification', '^verification_method$',
-         text_list([
-             "document verification",
-             "database check",
-             "third-party service"
-         ])),
-        # beneficial_owner_verification.id_type
-        (
-            'small_business_banking\\.beneficial_owner_verification', '^id_type$',
-            text_list([
-                "driver's license",
-                "passport",
-                "national ID card"
-            ])),
-        # beneficial_owner_verification.verification_status
+         text_list(small_business_banking__business_due_diligence__approval_status)),
+        ('small_business_banking\\.beneficial_owner_verification', '^id_type$',
+         text_list(small_business_banking__beneficial_owner_verification__id_type)),
         ('small_business_banking\\.beneficial_owner_verification', '^verification_status$',
-         text_list([
-             "pending",
-             "completed",
-             "exception"
-         ])),
-        # suspicious_activity_reports.suspicious_activity_type
+         text_list(small_business_banking__beneficial_owner_verification__verification_status)),
         ('small_business_banking\\.suspicious_activity_reports', '^suspicious_activity_type$',
-         text_list([
-             "structuring",
-             "terrorist financing",
-             "fraud",
-             "money laundering",
-             "insider abuse",
-             "other"
-         ])),
-        # loan_fair_lending.loan_type
-        ('small_business_banking\\.loan_fair_lending', '^loan_type$', text_list([
-            "term loan",
-            "line of credit",
-            "commercial mortgage"
-        ])),
-        # loan_fair_lending.action_taken
-        ('small_business_banking\\.loan_fair_lending', '^action_taken$', text_list([
-            "approved",
-            "denied",
-            "withdrawn",
-            "incomplete"
-        ])),
-        # credit_decisions.product_type
-        ('small_business_banking\\.credit_decisions', '^product_type$', text_list([
-            "loan",
-            "line of credit",
-            "card"
-        ])),
-        # business_due_diligence\\.verification_method
-        ('small_business_banking\\.business_due_diligence', '^verification_method$',
-         text_list([
-             "documents",
-             "database",
-             "site visit",
-             "third-party"
-         ])),
-        # business_due_diligence.risk_rating
-        ('small_business_banking\\.business_due_diligence', '^risk_rating$', text_list([
-            "low",
-            "medium",
-            "high"
-        ])),
-        # business_due_diligence.review_frequency
-        ('small_business_banking\\.business_due_diligence', '^review_frequency$',
-         text_list([
-             "monthly",
-             "quarterly",
-             "annual"
-         ])),
-        # business_due_diligence.approval_status
-        ('small_business_banking\\.business_due_diligence', '^approval_status$',
-         text_list([
-             "pending",
-             "approved",
-             "rejected"
-         ])),
-        # beneficial_owner_verification.verification_method
-        ('small_business_banking\\.beneficial_owner_verification', '^verification_method$',
-         text_list([
-             "document verification",
-             "database check",
-             "third-party service"
-         ])),
-        # beneficial_owner_verification.verification_status
-        ('small_business_banking\\.beneficial_owner_verification', '^verification_status$',
-         text_list([
-             "pending",
-             "completed",
-             "exception"
-         ])),
-        # suspicious_activity_reports.suspicious_activity_type
-        ('small_business_banking\\.suspicious_activity_reports', '^suspicious_activity_type$',
-         text_list([
-             "structuring",
-             "terrorist financing",
-             "fraud",
-             "money laundering",
-             "insider abuse",
-             "other"
-         ])),
-        # loan_fair_lending.loan_type
-        ('small_business_banking\\.loan_fair_lending', '^loan_type$', text_list([
-            "term loan",
-            "line of credit",
-            "commercial mortgage"
-        ])),
-        # loan_fair_lending.action_taken
-        ('small_business_banking\\.loan_fair_lending', '^action_taken$', text_list([
-            "approved",
-            "denied",
-            "withdrawn",
-            "incomplete"
-        ])),
-        # credit_decisions.product_type
-        ('small_business_banking\\.credit_decisions', '^product_type$', text_list([
-            "loan",
-            "line of credit",
-            "card"
-        ])),
-        # business_due_diligence.diligence_type
-        (
-            'small_business_banking\\.business_due_diligence', '^diligence_type$',
-            text_list([
-                "initial",
-                "ongoing",
-                "enhanced"
-            ])),
-        # business_due_diligence.verification_method
-        ('small_business_banking\\.business_due_diligence', '^verification_method$',
-         text_list([
-             "documents",
-             "database",
-             "site visit",
-             "third party"
-         ])),
-        # business_due_diligence.risk_rating
-        ('small_business_banking\\.business_due_diligence', '^risk_rating$', text_list([
-            "low",
-            "medium",
-            "high"
-        ])),
-        # business_due_diligence.review_frequency
-        ('small_business_banking\\.business_due_diligence', '^review_frequency$',
-         text_list([
-             "monthly",
-             "quarterly",
-             "annual"
-         ])),
-        # business_due_diligence.approval_status
-        ('small_business_banking\\.business_due_diligence', '^approval_status$',
-         text_list([
-             "pending",
-             "approved",
-             "rejected"
-         ])),
-        # beneficial_owner_verification.verification_method
-        ('small_business_banking\\.beneficial_owner_verification', '^verification_method$',
-         text_list([
-             "document verification",
-             "database check",
-             "third-party service"
-         ])),
-        # beneficial_owner_verification.verification_status
-        ('small_business_banking\\.beneficial_owner_verification', '^verification_status$',
-         text_list([
-             "pending",
-             "completed",
-             "exception"
-         ])),
-        # suspicious_activity_reports.suspicious_activity_type
-        ('small_business_banking\\.suspicious_activity_reports', '^suspicious_activity_type$',
-         text_list([
-             "structuring",
-             "terrorist financing",
-             "fraud",
-             "money laundering",
-             "insider abuse",
-             "other"
-         ])),
-        # loan_fair_lending.loan_type
-        ('small_business_banking\\.loan_fair_lending', '^loan_type$', text_list([
-            "term loan",
-            "line of credit",
-            "commercial mortgage"
-        ])),
-        # loan_fair_lending.action_taken
-        ('small_business_banking\\.loan_fair_lending', '^action_taken$', text_list([
-            "approved",
-            "denied",
-            "withdrawn",
-            "incomplete"
-        ])),
-        # credit_decisions.product_type
-        ('small_business_banking\\.credit_decisions', '^product_type$', text_list([
-            "loan",
-            "line of credit",
-            "card"
-        ])),
-        # credit_decisions.decision_type
-        ('small_business_banking\\.credit_decisions', '^decision_type$', text_list([
-            "automated",
-            "manual",
-            "hybrid"
-        ])),
-        # credit_decisions.decision_outcome
-        ('small_business_banking\\.credit_decisions', '^decision_outcome$', text_list([
-            "approved",
-            "declined",
-            "counter-offer"
-        ])),
-        # adverse_action_notices.delivery_method
+         text_list(small_business_banking__suspicious_activity_reports__suspicious_activity_type)),
+        ('small_business_banking\\.loan_fair_lending', '^loan_type$',
+         text_list(small_business_banking__loan_fair_lending__loan_type)),
+        ('small_business_banking\\.loan_fair_lending', '^action_taken$',
+         text_list(small_business_banking__loan_fair_lending__action_taken)),
+        ('small_business_banking\\.credit_decisions', '^product_type$',
+         text_list(small_business_banking__products__product_type)),
+        ('small_business_banking\\.business_due_diligence', '^risk_rating$',
+         text_list(small_business_banking__business_due_diligence__risk_rating)),
+        ('small_business_banking\\.business_due_diligence', '^diligence_type$',
+         text_list(small_business_banking__business_due_diligence__diligence_type)),
+        ('small_business_banking\\.credit_decisions', '^decision_type$',
+         text_list(small_business_banking__credit_decisions__decision_type)),
+        ('small_business_banking\\.credit_decisions', '^decision_outcome$',
+         text_list(small_business_banking__credit_decisions__decision_outcome)),
         ('small_business_banking\\.adverse_action_notices', '^delivery_method$',
-         text_list([
-             "mail",
-             "email"
-         ])),
-        # business_due_diligence.diligence_type
-        (
-            'small_business_banking\\.business_due_diligence', '^diligence_type$',
-            text_list([
-                "initial",
-                "ongoing",
-                "enhanced"
-            ])),
-        # business_due_diligence\\.verification_method
-        ('small_business_banking\\.business_due_diligence', '^verification_method$',
-         text_list([
-             "documents",
-             "database",
-             "site visit"
-         ])),
-        # business_due_diligence.risk_rating
-        ('small_business_banking\\.business_due_diligence', '^risk_rating$', text_list([
-            "low",
-            "medium",
-            "high"
-        ])),
-        # business_due_diligence.review_frequency
-        ('small_business_banking\\.business_due_diligence', '^review_frequency$',
-         text_list([
-             "monthly",
-             "quarterly",
-             "annual"
-         ])),
-        # business_due_diligence.approval_status
-        ('small_business_banking\\.business_due_diligence', '^approval_status$',
-         text_list([
-             "pending",
-             "approved",
-             "rejected"
-         ])),
-        # compliance_cases.priority
-        ('small_business_banking\\.compliance_cases', '^priority$', text_list([
-            "high",
-            "medium",
-            "low"
-        ])),
-        # compliance_cases.status
-        ('small_business_banking\\.compliance_cases', '^status$', text_list([
-            "open",
-            "in review",
-            "closed"
-        ])),
-        # compliance_cases.source
-        ('small_business_banking\\.compliance_cases', '^source$', text_list([
-            "system alert",
-            "manual review",
-            "exam"
-        ])),
-        # compliance_requirements.regulatory_authority
+         text_list(small_business_banking__adverse_action_notices__delivery_method)),
+        ('small_business_banking\\.compliance_cases', '^priority$',
+         text_list(small_business_banking__compliance_cases__priority)),
+        ('small_business_banking\\.compliance_cases', '^status$',
+         text_list(small_business_banking__compliance_cases__status)),
+        ('small_business_banking\\.compliance_cases', '^source$',
+         text_list(small_business_banking__compliance_cases__source)),
         ('small_business_banking\\.compliance_requirements', '^regulatory_authority$',
-         text_list([
-             "FDIC",
-             "Federal Reserve",
-             "CFPB",
-             "OCC"
-         ])),
-        # compliance_requirements.verification_frequency
+         text_list(small_business_banking__regulatory_reports__regulatory_agency)),
         ('small_business_banking\\.compliance_requirements', '^verification_frequency$',
-         text_list([
-             "daily",
-             "monthly",
-             "quarterly",
-             "annual"
-         ])),
-        # business_risk_assessments.assessment_type
+         text_list(small_business_banking__compliance_requirements__verification_frequency)),
         ('small_business_banking\\.\\business_risk_assessments', '^assessment_type$',
-         text_list([
-             "AML",
-             "credit",
-             "operational",
-             "fraud"
-         ])),
-        # business_risk_assessments.risk_rating
-        (
-            'small_business_banking\\.business_risk_assessments', '^risk_rating$',
-            text_list([
-                "low",
-                "medium",
-                "high"
-            ])),
-        # loan_fair_lending.loan_type
-        ('small_business_banking\\.loan_fair_lending', '^loan_type$', text_list([
-            "term loan",
-            "line of credit",
-            "SBA loan"
-        ])),
-        # loan_fair_lending.action_taken
-        ('small_business_banking\\.loan_fair_lending', '^action_taken$', text_list([
-            "approved",
-            "denied",
-            "withdrawn",
-            "incomplete"
-        ])),
-        # credit_decisions.product_type
-        ('small_business_banking\\.credit_decisions', '^product_type$', text_list([
-            "loan",
-            "line of credit",
-            "card"
-        ])),
-        # regulatory_reports.report_type
-        ('small_business_banking\\.regulatory_reports', '^report_type$', text_list([
-            "CRA",
-            "HMDA",
-            "BSA",
-            "Call Report"
-        ])),
-        # regulatory_reports.status
-        ('small_business_banking\\.regulatory_reports', '^status$', text_list([
-            "pending",
-            "in progress",
-            "submitted",
-            "accepted",
-            "rejected"
-        ])),
-        # regulatory_reports.regulatory_agency
-        ('small_business_banking\\.regulatory_reports', '^regulatory_agency$', text_list([
-            "FDIC",
-            "Federal Reserve",
-            "CFPB",
-            "OCC"
-        ])),
-        # report_submissions.submission_method
-        ('small_business_banking\\.report_submissions', '^submission_method$', text_list([
-            "portal",
-            "API",
-            "mail",
-            "courier"
-        ])),
-        # report_submissions.response_status
-        ('small_business_banking\\.report_submissions', '^response_status$', text_list([
-            "accepted",
-            "rejected",
-            "need more info"
-        ])),
-        # regulatory_findings.source
-        ('small_business_banking\\.regulatory_findings', '^source$', text_list([
-            "exam",
-            "self-assessment",
-            "regulator",
-            "customer complaint"
-        ])),
-        # regulatory_findings.finding_type
-        ('small_business_banking\\.regulatory_findings', '^finding_type$', text_list([
-            "violation",
-            "concern",
-            "observation"
-        ])),
-        # regulatory_findings.severity
-        ('small_business_banking\\.regulatory_findings', '^severity$', text_list([
-            "high",
-            "medium",
-            "low"
-        ])),
-        # regulatory_findings.status
-        ('small_business_banking\\.regulatory_findings', '^status$', text_list([
-            "open",
-            "in progress",
-            "resolved",
-            "validated"
-        ])),
-        # compliance_cases.case_type
-        ('small_business_banking\\.compliance_cases', '^case_type$', text_list([
-            "AML",
-            "KYC",
-            "fraud",
-            "fair lending"
-        ])),
-        # transactions.transaction_type
-        ('small_business_banking\\.transactions', '^transaction_type$', text_list([
-            "deposit",
-            "withdrawal",
-            "payment",
-            "fee",
-            "transfer"
-        ])),
-        # transactions.status
-        ('small_business_banking\\.transactions', '^status$', text_list([
-            "pending",
-            "completed",
-            "failed",
-            "reversed"
-        ])),
-        # payments.payment_method
-        ('small_business_banking\\.payments', '^payment_method$', text_list([
-            "ACH",
-            "wire",
-            "internal transfer",
-            "check"
-        ])),
-        # payments.payment_type
-        ('small_business_banking\\.payments', '^payment_type$', text_list([
-            "principal",
-            "interest",
-            "fees",
-            "combination"
-        ])),
-        # payments.status
-        ('small_business_banking\\.payments', '^status$', text_list([
-            "pending",
-            "processed",
-            "failed"
-        ])),
-        # documents.document_type
-        ('small_business_banking\\.documents', '^document_type$', text_list([
-            "tax return",
-            "financial statement",
-            "business license",
-            "contract",
-            "invoice"
-        ])),
-        # documents.status
-        ('small_business_banking\\.documents', '^status$', text_list([
-            "active",
-            "archived",
-            "expired"
-        ])),
-        # credit_cards.card_product_reward_categories (from your example)
-        ('credit_cards.card_product_reward_categories', '^category_name$', text_list([
-            "Dining",
-            "Travel",
-            "Gas",
-            "Groceries",
-            "Entertainment",
-            "Other"
-        ], lower=True)),
-        # credit_cards.card_product_reward_categories (from your example)
-        ('credit_cards.card_product_reward_categories', '^cap_period$', text_list([
-            "Monthly",
-            "Quarterly",
-            "Annually"
-        ], lower=True)),
-        # credit_lines.status
-        ('small_business_banking\\.credit_lines', '^status$', text_list([
-            "active",
-            "frozen",
-            "closed"
-        ], lower=True)),
-        # collateral.collateral_type
-        ('small_business_banking\\.collateral', '^collateral_type$', text_list([
-            "real estate",
-            "equipment",
-            "vehicle",
-            "inventory"
-        ], lower=True)),
-        # collateral.valuation_type
-        ('small_business_banking\\.collateral', '^valuation_type$', text_list([
-            "appraisal",
-            "estimate",
-            "purchase price"
-        ], lower=True)),
-        # collateral.status
-        ('small_business_banking\\.collateral', '^status$', text_list([
-            "active",
-            "sold",
-            "repossessed"
-        ], lower=True)),
-        # business_card_accounts.account_type
-        ('small_business_banking\\.business_card_accounts', '^account_type$', text_list([
-            "business",
-            "corporate"
-        ], lower=True)),
-        # business_card_accounts.business_structure
+         text_list(small_business_banking__business_risk_assessments__assessment_type)),
+        ('small_business_banking\\.business_risk_assessments', '^risk_rating$',
+         text_list(small_business_banking__business_risk_assessments__risk_rating)),
+        ('small_business_banking\\.regulatory_reports', '^report_type$',
+         text_list(small_business_banking__regulatory_reports__report_type)),
+        ('small_business_banking\\.regulatory_reports', '^status$',
+         text_list(small_business_banking__regulatory_reports__status)),
+        ('small_business_banking\\.regulatory_reports', '^regulatory_agency$',
+         text_list(small_business_banking__regulatory_reports__regulatory_agency)),
+        ('small_business_banking\\.report_submissions', '^submission_method$',
+         text_list(small_business_banking__report_submissions__submission_method)),
+        ('small_business_banking\\.report_submissions', '^response_status$',
+         text_list(small_business_banking__report_submissions__response_status)),
+        ('small_business_banking\\.regulatory_findings', '^source$',
+         text_list(small_business_banking__regulatory_findings__source)),
+        ('small_business_banking\\.regulatory_findings', '^finding_type$',
+         text_list(small_business_banking__regulatory_findings__finding_type)),
+        ('small_business_banking\\.regulatory_findings', '^severity$',
+         text_list(small_business_banking__regulatory_findings__severity)),
+        ('small_business_banking\\.regulatory_findings', '^status$',
+         text_list(small_business_banking__regulatory_findings__status)),
+        ('small_business_banking\\.compliance_cases', '^case_type$',
+         text_list(small_business_banking__compliance_cases__case_type)),
+        ('small_business_banking\\.transactions', '^transaction_type$',
+         text_list(small_business_banking__transactions__transaction_type)),
+        ('small_business_banking\\.transactions', '^status$', text_list(small_business_banking__transactions__status)),
+        ('small_business_banking\\.payments', '^payment_method$',
+         text_list(small_business_banking__payments__payment_method)),
+        ('small_business_banking\\.payments', '^payment_type$',
+         text_list(small_business_banking__payments__payment_type)),
+        ('small_business_banking\\.payments', '^status$', text_list(small_business_banking__payments__status)),
+        ('small_business_banking\\.documents', '^document_type$',
+         text_list(small_business_banking__documents__document_type)),
+        ('small_business_banking\\.documents', '^status$', text_list(small_business_banking__documents__status)),
+        ('small_business_banking\\.credit_lines', '^status$',
+         text_list(small_business_banking__credit_lines__status, lower=True)),
+        ('small_business_banking\\.collateral', '^collateral_type$',
+         text_list(small_business_banking__collateral__collateral_type, lower=True)),
+        ('small_business_banking\\.collateral', '^valuation_type$',
+         text_list(small_business_banking__collateral__valuation_type, lower=True)),
+        ('small_business_banking\\.collateral', '^status$',
+         text_list(small_business_banking__collateral__status, lower=True)),
+        ('small_business_banking\\.business_card_accounts', '^account_type$',
+         text_list(small_business_banking__business_card_accounts__account_type, lower=True)),
         ('small_business_banking\\.business_card_accounts', '^business_structure$',
-         text_list([
-             "Sole Proprietorship",
-             "Partnership",
-             "LLC",
-             "Corporation"
-         ])),
-        # business_card_accounts.ownership_type
-        ('small_business_banking\\.business_card_accounts', '^ownership_type$', text_list([
-            "sole proprietor",
-            "partnership",
-            "corporation"
-        ], lower=True)),
-        # business_card_accounts.liability_type
-        ('small_business_banking\\.business_card_accounts', '^liability_type$', text_list([
-            "business liability",
-            "joint liability",
-            "personal liability"
-        ], lower=True)),
-        # business_card_accounts.expense_category_setup
+         text_list(small_business_banking__businesses__business_type, lower=True)),
+        ('small_business_banking\\.business_card_accounts', '^ownership_type$',
+         text_list(small_business_banking__business_card_accounts__ownership_type, lower=True)),
+        ('small_business_banking\\.business_card_accounts', '^liability_type$',
+         text_list(small_business_banking__business_card_accounts__liability_type, lower=True)),
         ('small_business_banking\\.business_card_accounts', '^expense_category_setup$',
-         text_list([
-             "standard",
-             "custom"
-         ], lower=True)),
-        # business_card_users.role
-        ('small_business_banking\\.business_card_users', '^role$', text_list([
-            "owner",
-            "employee",
-            "accountant",
-            "administrator"
-        ], lower=True)),
-        # accounts.account_type
-        ('small_business_banking\\.accounts', '^account_type$', text_list([
-            "checking",
-            "savings",
-            "money market",
-            "CD"
-        ])),
-        # accounts.status
-        ('small_business_banking\\.accounts', '^status$', text_list([
-            "active",
-            "Inactive",
-            "Frozen",
-            "Closed"
-        ], lower=True)),
-        # accounts.currency
-        ('small_business_banking\\.accounts', '^currency$', text_list([
-            "USD",
-            "EUR",
-            "GBP",
-            "JPY"
-        ])),
-        # accounts.statement_frequency
-        ('small_business_banking\\.accounts', '^statement_frequency$', text_list([
-            "daily",
-            "weekly",
-            "monthly",
-            "quarterly"
-        ], lower=True)),
-        # products.product_type
-        ('small_business_banking\\.products', '^product_type$', text_list([
-            "checking",
-            "savings",
-            "loan",
-            "credit line",
-            "credit card"
-        ], lower=True)),
-        # account_signatories.signatory_level
-        ('small_business_banking\\.account_signatories', '^signatory_level$', text_list([
-            "primary",
-            "secondary",
-            "view-only"
-        ], lower=True)),
-        # loans.interest_type
-        ('small_business_banking\\.loans', '^interest_type$', text_list([
-            "fixed",
-            "variable"
-        ], lower=True)),
-        # loans.payment_frequency
-        ('small_business_banking\\.loans', '^payment_frequency$', text_list([
-            "weekly",
-            "monthly",
-            "quarterly"
-        ], lower=True)),
-        # loans.status
-        ('small_business_banking\\.loans', '^status$', text_list([
-            "pending",
-            "active",
-            "paid",
-            "defaulted"
-        ], lower=True)),
-        # credit_lines.interest_type
-        ('small_business_banking\\.credit_lines', '^interest_type$', text_list([
-            "fixed",
-            "variable"
-        ], lower=True)),
-        # business_type
-        ('small_business_banking\\.businesses', '^business_type$', text_list([
-            "LLC",
-            "Corporation",
-            "Sole Proprietorship",
-            "Partnership",
-            "Nonprofit"
-        ], lower=True)),
-        # business.status
-        ('small_business_banking\\.businesses', '^status$', text_list([
-            "active",
-            "inactive",
-            "suspended",
-            "closed"
-        ], lower=True)),
-        # business_owners.role
-        ('small_business_banking\\.business_owners', '^role$', text_list([
-            "CEO",
-            "CFO",
-            "Managing Partner",
-            "Owner",
-            "Director"
-        ], lower=True)),
-        # accounts.account_type
-        ('small_business_banking\\.accounts', '^account_type$', text_list([
-            "checking",
-            "savings",
-            "money market",
-            "CD"
-        ], lower=True)),
-        # accounts.status
-        ('small_business_banking\\.accounts', '^status$', text_list([
-            "active",
-            "Inactive",
-            "Frozen",
-            "Closed"
-        ], lower=True)),
-        # accounts.currency
-        ('small_business_banking\\.accounts', '^currency$', text_list([
-            "USD",
-            "EUR",
-            "GBP",
-            "JPY"
-        ])),
-        # accounts.statement_frequency
-        ('small_business_banking\\.accounts', '^statement_frequency$', text_list([
-            "daily",
-            "weekly",
-            "monthly",
-            "quarterly"
-        ], lower=True)),
-        # products.product_type
-        ('small_business_banking\\.products', '^product_type$', text_list([
-            "checking",
-            "savings",
-            "loan",
-            "credit line",
-            "credit card"
-        ], lower=True)),
-        # account_signatories.signatory_level
-        ('small_business_banking\\.account_signatories', '^signatory_level$', text_list([
-            "primary",
-            "secondary",
-            "view-only"
-        ], lower=True)),
-        # loans.interest_type
-        ('small_business_banking\\.loans', '^interest_type$', text_list([
-            "fixed",
-            "variable"
-        ], lower=True)), ]
+         text_list(small_business_banking__business_card_accounts__expense_category_setup, lower=True)),
+        ('small_business_banking\\.business_card_users', '^role$',
+         text_list(small_business_banking__business_card_users__role, lower=True)),
+        ('small_business_banking\\.accounts', '^account_type$',
+         text_list(small_business_banking__accounts__account_type)),
+        ('small_business_banking\\.accounts', '^status$',
+         text_list(small_business_banking__accounts__status, lower=True)),
+        ('small_business_banking\\.accounts', '^statement_frequency$',
+         text_list(small_business_banking__accounts__statement_frequency, lower=True)),
+        ('small_business_banking\\.products', '^product_type$',
+         text_list(small_business_banking__products__product_type, lower=True)),
+        ('small_business_banking\\.account_signatories', '^signatory_level$',
+         text_list(small_business_banking__account_signatories__signatory_level, lower=True)),
+        ('small_business_banking\\.loans', '^interest_type$',
+         text_list(small_business_banking__loans__interest_type, lower=True)),
+        ('small_business_banking\\.loans', '^payment_frequency$',
+         text_list(small_business_banking__loans__payment_frequency, lower=True)),
+        ('small_business_banking\\.loans', '^status$', text_list(small_business_banking__loans__status, lower=True)),
+        ('small_business_banking\\.credit_lines', '^interest_type$',
+         text_list(small_business_banking__credit_lines__interest_type, lower=True)),
+        ('small_business_banking\\.businesses', '^business_type$',
+         text_list(small_business_banking__businesses__business_type, lower=True)),
+        ('small_business_banking\\.businesses', '^status$',
+         text_list(small_business_banking__businesses__status, lower=True)),
+        ('small_business_banking\\.business_owners', '^role$',
+         text_list(small_business_banking__business_owners__role, lower=True)),
+        ('small_business_banking\\.accounts', '^account_type$',
+         text_list(small_business_banking__accounts__account_type, lower=True)),
+        ('small_business_banking\\.accounts', '^status$',
+         text_list(small_business_banking__accounts__status, lower=True)),
+        ('small_business_banking\\.accounts', '^statement_frequency$',
+         text_list(small_business_banking__accounts__statement_frequency, lower=True)),
+    ]

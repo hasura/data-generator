@@ -3,43 +3,43 @@ import random
 
 from faker import Faker
 
-from fsi_data_generator.fsi_generators.text_list import text_list
-from fsi_data_generator.fsi_text.consumer_lending__adverse_action_details__credit_score_factors import \
+from fsi_data_generator.fsi_generators.helpers.text_list import text_list
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__adverse_action_details__credit_score_factors import \
     consumer_lending__adverse_action_details__credit_score_factors
-from fsi_data_generator.fsi_text.consumer_lending__collection_actions__notes import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__collection_actions__notes import \
     consumer_lending__collection_actions__notes
-from fsi_data_generator.fsi_text.consumer_lending__compliance_exceptions__description import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__compliance_exceptions__description import \
     consumer_lending__compliance_exceptions__description
-from fsi_data_generator.fsi_text.consumer_lending__compliance_exceptions__preventive_action import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__compliance_exceptions__preventive_action import \
     consumer_lending__compliance_exceptions__preventive_action
-from fsi_data_generator.fsi_text.consumer_lending__compliance_exceptions__remediation_plan import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__compliance_exceptions__remediation_plan import \
     consumer_lending__compliance_exceptions__remediation_plan
-from fsi_data_generator.fsi_text.consumer_lending__compliance_exceptions__root_cause import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__compliance_exceptions__root_cause import \
     consumer_lending__compliance_exceptions__root_cause
-from fsi_data_generator.fsi_text.consumer_lending__decision_models__description import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__decision_models__description import \
     consumer_lending__decision_models__description
-from fsi_data_generator.fsi_text.consumer_lending__disbursements__notes import consumer_lending__disbursements__notes
-from fsi_data_generator.fsi_text.consumer_lending__fairlending_analysis__action_recommended import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__disbursements__notes import consumer_lending__disbursements__notes
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__fairlending_analysis__action_recommended import \
     consumer_lending__fairlending_analysis__action_recommended
-from fsi_data_generator.fsi_text.consumer_lending__fairlending_analysis__controls_applied import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__fairlending_analysis__controls_applied import \
     consumer_lending__fairlending_analysis__controls_applied
-from fsi_data_generator.fsi_text.consumer_lending__fairlending_analysis__findings import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__fairlending_analysis__findings import \
     consumer_lending__fairlending_analysis__findings
-from fsi_data_generator.fsi_text.consumer_lending__high_cost__mortgage_tests__notes import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__high_cost__mortgage_tests__notes import \
     consumer_lending__high_cost__mortgage_tests__notes
-from fsi_data_generator.fsi_text.consumer_lending__loan_applications__decision_reasons import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__loan_applications__decision_reasons import \
     consumer_lending__loan_applications__decision_reasons
-from fsi_data_generator.fsi_text.consumer_lending__loan_communications__content import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__loan_communications__content import \
     consumer_lending__loan_communications__content
-from fsi_data_generator.fsi_text.consumer_lending__loan_communications__content_dict import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__loan_communications__content_dict import \
     consumer_lending__loan_communications__content_dict
-from fsi_data_generator.fsi_text.consumer_lending__loan_communications__subject import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__loan_communications__subject import \
     consumer_lending__loan_communications__subject
-from fsi_data_generator.fsi_text.consumer_lending__payment_arrangements__notes import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__payment_arrangements__notes import \
     consumer_lending__payment_arrangements__notes
-from fsi_data_generator.fsi_text.consumer_lending__product_eligibility_criteria__description import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__product_eligibility_criteria__description import \
     consumer_lending__product_eligibility_criteria__description
-from fsi_data_generator.fsi_text.consumer_lending__reg_z_disclosures__security_interest import \
+from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__reg_z_disclosures__security_interest import \
     consumer_lending__reg_z_disclosures__security_interest
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ def loan_applicants(dg):
     return value
 
 
-def subject_content(a, b, c):
+def subject_content(a, _b, _c):
     subject = a.get("subject")
     content = consumer_lending__loan_communications__content_dict.get(subject)
     if content:

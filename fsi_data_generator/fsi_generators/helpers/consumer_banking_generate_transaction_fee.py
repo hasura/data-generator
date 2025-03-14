@@ -1,9 +1,9 @@
-def consumer_banking_generate_transaction_fee(a,b,c):
+def consumer_banking_generate_transaction_fee(a,_b,_c):
     """
     Calculate a probable transaction fee based on transaction details.
 
     Parameters:
-    transaction_type (str): Type of transaction (from the provided list, case insensitive)
+    transaction_type (str): Type of transaction (from the provided list, case-insensitive)
     amount (float): Amount of the transaction
     currency (str): Currency code of the transaction
     is_foreign (bool): Whether this is a foreign transaction
@@ -13,8 +13,6 @@ def consumer_banking_generate_transaction_fee(a,b,c):
 
     transaction_type = a.get('transaction_type')
     amount = a.get('amount')
-
-    fee = 0.0
 
     # Normalize transaction type to be case insensitive
     normalized_type = transaction_type.lower() if transaction_type else "other"

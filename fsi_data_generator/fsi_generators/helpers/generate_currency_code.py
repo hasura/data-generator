@@ -22,7 +22,7 @@ def generate_currency(probabilities=None):
     if not (0 <= sum(probabilities.values()) <= 1):
         raise ValueError("Probabilities must sum to 1 or less.")
 
-    def func(a,b,c):
+    def func(_a,_b,_c):
         # Generate currency based on the given probabilities
         value = random.choices(currencies, weights=[probabilities[c] for c in currencies], k=1)[0]
 

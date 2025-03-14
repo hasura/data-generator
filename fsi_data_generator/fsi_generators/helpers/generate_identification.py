@@ -1,5 +1,5 @@
 from faker import Faker
-from fsi_data_generator.fsi_generators.generate_clabe import generate_clabe
+from fsi_data_generator.fsi_generators.helpers.generate_clabe import generate_clabe
 
 
 def generate_identification(fake: Faker):

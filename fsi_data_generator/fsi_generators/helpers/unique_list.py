@@ -12,7 +12,7 @@ def unique_list(d: Union[list, tuple]):
     elif not isinstance(d, tuple):
         raise TypeError("The input must be a list or a tuple.")
 
-    def list_values(a,b,c):
+    def list_values(_a,_b,_c):
         v = fake.unique.random_element(d)
         return v
     return list_values

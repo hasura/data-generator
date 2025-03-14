@@ -13,6 +13,8 @@ from faker.exceptions import UniquenessException
 from psycopg2 import Error
 from sentence_transformers import SentenceTransformer, util
 
+from fsi_data_generator.fsi_generators.helpers.generate_random_interval import generate_random_interval_with_optional_weights
+
 load_dotenv()
 
 # Configure logging based on LOG_LEVEL environment variable
@@ -1132,6 +1134,8 @@ class DataGenerator:
                     values.append(value)
         elif data_type in ["uuid"]:
             values.append(self.fake.unique.uuid4())
+        elif data_type in ["interval"]:
+            values.append(generate_random_interval_with_optional_weights())
         elif data_type.startswith("date") or data_type.startswith("timestamp"):
             values.append(self.fake.unique.date_time_between(start_date="-30y", end_date="now"))
         elif data_type in ["json", "jsonb"]:

@@ -3542,7 +3542,7 @@ TableGroup AMLAndKYC {
 
 
 Table "security"."devices" {
-  "ip_address" INET [not null, pk, note: 'The unique IP address of the device. Serves as the primary key.']
+  "security_device_id" INET [not null, pk, note: 'The unique IP address of the device. Serves as the primary key.']
   "device_type" VARCHAR(50) [not null, note: 'The type of the device (e.g., router, server, workstation).']
   "subnet" VARCHAR(50) [note: 'The subnet the device belongs to.']
   "hostname" VARCHAR(100) [note: 'The hostname of the device.']
@@ -3564,7 +3564,7 @@ Enum "security"."tcp_flag_type" {
 }
 
 Table "security"."network_events" {
-  "id" BIGSERIAL [not null, increment, pk, note: 'Unique identifier for the network event. Automatically incrementing.']
+  "security_network_event_id" BIGSERIAL [not null, increment, pk, note: 'Unique identifier for the network event. Automatically incrementing.']
   "timestamp" TIMESTAMP(6) [not null, note: 'Timestamp when the network event occurred.']
   "source_ip" INET [not null, note: 'Source IP address of the network event.']
   "source_port" INTEGER [not null, note: 'Source port of the network event.']
@@ -3579,7 +3579,7 @@ Table "security"."network_events" {
   "length" INTEGER [not null, default: 0, note: 'Length of the data packet in bytes.']
   "bytes_sent" INTEGER [not null, default: 0, note: 'Number of bytes sent during the event.']
   "bytes_received" INTEGER [not null, default: 0, note: 'Number of bytes received during the event.']
-  "device_id" INET [not null, ref: > security.devices.ip_address, note: 'IP address of the device involved in the event, foreign key referencing the devices table.']
+  "security_device_id" INET [not null, ref: > security.devices.security_device_id, note: 'IP address of the device involved in the event, foreign key referencing the devices table.']
   "log_message" TEXT [note: 'Detailed log message associated with the network event.']
   "created_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the event record was created.']
 
@@ -3587,7 +3587,7 @@ Table "security"."network_events" {
 }
 
 Table "security"."policies" {
-  "policy_id" UUID [not null, pk, note: 'Unique identifier for the policy.']
+  "security_policy_id" UUID [not null, pk, note: 'Unique identifier for the policy.']
   "name" VARCHAR(200) [not null, unique, note: 'Name of the policy. Must be unique.']
   "description" TEXT [not null, note: 'Detailed description of the policy.']
   "created_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the policy was created.']
@@ -3602,20 +3602,20 @@ Table "security"."policies" {
 }
 
 Table "security"."policy_attributes" {
-  "policy_id" UUID [not null, ref: > security.policies.policy_id, note: 'Foreign key referencing the policy_id in the policies table.']
+  "security_policy_id" UUID [not null, ref: > security.policies.security_policy_id, note: 'Foreign key referencing the policy_id in the policies table.']
   "attribute_name" VARCHAR(200) [not null, note: 'Name of the policy attribute.']
   "attribute_value" VARCHAR(200) [note: 'Value of the policy attribute.']
 
   Indexes {
-    (policy_id, attribute_name) [pk, note: 'Composite primary key on policy_id and attribute_name. Ensures uniqueness of attributes per policy.']
+    (security_policy_id, attribute_name) [pk, note: 'Composite primary key on policy_id and attribute_name. Ensures uniqueness of attributes per policy.']
   }
 
   Note: 'Table storing attributes associated with security policies. Allows for flexible policy configuration.'
 }
 
 Table "security"."policy_rules" {
-  "rule_id" UUID [not null, pk, note: 'Unique identifier for the policy rule.']
-  "policy_id" UUID [ref: > security.policies.policy_id, note: 'Foreign key referencing the policy_id in the policies table.']
+  "security_policy_rule_id" UUID [not null, pk, note: 'Unique identifier for the policy rule.']
+  "security_policy_id" UUID [ref: > security.policies.security_policy_id, note: 'Foreign key referencing the policy_id in the policies table.']
   "rule_name" VARCHAR(200) [not null, note: 'Name of the policy rule.']
   "rule_description" TEXT [not null, note: 'Detailed description of the policy rule.']
 
@@ -3623,33 +3623,33 @@ Table "security"."policy_rules" {
 }
 
 Table "security"."access_profiles" {
-  "access_profile_id" UUID [not null, pk, note: 'Unique identifier for the access profile.']
+  "security_access_profile_id" UUID [not null, pk, note: 'Unique identifier for the access profile.']
   "name" VARCHAR(200) [note: 'Internal name of the access profile.']
   "display_name" VARCHAR(200) [note: 'User-friendly name of the access profile.']
   "description" VARCHAR(200) [note: 'Description of the access profile.']
-  "owner_id" UUID [note: 'Identifier of the owner of the access profile.', ref: > "security"."identities"."identity_id"]
+  "owner_id" INTEGER [note: 'Identifier of the owner of the access profile.', ref: > enterprise.associates.enterprise_associate_id]
 
   Note: 'Table storing information about access profiles, defining sets of permissions or roles.'
 }
 
 Table "security"."account_entitlement_attributes" {
-  "account_id" UUID [not null, note: 'Unique identifier for the account.', ref: > "security"."accounts"."account_id"]
+  "security_account_id" UUID [not null, note: 'Unique identifier for the account.', ref: > "security"."accounts"."security_account_id"]
   "attribute_name" VARCHAR(200) [not null, note: 'Name of the entitlement attribute.']
   "attribute_value" VARCHAR(200) [not null, note: 'Value of the entitlement attribute.']
 
   Indexes {
-    (account_id, attribute_name, attribute_value) [pk, note: 'Composite primary key on account_id, attribute_name, and attribute_value. Ensures uniqueness of entitlement attributes per account.']
+    (security_account_id, attribute_name, attribute_value) [pk, note: 'Composite primary key on account_id, attribute_name, and attribute_value. Ensures uniqueness of entitlement attributes per account.']
   }
 
   Note: 'Table storing specific attributes related to account entitlements. Allows for granular control over account permissions and access.'
 }
 
 Table "security"."accounts" {
-  "account_id" UUID [not null, pk, note: 'Unique identifier for the account.']
-  "identity_id" UUID [note: 'Identifier of the associated identity.', ref: > "security"."identities"."identity_id"]
+  "security_account_id" UUID [not null, pk, note: 'Unique identifier for the account.']
+  "security_identity_id" UUID [note: 'Identifier of the associated identity.', ref: > "security"."identities"."security_identity_id"]
   "name" VARCHAR(200) [note: 'Name of the account.']
   "account_id_string" VARCHAR(200) [note: 'String representation of the account ID.']
-  "source_id" UUID [note: 'Identifier of the source system for the account.', ref: > "security"."sources"."source_id"]
+  "security_source_id" UUID [note: 'Identifier of the source system for the account.', ref: > "app_mgmt"."applications"."app_mgmt_application_id"]
   "disabled" BOOLEAN [note: 'Indicates if the account is disabled.']
   "locked" BOOLEAN [note: 'Indicates if the account is locked.']
   "privileged" BOOLEAN [note: 'Indicates if the account has privileged access.']
@@ -3660,23 +3660,13 @@ Table "security"."accounts" {
   Note: 'Table storing information about user accounts across various systems.'
 }
 
-Table "security"."apps" {
-  "app_id" UUID [not null, pk, note: 'Unique identifier for the application.']
-  "identity_id" UUID [note: 'Identifier of the associated identity.', ref: > "security"."identities"."identity_id"]
-  "name" VARCHAR(200) [note: 'Name of the application.']
-  "source_id" UUID [note: 'Identifier of the source system for the application.', ref: > "security"."sources"."source_id"]
-  "account_id" UUID [note: 'Identifier of the associated account.', ref: > "security"."accounts"."account_id"]
-
-  Note: 'Table storing information about applications and their associations with identities and accounts.'
-}
-
 Table "security"."entitlements" {
-  "entitlement_id" UUID [not null, pk, note: 'Unique identifier for the entitlement.']
+  "security_entitlement_id" UUID [not null, pk, note: 'Unique identifier for the entitlement.']
   "name" VARCHAR(200) [note: 'Name of the entitlement.']
   "display_name" VARCHAR(200) [note: 'User-friendly name of the entitlement.']
   "description" VARCHAR(200) [note: 'Description of the entitlement.']
   "attribute" VARCHAR(200) [note: 'Attribute associated with the entitlement.']
-  "source_id" UUID [note: 'Identifier of the source system for the entitlement.', ref: > "security"."sources"."source_id"]
+  "security_source_id" UUID [note: 'Identifier of the source system for the entitlement.', ref: > "app_mgmt"."applications"."app_mgmt_application_id"]
   "value" VARCHAR(200) [note: 'Value of the entitlement.']
   "privileged" BOOLEAN [note: 'Indicates if the entitlement is privileged.']
 
@@ -3684,15 +3674,15 @@ Table "security"."entitlements" {
 }
 
 Table "security"."governance_groups" {
-  "group_id" UUID [not null, pk, note: 'Unique identifier for the governance group.']
+  "security_governance_group_id" UUID [not null, pk, note: 'Unique identifier for the governance group.']
   "name" VARCHAR(200) [note: 'Name of the governance group.']
-  "owner_id" UUID [note: 'Identifier of the owner of the governance group.', ref: > "security"."identities"."identity_id"]
+  "owner_id" integer [note: 'Identifier of the owner of the governance group.', ref: > enterprise.associates.enterprise_associate_id]
 
   Note: 'Table storing information about governance groups, used for managing access and permissions.'
 }
 
 Table "security"."iam_logins" {
-  "login_id" UUID [not null, pk, note: 'Unique identifier for the IAM login.']
+  "security_login_id" UUID [not null, pk, note: 'Unique identifier for the IAM login.']
   "system_id" UUID [note: 'Identifier of the system where the login occurred.']
   "user_name" VARCHAR(200) [note: 'Username used for the login.']
   "login_time" TIMESTAMP(6) [note: 'Timestamp when the login occurred.']
@@ -3702,22 +3692,24 @@ Table "security"."iam_logins" {
   Note: 'Table storing information about IAM logins, tracking user access to systems.'
 }
 
+Enum "security"."environment" {
+  production
+  preproduction
+  qa
+  development
+}
+
 Table "security"."identities" {
-  "identity_id" UUID [not null, pk, note: 'Unique identifier for the identity.']
+  "security_identity_id" UUID [not null, pk, note: 'Unique identifier for the identity.']
   "name" VARCHAR(200) [note: 'Internal name of the identity.']
   "display_name" VARCHAR(200) [note: 'User-friendly name of the identity.']
-  "first_name" VARCHAR(200) [note: 'First name of the identity.']
-  "last_name" VARCHAR(200) [note: 'Last name of the identity.']
-  "email" VARCHAR(200) [note: 'Email address of the identity.']
-  "phone" VARCHAR(200) [note: 'Phone number of the identity.']
+  "owner" INTEGER [null, ref: > enterprise.associates.enterprise_associate_id]
+  "service_account" BOOL [default: false, note: 'If false than access is considered to be on behalf of the owner, otherwise this is service account used for system to system automation']
+  "environment" security.environment [note: 'Identifies access to an environment e.g production, development, etc.' ]
   "created" TIMESTAMP(6) [note: 'Timestamp when the identity was created.']
   "inactive" BOOLEAN [note: 'Indicates if the identity is inactive.']
   "status" VARCHAR(200) [note: 'Status of the identity.']
-  "employee_number" VARCHAR(200) [note: 'Employee number of the identity.']
-  "is_manager" BOOLEAN [note: 'Indicates if the identity is a manager.']
-  "manager_id" UUID [note: 'Identifier of the manager of the identity.', ref: > "security"."identities"."identity_id"]
-  "authoritative_source_id" UUID [note: 'Identifier of the authoritative source for the identity.']
-  "identity_profile_id" UUID [note: 'Identifier of the identity profile associated with the identity.', ref: > "security"."identity_profiles"."identity_profile_id"]
+  "security_identity_profile_id" UUID [note: 'Identifier of the identity profile associated with the identity.', ref: > "security"."identity_profiles"."security_identity_profile_id"]
   "modified" TIMESTAMP(6) [note: 'Timestamp when the identity was last modified.']
   "synced" TIMESTAMP(6) [note: 'Timestamp when the identity was last synced.']
   "is_fallback_approver" BOOLEAN [note: 'Indicates if the identity is a fallback approver.']
@@ -3726,91 +3718,81 @@ Table "security"."identities" {
 }
 
 Table "security"."identity_access_profiles" {
-  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
-  "access_profile_id" UUID [not null, ref: > "security"."access_profiles"."access_profile_id", note: 'Identifier of the associated access profile.']
+  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
+  "security_access_profile_id" UUID [not null, ref: > "security"."access_profiles"."security_access_profile_id", note: 'Identifier of the associated access profile.']
 
   Indexes {
-    (identity_id, access_profile_id) [pk, note: 'Composite primary key on identity_id and access_profile_id. Ensures unique association.']
+    (security_identity_id, security_access_profile_id) [pk, note: 'Composite primary key on identity_id and access_profile_id. Ensures unique association.']
   }
 
   Note: 'Table linking identities to access profiles, granting specific permissions.'
 }
 
 Table "security"."identity_attributes" {
-  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
+  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
   "attribute_name" VARCHAR(200) [not null, note: 'Name of the identity attribute.']
   "attribute_value" VARCHAR(200) [note: 'Value of the identity attribute.']
 
   Indexes {
-    (identity_id, attribute_name) [pk, note: 'Composite primary key on identity_id and attribute_name. Ensures unique attributes per identity.']
+    (security_identity_id, attribute_name) [pk, note: 'Composite primary key on identity_id and attribute_name. Ensures unique attributes per identity.']
   }
 
   Note: 'Table storing attributes associated with identities, providing additional identity information.'
 }
 
 Table "security"."identity_entitlements" {
-  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
-  "entitlement_id" UUID [not null, ref: > "security"."entitlements"."entitlement_id", note: 'Identifier of the associated entitlement.']
+  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
+  "security_entitlement_id" UUID [not null, ref: > "security"."entitlements"."security_entitlement_id", note: 'Identifier of the associated entitlement.']
 
   Indexes {
-    (identity_id, entitlement_id) [pk, note: 'Composite primary key on identity_id and entitlement_id. Ensures unique entitlement assignments.']
+    (security_identity_id, security_entitlement_id) [pk, note: 'Composite primary key on identity_id and entitlement_id. Ensures unique entitlement assignments.']
   }
 
   Note: 'Table linking identities to entitlements, granting specific access rights.'
 }
 
 Table "security"."identity_profiles" {
-  "identity_profile_id" UUID [not null, pk, note: 'Unique identifier for the identity profile.']
+  "security_identity_profile_id" UUID [not null, pk, note: 'Unique identifier for the identity profile.']
   "name" VARCHAR(200) [note: 'Name of the identity profile.']
 
   Note: 'Table storing information about identity profiles, defining sets of attributes and rules for identities.'
 }
 
 Table "security"."identity_roles" {
-  "identity_id" UUID [not null, ref: > "security"."identities"."identity_id", note: 'Identifier of the associated identity.']
-  "role_id" UUID [not null, ref: > "security"."roles"."role_id", note: 'Identifier of the associated role.']
+  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
+  "security_role_id" UUID [not null, ref: > "security"."roles"."security_role_id", note: 'Identifier of the associated role.']
 
   Indexes {
-    (identity_id, role_id) [pk, note: 'Composite primary key on identity_id and role_id. Ensures unique role assignments.']
+    (security_identity_id, security_role_id) [pk, note: 'Composite primary key on identity_id and role_id. Ensures unique role assignments.']
   }
 
   Note: 'Table linking identities to roles, granting specific sets of permissions.'
 }
 
 Table "security"."roles" {
-  "role_id" UUID [not null, pk, note: 'Unique identifier for the role.']
+  "security_role_id" UUID [not null, pk, note: 'Unique identifier for the role.']
   "name" VARCHAR(200) [note: 'Internal name of the role.']
   "display_name" VARCHAR(200) [note: 'User-friendly name of the role.']
   "description" VARCHAR(200) [note: 'Description of the role.']
   "disabled" BOOLEAN [note: 'Indicates if the role is disabled.']
-  "owner_id" UUID [note: 'Identifier of the owner of the role.', ref: > "security"."identities"."identity_id"]
+  "owner_id" INTEGER [note: 'Identifier of the owner of the role.', ref: > enterprise.associates.enterprise_associate_id]
 
   Note: 'Table storing information about roles, defining sets of permissions and access rights.'
 }
 
-Table "security"."sources" {
-  "source_id" UUID [not null, pk, note: 'Unique identifier for the source system.']
-  "name" VARCHAR(200) [note: 'Name of the source system.']
-  "type" VARCHAR(200) [note: 'Type of the source system.']
-  "owner_id" UUID [note: 'Identifier of the owner of the source system.', ref: > "security"."identities"."identity_id"]
-
-  Note: 'Table storing information about source systems, providing data for identities and accounts.'
-}
-
-
 Table "security"."file_accesses" {
-  "access_id" UUID [not null, pk, note: 'Unique identifier for the file access event.']
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the file access occurred.']
-  "file_id" UUID [not null, ref: > "security"."files"."file_id", note: 'Identifier of the accessed file.']
+  "security_file_access_id" UUID [not null, pk, note: 'Unique identifier for the file access event.']
+  "security_system_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the file access occurred.']
+  "security_file_id" UUID [not null, ref: > "security"."files"."security_file_id", note: 'Identifier of the accessed file.']
   "access_type" VARCHAR(10) [note: 'Type of file access (e.g., read, write, execute).']
   "access_time" TIMESTAMP(6) [note: 'Timestamp when the file access occurred.']
-  "execution_id" UUID [not null, ref: > "security"."process_executions"."execution_id", note: 'Identifier of the process execution that initiated the file access.']
+  "security_process_execution_id" UUID [not null, ref: > "security"."process_executions"."security_process_execution_id", note: 'Identifier of the process execution that initiated the file access.']
 
   Note: 'Table storing information about file access events, tracking file usage and access patterns.'
 }
 
 Table "security"."file_threats" {
-  "file_hash" VARCHAR(64) [not null, pk, note: 'Hash of the file, used to identify threats.']
+  "security_file_threat_hash" VARCHAR(64) [not null, pk, note: 'Hash of the file, used to identify threats.']
   "threat_level" VARCHAR(10) [note: 'Level of threat associated with the file (e.g., high, medium, low).']
   "threat_description" TEXT [note: 'Description of the threat associated with the file.']
 
@@ -3818,8 +3800,8 @@ Table "security"."file_threats" {
 }
 
 Table "security"."files" {
-  "file_id" UUID [not null, pk, note: 'Unique identifier for the file.']
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the file is located.']
+  "security_file_id" UUID [not null, pk, note: 'Unique identifier for the file.']
+  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the file is located.']
   "file_path" TEXT [note: 'Path to the file on the system.']
   "file_hash" VARCHAR(64) [note: 'Hash of the file, used for integrity checks.']
   "file_size" BIGINT [note: 'Size of the file in bytes.']
@@ -3829,22 +3811,22 @@ Table "security"."files" {
 }
 
 Table "security"."installed_applications" {
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the application is installed.']
-  "application_name" VARCHAR(100) [not null, note: 'Name of the installed application.']
+  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the application is installed.']
+  "installed_application_name" VARCHAR(100) [not null, note: 'Name of the installed application.']
   "application_version" VARCHAR(50) [note: 'Version of the installed application.']
   "installation_date" TIMESTAMP(6) [note: 'Timestamp when the application was installed.']
 
   Indexes {
-    (system_id, application_name) [pk, note: 'Composite primary key on system_id and application_name. Ensures unique application installations.']
+    (security_host_id, installed_application_name) [pk, note: 'Composite primary key on system_id and application_name. Ensures unique application installations.']
   }
 
-  Note: 'Table storing information about installed applications on systems, tracking software installations.'
+  Note: 'Table storing information about installed applications on servers, tracking software installations.'
 }
 
 Table "security"."network_connections" {
-  "connection_id" UUID [not null, pk, note: 'Unique identifier for the network connection.']
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the connection originated.']
-  "execution_id" UUID [not null, ref: > "security"."process_executions"."execution_id", note: 'Identifier of the process execution that initiated the connection.']
+  "security_network_connection_id" UUID [not null, pk, note: 'Unique identifier for the network connection.']
+  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the connection originated.']
+  "security_process_execution_id" UUID [not null, ref: > "security"."process_executions"."security_process_execution_id", note: 'Identifier of the process execution that initiated the connection.']
   "connection_type" VARCHAR(10) [note: 'Type of network connection (e.g., TCP, UDP).']
   "protocol" VARCHAR(10) [note: 'Network protocol used for the connection.']
   "local_ip" VARCHAR(15) [note: 'Local IP address of the connection.']
@@ -3857,21 +3839,32 @@ Table "security"."network_connections" {
   Note: 'Table storing information about network connections, tracking network traffic and activity.'
 }
 
+Enum security.network_protocols {
+  TCP [note: 'Transmission Control Protocol. Connection-oriented and reliable. Commonly used for web servers, email, and other services.']
+  UDP [note: 'User Datagram Protocol. Connectionless and faster. Commonly used for DNS, VoIP, and streaming.']
+  ICMP [note: 'Internet Control Message Protocol. Used for network diagnostics (ping, traceroute). While not a transport protocol, it\'s relevant for network security.']
+  HTTP2 [note: 'Hypertext Transfer Protocol version 2. Application layer protocol built on top of TCP. Used for modern web applications.']
+  TLS [note: 'Transport Layer Security. Used for secure communication over TCP (HTTPS).']
+  QUIC [note: 'Quick UDP Internet Connections. A modern transport protocol used for web traffic and other applications.']
+  SIP [note: 'Session Initiation Protocol. Application layer protocol used for VoIP and real-time communication.']
+  // Add other protocols as needed (e.g., DNS over UDP, specific application protocols)
+}
+
 Table "security"."open_ports" {
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system with the open port.']
+  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system with the open port.']
   "port_number" INTEGER [not null, note: 'Port number that is open.']
-  "protocol" VARCHAR(10) [not null, note: 'Network protocol associated with the open port.']
+  "protocol" security.network_protocols [not null, note: 'Network protocol associated with the open port.']
 
   Indexes {
-    (system_id, port_number, protocol) [pk, note: 'Composite primary key on system_id, port_number, and protocol. Ensures unique open ports.']
+    (security_host_id, port_number, protocol) [pk, note: 'Composite primary key on system_id, port_number, and protocol. Ensures unique open ports.']
   }
 
   Note: 'Table storing information about open ports on systems, tracking network services and potential vulnerabilities.'
 }
 
 Table "security"."process_executions" {
-  "execution_id" UUID [not null, pk, note: 'Unique identifier for the process execution.']
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the process was executed.']
+  "security_process_execution_id" UUID [not null, pk, note: 'Unique identifier for the process execution.']
+  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the process was executed.']
   "process_name" VARCHAR(255) [note: 'Name of the executed process.']
   "process_id" INTEGER [note: 'Process ID of the executed process.']
   "parent_process_id" INTEGER [note: 'Process ID of the parent process.']
@@ -3884,21 +3877,21 @@ Table "security"."process_executions" {
 }
 
 Table "security"."running_services" {
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system with the running service.']
-  "service_name" VARCHAR(100) [not null, note: 'Name of the running service.']
+  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system with the running service.']
+  "running_service_name" VARCHAR(100) [not null, note: 'Name of the running service.']
   "start_time" TIMESTAMP(6) [note: 'Timestamp when the service started running.']
   "status" VARCHAR(20) [note: 'Status of the running service (e.g., running, stopped).']
 
   Indexes {
-    (system_id, service_name) [pk, note: 'Composite primary key on system_id and service_name. Ensures unique running services.']
+    (security_host_id, running_service_name) [pk, note: 'Composite primary key on system_id and service_name. Ensures unique running services.']
   }
 
   Note: 'Table storing information about running services on systems, tracking system services and their states.'
 }
 
 Table "security"."system_stats" {
-  "stat_id" UUID [not null, pk, note: 'Unique identifier for the system statistics record.']
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system for which statistics are recorded.']
+  "security_system_stat_id" UUID [not null, pk, note: 'Unique identifier for the system statistics record.']
+  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system for which statistics are recorded.']
   "cpu_usage_percent" INTEGER [note: 'CPU usage percentage.']
   "memory_usage_gb" NUMERIC(5,1) [note: 'Memory usage in gigabytes.']
   "memory_total_gb" INTEGER [note: 'Total memory in gigabytes.']
@@ -3910,8 +3903,8 @@ Table "security"."system_stats" {
 }
 
 
-Table "security"."systems" {
-  "system_id" UUID [not null, pk, note: 'Unique identifier for the system.']
+Table "security"."hosts" {
+  "security_host_id" UUID [not null, pk, note: 'Unique identifier for the system.']
   "hostname" VARCHAR(255) [note: 'Hostname of the system.']
   "agent_id" VARCHAR(36) [note: 'Identifier of the agent installed on the system.']
   "ip_address_internal" VARCHAR(15) [note: 'Internal IP address of the system.']
@@ -3936,8 +3929,8 @@ Table "security"."systems" {
 }
 
 Table "security"."usb_device_usage" {
-  "usage_id" UUID [not null, pk, note: 'Unique identifier for the USB device usage record.']
-  "system_id" UUID [not null, ref: > "security"."systems"."system_id", note: 'Identifier of the system where the USB device was used.']
+  "security_usb_device_usage_id" UUID [not null, pk, note: 'Unique identifier for the USB device usage record.']
+  "security_system_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the USB device was used.']
   "device_name" VARCHAR(100) [note: 'Name of the USB device.']
   "device_type" VARCHAR(50) [note: 'Type of the USB device.']
   "connection_time" TIMESTAMP(6) [note: 'Timestamp when the USB device was connected.']
@@ -3993,6 +3986,7 @@ Table "security"."cpe" {
 Table "security"."cve_problem" {
   "cve" VARCHAR(20) [ref: > "security"."cvss"."cve", note: 'Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.']
   "problem" TEXT [note: 'Problem description related to the CVE.']
+  "cwe_id" INTEGER [ref: > security.cwe.cwe_id, null, note: 'A reference to the related Common Weakness Enumeration, if it exists']
   note: 'Stores problem descriptions associated with CVEs.'
 }
 
@@ -4005,4 +3999,188 @@ Table "security"."cwe" {
   "common_consequences" TEXT [note: 'Common consequences of the CWE.']
   "potential_mitigations" TEXT [note: 'Potential mitigations for the CWE.']
   note: 'Stores Common Weakness Enumeration (CWE) information.'
+}
+
+//
+// APP MGMT
+//
+
+Table "app_mgmt"."architectures" {
+  "app_mgmt_architecture_id" UUID [pk, note: 'Unique identifier for an approved architectural design.']
+  "architecture_name" VARCHAR(255) [note: 'Name given to the architectural design.']
+  "description" TEXT [note: 'Detailed explanation of the architectural design.']
+  "approval_date" TIMESTAMP [note: 'Date when the architectural design was officially approved.']
+  "approved_by" INTEGER [note: 'Identifier of the employee who approved the design.', ref: > "enterprise"."associates"."enterprise_associate_id"]
+  "documentation_url" VARCHAR(2048) [note: 'Link to the full documentation for the architectural design.']
+  "status" VARCHAR(50) [note: 'Current state of the architecture (e.g., approved, deprecated, proposed).']
+  "sdlc_process_id" UUID [ref: > "app_mgmt"."sdlc_processes"."app_mgmt_sdlc_process_id", note: 'Identifier for the software development lifecycle process this architecture aligns with.']
+  "created_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who created the architectural design.']
+  "modified_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who last modified the architectural design.']
+  note: 'Table to store approved architectural designs and their key details.'
+}
+
+Table "app_mgmt"."sdlc_processes" {
+  "app_mgmt_sdlc_process_id" UUID [pk, note: 'Unique identifier for a defined software development lifecycle process.']
+  "process_name" VARCHAR(255) [note: 'Name of the software development lifecycle process.']
+  "description" TEXT [note: 'Description of the steps and activities within the SDLC process.']
+  "process_owner" VARCHAR(255) [note: 'Name of the individual or team responsible for the SDLC process.']
+  "version" VARCHAR(50) [note: 'Version number or identifier for the SDLC process.']
+  "documentation_url" VARCHAR(2048) [note: 'Link to the full documentation for the SDLC process.']
+  "team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team that manages this SDLC process.']
+  note: 'Table to store software development lifecycle processes and their attributes.'
+}
+
+Enum app_mgmt.application_lifecycle_status {
+  Development [note: 'Application is being actively developed, but not yet in production.']
+  Pilot [note: 'Application is being used by a small group of users for testing and feedback.']
+  Production [note: 'Application is in production and operating, but not accepting new features or major changes. Only bug fixes and minor updates are applied.']
+  Deprecated [note: 'Application is still operational but no longer actively developed or enhanced. It may receive critical security patches.']
+  DataMaintenance [note: 'Application is primarily used for data access and maintenance. Functionality is limited, and new features are not added.']
+  Decommissioned [note: 'Application is retired and no longer operational. Data is not archived.']
+  Archived [note: 'Application is retired and data is archived']
+}
+
+Enum app_mgmt.deployment_environments {
+  OnPremises [note: 'Application is deployed on physical servers or virtual machines within the organization\'s own data center.']
+  CloudPublic [note: 'Application is deployed on a public cloud platform (e.g., AWS, Azure, GCP).']
+  CloudPrivate [note: 'Application is deployed on a private cloud infrastructure.']
+  CloudHybrid [note: 'Application is deployed across a combination of on-premises and cloud environments.']
+  Containerized [note: 'Application is deployed within containers (e.g., Docker, Kubernetes).']
+  Serverless [note: 'Application is deployed using a serverless computing model (e.g., AWS Lambda, Azure Functions).']
+  Edge [note: 'Application is deployed on edge computing devices or servers closer to the end-users.']
+  // Add other environments as needed (e.g., Development, Staging, Testing)
+}
+
+Enum app_mgmt.application_types {
+  Web [note: 'Web-based application accessible through a web browser.']
+  Mobile [note: 'Application designed for mobile devices (e.g., iOS, Android).']
+  Desktop [note: 'Application installed and run on a desktop computer.']
+  API [note: 'Application Programming Interface, used for communication between software components.']
+  Batch [note: 'Application that performs batch processing tasks.']
+  Microservice [note: 'Small, independent service that communicates with other microservices.']
+  Legacy [note: 'Older application that may be difficult to maintain or modernize.']
+  SaaS [note: 'Software as a Service application, typically accessed via the web.']
+  Database [note: 'Database system or application.']
+  Middleware [note: 'Software that connects different applications or components.']
+  Embedded [note: 'Software embedded in hardware devices.']
+  // Add other types as needed (e.g., IoT, AI/ML, etc.)
+}
+
+Table "app_mgmt"."applications" {
+  "app_mgmt_application_id" UUID [pk, note: 'Unique identifier for an application.']
+  "application_name" VARCHAR(255) [note: 'Name of the application.']
+  "description" TEXT [note: 'General description of the application\'s purpose.']
+  "application_type" app_mgmt.application_types [note: 'Type of application (e.g., web, mobile, desktop).']
+  "vendor" VARCHAR(255) [note: 'Name of the vendor if the application is purchased.']
+  "version" VARCHAR(50) [note: 'Current version of the application.']
+  "deployment_environment" app_mgmt.deployment_environments [note: 'Environment where the application is deployed (e.g., on-premises, cloud).']
+  "operations_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team responsible for the day-to-day operation of the application.']
+  "maintenance_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team responsible for maintaining the application, including updates and fixes.']
+  "application_owner_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier for the individual responsible for communication with stakeholders, funding, budget, and strategy for the application.']
+  "lifecycle_status" app_mgmt.application_lifecycle_status [note: 'Current stage in the application\'s lifecycle (e.g., development, production).']
+  "date_deployed" TIMESTAMP [note: 'Date the application was deployed to its environment.']
+  "date_retired" TIMESTAMP [note: 'Date the application was retired or decommissioned.']
+  "architecture_id" UUID [ref: > "app_mgmt"."architectures"."app_mgmt_architecture_id", note: 'Identifier for the approved architecture the application adheres to.']
+  "sdlc_process_id" UUID [ref: > "app_mgmt"."sdlc_processes"."app_mgmt_sdlc_process_id", note: 'Identifier for the SDLC process used to develop or manage the application.']
+  "source_code_repository" VARCHAR(2048) [note: 'Link to the repository where the application\'s source code is stored.']
+  "documentation_url" VARCHAR(2048) [note: 'Link to the application\'s documentation.']
+  "created_by_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team that initially created the application.']
+  "maintained_by_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team currently responsible for maintaining the application.']
+  "parent_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: 'Identifier for a parent application if this application is a component or part of a larger system.']
+  "created_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who initially created the application record.']
+  "modified_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who last modified the application record.']
+  "rto" INTERVAL [note: 'Recovery Time Objective (RTO): The maximum acceptable downtime for the application.']
+  "rpo" INTERVAL [note: 'Recovery Point Objective (RPO): The maximum acceptable data loss for the application.']
+  note: 'Table to store comprehensive information about software applications within the organization.'
+}
+
+Table "app_mgmt"."components" {
+  "app_mgmt_component_id" UUID [pk, note: 'Unique identifier for a software component (e.g., library, module).']
+  "component_name" VARCHAR(255) [note: 'Name of the software component.']
+  "component_version" VARCHAR(50) [note: 'Version identifier for the software component.']
+  "component_type" VARCHAR(100) [note: 'Type of component (e.g., library, framework, API, module). Also used for language-specific categorization (e.g., java-library, npm-package).']
+  "vendor" VARCHAR(255) [note: 'Vendor or provider of the software component.']
+  "license_id" UUID [ref: > "app_mgmt"."licenses"."license_id", note: 'Identifier for the license associated with the component.']
+  "description" TEXT [note: 'Description of the component\'s functionality.']
+  "created_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who initially created the component record.']
+  "modified_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who last modified the component record.']
+  "package_info" TEXT [note: 'Language-specific package information (e.g., Maven coordinates, npm package name, NuGet package ID).']
+  "repository_url" VARCHAR(2048) [note: 'Link to the component\'s repository (e.g., Maven repository, npm registry, NuGet feed).']
+  "namespace_or_module" VARCHAR(255) [note: 'Namespace or module name within the component (if applicable).']
+  note: 'Table to store detailed information about software components (BOM).'
+}
+
+Enum app_mgmt.dependency_types {
+  runtime
+  build
+  test
+  development
+  optional
+  provided
+  system
+  import
+  compile
+  annotationProcessor
+  // Add any other specific dependency types as needed
+}
+
+Table "app_mgmt"."component_dependencies" {
+  "parent_component_id" UUID [ref: > "app_mgmt"."components"."app_mgmt_component_id", pk, note: 'Identifier for the component that depends on another component.']
+  "child_component_id" UUID [ref: > "app_mgmt"."components"."app_mgmt_component_id", pk, note: 'Identifier for the component being depended upon.']
+  "quantity" INTEGER [note: 'Number of times the child component is used by the parent.']
+  "dependency_type" app_mgmt.dependency_types [pk, note: 'Type of dependency (e.g., runtime, build, test).']
+  note: 'Table to store component dependencies (BOM relationships).'
+}
+
+Table "app_mgmt"."application_components" {
+  "application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the application that uses the component.']
+  "app_mgmt_component_id" UUID [ref: > "app_mgmt"."components"."app_mgmt_component_id", pk, note: 'Identifier for the software component used by the application.']
+  "dependency_type" app_mgmt.dependency_types [pk, note: 'Type of dependency (e.g., runtime, build, test).']
+  note: 'Table to store dependencies between applications and their software components.'
+}
+
+Enum app_mgmt.criticality_levels {
+  no_impact [note: 'No impact: The relationship is not critical and its failure has no noticeable effect. Resolution timeframe: Not applicable.']
+  minimal_impact [note: 'Minimal impact: The relationship is rarely critical, and its failure has a negligible effect on operations. Resolution timeframe: Within a week, if necessary.']
+  minor_impact [note: 'Minor impact: The relationship is occasionally important, and its failure causes slight inconvenience or delays. Resolution timeframe: Within 1-2 business days.']
+  moderate_impact [note: 'Moderate impact: The relationship is regularly important, and its failure disrupts some operations but workarounds are possible. Resolution timeframe: Within 4-8 hours.']
+  significant_impact [note: 'Significant impact: The relationship is highly important, and its failure severely disrupts operations, requiring immediate attention. Resolution timeframe: Within 1-2 hours.']
+  critical_impact [note: 'Critical impact: The relationship is essential, and its failure leads to catastrophic disruption or complete stoppage of operations. Requires urgent and immediate resolution. Resolution timeframe: Immediately (within 15-30 minutes).']
+}
+
+Table "app_mgmt"."application_relationships" {
+  "application_id_1" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the first application involved in the relationship.']
+  "application_id_2" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the second application involved in the relationship.']
+  "relationship_type" VARCHAR(50) [pk, note: 'Type of relationship between the applications (e.g., depends on, uses data from).']
+  "criticality" app_mgmt.criticality_levels [note: 'Criticality score of the relationship, indicating the impact of its failure.']
+  note: 'Table to store relationships between applications and their criticality levels.'
+}
+
+Table "app_mgmt"."licenses" {
+  "license_id" UUID [pk, note: 'Unique identifier for a software license.']
+  "license_name" VARCHAR(255) [note: 'Name of the software license.']
+  "license_type" VARCHAR(50) [note: 'Type of software license (e.g., MIT, GPL).']
+  "license_text" TEXT [note: 'Full text or a summary of the software license terms.']
+  note: 'Table to store information about software licenses.'
+}
+
+Table "app_mgmt"."application_licenses" {
+  "application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the application that uses the license.']
+  "license_id" UUID [ref: > "app_mgmt"."licenses"."license_id", pk, note: 'Identifier for the software license used by the application.']
+  note: 'Table to store associations between applications and the licenses they use.'
+}
+
+Table "app_mgmt"."teams" {
+  "team_id" UUID [pk, note: 'Unique identifier for a development or management team.']
+  "team_name" VARCHAR(255) [note: 'Name of the team.']
+  "description" TEXT [note: 'Description of the team\'s responsibilities.']
+  "team_lead_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the team lead from the enterprise associates table.']
+  note: 'Table to store information about development and management teams, including team lead association.'
+}
+
+Table "app_mgmt"."team_members" {
+  "team_id" UUID [ref: > "app_mgmt"."teams"."team_id", pk, note: 'Identifier of the team.']
+  "associate_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", pk, note: 'Identifier of the team member from the enterprise associates table.']
+  "function" VARCHAR(255) [note: 'Function or role of the team member within the team.']
+  note: 'Table to store the associations between teams and their members, including member functions.'
 }
