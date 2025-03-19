@@ -1,6 +1,5 @@
 import random
 from datetime import datetime, timedelta
-import json
 
 
 def generate_borrower_income(_ids_dict, _dg):

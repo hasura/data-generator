@@ -94,7 +94,7 @@ def generate_random_appraisal(id_fields: Dict[str, Any], dg: DataGenerator) -> D
         if 'estimated_property_value' in application_info and application_info['estimated_property_value']:
             estimated_value = application_info['estimated_property_value']
             # Ensure estimated value is within reasonable bounds before applying variation
-            if estimated_value > 0 and estimated_value < 10000000:  # Cap at 10 million
+            if 0 < estimated_value < 10000000:  # Cap at 10 million
                 # Appraisal typically varies from estimate by -10% to +15%
                 variation_factor = random.uniform(0.9, 1.15)
                 appraised_value = round(estimated_value * variation_factor, 2)
@@ -104,7 +104,7 @@ def generate_random_appraisal(id_fields: Dict[str, Any], dg: DataGenerator) -> D
         elif 'requested_loan_amount' in application_info and application_info['requested_loan_amount']:
             loan_amount = application_info['requested_loan_amount']
             # Ensure loan amount is within reasonable bounds before calculating
-            if loan_amount > 0 and loan_amount < 10000000:  # Cap at 10 million
+            if 0 < loan_amount < 10000000:  # Cap at 10 million
                 # Use requested loan amount as a basis (typically loan amount is 70-95% of property value)
                 ltv_ratio = random.uniform(0.7, 0.95)  # Loan-to-value ratio
                 appraised_value = round(loan_amount / ltv_ratio, 2)

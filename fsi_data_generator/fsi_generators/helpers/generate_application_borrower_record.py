@@ -360,7 +360,7 @@ def infer_personal_relationship(borrower_info, primary_info):
                 return random.choice(["spouse"] * 4 + ["friend"])
             else:
                 return random.choice(["spouse", "friend", "sibling"])
-        elif age_diff >= 10 and age_diff < 20:
+        elif 10 <= age_diff < 20:
             # Medium age gap
             if same_last_name:
                 return random.choice(["sibling"] * 3 + ["other"])

@@ -80,7 +80,7 @@ def generate_random_closing_disclosure(id_fields: Dict[str, Any], dg) -> Dict[st
     # Determine financial values based on loan information
     if loan_info:
         # Use loan data with small variations
-        loan_amount = loan_info.get('loan_amount', None)
+        loan_amount: Optional[float] = loan_info.get('loan_amount', None)
         if loan_amount is None:
             loan_amount = random.uniform(100000, 500000)
         else:
