@@ -3,7 +3,9 @@ kind: ObjectType
 version: v1
 definition:
   name: MortgageServicesApplications
-  description: Stores mortgage application details and tracks application status
+  description: Stores mortgage application details and tracks application status.
+    Note that the primary borrower is accessible through the
+    application_borrowers table, not directly from this table.
   fields:
     - name: applicationType
       type: Varchar!
@@ -14,9 +16,6 @@ definition:
     - name: creationDateTime
       type: Timestamp!
       description: When the application was created
-    - name: customerId
-      type: Int4!
-      description: References the primary customer applying for the mortgage
     - name: estimatedCreditScore
       type: Int4
       description: Estimated credit score of primary applicant
@@ -35,6 +34,9 @@ definition:
     - name: mortgageServicesApplicationId
       type: Int4!
       description: Unique identifier for each mortgage application
+    - name: mortgageServicesLoanProductId
+      type: Int4!
+      description: References the loan product being applied for
     - name: referralSource
       type: Varchar
       description: How the applicant learned about the mortgage product
@@ -66,9 +68,6 @@ definition:
         creationDateTime:
           column:
             name: creation_date_time
-        customerId:
-          column:
-            name: customer_id
         estimatedCreditScore:
           column:
             name: estimated_credit_score
@@ -87,6 +86,9 @@ definition:
         mortgageServicesApplicationId:
           column:
             name: mortgage_services_application_id
+        mortgageServicesLoanProductId:
+          column:
+            name: mortgage_services_loan_product_id
         referralSource:
           column:
             name: referral_source
@@ -115,13 +117,13 @@ definition:
           - applicationType
           - branchId
           - creationDateTime
-          - customerId
           - estimatedCreditScore
           - estimatedPropertyValue
           - lastUpdatedDateTime
           - loanOfficerId
           - loanPurpose
           - mortgageServicesApplicationId
+          - mortgageServicesLoanProductId
           - referralSource
           - requestedLoanAmount
           - requestedLoanTermMonths
@@ -143,8 +145,6 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: creationDateTime
           booleanExpressionType: TimestampBoolExp
-        - fieldName: customerId
-          booleanExpressionType: Int4BoolExp
         - fieldName: estimatedCreditScore
           booleanExpressionType: Int4BoolExp
         - fieldName: estimatedPropertyValue
@@ -156,6 +156,8 @@ definition:
         - fieldName: loanPurpose
           booleanExpressionType: VarcharBoolExp
         - fieldName: mortgageServicesApplicationId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLoanProductId
           booleanExpressionType: Int4BoolExp
         - fieldName: referralSource
           booleanExpressionType: VarcharBoolExp
@@ -169,6 +171,8 @@ definition:
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesApplicationBorrowers
+        - relationshipName: mortgageServicesLoanProduct
+        - relationshipName: mortgageServicesAppraisals
         - relationshipName: mortgageServicesConditions
         - relationshipName: mortgageServicesCreditReports
         - relationshipName: mortgageServicesCustomerCommunications
@@ -198,8 +202,6 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: creationDateTime
           aggregateExpression: TimestampAggExp
-        - fieldName: customerId
-          aggregateExpression: Int4AggExp
         - fieldName: estimatedCreditScore
           aggregateExpression: Int4AggExp
         - fieldName: estimatedPropertyValue
@@ -211,6 +213,8 @@ definition:
         - fieldName: loanPurpose
           aggregateExpression: VarcharAggExp
         - fieldName: mortgageServicesApplicationId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLoanProductId
           aggregateExpression: Int4AggExp
         - fieldName: referralSource
           aggregateExpression: VarcharAggExp
@@ -242,8 +246,6 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: creationDateTime
           orderByExpression: TimestampOrderByExp
-        - fieldName: customerId
-          orderByExpression: Int4OrderByExp
         - fieldName: estimatedCreditScore
           orderByExpression: Int4OrderByExp
         - fieldName: estimatedPropertyValue
@@ -256,6 +258,8 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: mortgageServicesApplicationId
           orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLoanProductId
+          orderByExpression: Int4OrderByExp
         - fieldName: referralSource
           orderByExpression: VarcharOrderByExp
         - fieldName: requestedLoanAmount
@@ -266,7 +270,8 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: submissionDateTime
           orderByExpression: TimestampOrderByExp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: mortgageServicesLoanProduct
   graphql:
     expressionTypeName: MortgageServices_MortgageServicesApplicationsOrderByExp
 
@@ -298,7 +303,9 @@ definition:
       queryRootField: mortgageServicesApplicationsAggregate
       subscription:
         rootField: mortgageServicesApplicationsAggregate
-  description: Stores mortgage application details and tracks application status
+  description: Stores mortgage application details and tracks application status.
+    Note that the primary borrower is accessible through the
+    application_borrowers table, not directly from this table.
 
 ---
 kind: ModelPermissions
@@ -332,6 +339,46 @@ definition:
           - fieldName: mortgageServicesApplicationId
   graphql:
     aggregateFieldName: mortgageServicesApplicationBorrowersAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoanProduct
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesLoanProducts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanProductId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanProductId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesAppraisals
+  sourceType: MortgageServicesApplications
+  target:
+    model:
+      name: MortgageServicesAppraisals
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesAppraisalsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesApplicationId
+      target:
+        modelField:
+          - fieldName: mortgageServicesApplicationId
+  graphql:
+    aggregateFieldName: mortgageServicesAppraisalsAggregate
 
 ---
 kind: Relationship

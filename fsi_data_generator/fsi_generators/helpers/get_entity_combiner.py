@@ -1,13 +1,20 @@
 # Global dictionary to store combinations keyed by (field_a, field_b)
+from typing import TYPE_CHECKING
+
+
 from fsi_data_generator.fsi_generators.helpers.generate_combinations_random import generate_combinations_random
+
+if TYPE_CHECKING:
+    from data_generator import SkipRowGenerationError
 
 global_entity_combinations = {}
 
-def get_entity_combiner(dg, field_a, field_b):
+def get_entity_combiner(dg, field_a, field_b, custom_cache_key=None):
     """
     Generates a generic method to assign combinations of entities from two schema.table.key fields.
     Each unique pair of fields will maintain its own set of combinations in a global cache.
 
+    :param custom_cache_key:
     :param dg: Data generator object with inserted primary keys, keyed as schema.table.
     :param field_a: The fully qualified field for the first entity, formatted as schema.table.key
                     (e.g., 'app_mgmt.applications.application_id').
@@ -22,7 +29,11 @@ def get_entity_combiner(dg, field_a, field_b):
     schema_table_b, key_b = field_b.rsplit('.', 1)  # e.g., 'app_mgmt.licenses.license_id'
 
     # Cache key for this entity combination
-    cache_key = (field_a, field_b)
+    if custom_cache_key is None:
+        cache_key = (field_a, field_b)
+    else:
+        # Use the custom cache key if provided
+        cache_key = (field_a, field_b, custom_cache_key)
 
     def get_combination(data_item, _b, _c):
         """
@@ -54,7 +65,7 @@ def get_entity_combiner(dg, field_a, field_b):
 
         # Handle pop from cached combinations
         if not global_entity_combinations[cache_key]:
-            raise ValueError(f"No combinations left for the fields: {field_a}, {field_b}")
+            raise SkipRowGenerationError(f"No combinations left for the fields: {field_a}, {field_b}")
 
         # Access or pop combinations from the cache
         entity_combination = global_entity_combinations[cache_key]

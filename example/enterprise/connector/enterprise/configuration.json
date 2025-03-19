@@ -74,16 +74,16 @@
         "schemaName": "app_mgmt",
         "tableName": "application_licenses",
         "columns": {
-          "application_id": {
-            "name": "application_id",
+          "app_mgmt_application_id": {
+            "name": "app_mgmt_application_id",
             "type": {
               "scalarType": "uuid"
             },
             "nullable": "nonNullable",
             "description": "Identifier for the application that uses the license."
           },
-          "license_id": {
-            "name": "license_id",
+          "app_mgmt_license_id": {
+            "name": "app_mgmt_license_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -93,23 +93,23 @@
         },
         "uniquenessConstraints": {
           "application_licenses_pkey": [
-            "application_id",
-            "license_id"
+            "app_mgmt_application_id",
+            "app_mgmt_license_id"
           ]
         },
         "foreignRelations": {
-          "application_licenses_application_id_fkey": {
+          "application_licenses_app_mgmt_application_id_fkey": {
             "foreignSchema": "app_mgmt",
             "foreignTable": "applications",
             "columnMapping": {
-              "application_id": "app_mgmt_application_id"
+              "app_mgmt_application_id": "app_mgmt_application_id"
             }
           },
-          "application_licenses_license_id_fkey": {
+          "application_licenses_app_mgmt_license_id_fkey": {
             "foreignSchema": "app_mgmt",
             "foreignTable": "licenses",
             "columnMapping": {
-              "license_id": "license_id"
+              "app_mgmt_license_id": "app_mgmt_license_id"
             }
           }
         },
@@ -119,12 +119,21 @@
         "schemaName": "app_mgmt",
         "tableName": "application_relationships",
         "columns": {
+          "app_mgmt_application_relationship_id": {
+            "name": "app_mgmt_application_relationship_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Primary key for application relationships"
+          },
           "application_id_1": {
             "name": "application_id_1",
             "type": {
               "scalarType": "uuid"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": "Identifier for the first application involved in the relationship."
           },
           "application_id_2": {
@@ -132,7 +141,7 @@
             "type": {
               "scalarType": "uuid"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": "Identifier for the second application involved in the relationship."
           },
           "criticality": {
@@ -143,20 +152,26 @@
             "nullable": "nullable",
             "description": "Criticality score of the relationship, indicating the impact of its failure."
           },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Additional explanation about nature of relationship."
+          },
           "relationship_type": {
             "name": "relationship_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "app_mgmt_relationship_types"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": "Type of relationship between the applications (e.g., depends on, uses data from)."
           }
         },
         "uniquenessConstraints": {
           "application_relationships_pkey": [
-            "application_id_1",
-            "application_id_2",
-            "relationship_type"
+            "app_mgmt_application_relationship_id"
           ]
         },
         "foreignRelations": {
@@ -175,7 +190,7 @@
             }
           }
         },
-        "description": "Table to store relationships between applications and their criticality levels."
+        "description": "Table to store relationships between applications and their criticality levels. Applications may have many relationships, even of the same type. They are only differentiated through the description."
       },
       "app_mgmt_applications": {
         "schemaName": "app_mgmt",
@@ -291,14 +306,6 @@
               "scalarType": "uuid"
             },
             "nullable": "nullable",
-            "description": "Identifier for the team currently responsible for maintaining the application."
-          },
-          "maintenance_team_id": {
-            "name": "maintenance_team_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nullable",
             "description": "Identifier for the team responsible for maintaining the application, including updates and fixes."
           },
           "modified_by_user_id": {
@@ -309,8 +316,8 @@
             "nullable": "nullable",
             "description": "Identifier of the employee who last modified the application record."
           },
-          "operations_team_id": {
-            "name": "operations_team_id",
+          "operated_by_team_id": {
+            "name": "operated_by_team_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -398,7 +405,7 @@
             "foreignSchema": "app_mgmt",
             "foreignTable": "teams",
             "columnMapping": {
-              "created_by_team_id": "team_id"
+              "created_by_team_id": "app_mgmt_team_id"
             }
           },
           "applications_created_by_user_id_fkey": {
@@ -412,14 +419,7 @@
             "foreignSchema": "app_mgmt",
             "foreignTable": "teams",
             "columnMapping": {
-              "maintained_by_team_id": "team_id"
-            }
-          },
-          "applications_maintenance_team_id_fkey": {
-            "foreignSchema": "app_mgmt",
-            "foreignTable": "teams",
-            "columnMapping": {
-              "maintenance_team_id": "team_id"
+              "maintained_by_team_id": "app_mgmt_team_id"
             }
           },
           "applications_modified_by_user_id_fkey": {
@@ -429,11 +429,11 @@
               "modified_by_user_id": "enterprise_associate_id"
             }
           },
-          "applications_operations_team_id_fkey": {
+          "applications_operated_by_team_id_fkey": {
             "foreignSchema": "app_mgmt",
             "foreignTable": "teams",
             "columnMapping": {
-              "operations_team_id": "team_id"
+              "operated_by_team_id": "app_mgmt_team_id"
             }
           },
           "applications_parent_application_id_fkey": {
@@ -649,6 +649,14 @@
             "nullable": "nonNullable",
             "description": "Unique identifier for a software component (e.g., library, module)."
           },
+          "app_mgmt_license_id": {
+            "name": "app_mgmt_license_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the license associated with the component."
+          },
           "component_name": {
             "name": "component_name",
             "type": {
@@ -688,14 +696,6 @@
             },
             "nullable": "nullable",
             "description": "Description of the component's functionality."
-          },
-          "license_id": {
-            "name": "license_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nullable",
-            "description": "Identifier for the license associated with the component."
           },
           "modified_by_user_id": {
             "name": "modified_by_user_id",
@@ -744,18 +744,18 @@
           ]
         },
         "foreignRelations": {
+          "components_app_mgmt_license_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "licenses",
+            "columnMapping": {
+              "app_mgmt_license_id": "app_mgmt_license_id"
+            }
+          },
           "components_created_by_user_id_fkey": {
             "foreignSchema": "enterprise",
             "foreignTable": "associates",
             "columnMapping": {
               "created_by_user_id": "enterprise_associate_id"
-            }
-          },
-          "components_license_id_fkey": {
-            "foreignSchema": "app_mgmt",
-            "foreignTable": "licenses",
-            "columnMapping": {
-              "license_id": "license_id"
             }
           },
           "components_modified_by_user_id_fkey": {
@@ -772,8 +772,8 @@
         "schemaName": "app_mgmt",
         "tableName": "licenses",
         "columns": {
-          "license_id": {
-            "name": "license_id",
+          "app_mgmt_license_id": {
+            "name": "app_mgmt_license_id",
             "type": {
               "scalarType": "uuid"
             },
@@ -799,7 +799,7 @@
           "license_type": {
             "name": "license_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "app_mgmt_license_types"
             },
             "nullable": "nullable",
             "description": "Type of software license (e.g., MIT, GPL)."
@@ -807,7 +807,7 @@
         },
         "uniquenessConstraints": {
           "licenses_pkey": [
-            "license_id"
+            "app_mgmt_license_id"
           ]
         },
         "foreignRelations": {},
@@ -824,6 +824,14 @@
             },
             "nullable": "nonNullable",
             "description": "Unique identifier for a defined software development lifecycle process."
+          },
+          "app_mgmt_team_id": {
+            "name": "app_mgmt_team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": "Identifier for the team that manages this SDLC process."
           },
           "description": {
             "name": "description",
@@ -857,14 +865,6 @@
             "nullable": "nullable",
             "description": "Name of the individual or team responsible for the SDLC process."
           },
-          "team_id": {
-            "name": "team_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nullable",
-            "description": "Identifier for the team that manages this SDLC process."
-          },
           "version": {
             "name": "version",
             "type": {
@@ -880,11 +880,11 @@
           ]
         },
         "foreignRelations": {
-          "sdlc_processes_team_id_fkey": {
+          "sdlc_processes_app_mgmt_team_id_fkey": {
             "foreignSchema": "app_mgmt",
             "foreignTable": "teams",
             "columnMapping": {
-              "team_id": "team_id"
+              "app_mgmt_team_id": "app_mgmt_team_id"
             }
           }
         },
@@ -894,8 +894,16 @@
         "schemaName": "app_mgmt",
         "tableName": "team_members",
         "columns": {
-          "associate_id": {
-            "name": "associate_id",
+          "app_mgmt_team_id": {
+            "name": "app_mgmt_team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Identifier of the team."
+          },
+          "enterprise_associate_id": {
+            "name": "enterprise_associate_id",
             "type": {
               "scalarType": "int4"
             },
@@ -909,35 +917,27 @@
             },
             "nullable": "nullable",
             "description": "Function or role of the team member within the team."
-          },
-          "team_id": {
-            "name": "team_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": "Identifier of the team."
           }
         },
         "uniquenessConstraints": {
           "team_members_pkey": [
-            "associate_id",
-            "team_id"
+            "app_mgmt_team_id",
+            "enterprise_associate_id"
           ]
         },
         "foreignRelations": {
-          "team_members_associate_id_fkey": {
-            "foreignSchema": "enterprise",
-            "foreignTable": "associates",
-            "columnMapping": {
-              "associate_id": "enterprise_associate_id"
-            }
-          },
-          "team_members_team_id_fkey": {
+          "team_members_app_mgmt_team_id_fkey": {
             "foreignSchema": "app_mgmt",
             "foreignTable": "teams",
             "columnMapping": {
-              "team_id": "team_id"
+              "app_mgmt_team_id": "app_mgmt_team_id"
+            }
+          },
+          "team_members_enterprise_associate_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "enterprise_associate_id": "enterprise_associate_id"
             }
           }
         },
@@ -947,6 +947,14 @@
         "schemaName": "app_mgmt",
         "tableName": "teams",
         "columns": {
+          "app_mgmt_team_id": {
+            "name": "app_mgmt_team_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for a development or management team."
+          },
           "description": {
             "name": "description",
             "type": {
@@ -954,14 +962,6 @@
             },
             "nullable": "nullable",
             "description": "Description of the team's responsibilities."
-          },
-          "team_id": {
-            "name": "team_id",
-            "type": {
-              "scalarType": "uuid"
-            },
-            "nullable": "nonNullable",
-            "description": "Unique identifier for a development or management team."
           },
           "team_lead_id": {
             "name": "team_lead_id",
@@ -982,7 +982,7 @@
         },
         "uniquenessConstraints": {
           "teams_pkey": [
-            "team_id"
+            "app_mgmt_team_id"
           ]
         },
         "foreignRelations": {
@@ -14708,6 +14708,22 @@
             "nullable": "nullable",
             "description": "Indicates if this party has beneficial ownership"
           },
+          "citizenship_status": {
+            "name": "citizenship_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Citizenship or residency status (for individuals)"
+          },
+          "date_of_birth": {
+            "name": "date_of_birth",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Party's date of birth (for individuals)"
+          },
           "email_address": {
             "name": "email_address",
             "type": {
@@ -14749,6 +14765,14 @@
             "nullable": "nullable",
             "description": "Legal Entity Identifier for organizations"
           },
+          "marital_status": {
+            "name": "marital_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Marital status (for individuals)"
+          },
           "mobile": {
             "name": "mobile",
             "type": {
@@ -14788,6 +14812,14 @@
             },
             "nullable": "nullable",
             "description": "Primary phone contact"
+          },
+          "ssn": {
+            "name": "ssn",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Social Security Number (for US individuals)"
           }
         },
         "uniquenessConstraints": {
@@ -14796,7 +14828,7 @@
           ]
         },
         "foreignRelations": {},
-        "description": "Stores information about individuals and organizations that interact with accounts"
+        "description": "Stores information about individuals and organizations that interact with accounts, now with additional common personal attributes for individuals"
       },
       "enterprise_party_addresses": {
         "schemaName": "enterprise",
@@ -15161,14 +15193,6 @@
             "nullable": "nonNullable",
             "description": "When the application was created"
           },
-          "customer_id": {
-            "name": "customer_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": "References the primary customer applying for the mortgage"
-          },
           "estimated_credit_score": {
             "name": "estimated_credit_score",
             "type": {
@@ -15217,6 +15241,14 @@
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
             "description": "Unique identifier for each mortgage application"
+          },
+          "mortgage_services_loan_product_id": {
+            "name": "mortgage_services_loan_product_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "References the loan product being applied for"
           },
           "referral_source": {
             "name": "referral_source",
@@ -15272,22 +15304,22 @@
               "branch_id": "enterprise_building_id"
             }
           },
-          "applications_customer_id_fkey": {
-            "foreignSchema": "enterprise",
-            "foreignTable": "accounts",
-            "columnMapping": {
-              "customer_id": "enterprise_account_id"
-            }
-          },
           "applications_loan_officer_id_fkey": {
             "foreignSchema": "enterprise",
             "foreignTable": "associates",
             "columnMapping": {
               "loan_officer_id": "enterprise_associate_id"
             }
+          },
+          "applications_mortgage_services_loan_product_id_fkey": {
+            "foreignSchema": "mortgage_services",
+            "foreignTable": "loan_products",
+            "columnMapping": {
+              "mortgage_services_loan_product_id": "mortgage_services_loan_product_id"
+            }
           }
         },
-        "description": "Stores mortgage application details and tracks application status"
+        "description": "Stores mortgage application details and tracks application status. Note that the primary borrower is accessible through the application_borrowers table, not directly from this table."
       },
       "mortgage_services_appraisals": {
         "schemaName": "mortgage_services",
@@ -15349,6 +15381,14 @@
             "nullable": "nullable",
             "description": "When the property was inspected"
           },
+          "mortgage_services_application_id": {
+            "name": "mortgage_services_application_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "References the application this appraisal is for"
+          },
           "mortgage_services_appraisal_id": {
             "name": "mortgage_services_appraisal_id",
             "type": {
@@ -15357,14 +15397,6 @@
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
             "description": "Auto-incrementing identifier for each appraisal"
-          },
-          "mortgage_services_loan_id": {
-            "name": "mortgage_services_loan_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": "References the loan this appraisal is for"
           },
           "mortgage_services_property_id": {
             "name": "mortgage_services_property_id",
@@ -15405,11 +15437,11 @@
           ]
         },
         "foreignRelations": {
-          "appraisals_mortgage_services_loan_id_fkey": {
+          "appraisals_mortgage_services_application_id_fkey": {
             "foreignSchema": "mortgage_services",
-            "foreignTable": "loans",
+            "foreignTable": "applications",
             "columnMapping": {
-              "mortgage_services_loan_id": "mortgage_services_loan_id"
+              "mortgage_services_application_id": "mortgage_services_application_id"
             }
           },
           "appraisals_mortgage_services_property_id_fkey": {
@@ -15615,6 +15647,22 @@
             },
             "nullable": "nonNullable",
             "description": "When employment began"
+          },
+          "verification_date": {
+            "name": "verification_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "When the income was verified"
+          },
+          "verification_status": {
+            "name": "verification_status",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Status of income verification process"
           },
           "years_in_profession": {
             "name": "years_in_profession",
@@ -15865,14 +15913,6 @@
         "schemaName": "mortgage_services",
         "tableName": "borrowers",
         "columns": {
-          "citizenship_status": {
-            "name": "citizenship_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Borrower's citizenship or residency status"
-          },
           "current_address_id": {
             "name": "current_address_id",
             "type": {
@@ -15880,14 +15920,6 @@
             },
             "nullable": "nullable",
             "description": "References borrower's current address"
-          },
-          "date_of_birth": {
-            "name": "date_of_birth",
-            "type": {
-              "scalarType": "date"
-            },
-            "nullable": "nonNullable",
-            "description": "Borrower's date of birth"
           },
           "dependent_count": {
             "name": "dependent_count",
@@ -15897,29 +15929,13 @@
             "nullable": "nullable",
             "description": "Number of dependents claimed by borrower"
           },
-          "email": {
-            "name": "email",
+          "enterprise_party_id": {
+            "name": "enterprise_party_id",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "Borrower's primary email address"
-          },
-          "first_name": {
-            "name": "first_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Borrower's first name"
-          },
-          "last_name": {
-            "name": "last_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Borrower's last name"
+            "description": "Reference to enterprise party record - the source of truth for personal information"
           },
           "mailing_address_id": {
             "name": "mailing_address_id",
@@ -15928,30 +15944,6 @@
             },
             "nullable": "nullable",
             "description": "References borrower's mailing address if different"
-          },
-          "marital_status": {
-            "name": "marital_status",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Borrower's marital status"
-          },
-          "middle_name": {
-            "name": "middle_name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Borrower's middle name if applicable"
-          },
-          "mobile_phone": {
-            "name": "mobile_phone",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Borrower's mobile phone number"
           },
           "mortgage_services_borrower_id": {
             "name": "mortgage_services_borrower_id",
@@ -15962,14 +15954,6 @@
             "hasDefault": "hasDefault",
             "description": "Unique identifier for each borrower"
           },
-          "phone": {
-            "name": "phone",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Borrower's primary phone number"
-          },
           "previous_address_id": {
             "name": "previous_address_id",
             "type": {
@@ -15977,14 +15961,6 @@
             },
             "nullable": "nullable",
             "description": "References borrower's previous address if relevant"
-          },
-          "ssn": {
-            "name": "ssn",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Borrower's Social Security Number"
           },
           "years_in_school": {
             "name": "years_in_school",
@@ -16008,6 +15984,13 @@
               "current_address_id": "enterprise_address_id"
             }
           },
+          "borrowers_enterprise_party_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "parties",
+            "columnMapping": {
+              "enterprise_party_id": "enterprise_party_id"
+            }
+          },
           "borrowers_mailing_address_id_fkey": {
             "foreignSchema": "enterprise",
             "foreignTable": "addresses",
@@ -16023,7 +16006,7 @@
             }
           }
         },
-        "description": "Stores detailed information about mortgage borrowers"
+        "description": "Stores mortgage-specific information about borrowers, note additional personal information stored in the enterprise parties table"
       },
       "mortgage_services_closed_loans": {
         "schemaName": "mortgage_services",
@@ -17666,14 +17649,6 @@
             "nullable": "nullable",
             "description": "Term of the loan in months"
           },
-          "loan_type": {
-            "name": "loan_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Code indicating loan type (1=Conventional, 2=FHA, 3=VA, 4=USDA)"
-          },
           "manufactured_home_land_property_interest": {
             "name": "manufactured_home_land_property_interest",
             "type": {
@@ -17714,6 +17689,14 @@
             },
             "nullable": "nullable",
             "description": "References the associated loan if originated"
+          },
+          "mortgage_services_loan_product_id": {
+            "name": "mortgage_services_loan_product_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Type of mortgage loan product"
           },
           "multifamily_affordable_units": {
             "name": "multifamily_affordable_units",
@@ -17871,6 +17854,13 @@
             "foreignTable": "loans",
             "columnMapping": {
               "mortgage_services_loan_id": "mortgage_services_loan_id"
+            }
+          },
+          "hmda_records_mortgage_services_loan_product_id_fkey": {
+            "foreignSchema": "mortgage_services",
+            "foreignTable": "loan_products",
+            "columnMapping": {
+              "mortgage_services_loan_product_id": "mortgage_services_loan_product_id"
             }
           }
         },
@@ -18372,8 +18362,8 @@
             "hasDefault": "hasDefault",
             "description": "Auto-incrementing identifier for each loan product"
           },
-          "product_code": {
-            "name": "product_code",
+          "mortgage_services_loan_products_product_code": {
+            "name": "mortgage_services_loan_products_product_code",
             "type": {
               "scalarType": "varchar"
             },
@@ -18511,13 +18501,21 @@
         "schemaName": "mortgage_services",
         "tableName": "loans",
         "columns": {
+          "closing_costs": {
+            "name": "closing_costs",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Actual fees and costs paid at closing"
+          },
           "down_payment": {
             "name": "down_payment",
             "type": {
               "scalarType": "numeric"
             },
             "nullable": "nullable",
-            "description": "Amount paid upfront by the borrower"
+            "description": "Final amount paid upfront by the borrower"
           },
           "down_payment_percentage": {
             "name": "down_payment_percentage",
@@ -18525,7 +18523,15 @@
               "scalarType": "numeric"
             },
             "nullable": "nullable",
-            "description": "Down payment as a percentage of purchase price"
+            "description": "Final down payment as a percentage of purchase price"
+          },
+          "enterprise_account_id": {
+            "name": "enterprise_account_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "References the enterprise account for this loan"
           },
           "escrow_amount": {
             "name": "escrow_amount",
@@ -18533,38 +18539,14 @@
               "scalarType": "numeric"
             },
             "nullable": "nullable",
-            "description": "Monthly amount collected for taxes and insurance"
-          },
-          "estimated_cash_to_close": {
-            "name": "estimated_cash_to_close",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": "Total cash needed from borrower to close"
-          },
-          "estimated_closing_costs": {
-            "name": "estimated_closing_costs",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": "Estimated fees and costs to close the loan"
-          },
-          "estimated_monthly_payment": {
-            "name": "estimated_monthly_payment",
-            "type": {
-              "scalarType": "numeric"
-            },
-            "nullable": "nullable",
-            "description": "Estimated regular payment including principal and interest"
+            "description": "Actual monthly amount collected for taxes and insurance"
           },
           "first_payment_date": {
             "name": "first_payment_date",
             "type": {
               "scalarType": "date"
             },
-            "nullable": "nullable",
+            "nullable": "nonNullable",
             "description": "Due date of the first loan payment"
           },
           "interest_rate": {
@@ -18573,15 +18555,7 @@
               "scalarType": "numeric"
             },
             "nullable": "nonNullable",
-            "description": "Annual percentage rate for the loan"
-          },
-          "interest_rate_type": {
-            "name": "interest_rate_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Whether the rate is fixed or adjustable"
+            "description": "Final annual percentage rate for the loan"
           },
           "loan_amount": {
             "name": "loan_amount",
@@ -18589,7 +18563,7 @@
               "scalarType": "numeric"
             },
             "nullable": "nonNullable",
-            "description": "Principal amount of the loan"
+            "description": "Final principal amount of the loan"
           },
           "loan_term_months": {
             "name": "loan_term_months",
@@ -18597,23 +18571,23 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "Duration of the loan in months"
-          },
-          "loan_type": {
-            "name": "loan_type",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Type of mortgage loan product"
+            "description": "Final duration of the loan in months"
           },
           "maturity_date": {
             "name": "maturity_date",
             "type": {
               "scalarType": "date"
             },
-            "nullable": "nullable",
+            "nullable": "nonNullable",
             "description": "When the loan will be fully paid off"
+          },
+          "monthly_payment": {
+            "name": "monthly_payment",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Actual monthly payment including principal and interest"
           },
           "mortgage_services_application_id": {
             "name": "mortgage_services_application_id",
@@ -18637,7 +18611,7 @@
             "type": {
               "scalarType": "date"
             },
-            "nullable": "nullable",
+            "nullable": "nonNullable",
             "description": "When the loan was originated"
           },
           "pmi_rate": {
@@ -18646,7 +18620,7 @@
               "scalarType": "numeric"
             },
             "nullable": "nullable",
-            "description": "Rate for private mortgage insurance if applicable"
+            "description": "Actual PMI rate applied to this loan"
           },
           "private_mortgage_insurance": {
             "name": "private_mortgage_insurance",
@@ -18654,7 +18628,7 @@
               "scalarType": "bool"
             },
             "nullable": "nullable",
-            "description": "Indicates if PMI is required"
+            "description": "Whether PMI is required for this loan"
           }
         },
         "uniquenessConstraints": {
@@ -18663,6 +18637,13 @@
           ]
         },
         "foreignRelations": {
+          "loans_enterprise_account_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "enterprise_account_id": "enterprise_account_id"
+            }
+          },
           "loans_mortgage_services_application_id_fkey": {
             "foreignSchema": "mortgage_services",
             "foreignTable": "applications",
@@ -18671,7 +18652,7 @@
             }
           }
         },
-        "description": "Stores detailed information about mortgage loans"
+        "description": "Stores final, actual loan details after closing. Now includes reference to enterprise account."
       },
       "mortgage_services_payments": {
         "schemaName": "mortgage_services",
@@ -18811,6 +18792,14 @@
         "schemaName": "mortgage_services",
         "tableName": "properties",
         "columns": {
+          "address": {
+            "name": "address",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "References the complete property address"
+          },
           "bathrooms": {
             "name": "bathrooms",
             "type": {
@@ -18834,14 +18823,6 @@
             },
             "nullable": "nullable",
             "description": "Expected completion date for new construction"
-          },
-          "enterprise_address_id": {
-            "name": "enterprise_address_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": "References the property address"
           },
           "hoa_dues": {
             "name": "hoa_dues",
@@ -18923,13 +18904,6 @@
           ]
         },
         "foreignRelations": {
-          "properties_enterprise_address_id_fkey": {
-            "foreignSchema": "enterprise",
-            "foreignTable": "addresses",
-            "columnMapping": {
-              "enterprise_address_id": "enterprise_address_id"
-            }
-          },
           "properties_mortgage_services_application_id_fkey": {
             "foreignSchema": "mortgage_services",
             "foreignTable": "applications",
@@ -18944,14 +18918,6 @@
         "schemaName": "mortgage_services",
         "tableName": "servicing_accounts",
         "columns": {
-          "account_number": {
-            "name": "account_number",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Customer-facing servicing account number"
-          },
           "current_interest_rate": {
             "name": "current_interest_rate",
             "type": {
@@ -19038,7 +19004,7 @@
             "type": {
               "scalarType": "numeric"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": "Amount due for next payment"
           },
           "next_payment_due_date": {
@@ -19046,7 +19012,7 @@
             "type": {
               "scalarType": "date"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": "When next payment is due"
           },
           "original_principal_balance": {
@@ -19091,9 +19057,6 @@
           }
         },
         "uniquenessConstraints": {
-          "servicing_accounts_account_number_key": [
-            "account_number"
-          ],
           "servicing_accounts_pkey": [
             "mortgage_services_servicing_account_id"
           ]
@@ -26314,6 +26277,175 @@
               "Containerized",
               "Serverless",
               "Edge"
+            ]
+          }
+        },
+        "app_mgmt_license_types": {
+          "typeName": "license_types",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_license_types"
+            },
+            "min": {
+              "returnType": "app_mgmt_license_types"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_license_types",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_license_types",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_license_types",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_license_types",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_license_types",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_license_types",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_license_types",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "MIT",
+              "APACHE_2_0",
+              "BSD_2_CLAUSE",
+              "BSD_3_CLAUSE",
+              "ISC",
+              "GPL_2_0",
+              "GPL_3_0",
+              "LGPL_2_1",
+              "LGPL_3_0",
+              "AGPL_3_0",
+              "PROPRIETARY",
+              "CC_BY_4_0",
+              "CC_BY_SA_4_0",
+              "CC_BY_NC_4_0",
+              "CC_BY_NC_SA_4_0",
+              "CC_BY_ND_4_0",
+              "CC_BY_NC_ND_4_0",
+              "MPL_2_0",
+              "EPL_2_0",
+              "CDDL_1_1",
+              "CPL_1_0",
+              "APPL_2_0"
+            ]
+          }
+        },
+        "app_mgmt_relationship_types": {
+          "typeName": "relationship_types",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_relationship_types"
+            },
+            "min": {
+              "returnType": "app_mgmt_relationship_types"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_relationship_types",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_relationship_types",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_relationship_types",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_relationship_types",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_relationship_types",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_relationship_types",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_relationship_types",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "AUTHORIZATION",
+              "AUTHENTICATION",
+              "DATA_ACCESS",
+              "SERVICE_DEPENDENCY",
+              "API_INTEGRATION",
+              "CONFIGURATION_PROVIDER",
+              "LOGGING_SERVICE",
+              "MONITORING_SERVICE",
+              "CACHING_SERVICE",
+              "MESSAGING_QUEUE",
+              "REPORTING_SERVICE",
+              "DATA_PROCESSING",
+              "UI_EMBEDDING",
+              "WORKFLOW_TRIGGER",
+              "EVENT_SUBSCRIPTION",
+              "NOTIFICATION_SERVICE",
+              "IDENTITY_MANAGEMENT",
+              "PAYMENT_PROCESSING",
+              "STORAGE_SERVICE",
+              "SEARCH_SERVICE",
+              "SECURITY_SCANNING",
+              "AUDIT_LOGGING",
+              "RESOURCE_MANAGEMENT",
+              "TASK_SCHEDULING",
+              "CONTENT_DELIVERY"
             ]
           }
         },

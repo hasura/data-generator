@@ -178,7 +178,7 @@ small_business_banking__compliance_cases__escalation_reason = [
   "Suspected involvement in trade-based money laundering scheme requiring expert review.",
   "Evidence of potential collusion with corrupt foreign officials through business account.",
   "Detection of suspicious pattern suggesting coordinated deposit fraud scheme.",
-  "Unusual pattern of transactions designed to circumvent recordkeeping requirements.",
+  "Unusual pattern of transactions designed to circumvent record keeping requirements.",
   "Suspected use of business account to conceal assets from creditors or authorities.",
   "Evidence of potential identity theft targeting business customers.",
   "Detection of suspicious pattern suggesting operation of black market exchange services."

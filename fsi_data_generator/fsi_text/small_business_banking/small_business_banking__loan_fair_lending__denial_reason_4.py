@@ -176,7 +176,7 @@ small_business_banking__loan_fair_lending__denial_reason_4 = [
   "Significant variances in monthly sales tax remittances inconsistent with reported revenue fluctuations.",
   "Inadequate business mileage documentation for vehicle expenses claimed as business deductions.",
   "Excessive number of business checking accounts without clear operational purpose or segregation rationale.",
-  "Unresolved state unemployment tax rate issues with significant potential liability for misclassification.",
+  "Unresolved state unemployment tax rate issues with significant potential liability for mis-classification.",
   "Significant discrepancies between business income reported on financial statements versus tax returns.",
   "Inadequate tracking of business inventory held on consignment creating financial reporting inaccuracies.",
   "Excessive spending on non-essential business expenses during period of claimed financial constraint.",

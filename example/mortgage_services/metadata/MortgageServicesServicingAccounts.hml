@@ -5,9 +5,6 @@ definition:
   name: MortgageServicesServicingAccounts
   description: Manages ongoing servicing of closed mortgage loans
   fields:
-    - name: accountNumber
-      type: Varchar!
-      description: Customer-facing servicing account number
     - name: currentInterestRate
       type: Numeric!
       description: Current applicable interest rate
@@ -39,10 +36,10 @@ definition:
       type: Int4!
       description: Unique identifier for each servicing account
     - name: nextPaymentAmount
-      type: Numeric!
+      type: Numeric
       description: Amount due for next payment
     - name: nextPaymentDueDate
-      type: Date!
+      type: Date
       description: When next payment is due
     - name: originalPrincipalBalance
       type: Numeric!
@@ -66,9 +63,6 @@ definition:
     - dataConnectorName: mortgage_services
       dataConnectorObjectType: mortgage_services_servicing_accounts
       fieldMapping:
-        accountNumber:
-          column:
-            name: account_number
         currentInterestRate:
           column:
             name: current_interest_rate
@@ -130,7 +124,6 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - accountNumber
           - currentInterestRate
           - currentPrincipalBalance
           - escrowBalance
@@ -158,8 +151,6 @@ definition:
     object:
       type: MortgageServicesServicingAccounts
       comparableFields:
-        - fieldName: accountNumber
-          booleanExpressionType: VarcharBoolExp
         - fieldName: currentInterestRate
           booleanExpressionType: NumericBoolExp
         - fieldName: currentPrincipalBalance
@@ -218,8 +209,6 @@ definition:
     object:
       aggregatedType: MortgageServicesServicingAccounts
       aggregatableFields:
-        - fieldName: accountNumber
-          aggregateExpression: VarcharAggExp
         - fieldName: currentInterestRate
           aggregateExpression: NumericAggExp
         - fieldName: currentPrincipalBalance
@@ -268,8 +257,6 @@ definition:
     object:
       orderedType: MortgageServicesServicingAccounts
       orderableFields:
-        - fieldName: accountNumber
-          orderByExpression: VarcharOrderByExp
         - fieldName: currentInterestRate
           orderByExpression: NumericOrderByExp
         - fieldName: currentPrincipalBalance
@@ -327,11 +314,6 @@ definition:
       subscription:
         rootField: mortgageServicesServicingAccounts
     selectUniques:
-      - queryRootField: mortgageServicesServicingAccountsByAccountNumber
-        uniqueIdentifier:
-          - accountNumber
-        subscription:
-          rootField: mortgageServicesServicingAccountsByAccountNumber
       - queryRootField: mortgageServicesServicingAccountsByMortgageServicesServicingAccountId
         uniqueIdentifier:
           - mortgageServicesServicingAccountId

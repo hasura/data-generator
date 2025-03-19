@@ -4,20 +4,27 @@ version: v1
 definition:
   name: AppMgmtApplicationRelationships
   description: Table to store relationships between applications and their
-    criticality levels.
+    criticality levels. Applications may have many relationships, even of the
+    same type. They are only differentiated through the description.
   fields:
+    - name: appMgmtApplicationRelationshipId
+      type: Int4!
+      description: Primary key for application relationships
     - name: applicationId1
-      type: Uuid!
+      type: Uuid
       description: Identifier for the first application involved in the relationship.
     - name: applicationId2
-      type: Uuid!
+      type: Uuid
       description: Identifier for the second application involved in the relationship.
     - name: criticality
       type: AppMgmtCriticalityLevels
       description: Criticality score of the relationship, indicating the impact of its
         failure.
+    - name: description
+      type: Text
+      description: Additional explanation about nature of relationship.
     - name: relationshipType
-      type: Varchar!
+      type: AppMgmtRelationshipTypes
       description: Type of relationship between the applications (e.g., depends on,
         uses data from).
   graphql:
@@ -27,6 +34,9 @@ definition:
     - dataConnectorName: app_mgmt
       dataConnectorObjectType: app_mgmt_application_relationships
       fieldMapping:
+        appMgmtApplicationRelationshipId:
+          column:
+            name: app_mgmt_application_relationship_id
         applicationId1:
           column:
             name: application_id_1
@@ -36,6 +46,9 @@ definition:
         criticality:
           column:
             name: criticality
+        description:
+          column:
+            name: description
         relationshipType:
           column:
             name: relationship_type
@@ -49,9 +62,11 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - appMgmtApplicationRelationshipId
           - applicationId1
           - applicationId2
           - criticality
+          - description
           - relationshipType
 
 ---
@@ -63,14 +78,18 @@ definition:
     object:
       type: AppMgmtApplicationRelationships
       comparableFields:
+        - fieldName: appMgmtApplicationRelationshipId
+          booleanExpressionType: Int4BoolExp
         - fieldName: applicationId1
           booleanExpressionType: UuidBoolExp
         - fieldName: applicationId2
           booleanExpressionType: UuidBoolExp
         - fieldName: criticality
           booleanExpressionType: AppMgmtCriticalityLevelsBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
         - fieldName: relationshipType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: AppMgmtRelationshipTypesBoolExp
       comparableRelationships:
         - relationshipName: appMgmtApplication
         - relationshipName: appMgmtApplicationByApplicationId2
@@ -90,14 +109,18 @@ definition:
     object:
       aggregatedType: AppMgmtApplicationRelationships
       aggregatableFields:
+        - fieldName: appMgmtApplicationRelationshipId
+          aggregateExpression: Int4AggExp
         - fieldName: applicationId1
           aggregateExpression: UuidAggExp
         - fieldName: applicationId2
           aggregateExpression: UuidAggExp
         - fieldName: criticality
           aggregateExpression: AppMgmtCriticalityLevelsAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
         - fieldName: relationshipType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: AppMgmtRelationshipTypesAggExp
   count:
     enable: true
   graphql:
@@ -112,14 +135,18 @@ definition:
     object:
       orderedType: AppMgmtApplicationRelationships
       orderableFields:
+        - fieldName: appMgmtApplicationRelationshipId
+          orderByExpression: Int4OrderByExp
         - fieldName: applicationId1
           orderByExpression: UuidOrderByExp
         - fieldName: applicationId2
           orderByExpression: UuidOrderByExp
         - fieldName: criticality
           orderByExpression: AppMgmtCriticalityLevelsOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
         - fieldName: relationshipType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: AppMgmtRelationshipTypesOrderByExp
       orderableRelationships:
         - relationshipName: appMgmtApplication
         - relationshipName: appMgmtApplicationByApplicationId2
@@ -144,20 +171,19 @@ definition:
       subscription:
         rootField: appMgmtApplicationRelationships
     selectUniques:
-      - queryRootField: appMgmtApplicationRelationshipsByApplicationRelationshipsPkey
+      - queryRootField: appMgmtApplicationRelationshipsByAppMgmtApplicationRelationshipId
         uniqueIdentifier:
-          - applicationId1
-          - applicationId2
-          - relationshipType
+          - appMgmtApplicationRelationshipId
         subscription:
-          rootField: appMgmtApplicationRelationshipsByApplicationRelationshipsPkey
+          rootField: appMgmtApplicationRelationshipsByAppMgmtApplicationRelationshipId
     filterInputTypeName: App_Mgmt_AppMgmtApplicationRelationshipsFilterInput
     aggregate:
       queryRootField: appMgmtApplicationRelationshipsAggregate
       subscription:
         rootField: appMgmtApplicationRelationshipsAggregate
   description: Table to store relationships between applications and their
-    criticality levels.
+    criticality levels. Applications may have many relationships, even of the
+    same type. They are only differentiated through the description.
 
 ---
 kind: ModelPermissions

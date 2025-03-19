@@ -3,53 +3,28 @@ kind: ObjectType
 version: v1
 definition:
   name: MortgageServicesBorrowers
-  description: Stores detailed information about mortgage borrowers
+  description: Stores mortgage-specific information about borrowers, note
+    additional personal information stored in the enterprise parties table
   fields:
-    - name: citizenshipStatus
-      type: Varchar!
-      description: Borrower's citizenship or residency status
     - name: currentAddressId
       type: Int4
       description: References borrower's current address
-    - name: dateOfBirth
-      type: Date!
-      description: Borrower's date of birth
     - name: dependentCount
       type: Int4
       description: Number of dependents claimed by borrower
-    - name: email
-      type: Varchar!
-      description: Borrower's primary email address
-    - name: firstName
-      type: Varchar!
-      description: Borrower's first name
-    - name: lastName
-      type: Varchar!
-      description: Borrower's last name
+    - name: enterprisePartyId
+      type: Int4!
+      description: Reference to enterprise party record - the source of truth for
+        personal information
     - name: mailingAddressId
       type: Int4
       description: References borrower's mailing address if different
-    - name: maritalStatus
-      type: Varchar
-      description: Borrower's marital status
-    - name: middleName
-      type: Varchar
-      description: Borrower's middle name if applicable
-    - name: mobilePhone
-      type: Varchar
-      description: Borrower's mobile phone number
     - name: mortgageServicesBorrowerId
       type: Int4!
       description: Unique identifier for each borrower
-    - name: phone
-      type: Varchar!
-      description: Borrower's primary phone number
     - name: previousAddressId
       type: Int4
       description: References borrower's previous address if relevant
-    - name: ssn
-      type: Varchar!
-      description: Borrower's Social Security Number
     - name: yearsInSchool
       type: Int4
       description: Total years of education
@@ -60,51 +35,24 @@ definition:
     - dataConnectorName: mortgage_services
       dataConnectorObjectType: mortgage_services_borrowers
       fieldMapping:
-        citizenshipStatus:
-          column:
-            name: citizenship_status
         currentAddressId:
           column:
             name: current_address_id
-        dateOfBirth:
-          column:
-            name: date_of_birth
         dependentCount:
           column:
             name: dependent_count
-        email:
+        enterprisePartyId:
           column:
-            name: email
-        firstName:
-          column:
-            name: first_name
-        lastName:
-          column:
-            name: last_name
+            name: enterprise_party_id
         mailingAddressId:
           column:
             name: mailing_address_id
-        maritalStatus:
-          column:
-            name: marital_status
-        middleName:
-          column:
-            name: middle_name
-        mobilePhone:
-          column:
-            name: mobile_phone
         mortgageServicesBorrowerId:
           column:
             name: mortgage_services_borrower_id
-        phone:
-          column:
-            name: phone
         previousAddressId:
           column:
             name: previous_address_id
-        ssn:
-          column:
-            name: ssn
         yearsInSchool:
           column:
             name: years_in_school
@@ -118,21 +66,12 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - citizenshipStatus
           - currentAddressId
-          - dateOfBirth
           - dependentCount
-          - email
-          - firstName
-          - lastName
+          - enterprisePartyId
           - mailingAddressId
-          - maritalStatus
-          - middleName
-          - mobilePhone
           - mortgageServicesBorrowerId
-          - phone
           - previousAddressId
-          - ssn
           - yearsInSchool
 
 ---
@@ -144,36 +83,18 @@ definition:
     object:
       type: MortgageServicesBorrowers
       comparableFields:
-        - fieldName: citizenshipStatus
-          booleanExpressionType: VarcharBoolExp
         - fieldName: currentAddressId
           booleanExpressionType: Int4BoolExp
-        - fieldName: dateOfBirth
-          booleanExpressionType: DateBoolExp
         - fieldName: dependentCount
           booleanExpressionType: Int4BoolExp
-        - fieldName: email
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: firstName
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: lastName
-          booleanExpressionType: VarcharBoolExp
+        - fieldName: enterprisePartyId
+          booleanExpressionType: Int4BoolExp
         - fieldName: mailingAddressId
           booleanExpressionType: Int4BoolExp
-        - fieldName: maritalStatus
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: middleName
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: mobilePhone
-          booleanExpressionType: VarcharBoolExp
         - fieldName: mortgageServicesBorrowerId
           booleanExpressionType: Int4BoolExp
-        - fieldName: phone
-          booleanExpressionType: VarcharBoolExp
         - fieldName: previousAddressId
           booleanExpressionType: Int4BoolExp
-        - fieldName: ssn
-          booleanExpressionType: VarcharBoolExp
         - fieldName: yearsInSchool
           booleanExpressionType: Int4BoolExp
       comparableRelationships:
@@ -199,36 +120,18 @@ definition:
     object:
       aggregatedType: MortgageServicesBorrowers
       aggregatableFields:
-        - fieldName: citizenshipStatus
-          aggregateExpression: VarcharAggExp
         - fieldName: currentAddressId
           aggregateExpression: Int4AggExp
-        - fieldName: dateOfBirth
-          aggregateExpression: DateAggExp
         - fieldName: dependentCount
           aggregateExpression: Int4AggExp
-        - fieldName: email
-          aggregateExpression: VarcharAggExp
-        - fieldName: firstName
-          aggregateExpression: VarcharAggExp
-        - fieldName: lastName
-          aggregateExpression: VarcharAggExp
+        - fieldName: enterprisePartyId
+          aggregateExpression: Int4AggExp
         - fieldName: mailingAddressId
           aggregateExpression: Int4AggExp
-        - fieldName: maritalStatus
-          aggregateExpression: VarcharAggExp
-        - fieldName: middleName
-          aggregateExpression: VarcharAggExp
-        - fieldName: mobilePhone
-          aggregateExpression: VarcharAggExp
         - fieldName: mortgageServicesBorrowerId
           aggregateExpression: Int4AggExp
-        - fieldName: phone
-          aggregateExpression: VarcharAggExp
         - fieldName: previousAddressId
           aggregateExpression: Int4AggExp
-        - fieldName: ssn
-          aggregateExpression: VarcharAggExp
         - fieldName: yearsInSchool
           aggregateExpression: Int4AggExp
   count:
@@ -245,36 +148,18 @@ definition:
     object:
       orderedType: MortgageServicesBorrowers
       orderableFields:
-        - fieldName: citizenshipStatus
-          orderByExpression: VarcharOrderByExp
         - fieldName: currentAddressId
           orderByExpression: Int4OrderByExp
-        - fieldName: dateOfBirth
-          orderByExpression: DateOrderByExp
         - fieldName: dependentCount
           orderByExpression: Int4OrderByExp
-        - fieldName: email
-          orderByExpression: VarcharOrderByExp
-        - fieldName: firstName
-          orderByExpression: VarcharOrderByExp
-        - fieldName: lastName
-          orderByExpression: VarcharOrderByExp
+        - fieldName: enterprisePartyId
+          orderByExpression: Int4OrderByExp
         - fieldName: mailingAddressId
           orderByExpression: Int4OrderByExp
-        - fieldName: maritalStatus
-          orderByExpression: VarcharOrderByExp
-        - fieldName: middleName
-          orderByExpression: VarcharOrderByExp
-        - fieldName: mobilePhone
-          orderByExpression: VarcharOrderByExp
         - fieldName: mortgageServicesBorrowerId
           orderByExpression: Int4OrderByExp
-        - fieldName: phone
-          orderByExpression: VarcharOrderByExp
         - fieldName: previousAddressId
           orderByExpression: Int4OrderByExp
-        - fieldName: ssn
-          orderByExpression: VarcharOrderByExp
         - fieldName: yearsInSchool
           orderByExpression: Int4OrderByExp
       orderableRelationships: []
@@ -309,7 +194,8 @@ definition:
       queryRootField: mortgageServicesBorrowersAggregate
       subscription:
         rootField: mortgageServicesBorrowersAggregate
-  description: Stores detailed information about mortgage borrowers
+  description: Stores mortgage-specific information about borrowers, note
+    additional personal information stored in the enterprise parties table
 
 ---
 kind: ModelPermissions

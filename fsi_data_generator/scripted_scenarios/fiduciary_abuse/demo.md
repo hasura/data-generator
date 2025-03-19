@@ -41,7 +41,7 @@
     * Focus on the speed and efficiency. "We achieved this result using metadata and semantic analysis on data at scale, significantly reducing the time and effort compared to traditional methods. **You could achieve similar results using your own anonymized production data in your own environment.**"
     * Emphasize the reduction of data movement, reduced cost, faster time-time-market, the increased relevance of potential internal results, and the ability to use this as a platform to extend into all types of compliance issues.
 8.  **Call to Action (4:27-4:35):**
-    * "I hope you found this demonstration insightful, particularly how it delivers realistic and actionable insights. **Imagine the potential of replicating this process within your own organization. Any questions?**
+    * I hope you found this demonstration insightful, particularly how it delivers realistic and actionable insights. **Imagine the potential of replicating this process within your own organization. Any questions?**
 
 ## Key Tips for the Sales Engineer:
 

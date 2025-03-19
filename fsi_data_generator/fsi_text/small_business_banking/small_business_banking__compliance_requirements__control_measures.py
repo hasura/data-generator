@@ -38,7 +38,7 @@ small_business_banking__compliance_requirements__control_measures = [
   "Customer activity profiling system that establishes expected patterns and generates alerts for significant deviations.",
   "Fraud detection rules embedded in loan origination system with data consistency validation and verification requirements.",
   "Concentration risk monitoring system with board-approved limits and exception approval workflow.",
-  "Enhanced due diligence questionnaire for nonbank financial institutions with regulatory compliance verification.",
+  "Enhanced due diligence questionnaire for non-bank financial institutions with regulatory compliance verification.",
   "Check kiting detection system with analysis of deposit and withdrawal patterns across multiple accounts.",
   "Standardized credit analysis templates with mandatory ratio calculations and industry comparison data.",
   "Data consistency validation rules in loan application system to identify potential misrepresentation.",

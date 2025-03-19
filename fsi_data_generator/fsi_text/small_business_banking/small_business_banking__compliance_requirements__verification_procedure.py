@@ -38,7 +38,7 @@ small_business_banking__compliance_requirements__verification_procedure = [
   "Test account monitoring system to compare business activity against expected patterns with appropriate alert parameters.",
   "Review loan fraud detection procedures and sample applications to verify consistent application of controls.",
   "Review commercial real estate concentration reports and verify monitoring against established risk tolerance limits.",
-  "Sample nonbank financial institution accounts to verify proper identification and enhanced due diligence procedures.",
+  "Sample non-bank financial institution accounts to verify proper identification and enhanced due diligence procedures.",
   "Test check kiting detection system and verify investigation and resolution procedures for suspicious patterns.",
   "Sample commercial credit files to verify thorough analysis and documentation supporting lending decisions.",
   "Review loan application verification procedures and test system for detecting potential misrepresentation.",

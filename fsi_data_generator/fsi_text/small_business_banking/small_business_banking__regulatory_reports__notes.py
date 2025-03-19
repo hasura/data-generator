@@ -141,7 +141,7 @@ small_business_banking__regulatory_reports__notes = [
   "Technical appendix on geocoding methodology enhanced.",
   "Analysis of declined applications by reason code.",
   "Regulatory citation references updated to reflect recent changes.",
-  "Addressed discrepancies in reporting of multijurisdictional businesses.",
+  "Addressed discrepancies in reporting of multi-jurisdictional businesses.",
   "Enhanced documentation of exception handling procedures.",
   "Explanation of data extraction timing and cutoff dates.",
   "Process for validation of NAICS codes detailed.",

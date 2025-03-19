@@ -8,6 +8,9 @@ definition:
     - name: appMgmtComponentId
       type: Uuid!
       description: Unique identifier for a software component (e.g., library, module).
+    - name: appMgmtLicenseId
+      type: Uuid
+      description: Identifier for the license associated with the component.
     - name: componentName
       type: Varchar
       description: Name of the software component.
@@ -25,9 +28,6 @@ definition:
     - name: description
       type: Text
       description: Description of the component's functionality.
-    - name: licenseId
-      type: Uuid
-      description: Identifier for the license associated with the component.
     - name: modifiedByUserId
       type: Int4
       description: Identifier of the employee who last modified the component record.
@@ -55,6 +55,9 @@ definition:
         appMgmtComponentId:
           column:
             name: app_mgmt_component_id
+        appMgmtLicenseId:
+          column:
+            name: app_mgmt_license_id
         componentName:
           column:
             name: component_name
@@ -70,9 +73,6 @@ definition:
         description:
           column:
             name: description
-        licenseId:
-          column:
-            name: license_id
         modifiedByUserId:
           column:
             name: modified_by_user_id
@@ -99,12 +99,12 @@ definition:
       output:
         allowedFields:
           - appMgmtComponentId
+          - appMgmtLicenseId
           - componentName
           - componentType
           - componentVersion
           - createdByUserId
           - description
-          - licenseId
           - modifiedByUserId
           - namespaceOrModule
           - packageInfo
@@ -122,6 +122,8 @@ definition:
       comparableFields:
         - fieldName: appMgmtComponentId
           booleanExpressionType: UuidBoolExp
+        - fieldName: appMgmtLicenseId
+          booleanExpressionType: UuidBoolExp
         - fieldName: componentName
           booleanExpressionType: VarcharBoolExp
         - fieldName: componentType
@@ -132,8 +134,6 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: description
           booleanExpressionType: TextBoolExp
-        - fieldName: licenseId
-          booleanExpressionType: UuidBoolExp
         - fieldName: modifiedByUserId
           booleanExpressionType: Int4BoolExp
         - fieldName: namespaceOrModule
@@ -167,6 +167,8 @@ definition:
       aggregatableFields:
         - fieldName: appMgmtComponentId
           aggregateExpression: UuidAggExp
+        - fieldName: appMgmtLicenseId
+          aggregateExpression: UuidAggExp
         - fieldName: componentName
           aggregateExpression: VarcharAggExp
         - fieldName: componentType
@@ -177,8 +179,6 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: description
           aggregateExpression: TextAggExp
-        - fieldName: licenseId
-          aggregateExpression: UuidAggExp
         - fieldName: modifiedByUserId
           aggregateExpression: Int4AggExp
         - fieldName: namespaceOrModule
@@ -205,6 +205,8 @@ definition:
       orderableFields:
         - fieldName: appMgmtComponentId
           orderByExpression: UuidOrderByExp
+        - fieldName: appMgmtLicenseId
+          orderByExpression: UuidOrderByExp
         - fieldName: componentName
           orderByExpression: VarcharOrderByExp
         - fieldName: componentType
@@ -215,8 +217,6 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: description
           orderByExpression: TextOrderByExp
-        - fieldName: licenseId
-          orderByExpression: UuidOrderByExp
         - fieldName: modifiedByUserId
           orderByExpression: Int4OrderByExp
         - fieldName: namespaceOrModule
@@ -352,8 +352,8 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
       target:
         modelField:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
 

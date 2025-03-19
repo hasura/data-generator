@@ -4,7 +4,6 @@ import glob
 import psycopg2
 from dotenv import load_dotenv
 
-import cve_manager
 from fsi_data_generator.banking_generators import custom_generators
 
 # Load environment variables from .env file
@@ -101,15 +100,19 @@ def generate_banking_data():
                     print(f"SQL execution completed successfully: {sql_file_path}")
 
         # Step 2: Initialize the DataGenerator
+        dbml_file_path = os.environ.get("DBML_FILE")
+        with open(dbml_file_path, 'r') as file:
+            dbml = file.read()
         generator = DataGenerator(
             conn_params=conn_params,
-            exclude_schemas=['public'],
+            exclude_schemas=['public', 'consumer_lending', 'credit_cards', 'consumer_banking', 'small_business_banking'],
             exclusions=[
                 ('security\\.cvss', '.*'),
                 ('security\\.cpe', '.*'),
                 ('security\\.cwe', '.*'),
                 ('security\\.cve_problem', '.*')
-            ]
+            ],
+            dbml=dbml
         )
         generator.custom_generators = custom_generators(generator)
 
@@ -362,9 +365,9 @@ def generate_banking_data():
                 execute_sql_scripts(conn, scripted_scenarios_path)
 
         # Step 5: Download CVEs and upload them to database
-        cve_manager.download_cves()
-        cve_manager.cwe(**conn_params)
-        cve_manager.process_cves(csv_file=True, import_db=True, **conn_params)
+        # cve_manager.download_cves()
+        # cve_manager.cwe(**conn_params)
+        # cve_manager.process_cves(csv_file=True, import_db=True, **conn_params)
 
         print("\nDataGenerator completed successfully!")
 

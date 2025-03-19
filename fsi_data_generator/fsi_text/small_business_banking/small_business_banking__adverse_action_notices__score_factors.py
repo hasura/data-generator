@@ -79,7 +79,7 @@ small_business_banking__adverse_action_notices__score_factors = [
   "Ratio of accounts never delinquent to total accounts below optimal payment history pattern.",
   "Lack of open accounts with recent activity affecting credit utilization metrics.",
   "Number of accounts with reported charge-offs affects payment history component.",
-  "Too many accounts showing minimum payment pattern rather than substantive paydown.",
+  "Too many accounts showing minimum payment pattern rather than substantive pay-down.",
   "Proportion of accounts with balances increasing month-over-month exceeds optimal trend.",
   "Length of time since oldest revolving account opened insufficient for history depth.",
   "Number of months since most recent account update indicates potential inactive accounts.",

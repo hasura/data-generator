@@ -41,7 +41,7 @@ definition:
     - name: mortgageServicesLoanProductId
       type: Int4!
       description: Auto-incrementing identifier for each loan product
-    - name: productCode
+    - name: mortgageServicesLoanProductsProductCode
       type: Varchar!
       description: Internal code identifying the loan product
     - name: productName
@@ -93,9 +93,9 @@ definition:
         mortgageServicesLoanProductId:
           column:
             name: mortgage_services_loan_product_id
-        productCode:
+        mortgageServicesLoanProductsProductCode:
           column:
-            name: product_code
+            name: mortgage_services_loan_products_product_code
         productName:
           column:
             name: product_name
@@ -124,7 +124,7 @@ definition:
           - minLoanAmount
           - minTermMonths
           - mortgageServicesLoanProductId
-          - productCode
+          - mortgageServicesLoanProductsProductCode
           - productName
           - requiresPmi
 
@@ -161,13 +161,15 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesLoanProductId
           booleanExpressionType: Int4BoolExp
-        - fieldName: productCode
+        - fieldName: mortgageServicesLoanProductsProductCode
           booleanExpressionType: VarcharBoolExp
         - fieldName: productName
           booleanExpressionType: VarcharBoolExp
         - fieldName: requiresPmi
           booleanExpressionType: BoolBoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: mortgageServicesApplications
+        - relationshipName: mortgageServicesHmdaRecords
   logicalOperators:
     enable: true
   isNull:
@@ -208,7 +210,7 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesLoanProductId
           aggregateExpression: Int4AggExp
-        - fieldName: productCode
+        - fieldName: mortgageServicesLoanProductsProductCode
           aggregateExpression: VarcharAggExp
         - fieldName: productName
           aggregateExpression: VarcharAggExp
@@ -252,7 +254,7 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesLoanProductId
           orderByExpression: Int4OrderByExp
-        - fieldName: productCode
+        - fieldName: mortgageServicesLoanProductsProductCode
           orderByExpression: VarcharOrderByExp
         - fieldName: productName
           orderByExpression: VarcharOrderByExp
@@ -302,4 +304,48 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesApplications
+  sourceType: MortgageServicesLoanProducts
+  target:
+    model:
+      name: MortgageServicesApplications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesApplicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanProductId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanProductId
+  graphql:
+    aggregateFieldName: mortgageServicesApplicationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesHmdaRecords
+  sourceType: MortgageServicesLoanProducts
+  target:
+    model:
+      name: MortgageServicesHmdaRecords
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: MortgageServicesHmdaRecordsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanProductId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanProductId
+  graphql:
+    aggregateFieldName: mortgageServicesHmdaRecordsAggregate
 

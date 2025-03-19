@@ -106,9 +106,6 @@ definition:
     - name: loanTerm
       type: Int4
       description: Term of the loan in months
-    - name: loanType
-      type: Varchar!
-      description: Code indicating loan type (1=Conventional, 2=FHA, 3=VA, 4=USDA)
     - name: manufacturedHomeLandPropertyInterest
       type: Varchar
       description: Code for land ownership with manufactured home
@@ -124,6 +121,9 @@ definition:
     - name: mortgageServicesLoanId
       type: Int4
       description: References the associated loan if originated
+    - name: mortgageServicesLoanProductId
+      type: Int4!
+      description: Type of mortgage loan product
     - name: multifamilyAffordableUnits
       type: Int4
       description: Number of income-restricted units in multifamily property
@@ -282,9 +282,6 @@ definition:
         loanTerm:
           column:
             name: loan_term
-        loanType:
-          column:
-            name: loan_type
         manufacturedHomeLandPropertyInterest:
           column:
             name: manufactured_home_land_property_interest
@@ -300,6 +297,9 @@ definition:
         mortgageServicesLoanId:
           column:
             name: mortgage_services_loan_id
+        mortgageServicesLoanProductId:
+          column:
+            name: mortgage_services_loan_product_id
         multifamilyAffordableUnits:
           column:
             name: multifamily_affordable_units
@@ -394,12 +394,12 @@ definition:
           - loanAmount
           - loanPurpose
           - loanTerm
-          - loanType
           - manufacturedHomeLandPropertyInterest
           - manufacturedHomeSecuredPropertyType
           - mortgageServicesApplicationId
           - mortgageServicesHmdaRecordId
           - mortgageServicesLoanId
+          - mortgageServicesLoanProductId
           - multifamilyAffordableUnits
           - negativeAmortization
           - occupancyType
@@ -493,8 +493,6 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: loanTerm
           booleanExpressionType: Int4BoolExp
-        - fieldName: loanType
-          booleanExpressionType: VarcharBoolExp
         - fieldName: manufacturedHomeLandPropertyInterest
           booleanExpressionType: VarcharBoolExp
         - fieldName: manufacturedHomeSecuredPropertyType
@@ -504,6 +502,8 @@ definition:
         - fieldName: mortgageServicesHmdaRecordId
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesLoanId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: mortgageServicesLoanProductId
           booleanExpressionType: Int4BoolExp
         - fieldName: multifamilyAffordableUnits
           booleanExpressionType: Int4BoolExp
@@ -544,6 +544,7 @@ definition:
         - relationshipName: mortgageServicesHmdaEdits
         - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesLoan
+        - relationshipName: mortgageServicesLoanProduct
   logicalOperators:
     enable: true
   isNull:
@@ -626,8 +627,6 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: loanTerm
           aggregateExpression: Int4AggExp
-        - fieldName: loanType
-          aggregateExpression: VarcharAggExp
         - fieldName: manufacturedHomeLandPropertyInterest
           aggregateExpression: VarcharAggExp
         - fieldName: manufacturedHomeSecuredPropertyType
@@ -637,6 +636,8 @@ definition:
         - fieldName: mortgageServicesHmdaRecordId
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesLoanId
+          aggregateExpression: Int4AggExp
+        - fieldName: mortgageServicesLoanProductId
           aggregateExpression: Int4AggExp
         - fieldName: multifamilyAffordableUnits
           aggregateExpression: Int4AggExp
@@ -752,8 +753,6 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: loanTerm
           orderByExpression: Int4OrderByExp
-        - fieldName: loanType
-          orderByExpression: VarcharOrderByExp
         - fieldName: manufacturedHomeLandPropertyInterest
           orderByExpression: VarcharOrderByExp
         - fieldName: manufacturedHomeSecuredPropertyType
@@ -763,6 +762,8 @@ definition:
         - fieldName: mortgageServicesHmdaRecordId
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesLoanId
+          orderByExpression: Int4OrderByExp
+        - fieldName: mortgageServicesLoanProductId
           orderByExpression: Int4OrderByExp
         - fieldName: multifamilyAffordableUnits
           orderByExpression: Int4OrderByExp
@@ -801,6 +802,7 @@ definition:
       orderableRelationships:
         - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesLoan
+        - relationshipName: mortgageServicesLoanProduct
   graphql:
     expressionTypeName: MortgageServices_MortgageServicesHmdaRecordsOrderByExp
 
@@ -925,4 +927,22 @@ definition:
       target:
         modelField:
           - fieldName: mortgageServicesLoanId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgageServicesLoanProduct
+  sourceType: MortgageServicesHmdaRecords
+  target:
+    model:
+      name: MortgageServicesLoanProducts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgageServicesLoanProductId
+      target:
+        modelField:
+          - fieldName: mortgageServicesLoanProductId
 

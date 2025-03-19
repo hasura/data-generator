@@ -126,6 +126,31 @@ CREATE TYPE "app_mgmt"."relationship_types" AS ENUM (
   'CONTENT_DELIVERY'
 );
 
+CREATE TYPE "app_mgmt"."license_types" AS ENUM (
+  'MIT',
+  'APACHE_2_0',
+  'BSD_2_CLAUSE',
+  'BSD_3_CLAUSE',
+  'ISC',
+  'GPL_2_0',
+  'GPL_3_0',
+  'LGPL_2_1',
+  'LGPL_3_0',
+  'AGPL_3_0',
+  'PROPRIETARY',
+  'CC_BY_4_0',
+  'CC_BY_SA_4_0',
+  'CC_BY_NC_4_0',
+  'CC_BY_NC_SA_4_0',
+  'CC_BY_ND_4_0',
+  'CC_BY_NC_ND_4_0',
+  'MPL_2_0',
+  'EPL_2_0',
+  'CDDL_1_1',
+  'CPL_1_0',
+  'APPL_2_0'
+);
+
 CREATE TABLE "security"."devices" (
   "security_device_id" INET PRIMARY KEY NOT NULL,
   "device_type" VARCHAR(50) NOT NULL,
@@ -542,17 +567,18 @@ CREATE TABLE "app_mgmt"."application_components" (
 );
 
 CREATE TABLE "app_mgmt"."application_relationships" (
+  "app_mgmt_application_relationship_id" SERIAL PRIMARY KEY,
   "application_id_1" UUID,
   "application_id_2" UUID,
   "relationship_type" app_mgmt.relationship_types,
-  "criticality" app_mgmt.criticality_levels,
-  PRIMARY KEY ("application_id_1", "application_id_2", "relationship_type")
+  "description" TEXT,
+  "criticality" app_mgmt.criticality_levels
 );
 
 CREATE TABLE "app_mgmt"."licenses" (
   "app_mgmt_license_id" UUID PRIMARY KEY,
   "license_name" VARCHAR(255),
-  "license_type" VARCHAR(50),
+  "license_type" app_mgmt.license_types,
   "license_text" TEXT
 );
 
@@ -602,7 +628,11 @@ CREATE TABLE "enterprise"."parties" (
   "beneficial_ownership" BOOLEAN,
   "email_address" VARCHAR(256),
   "phone" VARCHAR(30),
-  "mobile" VARCHAR(30)
+  "mobile" VARCHAR(30),
+  "date_of_birth" DATE,
+  "ssn" VARCHAR(11),
+  "marital_status" VARCHAR(20),
+  "citizenship_status" VARCHAR(50)
 );
 
 CREATE TABLE "enterprise"."party_relationships" (
@@ -1145,24 +1175,6 @@ CREATE TABLE "consumer_banking"."customer_interactions" (
   "updated_at" TIMESTAMP DEFAULT (now())
 );
 
-CREATE TABLE "mortgage_services"."applications" (
-  "mortgage_services_application_id" SERIAL PRIMARY KEY,
-  "customer_id" INTEGER NOT NULL,
-  "application_type" VARCHAR(50) NOT NULL,
-  "status" VARCHAR(20) NOT NULL,
-  "creation_date_time" TIMESTAMP NOT NULL,
-  "submission_date_time" TIMESTAMP,
-  "last_updated_date_time" TIMESTAMP NOT NULL,
-  "loan_purpose" VARCHAR(50),
-  "requested_loan_amount" NUMERIC(18,2) NOT NULL,
-  "requested_loan_term_months" INTEGER NOT NULL,
-  "estimated_property_value" NUMERIC(18,2),
-  "estimated_credit_score" INTEGER,
-  "referral_source" VARCHAR(100),
-  "loan_officer_id" INTEGER,
-  "branch_id" INTEGER
-);
-
 CREATE TABLE "mortgage_services"."application_borrowers" (
   "mortgage_services_application_borrower_id" SERIAL,
   "mortgage_services_application_id" INTEGER NOT NULL,
@@ -1175,21 +1187,12 @@ CREATE TABLE "mortgage_services"."application_borrowers" (
 
 CREATE TABLE "mortgage_services"."borrowers" (
   "mortgage_services_borrower_id" SERIAL PRIMARY KEY,
-  "first_name" VARCHAR(100) NOT NULL,
-  "middle_name" VARCHAR(100),
-  "last_name" VARCHAR(100) NOT NULL,
-  "date_of_birth" DATE NOT NULL,
-  "ssn" VARCHAR(11) NOT NULL,
-  "marital_status" VARCHAR(20),
-  "email" VARCHAR(255) NOT NULL,
-  "phone" VARCHAR(20) NOT NULL,
-  "mobile_phone" VARCHAR(20),
+  "enterprise_party_id" INTEGER NOT NULL,
+  "years_in_school" INTEGER,
+  "dependent_count" INTEGER,
   "current_address_id" INTEGER,
   "mailing_address_id" INTEGER,
-  "previous_address_id" INTEGER,
-  "citizenship_status" VARCHAR(50) NOT NULL,
-  "years_in_school" INTEGER,
-  "dependent_count" INTEGER
+  "previous_address_id" INTEGER
 );
 
 CREATE TABLE "mortgage_services"."borrower_employments" (
@@ -1198,13 +1201,15 @@ CREATE TABLE "mortgage_services"."borrower_employments" (
   "employer_name" VARCHAR(150) NOT NULL,
   "position" VARCHAR(100) NOT NULL,
   "enterprise_address_id" INTEGER,
-  "phone" VARCHAR(20),
+  "phone" VARCHAR(30),
   "employment_type" VARCHAR(30) NOT NULL,
   "start_date" DATE NOT NULL,
   "end_date" DATE,
   "is_current" BOOLEAN NOT NULL,
   "years_in_profession" INTEGER,
-  "monthly_income" NUMERIC(18,2) NOT NULL
+  "monthly_income" NUMERIC(18,2) NOT NULL,
+  "verification_status" VARCHAR(20) NOT NULL,
+  "verification_date" DATE
 );
 
 CREATE TABLE "mortgage_services"."borrower_incomes" (
@@ -1249,7 +1254,7 @@ CREATE TABLE "mortgage_services"."borrower_liabilities" (
 CREATE TABLE "mortgage_services"."properties" (
   "mortgage_services_property_id" SERIAL PRIMARY KEY,
   "mortgage_services_application_id" INTEGER NOT NULL,
-  "enterprise_address_id" INTEGER NOT NULL,
+  "address" VARCHAR(500) NOT NULL,
   "property_type" VARCHAR(50) NOT NULL,
   "occupancy_type" VARCHAR(30) NOT NULL,
   "year_built" INTEGER,
@@ -1262,31 +1267,47 @@ CREATE TABLE "mortgage_services"."properties" (
   "construction_completion_date" DATE
 );
 
+CREATE TABLE "mortgage_services"."applications" (
+  "mortgage_services_application_id" SERIAL PRIMARY KEY,
+  "mortgage_services_loan_product_id" INTEGER NOT NULL,
+  "application_type" VARCHAR(50) NOT NULL,
+  "status" VARCHAR(20) NOT NULL,
+  "creation_date_time" TIMESTAMP NOT NULL,
+  "submission_date_time" TIMESTAMP,
+  "last_updated_date_time" TIMESTAMP NOT NULL,
+  "loan_purpose" VARCHAR(50),
+  "requested_loan_amount" NUMERIC(18,2) NOT NULL,
+  "requested_loan_term_months" INTEGER NOT NULL,
+  "estimated_property_value" NUMERIC(18,2),
+  "estimated_credit_score" INTEGER,
+  "referral_source" VARCHAR(100),
+  "loan_officer_id" INTEGER,
+  "branch_id" INTEGER
+);
+
 CREATE TABLE "mortgage_services"."loans" (
   "mortgage_services_loan_id" SERIAL PRIMARY KEY,
   "mortgage_services_application_id" INTEGER NOT NULL,
-  "loan_type" VARCHAR(50) NOT NULL,
-  "interest_rate_type" VARCHAR(20) NOT NULL,
+  "enterprise_account_id" INTEGER NOT NULL,
   "interest_rate" NUMERIC(6,3) NOT NULL,
   "loan_term_months" INTEGER NOT NULL,
   "loan_amount" NUMERIC(18,2) NOT NULL,
   "down_payment" NUMERIC(18,2),
   "down_payment_percentage" NUMERIC(5,2),
-  "estimated_closing_costs" NUMERIC(18,2),
-  "estimated_monthly_payment" NUMERIC(18,2),
-  "estimated_cash_to_close" NUMERIC(18,2),
+  "closing_costs" NUMERIC(18,2),
+  "monthly_payment" NUMERIC(18,2),
   "private_mortgage_insurance" BOOLEAN,
   "pmi_rate" NUMERIC(5,3),
   "escrow_amount" NUMERIC(18,2),
-  "origination_date" DATE,
-  "first_payment_date" DATE,
-  "maturity_date" DATE
+  "origination_date" DATE NOT NULL,
+  "first_payment_date" DATE NOT NULL,
+  "maturity_date" DATE NOT NULL
 );
 
 CREATE TABLE "mortgage_services"."loan_products" (
   "mortgage_services_loan_product_id" SERIAL PRIMARY KEY,
   "product_name" VARCHAR(100) NOT NULL,
-  "product_code" VARCHAR(20) NOT NULL,
+  "mortgage_services_loan_products_product_code" VARCHAR(20) NOT NULL,
   "description" TEXT,
   "loan_type" VARCHAR(50) NOT NULL,
   "interest_rate_type" VARCHAR(20) NOT NULL,
@@ -1343,7 +1364,7 @@ CREATE TABLE "mortgage_services"."conditions" (
 
 CREATE TABLE "mortgage_services"."appraisals" (
   "mortgage_services_appraisal_id" SERIAL PRIMARY KEY,
-  "mortgage_services_loan_id" INTEGER NOT NULL,
+  "mortgage_services_application_id" INTEGER NOT NULL,
   "mortgage_services_property_id" INTEGER NOT NULL,
   "appraisal_type" VARCHAR(50) NOT NULL,
   "ordered_date" TIMESTAMP NOT NULL,
@@ -1417,14 +1438,13 @@ CREATE TABLE "mortgage_services"."closed_loans" (
 CREATE TABLE "mortgage_services"."servicing_accounts" (
   "mortgage_services_servicing_account_id" SERIAL PRIMARY KEY,
   "mortgage_services_loan_id" INTEGER NOT NULL,
-  "account_number" VARCHAR(30) UNIQUE NOT NULL,
   "status" VARCHAR(20) NOT NULL,
   "current_principal_balance" NUMERIC(18,2) NOT NULL,
   "original_principal_balance" NUMERIC(18,2) NOT NULL,
   "current_interest_rate" NUMERIC(6,3) NOT NULL,
   "escrow_balance" NUMERIC(18,2),
-  "next_payment_due_date" DATE NOT NULL,
-  "next_payment_amount" NUMERIC(18,2) NOT NULL,
+  "next_payment_due_date" DATE,
+  "next_payment_amount" NUMERIC(18,2),
   "last_payment_date" DATE,
   "last_payment_amount" NUMERIC(18,2),
   "interest_paid_ytd" NUMERIC(18,2),
@@ -1494,7 +1514,7 @@ CREATE TABLE "mortgage_services"."insurance_policies" (
   "expiration_date" DATE NOT NULL,
   "paid_through_escrow" BOOLEAN NOT NULL,
   "agent_name" VARCHAR(100),
-  "agent_phone" VARCHAR(20),
+  "agent_phone" VARCHAR(30),
   "status" VARCHAR(20) NOT NULL
 );
 
@@ -1538,7 +1558,7 @@ CREATE TABLE "mortgage_services"."hmda_records" (
   "mortgage_services_loan_id" INTEGER,
   "reporting_year" INTEGER NOT NULL,
   "lei" VARCHAR(20) NOT NULL,
-  "loan_type" VARCHAR(79) NOT NULL,
+  "mortgage_services_loan_product_id" INTEGER NOT NULL,
   "loan_purpose" VARCHAR(81) NOT NULL,
   "preapproval" VARCHAR(20) NOT NULL,
   "construction_method" VARCHAR(20) NOT NULL,
@@ -1685,8 +1705,8 @@ CREATE TABLE "consumer_lending"."applicants" (
   "ssn" VARCHAR(11) NOT NULL,
   "marital_status" VARCHAR(20),
   "email" VARCHAR(255) NOT NULL,
-  "phone" VARCHAR(20) NOT NULL,
-  "mobile_phone" VARCHAR(20),
+  "phone" VARCHAR(30) NOT NULL,
+  "mobile_phone" VARCHAR(30),
   "citizenship_status" VARCHAR(50) NOT NULL,
   "years_at_current_address" INTEGER,
   "housing_status" VARCHAR(50) NOT NULL,
@@ -4001,13 +4021,17 @@ COMMENT ON COLUMN "app_mgmt"."application_components"."app_mgmt_component_id" IS
 
 COMMENT ON COLUMN "app_mgmt"."application_components"."dependency_type" IS 'Type of dependency (e.g., runtime, build, test).';
 
-COMMENT ON TABLE "app_mgmt"."application_relationships" IS 'Table to store relationships between applications and their criticality levels.';
+COMMENT ON TABLE "app_mgmt"."application_relationships" IS 'Table to store relationships between applications and their criticality levels. Applications may have many relationships, even of the same type. They are only differentiated through the description.';
+
+COMMENT ON COLUMN "app_mgmt"."application_relationships"."app_mgmt_application_relationship_id" IS 'Primary key for application relationships';
 
 COMMENT ON COLUMN "app_mgmt"."application_relationships"."application_id_1" IS 'Identifier for the first application involved in the relationship.';
 
 COMMENT ON COLUMN "app_mgmt"."application_relationships"."application_id_2" IS 'Identifier for the second application involved in the relationship.';
 
 COMMENT ON COLUMN "app_mgmt"."application_relationships"."relationship_type" IS 'Type of relationship between the applications (e.g., depends on, uses data from).';
+
+COMMENT ON COLUMN "app_mgmt"."application_relationships"."description" IS 'Additional explanation about nature of relationship.';
 
 COMMENT ON COLUMN "app_mgmt"."application_relationships"."criticality" IS 'Criticality score of the relationship, indicating the impact of its failure.';
 
@@ -4067,7 +4091,7 @@ COMMENT ON COLUMN "enterprise"."account_identifiers"."lei" IS 'Legal Entity Iden
 
 COMMENT ON COLUMN "enterprise"."account_identifiers"."secondary_identification" IS 'Additional identification value (if applicable)';
 
-COMMENT ON TABLE "enterprise"."parties" IS 'Stores information about individuals and organizations that interact with accounts';
+COMMENT ON TABLE "enterprise"."parties" IS 'Stores information about individuals and organizations that interact with accounts, now with additional common personal attributes for individuals';
 
 COMMENT ON COLUMN "enterprise"."parties"."enterprise_party_id" IS 'Unique identifier for each party';
 
@@ -4090,6 +4114,14 @@ COMMENT ON COLUMN "enterprise"."parties"."email_address" IS 'Primary email conta
 COMMENT ON COLUMN "enterprise"."parties"."phone" IS 'Primary phone contact';
 
 COMMENT ON COLUMN "enterprise"."parties"."mobile" IS 'Mobile phone contact';
+
+COMMENT ON COLUMN "enterprise"."parties"."date_of_birth" IS 'Party''s date of birth (for individuals)';
+
+COMMENT ON COLUMN "enterprise"."parties"."ssn" IS 'Social Security Number (for US individuals)';
+
+COMMENT ON COLUMN "enterprise"."parties"."marital_status" IS 'Marital status (for individuals)';
+
+COMMENT ON COLUMN "enterprise"."parties"."citizenship_status" IS 'Citizenship or residency status (for individuals)';
 
 COMMENT ON TABLE "enterprise"."party_relationships" IS 'Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc.';
 
@@ -4941,38 +4973,6 @@ COMMENT ON COLUMN "consumer_banking"."customer_interactions"."created_at" IS 'Wh
 
 COMMENT ON COLUMN "consumer_banking"."customer_interactions"."updated_at" IS 'When the interaction record was last updated.';
 
-COMMENT ON TABLE "mortgage_services"."applications" IS 'Stores mortgage application details and tracks application status';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."mortgage_services_application_id" IS 'Unique identifier for each mortgage application';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."customer_id" IS 'References the primary customer applying for the mortgage';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."application_type" IS 'Type of mortgage application (e.g., Purchase, Refinance, HELOC)';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."status" IS 'Current status in the application workflow';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."creation_date_time" IS 'When the application was created';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."submission_date_time" IS 'When the application was formally submitted';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."last_updated_date_time" IS 'When the application was last modified';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."loan_purpose" IS 'Purpose of the loan (e.g., Primary Residence, Investment)';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."requested_loan_amount" IS 'Amount of financing requested';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."requested_loan_term_months" IS 'Requested duration of the loan in months';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."estimated_property_value" IS 'Estimated value of the property';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."estimated_credit_score" IS 'Estimated credit score of primary applicant';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."referral_source" IS 'How the applicant learned about the mortgage product';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."loan_officer_id" IS 'References the loan officer handling the application';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."branch_id" IS 'References the branch processing the application';
-
 COMMENT ON TABLE "mortgage_services"."application_borrowers" IS 'Junction table linking mortgage applications to borrowers, supporting multiple borrowers per application';
 
 COMMENT ON COLUMN "mortgage_services"."application_borrowers"."mortgage_services_application_borrower_id" IS 'Auto-incrementing identifier for each application-borrower relationship';
@@ -4987,39 +4987,21 @@ COMMENT ON COLUMN "mortgage_services"."application_borrowers"."relationship_to_p
 
 COMMENT ON COLUMN "mortgage_services"."application_borrowers"."contribution_percentage" IS 'Percentage of financial contribution to the loan';
 
-COMMENT ON TABLE "mortgage_services"."borrowers" IS 'Stores detailed information about mortgage borrowers';
+COMMENT ON TABLE "mortgage_services"."borrowers" IS 'Stores mortgage-specific information about borrowers, note additional personal information stored in the enterprise parties table';
 
 COMMENT ON COLUMN "mortgage_services"."borrowers"."mortgage_services_borrower_id" IS 'Unique identifier for each borrower';
 
-COMMENT ON COLUMN "mortgage_services"."borrowers"."first_name" IS 'Borrower''s first name';
+COMMENT ON COLUMN "mortgage_services"."borrowers"."enterprise_party_id" IS 'Reference to enterprise party record - the source of truth for personal information';
 
-COMMENT ON COLUMN "mortgage_services"."borrowers"."middle_name" IS 'Borrower''s middle name if applicable';
+COMMENT ON COLUMN "mortgage_services"."borrowers"."years_in_school" IS 'Total years of education';
 
-COMMENT ON COLUMN "mortgage_services"."borrowers"."last_name" IS 'Borrower''s last name';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."date_of_birth" IS 'Borrower''s date of birth';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."ssn" IS 'Borrower''s Social Security Number';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."marital_status" IS 'Borrower''s marital status';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."email" IS 'Borrower''s primary email address';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."phone" IS 'Borrower''s primary phone number';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."mobile_phone" IS 'Borrower''s mobile phone number';
+COMMENT ON COLUMN "mortgage_services"."borrowers"."dependent_count" IS 'Number of dependents claimed by borrower';
 
 COMMENT ON COLUMN "mortgage_services"."borrowers"."current_address_id" IS 'References borrower''s current address';
 
 COMMENT ON COLUMN "mortgage_services"."borrowers"."mailing_address_id" IS 'References borrower''s mailing address if different';
 
 COMMENT ON COLUMN "mortgage_services"."borrowers"."previous_address_id" IS 'References borrower''s previous address if relevant';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."citizenship_status" IS 'Borrower''s citizenship or residency status';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."years_in_school" IS 'Total years of education';
-
-COMMENT ON COLUMN "mortgage_services"."borrowers"."dependent_count" IS 'Number of dependents claimed by borrower';
 
 COMMENT ON TABLE "mortgage_services"."borrower_employments" IS 'Tracks employment history and income sources for mortgage borrowers';
 
@@ -5046,6 +5028,10 @@ COMMENT ON COLUMN "mortgage_services"."borrower_employments"."is_current" IS 'In
 COMMENT ON COLUMN "mortgage_services"."borrower_employments"."years_in_profession" IS 'Total years in this profession, even at different employers';
 
 COMMENT ON COLUMN "mortgage_services"."borrower_employments"."monthly_income" IS 'Gross monthly income from this employment';
+
+COMMENT ON COLUMN "mortgage_services"."borrower_employments"."verification_status" IS 'Status of income verification process';
+
+COMMENT ON COLUMN "mortgage_services"."borrower_employments"."verification_date" IS 'When the income was verified';
 
 COMMENT ON TABLE "mortgage_services"."borrower_incomes" IS 'Tracks various income sources for mortgage borrowers beyond employment';
 
@@ -5119,7 +5105,7 @@ COMMENT ON COLUMN "mortgage_services"."properties"."mortgage_services_property_i
 
 COMMENT ON COLUMN "mortgage_services"."properties"."mortgage_services_application_id" IS 'References the mortgage application this property is associated with';
 
-COMMENT ON COLUMN "mortgage_services"."properties"."enterprise_address_id" IS 'References the property address';
+COMMENT ON COLUMN "mortgage_services"."properties"."address" IS 'References the complete property address';
 
 COMMENT ON COLUMN "mortgage_services"."properties"."property_type" IS 'Type of property (e.g., Single Family, Condo)';
 
@@ -5141,37 +5127,65 @@ COMMENT ON COLUMN "mortgage_services"."properties"."is_new_construction" IS 'Ind
 
 COMMENT ON COLUMN "mortgage_services"."properties"."construction_completion_date" IS 'Expected completion date for new construction';
 
-COMMENT ON TABLE "mortgage_services"."loans" IS 'Stores detailed information about mortgage loans';
+COMMENT ON TABLE "mortgage_services"."applications" IS 'Stores mortgage application details and tracks application status. Note that the primary borrower is accessible through the application_borrowers table, not directly from this table.';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."mortgage_services_application_id" IS 'Unique identifier for each mortgage application';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."mortgage_services_loan_product_id" IS 'References the loan product being applied for';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."application_type" IS 'Type of mortgage application (e.g., Purchase, Refinance, HELOC)';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."status" IS 'Current status in the application workflow';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."creation_date_time" IS 'When the application was created';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."submission_date_time" IS 'When the application was formally submitted';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."last_updated_date_time" IS 'When the application was last modified';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."loan_purpose" IS 'Purpose of the loan (e.g., Primary Residence, Investment)';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."requested_loan_amount" IS 'Amount of financing requested';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."requested_loan_term_months" IS 'Requested duration of the loan in months';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."estimated_property_value" IS 'Estimated value of the property';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."estimated_credit_score" IS 'Estimated credit score of primary applicant';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."referral_source" IS 'How the applicant learned about the mortgage product';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."loan_officer_id" IS 'References the loan officer handling the application';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."branch_id" IS 'References the branch processing the application';
+
+COMMENT ON TABLE "mortgage_services"."loans" IS 'Stores final, actual loan details after closing. Now includes reference to enterprise account.';
 
 COMMENT ON COLUMN "mortgage_services"."loans"."mortgage_services_loan_id" IS 'Unique identifier for each loan';
 
 COMMENT ON COLUMN "mortgage_services"."loans"."mortgage_services_application_id" IS 'References the mortgage application this loan is associated with';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."loan_type" IS 'Type of mortgage loan product';
+COMMENT ON COLUMN "mortgage_services"."loans"."enterprise_account_id" IS 'References the enterprise account for this loan';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."interest_rate_type" IS 'Whether the rate is fixed or adjustable';
+COMMENT ON COLUMN "mortgage_services"."loans"."interest_rate" IS 'Final annual percentage rate for the loan';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."interest_rate" IS 'Annual percentage rate for the loan';
+COMMENT ON COLUMN "mortgage_services"."loans"."loan_term_months" IS 'Final duration of the loan in months';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."loan_term_months" IS 'Duration of the loan in months';
+COMMENT ON COLUMN "mortgage_services"."loans"."loan_amount" IS 'Final principal amount of the loan';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."loan_amount" IS 'Principal amount of the loan';
+COMMENT ON COLUMN "mortgage_services"."loans"."down_payment" IS 'Final amount paid upfront by the borrower';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."down_payment" IS 'Amount paid upfront by the borrower';
+COMMENT ON COLUMN "mortgage_services"."loans"."down_payment_percentage" IS 'Final down payment as a percentage of purchase price';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."down_payment_percentage" IS 'Down payment as a percentage of purchase price';
+COMMENT ON COLUMN "mortgage_services"."loans"."closing_costs" IS 'Actual fees and costs paid at closing';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."estimated_closing_costs" IS 'Estimated fees and costs to close the loan';
+COMMENT ON COLUMN "mortgage_services"."loans"."monthly_payment" IS 'Actual monthly payment including principal and interest';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."estimated_monthly_payment" IS 'Estimated regular payment including principal and interest';
+COMMENT ON COLUMN "mortgage_services"."loans"."private_mortgage_insurance" IS 'Whether PMI is required for this loan';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."estimated_cash_to_close" IS 'Total cash needed from borrower to close';
+COMMENT ON COLUMN "mortgage_services"."loans"."pmi_rate" IS 'Actual PMI rate applied to this loan';
 
-COMMENT ON COLUMN "mortgage_services"."loans"."private_mortgage_insurance" IS 'Indicates if PMI is required';
-
-COMMENT ON COLUMN "mortgage_services"."loans"."pmi_rate" IS 'Rate for private mortgage insurance if applicable';
-
-COMMENT ON COLUMN "mortgage_services"."loans"."escrow_amount" IS 'Monthly amount collected for taxes and insurance';
+COMMENT ON COLUMN "mortgage_services"."loans"."escrow_amount" IS 'Actual monthly amount collected for taxes and insurance';
 
 COMMENT ON COLUMN "mortgage_services"."loans"."origination_date" IS 'When the loan was originated';
 
@@ -5185,7 +5199,7 @@ COMMENT ON COLUMN "mortgage_services"."loan_products"."mortgage_services_loan_pr
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."product_name" IS 'Marketing name of the loan product';
 
-COMMENT ON COLUMN "mortgage_services"."loan_products"."product_code" IS 'Internal code identifying the loan product';
+COMMENT ON COLUMN "mortgage_services"."loan_products"."mortgage_services_loan_products_product_code" IS 'Internal code identifying the loan product';
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."description" IS 'Detailed description of the loan product and its features';
 
@@ -5283,7 +5297,7 @@ COMMENT ON TABLE "mortgage_services"."appraisals" IS 'Manages property appraisal
 
 COMMENT ON COLUMN "mortgage_services"."appraisals"."mortgage_services_appraisal_id" IS 'Auto-incrementing identifier for each appraisal';
 
-COMMENT ON COLUMN "mortgage_services"."appraisals"."mortgage_services_loan_id" IS 'References the loan this appraisal is for';
+COMMENT ON COLUMN "mortgage_services"."appraisals"."mortgage_services_application_id" IS 'References the application this appraisal is for';
 
 COMMENT ON COLUMN "mortgage_services"."appraisals"."mortgage_services_property_id" IS 'References the property being appraised';
 
@@ -5410,8 +5424,6 @@ COMMENT ON TABLE "mortgage_services"."servicing_accounts" IS 'Manages ongoing se
 COMMENT ON COLUMN "mortgage_services"."servicing_accounts"."mortgage_services_servicing_account_id" IS 'Unique identifier for each servicing account';
 
 COMMENT ON COLUMN "mortgage_services"."servicing_accounts"."mortgage_services_loan_id" IS 'References the originated loan';
-
-COMMENT ON COLUMN "mortgage_services"."servicing_accounts"."account_number" IS 'Customer-facing servicing account number';
 
 COMMENT ON COLUMN "mortgage_services"."servicing_accounts"."status" IS 'Current status of the loan being serviced';
 
@@ -5625,7 +5637,7 @@ COMMENT ON COLUMN "mortgage_services"."hmda_records"."reporting_year" IS 'Calend
 
 COMMENT ON COLUMN "mortgage_services"."hmda_records"."lei" IS 'Legal Entity Identifier of the reporting institution';
 
-COMMENT ON COLUMN "mortgage_services"."hmda_records"."loan_type" IS 'Code indicating loan type (1=Conventional, 2=FHA, 3=VA, 4=USDA)';
+COMMENT ON COLUMN "mortgage_services"."hmda_records"."mortgage_services_loan_product_id" IS 'Type of mortgage loan product';
 
 COMMENT ON COLUMN "mortgage_services"."hmda_records"."loan_purpose" IS 'Code indicating loan purpose (1=Home purchase, 2=Home improvement, etc.)';
 
@@ -8883,15 +8895,11 @@ ALTER TABLE "consumer_banking"."account_statement_preferences" ADD FOREIGN KEY (
 
 ALTER TABLE "consumer_banking"."account_statement_preferences" ADD FOREIGN KEY ("enterprise_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
-ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("customer_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
-
-ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("loan_officer_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
-
-ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("branch_id") REFERENCES "enterprise"."buildings" ("enterprise_building_id");
-
 ALTER TABLE "mortgage_services"."application_borrowers" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
 
 ALTER TABLE "mortgage_services"."application_borrowers" ADD FOREIGN KEY ("mortgage_services_borrower_id") REFERENCES "mortgage_services"."borrowers" ("mortgage_services_borrower_id");
+
+ALTER TABLE "mortgage_services"."borrowers" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
 
 ALTER TABLE "mortgage_services"."borrowers" ADD FOREIGN KEY ("current_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
@@ -8913,9 +8921,15 @@ ALTER TABLE "mortgage_services"."borrower_liabilities" ADD FOREIGN KEY ("mortgag
 
 ALTER TABLE "mortgage_services"."properties" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
 
-ALTER TABLE "mortgage_services"."properties" ADD FOREIGN KEY ("enterprise_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
+ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("mortgage_services_loan_product_id") REFERENCES "mortgage_services"."loan_products" ("mortgage_services_loan_product_id");
+
+ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("loan_officer_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "mortgage_services"."applications" ADD FOREIGN KEY ("branch_id") REFERENCES "enterprise"."buildings" ("enterprise_building_id");
 
 ALTER TABLE "mortgage_services"."loans" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
+
+ALTER TABLE "mortgage_services"."loans" ADD FOREIGN KEY ("enterprise_account_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
 
 ALTER TABLE "mortgage_services"."loan_rate_locks" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
 
@@ -8929,7 +8943,7 @@ ALTER TABLE "mortgage_services"."conditions" ADD FOREIGN KEY ("created_by") REFE
 
 ALTER TABLE "mortgage_services"."conditions" ADD FOREIGN KEY ("cleared_by") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "mortgage_services"."appraisals" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+ALTER TABLE "mortgage_services"."appraisals" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
 
 ALTER TABLE "mortgage_services"."appraisals" ADD FOREIGN KEY ("mortgage_services_property_id") REFERENCES "mortgage_services"."properties" ("mortgage_services_property_id");
 
@@ -8964,6 +8978,8 @@ ALTER TABLE "mortgage_services"."customer_communications" ADD FOREIGN KEY ("mort
 ALTER TABLE "mortgage_services"."hmda_records" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
 
 ALTER TABLE "mortgage_services"."hmda_records" ADD FOREIGN KEY ("mortgage_services_loan_id") REFERENCES "mortgage_services"."loans" ("mortgage_services_loan_id");
+
+ALTER TABLE "mortgage_services"."hmda_records" ADD FOREIGN KEY ("mortgage_services_loan_product_id") REFERENCES "mortgage_services"."loan_products" ("mortgage_services_loan_product_id");
 
 ALTER TABLE "mortgage_services"."hmda_applicant_demographics" ADD FOREIGN KEY ("mortgage_services_hmda_record_id") REFERENCES "mortgage_services"."hmda_records" ("mortgage_services_hmda_record_id");
 

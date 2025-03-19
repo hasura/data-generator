@@ -8,12 +8,15 @@ from typing import Dict, List
 import faker
 import networkx as nx
 import psycopg2
+from anthropic import AnthropicError
 from dotenv import load_dotenv
 from faker.exceptions import UniquenessException
 from psycopg2 import Error
 from sentence_transformers import SentenceTransformer, util
 
 from fsi_data_generator.fsi_generators.helpers.generate_random_interval import generate_random_interval_with_optional_weights
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import generate_unique_json_array, \
+    previous_responses
 
 load_dotenv()
 
@@ -28,6 +31,10 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
+logging.getLogger('sentence_transformers').setLevel(logging.WARNING)
+logging.getLogger('transformers').setLevel(logging.WARNING)
+logging.getLogger('torch').setLevel(logging.WARNING)
+logging.getLogger('tensorflow').setLevel(logging.WARNING)
 
 logger.info(f"Logging configured with level: {log_level_str}")
 
@@ -49,6 +56,9 @@ def timer_decorator(func):
 
     return wrapper
 
+class SkipRowGenerationError(Exception):
+    """Custom exception to skip row generation for a specific column or table."""
+    pass
 
 class DataGenerator:
     """
@@ -58,7 +68,7 @@ class DataGenerator:
     """
     inserted_pks: Dict[str, List] = {}
     def __init__(self, conn_params, schemas=None, exclude_schemas=None, exclusions=None, custom_generators=None,
-                 batch_size=100):
+                 batch_size=100, dbml=''):
         """
         Initialize the DataGenerator with database connection parameters and schema options.
 
@@ -80,11 +90,12 @@ class DataGenerator:
         self.cur = None
         self.batch_size = batch_size
         self.batch_data = {}  # Storage for batched rows
+        self.dbml = dbml
 
         # Schema management
         self.system_schemas = ['information_schema', 'pg_catalog', 'pg_toast', 'pg_temp']
         self.schemas = schemas  # If None, will be populated with all non-system schemas
-        self.exclude_schemas = exclude_schemas if exclude_schemas else self.system_schemas
+        self.exclude_schemas = exclude_schemas + self.system_schemas if exclude_schemas else self.system_schemas
 
         # Exclusions management using regex patterns
         self.exclusions = list(exclusions) if exclusions else []
@@ -113,6 +124,8 @@ class DataGenerator:
         self.not_populated_tables = dict()
         self.used_faker_funcs = set()
         self.faker_func_cache = {}  # Cache for faker_func
+        self.text_columns = {}
+        self.all_tables = []
 
     def connect_to_db(self):
         """Establish a connection to the database and get available schemas."""
@@ -165,6 +178,11 @@ class DataGenerator:
                     column_name, data_type, column_default, is_nullable,
                     character_maximum_length, numeric_precision, numeric_scale
                 ))
+                # store text columns
+                if data_type.lower() in ("text", "varchar", "character varying", "char"):
+                    if table_key not in self.text_columns:
+                        self.text_columns[table_key] = []
+                    self.text_columns[table_key].append(column_name)
 
             logger.debug(
                 f"Organized columns for schema {schema}, tables count: {len(set(table_name for table_name, _, _, _, _, _, _, _ in ordered_columns))}")
@@ -176,6 +194,7 @@ class DataGenerator:
     def generate_data(self, row_counts=None, commit_frequency=10, scale=1):
         """
         Generate fake data for all tables in the database, respecting dependencies and column order.
+        Prioritizes foreign keys to ensure data consistency.
 
         Args:
             row_counts (dict, optional): A dictionary mapping table names (with schema prefix) to
@@ -184,6 +203,7 @@ class DataGenerator:
                                       Example: {"schema1.table1": 500, "schema2.table2": 1000}
             commit_frequency (int, optional): Number of tables to process before committing.
                                            Set to 0 to only commit at the end.
+            scale (float, optional): Scale factor to apply to row counts.
         """
         try:
             # Compile exclusion patterns if they exist
@@ -200,6 +220,12 @@ class DataGenerator:
 
             for table_key in self.ordered_tables:
                 schema, table = table_key.split('.')
+
+                # Check if the schema is in the excluded list
+                if schema in self.exclude_schemas:
+                    logger.debug(f"Skipping excluded schema: {schema}")
+                    continue
+
                 logger.debug(f"Processing table {table_key}...")
 
                 # Support both "schema.table" format and "table" format in row_counts
@@ -214,13 +240,27 @@ class DataGenerator:
                 # Get the auto-generated columns for this table
                 auto_gen_cols = self.auto_generated_columns.get(table_key, [])
 
+                # Get all valid columns for this table
+                valid_columns = set(col_info[0] for col_info in self.table_columns[table_key])
+                logger.debug(f"Valid columns for {table_key}: {valid_columns}")
+
                 # Calculate number of batches for this table
                 num_batches = (num_rows + self.batch_size - 1) // self.batch_size  # Ceiling division
                 logger.debug(f"Will insert in {num_batches} batches of up to {self.batch_size} rows each")
 
                 # First determine which columns we'll use (not auto-generated or excluded)
-                standard_columns = []  # Columns without custom generators
+                fk_columns = []  # Columns with foreign key relationships
                 custom_columns = []  # Columns with custom generators
+                standard_columns = []  # Regular columns (no FK, no custom generator)
+
+                # Track columns that have both FK and custom generator
+                fk_custom_columns = set()
+
+                # Get all foreign key columns for this table
+                table_fk_columns = set()
+                for _, fk_schema, fk_table, fk_column, _, _, _ in self.foreign_keys:
+                    if fk_schema == schema and fk_table == table:
+                        table_fk_columns.add(fk_column)
 
                 # Use the ordered column list to maintain original order
                 for column_name in self.column_order.get(table_key, []):
@@ -241,18 +281,30 @@ class DataGenerator:
                         continue
 
                     # Check if this column has a custom generator
-                    if self._get_custom_generator(table_key, column_name) is not None:
+                    has_custom_generator = self._get_custom_generator(table_key, column_name) is not None
+
+                    # Check if this column has a foreign key constraint
+                    is_foreign_key = column_name in table_fk_columns
+
+                    # Add to appropriate list based on characteristics
+                    if is_foreign_key:
+                        fk_columns.append(column_info)
+                        # Also track if it has a custom generator
+                        if has_custom_generator:
+                            fk_custom_columns.add(column_name)
+                    elif has_custom_generator:
                         custom_columns.append(column_info)
                     else:
                         standard_columns.append(column_info)
 
                 # If no usable columns, skip this table entirely
-                if not standard_columns and not custom_columns:
+                if not fk_columns and not custom_columns and not standard_columns:
                     logger.debug(f"Skipping table {table_key} - all columns are either auto-generated or excluded")
                     continue
 
                 logger.debug(
-                    f"Generating {num_rows} rows for {table_key} with {len(standard_columns)} standard columns and {len(custom_columns)} custom generated columns")
+                    f"Generating {num_rows} rows for {table_key} with {len(fk_columns)} FK columns, "
+                    f"{len(custom_columns)} custom columns, and {len(standard_columns)} standard columns")
 
                 # Generate data for each row
                 for row_index in range(num_rows):
@@ -260,79 +312,162 @@ class DataGenerator:
                     column_names = []
                     row_values = {}  # Dictionary to store column values for custom generators
 
-                    # First process standard columns
-                    for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in standard_columns:
-                        column_names.append(column)
+                    try:
+                        # STEP 1: Process foreign key columns first
+                        for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in fk_columns:
+                            # Skip if this column has already been populated by another process
+                            if column in row_values:
+                                logger.debug(f"Column {column} already has a value set, skipping FK processing...")
+                                continue
 
-                        # Check for foreign key relationships
-                        fk_info = next(
-                            (fk for fk in self.foreign_keys
-                             if fk[1] == schema and fk[2] == table and fk[3] == column), None
-                        )
+                            column_names.append(column)
 
-                        if fk_info:
-                            # Handle foreign key constraints
-                            self._handle_foreign_key(fk_info, table_key, column, is_nullable, values)
-                        else:
+                            # Check if this FK column also has a custom generator
+                            if column in fk_custom_columns:
+                                # For columns with both FK and custom generator, use the custom generator
+                                generator_func = self._get_custom_generator(table_key, column)
+                                try:
+                                    # Call the custom generator with row_values, table_key, and column
+                                    custom_value = generator_func(row_values, table_key, column)
+                                    if isinstance(custom_value, str) and character_maximum_length and len(
+                                            custom_value) > character_maximum_length:
+                                        custom_value = custom_value[:character_maximum_length]
+
+                                    values.append(custom_value)
+                                    row_values[column] = custom_value
+
+                                    # Check if any newly added columns in row_values are valid columns for this table
+                                    for col, val in list(row_values.items()):
+                                        if col not in column_names and col in valid_columns and col not in auto_gen_cols:
+                                            column_names.append(col)
+                                            values.append(val)
+                                            logger.debug(f"Added valid extra column {col} from FK custom generator")
+
+                                except SkipRowGenerationError:
+                                    raise
+                                except Exception as e:
+                                    logger.debug(f"Error in custom generator for FK {table_key}.{column}: {e}")
+                                    # Fall back to standard FK handling if the custom generator fails
+                                    fk_info = next(
+                                        (fk for fk in self.foreign_keys
+                                         if fk[1] == schema and fk[2] == table and fk[3] == column), None
+                                    )
+                                    self._handle_foreign_key(fk_info, table_key, column, is_nullable, values)
+                                    row_values[column] = values[-1]
+                            else:
+                                # Standard FK handling for columns without custom generators
+                                fk_info = next(
+                                    (fk for fk in self.foreign_keys
+                                     if fk[1] == schema and fk[2] == table and fk[3] == column), None
+                                )
+                                if fk_info:
+                                    self._handle_foreign_key(fk_info, table_key, column, is_nullable, values)
+                                else:
+                                    logger.debug(f"Warning: Column {column} marked as FK but no FK info found")
+                                    self._generate_column_value(table_key,
+                                                                column, data_type, column_default, is_nullable,
+                                                                character_maximum_length, num_precision, num_scale,
+                                                                values)
+
+                                row_values[column] = values[-1]
+
+                        # STEP 2: Process custom columns that are not foreign keys
+                        for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in custom_columns:
+                            # Skip if this column has already been populated by another custom generator
+                            if column in row_values:
+                                logger.debug(f"Column {column} already has a value set, skipping custom generation...")
+                                continue
+
+                            # Get the custom generator for this column
+                            generator_func = self._get_custom_generator(table_key, column)
+
+                            try:
+                                # Call the custom generator with row_values, table_key, and column
+                                custom_value = generator_func(row_values, table_key, column)
+                                if isinstance(custom_value, str) and character_maximum_length and len(
+                                        custom_value) > character_maximum_length:
+                                    custom_value = custom_value[:character_maximum_length]
+
+                                # Add this column's value to both row_values and the column_names/values lists
+                                row_values[column] = custom_value
+                                column_names.append(column)
+                                values.append(custom_value)
+
+                                # Check if any newly added columns in row_values are valid columns for this table
+                                for col, val in list(row_values.items()):
+                                    if col not in column_names and col in valid_columns and col not in auto_gen_cols:
+                                        column_names.append(col)
+                                        values.append(val)
+                                        logger.debug(f"Added valid extra column {col} from custom generator")
+
+                            except AttributeError:
+                                if is_nullable == 'YES':
+                                    row_values[column] = None
+                                    column_names.append(column)
+                                    values.append(None)
+                                else:
+                                    default_value = self._generate_default_value(data_type, character_maximum_length)
+                                    row_values[column] = default_value
+                                    column_names.append(column)
+                                    values.append(default_value)
+                            except SkipRowGenerationError as _e:
+                                raise
+                            except Exception as e:
+                                logger.debug(f"Error in custom generator for {table_key}.{column}: {e}")
+                                # Set to NULL if nullable, otherwise try a generic value
+                                if is_nullable == 'YES':
+                                    row_values[column] = None
+                                    column_names.append(column)
+                                    values.append(None)
+                                else:
+                                    default_value = self._generate_default_value(data_type, character_maximum_length)
+                                    row_values[column] = default_value
+                                    column_names.append(column)
+                                    values.append(default_value)
+
+                        # STEP 3: Process standard columns last
+                        for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in standard_columns:
+                            # Skip if this column has already been populated
+                            if column in row_values:
+                                logger.debug(
+                                    f"Column {column} already has a value set, skipping standard generation...")
+                                if column not in column_names:
+                                    column_names.append(column)
+                                    values.append(row_values[column])
+                                continue
+
+                            column_names.append(column)
+
                             # Generate data for regular columns
+                            if data_type == 'text':
+                                try:
+                                    generate_unique_json_array(dbml_string=self.dbml, fully_qualified_column_name=f"{table_key}.{column}", count=num_rows)
+                                except (AnthropicError, ValueError):
+                                    pass
                             self._generate_column_value(table_key,
                                                         column, data_type, column_default, is_nullable,
-                                                        character_maximum_length, num_precision, num_scale, values
-                                                        )
+                                                        character_maximum_length, num_precision, num_scale, values)
 
-                        # Store the value in the row_values dictionary
-                        row_values[column] = values[-1]
+                            # Store the value in the row_values dictionary
+                            row_values[column] = values[-1]
 
-                    # Then process custom columns with access to previously generated values
-                    for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in custom_columns:
-                        column_names.append(column)
+                        # Skip if no columns to insert (shouldn't happen due to earlier check, but just in case)
+                        if not column_names:
+                            continue
 
-                        # Get the custom generator for this column
-                        generator_func = self._get_custom_generator(table_key, column)
+                        # Add the generated row to the batch
+                        self._batch_row(table_key, column_names, values)
+                        total_rows_generated += 1
 
-                        custom_value = None
-                        try:
-                            # Call the custom generator with row_values, table_key, and column
-                            custom_value = generator_func(row_values, table_key, column)
-                            if isinstance(custom_value, str) and character_maximum_length and len(
-                                    custom_value) > character_maximum_length:
-                                custom_value = custom_value[:character_maximum_length]
-                            values.append(custom_value)
-                            row_values[column] = custom_value
-                        except AttributeError:
-                            if is_nullable == 'YES':
-                                values.append(None)
-                                row_values[column] = None
-                            else:
-                                default_value = self._generate_default_value(data_type, character_maximum_length)
-                                values.append(default_value)
-                                row_values[column] = default_value
-                        except Exception as e:
-                            logger.debug(f"Error in custom generator for {table_key}.{column}: {e}")
-                            # Set to NULL if nullable, otherwise try a generic value
-                            if is_nullable == 'YES':
-                                values.append(None)
-                                row_values[column] = None
-                            else:
-                                default_value = self._generate_default_value(data_type, character_maximum_length)
-                                values.append(default_value)
-                                row_values[column] = default_value
-
-                    # Skip if no columns to insert (shouldn't happen due to earlier check, but just in case)
-                    if not column_names:
-                        continue
-
-                    # Add the generated row to the batch
-                    self._batch_row(table_key, column_names, values)
-                    total_rows_generated += 1
-
-                    # Display progress for large tables
-                    if (row_index + 1) % self.batch_size == 0 or row_index == num_rows - 1:
-                        current_batch = (row_index + 1) // self.batch_size
-                        if (row_index + 1) % self.batch_size > 0:
-                            current_batch += 1
-                        logger.debug(
-                            f"Generated {row_index + 1}/{num_rows} rows for {table_key} (Batch {current_batch}/{num_batches})")
+                        # Display progress for large tables
+                        if (row_index + 1) % self.batch_size == 0 or row_index == num_rows - 1:
+                            current_batch = (row_index + 1) // self.batch_size
+                            if (row_index + 1) % self.batch_size > 0:
+                                current_batch += 1
+                            logger.debug(
+                                f"Generated {row_index + 1}/{num_rows} rows for {table_key} (Batch {current_batch}/{num_batches})")
+                    except SkipRowGenerationError:
+                        pass
 
                 # Flush any remaining rows for this table
                 self._flush_batch(table_key)
@@ -445,6 +580,8 @@ class DataGenerator:
             inserted_rows = self.cur.fetchall()
             for row in inserted_rows:
                 self._store_primary_key(table_key, row)
+            if inserted_rows:
+                logger.debug(f"Stored PKs for {table_key}: {len(inserted_rows)} rows ")
 
             # Get the total rows for this table from the class instance
             total_rows = getattr(self, "total_rows_for_" + table_key.replace(".", "_"), 0)
@@ -498,7 +635,7 @@ class DataGenerator:
                     SELECT table_name, column_name
                     FROM information_schema.columns
                     WHERE table_schema = %s
-                    AND (column_default LIKE 'nextval%' OR is_identity = 'YES')
+                    AND (column_default LIKE 'nextval%%' OR is_identity = 'YES')
                 """
                 self.cur.execute(identity_query, (schema_name,))
                 identity_cols = self.cur.fetchall()
@@ -710,6 +847,61 @@ class DataGenerator:
             self.foreign_keys = []
             raise
 
+    def get_all_tables(self) -> List[str]:
+        """
+        Retrieve all tables from the database for the specified schemas,
+        excluding system schemas like 'pg_toast', 'pg_catalog', and 'information_schema'.
+        """
+
+        # Filter out system schemas
+        user_schemas = [
+            schema for schema in self.schemas
+            if schema not in ['pg_toast', 'pg_catalog', 'information_schema']
+        ]
+
+        # Early return if no user schemas are specified
+        if not user_schemas:
+            logger.warning("No user schemas specified for table retrieval.")
+            self.all_tables = []
+            return self.all_tables
+
+        query = """
+                SELECT DISTINCT
+            table_schema || '.' || table_name AS table_full_name,
+            table_schema,
+            table_name
+        FROM 
+            information_schema.tables
+        WHERE
+            table_schema = ANY(%s)
+            AND table_type = 'BASE TABLE'
+        ORDER BY 
+            table_schema, 
+            table_name;
+        """
+
+        try:
+            logger.debug(f"Executing query to retrieve all tables")
+            logger.debug(f"User schemas used in the query: {user_schemas}")
+
+            # Execute the query with user schemas
+            self.cur.execute(query, (user_schemas,))
+            result = self.cur.fetchall()
+
+            # Flatten result into a simple list of table names
+            self.all_tables = [row[0] for row in result]
+
+            logger.debug(f"Total tables retrieved: {len(self.all_tables)}")
+
+            return self.all_tables
+
+        except Exception as e:
+            logger.error(f"Error retrieving tables: {e}")
+            logger.error(f"Original schemas: {self.schemas}")
+            logger.error(f"User schemas: {user_schemas}")
+            self.all_tables = []
+            raise
+
     def get_columns(self):
         """Retrieve column information for all tables in the specified schemas."""
         schema_placeholders = ', '.join(['%s'] * len(self.schemas))
@@ -818,7 +1010,9 @@ class DataGenerator:
                 logger.debug(f"Identified auto-generated column: {table_key}.{column_name}")
 
     def determine_table_dependencies(self):
-        """Determine table dependencies based on foreign key relationships."""
+        """Determine table dependencies based on foreign key relationships,
+        including tables with no upstream or downstream dependencies."""
+
         for _, child_schema, child_table, _, parent_schema, parent_table, _ in self.foreign_keys:
             child_key = f"{child_schema}.{child_table}"
             parent_key = f"{parent_schema}.{parent_table}"
@@ -831,6 +1025,11 @@ class DataGenerator:
             # Use a list to maintain order, avoid duplicates
             if child_key != parent_key and parent_key not in self.table_dependencies[child_key]:
                 self.table_dependencies[child_key].append(parent_key)  # Child depends on Parent
+
+        # Handle tables with no dependencies at all
+        for table in self.get_all_tables():
+            if table not in self.table_dependencies:
+                self.table_dependencies[table] = []
 
         # Print dependency graph for debugging
         logger.debug("Dependency Graph:")
@@ -1019,37 +1218,21 @@ class DataGenerator:
             if is_nullable == 'YES':
                 values.append(None)
             else:
-                logger.debug(
-                    f"Warning: Required FK {table_key}.{column} references {fk_table_key}.{fk_column} but no values exist")
-                values.append(None)  # This might cause an error if NOT NULL constraint exists
+                raise SkipRowGenerationError(f"Warning: Required FK {table_key}.{column} references {fk_table_key}.{fk_column} but no values exist")  # This might cause an error if NOT NULL constraint exists
 
-    def _generate_column_value(self, table_key, column, data_type, column_default, is_nullable,
+    def _generate_column_value(self, table_key, column, data_type, _column_default, is_nullable,
                                character_maximum_length, num_precision, num_scale, values):
         """Generate an appropriate value for a database column based on its type."""
         try:
-            faker_func = None
             cache_key = (table_key, column)
             if cache_key in self.faker_func_cache:
                 faker_func = self.faker_func_cache[cache_key]
-
             else:
                 # Retrieve table and column descriptions from the database
                 schema, table_name = table_key.split('.')
-                table_description = self._get_table_description(schema, table_name)
-                column_description = self._get_column_description(schema, table_name, column)
 
-                # Convert table_key to singular
-                # singular_table_key = table_name.rstrip('s') if table_key.endswith('s') else table_key
-
-                # Combine singular table name and column name for more context
+                # Combine table name and column name for context
                 context_name = f"{column} {table_name}"
-
-
-                # Add descriptions to the context name
-                # if column_description:
-                #     context_name += f" {column_description}"
-                # if table_description:
-                #     context_name += f" {table_description}"
 
                 column_embedding = self.model.encode(context_name, convert_to_tensor=True)
                 cosine_scores = util.cos_sim(column_embedding, self.faker_embeddings)
@@ -1059,10 +1242,12 @@ class DataGenerator:
                 faker_func = getattr(self.fake.unique, faker_func_name)
                 self.used_faker_funcs.add((table_key, column, faker_func_name))
 
-            # Rest of the method remains the same
+                # Add this line to store the function in the cache
+                self.faker_func_cache[cache_key] = faker_func
+
             self._generate_by_data_type(
                 data_type, faker_func, is_nullable, character_maximum_length,
-                num_precision, num_scale, values
+                num_precision, num_scale, values, fully_qualified_column_name=f"{table_key}.{column}"
             )
         except Exception as e:
             logger.debug(f"Error generating value for column '{column}' with type '{data_type}': {e}")
@@ -1110,8 +1295,8 @@ class DataGenerator:
             logger.debug(f"Error retrieving column description for {schema}.{table_name}.{column_name}: {e}")
             return None
 
-    def _generate_by_data_type(self, data_type, faker_func, is_nullable,
-                               character_maximum_length, num_precision, num_scale, values):
+    def _generate_by_data_type(self, data_type, faker_func, _is_nullable,
+                               character_maximum_length, num_precision, num_scale, values, fully_qualified_column_name=None):
         """Generate a value based on the specific data type."""
         data_type = data_type.lower()
 
@@ -1123,10 +1308,14 @@ class DataGenerator:
             self._generate_numeric_value(num_precision, num_scale, values)
         elif data_type in ["boolean"]:
             values.append(self.fake.pybool())
-        elif data_type in ["text", "varchar", "character varying", "char"]:
+        elif data_type in ["text"] and fully_qualified_column_name and previous_responses.get(fully_qualified_column_name):
+            prev = previous_responses.get(fully_qualified_column_name)
+            value = random.choice(prev)
+            values.append(value)
+        elif data_type in ["varchar", "character varying", "char"]:
             try:
                 self._generate_string_value(faker_func, character_maximum_length, values)
-            except UniquenessException as e:
+            except UniquenessException as _e:
                 value = self.fake.unique.paragraph()
                 if value and character_maximum_length and len(str(value)) > character_maximum_length:
                     values.append(str(value)[:character_maximum_length])
@@ -1311,7 +1500,7 @@ class DataGenerator:
                 self.inserted_pks[table_key] = []
 
             self.inserted_pks[table_key].append(pk_value)
-            logger.debug(f"Stored PK for {table_key}: {pk_value} (columns: {pk_columns})")
+            # logger.debug(f"Stored PK for {table_key}: {pk_value} (columns: {pk_columns})")
 
         except Exception as e:
             logger.debug(f"Error storing primary key for {table_key}: {e}")
@@ -1423,94 +1612,94 @@ class DataGenerator:
 
 
 # Example usage:
-    # if __name__ == "__main__":
-    #     conn_params = {
-    #         "host": "localhost",
-    #         "database": "postgres",
-    #         "user": "postgres",
-    #         "password": "password",
-    #         "port": "32100"
-    #     }
+if __name__ == "__main__":
+    conn_params = {
+        "host": "localhost",
+        "database": "postgres",
+        "user": "postgres",
+        "password": "password",
+        "port": "32100"
+    }
 
-    # # Example with table-specific row counts (using schema.table format):
-    # row_counts = {
-    #     "public.users": 1000,
-    #     "public.products": 500,
-    #     "public.orders": 2000,
-    #     "sales.transactions": 5000
-    # }
-    #
-    # # Example 1: Generate data for all non-system schemas
-    # generator = DataGenerator(conn_params)
-    # generator.generate_vectorized_data(row_counts=row_counts)
-    #
-    # # Example 2: Generate data with wildcard exclusions
-    # exclusions = [
-    #     ('*', 'created_at'),  # Skip 'created_at' column in all tables
-    #     ('users', '*'),  # Skip entire 'users' table in all schemas
-    #     ('public.products', 'sku'),  # Skip 'sku' column in public.products
-    #     ('sales.*', '*')  # Skip all tables in the 'sales' schema
-    # ]
-    # generator = DataGenerator(conn_params, exclusions=exclusions)
-    # generator.generate_vectorized_data(row_counts=row_counts)
-    #
-    # # Example 3: Generate data for specific schemas with exclusions
-    # generator = DataGenerator(
-    #     conn_params,
-    #     schemas=['public', 'customer'],
-    #     exclusions=[
-    #         ('public.users', 'email'),
-    #         ('*', 'password'),
-    #         ('customer.*', '*')  # Skip all tables in customer schema
-    #     ]
-    # )
+    # Example with table-specific row counts (using schema.table format):
+    row_counts = {
+        "public.users": 1000,
+        "public.products": 500,
+        "public.orders": 2000,
+        "sales.transactions": 5000
+    }
+
+    # Example 1: Generate data for all non-system schemas
+    generator = DataGenerator(conn_params)
+    generator.generate_vectorized_data(row_counts=row_counts)
+
+    # Example 2: Generate data with wildcard exclusions
+    exclusions = [
+        ('*', 'created_at'),  # Skip 'created_at' column in all tables
+        ('users', '*'),  # Skip entire 'users' table in all schemas
+        ('public.products', 'sku'),  # Skip 'sku' column in public.products
+        ('sales.*', '*')  # Skip all tables in the 'sales' schema
+    ]
+    generator = DataGenerator(conn_params, exclusions=exclusions)
+    generator.generate_vectorized_data(row_counts=row_counts)
+
+    # Example 3: Generate data for specific schemas with exclusions
+    generator = DataGenerator(
+        conn_params,
+        schemas=['public', 'customer'],
+        exclusions=[
+            ('public.users', 'email'),
+            ('*', 'password'),
+            ('customer.*', '*')  # Skip all tables in customer schema
+        ]
+    )
+    generator.generate_vectorized_data()
+
+    # Example 4: Generate data for all schemas except specific ones
+    excluded_schemas = ['pg_catalog', 'information_schema', 'analytics']
+    generator = DataGenerator(conn_params, exclude_schemas=excluded_schemas)
+    generator.generate_vectorized_data()
+
+
+    # Example 5: Default row counts (100 rows per table)
+    # generator = DataGenerator(conn_params, schemas=['public'])
     # generator.generate_vectorized_data()
-    #
-    # # Example 4: Generate data for all schemas except specific ones
-    # excluded_schemas = ['pg_catalog', 'information_schema', 'analytics']
-    # generator = DataGenerator(conn_params, exclude_schemas=excluded_schemas)
-    # generator.generate_vectorized_data()
-    #
-    #
-    # # Example 5: Default row counts (100 rows per table)
-    # # generator = DataGenerator(conn_params, schemas=['public'])
-    # # generator.generate_vectorized_data()
-    #
-    # # Example of custom generators
-    # def full_name_generator(row_values, table, column):
-    #     # Generate a full name from first_name and last_name
-    #     if 'first_name' in row_values and 'last_name' in row_values:
-    #         return f"{row_values['first_name']} {row_values['last_name']}"
-    #     return "Unknown"
-    #
-    #
-    # def email_generator(row_values, table, column):
-    #     # Generate an email based on first_name and last_name
-    #     if 'first_name' in row_values and 'last_name' in row_values:
-    #         first = row_values['first_name'].lower()
-    #         last = row_values['last_name'].lower()
-    #         return f"{first}.{last}@example.com"
-    #     return "unknown@example.com"
-    #
-    #
-    # def total_price_generator(row_values, table, column):
-    #     # Calculate total price from price and quantity
-    #     if 'price' in row_values and 'quantity' in row_values:
-    #         return float(row_values['price']) * int(row_values['quantity'])
-    #     return 0.0
-    #
-    #
-    # # Define custom generators
-    # custom_gens = [
-    #     ('.*\\.users', 'full_name', full_name_generator),
-    #     ('.*\\.users', 'email', email_generator),
-    #     ('.*\\.order_items', 'total_price', total_price_generator)
-    # ]
-    #
-    # # Create generator with custom generators
-    # generator = DataGenerator(
-    #     conn_params,
-    #     schemas=['public'],
-    #     custom_generators=custom_gens
-    # )
-    # generator.generate_vectorized_data()
+
+    # Example of custom generators
+    def full_name_generator(row_values, _table, _column):
+        # Generate a full name from first_name and last_name
+        if 'first_name' in row_values and 'last_name' in row_values:
+            return f"{row_values['first_name']} {row_values['last_name']}"
+        return "Unknown"
+
+
+    def email_generator(row_values, _table, _column):
+        # Generate an email based on first_name and last_name
+        if 'first_name' in row_values and 'last_name' in row_values:
+            first = row_values['first_name'].lower()
+            last = row_values['last_name'].lower()
+            return f"{first}.{last}@example.com"
+        return "unknown@example.com"
+
+
+    def total_price_generator(row_values, _table, _column):
+        # Calculate total price from price and quantity
+        if 'price' in row_values and 'quantity' in row_values:
+            return float(row_values['price']) * int(row_values['quantity'])
+        return 0.0
+
+
+    # Define custom generators
+    custom_gens = [
+        ('.*\\.users', 'full_name', full_name_generator),
+        ('.*\\.users', 'email', email_generator),
+        ('.*\\.order_items', 'total_price', total_price_generator)
+    ]
+
+    # Create generator with custom generators
+    generator = DataGenerator(
+        conn_params,
+        schemas=['public'],
+        custom_generators=custom_gens
+    )
+    generator.generate_vectorized_data()

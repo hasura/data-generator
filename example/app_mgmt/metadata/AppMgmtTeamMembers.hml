@@ -6,15 +6,15 @@ definition:
   description: Table to store the associations between teams and their members,
     including member functions.
   fields:
-    - name: associateId
+    - name: appMgmtTeamId
+      type: Uuid!
+      description: Identifier of the team.
+    - name: enterpriseAssociateId
       type: Int4!
       description: Identifier of the team member from the enterprise associates table.
     - name: function
       type: Varchar
       description: Function or role of the team member within the team.
-    - name: teamId
-      type: Uuid!
-      description: Identifier of the team.
   graphql:
     typeName: App_Mgmt_AppMgmtTeamMembers
     inputTypeName: App_Mgmt_AppMgmtTeamMembersInput
@@ -22,15 +22,15 @@ definition:
     - dataConnectorName: app_mgmt
       dataConnectorObjectType: app_mgmt_team_members
       fieldMapping:
-        associateId:
+        appMgmtTeamId:
           column:
-            name: associate_id
+            name: app_mgmt_team_id
+        enterpriseAssociateId:
+          column:
+            name: enterprise_associate_id
         function:
           column:
             name: function
-        teamId:
-          column:
-            name: team_id
 
 ---
 kind: TypePermissions
@@ -41,9 +41,9 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - associateId
+          - appMgmtTeamId
+          - enterpriseAssociateId
           - function
-          - teamId
 
 ---
 kind: BooleanExpressionType
@@ -54,12 +54,12 @@ definition:
     object:
       type: AppMgmtTeamMembers
       comparableFields:
-        - fieldName: associateId
+        - fieldName: appMgmtTeamId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: enterpriseAssociateId
           booleanExpressionType: Int4BoolExp
         - fieldName: function
           booleanExpressionType: VarcharBoolExp
-        - fieldName: teamId
-          booleanExpressionType: UuidBoolExp
       comparableRelationships:
         - relationshipName: appMgmtTeam
   logicalOperators:
@@ -78,12 +78,12 @@ definition:
     object:
       aggregatedType: AppMgmtTeamMembers
       aggregatableFields:
-        - fieldName: associateId
+        - fieldName: appMgmtTeamId
+          aggregateExpression: UuidAggExp
+        - fieldName: enterpriseAssociateId
           aggregateExpression: Int4AggExp
         - fieldName: function
           aggregateExpression: VarcharAggExp
-        - fieldName: teamId
-          aggregateExpression: UuidAggExp
   count:
     enable: true
   graphql:
@@ -98,12 +98,12 @@ definition:
     object:
       orderedType: AppMgmtTeamMembers
       orderableFields:
-        - fieldName: associateId
+        - fieldName: appMgmtTeamId
+          orderByExpression: UuidOrderByExp
+        - fieldName: enterpriseAssociateId
           orderByExpression: Int4OrderByExp
         - fieldName: function
           orderByExpression: VarcharOrderByExp
-        - fieldName: teamId
-          orderByExpression: UuidOrderByExp
       orderableRelationships:
         - relationshipName: appMgmtTeam
   graphql:
@@ -129,8 +129,8 @@ definition:
     selectUniques:
       - queryRootField: appMgmtTeamMembersByTeamMembersPkey
         uniqueIdentifier:
-          - associateId
-          - teamId
+          - appMgmtTeamId
+          - enterpriseAssociateId
         subscription:
           rootField: appMgmtTeamMembersByTeamMembersPkey
     filterInputTypeName: App_Mgmt_AppMgmtTeamMembersFilterInput
@@ -165,8 +165,8 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: teamId
+          - fieldName: appMgmtTeamId
       target:
         modelField:
-          - fieldName: teamId
+          - fieldName: appMgmtTeamId
 

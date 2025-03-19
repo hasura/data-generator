@@ -313,7 +313,6 @@ def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=
             all_cves = all_cves + cve_dict['CVE_Items']
             #print(json.dumps(cve_dict['CVE_Items'][0], sort_keys=True, indent=4, separators=(',', ': ')))
             jsonfile.close()
-        cvssv_score = []
         for cves in all_cves:
             cve = cves['cve']['CVE_data_meta']['ID']
             description = ""
@@ -537,7 +536,7 @@ def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=
                     conn.commit()
                     print(f"Row inserted ({cve}, {problem}, {cwe_id})")
 
-                except psycopg2.errors.ForeignKeyViolation as e:  # Catch FK constraint error
+                except psycopg2.errors.ForeignKeyViolation as _e:  # Catch FK constraint error
                     conn.rollback()  # Rollback the failed transaction
                     print(f"Foreign key violation detected for cwe_id: {cwe_id}. Retrying with cwe_id=NULL.")
 
@@ -864,7 +863,7 @@ def cwe(user, host, database, password=None, port=5432):
         with open(extracted_csv_file, 'r', encoding='utf-8') as f:
             print("Importing CWE data")
             reader = csv.reader(f)
-            header_row = next(reader)
+            next(reader)
             cwe_data = io.StringIO()
             writer_cwe = csv.writer(cwe_data)
             writer_cwe.writerow(["cwe_id", "name", "description", "extended_description", "modes_of_introduction",

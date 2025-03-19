@@ -34,7 +34,7 @@ small_business_banking__suspicious_activity_reports__other_description = [
   "Transaction patterns suggesting potential operation of unlicensed money service business targeting immigrant communities.",
   "Evidence of potential corrupt payments to foreign officials through consulting agreements and third-party intermediaries.",
   "Unusual account activity suggesting business may be front for organized crime organization based on known associates.",
-  "Business appears to be facilitating potential customs fraud through misclassification and undervaluation of imports.",
+  "Business appears to be facilitating potential customs fraud through mis-classification and undervaluation of imports.",
   "Transaction patterns consistent with potential commodities-based money laundering through precious metals trading.",
   "Evidence suggesting operation of unregistered investment scheme targeting specific ethnic or religious communities.",
   "Unusual payment patterns potentially connected to sanctions evasion through misrepresented end users of exported goods.",

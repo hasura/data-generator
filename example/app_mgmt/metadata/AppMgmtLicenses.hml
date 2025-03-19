@@ -5,7 +5,7 @@ definition:
   name: AppMgmtLicenses
   description: Table to store information about software licenses.
   fields:
-    - name: licenseId
+    - name: appMgmtLicenseId
       type: Uuid!
       description: Unique identifier for a software license.
     - name: licenseName
@@ -15,7 +15,7 @@ definition:
       type: Text
       description: Full text or a summary of the software license terms.
     - name: licenseType
-      type: Varchar
+      type: AppMgmtLicenseTypes
       description: Type of software license (e.g., MIT, GPL).
   graphql:
     typeName: App_Mgmt_AppMgmtLicenses
@@ -24,9 +24,9 @@ definition:
     - dataConnectorName: app_mgmt
       dataConnectorObjectType: app_mgmt_licenses
       fieldMapping:
-        licenseId:
+        appMgmtLicenseId:
           column:
-            name: license_id
+            name: app_mgmt_license_id
         licenseName:
           column:
             name: license_name
@@ -46,7 +46,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - licenseId
+          - appMgmtLicenseId
           - licenseName
           - licenseText
           - licenseType
@@ -60,14 +60,14 @@ definition:
     object:
       type: AppMgmtLicenses
       comparableFields:
-        - fieldName: licenseId
+        - fieldName: appMgmtLicenseId
           booleanExpressionType: UuidBoolExp
         - fieldName: licenseName
           booleanExpressionType: VarcharBoolExp
         - fieldName: licenseText
           booleanExpressionType: TextBoolExp
         - fieldName: licenseType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: AppMgmtLicenseTypesBoolExp
       comparableRelationships:
         - relationshipName: appMgmtApplicationLicenses
         - relationshipName: appMgmtComponents
@@ -87,14 +87,14 @@ definition:
     object:
       aggregatedType: AppMgmtLicenses
       aggregatableFields:
-        - fieldName: licenseId
+        - fieldName: appMgmtLicenseId
           aggregateExpression: UuidAggExp
         - fieldName: licenseName
           aggregateExpression: VarcharAggExp
         - fieldName: licenseText
           aggregateExpression: TextAggExp
         - fieldName: licenseType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: AppMgmtLicenseTypesAggExp
   count:
     enable: true
   graphql:
@@ -109,14 +109,14 @@ definition:
     object:
       orderedType: AppMgmtLicenses
       orderableFields:
-        - fieldName: licenseId
+        - fieldName: appMgmtLicenseId
           orderByExpression: UuidOrderByExp
         - fieldName: licenseName
           orderByExpression: VarcharOrderByExp
         - fieldName: licenseText
           orderByExpression: TextOrderByExp
         - fieldName: licenseType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: AppMgmtLicenseTypesOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: App_Mgmt_AppMgmtLicensesOrderByExp
@@ -139,11 +139,11 @@ definition:
       subscription:
         rootField: appMgmtLicenses
     selectUniques:
-      - queryRootField: appMgmtLicensesByLicenseId
+      - queryRootField: appMgmtLicensesByAppMgmtLicenseId
         uniqueIdentifier:
-          - licenseId
+          - appMgmtLicenseId
         subscription:
-          rootField: appMgmtLicensesByLicenseId
+          rootField: appMgmtLicensesByAppMgmtLicenseId
     filterInputTypeName: App_Mgmt_AppMgmtLicensesFilterInput
     aggregate:
       queryRootField: appMgmtLicensesAggregate
@@ -177,10 +177,10 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
       target:
         modelField:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
   graphql:
     aggregateFieldName: appMgmtApplicationLicensesAggregate
 
@@ -199,10 +199,10 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
       target:
         modelField:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
   graphql:
     aggregateFieldName: appMgmtComponentsAggregate
 

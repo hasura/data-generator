@@ -49,16 +49,12 @@ definition:
         production).
     - name: maintainedByTeamId
       type: Uuid
-      description: Identifier for the team currently responsible for maintaining the
-        application.
-    - name: maintenanceTeamId
-      type: Uuid
       description: Identifier for the team responsible for maintaining the
         application, including updates and fixes.
     - name: modifiedByUserId
       type: Int4
       description: Identifier of the employee who last modified the application record.
-    - name: operationsTeamId
+    - name: operatedByTeamId
       type: Uuid
       description: Identifier for the team responsible for the day-to-day operation of
         the application.
@@ -136,15 +132,12 @@ definition:
         maintainedByTeamId:
           column:
             name: maintained_by_team_id
-        maintenanceTeamId:
-          column:
-            name: maintenance_team_id
         modifiedByUserId:
           column:
             name: modified_by_user_id
-        operationsTeamId:
+        operatedByTeamId:
           column:
-            name: operations_team_id
+            name: operated_by_team_id
         parentApplicationId:
           column:
             name: parent_application_id
@@ -190,9 +183,8 @@ definition:
           - documentationUrl
           - lifecycleStatus
           - maintainedByTeamId
-          - maintenanceTeamId
           - modifiedByUserId
-          - operationsTeamId
+          - operatedByTeamId
           - parentApplicationId
           - rpo
           - rto
@@ -238,11 +230,9 @@ definition:
           booleanExpressionType: AppMgmtApplicationLifecycleStatusBoolExp
         - fieldName: maintainedByTeamId
           booleanExpressionType: UuidBoolExp
-        - fieldName: maintenanceTeamId
-          booleanExpressionType: UuidBoolExp
         - fieldName: modifiedByUserId
           booleanExpressionType: Int4BoolExp
-        - fieldName: operationsTeamId
+        - fieldName: operatedByTeamId
           booleanExpressionType: UuidBoolExp
         - fieldName: parentApplicationId
           booleanExpressionType: UuidBoolExp
@@ -266,8 +256,7 @@ definition:
         - relationshipName: appMgmtArchitecture
         - relationshipName: appMgmtTeam
         - relationshipName: appMgmtTeamByMaintainedByTeamId
-        - relationshipName: appMgmtTeamByMaintenanceTeamId
-        - relationshipName: appMgmtTeamByOperationsTeamId
+        - relationshipName: appMgmtTeamByOperatedByTeamId
         - relationshipName: appMgmtApplication
         - relationshipName: appMgmtApplications
         - relationshipName: appMgmtSdlcProcess
@@ -315,11 +304,9 @@ definition:
           aggregateExpression: AppMgmtApplicationLifecycleStatusAggExp
         - fieldName: maintainedByTeamId
           aggregateExpression: UuidAggExp
-        - fieldName: maintenanceTeamId
-          aggregateExpression: UuidAggExp
         - fieldName: modifiedByUserId
           aggregateExpression: Int4AggExp
-        - fieldName: operationsTeamId
+        - fieldName: operatedByTeamId
           aggregateExpression: UuidAggExp
         - fieldName: parentApplicationId
           aggregateExpression: UuidAggExp
@@ -377,11 +364,9 @@ definition:
           orderByExpression: AppMgmtApplicationLifecycleStatusOrderByExp
         - fieldName: maintainedByTeamId
           orderByExpression: UuidOrderByExp
-        - fieldName: maintenanceTeamId
-          orderByExpression: UuidOrderByExp
         - fieldName: modifiedByUserId
           orderByExpression: Int4OrderByExp
-        - fieldName: operationsTeamId
+        - fieldName: operatedByTeamId
           orderByExpression: UuidOrderByExp
         - fieldName: parentApplicationId
           orderByExpression: UuidOrderByExp
@@ -401,8 +386,7 @@ definition:
         - relationshipName: appMgmtArchitecture
         - relationshipName: appMgmtTeam
         - relationshipName: appMgmtTeamByMaintainedByTeamId
-        - relationshipName: appMgmtTeamByMaintenanceTeamId
-        - relationshipName: appMgmtTeamByOperationsTeamId
+        - relationshipName: appMgmtTeamByOperatedByTeamId
         - relationshipName: appMgmtApplication
         - relationshipName: appMgmtSdlcProcess
   graphql:
@@ -490,7 +474,7 @@ definition:
           - fieldName: appMgmtApplicationId
       target:
         modelField:
-          - fieldName: applicationId
+          - fieldName: appMgmtApplicationId
   graphql:
     aggregateFieldName: appMgmtApplicationLicensesAggregate
 
@@ -572,7 +556,7 @@ definition:
           - fieldName: createdByTeamId
       target:
         modelField:
-          - fieldName: teamId
+          - fieldName: appMgmtTeamId
 
 ---
 kind: Relationship
@@ -590,13 +574,13 @@ definition:
           - fieldName: maintainedByTeamId
       target:
         modelField:
-          - fieldName: teamId
+          - fieldName: appMgmtTeamId
 
 ---
 kind: Relationship
 version: v1
 definition:
-  name: appMgmtTeamByMaintenanceTeamId
+  name: appMgmtTeamByOperatedByTeamId
   sourceType: AppMgmtApplications
   target:
     model:
@@ -605,28 +589,10 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: maintenanceTeamId
+          - fieldName: operatedByTeamId
       target:
         modelField:
-          - fieldName: teamId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: appMgmtTeamByOperationsTeamId
-  sourceType: AppMgmtApplications
-  target:
-    model:
-      name: AppMgmtTeams
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: operationsTeamId
-      target:
-        modelField:
-          - fieldName: teamId
+          - fieldName: appMgmtTeamId
 
 ---
 kind: Relationship

@@ -1,4 +1,5 @@
-from data_generator import DataGenerator
+
+# from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.consumer_banking_generate_transaction_fee import \
     consumer_banking_generate_transaction_fee
 from fsi_data_generator.fsi_generators.helpers.generate_transactions_and_balances import generate_fake_balance, \
@@ -60,7 +61,7 @@ def get_product_type_by_account_id(conn, account_id):
         # Reraise any exceptions that occur
         raise Exception(f"Error fetching product_type for account_id {account_id}: {str(e)}")
 
-def get_consumer_balance(dg: DataGenerator):
+def get_consumer_balance(dg):
     def get_balance(a,_b,_c):
         conn = dg.conn
         account_id = a.get('consumer_banking_account_id')
@@ -74,7 +75,7 @@ def get_consumer_balance(dg: DataGenerator):
         return value
     return get_balance
 
-def get_consumer_transaction(dg: DataGenerator):
+def get_consumer_transaction(dg):
     def get_transaction(a,_b,_c):
         conn = dg.conn
         account_id = a.get('consumer_banking_account_id')

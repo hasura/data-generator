@@ -30,9 +30,9 @@ def party_name(a,_b,_c):
 
 def full_business_legal_name(a,_b,_c):
     party_type = a.get('party_type')
-    party_name = a.get('name')
+    _party_name = a.get('name')
     if party_type == 'organization':
-        return party_name
+        return _party_name
     return ''
 
 def lei(a,b,c):
@@ -46,7 +46,7 @@ def account_description(a,b,c):
     account_category = a.get('account_category')
     value = text_list(enterprise__accounts__description)(a,b,c)
     if account_category:
-        alt_value = enterprise__accounts__description_dict[account_category]
+        alt_value = enterprise__accounts__description_dict.get(account_category)
         if alt_value:
             value = text_list(alt_value)(a,b,c)
             return value

@@ -14,7 +14,7 @@ def consumer_banking_generate_transaction_fee(a,_b,_c):
     transaction_type = a.get('transaction_type')
     amount = a.get('amount')
 
-    # Normalize transaction type to be case insensitive
+    # Normalize transaction type to be case-insensitive
     normalized_type = transaction_type.lower() if transaction_type else "other"
 
     # Base fee structures by transaction type

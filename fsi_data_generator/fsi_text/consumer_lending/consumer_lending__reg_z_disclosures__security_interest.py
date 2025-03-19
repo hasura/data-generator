@@ -83,7 +83,7 @@ consumer_lending__reg_z_disclosures__security_interest = [
     "Security interest letter of credit",
     "Security interest escrow",
     "Security interest reserve account",
-    "Security interest holdback",
+    "Security interest hold-back",
     "Security interest set-off",
     "Security interest cross-collateralization",
     "Security interest subordination",

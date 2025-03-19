@@ -5,10 +5,10 @@ definition:
   name: AppMgmtApplicationLicenses
   description: Table to store associations between applications and the licenses they use.
   fields:
-    - name: applicationId
+    - name: appMgmtApplicationId
       type: Uuid!
       description: Identifier for the application that uses the license.
-    - name: licenseId
+    - name: appMgmtLicenseId
       type: Uuid!
       description: Identifier for the software license used by the application.
   graphql:
@@ -18,12 +18,12 @@ definition:
     - dataConnectorName: app_mgmt
       dataConnectorObjectType: app_mgmt_application_licenses
       fieldMapping:
-        applicationId:
+        appMgmtApplicationId:
           column:
-            name: application_id
-        licenseId:
+            name: app_mgmt_application_id
+        appMgmtLicenseId:
           column:
-            name: license_id
+            name: app_mgmt_license_id
 
 ---
 kind: TypePermissions
@@ -34,8 +34,8 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - applicationId
-          - licenseId
+          - appMgmtApplicationId
+          - appMgmtLicenseId
 
 ---
 kind: BooleanExpressionType
@@ -46,9 +46,9 @@ definition:
     object:
       type: AppMgmtApplicationLicenses
       comparableFields:
-        - fieldName: applicationId
+        - fieldName: appMgmtApplicationId
           booleanExpressionType: UuidBoolExp
-        - fieldName: licenseId
+        - fieldName: appMgmtLicenseId
           booleanExpressionType: UuidBoolExp
       comparableRelationships:
         - relationshipName: appMgmtApplication
@@ -69,9 +69,9 @@ definition:
     object:
       aggregatedType: AppMgmtApplicationLicenses
       aggregatableFields:
-        - fieldName: applicationId
+        - fieldName: appMgmtApplicationId
           aggregateExpression: UuidAggExp
-        - fieldName: licenseId
+        - fieldName: appMgmtLicenseId
           aggregateExpression: UuidAggExp
   count:
     enable: true
@@ -87,9 +87,9 @@ definition:
     object:
       orderedType: AppMgmtApplicationLicenses
       orderableFields:
-        - fieldName: applicationId
+        - fieldName: appMgmtApplicationId
           orderByExpression: UuidOrderByExp
-        - fieldName: licenseId
+        - fieldName: appMgmtLicenseId
           orderByExpression: UuidOrderByExp
       orderableRelationships:
         - relationshipName: appMgmtApplication
@@ -117,8 +117,8 @@ definition:
     selectUniques:
       - queryRootField: appMgmtApplicationLicensesByApplicationLicensesPkey
         uniqueIdentifier:
-          - applicationId
-          - licenseId
+          - appMgmtApplicationId
+          - appMgmtLicenseId
         subscription:
           rootField: appMgmtApplicationLicensesByApplicationLicensesPkey
     filterInputTypeName: App_Mgmt_AppMgmtApplicationLicensesFilterInput
@@ -152,7 +152,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: applicationId
+          - fieldName: appMgmtApplicationId
       target:
         modelField:
           - fieldName: appMgmtApplicationId
@@ -170,8 +170,8 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
       target:
         modelField:
-          - fieldName: licenseId
+          - fieldName: appMgmtLicenseId
 

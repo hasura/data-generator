@@ -38,7 +38,7 @@ small_business_banking__compliance_requirements__business_impact = [
   "Requires ongoing monitoring of business account activity patterns, potentially generating additional customer inquiries.",
   "Necessitates enhanced fraud detection during loan application process, potentially extending approval timeline.",
   "Requires tracking and reporting of commercial real estate loan concentrations, potentially limiting availability in certain markets.",
-  "Mandates enhanced due diligence for nonbank financial institution customers, extending their onboarding timeline.",
+  "Mandates enhanced due diligence for non-bank financial institution customers, extending their onboarding timeline.",
   "Requires monitoring systems to detect unusual check clearing patterns, potentially leading to hold placement on deposits.",
   "Necessitates comprehensive documentation of commercial credit decisions, extending the approval process timeline.",
   "Requires verification procedures to confirm accuracy of business loan applications, potentially extending processing time.",

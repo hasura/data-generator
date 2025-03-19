@@ -180,6 +180,58 @@ definition:
 kind: ScalarType
 version: v1
 definition:
+  name: Int4
+  graphql:
+    typeName: App_Mgmt_Int4
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Int4BoolExp
+  operand:
+    scalar:
+      type: Int4
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int4!
+        - name: _gt
+          argumentType: Int4!
+        - name: _gte
+          argumentType: Int4!
+        - name: _in
+          argumentType: "[Int4!]!"
+        - name: _lt
+          argumentType: Int4!
+        - name: _lte
+          argumentType: Int4!
+        - name: _neq
+          argumentType: Int4!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: int4
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_Int4BoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: app_mgmt
+  dataConnectorScalarType: int4
+  representation: Int4
+  graphql:
+    comparisonExpressionTypeName: App_Mgmt_Int4ComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
   name: AppMgmtCriticalityLevels
   graphql:
     typeName: App_Mgmt_AppMgmtCriticalityLevels
@@ -227,106 +279,6 @@ definition:
   representation: AppMgmtCriticalityLevels
   graphql:
     comparisonExpressionTypeName: App_Mgmt_AppMgmtCriticalityLevelsComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Varchar
-  graphql:
-    typeName: App_Mgmt_Varchar
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: VarcharBoolExp
-  operand:
-    scalar:
-      type: Varchar
-      comparisonOperators:
-        - name: _eq
-          argumentType: Varchar!
-        - name: _gt
-          argumentType: Varchar!
-        - name: _gte
-          argumentType: Varchar!
-        - name: _ilike
-          argumentType: Varchar!
-        - name: _in
-          argumentType: "[Varchar!]!"
-        - name: _iregex
-          argumentType: Varchar!
-        - name: _like
-          argumentType: Varchar!
-        - name: _lt
-          argumentType: Varchar!
-        - name: _lte
-          argumentType: Varchar!
-        - name: _neq
-          argumentType: Varchar!
-        - name: _nilike
-          argumentType: Varchar!
-        - name: _niregex
-          argumentType: Varchar!
-        - name: _nlike
-          argumentType: Varchar!
-        - name: _nregex
-          argumentType: Varchar!
-        - name: _regex
-          argumentType: Varchar!
-        - name: starts_with
-          argumentType: Varchar!
-        - name: ts_match_tt
-          argumentType: Varchar!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: app_mgmt
-          dataConnectorScalarType: varchar
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: App_Mgmt_VarcharBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: app_mgmt
-  dataConnectorScalarType: varchar
-  representation: Varchar
-  graphql:
-    comparisonExpressionTypeName: App_Mgmt_VarcharComparisonExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: AppMgmtCriticalityLevelsAggExp
-  operand:
-    scalar:
-      aggregatedType: AppMgmtCriticalityLevels
-      aggregationFunctions:
-        - name: max
-          returnType: AppMgmtCriticalityLevels
-        - name: min
-          returnType: AppMgmtCriticalityLevels
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: app_mgmt
-          dataConnectorScalarType: app_mgmt_criticality_levels
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: App_Mgmt_AppMgmtCriticalityLevelsAggExp
 
 ---
 kind: ScalarType
@@ -401,21 +353,249 @@ definition:
     comparisonExpressionTypeName: App_Mgmt_TextComparisonExp
 
 ---
+kind: ScalarType
+version: v1
+definition:
+  name: AppMgmtRelationshipTypes
+  graphql:
+    typeName: App_Mgmt_AppMgmtRelationshipTypes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtRelationshipTypesBoolExp
+  operand:
+    scalar:
+      type: AppMgmtRelationshipTypes
+      comparisonOperators:
+        - name: _eq
+          argumentType: AppMgmtRelationshipTypes!
+        - name: _gt
+          argumentType: AppMgmtRelationshipTypes!
+        - name: _gte
+          argumentType: AppMgmtRelationshipTypes!
+        - name: _in
+          argumentType: "[AppMgmtRelationshipTypes!]!"
+        - name: _lt
+          argumentType: AppMgmtRelationshipTypes!
+        - name: _lte
+          argumentType: AppMgmtRelationshipTypes!
+        - name: _neq
+          argumentType: AppMgmtRelationshipTypes!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: app_mgmt_relationship_types
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtRelationshipTypesBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: app_mgmt
+  dataConnectorScalarType: app_mgmt_relationship_types
+  representation: AppMgmtRelationshipTypes
+  graphql:
+    comparisonExpressionTypeName: App_Mgmt_AppMgmtRelationshipTypesComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Numeric
+  graphql:
+    typeName: App_Mgmt_Numeric
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: NumericBoolExp
+  operand:
+    scalar:
+      type: Numeric
+      comparisonOperators:
+        - name: _eq
+          argumentType: Numeric!
+        - name: _gt
+          argumentType: Numeric!
+        - name: _gte
+          argumentType: Numeric!
+        - name: _in
+          argumentType: "[Numeric!]!"
+        - name: _lt
+          argumentType: Numeric!
+        - name: _lte
+          argumentType: Numeric!
+        - name: _neq
+          argumentType: Numeric!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: numeric
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_NumericBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: app_mgmt
+  dataConnectorScalarType: numeric
+  representation: Numeric
+  graphql:
+    comparisonExpressionTypeName: App_Mgmt_NumericComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Int8
+  graphql:
+    typeName: App_Mgmt_Int8
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Int8BoolExp
+  operand:
+    scalar:
+      type: Int8
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int8!
+        - name: _gt
+          argumentType: Int8!
+        - name: _gte
+          argumentType: Int8!
+        - name: _in
+          argumentType: "[Int8!]!"
+        - name: _lt
+          argumentType: Int8!
+        - name: _lte
+          argumentType: Int8!
+        - name: _neq
+          argumentType: Int8!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: int8
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_Int8BoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: app_mgmt
+  dataConnectorScalarType: int8
+  representation: Int8
+  graphql:
+    comparisonExpressionTypeName: App_Mgmt_Int8ComparisonExp
+
+---
 kind: AggregateExpression
 version: v1
 definition:
-  name: VarcharAggExp
+  name: Int4AggExp
   operand:
     scalar:
-      aggregatedType: Varchar
+      aggregatedType: Int4
       aggregationFunctions:
+        - name: avg
+          returnType: Numeric
+        - name: bit_and
+          returnType: Int4
+        - name: bit_or
+          returnType: Int4
+        - name: bit_xor
+          returnType: Int4
         - name: max
-          returnType: Text
+          returnType: Int4
         - name: min
-          returnType: Text
+          returnType: Int4
+        - name: stddev
+          returnType: Numeric
+        - name: stddev_pop
+          returnType: Numeric
+        - name: stddev_samp
+          returnType: Numeric
+        - name: sum
+          returnType: Int8
+        - name: var_pop
+          returnType: Numeric
+        - name: var_samp
+          returnType: Numeric
+        - name: variance
+          returnType: Numeric
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: app_mgmt
-          dataConnectorScalarType: varchar
+          dataConnectorScalarType: int4
+          functionMapping:
+            avg:
+              name: avg
+            bit_and:
+              name: bit_and
+            bit_or:
+              name: bit_or
+            bit_xor:
+              name: bit_xor
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_Int4AggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtCriticalityLevelsAggExp
+  operand:
+    scalar:
+      aggregatedType: AppMgmtCriticalityLevels
+      aggregationFunctions:
+        - name: max
+          returnType: AppMgmtCriticalityLevels
+        - name: min
+          returnType: AppMgmtCriticalityLevels
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: app_mgmt_criticality_levels
           functionMapping:
             max:
               name: max
@@ -426,7 +606,76 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: App_Mgmt_VarcharAggExp
+    selectTypeName: App_Mgmt_AppMgmtCriticalityLevelsAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: TextAggExp
+  operand:
+    scalar:
+      aggregatedType: Text
+      aggregationFunctions:
+        - name: max
+          returnType: Text
+        - name: min
+          returnType: Text
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: text
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_TextAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtRelationshipTypesAggExp
+  operand:
+    scalar:
+      aggregatedType: AppMgmtRelationshipTypes
+      aggregationFunctions:
+        - name: max
+          returnType: AppMgmtRelationshipTypes
+        - name: min
+          returnType: AppMgmtRelationshipTypes
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: app_mgmt_relationship_types
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtRelationshipTypesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: Int4OrderByExp
+  operand:
+    scalar:
+      orderedType: Int4
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: App_Mgmt_Int4OrderByExp
 
 ---
 kind: OrderByExpression
@@ -445,66 +694,99 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: VarcharOrderByExp
+  name: TextOrderByExp
   operand:
     scalar:
-      orderedType: Varchar
+      orderedType: Text
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: App_Mgmt_VarcharOrderByExp
+    expressionTypeName: App_Mgmt_TextOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtRelationshipTypesOrderByExp
+  operand:
+    scalar:
+      orderedType: AppMgmtRelationshipTypes
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtRelationshipTypesOrderByExp
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: Int4
+  name: Varchar
   graphql:
-    typeName: App_Mgmt_Int4
+    typeName: App_Mgmt_Varchar
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: Int4BoolExp
+  name: VarcharBoolExp
   operand:
     scalar:
-      type: Int4
+      type: Varchar
       comparisonOperators:
         - name: _eq
-          argumentType: Int4!
+          argumentType: Varchar!
         - name: _gt
-          argumentType: Int4!
+          argumentType: Varchar!
         - name: _gte
-          argumentType: Int4!
+          argumentType: Varchar!
+        - name: _ilike
+          argumentType: Varchar!
         - name: _in
-          argumentType: "[Int4!]!"
+          argumentType: "[Varchar!]!"
+        - name: _iregex
+          argumentType: Varchar!
+        - name: _like
+          argumentType: Varchar!
         - name: _lt
-          argumentType: Int4!
+          argumentType: Varchar!
         - name: _lte
-          argumentType: Int4!
+          argumentType: Varchar!
         - name: _neq
-          argumentType: Int4!
+          argumentType: Varchar!
+        - name: _nilike
+          argumentType: Varchar!
+        - name: _niregex
+          argumentType: Varchar!
+        - name: _nlike
+          argumentType: Varchar!
+        - name: _nregex
+          argumentType: Varchar!
+        - name: _regex
+          argumentType: Varchar!
+        - name: starts_with
+          argumentType: Varchar!
+        - name: ts_match_tt
+          argumentType: Varchar!
       dataConnectorOperatorMapping:
         - dataConnectorName: app_mgmt
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: varchar
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: App_Mgmt_Int4BoolExp
+    typeName: App_Mgmt_VarcharBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: app_mgmt
-  dataConnectorScalarType: int4
-  representation: Int4
+  dataConnectorScalarType: varchar
+  representation: Varchar
   graphql:
-    comparisonExpressionTypeName: App_Mgmt_Int4ComparisonExp
+    comparisonExpressionTypeName: App_Mgmt_VarcharComparisonExp
 
 ---
 kind: ScalarType
@@ -767,180 +1049,32 @@ definition:
     comparisonExpressionTypeName: App_Mgmt_IntervalComparisonExp
 
 ---
-kind: ScalarType
-version: v1
-definition:
-  name: Numeric
-  graphql:
-    typeName: App_Mgmt_Numeric
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: NumericBoolExp
-  operand:
-    scalar:
-      type: Numeric
-      comparisonOperators:
-        - name: _eq
-          argumentType: Numeric!
-        - name: _gt
-          argumentType: Numeric!
-        - name: _gte
-          argumentType: Numeric!
-        - name: _in
-          argumentType: "[Numeric!]!"
-        - name: _lt
-          argumentType: Numeric!
-        - name: _lte
-          argumentType: Numeric!
-        - name: _neq
-          argumentType: Numeric!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: app_mgmt
-          dataConnectorScalarType: numeric
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: App_Mgmt_NumericBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: app_mgmt
-  dataConnectorScalarType: numeric
-  representation: Numeric
-  graphql:
-    comparisonExpressionTypeName: App_Mgmt_NumericComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Int8
-  graphql:
-    typeName: App_Mgmt_Int8
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: Int8BoolExp
-  operand:
-    scalar:
-      type: Int8
-      comparisonOperators:
-        - name: _eq
-          argumentType: Int8!
-        - name: _gt
-          argumentType: Int8!
-        - name: _gte
-          argumentType: Int8!
-        - name: _in
-          argumentType: "[Int8!]!"
-        - name: _lt
-          argumentType: Int8!
-        - name: _lte
-          argumentType: Int8!
-        - name: _neq
-          argumentType: Int8!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: app_mgmt
-          dataConnectorScalarType: int8
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: App_Mgmt_Int8BoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: app_mgmt
-  dataConnectorScalarType: int8
-  representation: Int8
-  graphql:
-    comparisonExpressionTypeName: App_Mgmt_Int8ComparisonExp
-
----
 kind: AggregateExpression
 version: v1
 definition:
-  name: Int4AggExp
+  name: VarcharAggExp
   operand:
     scalar:
-      aggregatedType: Int4
+      aggregatedType: Varchar
       aggregationFunctions:
-        - name: avg
-          returnType: Numeric
-        - name: bit_and
-          returnType: Int4
-        - name: bit_or
-          returnType: Int4
-        - name: bit_xor
-          returnType: Int4
         - name: max
-          returnType: Int4
+          returnType: Text
         - name: min
-          returnType: Int4
-        - name: stddev
-          returnType: Numeric
-        - name: stddev_pop
-          returnType: Numeric
-        - name: stddev_samp
-          returnType: Numeric
-        - name: sum
-          returnType: Int8
-        - name: var_pop
-          returnType: Numeric
-        - name: var_samp
-          returnType: Numeric
-        - name: variance
-          returnType: Numeric
+          returnType: Text
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: app_mgmt
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: varchar
           functionMapping:
-            avg:
-              name: avg
-            bit_and:
-              name: bit_and
-            bit_or:
-              name: bit_or
-            bit_xor:
-              name: bit_xor
             max:
               name: max
             min:
               name: min
-            stddev:
-              name: stddev
-            stddev_pop:
-              name: stddev_pop
-            stddev_samp:
-              name: stddev_samp
-            sum:
-              name: sum
-            var_pop:
-              name: var_pop
-            var_samp:
-              name: var_samp
-            variance:
-              name: variance
   count:
     enable: true
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: App_Mgmt_Int4AggExp
+    selectTypeName: App_Mgmt_VarcharAggExp
 
 ---
 kind: AggregateExpression
@@ -1030,34 +1164,6 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: TextAggExp
-  operand:
-    scalar:
-      aggregatedType: Text
-      aggregationFunctions:
-        - name: max
-          returnType: Text
-        - name: min
-          returnType: Text
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: app_mgmt
-          dataConnectorScalarType: text
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: App_Mgmt_TextAggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
   name: AppMgmtApplicationLifecycleStatusAggExp
   operand:
     scalar:
@@ -1122,14 +1228,14 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: Int4OrderByExp
+  name: VarcharOrderByExp
   operand:
     scalar:
-      orderedType: Int4
+      orderedType: Varchar
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: App_Mgmt_Int4OrderByExp
+    expressionTypeName: App_Mgmt_VarcharOrderByExp
 
 ---
 kind: OrderByExpression
@@ -1174,19 +1280,6 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: TextOrderByExp
-  operand:
-    scalar:
-      orderedType: Text
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: App_Mgmt_TextOrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
   name: AppMgmtApplicationLifecycleStatusOrderByExp
   operand:
     scalar:
@@ -1208,4 +1301,97 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: App_Mgmt_IntervalOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: AppMgmtLicenseTypes
+  graphql:
+    typeName: App_Mgmt_AppMgmtLicenseTypes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtLicenseTypesBoolExp
+  operand:
+    scalar:
+      type: AppMgmtLicenseTypes
+      comparisonOperators:
+        - name: _eq
+          argumentType: AppMgmtLicenseTypes!
+        - name: _gt
+          argumentType: AppMgmtLicenseTypes!
+        - name: _gte
+          argumentType: AppMgmtLicenseTypes!
+        - name: _in
+          argumentType: "[AppMgmtLicenseTypes!]!"
+        - name: _lt
+          argumentType: AppMgmtLicenseTypes!
+        - name: _lte
+          argumentType: AppMgmtLicenseTypes!
+        - name: _neq
+          argumentType: AppMgmtLicenseTypes!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: app_mgmt_license_types
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtLicenseTypesBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: app_mgmt
+  dataConnectorScalarType: app_mgmt_license_types
+  representation: AppMgmtLicenseTypes
+  graphql:
+    comparisonExpressionTypeName: App_Mgmt_AppMgmtLicenseTypesComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtLicenseTypesAggExp
+  operand:
+    scalar:
+      aggregatedType: AppMgmtLicenseTypes
+      aggregationFunctions:
+        - name: max
+          returnType: AppMgmtLicenseTypes
+        - name: min
+          returnType: AppMgmtLicenseTypes
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: app_mgmt_license_types
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtLicenseTypesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtLicenseTypesOrderByExp
+  operand:
+    scalar:
+      orderedType: AppMgmtLicenseTypes
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtLicenseTypesOrderByExp
 

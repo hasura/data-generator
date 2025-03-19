@@ -1,5 +1,5 @@
 enterprise__accounts__description_dict = {
-  "Personal": [
+  "personal": [
     "Checking account for daily use",
     "Savings for short-term goals",
     "Personal investment account",
@@ -49,7 +49,7 @@ enterprise__accounts__description_dict = {
     "Gift card account",
     "Prepaid expense account"
   ],
-  "Business": [
+  "business": [
     "Business operating account",
     "Payroll processing account",
     "Travel expense account",
@@ -120,7 +120,7 @@ enterprise__accounts__description_dict = {
     "Processing fees",
     "Transaction fees"
   ],
-  "Retirement": [
+  "retirement": [
     "Retirement savings account",
     "Trust fund account",
     "Estate planning fund",

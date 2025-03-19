@@ -103,7 +103,7 @@ small_business_banking__business_due_diligence__high_risk_factors = [
   "Business transactions primarily with regions or countries experiencing political instability or conflict.",
   "Concerning discrepancies between financial statements provided and transaction activity observed in accounts.",
   "Ownership structure changes frequently with new beneficial owners from high-risk jurisdictions.",
-  "Transaction activity suggesting potential operation as informal value transfer system or hawala.",
+  "Transaction activity suggesting potential operation as informal value transfer system or withdrawal.",
   "Customer unable to clearly articulate business model, revenue sources, or operational processes when questioned.",
   "Business registered in jurisdiction with minimal connection to actual operational location or market.",
   "Account activity suggesting potential nominee arrangement with transactions benefiting undisclosed parties.",

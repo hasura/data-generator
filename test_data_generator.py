@@ -217,7 +217,7 @@ def test_data_generator():
         fake = Faker()
 
         # Define custom generators for more realistic data
-        def email_generator(row_values, table, column):
+        def email_generator(row_values, _table, _column):
             """Generate email based on first and last name"""
             if 'first_name' in row_values and 'last_name' in row_values:
                 first = row_values['first_name'].lower()
@@ -225,14 +225,14 @@ def test_data_generator():
                 return f"{first}.{last}@example.com"
             return "unknown@example.com"
 
-        def order_status_generator(row_values, table, column):
+        def order_status_generator(_row_values, _table, _column):
             """Generate realistic order status"""
             import random
             statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
             weights = [0.1, 0.2, 0.3, 0.3, 0.1]  # Weighted probabilities
             return random.choices(statuses, weights=weights, k=1)[0]
 
-        def fake_words(row_values, table, column):
+        def fake_words(_row_values, _table, _column):
             return fake.paragraph()
 
         # Define custom generators - now with the test schema prefix

@@ -1,4 +1,3 @@
-from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.app_mgmt import app_mgmt
 from fsi_data_generator.fsi_generators.consumer_banking import consumer_banking
 from fsi_data_generator.fsi_generators.consumer_lending import consumer_lending
@@ -8,6 +7,7 @@ from fsi_data_generator.fsi_generators.mortgage_services import mortgage_service
 from fsi_data_generator.fsi_generators.security import security
 from fsi_data_generator.fsi_generators.small_business_banking import small_business_banking
 from fsi_data_generator.fsi_generators.wildcards import wildcards
+from data_generator import DataGenerator
 
 dg = None
 def custom_generators(gen: DataGenerator):

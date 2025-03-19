@@ -5,6 +5,9 @@ definition:
   name: MortgageServicesProperties
   description: Stores information about properties being purchased or refinanced
   fields:
+    - name: address
+      type: Varchar!
+      description: References the complete property address
     - name: bathrooms
       type: Numeric
       description: Number of bathrooms (allows for half baths)
@@ -14,9 +17,6 @@ definition:
     - name: constructionCompletionDate
       type: Date
       description: Expected completion date for new construction
-    - name: enterpriseAddressId
-      type: Int4!
-      description: References the property address
     - name: hoaDues
       type: Numeric
       description: Monthly homeowners association fees if applicable
@@ -51,6 +51,9 @@ definition:
     - dataConnectorName: mortgage_services
       dataConnectorObjectType: mortgage_services_properties
       fieldMapping:
+        address:
+          column:
+            name: address
         bathrooms:
           column:
             name: bathrooms
@@ -60,9 +63,6 @@ definition:
         constructionCompletionDate:
           column:
             name: construction_completion_date
-        enterpriseAddressId:
-          column:
-            name: enterprise_address_id
         hoaDues:
           column:
             name: hoa_dues
@@ -100,10 +100,10 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - address
           - bathrooms
           - bedrooms
           - constructionCompletionDate
-          - enterpriseAddressId
           - hoaDues
           - isNewConstruction
           - lotSize
@@ -123,14 +123,14 @@ definition:
     object:
       type: MortgageServicesProperties
       comparableFields:
+        - fieldName: address
+          booleanExpressionType: VarcharBoolExp
         - fieldName: bathrooms
           booleanExpressionType: NumericBoolExp
         - fieldName: bedrooms
           booleanExpressionType: Int4BoolExp
         - fieldName: constructionCompletionDate
           booleanExpressionType: DateBoolExp
-        - fieldName: enterpriseAddressId
-          booleanExpressionType: Int4BoolExp
         - fieldName: hoaDues
           booleanExpressionType: NumericBoolExp
         - fieldName: isNewConstruction
@@ -168,14 +168,14 @@ definition:
     object:
       aggregatedType: MortgageServicesProperties
       aggregatableFields:
+        - fieldName: address
+          aggregateExpression: VarcharAggExp
         - fieldName: bathrooms
           aggregateExpression: NumericAggExp
         - fieldName: bedrooms
           aggregateExpression: Int4AggExp
         - fieldName: constructionCompletionDate
           aggregateExpression: DateAggExp
-        - fieldName: enterpriseAddressId
-          aggregateExpression: Int4AggExp
         - fieldName: hoaDues
           aggregateExpression: NumericAggExp
         - fieldName: isNewConstruction
@@ -208,14 +208,14 @@ definition:
     object:
       orderedType: MortgageServicesProperties
       orderableFields:
+        - fieldName: address
+          orderByExpression: VarcharOrderByExp
         - fieldName: bathrooms
           orderByExpression: NumericOrderByExp
         - fieldName: bedrooms
           orderByExpression: Int4OrderByExp
         - fieldName: constructionCompletionDate
           orderByExpression: DateOrderByExp
-        - fieldName: enterpriseAddressId
-          orderByExpression: Int4OrderByExp
         - fieldName: hoaDues
           orderByExpression: NumericOrderByExp
         - fieldName: isNewConstruction

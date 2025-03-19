@@ -52,6 +52,6 @@ These test scenarios simulate potential fiduciary abuse by guardians managing th
 * **Transaction patterns:** Unusual transaction types or amounts that deviate from typical spending habits.
 * **Multiple guardians:** Scenarios involving more than one guardian, potentially masking misappropriation.
 * **Timestamps:** The time between transactions is important, to show quick movements of funds.
-* **Transaction descriptions:** The descriptions of the transactions can show red flags, like casino withdrawls.
+* **Transaction descriptions:** The descriptions of the transactions can show red flags, like casino withdrawals.
 
 These summarized scenarios provide a clear framework for documenting and executing tests designed to detect potential fiduciary abuse.

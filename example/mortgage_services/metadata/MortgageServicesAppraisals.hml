@@ -26,12 +26,12 @@ definition:
     - name: inspectionDate
       type: Date
       description: When the property was inspected
+    - name: mortgageServicesApplicationId
+      type: Int4!
+      description: References the application this appraisal is for
     - name: mortgageServicesAppraisalId
       type: Int4!
       description: Auto-incrementing identifier for each appraisal
-    - name: mortgageServicesLoanId
-      type: Int4!
-      description: References the loan this appraisal is for
     - name: mortgageServicesPropertyId
       type: Int4!
       description: References the property being appraised
@@ -72,12 +72,12 @@ definition:
         inspectionDate:
           column:
             name: inspection_date
+        mortgageServicesApplicationId:
+          column:
+            name: mortgage_services_application_id
         mortgageServicesAppraisalId:
           column:
             name: mortgage_services_appraisal_id
-        mortgageServicesLoanId:
-          column:
-            name: mortgage_services_loan_id
         mortgageServicesPropertyId:
           column:
             name: mortgage_services_property_id
@@ -107,8 +107,8 @@ definition:
           - appraiserName
           - completionDate
           - inspectionDate
+          - mortgageServicesApplicationId
           - mortgageServicesAppraisalId
-          - mortgageServicesLoanId
           - mortgageServicesPropertyId
           - orderedDate
           - reportPath
@@ -137,9 +137,9 @@ definition:
           booleanExpressionType: DateBoolExp
         - fieldName: inspectionDate
           booleanExpressionType: DateBoolExp
-        - fieldName: mortgageServicesAppraisalId
+        - fieldName: mortgageServicesApplicationId
           booleanExpressionType: Int4BoolExp
-        - fieldName: mortgageServicesLoanId
+        - fieldName: mortgageServicesAppraisalId
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesPropertyId
           booleanExpressionType: Int4BoolExp
@@ -150,7 +150,7 @@ definition:
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
-        - relationshipName: mortgageServicesLoan
+        - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesProperty
   logicalOperators:
     enable: true
@@ -182,9 +182,9 @@ definition:
           aggregateExpression: DateAggExp
         - fieldName: inspectionDate
           aggregateExpression: DateAggExp
-        - fieldName: mortgageServicesAppraisalId
+        - fieldName: mortgageServicesApplicationId
           aggregateExpression: Int4AggExp
-        - fieldName: mortgageServicesLoanId
+        - fieldName: mortgageServicesAppraisalId
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesPropertyId
           aggregateExpression: Int4AggExp
@@ -222,9 +222,9 @@ definition:
           orderByExpression: DateOrderByExp
         - fieldName: inspectionDate
           orderByExpression: DateOrderByExp
-        - fieldName: mortgageServicesAppraisalId
+        - fieldName: mortgageServicesApplicationId
           orderByExpression: Int4OrderByExp
-        - fieldName: mortgageServicesLoanId
+        - fieldName: mortgageServicesAppraisalId
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesPropertyId
           orderByExpression: Int4OrderByExp
@@ -235,7 +235,7 @@ definition:
         - fieldName: status
           orderByExpression: VarcharOrderByExp
       orderableRelationships:
-        - relationshipName: mortgageServicesLoan
+        - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesProperty
   graphql:
     expressionTypeName: MortgageServices_MortgageServicesAppraisalsOrderByExp
@@ -285,19 +285,19 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: mortgageServicesLoan
+  name: mortgageServicesApplication
   sourceType: MortgageServicesAppraisals
   target:
     model:
-      name: MortgageServicesLoans
+      name: MortgageServicesApplications
       relationshipType: Object
   mapping:
     - source:
         fieldPath:
-          - fieldName: mortgageServicesLoanId
+          - fieldName: mortgageServicesApplicationId
       target:
         modelField:
-          - fieldName: mortgageServicesLoanId
+          - fieldName: mortgageServicesApplicationId
 
 ---
 kind: Relationship

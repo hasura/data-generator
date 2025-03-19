@@ -8,6 +8,9 @@ definition:
     - name: appMgmtSdlcProcessId
       type: Uuid!
       description: Unique identifier for a defined software development lifecycle process.
+    - name: appMgmtTeamId
+      type: Uuid
+      description: Identifier for the team that manages this SDLC process.
     - name: description
       type: Text
       description: Description of the steps and activities within the SDLC process.
@@ -20,9 +23,6 @@ definition:
     - name: processOwner
       type: Varchar
       description: Name of the individual or team responsible for the SDLC process.
-    - name: teamId
-      type: Uuid
-      description: Identifier for the team that manages this SDLC process.
     - name: version
       type: Varchar
       description: Version number or identifier for the SDLC process.
@@ -36,6 +36,9 @@ definition:
         appMgmtSdlcProcessId:
           column:
             name: app_mgmt_sdlc_process_id
+        appMgmtTeamId:
+          column:
+            name: app_mgmt_team_id
         description:
           column:
             name: description
@@ -48,9 +51,6 @@ definition:
         processOwner:
           column:
             name: process_owner
-        teamId:
-          column:
-            name: team_id
         version:
           column:
             name: version
@@ -65,11 +65,11 @@ definition:
       output:
         allowedFields:
           - appMgmtSdlcProcessId
+          - appMgmtTeamId
           - description
           - documentationUrl
           - processName
           - processOwner
-          - teamId
           - version
 
 ---
@@ -83,6 +83,8 @@ definition:
       comparableFields:
         - fieldName: appMgmtSdlcProcessId
           booleanExpressionType: UuidBoolExp
+        - fieldName: appMgmtTeamId
+          booleanExpressionType: UuidBoolExp
         - fieldName: description
           booleanExpressionType: TextBoolExp
         - fieldName: documentationUrl
@@ -91,8 +93,6 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: processOwner
           booleanExpressionType: VarcharBoolExp
-        - fieldName: teamId
-          booleanExpressionType: UuidBoolExp
         - fieldName: version
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
@@ -117,6 +117,8 @@ definition:
       aggregatableFields:
         - fieldName: appMgmtSdlcProcessId
           aggregateExpression: UuidAggExp
+        - fieldName: appMgmtTeamId
+          aggregateExpression: UuidAggExp
         - fieldName: description
           aggregateExpression: TextAggExp
         - fieldName: documentationUrl
@@ -125,8 +127,6 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: processOwner
           aggregateExpression: VarcharAggExp
-        - fieldName: teamId
-          aggregateExpression: UuidAggExp
         - fieldName: version
           aggregateExpression: VarcharAggExp
   count:
@@ -145,6 +145,8 @@ definition:
       orderableFields:
         - fieldName: appMgmtSdlcProcessId
           orderByExpression: UuidOrderByExp
+        - fieldName: appMgmtTeamId
+          orderByExpression: UuidOrderByExp
         - fieldName: description
           orderByExpression: TextOrderByExp
         - fieldName: documentationUrl
@@ -153,8 +155,6 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: processOwner
           orderByExpression: VarcharOrderByExp
-        - fieldName: teamId
-          orderByExpression: UuidOrderByExp
         - fieldName: version
           orderByExpression: VarcharOrderByExp
       orderableRelationships:
@@ -260,8 +260,8 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: teamId
+          - fieldName: appMgmtTeamId
       target:
         modelField:
-          - fieldName: teamId
+          - fieldName: appMgmtTeamId
 

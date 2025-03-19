@@ -169,7 +169,7 @@ small_business_banking__loan_fair_lending__denial_reason_3 = [
   "Insufficient internet security measures for business conducting significant e-commerce activity.",
   "Unacceptable balance sheet leverage with debt comprising 90% of total business capitalization.",
   "Inadequate point-of-sale systems with limited ability to track sales and inventory movement.",
-  "Excessive cost structure relative to revenue with breakeven point at 90% of current sales level.",
+  "Excessive cost structure relative to revenue with break-even point at 90% of current sales level.",
   "Insufficient compliance with industry-specific regulatory requirements based on due diligence findings.",
   "Unacceptable facilities maintenance reserve for commercial property with aging infrastructure.",
   "Inadequate terms on critical supplier contracts with unfavorable pricing or exclusivity provisions.",

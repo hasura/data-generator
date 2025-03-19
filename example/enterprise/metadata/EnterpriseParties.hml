@@ -4,11 +4,18 @@ version: v1
 definition:
   name: EnterpriseParties
   description: Stores information about individuals and organizations that
-    interact with accounts
+    interact with accounts, now with additional common personal attributes for
+    individuals
   fields:
     - name: beneficialOwnership
       type: Bool
       description: Indicates if this party has beneficial ownership
+    - name: citizenshipStatus
+      type: Varchar
+      description: Citizenship or residency status (for individuals)
+    - name: dateOfBirth
+      type: Date
+      description: Party's date of birth (for individuals)
     - name: emailAddress
       type: Varchar
       description: Primary email contact
@@ -24,6 +31,9 @@ definition:
     - name: lei
       type: Varchar
       description: Legal Entity Identifier for organizations
+    - name: maritalStatus
+      type: Varchar
+      description: Marital status (for individuals)
     - name: mobile
       type: Varchar
       description: Mobile phone contact
@@ -39,6 +49,9 @@ definition:
     - name: phone
       type: Varchar
       description: Primary phone contact
+    - name: ssn
+      type: Varchar
+      description: Social Security Number (for US individuals)
   graphql:
     typeName: Enterprise_EnterpriseParties
     inputTypeName: Enterprise_EnterprisePartiesInput
@@ -49,6 +62,12 @@ definition:
         beneficialOwnership:
           column:
             name: beneficial_ownership
+        citizenshipStatus:
+          column:
+            name: citizenship_status
+        dateOfBirth:
+          column:
+            name: date_of_birth
         emailAddress:
           column:
             name: email_address
@@ -64,6 +83,9 @@ definition:
         lei:
           column:
             name: lei
+        maritalStatus:
+          column:
+            name: marital_status
         mobile:
           column:
             name: mobile
@@ -79,6 +101,9 @@ definition:
         phone:
           column:
             name: phone
+        ssn:
+          column:
+            name: ssn
 
 ---
 kind: TypePermissions
@@ -90,16 +115,20 @@ definition:
       output:
         allowedFields:
           - beneficialOwnership
+          - citizenshipStatus
+          - dateOfBirth
           - emailAddress
           - enterprisePartyId
           - fullBusinessLegalName
           - legalStructure
           - lei
+          - maritalStatus
           - mobile
           - name
           - partyNumber
           - partyType
           - phone
+          - ssn
 
 ---
 kind: BooleanExpressionType
@@ -112,6 +141,10 @@ definition:
       comparableFields:
         - fieldName: beneficialOwnership
           booleanExpressionType: BoolBoolExp
+        - fieldName: citizenshipStatus
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: dateOfBirth
+          booleanExpressionType: DateBoolExp
         - fieldName: emailAddress
           booleanExpressionType: VarcharBoolExp
         - fieldName: enterprisePartyId
@@ -122,6 +155,8 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: lei
           booleanExpressionType: VarcharBoolExp
+        - fieldName: maritalStatus
+          booleanExpressionType: VarcharBoolExp
         - fieldName: mobile
           booleanExpressionType: VarcharBoolExp
         - fieldName: name
@@ -131,6 +166,8 @@ definition:
         - fieldName: partyType
           booleanExpressionType: VarcharBoolExp
         - fieldName: phone
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: ssn
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAccountOwnerships
@@ -155,6 +192,10 @@ definition:
       aggregatableFields:
         - fieldName: beneficialOwnership
           aggregateExpression: BoolAggExp
+        - fieldName: citizenshipStatus
+          aggregateExpression: VarcharAggExp
+        - fieldName: dateOfBirth
+          aggregateExpression: DateAggExp
         - fieldName: emailAddress
           aggregateExpression: VarcharAggExp
         - fieldName: enterprisePartyId
@@ -165,6 +206,8 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: lei
           aggregateExpression: VarcharAggExp
+        - fieldName: maritalStatus
+          aggregateExpression: VarcharAggExp
         - fieldName: mobile
           aggregateExpression: VarcharAggExp
         - fieldName: name
@@ -174,6 +217,8 @@ definition:
         - fieldName: partyType
           aggregateExpression: VarcharAggExp
         - fieldName: phone
+          aggregateExpression: VarcharAggExp
+        - fieldName: ssn
           aggregateExpression: VarcharAggExp
   count:
     enable: true
@@ -191,6 +236,10 @@ definition:
       orderableFields:
         - fieldName: beneficialOwnership
           orderByExpression: BoolOrderByExp
+        - fieldName: citizenshipStatus
+          orderByExpression: VarcharOrderByExp
+        - fieldName: dateOfBirth
+          orderByExpression: DateOrderByExp
         - fieldName: emailAddress
           orderByExpression: VarcharOrderByExp
         - fieldName: enterprisePartyId
@@ -201,6 +250,8 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: lei
           orderByExpression: VarcharOrderByExp
+        - fieldName: maritalStatus
+          orderByExpression: VarcharOrderByExp
         - fieldName: mobile
           orderByExpression: VarcharOrderByExp
         - fieldName: name
@@ -210,6 +261,8 @@ definition:
         - fieldName: partyType
           orderByExpression: VarcharOrderByExp
         - fieldName: phone
+          orderByExpression: VarcharOrderByExp
+        - fieldName: ssn
           orderByExpression: VarcharOrderByExp
       orderableRelationships: []
   graphql:
@@ -244,7 +297,8 @@ definition:
       subscription:
         rootField: enterprisePartiesAggregate
   description: Stores information about individuals and organizations that
-    interact with accounts
+    interact with accounts, now with additional common personal attributes for
+    individuals
 
 ---
 kind: ModelPermissions

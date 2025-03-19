@@ -102,7 +102,7 @@ enterprise__accounts__description = [
   "Clearing account",
   "Transit account",
   "Suspense account",
-  "Intercompany account",
+  "Inter-company account",
   "Reconciliation account",
   "Audit trail account",
   "Compliance monitoring",

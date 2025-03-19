@@ -3,47 +3,42 @@ kind: ObjectType
 version: v1
 definition:
   name: MortgageServicesLoans
-  description: Stores detailed information about mortgage loans
+  description: Stores final, actual loan details after closing. Now includes
+    reference to enterprise account.
   fields:
+    - name: closingCosts
+      type: Numeric
+      description: Actual fees and costs paid at closing
     - name: downPayment
       type: Numeric
-      description: Amount paid upfront by the borrower
+      description: Final amount paid upfront by the borrower
     - name: downPaymentPercentage
       type: Numeric
-      description: Down payment as a percentage of purchase price
+      description: Final down payment as a percentage of purchase price
+    - name: enterpriseAccountId
+      type: Int4!
+      description: References the enterprise account for this loan
     - name: escrowAmount
       type: Numeric
-      description: Monthly amount collected for taxes and insurance
-    - name: estimatedCashToClose
-      type: Numeric
-      description: Total cash needed from borrower to close
-    - name: estimatedClosingCosts
-      type: Numeric
-      description: Estimated fees and costs to close the loan
-    - name: estimatedMonthlyPayment
-      type: Numeric
-      description: Estimated regular payment including principal and interest
+      description: Actual monthly amount collected for taxes and insurance
     - name: firstPaymentDate
-      type: Date
+      type: Date!
       description: Due date of the first loan payment
     - name: interestRate
       type: Numeric!
-      description: Annual percentage rate for the loan
-    - name: interestRateType
-      type: Varchar!
-      description: Whether the rate is fixed or adjustable
+      description: Final annual percentage rate for the loan
     - name: loanAmount
       type: Numeric!
-      description: Principal amount of the loan
+      description: Final principal amount of the loan
     - name: loanTermMonths
       type: Int4!
-      description: Duration of the loan in months
-    - name: loanType
-      type: Varchar!
-      description: Type of mortgage loan product
+      description: Final duration of the loan in months
     - name: maturityDate
-      type: Date
+      type: Date!
       description: When the loan will be fully paid off
+    - name: monthlyPayment
+      type: Numeric
+      description: Actual monthly payment including principal and interest
     - name: mortgageServicesApplicationId
       type: Int4!
       description: References the mortgage application this loan is associated with
@@ -51,14 +46,14 @@ definition:
       type: Int4!
       description: Unique identifier for each loan
     - name: originationDate
-      type: Date
+      type: Date!
       description: When the loan was originated
     - name: pmiRate
       type: Numeric
-      description: Rate for private mortgage insurance if applicable
+      description: Actual PMI rate applied to this loan
     - name: privateMortgageInsurance
       type: Bool
-      description: Indicates if PMI is required
+      description: Whether PMI is required for this loan
   graphql:
     typeName: MortgageServices_MortgageServicesLoans
     inputTypeName: MortgageServices_MortgageServicesLoansInput
@@ -66,45 +61,39 @@ definition:
     - dataConnectorName: mortgage_services
       dataConnectorObjectType: mortgage_services_loans
       fieldMapping:
+        closingCosts:
+          column:
+            name: closing_costs
         downPayment:
           column:
             name: down_payment
         downPaymentPercentage:
           column:
             name: down_payment_percentage
+        enterpriseAccountId:
+          column:
+            name: enterprise_account_id
         escrowAmount:
           column:
             name: escrow_amount
-        estimatedCashToClose:
-          column:
-            name: estimated_cash_to_close
-        estimatedClosingCosts:
-          column:
-            name: estimated_closing_costs
-        estimatedMonthlyPayment:
-          column:
-            name: estimated_monthly_payment
         firstPaymentDate:
           column:
             name: first_payment_date
         interestRate:
           column:
             name: interest_rate
-        interestRateType:
-          column:
-            name: interest_rate_type
         loanAmount:
           column:
             name: loan_amount
         loanTermMonths:
           column:
             name: loan_term_months
-        loanType:
-          column:
-            name: loan_type
         maturityDate:
           column:
             name: maturity_date
+        monthlyPayment:
+          column:
+            name: monthly_payment
         mortgageServicesApplicationId:
           column:
             name: mortgage_services_application_id
@@ -130,19 +119,17 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - closingCosts
           - downPayment
           - downPaymentPercentage
+          - enterpriseAccountId
           - escrowAmount
-          - estimatedCashToClose
-          - estimatedClosingCosts
-          - estimatedMonthlyPayment
           - firstPaymentDate
           - interestRate
-          - interestRateType
           - loanAmount
           - loanTermMonths
-          - loanType
           - maturityDate
+          - monthlyPayment
           - mortgageServicesApplicationId
           - mortgageServicesLoanId
           - originationDate
@@ -158,32 +145,28 @@ definition:
     object:
       type: MortgageServicesLoans
       comparableFields:
+        - fieldName: closingCosts
+          booleanExpressionType: NumericBoolExp
         - fieldName: downPayment
           booleanExpressionType: NumericBoolExp
         - fieldName: downPaymentPercentage
           booleanExpressionType: NumericBoolExp
+        - fieldName: enterpriseAccountId
+          booleanExpressionType: Int4BoolExp
         - fieldName: escrowAmount
-          booleanExpressionType: NumericBoolExp
-        - fieldName: estimatedCashToClose
-          booleanExpressionType: NumericBoolExp
-        - fieldName: estimatedClosingCosts
-          booleanExpressionType: NumericBoolExp
-        - fieldName: estimatedMonthlyPayment
           booleanExpressionType: NumericBoolExp
         - fieldName: firstPaymentDate
           booleanExpressionType: DateBoolExp
         - fieldName: interestRate
           booleanExpressionType: NumericBoolExp
-        - fieldName: interestRateType
-          booleanExpressionType: VarcharBoolExp
         - fieldName: loanAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: loanTermMonths
           booleanExpressionType: Int4BoolExp
-        - fieldName: loanType
-          booleanExpressionType: VarcharBoolExp
         - fieldName: maturityDate
           booleanExpressionType: DateBoolExp
+        - fieldName: monthlyPayment
+          booleanExpressionType: NumericBoolExp
         - fieldName: mortgageServicesApplicationId
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesLoanId
@@ -195,7 +178,6 @@ definition:
         - fieldName: privateMortgageInsurance
           booleanExpressionType: BoolBoolExp
       comparableRelationships:
-        - relationshipName: mortgageServicesAppraisals
         - relationshipName: mortgageServicesClosedLoans
         - relationshipName: mortgageServicesClosingAppointments
         - relationshipName: mortgageServicesClosingDisclosures
@@ -219,32 +201,28 @@ definition:
     object:
       aggregatedType: MortgageServicesLoans
       aggregatableFields:
+        - fieldName: closingCosts
+          aggregateExpression: NumericAggExp
         - fieldName: downPayment
           aggregateExpression: NumericAggExp
         - fieldName: downPaymentPercentage
           aggregateExpression: NumericAggExp
+        - fieldName: enterpriseAccountId
+          aggregateExpression: Int4AggExp
         - fieldName: escrowAmount
-          aggregateExpression: NumericAggExp
-        - fieldName: estimatedCashToClose
-          aggregateExpression: NumericAggExp
-        - fieldName: estimatedClosingCosts
-          aggregateExpression: NumericAggExp
-        - fieldName: estimatedMonthlyPayment
           aggregateExpression: NumericAggExp
         - fieldName: firstPaymentDate
           aggregateExpression: DateAggExp
         - fieldName: interestRate
           aggregateExpression: NumericAggExp
-        - fieldName: interestRateType
-          aggregateExpression: VarcharAggExp
         - fieldName: loanAmount
           aggregateExpression: NumericAggExp
         - fieldName: loanTermMonths
           aggregateExpression: Int4AggExp
-        - fieldName: loanType
-          aggregateExpression: VarcharAggExp
         - fieldName: maturityDate
           aggregateExpression: DateAggExp
+        - fieldName: monthlyPayment
+          aggregateExpression: NumericAggExp
         - fieldName: mortgageServicesApplicationId
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesLoanId
@@ -269,32 +247,28 @@ definition:
     object:
       orderedType: MortgageServicesLoans
       orderableFields:
+        - fieldName: closingCosts
+          orderByExpression: NumericOrderByExp
         - fieldName: downPayment
           orderByExpression: NumericOrderByExp
         - fieldName: downPaymentPercentage
           orderByExpression: NumericOrderByExp
+        - fieldName: enterpriseAccountId
+          orderByExpression: Int4OrderByExp
         - fieldName: escrowAmount
-          orderByExpression: NumericOrderByExp
-        - fieldName: estimatedCashToClose
-          orderByExpression: NumericOrderByExp
-        - fieldName: estimatedClosingCosts
-          orderByExpression: NumericOrderByExp
-        - fieldName: estimatedMonthlyPayment
           orderByExpression: NumericOrderByExp
         - fieldName: firstPaymentDate
           orderByExpression: DateOrderByExp
         - fieldName: interestRate
           orderByExpression: NumericOrderByExp
-        - fieldName: interestRateType
-          orderByExpression: VarcharOrderByExp
         - fieldName: loanAmount
           orderByExpression: NumericOrderByExp
         - fieldName: loanTermMonths
           orderByExpression: Int4OrderByExp
-        - fieldName: loanType
-          orderByExpression: VarcharOrderByExp
         - fieldName: maturityDate
           orderByExpression: DateOrderByExp
+        - fieldName: monthlyPayment
+          orderByExpression: NumericOrderByExp
         - fieldName: mortgageServicesApplicationId
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesLoanId
@@ -338,7 +312,8 @@ definition:
       queryRootField: mortgageServicesLoansAggregate
       subscription:
         rootField: mortgageServicesLoansAggregate
-  description: Stores detailed information about mortgage loans
+  description: Stores final, actual loan details after closing. Now includes
+    reference to enterprise account.
 
 ---
 kind: ModelPermissions
@@ -350,28 +325,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: mortgageServicesAppraisals
-  sourceType: MortgageServicesLoans
-  target:
-    model:
-      name: MortgageServicesAppraisals
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: MortgageServicesAppraisalsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: mortgageServicesLoanId
-      target:
-        modelField:
-          - fieldName: mortgageServicesLoanId
-  graphql:
-    aggregateFieldName: mortgageServicesAppraisalsAggregate
 
 ---
 kind: Relationship

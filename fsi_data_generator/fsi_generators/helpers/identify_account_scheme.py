@@ -21,7 +21,7 @@ def identify_account_scheme(account_identifier):
         return "BIC/SWIFT Code"
 
     # ISO 9362 (BIC/SWIFT Standard) - Since BIC is based on it, the BIC check will cover this.
-    # Therefore, this is not needed as a seperate check.
+    # Therefore, this is not needed as a separate check.
 
     # ABA Routing Number (US) Check
     if len(account_identifier) == 9 and account_identifier.isdigit():

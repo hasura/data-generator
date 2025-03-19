@@ -38,6 +38,12 @@ definition:
     - name: startDate
       type: Date!
       description: When employment began
+    - name: verificationDate
+      type: Date
+      description: When the income was verified
+    - name: verificationStatus
+      type: Varchar!
+      description: Status of income verification process
     - name: yearsInProfession
       type: Int4
       description: Total years in this profession, even at different employers
@@ -81,6 +87,12 @@ definition:
         startDate:
           column:
             name: start_date
+        verificationDate:
+          column:
+            name: verification_date
+        verificationStatus:
+          column:
+            name: verification_status
         yearsInProfession:
           column:
             name: years_in_profession
@@ -105,6 +117,8 @@ definition:
           - phone
           - position
           - startDate
+          - verificationDate
+          - verificationStatus
           - yearsInProfession
 
 ---
@@ -138,6 +152,10 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: startDate
           booleanExpressionType: DateBoolExp
+        - fieldName: verificationDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: verificationStatus
+          booleanExpressionType: VarcharBoolExp
         - fieldName: yearsInProfession
           booleanExpressionType: Int4BoolExp
       comparableRelationships:
@@ -180,6 +198,10 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: startDate
           aggregateExpression: DateAggExp
+        - fieldName: verificationDate
+          aggregateExpression: DateAggExp
+        - fieldName: verificationStatus
+          aggregateExpression: VarcharAggExp
         - fieldName: yearsInProfession
           aggregateExpression: Int4AggExp
   count:
@@ -218,6 +240,10 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: startDate
           orderByExpression: DateOrderByExp
+        - fieldName: verificationDate
+          orderByExpression: DateOrderByExp
+        - fieldName: verificationStatus
+          orderByExpression: VarcharOrderByExp
         - fieldName: yearsInProfession
           orderByExpression: Int4OrderByExp
       orderableRelationships:

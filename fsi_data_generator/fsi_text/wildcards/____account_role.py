@@ -5,5 +5,6 @@ ____account_role = [
     "GUARDIAN",
     "POWER_OF_ATTORNEY",
     "ADMINISTRATOR",
-    "EXECUTOR"
+    "EXECUTOR",
+    "SPOUSE"
 ]

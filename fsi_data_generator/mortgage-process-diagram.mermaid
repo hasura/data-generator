@@ -1,0 +1,124 @@
+flowchart TB
+    subgraph "Prerequisite"
+        LoanProducts["mortgage_services.loan_products<br>PROCESS: Define available loan products<br>OUTPUT: Catalog of available loan options"]
+    end
+
+    subgraph "1. Initial Application"
+        InitialApplication["PROCESS: Customer fills out application form<br>INPUT: Customer information, selected loan product<br>OUTPUT: Preliminary application data"]
+    end
+
+    subgraph "2. Enterprise Identity Management"
+        PartyCheck["PROCESS: Check if party exists in enterprise.parties<br>OUTPUT: Party identified or needs creation"]
+        PartyCreation["PROCESS: Create enterprise.parties record<br>INPUT: Customer information<br>OUTPUT: New party record"]
+        KYCVerification["PROCESS: Perform KYC verification<br>INPUT: Party information<br>OUTPUT: Verified identity"]
+    end
+
+    subgraph "3. Application Processing"
+        Application["mortgage_services.applications<br>INPUT: Verified customer, property info, loan product<br>OUTPUT: Validated application record"]
+    end
+
+    subgraph "4. Borrower Information"
+        Borrowers["mortgage_services.borrowers<br>INPUT: Enterprise party reference, mortgage-specific info<br>OUTPUT: Borrower profiles"]
+        AppBorrowers["mortgage_services.application_borrowers<br>INPUT: Relationship types<br>OUTPUT: Borrower-application associations"]
+        BorrowerEmployment["mortgage_services.borrower_employments<br>INPUT: Employment history<br>OUTPUT: Verified income sources"]
+        BorrowerIncomes["mortgage_services.borrower_incomes<br>INPUT: Other income<br>OUTPUT: Total income picture"]
+        BorrowerAssets["mortgage_services.borrower_assets<br>INPUT: Asset details<br>OUTPUT: Verified assets"]
+        BorrowerLiabilities["mortgage_services.borrower_liabilities<br>INPUT: Debt obligations<br>OUTPUT: Verified liabilities"]
+    end
+
+    subgraph "5. Property Information"
+        Properties["mortgage_services.properties<br>INPUT: Property details<br>OUTPUT: Property record for underwriting"]
+    end
+
+    subgraph "6. Credit Verification"
+        CreditReports["mortgage_services.credit_reports<br>INPUT: Borrower identifiers<br>OUTPUT: Credit scores and history"]
+    end
+
+    subgraph "7. Rate Lock (Optional)"
+        RateLocks["mortgage_services.loan_rate_locks<br>INPUT: Current rates, lock period<br>OUTPUT: Secured interest rate"]
+    end
+
+    subgraph "8. Document Collection"
+        Documents["mortgage_services.documents<br>INPUT: Required documentation<br>OUTPUT: Verified document records"]
+        Conditions["mortgage_services.conditions<br>INPUT: Underwriting review<br>OUTPUT: Approval conditions"]
+    end
+
+    %% Column Break
+
+    subgraph "9. Property Appraisal"
+        Appraisals["mortgage_services.appraisals<br>INPUT: Property inspection<br>OUTPUT: Appraised value"]
+    end
+
+    subgraph "10. Insurance Verification"
+        InsuranceVerification["mortgage_services.insurance_policies<br>INPUT: Policy documentation<br>OUTPUT: Verified insurance coverage"]
+    end
+
+    subgraph "11. HMDA Reporting"
+        HMDARecords["mortgage_services.hmda_records<br>INPUT: Application demographics<br>OUTPUT: Regulatory compliance data"]
+        HMDADemographics["mortgage_services.hmda_applicant_demographics<br>INPUT: Applicant information<br>OUTPUT: Demographics for reporting"]
+    end
+
+    subgraph "12. Enterprise Account Creation"
+        EnterpriseAccount["enterprise.accounts<br>PROCESS: Create new account<br>OUTPUT: Enterprise account record for loan"]
+        AccountOwnership["enterprise.account_ownership<br>PROCESS: Link parties to account<br>OUTPUT: Established ownership relationships"]
+    end
+
+    subgraph "13. Closing Process"
+        ClosingDisclosures["mortgage_services.closing_disclosures<br>INPUT: Final loan terms<br>OUTPUT: Required legal disclosures"]
+        ClosingAppointments["mortgage_services.closing_appointments<br>INPUT: Scheduling details<br>OUTPUT: Closing meeting record"]
+    end
+
+    subgraph "14. Loan Creation"
+        Loans["mortgage_services.loans<br>INPUT: Final terms, enterprise account ID<br>OUTPUT: Active loan record"]
+        ClosedLoans["mortgage_services.closed_loans<br>INPUT: Closing details<br>OUTPUT: Funded loan record"]
+    end
+
+    subgraph "15. Loan Servicing"
+        ServicingAccounts["mortgage_services.servicing_accounts<br>INPUT: Loan details<br>OUTPUT: Servicing setup"]
+        Payments["mortgage_services.payments<br>INPUT: Payment transactions<br>OUTPUT: Payment records"]
+        InsurancePolicies["mortgage_services.insurance_policies<br>INPUT: Ongoing insurance verification<br>OUTPUT: Updated policy records"]
+    end
+
+    subgraph "16. Post-Closing Management"
+        LoanModifications["mortgage_services.loan_modifications<br>INPUT: Change requests<br>OUTPUT: Modified loan terms"]
+        EscrowAnalyses["mortgage_services.escrow_analyses<br>INPUT: Tax & insurance changes<br>OUTPUT: Updated escrow payments"]
+    end
+
+    %% Define the revised process flow with loan products as prerequisite
+    LoanProducts --> InitialApplication
+    InitialApplication --> PartyCheck
+    PartyCheck -->|Party exists| KYCVerification
+    PartyCheck -->|No party record| PartyCreation
+    PartyCreation --> KYCVerification
+    KYCVerification --> Application
+
+    Application --> Borrowers
+    PartyCheck --> Borrowers
+    Borrowers --> AppBorrowers
+    AppBorrowers --> BorrowerEmployment
+    BorrowerEmployment --> BorrowerIncomes
+    BorrowerIncomes --> BorrowerAssets
+    BorrowerAssets --> BorrowerLiabilities
+    Application --> Properties
+    BorrowerLiabilities --> CreditReports
+    Properties --> CreditReports
+    CreditReports --> RateLocks
+    CreditReports --> Documents
+    Documents --> Conditions
+    Properties --> Appraisals
+    Conditions --> Appraisals
+    Appraisals --> InsuranceVerification
+    InsuranceVerification --> HMDARecords
+    HMDARecords --> HMDADemographics
+    HMDADemographics --> EnterpriseAccount
+    EnterpriseAccount --> AccountOwnership
+    AccountOwnership --> ClosingDisclosures
+    ClosingDisclosures --> ClosingAppointments
+    ClosingAppointments --> Loans
+    EnterpriseAccount --> Loans
+    Loans --> ClosedLoans
+    ClosedLoans --> ServicingAccounts
+    ServicingAccounts --> Payments
+    ServicingAccounts --> InsurancePolicies
+    InsurancePolicies --> EscrowAnalyses
+    ServicingAccounts --> LoanModifications

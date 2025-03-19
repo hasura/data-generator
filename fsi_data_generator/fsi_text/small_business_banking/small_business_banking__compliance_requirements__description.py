@@ -38,7 +38,7 @@ small_business_banking__compliance_requirements__description = [
   "Establish procedures for monitoring commercial customer deposit account activity against expected patterns.",
   "Develop controls to identify potential commercial loan fraud during application process.",
   "Maintain written procedures for commercial real estate lending concentration risk management.",
-  "Implement procedures to monitor transactions with nonbank financial institutions.",
+  "Implement procedures to monitor transactions with non-bank financial institutions.",
   "Establish procedures for identifying potential check kiting schemes by business customers.",
   "Maintain appropriate documentation of commercial credit analyses and underwriting decisions.",
   "Implement procedures to identify potential misrepresentation in business loan applications.",

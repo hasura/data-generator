@@ -44,7 +44,7 @@ def status_update_date_time(a, _b, _c):
 
 
 wildcards = [
-    ('.*\\.accounts', '^status_update_date_time$', status_update_date_time),
+    ('^.*\\.accounts', '^status_update_date_time$', status_update_date_time),
     ('.*', '^mobile$', lambda a, b, c: fake.phone_number()),
     ('.*', '^first_name$', lambda a, b, c: fake.first_name()),
     ('.*', '^middle_name$', lambda a, b, c: fake.first_name()),
@@ -58,12 +58,12 @@ wildcards = [
         ["customer", "borrower", "business", "vendor", "employee", "branch", "department", "subsidiary",
          "supplier",
          "partner", "shareholder", "legal_representative", "agent", "regulator", "government_agency"])),
-    ('.*\\.account_statement_preferences', '^frequency$', text_list(
+    ('^.*\\.account_statement_preferences', '^frequency$', text_list(
         ["Daily", "Weekly", "Bi-Weekly", "Monthly", "Quarterly", "Annually", "Upon Request", "End of Month"],
         lower=True)),
-    ('.*\\.account_statement_preferences', '^format$',
+    ('^.*\\.account_statement_preferences', '^format$',
      text_list(["PDF", "Paper", "CSV", "HTML", "XML", "Plain Text"])),
-    ('.*\\.account_statement_preferences', '^communication_method$',
+    ('^.*\\.account_statement_preferences', '^communication_method$',
      text_list(["EMAIL", "POSTAL", "ONLINE_BANKING", "MOBILE_APP", "SMS"])),
     ('.*', '^street_name$', lambda a, b, c: fake.street_name()),
     ('.*', '^department$', lambda a, b, c: fake.unique.random_element(three_word_tuple)),
@@ -82,7 +82,7 @@ wildcards = [
     ('.*', '^switch_status$', text_list(
         ["Initiated", "In Progress", "Completed", "Failed", "Cancelled", "Pending", "Awaiting Confirmation",
          "Validation Error", "Transferred", "Rejected"])),
-    ('.*\\.transaction_card_instruments', '^authorisation_type$', text_list([
+    ('^.*\\.transaction_card_instruments', '^authorisation_type$', text_list([
         "PIN",
         "Signature",
         "Contactless",
@@ -94,15 +94,15 @@ wildcards = [
         "Manual"
     ])),
     ('.*', '^institution_name$', lambda a, b, c: fake.company()),
-    ('.*\\.transaction_debtor_agents', '^name$', lambda a, b, c: fake.company()),
+    ('^.*\\.transaction_debtor_agents', '^name$', lambda a, b, c: fake.company()),
     ('.*', '^merchant_category_code$', lambda a, b, c: fake.merchant_category_code()),
-    ('.*\\.transaction_balances', '^type$', text_list([
+    ('^.*\\.transaction_balances', '^type$', text_list([
         "Booked",
         "Available",
         "Hold",
         "Closing"
     ], lower=True)),
-    ('.*\\.transaction_bank_transaction_codes', '^code$', text_list([
+    ('^.*\\.transaction_bank_transaction_codes', '^code$', text_list([
         "PAYMENT",
         "TRANSFER",
         "DEPOSIT",
@@ -130,7 +130,7 @@ wildcards = [
         "DIVIDEND",
         "TAX"
     ], lower=True)),
-    ('.*\\.transaction_bank_transaction_codes', '^sub_code$', text_list([
+    ('^.*\\.transaction_bank_transaction_codes', '^sub_code$', text_list([
         "DOMESTIC",
         "INTERNATIONAL",
         "INTERNAL",
@@ -186,7 +186,7 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '.*\\.statement_date_times', '^type$', text_list([
+        '^.*\\.statement_date_times', '^type$', text_list([
             "PAYMENT_DUE",
             "MINIMUM_PAYMENT_DUE",
             "CYCLE_END",
@@ -196,7 +196,7 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '.*\\.statement_rates', '^type$', text_list([
+        '^.*\\.statement_rates', '^type$', text_list([
             "APR",
             "INTEREST",
             "EXCHANGE",
@@ -207,7 +207,7 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '.*\\.statement_amounts', '^type$', text_list([
+        '^.*\\.statement_amounts', '^type$', text_list([
             "OPENING_BALANCE",
             "CLOSING_BALANCE",
             "PAYMENTS",
@@ -221,7 +221,7 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '.*\\.statement_amounts', '^sub_type$', text_list([
+        '^.*\\.statement_amounts', '^sub_type$', text_list([
             "ATM_WITHDRAWAL",
             "ONLINE_TRANSFER",
             "CHECK_DEPOSIT",
@@ -230,7 +230,7 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '*\\.statement_interests', '^type$', text_list([
+        '^.*\\.statement_interests', '^type$', text_list([
             "DEPOSIT",
             "LOAN",
             "CREDIT_CARD",
@@ -239,7 +239,7 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '*\\.statement_interests', '^rate_type$', text_list([
+        '^.*\\.statement_interests', '^rate_type$', text_list([
             "FIXED",
             "VARIABLE",
             "INTRODUCTORY",
@@ -248,7 +248,7 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '*\\.statement_interests', '^frequency$', text_list([
+        '^.*\\.statement_interests', '^frequency$', text_list([
             "DAILY",
             "WEEKLY",
             "MONTHLY",
@@ -257,23 +257,23 @@ wildcards = [
         ], lower=True)
     ),
     (
-        '.*\\.statement_fees', '^frequency$', text_list(__statement_fees__frequency, lower=True)
+        '^.*\\.statement_fees', '^frequency$', text_list(__statement_fees__frequency, lower=True)
     ),
     (
         '^.*\\.statement_.*$', '^rate_type$', text_list(__statement__rate_type, lower=True)
     ),
     (
-        '.*\\.statement_fees', '^type$', text_list(__statement_fees__type, lower=True)
+        '^.*\\.statement_fees', '^type$', text_list(__statement_fees__type, lower=True)
     ),
     (
-        '.*\\.statement_benefits', '^type$', text_list(__statement_benefits__type, lower=True)
+        '^.*\\.statement_benefits', '^type$', text_list(__statement_benefits__type, lower=True)
     ),
     (
-        '.*\\.statements', '^type$', text_list(__statements__type, lower=True)
+        '^.*\\.statements', '^type$', text_list(__statements__type, lower=True)
     ),
 
     (
-        '.*', '^scheduled_type$', text_list([
+        '^.*', '^scheduled_type$', text_list([
             "SINGLE",
             "RECURRING"
         ], lower=True)
