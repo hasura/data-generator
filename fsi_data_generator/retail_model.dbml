@@ -33,14 +33,18 @@ Table "enterprise"."parties" {
   "email_address" VARCHAR(256) [note: "Primary email contact"]
   "phone" VARCHAR(30) [note: "Primary phone contact"]
   "mobile" VARCHAR(30) [note: "Mobile phone contact"]
+  "date_of_birth" DATE [note: "Party's date of birth (for individuals)"]
+  "ssn" VARCHAR(11) [note: "Social Security Number (for US individuals)"]
+  "marital_status" VARCHAR(20) [note: "Marital status (for individuals)"]
+  "citizenship_status" VARCHAR(50) [note: "Citizenship or residency status (for individuals)"]
 
-  note: "Stores information about individuals and organizations that interact with accounts"
+  note: "Stores information about individuals and organizations that interact with accounts, now with additional common personal attributes for individuals"
 }
 
 Table "enterprise"."party_relationships" {
   "enterprise_party_relationship_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each relationship record"]
   "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the to the party being represented or acted upon"]
-  "related_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party taking the role e.g. power of attorney, guardian, etc."]
+  "related_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party taking the role e.g. power of attorney, guardin, etc."]
   "relationship_type" VARCHAR(50) [note: "Describes the role of the related party relative to the enterprise party, e.g. related party is the 'guardian' of enterprise party'"]
   "priority" INT [note: "Order of precedence for the relationship type (lower number = higher priority)"]
 
@@ -781,26 +785,6 @@ TableGroup "Transactions" [color: #2D6512] {
 // MORTGAGE SERVICES
 //
 
-Table "mortgage_services"."applications" {
-  "mortgage_services_application_id" SERIAL [pk, increment, note: "Unique identifier for each mortgage application"]
-  "customer_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the primary customer applying for the mortgage"]
-  "application_type" VARCHAR(50) [not null, note: "Type of mortgage application (e.g., Purchase, Refinance, HELOC)"]
-  "status" VARCHAR(20) [not null, note: "Current status in the application workflow"]
-  "creation_date_time" TIMESTAMP [not null, note: "When the application was created"]
-  "submission_date_time" TIMESTAMP [note: "When the application was formally submitted"]
-  "last_updated_date_time" TIMESTAMP [not null, note: "When the application was last modified"]
-  "loan_purpose" VARCHAR(50) [note: "Purpose of the loan (e.g., Primary Residence, Investment)"]
-  "requested_loan_amount" NUMERIC(18,2) [not null, note: "Amount of financing requested"]
-  "requested_loan_term_months" INTEGER [not null, note: "Requested duration of the loan in months"]
-  "estimated_property_value" NUMERIC(18,2) [note: "Estimated value of the property"]
-  "estimated_credit_score" INTEGER [note: "Estimated credit score of primary applicant"]
-  "referral_source" VARCHAR(100) [note: "How the applicant learned about the mortgage product"]
-  "loan_officer_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "References the loan officer handling the application"]
-  "branch_id" INTEGER [ref: > enterprise.buildings.enterprise_building_id, note: "References the branch processing the application"]
-
-  note: "Stores mortgage application details and tracks application status"
-}
-
 Table "mortgage_services"."application_borrowers" {
   "mortgage_services_application_borrower_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each application-borrower relationship"]
   "mortgage_services_application_id" INTEGER [pk, not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application"]
@@ -814,23 +798,14 @@ Table "mortgage_services"."application_borrowers" {
 
 Table "mortgage_services"."borrowers" {
   "mortgage_services_borrower_id" SERIAL [pk, increment, note: "Unique identifier for each borrower"]
-  "first_name" VARCHAR(100) [not null, note: "Borrower's first name"]
-  "middle_name" VARCHAR(100) [note: "Borrower's middle name if applicable"]
-  "last_name" VARCHAR(100) [not null, note: "Borrower's last name"]
-  "date_of_birth" DATE [not null, note: "Borrower's date of birth"]
-  "ssn" VARCHAR(11) [not null, note: "Borrower's Social Security Number"]
-  "marital_status" VARCHAR(20) [note: "Borrower's marital status"]
-  "email" VARCHAR(255) [not null, note: "Borrower's primary email address"]
-  "phone" VARCHAR(20) [not null, note: "Borrower's primary phone number"]
-  "mobile_phone" VARCHAR(20) [note: "Borrower's mobile phone number"]
+  "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "Reference to enterprise party record - the source of truth for personal information"]
+  "years_in_school" INTEGER [note: "Total years of education"]
+  "dependent_count" INTEGER [note: "Number of dependents claimed by borrower"]
   "current_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References borrower's current address"]
   "mailing_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References borrower's mailing address if different"]
   "previous_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References borrower's previous address if relevant"]
-  "citizenship_status" VARCHAR(50) [not null, note: "Borrower's citizenship or residency status"]
-  "years_in_school" INTEGER [note: "Total years of education"]
-  "dependent_count" INTEGER [note: "Number of dependents claimed by borrower"]
 
-  note: "Stores detailed information about mortgage borrowers"
+  note: "Stores mortgage-specific information about borrowers, note additional personal information stored in the enterprise parties table"
 }
 
 Table "mortgage_services"."borrower_employments" {
@@ -839,13 +814,15 @@ Table "mortgage_services"."borrower_employments" {
   "employer_name" VARCHAR(150) [not null, note: "Name of the employer"]
   "position" VARCHAR(100) [not null, note: "Job title or position"]
   "enterprise_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the employer's address"]
-  "phone" VARCHAR(20) [note: "Employer's phone number"]
+  "phone" VARCHAR(30) [note: "Employer's phone number"]
   "employment_type" VARCHAR(30) [not null, note: "Type of employment arrangement"]
   "start_date" DATE [not null, note: "When employment began"]
   "end_date" DATE [note: "When employment ended, if applicable"]
   "is_current" BOOLEAN [not null, note: "Indicates if this is the borrower's current job"]
   "years_in_profession" INTEGER [note: "Total years in this profession, even at different employers"]
   "monthly_income" NUMERIC(18,2) [not null, note: "Gross monthly income from this employment"]
+  "verification_status" VARCHAR(20) [not null, note: "Status of income verification process"]
+  "verification_date" DATE [note: "When the income was verified"]
 
   note: "Tracks employment history and income sources for mortgage borrowers"
 }
@@ -898,7 +875,7 @@ Table "mortgage_services"."borrower_liabilities" {
 Table "mortgage_services"."properties" {
   "mortgage_services_property_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each property record"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application this property is associated with"]
-  "enterprise_address_id" INTEGER [not null, ref: > enterprise.addresses.enterprise_address_id, note: "References the property address"]
+  "address" VARCHAR(500) [not null, note: "References the complete property address"]
   "property_type" VARCHAR(50) [not null, note: "Type of property (e.g., Single Family, Condo)"]
   "occupancy_type" VARCHAR(30) [not null, note: "How the property will be used by the borrower"]
   "year_built" INTEGER [note: "Year the property was constructed"]
@@ -913,33 +890,51 @@ Table "mortgage_services"."properties" {
   note: "Stores information about properties being purchased or refinanced"
 }
 
+Table "mortgage_services"."applications" {
+  "mortgage_services_application_id" SERIAL [pk, increment, note: "Unique identifier for each mortgage application"]
+  "mortgage_services_loan_product_id" INTEGER [not null, ref: > mortgage_services.loan_products.mortgage_services_loan_product_id, note: "References the loan product being applied for"]
+  "application_type" VARCHAR(50) [not null, note: "Type of mortgage application (e.g., Purchase, Refinance, HELOC)"]
+  "status" VARCHAR(20) [not null, note: "Current status in the application workflow"]
+  "creation_date_time" TIMESTAMP [not null, note: "When the application was created"]
+  "submission_date_time" TIMESTAMP [note: "When the application was formally submitted"]
+  "last_updated_date_time" TIMESTAMP [not null, note: "When the application was last modified"]
+  "loan_purpose" VARCHAR(50) [note: "Purpose of the loan (e.g., Primary Residence, Investment)"]
+  "requested_loan_amount" NUMERIC(18,2) [not null, note: "Amount of financing requested"]
+  "requested_loan_term_months" INTEGER [not null, note: "Requested duration of the loan in months"]
+  "estimated_property_value" NUMERIC(18,2) [note: "Estimated value of the property"]
+  "estimated_credit_score" INTEGER [note: "Estimated credit score of primary applicant"]
+  "referral_source" VARCHAR(100) [note: "How the applicant learned about the mortgage product"]
+  "loan_officer_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "References the loan officer handling the application"]
+  "branch_id" INTEGER [ref: > enterprise.buildings.enterprise_building_id, note: "References the branch processing the application"]
+
+  note: "Stores mortgage application details and tracks application status. Note that the primary borrower is accessible through the application_borrowers table, not directly from this table."
+}
+
 Table "mortgage_services"."loans" {
   "mortgage_services_loan_id" SERIAL [pk, increment, note: "Unique identifier for each loan"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application this loan is associated with"]
-  "loan_type" VARCHAR(50) [not null, note: "Type of mortgage loan product"]
-  "interest_rate_type" VARCHAR(20) [not null, note: "Whether the rate is fixed or adjustable"]
-  "interest_rate" NUMERIC(6,3) [not null, note: "Annual percentage rate for the loan"]
-  "loan_term_months" INTEGER [not null, note: "Duration of the loan in months"]
-  "loan_amount" NUMERIC(18,2) [not null, note: "Principal amount of the loan"]
-  "down_payment" NUMERIC(18,2) [note: "Amount paid upfront by the borrower"]
-  "down_payment_percentage" NUMERIC(5,2) [note: "Down payment as a percentage of purchase price"]
-  "estimated_closing_costs" NUMERIC(18,2) [note: "Estimated fees and costs to close the loan"]
-  "estimated_monthly_payment" NUMERIC(18,2) [note: "Estimated regular payment including principal and interest"]
-  "estimated_cash_to_close" NUMERIC(18,2) [note: "Total cash needed from borrower to close"]
-  "private_mortgage_insurance" BOOLEAN [note: "Indicates if PMI is required"]
-  "pmi_rate" NUMERIC(5,3) [note: "Rate for private mortgage insurance if applicable"]
-  "escrow_amount" NUMERIC(18,2) [note: "Monthly amount collected for taxes and insurance"]
-  "origination_date" DATE [note: "When the loan was originated"]
-  "first_payment_date" DATE [note: "Due date of the first loan payment"]
-  "maturity_date" DATE [note: "When the loan will be fully paid off"]
+  "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the enterprise account for this loan"]
+  "interest_rate" NUMERIC(6,3) [not null, note: "Final annual percentage rate for the loan"]
+  "loan_term_months" INTEGER [not null, note: "Final duration of the loan in months"]
+  "loan_amount" NUMERIC(18,2) [not null, note: "Final principal amount of the loan"]
+  "down_payment" NUMERIC(18,2) [note: "Final amount paid upfront by the borrower"]
+  "down_payment_percentage" NUMERIC(5,2) [note: "Final down payment as a percentage of purchase price"]
+  "closing_costs" NUMERIC(18,2) [note: "Actual fees and costs paid at closing"]
+  "monthly_payment" NUMERIC(18,2) [note: "Actual monthly payment including principal and interest"]
+  "private_mortgage_insurance" BOOLEAN [note: "Whether PMI is required for this loan"]
+  "pmi_rate" NUMERIC(5,3) [note: "Actual PMI rate applied to this loan"]
+  "escrow_amount" NUMERIC(18,2) [note: "Actual monthly amount collected for taxes and insurance"]
+  "origination_date" DATE [not null, note: "When the loan was originated"]
+  "first_payment_date" DATE [not null, note: "Due date of the first loan payment"]
+  "maturity_date" DATE [not null, note: "When the loan will be fully paid off"]
 
-  note: "Stores detailed information about mortgage loans"
+  note: "Stores final, actual loan details after closing. Now includes reference to enterprise account."
 }
 
 Table "mortgage_services"."loan_products" {
   "mortgage_services_loan_product_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each loan product"]
   "product_name" VARCHAR(100) [not null, note: "Marketing name of the loan product"]
-  "product_code" VARCHAR(20) [not null, note: "Internal code identifying the loan product"]
+  "mortgage_services_loan_products_product_code" VARCHAR(20) [not null, note: "Internal code identifying the loan product"]
   "description" TEXT [note: "Detailed description of the loan product and its features"]
   "loan_type" VARCHAR(50) [not null, note: "Category of loan (e.g., Conventional, FHA, VA, USDA)"]
   "interest_rate_type" VARCHAR(20) [not null, note: "Whether the rate is fixed or adjustable"]
@@ -1004,7 +999,7 @@ Table "mortgage_services"."conditions" {
 
 Table "mortgage_services"."appraisals" {
   "mortgage_services_appraisal_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each appraisal"]
-  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this appraisal is for"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this appraisal is for"]
   "mortgage_services_property_id" INTEGER [not null, ref: > mortgage_services.properties.mortgage_services_property_id, note: "References the property being appraised"]
   "appraisal_type" VARCHAR(50) [not null, note: "Type of appraisal being performed"]
   "ordered_date" TIMESTAMP [not null, note: "When the appraisal was ordered"]
@@ -1088,14 +1083,13 @@ Table "mortgage_services"."closed_loans" {
 Table "mortgage_services"."servicing_accounts" {
   "mortgage_services_servicing_account_id" SERIAL [pk, note: "Unique identifier for each servicing account"]
   "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the originated loan"]
-  "account_number" VARCHAR(30) [not null, unique, note: "Customer-facing servicing account number"]
   "status" VARCHAR(20) [not null, note: "Current status of the loan being serviced"]
   "current_principal_balance" NUMERIC(18,2) [not null, note: "Current remaining principal balance"]
   "original_principal_balance" NUMERIC(18,2) [not null, note: "Original loan amount at closing"]
   "current_interest_rate" NUMERIC(6,3) [not null, note: "Current applicable interest rate"]
   "escrow_balance" NUMERIC(18,2) [note: "Current balance in escrow account"]
-  "next_payment_due_date" DATE [not null, note: "When next payment is due"]
-  "next_payment_amount" NUMERIC(18,2) [not null, note: "Amount due for next payment"]
+  "next_payment_due_date" DATE [note: "When next payment is due"]
+  "next_payment_amount" NUMERIC(18,2) [note: "Amount due for next payment"]
   "last_payment_date" DATE [note: "When last payment was received"]
   "last_payment_amount" NUMERIC(18,2) [note: "Amount of last payment received"]
   "interest_paid_ytd" NUMERIC(18,2) [note: "Interest paid year-to-date"]
@@ -1120,7 +1114,7 @@ Table "mortgage_services"."payments" {
   "escrow_amount" NUMERIC(18,2) [note: "Portion of payment applied to escrow"]
   "late_fee_amount" NUMERIC(10,2) [note: "Portion of payment applied to late fees"]
   "other_fee_amount" NUMERIC(10,2) [note: "Portion of payment applied to other fees"]
-  "transaction_id" INTEGER [note: "Financial transaction identifier"]
+  "transaction_id" VARCHAR(30) [note: "Financial transaction identifier"]
   "confirmation_number" VARCHAR(50) [note: "Confirmation number provided to customer"]
   "status" VARCHAR(20) [not null, note: "Current status of the payment (e.g., Pending, Completed)"]
 
@@ -1173,7 +1167,7 @@ Table "mortgage_services"."insurance_policies" {
   "expiration_date" DATE [not null, note: "End date of policy coverage"]
   "paid_through_escrow" BOOLEAN [not null, note: "Whether premium is paid from escrow account"]
   "agent_name" VARCHAR(100) [note: "Insurance agent's name"]
-  "agent_phone" VARCHAR(20) [note: "Insurance agent's contact number"]
+  "agent_phone" VARCHAR(30) [note: "Insurance agent's contact number"]
   "status" VARCHAR(20) [not null, note: "Current status of the policy"]
 
   note: "Tracks insurance policies protecting mortgaged properties"
@@ -1223,7 +1217,7 @@ Table "mortgage_services"."hmda_records" {
   "mortgage_services_loan_id" INTEGER [ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the associated loan if originated"]
   "reporting_year" INTEGER [not null, note: "Calendar year for HMDA reporting"]
   "lei" VARCHAR(20) [not null, note: "Legal Entity Identifier of the reporting institution"]
-  "loan_type" VARCHAR(79) [not null, note: "Code indicating loan type (1=Conventional, 2=FHA, 3=VA, 4=USDA)"]
+  "mortgage_services_loan_product_id" INTEGER [not null, ref: > mortgage_services.loan_products.mortgage_services_loan_product_id, note: "Type of mortgage loan product"]
   "loan_purpose" VARCHAR(81) [not null, note: "Code indicating loan purpose (1=Home purchase, 2=Home improvement, etc.)"]
   "preapproval" VARCHAR(20) [not null, note: "Code indicating if preapproval was requested"]
   "construction_method" VARCHAR(20) [not null, note: "Code indicating construction method (1=Site-built, 2=Manufactured)"]
@@ -1453,8 +1447,8 @@ Table "consumer_lending"."applicants" {
   "ssn" VARCHAR(11) [not null, note: "Social Security Number, stored encrypted"]
   "marital_status" VARCHAR(20) [note: "Married, Single, Divorced, etc."]
   "email" VARCHAR(255) [not null, note: "Primary email address"]
-  "phone" VARCHAR(20) [not null, note: "Primary phone number"]
-  "mobile_phone" VARCHAR(20) [note: "Mobile phone number if different from primary"]
+  "phone" VARCHAR(30) [not null, note: "Primary phone number"]
+  "mobile_phone" VARCHAR(30) [note: "Mobile phone number if different from primary"]
   "citizenship_status" VARCHAR(50) [not null, note: "US Citizen, Permanent Resident, etc."]
   "years_at_current_address" INTEGER [note: "Years at current residence"]
   "housing_status" VARCHAR(50) [not null, note: "Own, Rent, Live with Parents, etc."]
@@ -4026,7 +4020,7 @@ Table "app_mgmt"."sdlc_processes" {
   "process_owner" VARCHAR(255) [note: 'Name of the individual or team responsible for the SDLC process.']
   "version" VARCHAR(50) [note: 'Version number or identifier for the SDLC process.']
   "documentation_url" VARCHAR(2048) [note: 'Link to the full documentation for the SDLC process.']
-  "team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team that manages this SDLC process.']
+  "app_mgmt_team_id" UUID [ref: > "app_mgmt"."teams"."app_mgmt_team_id", note: 'Identifier for the team that manages this SDLC process.']
   note: 'Table to store software development lifecycle processes and their attributes.'
 }
 
@@ -4074,8 +4068,9 @@ Table "app_mgmt"."applications" {
   "vendor" VARCHAR(255) [note: 'Name of the vendor if the application is purchased.']
   "version" VARCHAR(50) [note: 'Current version of the application.']
   "deployment_environment" app_mgmt.deployment_environments [note: 'Environment where the application is deployed (e.g., on-premises, cloud).']
-  "operations_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team responsible for the day-to-day operation of the application.']
-  "maintenance_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team responsible for maintaining the application, including updates and fixes.']
+  "operated_by_team_id" UUID [ref: > "app_mgmt"."teams"."app_mgmt_team_id", note: 'Identifier for the team responsible for the day-to-day operation of the application.']
+  "maintained_by_team_id" UUID [ref: > "app_mgmt"."teams"."app_mgmt_team_id", note: 'Identifier for the team responsible for maintaining the application, including updates and fixes.']
+  "created_by_team_id" UUID [ref: > "app_mgmt"."teams"."app_mgmt_team_id", note: 'Identifier for the team that initially created the application.']
   "application_owner_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier for the individual responsible for communication with stakeholders, funding, budget, and strategy for the application.']
   "lifecycle_status" app_mgmt.application_lifecycle_status [note: 'Current stage in the application\'s lifecycle (e.g., development, production).']
   "date_deployed" TIMESTAMP [note: 'Date the application was deployed to its environment.']
@@ -4084,8 +4079,6 @@ Table "app_mgmt"."applications" {
   "sdlc_process_id" UUID [ref: > "app_mgmt"."sdlc_processes"."app_mgmt_sdlc_process_id", note: 'Identifier for the SDLC process used to develop or manage the application.']
   "source_code_repository" VARCHAR(2048) [note: 'Link to the repository where the application\'s source code is stored.']
   "documentation_url" VARCHAR(2048) [note: 'Link to the application\'s documentation.']
-  "created_by_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team that initially created the application.']
-  "maintained_by_team_id" UUID [ref: > "app_mgmt"."teams"."team_id", note: 'Identifier for the team currently responsible for maintaining the application.']
   "parent_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: 'Identifier for a parent application if this application is a component or part of a larger system.']
   "created_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who initially created the application record.']
   "modified_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who last modified the application record.']
@@ -4100,7 +4093,7 @@ Table "app_mgmt"."components" {
   "component_version" VARCHAR(50) [note: 'Version identifier for the software component.']
   "component_type" VARCHAR(100) [note: 'Type of component (e.g., library, framework, API, module). Also used for language-specific categorization (e.g., java-library, npm-package).']
   "vendor" VARCHAR(255) [note: 'Vendor or provider of the software component.']
-  "license_id" UUID [ref: > "app_mgmt"."licenses"."license_id", note: 'Identifier for the license associated with the component.']
+  "app_mgmt_license_id" UUID [ref: > "app_mgmt"."licenses"."app_mgmt_license_id", note: 'Identifier for the license associated with the component.']
   "description" TEXT [note: 'Description of the component\'s functionality.']
   "created_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who initially created the component record.']
   "modified_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who last modified the component record.']
@@ -4148,30 +4141,85 @@ Enum app_mgmt.criticality_levels {
   critical_impact [note: 'Critical impact: The relationship is essential, and its failure leads to catastrophic disruption or complete stoppage of operations. Requires urgent and immediate resolution. Resolution timeframe: Immediately (within 15-30 minutes).']
 }
 
+Enum app_mgmt.relationship_types {
+  AUTHORIZATION [note: 'Relies on to verify user permissions for accessing resources or functionalities.']
+  AUTHENTICATION [note: 'Relies on to verify the identity of users or other applications.']
+  DATA_ACCESS [note: 'Requires to retrieve, store, or process specific data.']
+  SERVICE_DEPENDENCY [note: 'Requires to provide a specific business or technical service.']
+  API_INTEGRATION [note: 'Utilizes its API to access its features or data.']
+  CONFIGURATION_PROVIDER [note: 'Requires to obtain necessary configuration settings or parameters.']
+  LOGGING_SERVICE [note: 'Utilizes to store and manage logs or audit trails.']
+  MONITORING_SERVICE [note: 'Requires to provide monitoring, health checks, or performance metrics.']
+  CACHING_SERVICE [note: 'Utilizes as a caching layer to improve performance.']
+  MESSAGING_QUEUE [note: 'Utilizes to enable asynchronous communication via a message queue.']
+  REPORTING_SERVICE [note: 'Requires to generate reports or provide analytical insights.']
+  DATA_PROCESSING [note: 'Requires to perform specific processing or transformation of data.']
+  UI_EMBEDDING [note: 'Incorporates and depends on its user interface component or part of the UI.']
+  WORKFLOW_TRIGGER [note: 'Depends on to initiate or trigger a workflow or process.']
+  EVENT_SUBSCRIPTION [note: 'Depends on to receive and react to published events.']
+  NOTIFICATION_SERVICE [note: 'Utilizes to send notifications to users or other systems.']
+  IDENTITY_MANAGEMENT [note: 'Relies on for managing user identities, profiles, and related information.']
+  PAYMENT_PROCESSING [note: 'Utilizes to handle payment transactions.']
+  STORAGE_SERVICE [note: 'Requires to store or retrieve files or other data.']
+  SEARCH_SERVICE [note: 'Utilizes to perform search operations on a dataset.']
+  SECURITY_SCANNING [note: 'Relies on to perform security vulnerability scans.']
+  AUDIT_LOGGING [note: 'Utilizes to store audit logs for security and compliance.']
+  RESOURCE_MANAGEMENT [note: 'Depends on for managing shared resources like databases or compute instances.']
+  TASK_SCHEDULING [note: 'Utilizes to schedule and execute background tasks or jobs.']
+  CONTENT_DELIVERY [note: 'Requires to deliver static content like images or videos to users.']
+}
+
 Table "app_mgmt"."application_relationships" {
-  "application_id_1" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the first application involved in the relationship.']
-  "application_id_2" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the second application involved in the relationship.']
-  "relationship_type" VARCHAR(50) [pk, note: 'Type of relationship between the applications (e.g., depends on, uses data from).']
+  "app_mgmt_application_relationship_id" SERIAL [pk, increment, note: 'Primary key for application relationships']
+  "application_id_1" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: 'Identifier for the first application involved in the relationship.']
+  "application_id_2" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: 'Identifier for the second application involved in the relationship.']
+  "relationship_type" app_mgmt.relationship_types [note: 'Type of relationship between the applications (e.g., depends on, uses data from).']
+  "description" TEXT [note: 'Additional explanation about nature of relationship.']
   "criticality" app_mgmt.criticality_levels [note: 'Criticality score of the relationship, indicating the impact of its failure.']
-  note: 'Table to store relationships between applications and their criticality levels.'
+  note: 'Table to store relationships between applications and their criticality levels. Applications may have many relationships, even of the same type. They are only differentiated through the description.'
+}
+
+Enum app_mgmt.license_types {
+  MIT [note: 'A permissive license that allows reuse within proprietary software provided all copies of the licensed software include a copy of the MIT License terms and the copyright notice.']
+  APACHE_2_0 [note: 'A permissive license that provides a broad grant of patent rights.']
+  BSD_2_CLAUSE [note: 'A permissive license with a simple two-clause condition.']
+  BSD_3_CLAUSE [note: 'A permissive license with an additional non-endorsement clause.']
+  ISC [note: 'A permissive license similar to the BSD and MIT licenses.']
+  GPL_2_0 [note: 'A strong copyleft license that requires derivative works to be licensed under the same terms.']
+  GPL_3_0 [note: 'A strong copyleft license that addresses some of the issues in GPLv2, such as patent grants and tivoization.']
+  LGPL_2_1 [note: 'A weaker copyleft license that allows proprietary software to link to the library.']
+  LGPL_3_0 [note: 'A weaker copyleft license, similar to LGPLv2.1 but with some updates.']
+  AGPL_3_0 [note: 'A copyleft license designed for network use, requiring that the source code of the service is available if modified versions are publicly used.']
+  PROPRIETARY [note: 'Software license that restricts the rights of the user to use, modify, or share the software.']
+  CC_BY_4_0 [note: 'Creative Commons Attribution 4.0 International License. Allows others to distribute, remix, adapt, and build upon the work, even commercially, as long as they credit the original creator.']
+  CC_BY_SA_4_0 [note: 'Creative Commons Attribution-ShareAlike 4.0 International License. Allows others to remix, adapt, and build upon the work even for commercial purposes, as long as they credit the original creator and license their new creations under the identical terms.']
+  CC_BY_NC_4_0 [note: 'Creative Commons Attribution-NonCommercial 4.0 International License. Allows others to remix, adapt, and build upon the work non-commercially, and although their new works must also acknowledge the original creator, they don’t have to license their derivative works on the same terms.']
+  CC_BY_NC_SA_4_0 [note: 'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. Allows others to remix, adapt, and build upon the work non-commercially, as long as they credit the original creator and license their new creations under the identical terms.']
+  CC_BY_ND_4_0 [note: 'Creative Commons Attribution-NoDerivatives 4.0 International License. Allows for redistribution, commercial and non-commercial, as long as it is passed along unchanged and in whole, with credit to the original creator.']
+  CC_BY_NC_ND_4_0 [note: 'Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. Allows for redistribution, non-commercial, as long as it is passed along unchanged and in whole, with credit to the original creator.']
+  MPL_2_0 [note: 'Mozilla Public License Version 2.0. A weaker copyleft license that aims to balance the interests of both proprietary and open-source developers.']
+  EPL_2_0 [note: 'Eclipse Public License Version 2.0. A permissive license with some copyleft features.']
+  CDDL_1_1 [note: 'Common Development and Distribution License. A permissive license with some copyleft features.']
+  CPL_1_0 [note: 'Common Public License Version 1.0. A permissive license with some copyleft features.']
+  APPL_2_0 [note: 'Apple Public Source License Version 2.0. A permissive license.']
 }
 
 Table "app_mgmt"."licenses" {
-  "license_id" UUID [pk, note: 'Unique identifier for a software license.']
+  "app_mgmt_license_id" UUID [pk, note: 'Unique identifier for a software license.']
   "license_name" VARCHAR(255) [note: 'Name of the software license.']
-  "license_type" VARCHAR(50) [note: 'Type of software license (e.g., MIT, GPL).']
+  "license_type" app_mgmt.license_types [note: 'Type of software license (e.g., MIT, GPL).']
   "license_text" TEXT [note: 'Full text or a summary of the software license terms.']
   note: 'Table to store information about software licenses.'
 }
 
 Table "app_mgmt"."application_licenses" {
-  "application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the application that uses the license.']
-  "license_id" UUID [ref: > "app_mgmt"."licenses"."license_id", pk, note: 'Identifier for the software license used by the application.']
+  "app_mgmt_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the application that uses the license.']
+  "app_mgmt_license_id" UUID [ref: > "app_mgmt"."licenses"."app_mgmt_license_id", pk, note: 'Identifier for the software license used by the application.']
   note: 'Table to store associations between applications and the licenses they use.'
 }
 
 Table "app_mgmt"."teams" {
-  "team_id" UUID [pk, note: 'Unique identifier for a development or management team.']
+  "app_mgmt_team_id" UUID [pk, note: 'Unique identifier for a development or management team.']
   "team_name" VARCHAR(255) [note: 'Name of the team.']
   "description" TEXT [note: 'Description of the team\'s responsibilities.']
   "team_lead_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the team lead from the enterprise associates table.']
@@ -4179,8 +4227,8 @@ Table "app_mgmt"."teams" {
 }
 
 Table "app_mgmt"."team_members" {
-  "team_id" UUID [ref: > "app_mgmt"."teams"."team_id", pk, note: 'Identifier of the team.']
-  "associate_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", pk, note: 'Identifier of the team member from the enterprise associates table.']
+  "app_mgmt_team_id" UUID [ref: > "app_mgmt"."teams"."app_mgmt_team_id", pk, note: 'Identifier of the team.']
+  "enterprise_associate_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", pk, note: 'Identifier of the team member from the enterprise associates table.']
   "function" VARCHAR(255) [note: 'Function or role of the team member within the team.']
   note: 'Table to store the associations between teams and their members, including member functions.'
 }

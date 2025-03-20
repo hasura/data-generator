@@ -4,6 +4,7 @@ from typing import Dict, Any, Optional
 import psycopg2
 
 from data_generator import DataGenerator
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import generate_unique_json_array
 
 
 def generate_random_appraisal(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
@@ -41,6 +42,15 @@ def generate_random_appraisal(id_fields: Dict[str, Any], dg: DataGenerator) -> D
         "Elite Property Assessors", "American Appraisal Associates", "Quality Valuation Services",
         "Certified Appraisal Specialists", "Metro Appraisal Company", "Allied Appraisal Network"
     ]
+    try:
+        alt_appraisal_companies = generate_unique_json_array(
+            dg.dbml,
+            fully_qualified_column_name='mortgage_services.appraisals.appraisal_companies',
+            count=50
+        )
+        appraisal_companies = appraisal_companies + alt_appraisal_companies
+    except:
+        pass
 
     status_options = [
         "ordered", "scheduled", "inspection complete", "in review", "completed", "rejected"

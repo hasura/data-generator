@@ -3,20 +3,23 @@ import datetime
 from typing import Dict, Any, Optional
 import psycopg2
 
+from data_generator import DataGenerator
 
-def generate_random_hmda_record(id_fields: Dict[str, Any], conn) -> Dict[str, Any]:
+
+def generate_random_hmda_record(id_fields: Dict, dg: DataGenerator) -> Dict[str, Any]:
     """
     Generate a random mortgage services HMDA record with reasonable values.
 
     Args:
         id_fields: Dictionary containing the required ID fields (mortgage_services_application_id,
                    mortgage_services_loan_id as optional)
-        conn: PostgreSQL connection object
+        dg: DataGenerator object
 
     Returns:
         Dictionary containing randomly generated HMDA record data (without ID fields)
     """
     # Get application and loan information to make HMDA record data reasonable
+    conn = dg.conn
     application_info = get_application_info(id_fields.get("mortgage_services_application_id"), conn)
     loan_info = None
     if "mortgage_services_loan_id" in id_fields:
@@ -40,8 +43,25 @@ def generate_random_hmda_record(id_fields: Dict[str, Any], conn) -> Dict[str, An
 
     loan_purpose_weights = [0.5, 0.1, 0.2, 0.15, 0.04, 0.01]
 
+    # Create mappings for application types to ensure consistency
+    application_type_mapping = {
+        # Direct matches (case-insensitive)
+        "purchase": "Purchase",
+        "refinance": "Refinance",
+        "heloc": "HomeEquity",
+        # Alternative formats that might appear
+        "home equity": "HomeEquity",
+        "cash-out refinance": "Refinance",
+        "rate and term refinance": "Refinance"
+    }
+
     if application_info and 'application_type' in application_info:
         app_type = application_info['application_type']
+
+        # Convert to standard format using the mapping (case-insensitive)
+        app_type_normalized = app_type.lower()
+        app_type = application_type_mapping.get(app_type_normalized, app_type)
+
         if app_type == "Purchase":
             loan_purpose = "1"  # Home purchase
         elif app_type == "Refinance":
@@ -85,6 +105,23 @@ def generate_random_hmda_record(id_fields: Dict[str, Any], conn) -> Dict[str, An
     else:
         loan_amount = round(random.uniform(50000, 750000), 2)
 
+    # Create mappings for application status to ensure consistency
+    application_status_mapping = {
+        # Direct matches (case-insensitive)
+        "approved": "approved",
+        "denied": "denied",
+        "withdrawn": "withdrawn",
+        # Alternative formats that might appear
+        "under review": "in review",
+        "in review": "in review",
+        "incomplete": "incomplete",
+        "cancelled": "withdrawn",
+        "canceled": "withdrawn",
+        "funded": "approved",  # A funded loan was approved
+        "draft": "incomplete",
+        "submitted": "in review",
+    }
+
     # Generate action taken based on application status if available
     action_taken_options = {
         "1": "Loan originated",
@@ -101,6 +138,12 @@ def generate_random_hmda_record(id_fields: Dict[str, Any], conn) -> Dict[str, An
 
     if application_info and 'status' in application_info:
         app_status = application_info['status']
+
+        # Convert to standard format using the mapping (case-insensitive)
+        if isinstance(app_status, str):
+            app_status_normalized = app_status.lower()
+            app_status = application_status_mapping.get(app_status_normalized, app_status)
+
         if app_status == "approved" and loan_info:
             action_taken = "1"  # Loan originated
         elif app_status == "approved" and not loan_info:
@@ -321,8 +364,8 @@ def generate_random_hmda_record(id_fields: Dict[str, Any], conn) -> Dict[str, An
                                                                  weights=[0.6, 0.3, 0.1], k=1)[0]
 
         manufactured_home_land_property_interest = \
-        random.choices(list(manufactured_home_land_property_interests.keys()),
-                       weights=[0.4, 0.1, 0.2, 0.2, 0.1], k=1)[0]
+            random.choices(list(manufactured_home_land_property_interests.keys()),
+                           weights=[0.4, 0.1, 0.2, 0.2, 0.1], k=1)[0]
     else:
         manufactured_home_secured_property_type = "3"  # Not applicable
         manufactured_home_land_property_interest = "5"  # Not applicable

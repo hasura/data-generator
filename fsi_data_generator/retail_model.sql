@@ -1467,7 +1467,7 @@ CREATE TABLE "mortgage_services"."payments" (
   "escrow_amount" NUMERIC(18,2),
   "late_fee_amount" NUMERIC(10,2),
   "other_fee_amount" NUMERIC(10,2),
-  "transaction_id" INTEGER,
+  "transaction_id" VARCHAR(30),
   "confirmation_number" VARCHAR(50),
   "status" VARCHAR(20) NOT NULL
 );
