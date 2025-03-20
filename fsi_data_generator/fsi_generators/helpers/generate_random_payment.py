@@ -95,10 +95,17 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     next_payment_due_date = servicing_account_info.get("next_payment_due_date")
     last_payment_date = servicing_account_info.get("last_payment_date")
 
+    # Ensure dates are in proper date format (not datetime)
+    next_payment_due_date = next_payment_due_date.date() if hasattr(next_payment_due_date, 'date') else next_payment_due_date
+    last_payment_date = last_payment_date.date() if hasattr(last_payment_date, 'date') else last_payment_date
+
     # Determine payment date based on existing payments and payment schedule
     if previous_payments:
         # If there are already payments in the system, place this payment before the earliest recorded payment
         earliest_payment_date = previous_payments[-1]["payment_date"] if len(previous_payments) > 1 else previous_payments[0]["payment_date"]
+
+        # Ensure earliest_payment_date is in date format
+        earliest_payment_date = earliest_payment_date.date() if hasattr(earliest_payment_date, 'date') else earliest_payment_date
 
         # Make this payment 28-31 days before the earliest payment (typical monthly cycle)
         days_before_earliest = random.randint(28, 31)
@@ -118,11 +125,17 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
         payment_date = today - datetime.timedelta(days=days_ago)
 
     # Ensure payment date isn't in the future
-    if payment_date > today:
+    # Convert payment_date to date type if it's datetime
+    payment_date_obj = payment_date.date() if hasattr(payment_date, 'date') else payment_date
+    if payment_date_obj > today:
         payment_date = today - datetime.timedelta(days=random.randint(1, 5))
 
     # Check if payment date is before loan origination date
-    if loan_origination_date and payment_date < loan_origination_date:
+    # Ensure both dates are the same type for comparison
+    payment_date_obj = payment_date.date() if hasattr(payment_date, 'date') else payment_date
+    loan_origination_date_obj = loan_origination_date.date() if hasattr(loan_origination_date, 'date') else loan_origination_date
+
+    if loan_origination_date_obj and payment_date_obj < loan_origination_date_obj:
         # We've reached back to the beginning of the loan - payment history is complete
         # Signal to skip this row generation
         from data_generator import SkipRowGenerationError
@@ -142,7 +155,8 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
 
     # Determine payment status
     # Most payments should be completed, especially if they're not recent
-    days_from_today = (today - payment_date).days
+    payment_date_obj = payment_date.date() if hasattr(payment_date, 'date') else payment_date
+    days_from_today = (today - payment_date_obj).days
     if days_from_today > 5:
         status_weights = [0.01, 0.97, 0.01, 0.01]  # Older payments almost always completed
     elif days_from_today > 3:
@@ -262,8 +276,8 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     returned_date = None
     if payment_status == "returned":
         return_reasons = [
-            "Insufficient Funds", "Account Closed", "Payment Stopped",
-            "Invalid Account Number", "Technical Error"
+            "insufficient funds", "account closed", "payment stopped",
+            "invalid account number", "technical error"
         ]
         returned_reason = random.choice(return_reasons)
         # Return typically happens 1-3 days after payment
@@ -307,14 +321,14 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
 
         cursor.execute("""
             SELECT 
-                current_principal_balance, 
-                original_principal_balance,
-                current_interest_rate,
-                next_payment_amount,
+                CAST(current_principal_balance AS FLOAT), 
+                CAST(original_principal_balance AS FLOAT),
+                CAST(current_interest_rate AS FLOAT),
+                CAST(next_payment_amount AS FLOAT),
                 next_payment_due_date,
                 last_payment_date,
-                last_payment_amount,
-                escrow_balance
+                CAST(last_payment_amount AS FLOAT),
+                CAST(escrow_balance AS FLOAT)
             FROM mortgage_services.servicing_accounts 
             WHERE mortgage_services_servicing_account_id = %s
         """, (servicing_account_id,))
@@ -328,7 +342,7 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
             payment_amount = result[3]  # next_payment_amount
 
             # If we have a principal balance and interest rate, we can calculate the P&I portion
-            if result[0] and result[2]:  # current_principal_balance and current_interest_rate
+            if result[0] is not None and result[2] is not None:  # current_principal_balance and current_interest_rate
                 principal_balance = float(result[0])
                 interest_rate = float(result[2])
 
@@ -339,7 +353,7 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
 
                 # The monthly escrow would be the difference between total payment and estimated P&I
                 # Estimate P&I by calculating interest and assuming the rest is principal
-                payment_amount_float = float(payment_amount) if payment_amount else 0.0
+                payment_amount_float = float(payment_amount) if payment_amount is not None else 0.0
                 estimated_pi_payment = monthly_interest + (payment_amount_float * 0.7)  # Assume ~70% of payment is P&I
                 monthly_escrow_amount = payment_amount_float - estimated_pi_payment
 
@@ -350,20 +364,20 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
                         monthly_escrow_amount = payment_amount_float * 0.25
 
             # If we couldn't calculate it, set a reasonable default
-            if monthly_escrow_amount is None and payment_amount:
+            if monthly_escrow_amount is None and payment_amount is not None:
                 monthly_escrow_amount = float(payment_amount) * 0.25  # Typical escrow is about 25% of payment
             elif monthly_escrow_amount is None:
                 monthly_escrow_amount = 250.00  # Default value if no payment amount
 
             return {
-                "current_principal_balance": float(result[0]) if result[0] else None,
-                "original_principal_balance": float(result[1]) if result[1] else None,
-                "interest_rate": float(result[2]) if result[2] else None,
-                "payment_amount": float(result[3]) if result[3] else None,  # Using next_payment_amount as payment_amount
+                "current_principal_balance": result[0],
+                "original_principal_balance": result[1],
+                "interest_rate": result[2],
+                "payment_amount": result[3],  # Using next_payment_amount as payment_amount
                 "next_payment_due_date": result[4],
                 "last_payment_date": result[5],
-                "last_payment_amount": float(result[6]) if result[6] else None,
-                "escrow_balance": float(result[7]) if result[7] else None,
+                "last_payment_amount": result[6],
+                "escrow_balance": result[7],
                 "monthly_escrow_amount": monthly_escrow_amount
             }
         else:
@@ -392,10 +406,10 @@ def get_previous_payments(servicing_account_id: int, conn) -> list:
             SELECT 
                 payment_date,
                 payment_type,
-                payment_amount,
-                principal_amount,
-                interest_amount,
-                escrow_amount
+                CAST(payment_amount AS FLOAT),
+                CAST(principal_amount AS FLOAT),
+                CAST(interest_amount AS FLOAT),
+                CAST(escrow_amount AS FLOAT)
             FROM mortgage_services.payments 
             WHERE mortgage_services_servicing_account_id = %s
             ORDER BY payment_date DESC
@@ -409,10 +423,10 @@ def get_previous_payments(servicing_account_id: int, conn) -> list:
             payments.append({
                 "payment_date": row[0],
                 "payment_type": row[1],
-                "payment_amount": float(row[2]) if row[2] else None,
-                "principal_amount": float(row[3]) if row[3] else None,
-                "interest_amount": float(row[4]) if row[4] else None,
-                "escrow_amount": float(row[5]) if row[5] else None
+                "payment_amount": row[2],
+                "principal_amount": row[3],
+                "interest_amount": row[4],
+                "escrow_amount": row[5]
             })
 
         return payments

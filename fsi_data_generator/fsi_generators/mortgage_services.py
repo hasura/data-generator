@@ -22,6 +22,8 @@ from fsi_data_generator.fsi_generators.helpers.generate_random_closing_disclosur
     generate_random_closing_disclosure
 from fsi_data_generator.fsi_generators.helpers.generate_random_condition import generate_random_condition
 from fsi_data_generator.fsi_generators.helpers.generate_random_credit_report import generate_random_credit_report
+from fsi_data_generator.fsi_generators.helpers.generate_random_customer_communication import \
+    generate_random_customer_communication
 from fsi_data_generator.fsi_generators.helpers.generate_random_document import generate_random_document
 from fsi_data_generator.fsi_generators.helpers.generate_random_escrow_analysis import generate_random_escrow_analysis
 from fsi_data_generator.fsi_generators.helpers.generate_random_escrow_disbursement import \
@@ -32,6 +34,8 @@ from fsi_data_generator.fsi_generators.helpers.generate_random_hmda_edit import 
 from fsi_data_generator.fsi_generators.helpers.generate_random_hmda_record import generate_random_hmda_record
 from fsi_data_generator.fsi_generators.helpers.generate_random_hmda_submission import generate_random_hmda_submission
 from fsi_data_generator.fsi_generators.helpers.generate_random_insurance_policy import generate_random_insurance_policy
+from fsi_data_generator.fsi_generators.helpers.generate_random_loan_modification import \
+    generate_random_loan_modification
 from fsi_data_generator.fsi_generators.helpers.generate_random_loan_product import generate_random_loan_product
 from fsi_data_generator.fsi_generators.helpers.generate_random_loan_rate_lock import generate_random_loan_rate_lock
 from fsi_data_generator.fsi_generators.helpers.generate_random_mortgage import generate_random_mortgage
@@ -40,23 +44,6 @@ from fsi_data_generator.fsi_generators.helpers.generate_random_property import g
 from fsi_data_generator.fsi_generators.helpers.generate_random_servicing_account import \
     generate_random_servicing_account
 from fsi_data_generator.fsi_generators.helpers.mod_tuples import mod_tuples
-from fsi_data_generator.fsi_generators.helpers.text_list import text_list
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__customer_communications__communication_type import \
-    mortgage_services__customer_communications__communication_type
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__customer_communications__content import \
-    mortgage_services__customer_communications__content
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__customer_communications__direction import \
-    mortgage_services__customer_communications__direction
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__customer_communications__related_to import \
-    mortgage_services__customer_communications__related_to
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__customer_communications__status import \
-    mortgage_services__customer_communications__status
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__loan_modification__modification_type import \
-    mortgage_services__loan_modification__modification_type
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__loan_modification__status import \
-    mortgage_services__loan_modification__status
-from fsi_data_generator.fsi_text.mortgage_services.mortgage_services__loan_modifications__reason import \
-    mortgage_services__loan_modifications__reason
 
 fake = Faker()
 
@@ -212,6 +199,8 @@ def random_record(dg: DataGenerator, fn):
 
 def mortgage_services(dg):
     return mod_tuples('mortgage_services', [
+        ('customer_communications', random_record(dg, generate_random_customer_communication)),
+        ('loan_modifications', random_record(dg, generate_random_loan_modification)),
         ('escrow_disbursements', random_record(dg, generate_random_escrow_disbursement)),
         ('escrow_analyses', random_record(dg, generate_random_escrow_analysis)),
         ('payments', random_record(dg, generate_random_payment)),
@@ -238,23 +227,5 @@ def mortgage_services(dg):
         ('hmda_records', random_record(dg, generate_random_hmda_record)),
         ('hmda_edits', random_record(dg, generate_random_hmda_edit)),
         ('hmda_applicant_demographics', random_record(dg, generate_random_hmda_applicant_demographics)),
-        ('hmda_submissions', random_record(dg, generate_random_hmda_submission)),
-        ('customer_communications', 'communication_type',
-         text_list(mortgage_services__customer_communications__communication_type)),
-        ('customer_communications', 'direction',
-         text_list(mortgage_services__customer_communications__direction, lower=True)),
-        ('customer_communications', 'status',
-         text_list(mortgage_services__customer_communications__status, lower=True)),
-        ('customer_communications', 'related_to',
-         text_list(mortgage_services__customer_communications__related_to, lower=True)),
-        ('loan_modification', 'modification_type',
-         text_list(mortgage_services__loan_modification__modification_type, lower=True)),
-        ('loan_modification', 'reason', text_list(
-            mortgage_services__loan_modifications__reason)),
-        ('loan_modification', 'status',
-         text_list(mortgage_services__loan_modification__status, lower=True)),
-        ('.*', 'document_name', lambda a, b, c: fake.file_name()),
-        ('.*', '.*_path', lambda a, b, c: fake.file_path()),
-        ('customer_communications', 'content',
-         text_list(mortgage_services__customer_communications__content)),
+        ('hmda_submissions', random_record(dg, generate_random_hmda_submission))
     ])

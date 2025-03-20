@@ -1546,7 +1546,7 @@ CREATE TABLE "mortgage_services"."customer_communications" (
   "content" TEXT,
   "sender" VARCHAR(100),
   "recipient" VARCHAR(100),
-  "template_id" INTEGER,
+  "template_id" VARCHAR(30),
   "status" VARCHAR(20) NOT NULL,
   "document_path" VARCHAR(500),
   "related_to" VARCHAR(50)
