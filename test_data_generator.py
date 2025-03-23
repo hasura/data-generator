@@ -3,11 +3,12 @@ import os
 import sys
 import time
 
+import pandas as pd
 import psycopg2
 from dotenv import load_dotenv
 from faker import Faker
 from psycopg2 import sql
-import pandas as pd
+
 pd.set_option('display.max_rows', None)
 from fsi_data_generator import generate_banking_data
 

@@ -14,9 +14,10 @@ from faker.exceptions import UniquenessException
 from psycopg2 import Error
 from sentence_transformers import SentenceTransformer, util
 
-from fsi_data_generator.fsi_generators.helpers.generate_random_interval import generate_random_interval_with_optional_weights
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import generate_unique_json_array, \
-    previous_responses
+from fsi_data_generator.fsi_generators.helpers.generate_random_interval import \
+    generate_random_interval_with_optional_weights
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import (
+    generate_unique_json_array, previous_responses)
 
 load_dotenv()
 
@@ -31,6 +32,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
+logging.getLogger('httpcore').setLevel(logging.WARNING)
 logging.getLogger('sentence_transformers').setLevel(logging.WARNING)
 logging.getLogger('transformers').setLevel(logging.WARNING)
 logging.getLogger('torch').setLevel(logging.WARNING)
@@ -223,7 +225,7 @@ class DataGenerator:
 
                 # Check if the schema is in the excluded list
                 if schema in self.exclude_schemas:
-                    logger.debug(f"Skipping excluded schema: {schema}")
+                    # logger.debug(f"Skipping excluded schema: {schema}")
                     continue
 
                 logger.debug(f"Processing table {table_key}...")
@@ -242,11 +244,11 @@ class DataGenerator:
 
                 # Get all valid columns for this table
                 valid_columns = set(col_info[0] for col_info in self.table_columns[table_key])
-                logger.debug(f"Valid columns for {table_key}: {valid_columns}")
+                # logger.debug(f"Valid columns for {table_key}: {valid_columns}")
 
                 # Calculate number of batches for this table
                 num_batches = (num_rows + self.batch_size - 1) // self.batch_size  # Ceiling division
-                logger.debug(f"Will insert in {num_batches} batches of up to {self.batch_size} rows each")
+                # logger.debug(f"Will insert in {num_batches} batches of up to {self.batch_size} rows each")
 
                 # First determine which columns we'll use (not auto-generated or excluded)
                 fk_columns = []  # Columns with foreign key relationships
@@ -277,7 +279,7 @@ class DataGenerator:
 
                     # Skip excluded columns
                     if self._is_excluded(table_key, column_name):
-                        logger.debug(f"Skipping excluded column {table_key}.{column_name}")
+                        # logger.debug(f"Skipping excluded column {table_key}.{column_name}")
                         continue
 
                     # Check if this column has a custom generator
@@ -317,7 +319,7 @@ class DataGenerator:
                         for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in fk_columns:
                             # Skip if this column has already been populated by another process
                             if column in row_values:
-                                logger.debug(f"Column {column} already has a value set, skipping FK processing...")
+                                # logger.debug(f"Column {column} already has a value set, skipping FK processing...")
                                 continue
 
                             column_names.append(column)
@@ -341,7 +343,7 @@ class DataGenerator:
                                         if col not in column_names and col in valid_columns and col not in auto_gen_cols:
                                             column_names.append(col)
                                             values.append(val)
-                                            logger.debug(f"Added valid extra column {col} from FK custom generator")
+                                            # logger.debug(f"Added valid extra column {col} from FK custom generator")
 
                                 except SkipRowGenerationError:
                                     raise
@@ -363,7 +365,7 @@ class DataGenerator:
                                 if fk_info:
                                     self._handle_foreign_key(fk_info, table_key, column, is_nullable, values)
                                 else:
-                                    logger.debug(f"Warning: Column {column} marked as FK but no FK info found")
+                                    # logger.debug(f"Warning: Column {column} marked as FK but no FK info found")
                                     self._generate_column_value(table_key,
                                                                 column, data_type, column_default, is_nullable,
                                                                 character_maximum_length, num_precision, num_scale,
@@ -375,7 +377,7 @@ class DataGenerator:
                         for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in custom_columns:
                             # Skip if this column has already been populated by another custom generator
                             if column in row_values:
-                                logger.debug(f"Column {column} already has a value set, skipping custom generation...")
+                                # logger.debug(f"Column {column} already has a value set, skipping custom generation...")
                                 continue
 
                             # Get the custom generator for this column
@@ -398,7 +400,7 @@ class DataGenerator:
                                     if col not in column_names and col in valid_columns and col not in auto_gen_cols:
                                         column_names.append(col)
                                         values.append(val)
-                                        logger.debug(f"Added valid extra column {col} from custom generator")
+                                        # logger.debug(f"Added valid extra column {col} from custom generator")
 
                             except AttributeError:
                                 if is_nullable == 'YES':
@@ -429,8 +431,8 @@ class DataGenerator:
                         for column, data_type, column_default, is_nullable, character_maximum_length, num_precision, num_scale in standard_columns:
                             # Skip if this column has already been populated
                             if column in row_values:
-                                logger.debug(
-                                    f"Column {column} already has a value set, skipping standard generation...")
+                                # logger.debug(
+                                #     f"Column {column} already has a value set, skipping standard generation...")
                                 if column not in column_names:
                                     column_names.append(column)
                                     values.append(row_values[column])
@@ -572,16 +574,16 @@ class DataGenerator:
         query = f'INSERT INTO "{schema}"."{table}" ({columns_str}) VALUES {placeholders_str} RETURNING *'
 
         try:
-            logger.debug(f"Executing batch query: {query}")
-            logger.debug(f"all_values={all_values}")
+            # logger.debug(f"Executing batch query: {query}")
+            # logger.debug(f"all_values={all_values}")
             self.cur.execute(query, all_values)
 
             # Process returned rows to store primary keys
             inserted_rows = self.cur.fetchall()
             for row in inserted_rows:
                 self._store_primary_key(table_key, row)
-            if inserted_rows:
-                logger.debug(f"Stored PKs for {table_key}: {len(inserted_rows)} rows ")
+            # if inserted_rows:
+            #     logger.debug(f"Stored PKs for {table_key}: {len(inserted_rows)} rows ")
 
             # Get the total rows for this table from the class instance
             total_rows = getattr(self, "total_rows_for_" + table_key.replace(".", "_"), 0)
@@ -607,7 +609,7 @@ class DataGenerator:
     def identify_generated_columns(self):
         """
         Identify generated columns in the PostgreSQL database and add them to auto_generated_columns.
-        This includes both identity columns (SERIAL) and computed columns (GENERATED ALWAYS AS).
+        This includes both identity columns (IAL) and computed columns (GENERATED ALWAYS AS).
         """
         for schema_name in self.schemas:
             try:
@@ -1532,6 +1534,7 @@ class DataGenerator:
         Args:
             row_counts (dict, optional): A dictionary mapping table names to row counts.
             commit_frequency (int, optional): Number of tables to process before committing.
+            scale: multiplier for row_counts
 
         Returns:
             int: Total number of rows generated

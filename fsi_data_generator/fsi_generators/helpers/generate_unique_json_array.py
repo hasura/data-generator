@@ -1,6 +1,9 @@
-import anthropic
 import json
+import logging
 import os
+from json import JSONDecodeError
+
+import anthropic
 from dotenv import load_dotenv  # Import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
@@ -8,6 +11,8 @@ load_dotenv()  # Load environment variables from .env file
 client = anthropic.Anthropic()
 
 PREVIOUS_RESPONSES_FILE = "previous_responses.json"
+logger = logging.getLogger(__name__)
+logging.getLogger("anthropic._base_client").setLevel(logging.INFO)
 
 
 def load_previous_responses():
@@ -27,7 +32,7 @@ def save_previous_responses(responses):
         with open(PREVIOUS_RESPONSES_FILE, "w") as f:
             json.dump(responses, f, indent=4)
     except IOError as e:
-        print(f"Error saving previous responses: {e}")
+        logger.error(f"Error saving previous responses: {e}")
 
 
 previous_responses = load_previous_responses()  # Load on startup
@@ -60,7 +65,7 @@ def generate_unique_json_array(dbml_string, fully_qualified_column_name, count, 
 
         # If we have some but not enough, only request the additional elements needed
         additional_needed = count - len(cached_results)
-        print(f"Found {len(cached_results)} cached elements. Requesting {additional_needed} additional elements.")
+        # logger.debug(f"Found {len(cached_results)} cached elements. Requesting {additional_needed} additional elements.")
     else:
         cached_results = []
         additional_needed = count
@@ -141,7 +146,7 @@ def generate_unique_json_array(dbml_string, fully_qualified_column_name, count, 
                 raise ValueError("Anthropic response was not a valid JSON string array of strings.")
         except json.JSONDecodeError as e:
             # Attempt recovery for incomplete JSON responses
-            print(f"Received potentially incomplete JSON: {e}")
+            logger.debug(f"Received potentially incomplete JSON: {e}")
 
             # Try to recover truncated JSON array
             if response_text.startswith("[") and not response_text.endswith("]"):
@@ -156,8 +161,8 @@ def generate_unique_json_array(dbml_string, fully_qualified_column_name, count, 
                         previous_responses[key_to_use] = combined_results
                         save_previous_responses(previous_responses)
                         return combined_results
-                except:
-                    pass  # If recovery fails, continue to original error
+                except JSONDecodeError:
+                    pass
 
             # For other common truncation patterns
             if "," in response_text and not response_text.endswith("]"):
@@ -174,20 +179,20 @@ def generate_unique_json_array(dbml_string, fully_qualified_column_name, count, 
                             previous_responses[key_to_use] = combined_results
                             save_previous_responses(previous_responses)
                             return combined_results
-                except:
+                except JSONDecodeError:
                     pass  # If recovery fails, continue to original error
 
             # If all recovery attempts fail, raise the original error
-            print(f"Error decoding JSON: {e}")
-            print(f"Raw response: {response_text}")
+            logger.error(f"Error decoding JSON: {e}")
+            # logger.debug(f"Raw response: {response_text}")
             raise ValueError("Anthropic response was not valid JSON and could not be recovered.")
 
     except anthropic.APIConnectionError as e:
-        print(f"Error connecting to Anthropic API: {e}")
+        logger.error(f"Error connecting to Anthropic API: {e}")
         raise
     except anthropic.APIStatusError as e:
-        print(f"Anthropic API returned an error: {e}")
+        logger.debug(f"Anthropic API returned an error: {e}")
         raise
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        logger.debug(f"An unexpected error occurred: {e}")
         raise

@@ -1,1 +1,3 @@
-consumer_lending__applicants__citizenship_status = ["us citizen", "permanent resident", "visa holder", "other"]
+consumer_lending__applicants__citizenship_status = [
+    "US_CITIZEN", "US_PERMANENT_RESIDENT", "US_TEMPORARY_RESIDENT", "NOT_SPECIFIED"
+]

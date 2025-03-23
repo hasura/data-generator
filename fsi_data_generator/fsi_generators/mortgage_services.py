@@ -1,54 +1,74 @@
 from decimal import Decimal
-from typing import Dict
 
 from faker import Faker
 
 from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.helpers.generate_application_borrower_record import \
+
+from .helpers.apply_schema_to_regex import apply_schema_to_regex
+from .helpers.random_record import random_record
+from .intelligent_generators.mortgage_services.borrower import \
+    generate_random_borrower
+from .intelligent_generators.mortgage_services.borrower_record import \
     generate_application_borrower_record
-from fsi_data_generator.fsi_generators.helpers.generate_borrower_asset_record import generate_borrower_asset
-from fsi_data_generator.fsi_generators.helpers.generate_borrower_employment import \
+from .intelligent_generators.mortgage_services.employment import \
     generate_random_borrower_employment
-from fsi_data_generator.fsi_generators.helpers.generate_borrower_income import generate_borrower_income
-from fsi_data_generator.fsi_generators.helpers.generate_random_application import generate_random_application
-from fsi_data_generator.fsi_generators.helpers.generate_random_appraisal import generate_random_appraisal
-from fsi_data_generator.fsi_generators.helpers.generate_random_borrower import generate_random_borrower
-from fsi_data_generator.fsi_generators.helpers.generate_random_borrower_liability import \
+from .intelligent_generators.mortgage_services.generate_borrower_asset_record import \
+    generate_borrower_asset
+from .intelligent_generators.mortgage_services.generate_borrower_income import \
+    generate_borrower_income
+from .intelligent_generators.mortgage_services.generate_random_application import \
+    generate_random_application
+from .intelligent_generators.mortgage_services.generate_random_appraisal import \
+    generate_random_appraisal
+from .intelligent_generators.mortgage_services.generate_random_borrower_liability import \
     generate_random_borrower_liability
-from fsi_data_generator.fsi_generators.helpers.generate_random_closed_loan import generate_random_closed_loan
-from fsi_data_generator.fsi_generators.helpers.generate_random_closing_appointment import \
+from .intelligent_generators.mortgage_services.generate_random_closed_loan import \
+    generate_random_closed_loan
+from .intelligent_generators.mortgage_services.generate_random_closing_appointment import \
     generate_random_closing_appointment
-from fsi_data_generator.fsi_generators.helpers.generate_random_closing_disclosure import \
+from .intelligent_generators.mortgage_services.generate_random_closing_disclosure import \
     generate_random_closing_disclosure
-from fsi_data_generator.fsi_generators.helpers.generate_random_condition import generate_random_condition
-from fsi_data_generator.fsi_generators.helpers.generate_random_credit_report import generate_random_credit_report
-from fsi_data_generator.fsi_generators.helpers.generate_random_customer_communication import \
+from .intelligent_generators.mortgage_services.generate_random_condition import \
+    generate_random_condition
+from .intelligent_generators.mortgage_services.generate_random_credit_report import \
+    generate_random_credit_report
+from .intelligent_generators.mortgage_services.generate_random_customer_communication import \
     generate_random_customer_communication
-from fsi_data_generator.fsi_generators.helpers.generate_random_document import generate_random_document
-from fsi_data_generator.fsi_generators.helpers.generate_random_escrow_analysis import generate_random_escrow_analysis
-from fsi_data_generator.fsi_generators.helpers.generate_random_escrow_disbursement import \
+from .intelligent_generators.mortgage_services.generate_random_document import \
+    generate_random_document
+from .intelligent_generators.mortgage_services.generate_random_escrow_analysis import \
+    generate_random_escrow_analysis
+from .intelligent_generators.mortgage_services.generate_random_escrow_disbursement import \
     generate_random_escrow_disbursement
-from fsi_data_generator.fsi_generators.helpers.generate_random_hmda_applicant_demographics import \
+from .intelligent_generators.mortgage_services.generate_random_hmda_applicant_demographics import \
     generate_random_hmda_applicant_demographics
-from fsi_data_generator.fsi_generators.helpers.generate_random_hmda_edit import generate_random_hmda_edit
-from fsi_data_generator.fsi_generators.helpers.generate_random_hmda_record import generate_random_hmda_record
-from fsi_data_generator.fsi_generators.helpers.generate_random_hmda_submission import generate_random_hmda_submission
-from fsi_data_generator.fsi_generators.helpers.generate_random_insurance_policy import generate_random_insurance_policy
-from fsi_data_generator.fsi_generators.helpers.generate_random_loan_modification import \
+from .intelligent_generators.mortgage_services.generate_random_hmda_edit import \
+    generate_random_hmda_edit
+from .intelligent_generators.mortgage_services.generate_random_hmda_record import \
+    generate_random_hmda_record
+from .intelligent_generators.mortgage_services.generate_random_hmda_submission import \
+    generate_random_hmda_submission
+from .intelligent_generators.mortgage_services.generate_random_insurance_policy import \
+    generate_random_insurance_policy
+from .intelligent_generators.mortgage_services.generate_random_loan_modification import \
     generate_random_loan_modification
-from fsi_data_generator.fsi_generators.helpers.generate_random_loan_product import generate_random_loan_product
-from fsi_data_generator.fsi_generators.helpers.generate_random_loan_rate_lock import generate_random_loan_rate_lock
-from fsi_data_generator.fsi_generators.helpers.generate_random_mortgage import generate_random_mortgage
-from fsi_data_generator.fsi_generators.helpers.generate_random_payment import generate_random_payment
-from fsi_data_generator.fsi_generators.helpers.generate_random_property import generate_random_property
-from fsi_data_generator.fsi_generators.helpers.generate_random_servicing_account import \
+from .intelligent_generators.mortgage_services.generate_random_loan_product import \
+    generate_random_loan_product
+from .intelligent_generators.mortgage_services.generate_random_loan_rate_lock import \
+    generate_random_loan_rate_lock
+from .intelligent_generators.mortgage_services.generate_random_mortgage import \
+    generate_random_mortgage
+from .intelligent_generators.mortgage_services.generate_random_payment import \
+    generate_random_payment
+from .intelligent_generators.mortgage_services.generate_random_property import \
+    generate_random_property
+from .intelligent_generators.mortgage_services.generate_random_servicing_account import \
     generate_random_servicing_account
-from fsi_data_generator.fsi_generators.helpers.mod_tuples import mod_tuples
 
 fake = Faker()
 
-def generate_property(ids_dict, dg: DataGenerator):
 
+def generate_property(ids_dict, dg: DataGenerator):
     conn = dg.conn
 
     # Randomly choose an application ID
@@ -82,9 +102,7 @@ def generate_property(ids_dict, dg: DataGenerator):
     return property_
 
 
-
 def generate_mortgage(ids_dict, dg: DataGenerator):
-
     conn = dg.conn
 
     # Randomly choose an application ID
@@ -152,9 +170,7 @@ def generate_mortgage(ids_dict, dg: DataGenerator):
     return mortgage
 
 
-
 def generate_application(ids_dict, dg: DataGenerator):
-
     conn = dg.conn
 
     # Randomly choose an application ID
@@ -185,20 +201,12 @@ def generate_application(ids_dict, dg: DataGenerator):
     # Do something with the retrieved data, e.g., update 'a'
     loan_application = generate_random_application(loan_product=record_dict)
 
-
     # Optionally return something (e.g., application_id or the record_dict)
     return loan_application
 
 
-def random_record(dg: DataGenerator, fn):
-    def get_it(record: Dict, _b, field):
-        record.update(fn(record, dg))
-        return record.get(field)
-    return get_it
-
-
 def mortgage_services(dg):
-    return mod_tuples('mortgage_services', [
+    return apply_schema_to_regex('mortgage_services', [
         ('customer_communications', random_record(dg, generate_random_customer_communication)),
         ('loan_modifications', random_record(dg, generate_random_loan_modification)),
         ('escrow_disbursements', random_record(dg, generate_random_escrow_disbursement)),

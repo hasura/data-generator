@@ -263,7 +263,7 @@ def download_cves(directory='nvd/', year=None):
 
 #processes the already downloaded in json format CVEs
 #def process_cves(directory, results, csv_file, import_db,myuser,mypassword,myhost,database):
-def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=None, user='postgres', host='localhost', database='postgres', password=None, port=5432, server='localhost'):
+def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=None, user='postgres', host='localhost', database='postgres', password=None, port=5432, _server='localhost'):
     if csv_file:
         if not os.path.exists(results):
             try:

@@ -1,6 +1,7 @@
 import random
 
-def generate_mortgage_size(_a,_b,_c):
+
+def generate_mortgage_size(_a, _b, _c):
     """
     Generates a random mortgage size based on the distribution
     of mortgage sizes in the United States in 2023.
@@ -29,4 +30,3 @@ def generate_mortgage_size(_a,_b,_c):
         return random.uniform(lower_bound, 2000000)
     else:
         return random.uniform(lower_bound, upper_bound)
-

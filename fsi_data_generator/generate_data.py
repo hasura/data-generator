@@ -1,11 +1,15 @@
+import glob
+import logging
 import os
 import sys
-import glob
+
 import psycopg2
 from dotenv import load_dotenv
 
 import cve_manager
 from fsi_data_generator.banking_generators import custom_generators
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,7 +19,7 @@ load_dotenv()
 try:
     from data_generator import DataGenerator
 except ImportError:
-    print("Error: Could not import DataGenerator. Make sure data_generator.py is in the same directory.")
+    logger.error("Error: Could not import DataGenerator. Make sure data_generator.py is in the same directory.")
     sys.exit(1)
 
 
@@ -28,7 +32,7 @@ def execute_sql_scripts(conn, directory_path):
         directory_path: Path to directory containing SQL scripts
     """
     if not directory_path or not os.path.isdir(directory_path):
-        print(f"Warning: Directory not found: {directory_path}")
+        logger.error(f"Warning: Directory not found: {directory_path}")
         return
 
     # Find all SQL files recursively
@@ -40,7 +44,7 @@ def execute_sql_scripts(conn, directory_path):
     # Execute each SQL file
     executed_count = 0
     for sql_file in sql_files:
-        print(f"Executing SQL file: {sql_file}")
+        logger.debug(f"Executing SQL file: {sql_file}")
         try:
             with conn.cursor() as cursor:
                 with open(sql_file, "r") as file:
@@ -48,12 +52,12 @@ def execute_sql_scripts(conn, directory_path):
                     cursor.execute(sql)
                     conn.commit()
                     executed_count += 1
-                    print(f"SQL execution completed successfully: {sql_file}")
+                    logger.debug(f"SQL execution completed successfully: {sql_file}")
         except Exception as e:
             conn.rollback()
-            print(f"Error executing SQL file {sql_file}: {str(e)}")
+            logger.error(f"Error executing SQL file {sql_file}: {str(e)}")
 
-    print(f"Executed {executed_count} SQL script files from {directory_path}")
+    logger.debug(f"Executed {executed_count} SQL script files from {directory_path}")
 
 
 def generate_banking_data():
@@ -70,13 +74,13 @@ def generate_banking_data():
     # Get the SQL file path from the environment variable
     sql_file_path = os.environ.get("MODEL_FILE")
     if not sql_file_path or not os.path.isfile(sql_file_path):
-        print(f"Error: SQL file not found at {sql_file_path}")
+        logger.error(f"Error: SQL file not found at {sql_file_path}")
         return
 
     # Get the SQL file path from the environment variable
     drop_sql_file_path = os.environ.get("DROP_FILE")
     if not drop_sql_file_path or not os.path.isfile(drop_sql_file_path):
-        print(f"Error: SQL file not found at {drop_sql_file_path}")
+        logger.error(f"Error: SQL file not found at {drop_sql_file_path}")
         return
 
     try:
@@ -85,20 +89,19 @@ def generate_banking_data():
         # Step 1: Execute the SQL file using conn_params
         with psycopg2.connect(**conn_params) as conn:
             with conn.cursor() as cursor:
-
-                print(f"Executing SQL file: {drop_sql_file_path}")
+                logger.debug(f"Executing SQL file: {drop_sql_file_path}")
                 with open(drop_sql_file_path, "r") as file:
                     sql = file.read()
                     cursor.execute(sql)
                     conn.commit()
-                    print(f"SQL execution completed successfully: {drop_sql_file_path}")
+                    logger.debug(f"SQL execution completed successfully: {drop_sql_file_path}")
 
-                print(f"Executing SQL file: {sql_file_path}")
+                logger.debug(f"Executing SQL file: {sql_file_path}")
                 with open(sql_file_path, "r") as file:
                     sql = file.read()
                     cursor.execute(sql)
                     conn.commit()
-                    print(f"SQL execution completed successfully: {sql_file_path}")
+                    logger.debug(f"SQL execution completed successfully: {sql_file_path}")
 
         # Step 2: Initialize the DataGenerator
         dbml_file_path = os.environ.get("DBML_FILE")
@@ -106,13 +109,10 @@ def generate_banking_data():
             dbml = file.read()
         generator = DataGenerator(
             conn_params=conn_params,
-            exclude_schemas=['public', 'consumer_lending', 'credit_cards', 'consumer_banking', 'small_business_banking'],
-            exclusions=[
-                ('security\\.cvss', '.*'),
-                ('security\\.cpe', '.*'),
-                ('security\\.cwe', '.*'),
-                ('security\\.cve_problem', '.*')
-            ],
+            exclude_schemas=['public', 'consumer_lending', 'credit_cards', 'consumer_banking',
+                             'small_business_banking'],
+            exclusions=[('security\\.cvss', '.*'), ('security\\.cpe', '.*'), ('security\\.cwe', '.*'),
+                        ('security\\.cve_problem', '.*')],
             dbml=dbml
         )
         generator.custom_generators = custom_generators(generator)
@@ -366,11 +366,12 @@ def generate_banking_data():
                 execute_sql_scripts(conn, scripted_scenarios_path)
 
         # Step 5: Download CVEs and upload them to database
-        cve_manager.download_cves()
-        cve_manager.cwe(**conn_params)
-        cve_manager.process_cves(csv_file=True, import_db=True, **conn_params)
+        if os.environ.get('DOWNLOAD_CVE', 'true').lower() in ('true', 'yes', 't', 'y'):
+            cve_manager.download_cves()
+            cve_manager.cwe(**conn_params)
+            cve_manager.process_cves(csv_file=True, import_db=True, **conn_params)
 
         print("\nDataGenerator completed successfully!")
 
     except Exception as e:
-        print(f"Error during data generation: {e}")
+        logger.error(f"Error during data generation: {e}")

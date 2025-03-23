@@ -1,4 +1,4 @@
-def consumer_banking_generate_transaction_fee(a,_b,_c):
+def consumer_banking_generate_transaction_fee(a, _b, _c):
     """
     Calculate a probable transaction fee based on transaction details.
 
@@ -8,8 +8,6 @@ def consumer_banking_generate_transaction_fee(a,_b,_c):
     currency (str): Currency code of the transaction
     is_foreign (bool): Whether this is a foreign transaction
     """
-
-
 
     transaction_type = a.get('transaction_type')
     amount = a.get('amount')
@@ -61,5 +59,3 @@ def consumer_banking_generate_transaction_fee(a,_b,_c):
         fee = 0.0  # Waive fees for salaries and large intra-company/dividend transactions
 
     return fee
-
-

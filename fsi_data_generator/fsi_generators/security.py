@@ -1,44 +1,67 @@
-from typing import cast
-
 from faker import Faker
 
-from fsi_data_generator.fsi_generators.helpers.generate_correlated_subnet import generate_correlated_subnet
-from fsi_data_generator.fsi_generators.helpers.get_entity_combiner import get_entity_combiner
-from fsi_data_generator.fsi_generators.helpers.get_random_port_with_popular_bias import get_random_port_with_popular_bias
-from fsi_data_generator.fsi_generators.security__policies__name import security__policies__name
-from fsi_data_generator.fsi_generators.helpers.text_list import text_list
-from fsi_data_generator.fsi_generators.helpers.unique_list import unique_list
-from fsi_data_generator.fsi_text.wildcards.____tcp_flag import ____tcp_flag
-from fsi_data_generator.fsi_text.security.security__apps__name import security__apps__name
-from fsi_data_generator.fsi_text.security.security__roles__name import security__roles__name
+from fsi_data_generator.fsi_generators.helpers import (
+    apply_schema_to_regex, generate_unique_composite_key, random_record)
+from fsi_data_generator.fsi_generators.intelligent_generators.security import (
+    generate_random_account, generate_random_device,
+    generate_random_enhanced_entitlement, generate_random_entitlement_resource,
+    generate_random_file, generate_random_file_access,
+    generate_random_file_threat, generate_random_governance_group,
+    generate_random_host, generate_random_iam_login, generate_random_identity,
+    generate_random_identity_profile, generate_random_identity_role,
+    generate_random_installed_application, generate_random_network_connection,
+    generate_random_network_event, generate_random_open_port,
+    generate_random_policy, generate_random_policy_attribute,
+    generate_random_policy_rule, generate_random_process_execution,
+    generate_random_resource_definition, generate_random_role_entitlement,
+    generate_random_running_service, generate_random_security_role,
+    generate_random_system_stat, generate_random_usb_device_usage)
 
 fake = Faker()
 
+
 def security(dg):
-    return [
-        ('security\\.apps', '^name$', unique_list(security__apps__name)),
-        ('security\\.roles', '^name$', unique_list(list(security__roles__name.keys()))),
-        ('security\\.roles', '^display_name$',
-         lambda a, b, c: security__roles__name[cast(str, a.get('name'))].get('display_name')),
-        ('security\\.roles', '^description$',
-         lambda a, b, c: security__roles__name[cast(str, a.get('name'))].get('responsibilities')),
-        ('security\\.policies', '^name$', unique_list(list(security__policies__name.keys()))),
-        ('security\\.identity_access_profiles', '^identity_id$',
-         lambda a, b, c: fake.unique.random_element(tuple(dg.inserted_pks['security.identities']))),
-        ('security\\.identity_roles', '^security_identity_id$', get_entity_combiner(dg, 'security.identities.security_identity_id', 'security.roles.security_role_id', '3')),
-        ('security\\.identity_entitlements', '^security_identity_id$', get_entity_combiner(dg, 'security.identities.security_identity_id', 'security.entitlements.security_entitlement_id', '4')),
-        ('security\\.identity_access_profiles', '^security_identity_id$', get_entity_combiner(dg, 'security.identities.security_identity_id', 'security.access_profiles.security_access_profile_id', '5')),
-        ('security\\..*', '^subnet$', generate_correlated_subnet),
-        ('security\\..*', '^.*port$', get_random_port_with_popular_bias),
-        ('security\\..*', '^tcp_flag$', text_list(____tcp_flag)),
-        ('security\\.open_ports', '^protocol', text_list([
-            "TCP",
-            "UDP",
-            "ICMP",
-            "HTTP2",
-            "TLS",
-            "QUIC",
-            "SIP"]
-        )),
-        ('security\\.identities', '^environment$', text_list(["production", "development", "qa", "preproduction"])),
-    ]
+    return apply_schema_to_regex('security', [
+        ('policies', random_record(dg, generate_random_policy)),
+        ('usb_device_usage', random_record(dg, generate_random_usb_device_usage)),
+        ('role_entitlements', random_record(dg, generate_random_role_entitlement)),
+        ('identity_roles', random_record(dg, generate_random_identity_role)),
+        ('system_stats', random_record(dg, generate_random_system_stat)),
+        ('running_services', random_record(dg, generate_random_running_service)),
+        ('hosts', random_record(dg, generate_random_host)),
+        ('process_executions', random_record(dg, generate_random_process_execution)),
+        ('open_ports', random_record(dg, generate_random_open_port)),
+        ('network_connections', random_record(dg, generate_random_network_connection)),
+        ('installed_applications', '.*_id',
+         generate_unique_composite_key(
+             dg,
+             ('security.hosts.security_host_id', 'app_mgmt.applications.app_mgmt_application_id'),
+             ('security_host_id', 'app_mgmt_application_id'),
+             __name__ + '_security_identity_role')),
+        ('installed_applications', random_record(dg, generate_random_installed_application)),
+        ('files', random_record(dg, generate_random_file)),
+        ('file_threats', random_record(dg, generate_random_file_threat)),
+        ('file_accesses', random_record(dg, generate_random_file_access)),
+        ('governance_groups', random_record(dg, generate_random_governance_group)),
+        ('identity_profiles', random_record(dg, generate_random_identity_profile)),
+        ('identities', random_record(dg, generate_random_identity)),
+        ('iam_logins', random_record(dg, generate_random_iam_login)),
+        ('accounts', random_record(dg, generate_random_account)),
+        ('policy_rules', random_record(dg, generate_random_policy_rule)),
+        ('policy_attributes', random_record(dg, generate_random_policy_attribute)),
+        ('network_events', random_record(dg, generate_random_network_event)),
+        ('devices', random_record(dg, generate_random_device)),
+        ('enhanced_entitlements', random_record(dg, generate_random_enhanced_entitlement)),
+        ('identity_roles', 'security_identity_id', generate_unique_composite_key(dg, (
+            'security.identities.security_identity_id', 'security.roles.security_role_id'), ('security_identity_id',
+                                                                                             'security_role_id'),
+                                                                                 __name__ + '_security_identity_role')),
+        ('role_entitlements', 'security_role_id', generate_unique_composite_key(dg, (
+            'security.roles.security_role_id', 'security.enhanced_entitlements.security_entitlement_id'), (
+                                                                                    'security_role_id',
+                                                                                    'security_entitlement_id'),
+                                                                                __name__ + '_security_role_entitlement')),
+        ('entitlement_resources', random_record(dg, generate_random_entitlement_resource)),
+        ('resource_definitions', random_record(dg, generate_random_resource_definition)),
+        ('roles', random_record(dg, generate_random_security_role)),
+    ])

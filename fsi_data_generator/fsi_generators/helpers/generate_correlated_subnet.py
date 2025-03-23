@@ -1,7 +1,7 @@
 import random
 
 
-def generate_correlated_subnet(a,_b,_c):
+def generate_correlated_subnet(a, _b, _c):
     ipv4_address = a.get('ip_address')
     # Split the IP into its octets
     octets = list(map(int, ipv4_address.split(".")))

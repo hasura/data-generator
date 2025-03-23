@@ -1,4 +1,5 @@
 import random
+
 import numpy as np
 
 
@@ -38,6 +39,7 @@ def generate_fake_balance(product_type):
         return round(np.random.lognormal(mean=13, sigma=0.8), 2)
     else:
         raise ValueError(f"Unknown product type: {product_type}")
+
 
 def generate_fake_transaction(product_type, balance=None):
     """

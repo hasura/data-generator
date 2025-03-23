@@ -21,13 +21,59 @@ Table "enterprise"."account_identifiers" {
   note: "Stores various identifiers associated with accounts, supports multiple identification schemes"
 }
 
+Enum "enterprise"."citizenship_status" {
+  US_CITIZEN [note: 'United States citizen']
+  US_PERMANENT_RESIDENT [note: 'Lawful permanent resident of the United States (Green Card holder)']
+  US_TEMPORARY_RESIDENT [note: 'Non-immigrant with temporary authorization to reside in the United States']
+  NON_RESIDENT_ALIEN [note: 'Foreign individual without US residency but subject to US tax requirements']
+  FOREIGN_NATIONAL [note: 'Citizen of a foreign country with no US immigration status']
+  DUAL_CITIZEN_US [note: 'Holds US citizenship and citizenship in another country']
+  REFUGEE_ASYLEE [note: 'Individual granted refuge or asylum in the United States']
+  TEMPORARY_PROTECTED_STATUS [note: 'Individual from a designated country granted temporary protected status']
+  DACA_RECIPIENT [note: 'Recipient of Deferred Action for Childhood Arrivals']
+  UNDOCUMENTED [note: 'Individual residing in the country without formal immigration status']
+  NOT_SPECIFIED [note: 'Citizenship status not provided or specified']
+}
+
+Enum "enterprise"."legal_structure" {
+  SOLE_PROPRIETORSHIP [note: 'Business owned and operated by a single individual with no legal distinction between the owner and the business']
+  GENERAL_PARTNERSHIP [note: 'Business arrangement where two or more individuals share ownership and liability']
+  LIMITED_PARTNERSHIP [note: 'Partnership with both general partners and limited partners who have limited liability']
+  LIMITED_LIABILITY_PARTNERSHIP [note: 'Partnership where all partners have limited liability protection']
+  LIMITED_LIABILITY_COMPANY [note: 'Hybrid entity combining characteristics of corporations and partnerships/sole proprietorships']
+  C_CORPORATION [note: 'Legal entity separate from its owners with limited liability for shareholders']
+  S_CORPORATION [note: 'Corporation that passes income, losses, deductions, and credits to shareholders for tax purposes']
+  PROFESSIONAL_CORPORATION [note: 'Corporation for licensed professionals like doctors, lawyers, and accountants']
+  NONPROFIT_CORPORATION [note: 'Corporation organized for purposes other than generating profit']
+  BENEFIT_CORPORATION [note: 'For-profit entity with a public benefit purpose in addition to profit']
+  COOPERATIVE [note: 'Business owned and operated by its members for their mutual benefit']
+  JOINT_VENTURE [note: 'Business arrangement where two or more parties agree to pool resources for a specific task']
+  TRUST [note: 'Legal arrangement where one party holds assets for the benefit of another']
+  ESTATE [note: 'Legal entity created upon a person\'s death to distribute their assets']
+  ASSOCIATION [note: 'Group of individuals who join together for a common purpose']
+  GOVERNMENT_ENTITY [note: 'Organizations run by federal, state, or local government']
+  FOREIGN_ENTITY [note: 'Entity formed under the laws of a different country/jurisdiction']
+  NOT_APPLICABLE [note: 'Used when the party is an individual or the legal structure is not relevant']
+  OTHER [note: 'Used for legal structures not covered by the other options']
+}
+
+Enum "enterprise"."marital_status" {
+  SINGLE [note: 'Never been married']
+  MARRIED [note: 'Currently in a legally recognized marriage']
+  DOMESTIC_PARTNERSHIP [note: 'In a registered domestic partnership or civil union']
+  SEPARATED [note: 'Legally separated but not divorced']
+  DIVORCED [note: 'Previously married, now legally divorced']
+  WIDOWED [note: 'Previously married, spouse is deceased']
+  NOT_SPECIFIED [note: 'Marital status not provided or specified']
+}
+
 Table "enterprise"."parties" {
   "enterprise_party_id" SERIAL [pk, increment, note: "Unique identifier for each party"]
   "party_number" VARCHAR(35) [note: "Alternative reference number for the party"]
   "party_type" VARCHAR(20) [not null, note: "Type of party (e.g., individual, organization)"]
   "name" VARCHAR(350) [not null, note: "Name of the party"]
   "full_business_legal_name" VARCHAR(350) [note: "Complete legal name for business entities"]
-  "legal_structure" VARCHAR(50) [note: "Legal structure of the organization (e.g., LLC, corporation)"]
+  "legal_structure" enterprise.legal_structure [note: "Legal structure of the organization"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier for organizations"]
   "beneficial_ownership" BOOLEAN [note: "Indicates if this party has beneficial ownership"]
   "email_address" VARCHAR(256) [note: "Primary email contact"]
@@ -35,8 +81,8 @@ Table "enterprise"."parties" {
   "mobile" VARCHAR(30) [note: "Mobile phone contact"]
   "date_of_birth" DATE [note: "Party's date of birth (for individuals)"]
   "ssn" VARCHAR(11) [note: "Social Security Number (for US individuals)"]
-  "marital_status" VARCHAR(20) [note: "Marital status (for individuals)"]
-  "citizenship_status" VARCHAR(50) [note: "Citizenship or residency status (for individuals)"]
+  "marital_status" enterprise.marital_status [note: "Marital status (for individuals)"]
+  "citizenship_status" enterprise.citizenship_status [note: "Citizenship or residency status (for individuals)"]
 
   note: "Stores information about individuals and organizations that interact with accounts, now with additional common personal attributes for individuals"
 }
@@ -51,27 +97,40 @@ Table "enterprise"."party_relationships" {
   note: "Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc."
 }
 
-Table "enterprise"."party_addresses" {
-  "enterprise_party_address_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each address record"]
-  "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party this address belongs to"]
-  "address_type" VARCHAR(5) [not null, note: "Type of address (e.g., home, business, mailing)"]
-  "address_line" VARCHAR(70) [not null, note: "Main address line"]
-  "building_number" VARCHAR(16) [note: "Building or house number"]
-  "building_name" VARCHAR(140) [note: "Name of building if applicable"]
-  "floor" VARCHAR(70) [note: "Floor number or description"]
-  "unit_number" VARCHAR(16) [note: "Apartment or unit number"]
-  "room" VARCHAR(70) [note: "Room identifier if applicable"]
-  "post_box" VARCHAR(16) [note: "Post office box number"]
-  "town_location_name" VARCHAR(140) [note: "Name of area within town"]
-  "district_name" VARCHAR(140) [note: "District or county"]
-  "care_of" VARCHAR(140) [note: "Person to whose attention mail should be sent"]
-  "post_code" VARCHAR(16) [note: "Postal or zip code"]
-  "town_name" VARCHAR(140) [note: "City or town name"]
-  "country_sub_division" VARCHAR(35) [note: "State, province, or region"]
-  "country" VARCHAR(2) [note: "Two-letter country code"]
+Table "enterprise"."party_entity_addresses" {
+  "enterprise_party_entity_address_id" SERIAL [pk, increment, note: "Unique identifier for party-entity address association"]
+  "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "Reference to the party"]
+  "enterprise_entity_address_id" INTEGER [not null, ref: > enterprise.entity_addresses.enterprise_entity_address_id, note: "Reference to the entity address"]
+  "relationship_type" VARCHAR(50) [note: "Type of relationship (e.g., work location, meeting venue, service location)"]
 
-  note: "Stores address information for parties with detailed address components"
+  Indexes {
+    (enterprise_party_id, enterprise_entity_address_id) [unique, note: "Ensures unique party-entity address associations"]
+  }
+
+  note: "Links parties to entity addresses with a defined relationship"
 }
+
+// Table "enterprise"."party_addresses" {
+//   "enterprise_party_address_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each address record"]
+//   "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party this address belongs to"]
+//   "address_type" VARCHAR(5) [not null, note: "Type of address (e.g., home, business, mailing)"]
+//   "address_line" VARCHAR(70) [not null, note: "Main address line"]
+//   "building_number" VARCHAR(16) [note: "Building or house number"]
+//   "building_name" VARCHAR(140) [note: "Name of building if applicable"]
+//   "floor" VARCHAR(70) [note: "Floor number or description"]
+//   "unit_number" VARCHAR(16) [note: "Apartment or unit number"]
+//   "room" VARCHAR(70) [note: "Room identifier if applicable"]
+//   "post_box" VARCHAR(16) [note: "Post office box number"]
+//   "town_location_name" VARCHAR(140) [note: "Name of area within town"]
+//   "district_name" VARCHAR(140) [note: "District or county"]
+//   "care_of" VARCHAR(140) [note: "Person to whose attention mail should be sent"]
+//   "post_code" VARCHAR(16) [note: "Postal or zip code"]
+//   "town_name" VARCHAR(140) [note: "City or town name"]
+//   "country_sub_division" VARCHAR(35) [note: "State, province, or region"]
+//   "country" VARCHAR(2) [note: "Two-letter country code"]
+
+//   note: "Stores address information for parties with detailed address components"
+// }
 
 Table "enterprise"."addresses" {
   "enterprise_address_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each address record"]
@@ -122,10 +181,21 @@ Table "enterprise"."entity_addresses" {
   note: "Junction table linking addresses to various entities across the system"
 }
 
+Enum "enterprise"."account_status" {
+  ACTIVE [note: 'Account is in good standing and fully operational']
+  PENDING [note: 'Account creation is in progress but not yet active']
+  INACTIVE [note: 'Account exists but is not currently in use']
+  SUSPENDED [note: 'Account temporarily disabled due to policy issues']
+  DORMANT [note: 'Account with no activity for an extended period']
+  FROZEN [note: 'Account with temporarily restricted transactions']
+  CLOSED [note: 'Account permanently terminated']
+  ARCHIVED [note: 'Closed account retained for record-keeping']
+}
+
 Table "enterprise"."accounts" {
   "enterprise_account_id" SERIAL [pk, increment, note: "Unique identifier for each enterprise account"]
   "opened_date" TIMESTAMPTZ [note: "When the enterprise account was created, typically coincides with first LOB account."]
-  "status" VARCHAR(10) [not null, note: "Current status of the account (e.g., active, closed). When set to 'closed', all linked LOB accounts must be closed or in a terminal state."]
+  "status" enterprise.account_status [not null, note: "Current status of the account. When set to 'CLOSED', all linked LOB accounts must be closed or in a terminal state."]
   "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated. Updates here may trigger required status changes in linked LOB accounts."]
   "account_category" VARCHAR(40) [note: "Customer defined category of account (e.g., personal, business, retirement)"]
   "description" VARCHAR(35) [note: "Customer defined description of the account"]
@@ -141,26 +211,42 @@ Table "enterprise"."account_ownership" {
   note: "The only table that controls account access rights. Creates the mandatory link between parties and accounts. Any query checking account access or ownership must start with this table. No direct relationships exist between parties and other account tables."
 }
 
+enum "enterprise"."associate_status" {
+  Active [note: 'Associate is currently employed and working.']
+  Inactive [note: 'Associate\'s employment relationship exists but they are not currently working (e.g., extended leave).']
+  PendingStart [note: 'Associate has accepted an offer but has not yet started working.']
+  OnLeave [note: 'Associate is on an approved leave of absence (e.g., medical, parental, sabbatical).']
+  Terminated [note: 'Associate\'s employment has been ended.']
+}
+
+enum "enterprise"."relationship_status" {
+  Employee [note: 'Full-time or part-time worker directly employed by the enterprise.']
+  Contractor [note: 'Independent worker engaged for a specific project or time period.']
+  Consultant [note: 'External advisor providing specialized expertise.']
+  Intern [note: 'Temporary position for students or trainees to gain experience.']
+  Temporary [note: 'Short-term worker hired through an agency or directly for seasonal or limited duration work.']
+}
+
 Table "enterprise"."associates" {
   "enterprise_associate_id" SERIAL [pk, increment, note: 'Unique identifier for each associate.']
   "first_name" VARCHAR(255) [note: 'Associate\'s first name.']
   "last_name" VARCHAR(255) [note: 'Associate\'s last name.']
   "email" VARCHAR(255) [unique, note: 'Associate\'s unique email address.']
-  "phone_number" VARCHAR(20) [note: 'Associate\'s phone number.']
+  "phone_number" VARCHAR(30) [note: 'Associate\'s phone number.']
   "hire_date" DATE [note: 'Date the associate was hired.']
-  "status" VARCHAR(20) [note: 'Current status of the associate (e.g., Active, Inactive).']
+  "status" enterprise.associate_status [note: 'Current status of the associate.']
   "release_date" DATE [null, note: 'Date the associate was released from employment, if applicable.']
   "job_title" VARCHAR(255) [note: 'Associate\'s functional job title (e.g., Teller, Loan Officer).']
   "officer_title" VARCHAR(50) [note: 'Associate\'s formal officer title (e.g., VP, MD), if applicable.']
   "enterprise_department_id" INTEGER [ref: > enterprise.departments.enterprise_department_id, note: 'Foreign key referencing the department the associate belongs to.']
   "manager_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: 'Foreign key referencing the associate\'s manager.']
   "salary" decimal(10, 2) [note: 'Associate\'s annual salary.']
-  "relationship_type" VARCHAR(20) [note: 'Type of relationship with the company (e.g., Employee, Contractor).']
+  "relationship_type" enterprise.relationship_status [note: 'Type of relationship with the company.']
   "street_address" VARCHAR(255) [note: 'Associate\'s street address.']
   "city" VARCHAR(255) [note: 'Associate\'s city of residence.']
   "state" VARCHAR(2) [note: 'Associate\'s state of residence.']
   "post_code" VARCHAR(10) [note: 'Associate\'s postal code.']
-  "country" VARCHAR(255) [note: 'Associate\'s country of residence.'] // Added country
+  "country" VARCHAR(255) [note: 'Associate\'s country of residence.']
   "enterprise_building_id" INTEGER [ref: > enterprise.buildings.enterprise_building_id, note: 'Foreign key referencing the building where the associate is primarily located.']
 
   note: 'Stores information about employees, contractors, or other individuals associated with the enterprise.'
@@ -191,7 +277,6 @@ Table "enterprise"."buildings" {
 TableGroup "Parties & Addresses" [color: #1E69FD] {
   "enterprise"."parties"
   "enterprise"."party_relationships"
-  "enterprise"."party_addresses"
 
   note: "Tables related to account stakeholders and their contact information"
 }
@@ -989,10 +1074,10 @@ Table "mortgage_services"."conditions" {
   "description" TEXT [not null, note: "Detailed explanation of what must be provided or resolved"]
   "status" VARCHAR(20) [not null, note: "Current status of the condition"]
   "created_date" TIMESTAMP [not null, note: "When the condition was created"]
-  "created_by" INTEGER [not null, ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who created the condition"]
+  "created_by_id" INTEGER [not null, ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who created the condition"]
   "due_date" DATE [note: "Deadline for satisfying the condition"]
   "cleared_date" TIMESTAMP [note: "When the condition was satisfied or waived"]
-  "cleared_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who cleared the condition"]
+  "cleared_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who cleared the condition"]
 
   note: "Tracks underwriting conditions that must be cleared for loan approval"
 }
@@ -1308,7 +1393,7 @@ Table "mortgage_services"."hmda_edits" {
   "status" VARCHAR(20) [not null, note: "Current status of the edit (OPEN, VERIFIED, CORRECTED)"]
   "created_date" TIMESTAMP [not null, note: "When the edit was first identified"]
   "resolved_date" TIMESTAMP [note: "When the edit was resolved if applicable"]
-  "resolved_by" VARCHAR(50) [note: "User who resolved the edit"]
+  "resolved_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who resolved the edit"]
   "resolution_notes" TEXT [note: "Notes explaining how the edit was resolved"]
 
   note: "Tracks validation issues with HMDA data and their resolution"
@@ -1326,7 +1411,7 @@ Table "mortgage_services"."hmda_submissions" {
   "record_count" INTEGER [note: "Number of records in the submission"]
   "error_count" INTEGER [note: "Number of errors found in the submission"]
   "warning_count" INTEGER [note: "Number of warnings found in the submission"]
-  "submitted_by" VARCHAR(100) [note: "User who made the submission"]
+  "submitted_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who made the submission"]
   "submission_notes" TEXT [note: "Additional notes about the submission"]
   "confirmation_number" VARCHAR(50) [note: "Confirmation number provided by the regulatory agency"]
   "completion_date" TIMESTAMP [note: "When the submission was accepted as complete"]
@@ -1438,6 +1523,19 @@ Table "consumer_lending"."application_applicants" {
   note: "Links loan applications to individual applicants, allowing for multiple applicants per application."
 }
 
+Enum "consumer_lending"."housing_status" {
+  OWN [note: 'Applicant owns their residence']
+  RENT [note: 'Applicant rents their residence']
+  LIVE_WITH_PARENTS [note: 'Applicant lives with parents or family']
+  MILITARY_HOUSING [note: 'Applicant resides in military-provided housing']
+  EMPLOYER_PROVIDED [note: 'Housing provided by employer']
+  STUDENT_HOUSING [note: 'Housing associated with educational institution']
+  SHARED_HOUSING [note: 'Applicant shares housing with roommates']
+  TEMPORARY [note: 'Temporary or transitional housing']
+  HOMELESS [note: 'No fixed residential address']
+  OTHER [note: 'Housing status not captured by other categories']
+}
+
 Table "consumer_lending"."applicants" {
   "consumer_lending_applicant_id" SERIAL [pk, increment, note: "Unique identifier for applicant, may link to parties table"]
   "first_name" VARCHAR(100) [not null, note: "Applicant's legal first name"]
@@ -1445,13 +1543,13 @@ Table "consumer_lending"."applicants" {
   "last_name" VARCHAR(100) [not null, note: "Applicant's legal last name"]
   "date_of_birth" DATE [not null, note: "Applicant's date of birth"]
   "ssn" VARCHAR(11) [not null, note: "Social Security Number, stored encrypted"]
-  "marital_status" VARCHAR(20) [note: "Married, Single, Divorced, etc."]
+  "marital_status" enterprise.marital_status [note: "Married, Single, Divorced, etc."]
   "email" VARCHAR(255) [not null, note: "Primary email address"]
   "phone" VARCHAR(30) [not null, note: "Primary phone number"]
   "mobile_phone" VARCHAR(30) [note: "Mobile phone number if different from primary"]
-  "citizenship_status" VARCHAR(50) [not null, note: "US Citizen, Permanent Resident, etc."]
+  "citizenship_status" enterprise.citizenship_status [not null, note: "US Citizen, Permanent Resident, etc."]
   "years_at_current_address" INTEGER [note: "Years at current residence"]
-  "housing_status" VARCHAR(50) [not null, note: "Own, Rent, Live with Parents, etc."]
+  "housing_status" consumer_lending.housing_status [not null, note: "Current housing situation"]
   "monthly_housing_expense" NUMERIC(10,2) [note: "Monthly housing payment amount"]
   "current_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses"]
   "mailing_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses if different from current"]
@@ -1477,10 +1575,29 @@ Table "consumer_lending"."applicant_employments" {
   note: "Stores employment history and income details for loan applicants."
 }
 
+Enum "consumer_lending"."income_type" {
+  SALARY [note: 'Regular wages from employment']
+  SELF_EMPLOYMENT [note: 'Income from own business or freelance work']
+  RENTAL_INCOME [note: 'Income from property rentals']
+  ALIMONY [note: 'Court-ordered spousal support payments']
+  CHILD_SUPPORT [note: 'Court-ordered child support payments']
+  PENSION [note: 'Retirement income from pension']
+  SOCIAL_SECURITY [note: 'Social Security benefits']
+  DISABILITY_INCOME [note: 'Income from disability benefits']
+  INVESTMENT_INCOME [note: 'Income from investments, dividends, interest']
+  COMMISSION [note: 'Income based on sales or performance commissions']
+  BONUS [note: 'Additional compensation beyond regular salary']
+  ROYALTIES [note: 'Income from intellectual property or natural resources']
+  ANNUITY [note: 'Regular payments from an insurance or investment product']
+  MILITARY_PAY [note: 'Income from military service']
+  TIPS [note: 'Gratuity-based income']
+  OTHER [note: 'Income from sources not otherwise specified']
+}
+
 Table "consumer_lending"."applicant_incomes" {
   "consumer_lending_income_id" SERIAL [pk, increment, note: "Unique identifier for income record"]
   "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
-  "income_type" VARCHAR(50) [not null, note: "Salary, Self-employment, Rental, Alimony, etc."]
+  "income_type" consumer_lending.income_type [not null, note: "Type of income source"]
   "amount" NUMERIC(18,2) [not null, note: "Income amount"]
   "frequency" VARCHAR(20) [not null, note: "Monthly, Annual, etc."]
   "verification_status" VARCHAR(20) [not null, note: "Self-reported, Verified, Failed"]
@@ -1489,24 +1606,73 @@ Table "consumer_lending"."applicant_incomes" {
   note: "Tracks various income sources for loan applicants, including employment and other income types."
 }
 
+Enum "consumer_lending"."asset_type" {
+  CHECKING_ACCOUNT [note: 'Checking bank account']
+  SAVINGS_ACCOUNT [note: 'Savings bank account']
+  MONEY_MARKET_ACCOUNT [note: 'Money market deposit account']
+  CERTIFICATE_OF_DEPOSIT [note: 'CD or time deposit']
+  INVESTMENT_ACCOUNT [note: 'Brokerage or investment account']
+  RETIREMENT_ACCOUNT [note: 'Retirement savings (401k, IRA, etc.)']
+  STOCKS [note: 'Individual stock holdings']
+  BONDS [note: 'Bond investments']
+  MUTUAL_FUNDS [note: 'Mutual fund investments']
+  REAL_ESTATE [note: 'Residential or commercial property']
+  VACANT_LAND [note: 'Undeveloped land']
+  VEHICLE [note: 'Automobile or other vehicle']
+  BUSINESS_OWNERSHIP [note: 'Ownership stake in a business']
+  CRYPTOCURRENCY [note: 'Digital currency assets']
+  PRECIOUS_METALS [note: 'Gold, silver, or other precious metals']
+  LIFE_INSURANCE_CASH_VALUE [note: 'Cash value of life insurance policy']
+  OTHER [note: 'Assets not falling into other categories']
+}
+
 Table "consumer_lending"."applicant_assets" {
   "consumer_lending_asset_id" SERIAL [pk, increment, note: "Unique identifier for asset record"]
   "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
-  "asset_type" VARCHAR(50) [not null, note: "Checking, Savings, Investments, Property"]
+  "asset_type" consumer_lending.asset_type [not null, note: "Type of asset"]
   "institution_name" VARCHAR(100) [note: "Financial institution holding the asset"]
   "account_number" VARCHAR(50) [note: "Account number, stored encrypted"]
   "current_value" NUMERIC(18,2) [not null, note: "Current market value of asset"]
-  "verification_status" VARCHAR(20) [not null, note: "Self-reported, Verified, Failed"]
+  "verification_status" consumer_lending.verification_status [not null, note: "Self-reported, Verified, Failed"]
   "verification_date" DATE [note: "Date asset was verified"]
   "property_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses if asset is property"]
 
   note: "Records assets owned by loan applicants, including financial accounts and property."
 }
 
+Enum "consumer_lending"."liability_type" {
+  CREDIT_CARD [note: 'Revolving credit card debt']
+  AUTO_LOAN [note: 'Loan for vehicle purchase']
+  STUDENT_LOAN [note: 'Educational loan']
+  PERSONAL_LOAN [note: 'Unsecured personal loan']
+  MORTGAGE [note: 'Home mortgage loan']
+  HOME_EQUITY_LOAN [note: 'Loan secured by home equity']
+  HOME_EQUITY_LINE_OF_CREDIT [note: 'Revolving line of credit secured by home equity']
+  MEDICAL_DEBT [note: 'Outstanding medical bills or healthcare-related debt']
+  BUSINESS_LOAN [note: 'Loan for business purposes']
+  PERSONAL_LINE_OF_CREDIT [note: 'Revolving line of credit']
+  INSTALLMENT_LOAN [note: 'Fixed-term loan with regular payments']
+  PAYDAY_LOAN [note: 'Short-term, high-interest loan']
+  RENT_TO_OWN [note: 'Contractual agreement for purchasing an item through installments']
+  ALIMONY [note: 'Court-ordered spousal support payments']
+  CHILD_SUPPORT [note: 'Court-ordered child support payments']
+  TAX_DEBT [note: 'Outstanding tax liabilities']
+  OTHER [note: 'Liabilities not falling into other categories']
+}
+
+Enum "consumer_lending"."verification_status" {
+  SELF_REPORTED [note: 'Information provided by applicant, not yet verified']
+  VERIFIED [note: 'Information confirmed through external sources']
+  FAILED [note: 'Verification process could not confirm the information']
+  PENDING [note: 'Verification process is currently in progress']
+  PARTIALLY_VERIFIED [note: 'Some aspects of the information have been confirmed']
+  UNABLE_TO_VERIFY [note: 'Unable to verify due to lack of information or access']
+}
+
 Table "consumer_lending"."applicant_liabilities" {
   "consumer_lending_liability_id" SERIAL [pk, increment, note: "Unique identifier for liability record"]
   "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
-  "liability_type" VARCHAR(50) [not null, note: "Credit Card, Auto Loan, Student Loan"]
+  "liability_type" consumer_lending.liability_type [not null, note: "Type of liability"]
   "creditor_name" VARCHAR(100) [not null, note: "Name of creditor"]
   "account_number" VARCHAR(50) [note: "Account number, stored encrypted"]
   "monthly_payment" NUMERIC(18,2) [not null, note: "Required monthly payment amount"]
@@ -1515,42 +1681,100 @@ Table "consumer_lending"."applicant_liabilities" {
   "interest_rate" NUMERIC(6,3) [note: "Current interest rate percentage"]
   "origination_date" DATE [note: "When debt was originated"]
   "maturity_date" DATE [note: "When debt will be paid off"]
-  "verification_status" VARCHAR(20) [not null, note: "Self-reported, Verified, Failed"]
+  "verification_status" consumer_lending.verification_status [not null, note: "Status of liability verification"]
   "verification_date" DATE [note: "Date liability was verified"]
   "will_be_paid_off" BOOLEAN [default: false, note: "Indicates if debt will be paid off with loan"]
 
   note: "Tracks liabilities and debt obligations of loan applicants."
 }
 
-Table "consumer_lending"."loan_products" [note: "Contains definitions of loan product offerings"] {
+Enum "consumer_lending"."loan_type" {
+  PERSONAL [note: 'Unsecured personal loan for various purposes']
+  AUTO [note: 'Loan for vehicle purchase']
+  STUDENT [note: 'Educational loan for tuition and expenses']
+  HOME_IMPROVEMENT [note: 'Loan for home renovation or repair']
+  DEBT_CONSOLIDATION [note: 'Loan to combine multiple debts']
+  MEDICAL [note: 'Loan for medical expenses']
+  BUSINESS [note: 'Loan for small business needs']
+  RECREATIONAL_VEHICLE [note: 'Loan for RVs, boats, or other recreational vehicles']
+  MOTORCYCLE [note: 'Loan specifically for motorcycle purchase']
+  BOAT [note: 'Loan for boat or marine vessel purchase']
+  WEDDING [note: 'Loan for wedding expenses']
+  VACATION [note: 'Loan for travel or vacation expenses']
+  GREEN_ENERGY [note: 'Loan for eco-friendly home improvements or renewable energy equipment']
+  OTHER [note: 'Loan type not falling into other categories']
+}
+
+Enum "consumer_lending"."interest_rate_type" {
+  FIXED [note: 'Interest rate remains constant throughout loan term']
+  VARIABLE [note: 'Interest rate can change based on market conditions']
+  ADJUSTABLE [note: 'Interest rate can be adjusted at specific intervals']
+  HYBRID [note: 'Combines fixed and variable rate periods']
+}
+
+Enum "consumer_lending"."fee_type" {
+  FLAT [note: 'Fixed dollar amount fee']
+  PERCENTAGE [note: 'Fee calculated as a percentage of loan amount or transaction']
+  TIERED [note: 'Fee varies based on loan amount or other criteria']
+}
+
+Enum "consumer_lending"."disbursement_option" {
+  DIRECT_DEPOSIT [note: 'Funds transferred directly to bank account']
+  CHECK [note: 'Physical check issued']
+  DEALER_DIRECT [note: 'Funds sent directly to dealer (often for auto loans)']
+  WIRE_TRANSFER [note: 'Electronic funds transfer']
+  CASH [note: 'Cash payment']
+  CREDIT_TO_ACCOUNT [note: 'Funds credited to existing account']
+  OTHER [note: 'Disbursement method not listed']
+}
+
+Table "consumer_lending"."loan_products" {
   "consumer_lending_loan_product_id" SERIAL [pk, increment, note: "Unique identifier for loan product"]
   "product_name" VARCHAR(100) [not null, note: "Marketing name of the product"]
   "product_code" VARCHAR(20) [not null, note: "Internal code for the product"]
-  "loan_type" VARCHAR(50) [not null, note: "Personal, Auto, Student, etc."]
+  "loan_type" consumer_lending.loan_type [not null, note: "Type of loan product"]
   "description" TEXT [note: "Detailed product description"]
-  "interest_rate_type" VARCHAR(20) [not null, note: "Fixed, Variable"]
+  "interest_rate_type" consumer_lending.interest_rate_type [not null, note: "Type of interest rate"]
   "base_interest_rate" NUMERIC(6,3) [not null, note: "Starting interest rate before adjustments"]
   "min_term_months" INTEGER [not null, note: "Minimum allowed term in months"]
   "max_term_months" INTEGER [not null, note: "Maximum allowed term in months"]
   "min_loan_amount" NUMERIC(18,2) [note: "Minimum allowed loan amount"]
   "max_loan_amount" NUMERIC(18,2) [note: "Maximum allowed loan amount"]
   "min_credit_score" INTEGER [note: "Minimum required credit score"]
-  "origination_fee_type" VARCHAR(20) [note: "Flat, Percentage"]
+  "origination_fee_type" consumer_lending.fee_type [note: "Type of origination fee"]
   "origination_fee_amount" NUMERIC(10,2) [note: "Amount or percentage of origination fee"]
-  "late_fee_type" VARCHAR(20) [note: "Flat, Percentage"]
+  "late_fee_type" consumer_lending.fee_type [note: "Type of late fee"]
   "late_fee_amount" NUMERIC(10,2) [note: "Amount or percentage of late fee"]
   "is_active" BOOLEAN [not null, default: true, note: "Whether product is currently offered"]
   "required_collateral" BOOLEAN [not null, default: false, note: "Whether collateral is required"]
   "early_repayment_penalty" BOOLEAN [not null, default: false, note: "Whether penalty applies for early payoff"]
-  "disbursement_options" VARCHAR(100) [note: "Direct Deposit, Check, Dealer Direct, etc."]
+  "disbursement_options" consumer_lending.disbursement_option [note: "Method of loan disbursement"]
 
   note: "Defines the various loan products offered to consumers, including their terms, fees, and features."
+}
+
+Enum "consumer_lending"."eligibility_criteria_type" {
+  CREDIT_SCORE [note: 'Minimum or maximum credit score requirement']
+  INCOME [note: 'Minimum or maximum annual income requirement']
+  DEBT_TO_INCOME_RATIO [note: 'Maximum debt-to-income ratio allowed']
+  EMPLOYMENT_STATUS [note: 'Required employment status or type']
+  TIME_IN_BUSINESS [note: 'Minimum time in business for self-employed applicants']
+  AGE [note: 'Minimum or maximum age requirement']
+  CITIZENSHIP [note: 'Citizenship or residency requirements']
+  EXISTING_DEBT [note: 'Maximum existing debt levels']
+  BANKRUPTCY_HISTORY [note: 'Restrictions based on past bankruptcy']
+  COLLATERAL_VALUE [note: 'Minimum or maximum value of collateral']
+  INDUSTRY [note: 'Specific industry or sector requirements']
+  GEOGRAPHIC_LOCATION [note: 'Location-based eligibility criteria']
+  EDUCATION_LEVEL [note: 'Minimum education requirements']
+  NET_WORTH [note: 'Minimum net worth requirement']
+  OTHER [note: 'Eligibility criteria not falling into other categories']
 }
 
 Table "consumer_lending"."product_eligibility_criteria" {
   "consumer_lending_criteria_id" SERIAL [pk, increment, note: "Unique identifier for eligibility criteria"]
   "consumer_lending_loan_product_id" INTEGER [not null, ref: > consumer_lending.loan_products.consumer_lending_loan_product_id, note: "Reference to loan product"]
-  "criteria_type" VARCHAR(50) [not null, note: "Credit Score, Income, DTI, Employment"]
+  "criteria_type" consumer_lending.eligibility_criteria_type [not null, note: "Type of eligibility criteria"]
   "min_value" VARCHAR(50) [note: "Minimum value for eligibility"]
   "max_value" VARCHAR(50) [note: "Maximum value for eligibility"]
   "required" BOOLEAN [not null, note: "Whether this criteria is required"]
@@ -1574,6 +1798,35 @@ Table "consumer_lending"."risk_based_pricing_tiers" {
   note: "Defines pricing tiers based on risk factors, such as credit score and debt-to-income ratio, for loan products."
 }
 
+Enum "consumer_lending"."credit_report_type" {
+  TRI_MERGE [note: 'Credit report combining data from all three major bureaus']
+  SINGLE_BUREAU [note: 'Credit report from a single credit bureau']
+  MERGED_BUREAU [note: 'Credit report merging data from two bureaus']
+  EXPANDED [note: 'Comprehensive report with additional details']
+  CUSTOM [note: 'Customized report with specific requirements']
+  OTHER [note: 'Report type not falling into standard categories']
+}
+
+Enum "consumer_lending"."credit_bureau" {
+  EQUIFAX [note: 'Equifax credit reporting agency']
+  EXPERIAN [note: 'Experian credit reporting agency']
+  TRANSUNION [note: 'TransUnion credit reporting agency']
+  INNOVIS [note: 'Innovis credit reporting agency']
+  CLEAR_REPORT [note: 'Alternative credit reporting service']
+  OTHER [note: 'Credit bureau not listed']
+}
+
+Enum "consumer_lending"."credit_report_status" {
+  COMPLETED [note: 'Credit report successfully retrieved and processed']
+  FAILED [note: 'Attempt to retrieve credit report was unsuccessful']
+  PENDING [note: 'Credit report retrieval is in progress']
+  PARTIALLY_RETRIEVED [note: 'Only partial credit report information obtained']
+  EXPIRED [note: 'Credit report is no longer valid']
+  UNDER_REVIEW [note: 'Credit report is being reviewed or verified']
+  ERROR [note: 'Technical error occurred during report retrieval']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
 Table "consumer_lending"."credit_reports" {
   "consumer_lending_credit_report_id" SERIAL [pk, increment, note: "Unique identifier for credit report"]
   "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
@@ -1581,19 +1834,64 @@ Table "consumer_lending"."credit_reports" {
   "report_date" TIMESTAMP [not null, note: "When report was pulled"]
   "expiration_date" DATE [not null, note: "When report expires"]
   "credit_score" INTEGER [note: "Primary credit score from report"]
-  "report_type" VARCHAR(20) [not null, note: "Tri-merge, Single Bureau"]
-  "bureau_name" VARCHAR(50) [note: "Equifax, Experian, TransUnion"]
+  "report_type" consumer_lending.credit_report_type [not null, note: "Type of credit report"]
+  "bureau_name" consumer_lending.credit_bureau [note: "Credit bureau providing the report"]
   "report_reference" VARCHAR(100) [note: "External reference ID from bureau"]
   "report_path" VARCHAR(500) [note: "Path to stored report file"]
-  "status" VARCHAR(20) [not null, note: "Completed, Failed, Pending"]
+  "status" consumer_lending.credit_report_status [not null, note: "Status of credit report retrieval"]
 
   note: "Stores credit reports obtained for loan applicants, including credit scores and other relevant information."
+}
+
+Enum "consumer_lending"."account_type" {
+  MORTGAGE [note: 'Home mortgage loan account']
+  INSTALLMENT [note: 'Fixed-term loan with regular payments']
+  REVOLVING [note: 'Credit account with variable balance and payments']
+  AUTO_LOAN [note: 'Vehicle financing loan']
+  STUDENT_LOAN [note: 'Educational loan account']
+  PERSONAL_LOAN [note: 'Unsecured personal loan']
+  CREDIT_CARD [note: 'Revolving credit card account']
+  HOME_EQUITY [note: 'Home equity loan or line of credit']
+  BUSINESS_LOAN [note: 'Commercial or business loan']
+  LEASE [note: 'Leasing agreement']
+  MEDICAL_DEBT [note: 'Medical bill or healthcare-related debt']
+  COLLECTION [note: 'Account in collections']
+  CHARGE_ACCOUNT [note: 'Retail or merchant charge account']
+  OTHER [note: 'Account type not falling into standard categories']
+}
+
+Enum "consumer_lending"."payment_status" {
+  CURRENT [note: 'Account is up to date with no missed payments']
+  DAYS_30_LATE [note: 'Payment is 30 days past due']
+  DAYS_60_LATE [note: 'Payment is 60 days past due']
+  DAYS_90_LATE [note: 'Payment is 90 days past due']
+  DAYS_120_LATE [note: 'Payment is 120 days past due']
+  DAYS_150_LATE [note: 'Payment is 150 days past due']
+  CHARGED_OFF [note: 'Account has been written off as a loss']
+  IN_COLLECTIONS [note: 'Account has been sent to collections']
+  SETTLED [note: 'Account balance has been negotiated and settled']
+  REPOSSESSION [note: 'Collateral has been repossessed']
+  FORECLOSURE [note: 'Property has been foreclosed']
+  BANKRUPTCY [note: 'Account included in bankruptcy filing']
+  OTHER [note: 'Payment status not falling into standard categories']
+}
+
+Enum "consumer_lending"."delinquency_severity" {
+  NONE [note: 'No delinquency recorded']
+  MINOR [note: 'Slight delay in payment, less than 30 days']
+  MODERATE [note: 'Payment 30-60 days late']
+  SERIOUS [note: 'Payment 60-90 days late']
+  SEVERE [note: 'Payment over 90 days late']
+  CRITICAL [note: 'Account charged off or in collections']
+  LEGAL_ACTION [note: 'Legal proceedings initiated']
+  BANKRUPTCY [note: 'Delinquency related to bankruptcy']
+  OTHER [note: 'Delinquency type not falling into standard categories']
 }
 
 Table "consumer_lending"."credit_report_tradelines" {
   "consumer_lending_tradeline_id" SERIAL [pk, increment, note: "Unique identifier for tradeline"]
   "consumer_lending_credit_report_id" INTEGER [not null, ref: > consumer_lending.credit_reports.consumer_lending_credit_report_id, note: "Reference to credit report"]
-  "account_type" VARCHAR(50) [not null, note: "Mortgage, Installment, Revolving, etc."]
+  "account_type" consumer_lending.account_type [not null, note: "Type of credit account"]
   "creditor_name" VARCHAR(100) [not null, note: "Name of creditor"]
   "account_number" VARCHAR(50) [note: "Masked account number"]
   "open_date" DATE [note: "When account was opened"]
@@ -1601,12 +1899,26 @@ Table "consumer_lending"."credit_report_tradelines" {
   "high_credit" NUMERIC(18,2) [note: "Highest balance or credit limit"]
   "credit_limit" NUMERIC(18,2) [note: "Credit limit if applicable"]
   "monthly_payment" NUMERIC(18,2) [note: "Monthly payment amount"]
-  "payment_status" VARCHAR(50) [note: "Current, 30 days late, etc."]
+  "payment_status" consumer_lending.payment_status [note: "Current status of account payments"]
   "days_past_due" INTEGER [note: "Current days past due"]
-  "worst_delinquency" VARCHAR(20) [note: "Worst historical delinquency"]
+  "worst_delinquency" consumer_lending.delinquency_severity [note: "Worst historical delinquency"]
   "worst_delinquency_date" DATE [note: "Date of worst delinquency"]
 
   note: "Contains details of individual tradelines (credit accounts) reported on a credit report."
+}
+
+Enum "consumer_lending"."inquiry_type" {
+  HARD [note: 'Credit inquiry that may impact credit score, typically for credit applications']
+  SOFT [note: 'Credit inquiry that does not affect credit score, often for pre-approvals or background checks']
+  PRE_APPROVAL [note: 'Preliminary credit check for potential offers']
+  ACCOUNT_REVIEW [note: 'Periodic review of existing account by current creditor']
+  EMPLOYMENT_VERIFICATION [note: 'Credit check for employment purposes']
+  INSURANCE_QUOTE [note: 'Credit check for insurance underwriting']
+  TENANT_SCREENING [note: 'Credit check for rental application']
+  PROMOTIONAL [note: 'Inquiry for marketing or promotional purposes']
+  COLLECTION [note: 'Inquiry related to debt collection efforts']
+  FRAUD_PREVENTION [note: 'Credit check for fraud detection and prevention']
+  OTHER [note: 'Inquiry type not falling into standard categories']
 }
 
 Table "consumer_lending"."credit_inquiries" {
@@ -1614,16 +1926,43 @@ Table "consumer_lending"."credit_inquiries" {
   "consumer_lending_credit_report_id" INTEGER [not null, ref: > consumer_lending.credit_reports.consumer_lending_credit_report_id, note: "Reference to credit report"]
   "inquiry_date" DATE [not null, note: "Date of credit inquiry"]
   "creditor_name" VARCHAR(100) [not null, note: "Institution that made inquiry"]
-  "inquiry_type" VARCHAR(50) [note: "Hard inquiry, soft inquiry"]
+  "inquiry_type" consumer_lending.inquiry_type [note: "Type of credit inquiry"]
 
   note: "Records inquiries made on a credit report, indicating potential credit applications or checks."
+}
+
+Enum "consumer_lending"."public_record_type" {
+  BANKRUPTCY [note: 'Legal proceeding for debt relief or restructuring']
+  TAX_LIEN [note: 'Government claim against assets for unpaid taxes']
+  JUDGMENT [note: 'Court ruling requiring payment or action']
+  FORECLOSURE [note: 'Legal process of repossessing property due to default']
+  REPOSSESSION [note: 'Seizure of property due to non-payment']
+  WAGE_GARNISHMENT [note: 'Court-ordered withholding of wages for debt payment']
+  CIVIL_LAWSUIT [note: 'Legal action for monetary damages']
+  SMALL_CLAIMS [note: 'Court judgment for relatively small monetary disputes']
+  CHILD_SUPPORT_LIEN [note: 'Legal claim related to unpaid child support']
+  FEDERAL_TAX_LIEN [note: 'Federal government tax debt claim']
+  STATE_TAX_LIEN [note: 'State government tax debt claim']
+  OTHER [note: 'Public record type not falling into standard categories']
+}
+
+Enum "consumer_lending"."public_record_status" {
+  ACTIVE [note: 'Public record is current and unresolved']
+  SATISFIED [note: 'Debt or obligation has been fully paid']
+  DISCHARGED [note: 'Legally released from obligation, typically in bankruptcy']
+  SETTLED [note: 'Partial resolution or negotiated settlement']
+  VACATED [note: 'Court ruling has been overturned or nullified']
+  PENDING [note: 'Currently in process or awaiting final determination']
+  RELEASED [note: 'Officially removed or cleared']
+  EXPIRED [note: 'Time-limit for record has passed']
+  OTHER [note: 'Status not falling into standard categories']
 }
 
 Table "consumer_lending"."public_records" {
   "consumer_lending_record_id" SERIAL [pk, increment, note: "Unique identifier for public record"]
   "consumer_lending_credit_report_id" INTEGER [not null, ref: > consumer_lending.credit_reports.consumer_lending_credit_report_id, note: "Reference to credit report"]
-  "record_type" VARCHAR(50) [not null, note: "Bankruptcy, Lien, Judgment"]
-  "status" VARCHAR(50) [not null, note: "Active, Satisfied, Discharged"]
+  "record_type" consumer_lending.public_record_type [not null, note: "Type of public record"]
+  "status" consumer_lending.public_record_status [not null, note: "Current status of the public record"]
   "filing_date" DATE [not null, note: "Date record was filed"]
   "amount" NUMERIC(18,2) [note: "Amount of judgment or lien"]
   "reference_number" VARCHAR(100) [note: "Court or filing reference number"]
@@ -1631,11 +1970,27 @@ Table "consumer_lending"."public_records" {
   note: "Stores public records, such as bankruptcies, liens, and judgments, associated with a credit report."
 }
 
+Enum "consumer_lending"."decision_model_type" {
+  CREDIT_SCORE [note: 'Model for calculating credit worthiness']
+  INCOME_VERIFICATION [note: 'Model for verifying and assessing income']
+  FRAUD_DETECTION [note: 'Model for identifying potential fraudulent applications']
+  RISK_ASSESSMENT [note: 'Comprehensive model for evaluating overall lending risk']
+  DEBT_TO_INCOME_ANALYSIS [note: 'Model for analyzing debt-to-income ratio']
+  BEHAVIORAL_SCORING [note: 'Model based on past financial behavior']
+  MACHINE_LEARNING_PREDICTIVE [note: 'Advanced predictive model using machine learning']
+  ALTERNATIVE_CREDIT_SCORING [note: 'Model using non-traditional credit data']
+  EMPLOYMENT_VERIFICATION [note: 'Model for assessing employment stability']
+  COLLATERAL_VALUATION [note: 'Model for evaluating collateral value']
+  REGULATORY_COMPLIANCE [note: 'Model for ensuring lending regulation compliance']
+  PRICING_MODEL [note: 'Model for determining loan pricing and terms']
+  OTHER [note: 'Decision model type not falling into standard categories']
+}
+
 Table "consumer_lending"."decision_models" {
   "consumer_lending_model_id" SERIAL [pk, increment, note: "Unique identifier for decision model"]
   "model_name" VARCHAR(100) [not null, note: "Name of the model"]
   "model_version" VARCHAR(20) [not null, note: "Version of the model"]
-  "model_type" VARCHAR(50) [not null, note: "Credit Score, Income Verification, Fraud Detection"]
+  "model_type" consumer_lending.decision_model_type [not null, note: "Type of decision model"]
   "is_active" BOOLEAN [not null, note: "Whether model is in active use"]
   "effective_date" DATE [not null, note: "When model became effective"]
   "expiration_date" DATE [note: "When model expires"]
@@ -1644,13 +1999,36 @@ Table "consumer_lending"."decision_models" {
   note: "Contains information about the decision models used to evaluate loan applications, including credit scoring, income verification, and fraud detection models."
 }
 
+Enum "consumer_lending"."decision_type" {
+  PREQUALIFICATION [note: 'Preliminary assessment of loan eligibility']
+  INITIAL [note: 'First formal review of loan application']
+  FINAL [note: 'Conclusive decision after complete review']
+  RECONSIDERATION [note: 'Review of a previously made decision']
+  COUNTER_OFFER [note: 'Alternative loan terms proposed']
+  CONDITIONAL [note: 'Decision with specific conditions to be met']
+  ADMINISTRATIVE_REVIEW [note: 'Internal administrative review']
+  OTHER [note: 'Decision type not falling into standard categories']
+}
+
+Enum "consumer_lending"."decision_result" {
+  APPROVED [note: 'Loan application fully approved']
+  DENIED [note: 'Loan application rejected']
+  PENDING_REVIEW [note: 'Application under active review']
+  SUSPENDED [note: 'Application temporarily halted']
+  INCOMPLETE [note: 'Application lacks required information']
+  REFERRED [note: 'Requires additional manual review']
+  COUNTER_OFFER [note: 'Alternative terms proposed']
+  WITHDRAWN [note: 'Applicant withdrew the application']
+  OTHER [note: 'Decision result not falling into standard categories']
+}
+
 Table "consumer_lending"."application_decisions" {
   "consumer_lending_decision_id" SERIAL [pk, increment, note: "Unique identifier for decision"]
   "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
-  "decision_type" VARCHAR(50) [not null, note: "Prequalification, Initial, Final"]
-  "decision_result" VARCHAR(20) [not null, note: "Approved, Denied, Pending Review"]
+  "decision_type" consumer_lending.decision_type [not null, note: "Type of decision"]
+  "decision_result" consumer_lending.decision_result [not null, note: "Result of the decision"]
   "decision_date_time" TIMESTAMP [not null, note: "When decision was made"]
-  "decision_by" VARCHAR(50) [note: "User ID or System that made decision"]
+  "decision_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User that made decision"]
   "consumer_lending_model_id" INTEGER [ref: > consumer_lending.decision_models.consumer_lending_model_id, note: "Reference to decision model used"]
   "decision_score" NUMERIC(10,2) [note: "Numeric score from decision model"]
   "consumer_lending_pricing_tier_id" INTEGER [ref: > consumer_lending.risk_based_pricing_tiers.consumer_lending_pricing_tier_id, note: "Reference to pricing tier if approved"]
@@ -1665,14 +2043,58 @@ Table "consumer_lending"."application_decisions" {
   note: "Records the decisions made on loan applications, including approvals, denials, and pre-qualifications."
 }
 
+Enum "consumer_lending"."decision_reason_code" {
+  INSUFFICIENT_INCOME [note: 'Applicant\'s income does not meet minimum requirements']
+  HIGH_DEBT_TO_INCOME [note: 'Debt-to-income ratio exceeds acceptable limits']
+  LOW_CREDIT_SCORE [note: 'Credit score below minimum threshold']
+  INSUFFICIENT_CREDIT_HISTORY [note: 'Limited or no established credit history']
+  RECENT_BANKRUPTCY [note: 'Bankruptcy within recent time period']
+  OUTSTANDING_COLLECTIONS [note: 'Unresolved collection accounts']
+  INCOMPLETE_APPLICATION [note: 'Application missing required information']
+  NEGATIVE_PAYMENT_HISTORY [note: 'History of late payments or defaults']
+  INSUFFICIENT_COLLATERAL [note: 'Inadequate collateral for secured loans']
+  EMPLOYMENT_INSTABILITY [note: 'Inconsistent or unstable employment']
+  FRAUD_RISK [note: 'Potential fraud detected in application']
+  REGULATORY_RESTRICTIONS [note: 'Fails to meet regulatory lending requirements']
+  GEOGRAPHIC_RESTRICTION [note: 'Does not meet geographic lending criteria']
+  UNVERIFIABLE_INFORMATION [note: 'Unable to verify provided information']
+  INSUFFICIENT_ASSETS [note: 'Lack of sufficient liquid assets']
+  AGE_REQUIREMENTS [note: 'Does not meet age criteria for the loan']
+  EXISTING_RELATIONSHIP [note: 'Issues with existing financial relationships']
+  RISK_TIER_INELIGIBILITY [note: 'Does not qualify for any risk-based pricing tier']
+  OTHER [note: 'Reason not falling into standard categories']
+}
+
 Table "consumer_lending"."decision_reasons" {
   "consumer_lending_decision_reason_id" SERIAL [pk, increment, note: "Unique identifier for decision reason"]
   "consumer_lending_decision_id" INTEGER [not null, ref: > consumer_lending.application_decisions.consumer_lending_decision_id, note: "Reference to application decision"]
-  "reason_code" VARCHAR(20) [not null, note: "Standard reason code"]
+  "reason_code" consumer_lending.decision_reason_code [not null, note: "Standard reason code for decision"]
   "reason_description" VARCHAR(255) [not null, note: "Description of reason"]
   "sequence" INTEGER [not null, note: "Order of importance for reason"]
 
   note: "Provides specific reasons for the decisions made on loan applications, linked to the application_decisions table."
+}
+
+Enum "consumer_lending"."delivery_method" {
+  EMAIL [note: 'Notice sent via electronic mail']
+  MAIL [note: 'Physical notice sent through postal service']
+  PORTAL [note: 'Notice delivered through online customer portal']
+  SMS [note: 'Notice sent via text message']
+  PHONE [note: 'Notice communicated via phone call']
+  FAX [note: 'Notice sent via facsimile']
+  IN_PERSON [note: 'Notice delivered in person']
+  OTHER [note: 'Delivery method not falling into standard categories']
+}
+
+Enum "consumer_lending"."adverse_action_notice_status" {
+  GENERATED [note: 'Notice has been created but not yet sent']
+  SENT [note: 'Notice has been transmitted to the applicant']
+  DELIVERED [note: 'Notice has been confirmed as received by the applicant']
+  FAILED [note: 'Attempt to send notice was unsuccessful']
+  PENDING [note: 'Notice is in process of being sent']
+  READ [note: 'Notice has been opened and read by the applicant']
+  RETURNED [note: 'Notice was returned undeliverable']
+  OTHER [note: 'Notice status not falling into standard categories']
 }
 
 Table "consumer_lending"."adverse_action_notices" {
@@ -1680,11 +2102,33 @@ Table "consumer_lending"."adverse_action_notices" {
   "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "generated_date" TIMESTAMP [not null, note: "When notice was generated"]
   "sent_date" TIMESTAMP [note: "When notice was sent to applicant"]
-  "delivery_method" VARCHAR(50) [not null, note: "Email, Mail, Portal"]
+  "delivery_method" consumer_lending.delivery_method [not null, note: "Method of delivering the notice"]
   "notice_path" VARCHAR(500) [note: "Path to stored notice document"]
-  "status" VARCHAR(20) [not null, note: "Generated, Sent, Delivered"]
+  "status" consumer_lending.adverse_action_notice_status [not null, note: "Current status of the notice"]
 
   note: "Tracks adverse action notices sent to applicants when their loan applications are denied."
+}
+
+Enum "consumer_lending"."vehicle_condition" {
+  NEW [note: 'Brand new vehicle, never previously registered']
+  USED [note: 'Previously owned or registered vehicle']
+  CERTIFIED_PRE_OWNED [note: 'Used vehicle that has been inspected and certified by manufacturer']
+  DEMO [note: 'Demonstrator vehicle used by dealership']
+  SALVAGE [note: 'Vehicle with significant previous damage']
+  RECONSTRUCTED [note: 'Rebuilt after major damage']
+  OTHER [note: 'Vehicle condition not falling into standard categories']
+}
+
+Enum "consumer_lending"."valuation_source" {
+  KELLEY_BLUE_BOOK [note: 'Valuation from Kelley Blue Book']
+  NADA_GUIDES [note: 'Valuation from NADA Guides']
+  EDMUNDS [note: 'Valuation from Edmunds']
+  BLACK_BOOK [note: 'Valuation from Black Book']
+  CARFAX [note: 'Valuation from Carfax']
+  DEALER_APPRAISAL [note: 'Valuation provided by dealership']
+  INDEPENDENT_APPRAISAL [note: 'Valuation from independent appraiser']
+  MANHEIM [note: 'Valuation from Manheim automotive marketplace']
+  OTHER [note: 'Valuation source not falling into standard categories']
 }
 
 Table "consumer_lending"."vehicles" {
@@ -1695,7 +2139,7 @@ Table "consumer_lending"."vehicles" {
   "model" VARCHAR(50) [not null, note: "Vehicle model"]
   "trim" VARCHAR(50) [note: "Vehicle trim level"]
   "vin" VARCHAR(17) [note: "Vehicle Identification Number"]
-  "vehicle_type" VARCHAR(20) [not null, note: "New, Used"]
+  "vehicle_type" consumer_lending.vehicle_condition [not null, note: "Condition of the vehicle"]
   "mileage" INTEGER [note: "Current odometer reading"]
   "purchase_price" NUMERIC(18,2) [not null, note: "Agreed purchase price"]
   "down_payment" NUMERIC(18,2) [note: "Down payment amount"]
@@ -1704,7 +2148,7 @@ Table "consumer_lending"."vehicles" {
   "dealer_name" VARCHAR(100) [note: "Name of dealership"]
   "dealer_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses"]
   "is_private_sale" BOOLEAN [not null, default: false, note: "Whether private sale or dealer"]
-  "valuation_source" VARCHAR(50) [note: "KBB, NADA, etc."]
+  "valuation_source" consumer_lending.valuation_source [note: "Source of vehicle valuation"]
   "valuation_amount" NUMERIC(18,2) [note: "Third-party valuation amount"]
   "valuation_date" DATE [note: "Date of valuation"]
 
@@ -1749,6 +2193,19 @@ Table "consumer_lending"."loan_accounts" {
   note: "Stores information about active loan accounts, including loan details, payment history, and current status."
 }
 
+Enum "consumer_lending"."payment_schedule_status" {
+  SCHEDULED [note: 'Payment is planned but not yet due']
+  PAID [note: 'Payment has been successfully completed']
+  PAST_DUE [note: 'Payment is overdue and not yet made']
+  PARTIALLY_PAID [note: 'Payment made but not for full amount']
+  SKIPPED [note: 'Payment intentionally skipped or deferred']
+  LATE_PROCESSED [note: 'Payment processed after scheduled date']
+  CANCELED [note: 'Scheduled payment was canceled']
+  PENDING [note: 'Payment is in process of being made']
+  FAILED [note: 'Payment attempt was unsuccessful']
+  OTHER [note: 'Payment status not falling into standard categories']
+}
+
 Table "consumer_lending"."payment_schedules" {
   "payment_schedule_id" SERIAL [pk, increment, note: "Unique identifier for schedule entry"]
   "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
@@ -1759,7 +2216,7 @@ Table "consumer_lending"."payment_schedules" {
   "interest_amount" NUMERIC(18,2) [not null, note: "Portion applied to interest"]
   "beginning_balance" NUMERIC(18,2) [not null, note: "Principal balance before payment"]
   "ending_balance" NUMERIC(18,2) [not null, note: "Principal balance after payment"]
-  "status" VARCHAR(20) [not null, note: "Scheduled, Paid, Past Due"]
+  "status" consumer_lending.payment_schedule_status [not null, note: "Current status of the payment schedule entry"]
   "actual_payment_date" DATE [note: "Date payment was actually made"]
   "actual_payment_id" INTEGER [ref: > consumer_lending.loan_payments.consumer_lending_payment_id, note: "Reference to loan_payments if paid"]
 
@@ -1788,13 +2245,52 @@ Table "consumer_lending"."disbursements" {
   note: "Tracks the disbursement of funds for loan accounts, including the date, amount, method, and recipient information."
 }
 
+Enum "consumer_lending"."payment_type" {
+  REGULAR [note: 'Scheduled monthly payment']
+  EXTRA_PRINCIPAL [note: 'Additional payment applied directly to principal']
+  LATE [note: 'Payment made after scheduled due date']
+  FULL_PAYOFF [note: 'Complete loan payoff']
+  PARTIAL [note: 'Partial payment of scheduled amount']
+  CATCH_UP [note: 'Payment to bring account current after missed payments']
+  PREPAYMENT [note: 'Payment made before scheduled date']
+  REFINANCE [note: 'Payment related to loan refinancing']
+  OTHER [note: 'Payment type not falling into standard categories']
+}
+
+Enum "consumer_lending"."payment_method" {
+  ACH [note: 'Automated Clearing House electronic transfer']
+  CHECK [note: 'Physical paper check']
+  ONLINE [note: 'Payment made through online banking platform']
+  CREDIT_CARD [note: 'Payment made using credit card']
+  DEBIT_CARD [note: 'Payment made using debit card']
+  WIRE_TRANSFER [note: 'Electronic wire transfer']
+  CASH [note: 'Cash payment']
+  MONEY_ORDER [note: 'Payment via money order']
+  MOBILE_APP [note: 'Payment through mobile banking application']
+  IN_PERSON [note: 'Payment made at physical branch or location']
+  AUTOMATIC [note: 'Automatic recurring payment']
+  OTHER [note: 'Payment method not falling into standard categories']
+}
+
+Enum "consumer_lending"."loan_payment_status" {
+  PENDING [note: 'Payment is being processed']
+  COMPLETED [note: 'Payment successfully processed']
+  RETURNED [note: 'Payment was returned or rejected']
+  CANCELED [note: 'Payment was canceled before processing']
+  REVERSED [note: 'Payment was reversed after initial processing']
+  FAILED [note: 'Payment attempt was unsuccessful']
+  PARTIAL [note: 'Payment was only partially processed']
+  SUSPENDED [note: 'Payment processing is temporarily on hold']
+  OTHER [note: 'Payment status not falling into standard categories']
+}
+
 Table "consumer_lending"."loan_payments" {
   "consumer_lending_payment_id" SERIAL [pk, increment, note: "Unique identifier for payment"]
   "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
   "payment_date" TIMESTAMP [not null, note: "Date/time payment was received"]
   "payment_effective_date" DATE [not null, note: "Date payment is effective"]
-  "payment_type" VARCHAR(30) [not null, note: "Regular, Extra Principal, Late"]
-  "payment_method" VARCHAR(30) [not null, note: "ACH, Check, Online, etc."]
+  "payment_type" consumer_lending.payment_type [not null, note: "Type of payment"]
+  "payment_method" consumer_lending.payment_method [not null, note: "Method used to make payment"]
   "payment_amount" NUMERIC(18,2) [not null, note: "Total payment amount"]
   "principal_amount" NUMERIC(18,2) [not null, note: "Amount applied to principal"]
   "interest_amount" NUMERIC(18,2) [not null, note: "Amount applied to interest"]
@@ -1802,22 +2298,51 @@ Table "consumer_lending"."loan_payments" {
   "other_fee_amount" NUMERIC(10,2) [not null, default: 0, note: "Amount applied to other fees"]
   "transaction_id" VARCHAR(50) [note: "External transaction identifier"]
   "confirmation_number" VARCHAR(50) [note: "Payment confirmation number"]
-  "payment_status" VARCHAR(20) [not null, note: "Pending, Completed, Returned, Canceled"]
+  "payment_status" consumer_lending.loan_payment_status [not null, note: "Current status of the payment"]
   "returned_reason" VARCHAR(100) [note: "Reason for payment return if applicable"]
   "returned_date" DATE [note: "Date payment was returned if applicable"]
 
   note: "Records payments made on loan accounts, including payment date, amount, method, and status."
 }
 
+Enum "consumer_lending"."loan_fee_type" {
+  LATE_FEE [note: 'Fee charged for late payment']
+  NSF_FEE [note: 'Non-sufficient funds fee']
+  ORIGINATION_FEE [note: 'Fee charged for processing a new loan']
+  PREPAYMENT_PENALTY [note: 'Fee for paying off loan early']
+  UNDERWRITING_FEE [note: 'Fee for loan underwriting process']
+  DOCUMENTATION_FEE [note: 'Fee for document preparation']
+  APPLICATION_FEE [note: 'Fee charged for loan application processing']
+  ANNUAL_FEE [note: 'Recurring annual fee for loan maintenance']
+  WIRE_TRANSFER_FEE [note: 'Fee for wire transfer transactions']
+  RETURNED_CHECK_FEE [note: 'Fee for returned or bounced checks']
+  MODIFICATION_FEE [note: 'Fee for changing loan terms']
+  EXTENSION_FEE [note: 'Fee for extending loan term']
+  COLLECTION_FEE [note: 'Fee associated with collection efforts']
+  OTHER [note: 'Fee type not falling into standard categories']
+}
+
+Enum "consumer_lending"."loan_fee_status" {
+  PENDING [note: 'Fee has been assessed but not yet processed']
+  CHARGED [note: 'Fee has been applied to the account']
+  WAIVED [note: 'Fee has been forgiven and will not be collected']
+  PAID [note: 'Fee has been successfully paid']
+  PARTIALLY_PAID [note: 'Fee has been partially paid']
+  REVERSED [note: 'Fee has been removed or canceled']
+  DISPUTED [note: 'Fee is under review or challenge']
+  WRITTEN_OFF [note: 'Fee has been removed from active collection']
+  OTHER [note: 'Fee status not falling into standard categories']
+}
+
 Table "consumer_lending"."loan_fees" {
   "consumer_lending_fee_id" SERIAL [pk, increment, note: "Unique identifier for fee"]
   "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
-  "fee_type" VARCHAR(50) [not null, note: "Late Fee, NSF Fee, Origination Fee"]
+  "fee_type" consumer_lending.loan_fee_type [not null, note: "Type of fee charged"]
   "fee_date" DATE [not null, note: "Date fee was assessed"]
   "fee_amount" NUMERIC(10,2) [not null, note: "Fee amount"]
-  "fee_status" VARCHAR(20) [not null, note: "Pending, Charged, Waived, Paid"]
+  "fee_status" consumer_lending.loan_fee_status [not null, note: "Current status of the fee"]
   "waived_date" DATE [note: "Date fee was waived if applicable"]
-  "waived_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who waived the fee"]
+  "waived_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who waived the fee"]
   "waiver_reason" VARCHAR(255) [note: "Reason fee was waived"]
   "paid_date" DATE [note: "Date fee was paid"]
   "consumer_lending_payment_id" INTEGER [ref: > consumer_lending.loan_payments.consumer_lending_payment_id, note: "Reference to loan_payments if paid"]
@@ -1825,10 +2350,27 @@ Table "consumer_lending"."loan_fees" {
   note: "Tracks fees charged to loan accounts, including fee type, amount, status, and payment details."
 }
 
+Enum "consumer_lending"."collateral_type" {
+  VEHICLE [note: 'Automobile or other motor vehicle used as collateral']
+  REAL_ESTATE [note: 'Residential or commercial property']
+  DEPOSIT_ACCOUNT [note: 'Savings or other deposit account']
+  INVESTMENT_SECURITIES [note: 'Stocks, bonds, or other investment securities']
+  EQUIPMENT [note: 'Business or personal equipment']
+  BOAT [note: 'Watercraft used as collateral']
+  RECREATIONAL_VEHICLE [note: 'RV, camper, or similar vehicle']
+  MACHINERY [note: 'Industrial or agricultural machinery']
+  INVENTORY [note: 'Business inventory or stock']
+  ACCOUNTS_RECEIVABLE [note: 'Outstanding invoices or expected payments']
+  LIFE_INSURANCE_POLICY [note: 'Cash value of a life insurance policy']
+  JEWELRY [note: 'Precious metals or valuable jewelry']
+  FARM_ASSETS [note: 'Agricultural land or farm-related assets']
+  OTHER [note: 'Collateral type not falling into standard categories']
+}
+
 Table "consumer_lending"."loan_collateral" {
   "consumer_lending_collateral_id" SERIAL [pk, increment, note: "Unique identifier for collateral"]
   "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
-  "collateral_type" VARCHAR(50) [not null, note: "Vehicle, Property, Deposit Account"]
+  "collateral_type" consumer_lending.collateral_type [not null, note: "Type of collateral"]
   "description" VARCHAR(255) [not null, note: "Description of collateral"]
   "value" NUMERIC(18,2) [not null, note: "Estimated value of collateral"]
   "valuation_date" DATE [not null, note: "Date of valuation"]
@@ -1844,33 +2386,100 @@ Table "consumer_lending"."loan_collateral" {
   note: "Stores information about collateral used to secure loans, including type, value, and insurance requirements."
 }
 
+Enum "consumer_lending"."insurance_type" {
+  AUTO [note: 'Insurance specifically for vehicle loans']
+  HAZARD [note: 'Property damage insurance']
+  CREDIT_LIFE [note: 'Insurance that pays off loan if borrower dies']
+  DISABILITY [note: 'Insurance covering loan payments if borrower becomes disabled']
+  COMPREHENSIVE [note: 'All-inclusive insurance coverage']
+  COLLISION [note: 'Insurance covering damage from vehicle collisions']
+  PROPERTY [note: 'Insurance for real estate or physical property']
+  TITLE [note: 'Insurance protecting against property ownership disputes']
+  LIFE [note: 'Life insurance policy']
+  UNEMPLOYMENT [note: 'Insurance covering loan payments during job loss']
+  MARINE [note: 'Insurance for watercraft or marine-related loans']
+  EQUIPMENT [note: 'Insurance for machinery or equipment loans']
+  OTHER [note: 'Insurance type not falling into standard categories']
+}
+
+Enum "consumer_lending"."premium_frequency" {
+  ANNUAL [note: 'Premium paid once per year']
+  MONTHLY [note: 'Premium paid monthly']
+  QUARTERLY [note: 'Premium paid every three months']
+  SEMI_ANNUAL [note: 'Premium paid twice per year']
+  ONE_TIME [note: 'Single premium payment']
+  OTHER [note: 'Premium frequency not falling into standard categories']
+}
+
+Enum "consumer_lending"."insurance_status" {
+  ACTIVE [note: 'Insurance policy is currently in force']
+  LAPSED [note: 'Policy has expired due to non-payment']
+  CANCELED [note: 'Policy has been intentionally terminated']
+  PENDING [note: 'Policy is in process of being activated']
+  SUSPENDED [note: 'Policy temporarily not in effect']
+  EXPIRED [note: 'Policy has reached its end date']
+  IN_GRACE_PERIOD [note: 'Policy is in a grace period']
+  OTHER [note: 'Insurance status not falling into standard categories']
+}
+
 Table "consumer_lending"."loan_insurance" {
   "consumer_lending_insurance_id" SERIAL [pk, increment, note: "Unique identifier for insurance record"]
   "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
   "consumer_lending_collateral_id" INTEGER [ref: > consumer_lending.loan_collateral.consumer_lending_collateral_id, note: "Reference to loan_collateral if associated with specific collateral"]
-  "insurance_type" VARCHAR(50) [not null, note: "Auto, Hazard, Credit Life, Disability"]
+  "insurance_type" consumer_lending.insurance_type [not null, note: "Type of insurance"]
   "carrier_name" VARCHAR(100) [not null, note: "Name of insurance company"]
   "policy_number" VARCHAR(50) [not null, note: "Insurance policy number"]
   "coverage_amount" NUMERIC(18,2) [not null, note: "Amount of coverage"]
   "premium_amount" NUMERIC(18,2) [not null, note: "Cost of insurance premium"]
-  "premium_frequency" VARCHAR(20) [not null, note: "Annual, Monthly"]
+  "premium_frequency" consumer_lending.premium_frequency [not null, note: "Frequency of premium payments"]
   "effective_date" DATE [not null, note: "Policy start date"]
   "expiration_date" DATE [not null, note: "Policy end date"]
   "beneficiary" VARCHAR(100) [note: "Named beneficiary if applicable"]
-  "status" VARCHAR(20) [not null, note: "Active, Lapsed, Canceled"]
+  "status" consumer_lending.insurance_status [not null, note: "Current status of the insurance policy"]
 
   note: "Stores information about insurance policies associated with loan accounts or collateral."
+}
+
+Enum "consumer_lending"."document_type" {
+  APPLICATION [note: 'Initial loan application form']
+  CONTRACT [note: 'Signed loan agreement or contract']
+  STATEMENT [note: 'Account statement or billing document']
+  INCOME_VERIFICATION [note: 'Documents proving income (W2, pay stubs)']
+  TAX_RETURN [note: 'Personal or business tax return']
+  BANK_STATEMENT [note: 'Bank account statements']
+  IDENTIFICATION [note: 'Government-issued ID or passport']
+  PROOF_OF_ADDRESS [note: 'Utility bill or lease agreement']
+  CREDIT_REPORT [note: 'Credit report document']
+  COLLATERAL_DOCUMENT [note: 'Documents related to collateral']
+  INSURANCE_DOCUMENT [note: 'Insurance policy or coverage documents']
+  PROMISSORY_NOTE [note: 'Legal promise to repay the loan']
+  CLOSING_DISCLOSURE [note: 'Loan closing and terms disclosure']
+  RECEIPT [note: 'Payment or transaction receipt']
+  COMMUNICATION [note: 'Correspondence related to the loan']
+  OTHER [note: 'Document type not falling into standard categories']
+}
+
+Enum "consumer_lending"."document_status" {
+  PENDING [note: 'Document awaiting initial review']
+  REVIEWED [note: 'Document has been examined']
+  ACCEPTED [note: 'Document has been approved and accepted']
+  REJECTED [note: 'Document was not accepted']
+  REQUIRES_REVISION [note: 'Document needs updates or corrections']
+  IN_REVIEW [note: 'Document is currently being reviewed']
+  ARCHIVED [note: 'Document has been filed and stored']
+  EXPIRED [note: 'Document is no longer valid']
+  OTHER [note: 'Document status not falling into standard categories']
 }
 
 Table "consumer_lending"."loan_documents" {
   "consumer_lending_document_id" SERIAL [pk, increment, note: "Unique identifier for document"]
   "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
-  "document_type" VARCHAR(50) [not null, note: "Application, Contract, Statement, etc."]
+  "document_type" consumer_lending.document_type [not null, note: "Type of document"]
   "document_name" VARCHAR(255) [not null, note: "File name or title"]
   "document_path" VARCHAR(500) [not null, note: "Path to stored document"]
   "upload_date" TIMESTAMP [not null, note: "When document was created/uploaded"]
-  "status" VARCHAR(20) [not null, note: "Pending, Reviewed, Accepted, Rejected"]
+  "status" consumer_lending.document_status [not null, note: "Current status of the document"]
   "review_date" TIMESTAMP [note: "When document was reviewed"]
   "reviewer_id" INTEGER [note: "User who reviewed document"]
   "expiration_date" DATE [note: "Document expiration date if applicable"]
@@ -1879,23 +2488,79 @@ Table "consumer_lending"."loan_documents" {
   note: "Tracks documents related to loan applications and accounts, including application forms, contracts, and statements."
 }
 
+Enum "consumer_lending"."communication_type" {
+  EMAIL [note: 'Electronic mail communication']
+  LETTER [note: 'Physical mail correspondence']
+  PHONE_CALL [note: 'Telephone conversation']
+  TEXT_MESSAGE [note: 'SMS or instant message']
+  VOICEMAIL [note: 'Voice message left']
+  CHAT [note: 'Online chat or messaging platform']
+  VIDEO_CALL [note: 'Video conference or call']
+  FAX [note: 'Facsimile transmission']
+  IN_PERSON [note: 'Face-to-face communication']
+  OTHER [note: 'Communication type not falling into standard categories']
+}
+
+Enum "consumer_lending"."communication_direction" {
+  INBOUND [note: 'Communication received by the organization']
+  OUTBOUND [note: 'Communication sent by the organization']
+  INTERNAL [note: 'Communication within the organization']
+  OTHER [note: 'Communication direction not falling into standard categories']
+}
+
+Enum "consumer_lending"."communication_status" {
+  SENT [note: 'Communication has been sent']
+  DELIVERED [note: 'Communication successfully reached recipient']
+  FAILED [note: 'Communication attempt was unsuccessful']
+  RECEIVED [note: 'Communication has been received and processed']
+  PENDING [note: 'Communication is in process of being sent']
+  READ [note: 'Communication has been read by recipient']
+  PARTIALLY_DELIVERED [note: 'Communication partially reached recipient']
+  OTHER [note: 'Communication status not falling into standard categories']
+}
+
+Enum "consumer_lending"."communication_context" {
+  PAYMENT_REMINDER [note: 'Communication related to upcoming or missed payment']
+  STATEMENT [note: 'Statement-related communication']
+  NOTICE [note: 'Official notice or communication']
+  APPLICATION_STATUS [note: 'Update on loan application status']
+  DOCUMENT_REQUEST [note: 'Request for additional documents']
+  ACCOUNT_REVIEW [note: 'Communication about account review']
+  COLLECTION [note: 'Communication related to debt collection']
+  VERIFICATION [note: 'Request for information verification']
+  MARKETING [note: 'Promotional or marketing communication']
+  CUSTOMER_SERVICE [note: 'General customer service inquiry']
+  OTHER [note: 'Communication context not falling into standard categories']
+}
+
 Table "consumer_lending"."loan_communications" {
   "consumer_lending_communication_id" SERIAL [pk, increment, note: "Unique identifier for communication"]
   "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
   "communication_date" TIMESTAMP [not null, note: "Date/time of communication"]
-  "communication_type" VARCHAR(30) [not null, note: "Email, Letter, Phone Call, Text"]
-  "direction" VARCHAR(10) [not null, note: "Inbound, Outbound"]
+  "communication_type" consumer_lending.communication_type [not null, note: "Method of communication"]
+  "direction" consumer_lending.communication_direction [not null, note: "Direction of communication"]
   "subject" VARCHAR(255) [note: "Communication subject"]
   "content" TEXT [note: "Communication content or transcript"]
   "sender" VARCHAR(100) [note: "Person or system that sent communication"]
   "recipient" VARCHAR(100) [note: "Person who received communication"]
   "template_id" VARCHAR(50) [note: "Reference to template if applicable"]
-  "status" VARCHAR(20) [not null, note: "Sent, Delivered, Failed, Received"]
+  "status" consumer_lending.communication_status [not null, note: "Current status of communication"]
   "document_path" VARCHAR(500) [note: "Path to stored communication document"]
-  "related_to" VARCHAR(50) [note: "Payment Reminder, Statement, Notice, etc."]
+  "related_to" consumer_lending.communication_context [note: "Context or purpose of communication"]
 
   note: "Logs various communications related to loan applications and accounts, such as emails, letters, and phone calls."
+}
+
+Enum "consumer_lending"."statement_delivery_method" {
+  EMAIL [note: 'Statement sent via electronic mail']
+  MAIL [note: 'Physical statement sent through postal service']
+  PORTAL [note: 'Statement made available through online customer portal']
+  SMS [note: 'Statement link sent via text message']
+  MOBILE_APP [note: 'Statement delivered through mobile banking application']
+  FAX [note: 'Statement sent via facsimile']
+  PRINT_AT_BRANCH [note: 'Statement printed and available at physical branch']
+  OTHER [note: 'Delivery method not falling into standard categories']
 }
 
 Table "consumer_lending"."loan_statements" {
@@ -1915,39 +2580,111 @@ Table "consumer_lending"."loan_statements" {
   "due_date" DATE [not null, note: "Next payment due date"]
   "document_path" VARCHAR(500) [note: "Path to stored statement document"]
   "sent_date" DATE [note: "Date statement was sent to customer"]
-  "delivery_method" VARCHAR(50) [note: "Email, Mail, Portal"]
+  "delivery_method" consumer_lending.statement_delivery_method [note: "Method of statement delivery"]
 
   note: "Stores periodic loan statements, providing a summary of account activity, balances, and payments."
+}
+
+Enum "consumer_lending"."collection_status" {
+  ACTIVE [note: 'Account is currently in active collection process']
+  RESOLVED [note: 'Collection process has been successfully completed']
+  CHARGED_OFF [note: 'Account has been written off as a loss']
+  NEGOTIATING [note: 'In negotiation for repayment or settlement']
+  SUSPENDED [note: 'Collection efforts temporarily paused']
+  LEGAL_PROCEEDINGS [note: 'Account is in legal collection process']
+  PAYMENT_PLAN [note: 'Account is on a structured payment plan']
+  OTHER [note: 'Collection status not falling into standard categories']
+}
+
+Enum "consumer_lending"."collection_priority" {
+  HIGH [note: 'Urgent collection account requiring immediate attention']
+  MEDIUM [note: 'Standard priority collection account']
+  LOW [note: 'Lower risk or lower balance collection account']
+  CRITICAL [note: 'Highest priority account with significant risk']
+  MINIMAL [note: 'Lowest priority account with minimal collection risk']
+  OTHER [note: 'Collection priority not falling into standard categories']
+}
+
+Enum "consumer_lending"."collection_resolution_type" {
+  PAID_IN_FULL [note: 'Account fully paid off']
+  SETTLEMENT [note: 'Partial payment accepted to resolve debt']
+  MODIFICATION [note: 'Loan terms modified to facilitate repayment']
+  CHARGE_OFF [note: 'Debt written off as uncollectible']
+  BANKRUPTCY [note: 'Resolution through bankruptcy proceedings']
+  DEBT_CONSOLIDATION [note: 'Debt consolidated into new arrangement']
+  PAYMENT_PLAN [note: 'Structured repayment plan established']
+  LEGAL_JUDGMENT [note: 'Resolved through court judgment']
+  FORGIVEN [note: 'Debt completely forgiven']
+  OTHER [note: 'Resolution type not falling into standard categories']
 }
 
 Table "consumer_lending"."collection_accounts" {
   "consumer_lending_collection_id" SERIAL [pk, increment, note: "Unique identifier for collection record"]
   "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
   "assigned_date" DATE [not null, note: "Date account was placed in collections"]
-  "status" VARCHAR(20) [not null, note: "Active, Resolved, Charged Off"]
+  "status" consumer_lending.collection_status [not null, note: "Current status of collection account"]
   "delinquency_reason" VARCHAR(100) [note: "Customer-provided reason for delinquency"]
   "delinquency_date" DATE [not null, note: "First date of delinquency"]
   "days_delinquent" INTEGER [not null, note: "Current days delinquent"]
   "amount_past_due" NUMERIC(18,2) [not null, note: "Total amount past due"]
   "assigned_to" VARCHAR(50) [note: "Collector assigned to account"]
-  "priority" VARCHAR(20) [note: "High, Medium, Low"]
+  "priority" consumer_lending.collection_priority [note: "Priority level of the collection account"]
   "next_action_date" DATE [note: "Date of next scheduled action"]
   "last_action_date" DATE [note: "Date of most recent action taken"]
   "resolution_date" DATE [note: "Date collection was resolved"]
-  "resolution_type" VARCHAR(50) [note: "Paid, Settlement, Modification, Charge Off"]
+  "resolution_type" consumer_lending.collection_resolution_type [note: "Type of resolution for the collection account"]
 
   note: "Tracks accounts that have been placed in collections, including delinquency details and collection actions."
+}
+
+Enum "consumer_lending"."collection_action_type" {
+  CALL [note: 'Telephone communication']
+  LETTER [note: 'Written correspondence via mail']
+  EMAIL [note: 'Electronic mail communication']
+  FIELD_VISIT [note: 'In-person visit to collect or discuss debt']
+  SMS [note: 'Text message communication']
+  VOICEMAIL [note: 'Voice message left']
+  LEGAL_NOTICE [note: 'Formal legal communication']
+  ONLINE_MESSAGE [note: 'Communication through online portal']
+  AUTOMATED_MESSAGE [note: 'Automated communication system']
+  OTHER [note: 'Action type not falling into standard categories']
+}
+
+Enum "consumer_lending"."collection_action_result" {
+  CONTACT_MADE [note: 'Successfully spoke with debtor']
+  LEFT_MESSAGE [note: 'Message left with debtor or representative']
+  NO_ANSWER [note: 'No response or contact made']
+  WRONG_NUMBER [note: 'Contact information proved incorrect']
+  PROMISE_TO_PAY [note: 'Debtor committed to making a payment']
+  PARTIAL_PAYMENT [note: 'Partial payment received']
+  DISPUTE_RAISED [note: 'Debtor disputed the debt']
+  REFERRED_TO_LEGAL [note: 'Account referred to legal department']
+  UNABLE_TO_LOCATE [note: 'Unable to find or contact debtor']
+  OTHER [note: 'Action result not falling into standard categories']
+}
+
+Enum "consumer_lending"."next_collection_action_type" {
+  FOLLOW_UP_CALL [note: 'Scheduled follow-up telephone call']
+  SEND_DEMAND_LETTER [note: 'Formal written demand for payment']
+  ESCALATE_TO_LEGAL [note: 'Refer to legal department for further action']
+  SKIP_TRACE [note: 'Attempt to locate debtor']
+  NEGOTIATE_SETTLEMENT [note: 'Attempt to arrange debt settlement']
+  PAYMENT_PLAN_DISCUSSION [note: 'Discuss potential payment arrangement']
+  CREDIT_REPORTING [note: 'Report to credit bureaus']
+  ASSET_INVESTIGATION [note: 'Investigate potential asset recovery']
+  SUSPEND_COLLECTION [note: 'Temporarily halt collection efforts']
+  OTHER [note: 'Next action type not falling into standard categories']
 }
 
 Table "consumer_lending"."collection_actions" {
   "consumer_lending_action_id" SERIAL [pk, increment, note: "Unique identifier for collection action"]
   "consumer_lending_collection_id" INTEGER [not null, ref: > consumer_lending.collection_accounts.consumer_lending_collection_id, note: "Reference to collection account"]
   "action_date" TIMESTAMP [not null, note: "Date/time action was taken"]
-  "action_type" VARCHAR(50) [not null, note: "Call, Letter, Email, Field Visit"]
-  "action_result" VARCHAR(50) [note: "Contact Made, Left Message, No Answer"]
-  "action_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, not null, note: "User who performed action"]
+  "action_type" consumer_lending.collection_action_type [not null, note: "Type of collection action"]
+  "action_result" consumer_lending.collection_action_result [note: "Result of the collection action"]
+  "action_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, not null, note: "User who performed action"]
   "notes" TEXT [note: "Details of action and outcome"]
-  "next_action_type" VARCHAR(50) [note: "Type of next planned action"]
+  "next_action_type" consumer_lending.next_collection_action_type [note: "Type of next planned action"]
   "next_action_date" DATE [note: "Date for next planned action"]
   "promise_to_pay_amount" NUMERIC(18,2) [note: "Amount customer promised to pay"]
   "promise_to_pay_date" DATE [note: "Date customer promised to pay by"]
@@ -1955,26 +2692,74 @@ Table "consumer_lending"."collection_actions" {
   note: "Logs specific actions taken to collect on delinquent loan accounts, such as calls, letters, and emails."
 }
 
+Enum "consumer_lending"."payment_arrangement_status" {
+  ACTIVE [note: 'Payment arrangement is currently in effect']
+  COMPLETED [note: 'All payments under the arrangement have been made']
+  BROKEN [note: 'Arrangement has been violated or defaulted']
+  SUSPENDED [note: 'Arrangement temporarily paused']
+  PENDING [note: 'Arrangement is being processed but not yet active']
+  NEGOTIATING [note: 'Arrangement terms are still being discussed']
+  CANCELED [note: 'Arrangement was terminated before completion']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
+Enum "consumer_lending"."payment_frequency" {
+  WEEKLY [note: 'Payments made once per week']
+  BI_WEEKLY [note: 'Payments made every two weeks']
+  MONTHLY [note: 'Payments made once per month']
+  SEMI_MONTHLY [note: 'Payments made twice per month']
+  QUARTERLY [note: 'Payments made every three months']
+  SEMI_ANNUALLY [note: 'Payments made twice per year']
+  ANNUALLY [note: 'Payments made once per year']
+  CUSTOM [note: 'Non-standard payment frequency']
+  OTHER [note: 'Frequency not falling into standard categories']
+}
+
 Table "consumer_lending"."payment_arrangements" {
   "consumer_lending_arrangement_id" SERIAL [pk, increment, note: "Unique identifier for payment arrangement"]
   "consumer_lending_collection_id" INTEGER [not null, ref: > consumer_lending.collection_accounts.consumer_lending_collection_id, note: "Reference to collection account"]
   "arrangement_date" DATE [not null, note: "Date arrangement was created"]
-  "status" VARCHAR(20) [not null, note: "Active, Completed, Broken"]
+  "status" consumer_lending.payment_arrangement_status [not null, note: "Current status of payment arrangement"]
   "total_amount" NUMERIC(18,2) [not null, note: "Total amount to be paid"]
   "number_of_payments" INTEGER [not null, note: "Number of payments in arrangement"]
   "first_payment_date" DATE [not null, note: "Date first payment is due"]
-  "payment_frequency" VARCHAR(20) [not null, note: "Weekly, Bi-weekly, Monthly"]
+  "payment_frequency" consumer_lending.payment_frequency [not null, note: "Frequency of payments"]
   "payment_amount" NUMERIC(18,2) [not null, note: "Amount of each payment"]
-  "approved_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who approved arrangement"]
+  "approved_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who approved arrangement"]
   "notes" TEXT [note: "Additional arrangement notes"]
 
   note: "Records payment arrangements made with borrowers to resolve delinquent accounts."
 }
 
+Enum "consumer_lending"."loan_modification_type" {
+  RATE_REDUCTION [note: 'Lowering of the interest rate']
+  TERM_EXTENSION [note: 'Extending the loan repayment period']
+  PRINCIPAL_REDUCTION [note: 'Reduction of the principal balance']
+  INTEREST_ONLY_PERIOD [note: 'Temporary period of interest-only payments']
+  CAPITALIZATION [note: 'Adding unpaid interest to principal balance']
+  PAYMENT_DEFERRAL [note: 'Temporary suspension or postponement of payments']
+  FORBEARANCE [note: 'Temporary reduction or suspension of payments']
+  WORKOUT [note: 'Comprehensive restructuring of loan terms']
+  REFINANCE [note: 'Replacing existing loan with new loan terms']
+  OTHER [note: 'Modification type not falling into standard categories']
+}
+
+Enum "consumer_lending"."loan_modification_status" {
+  PENDING [note: 'Modification request is under review']
+  APPROVED [note: 'Modification has been approved']
+  DENIED [note: 'Modification request was rejected']
+  COMPLETED [note: 'Modification has been fully implemented']
+  IN_PROGRESS [note: 'Modification is being processed']
+  SUSPENDED [note: 'Modification process is temporarily on hold']
+  PARTIAL [note: 'Partial modification approved']
+  CANCELED [note: 'Modification request was withdrawn or canceled']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
 Table "consumer_lending"."loan_modifications" {
   "consumer_lending_modification_id" SERIAL [pk, increment, note: "Unique identifier for loan modification"]
   "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
-  "modification_type" VARCHAR(50) [not null, note: "Rate Reduction, Term Extension, etc."]
+  "modification_type" consumer_lending.loan_modification_type [not null, note: "Type of loan modification"]
   "request_date" DATE [not null, note: "Date modification was requested"]
   "approval_date" DATE [note: "Date modification was approved"]
   "effective_date" DATE [note: "Date modification takes effect"]
@@ -1985,22 +2770,48 @@ Table "consumer_lending"."loan_modifications" {
   "original_principal_balance" NUMERIC(18,2) [note: "Principal balance before modification"]
   "new_principal_balance" NUMERIC(18,2) [note: "Principal balance after modification"]
   "capitalized_amount" NUMERIC(18,2) [note: "Amount of interest or fees capitalized"]
-  "status" VARCHAR(20) [not null, note: "Pending, Approved, Denied, Completed"]
+  "status" consumer_lending.loan_modification_status [not null, note: "Current status of the modification"]
   "hardship_reason" VARCHAR(100) [note: "Customer's reason for hardship"]
-  "approved_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who approved modification"]
+  "approved_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who approved modification"]
   "document_path" VARCHAR(500) [note: "Path to modification agreement document"]
 
   note: "Tracks modifications made to existing loan accounts, such as changes to interest rates, terms, or principal balance."
+}
+
+Enum "consumer_lending"."disclosure_type" {
+  INITIAL_TIL [note: 'Initial Truth in Lending disclosure']
+  LOAN_ESTIMATE [note: 'Estimated loan terms and costs']
+  CLOSING_DISCLOSURE [note: 'Final loan terms and closing costs']
+  CHANGE_IN_TERMS [note: 'Notification of changes to loan terms']
+  PERIODIC_STATEMENT [note: 'Periodic statement of loan details']
+  PAYMENT_NOTICE [note: 'Notice of upcoming payment or changes']
+  INTEREST_RATE_ADJUSTMENT [note: 'Notification of interest rate change']
+  PRE_QUALIFICATION [note: 'Initial loan pre-qualification disclosure']
+  ADVERSE_ACTION [note: 'Disclosure related to loan denial']
+  REFINANCE_NOTICE [note: 'Disclosure for refinancing terms']
+  OTHER [note: 'Disclosure type not falling into standard categories']
+}
+
+Enum "consumer_lending"."disclosure_delivery_method" {
+  EMAIL [note: 'Disclosure sent via electronic mail']
+  MAIL [note: 'Physical document sent through postal service']
+  IN_PERSON [note: 'Disclosed directly in a face-to-face meeting']
+  ELECTRONIC [note: 'Electronic delivery through secure portal']
+  SMS [note: 'Disclosure link sent via text message']
+  FAX [note: 'Disclosure sent via facsimile']
+  MOBILE_APP [note: 'Delivered through mobile banking application']
+  BRANCH_PICKUP [note: 'Document available for pickup at branch']
+  OTHER [note: 'Delivery method not falling into standard categories']
 }
 
 Table "consumer_lending"."reg_z_disclosures" {
   "consumer_lending_disclosure_id" SERIAL [pk, increment, note: "Unique identifier for disclosure"]
   "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if originated"]
-  "disclosure_type" VARCHAR(50) [not null, note: "Initial TIL, Loan Estimate, Closing Disclosure, Change in Terms"]
+  "disclosure_type" consumer_lending.disclosure_type [not null, note: "Type of Regulation Z disclosure"]
   "disclosure_date" TIMESTAMP [not null, note: "Date disclosure was generated"]
   "sent_date" TIMESTAMP [note: "Date disclosure was sent to applicant"]
-  "delivery_method" VARCHAR(30) [not null, note: "Email, Mail, In Person, Electronic"]
+  "delivery_method" consumer_lending.disclosure_delivery_method [not null, note: "Method of delivering the disclosure"]
   "annual_percentage_rate" NUMERIC(6,3) [not null, note: "APR disclosed"]
   "finance_charge" NUMERIC(18,2) [not null, note: "Total finance charge disclosed"]
   "amount_financed" NUMERIC(18,2) [not null, note: "Amount financed disclosed"]
@@ -2018,22 +2829,86 @@ Table "consumer_lending"."reg_z_disclosures" {
   note: "Stores disclosures required by the Truth in Lending Act (Regulation Z), such as Loan Estimates and Closing Disclosures."
 }
 
+Enum "consumer_lending"."ecoa_reason_code" {
+  "01" [note: 'Insufficient number of credit references']
+  "02" [note: 'No recent credit references']
+  "03" [note: 'Lack of recent credit performance']
+  "04" [note: 'Serious delinquency']
+  "05" [note: 'Serious derogatory credit history']
+  "10" [note: 'Insufficient income for requested credit']
+  "11" [note: 'Debt-to-income ratio too high']
+  "12" [note: 'Unable to verify income']
+  "20" [note: 'Low credit score']
+  "21" [note: 'Lack of credit score']
+  "22" [note: 'Insufficient credit score']
+  "23" [note: 'Insufficient credit bureau file']
+  "30" [note: 'Insufficient length of employment']
+  "31" [note: 'Unemployed']
+  "32" [note: 'Unable to verify employment']
+  "40" [note: 'Insufficient collateral']
+  "41" [note: 'Unacceptable collateral']
+  "50" [note: 'Incomplete application']
+  "51" [note: 'Unable to verify residence']
+  "52" [note: 'Unable to verify other information']
+  "60" [note: 'Bankruptcy']
+  "61" [note: 'Foreclosure']
+  "62" [note: 'Repossession']
+  "63" [note: 'Collection activity']
+  "64" [note: 'Legal judgment']
+  "65" [note: 'Charge-off']
+}
+
+Enum "consumer_lending"."fcra_reason_code" {
+  "A1" [note: 'Too many inquiries in the last 12 months']
+  "A2" [note: 'Serious delinquency in past 12-24 months']
+  "A3" [note: 'Serious delinquency in past 24+ months']
+  "A4" [note: 'Bankruptcy filed in last 12-24 months']
+  "A5" [note: 'Bankruptcy filed in past 24+ months']
+  "A6" [note: 'Foreclosure in last 12-24 months']
+  "A7" [note: 'Foreclosure in past 24+ months']
+  "A8" [note: 'Collection accounts']
+  "A9" [note: 'Charge-offs']
+  "B1" [note: 'Length of credit history too short']
+  "B2" [note: 'No recent credit card activity']
+  "B3" [note: 'No recent installment loan activity']
+  "B4" [note: 'No recent revolving credit activity']
+  "C1" [note: 'High credit card utilization']
+  "C2" [note: 'High total debt balance']
+  "C3" [note: 'High ratio of balance to credit limit']
+  "D1" [note: 'Public record or collection indicates serious credit problems']
+  "D2" [note: 'Wage garnishment']
+  "D3" [note: 'Tax lien']
+}
+
 Table "consumer_lending"."adverse_action_details" {
   "consumer_lending_adverse_action_id" SERIAL [pk, increment, note: "Unique identifier for adverse action record"]
   "consumer_lending_notice_id" INTEGER [not null, ref: > consumer_lending.adverse_action_notices.consumer_lending_notice_id, note: "Reference to adverse_action_notices"]
-  "ecoa_reason_code" VARCHAR(10) [not null, note: "Standard ECOA reason code"]
-  "fcra_reason_code" VARCHAR(10) [note: "Standard FCRA reason code if applicable"]
+  "ecoa_reason_code" consumer_lending.ecoa_reason_code [not null, note: "Standard ECOA reason code"]
+  "fcra_reason_code" consumer_lending.fcra_reason_code [note: "Standard FCRA reason code if applicable"]
   "reason_description" VARCHAR(255) [not null, note: "Description of reason for adverse action"]
   "credit_score_disclosed" INTEGER [note: "Credit score disclosed to applicant"]
   "credit_score_range_min" INTEGER [note: "Minimum score in range"]
   "credit_score_range_max" INTEGER [note: "Maximum score in range"]
   "credit_score_factors" TEXT [note: "Key factors affecting score"]
-  "credit_bureau_name" VARCHAR(50) [note: "Name of credit bureau"]
+  "credit_bureau_name" consumer_lending.credit_bureau [note: "Credit bureau providing the report"]
   "generated_date" TIMESTAMP [not null, note: "Date details were generated"]
   "user_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who generated adverse action"]
   "sequence" INTEGER [not null, note: "Order of importance for reason"]
 
   note: "Provides detailed information about adverse action taken on loan applications, including reasons and credit information."
+}
+
+Enum "consumer_lending"."information_method" {
+  "SELF_REPORTED" [note: 'Information provided by the applicant']
+  "OBSERVED" [note: 'Information determined by observation']
+  "NOT_PROVIDED" [note: 'Information was not provided']
+}
+
+Enum "consumer_lending"."action_taken" {
+  "APPROVED" [note: 'Loan application was approved']
+  "DENIED" [note: 'Loan application was denied']
+  "WITHDRAWN" [note: 'Applicant withdrew the application']
+  "INCOMPLETE" [note: 'Application is incomplete']
 }
 
 Table "consumer_lending"."ecoa_monitoring" {
@@ -2044,31 +2919,71 @@ Table "consumer_lending"."ecoa_monitoring" {
   "race" VARCHAR(50) [note: "Self-reported race"]
   "sex" VARCHAR(10) [note: "Self-reported sex"]
   "age" INTEGER [note: "Applicant age"]
-  "marital_status" VARCHAR(20) [note: "Marital status"]
-  "information_method" VARCHAR(30) [not null, note: "Self-reported, Observed, Not Provided"]
+  "marital_status" enterprise.marital_status [note: "Marital status"]
+  "information_method" consumer_lending.information_method [not null, note: "Method of obtaining information"]
   "income_monitored" NUMERIC(18,2) [note: "Income used for decision"]
-  "action_taken" VARCHAR(30) [not null, note: "Approved, Denied, Withdrawn, Incomplete"]
+  "action_taken" consumer_lending.action_taken [not null, note: "Action taken on the loan application"]
   "action_date" DATE [not null, note: "Date of action"]
   "submission_date" DATE [not null, note: "Date monitoring info submitted"]
-  "submitted_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who submitted monitoring info"]
+  "submitted_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who submitted monitoring info"]
 
   note: "Tracks information related to the Equal Credit Opportunity Act (ECOA) for monitoring and compliance purposes."
+}
+
+Enum "consumer_lending"."analysis_type" {
+  "PRICING" [note: 'Analysis of pricing disparities']
+  "UNDERWRITING" [note: 'Analysis of underwriting decision processes']
+  "MARKETING" [note: 'Analysis of marketing practices']
+  "PRODUCT_DESIGN" [note: 'Analysis of loan product design']
+  "PORTFOLIO_REVIEW" [note: 'Comprehensive portfolio-level analysis']
+  "GEOGRAPHIC" [note: 'Analysis of geographic lending patterns']
+}
+
+Enum "consumer_lending"."protected_class" {
+  "RACE" [note: 'Racial classification']
+  "ETHNICITY" [note: 'Ethnic background']
+  "SEX" [note: 'Gender classification']
+  "AGE" [note: 'Age group']
+  "NATIONAL_ORIGIN" [note: 'National origin']
+  "DISABILITY_STATUS" [note: 'Disability classification']
+  "MARITAL_STATUS" [note: 'Marital status']
+  "RELIGION" [note: 'Religious affiliation']
+  "VETERAN_STATUS" [note: 'Military veteran status']
+}
+
+Enum "consumer_lending"."outcome_variable" {
+  "APPROVAL_RATE" [note: 'Loan application approval percentage']
+  "APR" [note: 'Annual Percentage Rate']
+  "FEES" [note: 'Loan-related fees']
+  "LOAN_AMOUNT" [note: 'Approved loan amount']
+  "INTEREST_RATE" [note: 'Interest rate offered']
+  "LOAN_TERMS" [note: 'Loan repayment terms']
+  "COLLATERAL_REQUIREMENTS" [note: 'Collateral conditions']
+}
+
+Enum "consumer_lending"."statistical_test" {
+  "T_TEST" [note: 'Statistical test comparing means']
+  "CHI_SQUARE" [note: 'Test of independence between categorical variables']
+  "REGRESSION" [note: 'Regression analysis']
+  "ANOVA" [note: 'Analysis of variance']
+  "LOGISTIC_REGRESSION" [note: 'Regression for binary outcome']
+  "WILCOXON" [note: 'Non-parametric test comparing two groups']
 }
 
 Table "consumer_lending"."fairlending_analysis" {
   "consumer_lending_analysis_id" SERIAL [pk, increment, note: "Unique identifier for analysis record"]
   "analysis_date" DATE [not null, note: "Date analysis was performed"]
-  "analysis_type" VARCHAR(50) [not null, note: "Pricing, Underwriting, Marketing"]
+  "analysis_type" consumer_lending.analysis_type [not null, note: "Type of fair lending analysis"]
   "consumer_lending_loan_product_id" INTEGER [not null, ref: > consumer_lending.loan_products.consumer_lending_loan_product_id, note: "Loan product analyzed if specific product"]
   "time_period_start" DATE [not null, note: "Start of analysis period"]
   "time_period_end" DATE [not null, note: "End of analysis period"]
-  "protected_class" VARCHAR(50) [not null, note: "Race, Ethnicity, Sex, Age, etc."]
+  "protected_class" consumer_lending.protected_class [not null, note: "Protected class being analyzed"]
   "control_group" VARCHAR(50) [not null, note: "Reference group for comparison"]
   "test_group" VARCHAR(50) [not null, note: "Group being tested for disparities"]
   "sample_size_control" INTEGER [not null, note: "Number in control group"]
   "sample_size_test" INTEGER [not null, note: "Number in test group"]
-  "outcome_variable" VARCHAR(50) [not null, note: "Approval Rate, APR, Fees, etc."]
-  "statistical_test" VARCHAR(50) [note: "t-test, chi-square, regression"]
+  "outcome_variable" consumer_lending.outcome_variable [not null, note: "Outcome being measured"]
+  "statistical_test" consumer_lending.statistical_test [note: "Statistical method used"]
   "disparity_ratio" NUMERIC(8,3) [note: "Ratio of outcomes between groups"]
   "p_value" NUMERIC(8,6) [note: "Statistical significance level"]
   "statistically_significant" BOOLEAN [note: "Whether result is statistically significant"]
@@ -2082,13 +2997,23 @@ Table "consumer_lending"."fairlending_analysis" {
   note: "Records fair lending analysis conducted to identify and address potential disparities in lending practices."
 }
 
+Enum "consumer_lending"."reg_b_notice_type" {
+  "INCOMPLETENESS" [note: 'Notice of incomplete application']
+  "COUNTEROFFER" [note: 'Proposed alternative loan terms']
+  "ACTION_TAKEN" [note: 'Notice of final action on loan application']
+  "PRE_ADVERSE_ACTION" [note: 'Preliminary notice before adverse action']
+  "ADVERSE_ACTION" [note: 'Formal notice of application denial']
+  "REQUEST_FOR_INFORMATION" [note: 'Request for additional applicant information']
+  "CONDITIONAL_APPROVAL" [note: 'Approval with specific conditions']
+}
+
 Table "consumer_lending"."reg_b_notices" {
   "consumer_lending_notice_id" SERIAL [pk, increment, note: "Unique identifier for Reg B notice"]
   "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
-  "notice_type" VARCHAR(50) [not null, note: "Incompleteness, Counteroffer, Notice of Action Taken"]
+  "notice_type" consumer_lending.reg_b_notice_type [not null, note: "Type of Regulation B notice"]
   "generated_date" TIMESTAMP [not null, note: "Date notice was generated"]
   "sent_date" TIMESTAMP [not null, note: "Date notice was sent"]
-  "delivery_method" VARCHAR(30) [not null, note: "Email, Mail, Electronic"]
+  "delivery_method" consumer_lending.delivery_method [not null, note: "Method of delivering the notice"]
   "incomplete_items" TEXT [note: "Items needed if incompleteness notice"]
   "deadline_date" DATE [note: "Deadline for response if applicable"]
   "counteroffer_terms" TEXT [note: "Terms of counteroffer if applicable"]
@@ -2167,11 +3092,11 @@ Table "consumer_lending"."compliance_exceptions" {
   "regulation" VARCHAR(50) [not null, note: "Reg Z, Reg B, FCRA, etc."]
   "severity" VARCHAR(20) [not null, note: "High, Medium, Low"]
   "description" TEXT [not null, note: "Detailed description of exception"]
-  "identified_by" VARCHAR(50) [not null, note: "Person or process that identified exception"]
+  "identified_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, not null, note: "Person that identified exception"]
   "status" VARCHAR(20) [not null, note: "Open, In Remediation, Closed"]
   "remediation_plan" TEXT [note: "Plan to address exception"]
   "remediation_date" DATE [note: "Date remediation completed"]
-  "remediated_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "Person who remediated exception"]
+  "remediated_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "Person who remediated exception"]
   "root_cause" TEXT [note: "Identified root cause"]
   "preventive_action" TEXT [note: "Action to prevent recurrence"]
   "notes" TEXT [note: "Additional exception notes"]
@@ -2346,7 +3271,7 @@ Table "credit_cards"."security_blocks" {
   "transaction_type_restricted" VARCHAR(30) [note: "Transaction types blocked if specific"]
   "requested_by" VARCHAR(20) [not null, note: "Who requested the block (Customer, Bank, Fraud System)"]
   "status" VARCHAR(20) [not null, note: "Status of block (Active, Removed)"]
-  "removed_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who removed the block"]
+  "removed_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who removed the block"]
   "removed_date" TIMESTAMP [note: "When block was removed"]
 
   note: "Tracks security blocks placed on cards"
@@ -2406,7 +3331,7 @@ Table "credit_cards"."ability_to_pay_assessments" {
   "dti_ratio" NUMERIC(5,2) [note: "Debt-to-income ratio calculated"]
   "max_supportable_payment" NUMERIC(10,2) [note: "Maximum monthly payment calculated as supportable"]
   "passed_assessment" BOOLEAN [not null, note: "Whether applicant passed ability to pay test"]
-  "performed_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who performed assessment"]
+  "performed_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who performed assessment"]
   "notes" TEXT [note: "Additional assessment notes"]
 
   note: "Documents ability to pay assessments required by Reg Z"
@@ -2759,7 +3684,7 @@ Table "credit_cards"."credit_limit_changes" {
   "new_limit" NUMERIC(10,2) [not null, note: "Credit limit after change"]
   "change_reason" VARCHAR(50) [not null, note: "Reason for limit change"]
   "requested_by" VARCHAR(20) [not null, note: "Who requested change (Customer, Bank)"]
-  "approved_by" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who approved change"]
+  "approved_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who approved change"]
 
   note: "Tracks history of credit limit changes"
 }
@@ -3126,7 +4051,7 @@ Table "small_business_banking"."business_transaction_categories" {
   "notes" TEXT [note: "Additional notes about this transaction categorization"]
   "receipt_image_path" VARCHAR(500) [note: "Path to stored receipt image"]
   "tax_relevant" BOOLEAN [not null, default: false, note: "Flag indicating transaction is relevant for tax purposes"]
-  "created_by" INTEGER [note: "User who created this categorization"]
+  "created_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who created this categorization"]
 
   note: "Maps credit card transactions to business expense categories"
 }
@@ -3143,7 +4068,7 @@ Table "small_business_banking"."transactions" {
   "status" VARCHAR(20) [not null, default: "completed", note: "Status of the transaction (pending, completed, failed, reversed)"]
   "transaction_date" DATE [not null, note: "Date of the transaction"]
   "post_date" DATE [note: "Date when the transaction was posted to the account"]
-  "created_by" VARCHAR(50) [note: "User or system that created the transaction"]
+  "created_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User that created the transaction"]
 
   note: "Records all financial transactions across business accounts"
 }
@@ -3183,7 +4108,7 @@ Table "small_business_banking"."documents" {
   "upload_date" DATE [not null, note: "Date the document was uploaded"]
   "expiration_date" DATE [note: "Date when the document expires (if applicable)"]
   "status" VARCHAR(20) [not null, default: "active", note: "Status of the document (active, archived, expired)"]
-  "created_by" VARCHAR(50) [note: "User or system that created the document record"]
+  "created_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User that created the document record"]
 
   note: "Stores metadata about business documents with references to their file locations"
 }
@@ -3209,7 +4134,7 @@ Table "small_business_banking"."report_submissions" {
   "submission_date" TIMESTAMP [not null, note: "Date and time of submission"]
   "submission_method" VARCHAR(50) [not null, note: "Method of submission (portal, API, mail, etc.)"]
   "confirmation_number" VARCHAR(100) [note: "Confirmation number received upon submission"]
-  "submitted_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who submitted the report"]
+  "submitted_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who submitted the report"]
   "submission_file_path" VARCHAR(500) [note: "Path to the submitted file"]
   "response_date" TIMESTAMP [note: "Date and time of regulator response"]
   "response_status" VARCHAR(20) [note: "Status of the regulator's response (accepted, rejected, need more info)"]
@@ -3281,7 +4206,7 @@ Table "small_business_banking"."business_risk_assessments" {
   "small_business_banking_business_id" INTEGER [not null, ref: > "small_business_banking"."businesses"."small_business_banking_business_id", note: "Reference to the business being assessed"]
   "assessment_date" DATE [not null, note: "Date of the risk assessment"]
   "assessment_type" VARCHAR(50) [not null, note: "Type of assessment (AML, credit, operational, etc.)"]
-  "conducted_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person or team that conducted the assessment"]
+  "conducted_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person or team that conducted the assessment"]
   "methodology" TEXT [not null, note: "Methodology used for the assessment"]
   "industry_risk_score" INTEGER [not null, note: "Risk score based on industry (1-5 scale)"]
   "geographic_risk_score" INTEGER [not null, note: "Risk score based on geographic location (1-5 scale)"]
@@ -3349,7 +4274,7 @@ Table "small_business_banking"."credit_decisions" {
   "exception_reason" TEXT [note: "Reason for the exception (if applicable)"]
   "exception_approver" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who approved the exception"]
   "decision_notes" TEXT [note: "Additional notes about the decision"]
-  "decision_made_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person or system that made the decision"]
+  "decision_made_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person or system that made the decision"]
 
   note: "Documents credit decisions for regulatory review and fair lending analysis"
 }
@@ -3373,7 +4298,7 @@ Table "small_business_banking"."adverse_action_notices" {
   "fcra_notice_included" BOOLEAN [not null, default: true, note: "Whether FCRA notice was included"]
   "right_to_appraisal_notice" BOOLEAN [not null, default: false, note: "Whether right to appraisal notice was included"]
   "template_version" VARCHAR(20) [not null, note: "Version of the notice template used"]
-  "generated_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person or system that generated the notice"]
+  "generated_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person or system that generated the notice"]
   "notice_file_path" VARCHAR(500) [note: "Path to stored copy of the notice"]
 
   note: "Tracks adverse action notices sent to declined applicants"
@@ -3384,7 +4309,7 @@ Table "small_business_banking"."business_due_diligence" {
   "small_business_banking_business_id" INTEGER [not null, ref: > "small_business_banking"."businesses"."small_business_banking_business_id", note: "Reference to the business"]
   "diligence_type" VARCHAR(20) [not null, note: "Type of due diligence (initial, ongoing, enhanced)"]
   "diligence_date" DATE [not null, note: "Date the due diligence was performed"]
-  "performed_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who performed the due diligence"]
+  "performed_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who performed the due diligence"]
   "business_verified" BOOLEAN [not null, note: "Whether business identity was verified"]
   "verification_method" VARCHAR(100) [not null, note: "Method used to verify business (documents, database, etc.)"]
   "legal_structure_verified" BOOLEAN [not null, note: "Whether legal structure was verified"]
@@ -3402,7 +4327,7 @@ Table "small_business_banking"."business_due_diligence" {
   "review_frequency" VARCHAR(20) [not null, note: "Frequency of ongoing reviews (monthly, quarterly, annual)"]
   "next_review_date" DATE [not null, note: "Date when next review is due"]
   "approval_status" VARCHAR(20) [not null, note: "Status of approval (pending, approved, rejected)"]
-  "approved_by" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who approved the due diligence"]
+  "approved_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who approved the due diligence"]
   "approval_date" DATE [note: "Date of approval"]
   "notes" TEXT [note: "Additional notes about the due diligence"]
 
@@ -3414,7 +4339,7 @@ Table "small_business_banking"."beneficial_owner_verification" {
   "small_business_banking_business_id" INTEGER [not null, ref: > "small_business_banking"."businesses"."small_business_banking_business_id", note: "Reference to the business"]
   "small_business_banking_business_owner_id" INTEGER [not null, ref: > "small_business_banking"."business_owners"."small_business_banking_business_owner_id", note: "Reference to the business owner"]
   "verification_date" DATE [not null, note: "Date the verification was performed"]
-  "performed_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who performed the verification"]
+  "performed_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who performed the verification"]
   "ownership_percentage_verified" BOOLEAN [not null, note: "Whether ownership percentage was verified"]
   "verification_method" VARCHAR(50) [not null, note: "Method used to verify beneficial ownership"]
   "id_type" VARCHAR(50) [note: "Type of ID provided (driver's license, passport, etc.)"]
@@ -3464,8 +4389,8 @@ Table "small_business_banking"."suspicious_activity_reports" {
   "law_enforcement_contact_name" VARCHAR(100) [note: "Name of law enforcement contact"]
   "account_closed" BOOLEAN [not null, default: false, note: "Whether account was closed"]
   "account_closing_date" DATE [note: "Date account was closed (if applicable)"]
-  "prepared_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who prepared the SAR"]
-  "approved_by" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who approved the SAR"]
+  "prepared_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who prepared the SAR"]
+  "approved_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who approved the SAR"]
   "bsa_officer_signature" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Signature of BSA officer"]
   "fincen_acknowledgment" VARCHAR(50) [note: "Acknowledgment received from FinCEN"]
   "sar_file_path" VARCHAR(500) [note: "Path to stored copy of the SAR"]
@@ -3534,6 +4459,158 @@ TableGroup AMLAndKYC {
 // SECURITY
 //
 
+//
+
+Table "security"."identity_roles" {
+  "security_identity_role_id" UUID [not null, pk, note: "Reference to the identity role assignment"]
+  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: "Reference to the identity"]
+  "security_role_id" UUID [not null, ref: > "security"."roles"."security_role_id", note: "Reference to the role"]
+  "start_date" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the role became effective"]
+  "end_date" TIMESTAMP [note: "When the role was no longer effective"]
+  "assigned_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who assigned the role"]
+  "active" BOOLEAN [not null, default: true, note: "Whether this assignment is currently active"]
+
+  Indexes {
+    security_role_id [note: "Index for faster role-based queries"]
+  }
+
+  Note: "Associates identities with roles"
+}
+
+Enum "security"."role_status" {
+  ACTIVE [note: "Role is available for use and assignments are effective"]
+  INACTIVE [note: "Role is temporarily unavailable; existing assignments are suspended"]
+  DEPRECATED [note: "Role is being phased out; no new assignments allowed"]
+  RETIRED [note: "Role is no longer in use; all assignments are ineffective"]
+  DRAFT [note: "Role is still being defined and not ready for use"]
+}
+
+Table "security"."roles" {
+  "security_role_id" UUID [pk, note: "Unique identifier for the role"]
+  "role_name" VARCHAR(255) [not null, note: "Internal name for the role"]
+  "display_name" VARCHAR(255) [note: "User-friendly name for the role"]
+  "description" TEXT [note: "Description of the role's purpose and scope"]
+  "status" security.role_status [not null, default: "ACTIVE", note: "Current status of the role"]
+  "managing_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: "Application that manages this role"]
+  "owner_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who owns/manages this role"]
+  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the role was created"]
+  "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who created the role"]
+
+  Indexes {
+    role_name [note: "Index for faster role lookups"]
+    managing_application_id [note: "Index for faster lookup by managing application"]
+    status [note: "Index for filtering by status"]
+  }
+
+  Note: "Defines roles that can be assigned to identities"
+}
+
+Table "security"."role_entitlements" {
+  "security_role_entitlement_id" UUID [not null, pk, note: "Reference to the role entitlement pair"]
+  "security_role_id" UUID [not null, ref: > "security"."roles"."security_role_id", note: "Reference to the role"]
+  "security_entitlement_id" UUID [not null, ref: > "security"."enhanced_entitlements"."security_entitlement_id", note: "Reference to the entitlement"]
+  "created_at" TIMESTAMP [not null, note: "When the entitlement was added to the role"]
+  "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who added the entitlement to the role"]
+  "updated_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who added the entitlement to the role"]
+  "started_at" TIMESTAMP [not null, note: "When the entitlement became effective"]
+  "ended_at" TIMESTAMP [note: "When the entitlement was no longer effective"]
+  "active" BOOL [note: "Incicates that the entitlement is effective at this moment"]
+
+  Indexes {
+    security_entitlement_id [note: "Index for faster entitlement-based queries"]
+  }
+
+  Note: "Maps roles to their constituent entitlements"
+}
+
+Enum "security"."entitlement_status" {
+  ACTIVE [note: "Entitlement is currently active and can be used"]
+  INACTIVE [note: "Entitlement is disabled and cannot be used"]
+  DEPRECATED [note: "Entitlement is being phased out and should not be assigned to new roles"]
+  DRAFT [note: "Entitlement is still being defined and is not ready for use"]
+}
+
+Table "security"."enhanced_entitlements" {
+  "security_entitlement_id" UUID [pk, note: "Unique identifier for the entitlement"]
+  "entitlement_name" VARCHAR(255) [not null, note: "Internal name for the entitlement"]
+  "display_name" VARCHAR(255) [note: "User-friendly name for the entitlement"]
+  "description" TEXT [note: "Description of what the entitlement grants access to"]
+  "status" "security"."entitlement_status" [not null, default: "ACTIVE", note: "Current status of the entitlement"]
+  "managing_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: "Application that manages this entitlement"]
+  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the entitlement was created"]
+  "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who created the entitlement"]
+
+  Indexes {
+    entitlement_name [note: "Index for faster entitlement lookups"]
+    managing_application_id [note: "Index for faster lookup by managing application"]
+    status [note: "Index for filtering by status"]
+  }
+
+  Note: "Defines granular entitlements that can be granted to roles"
+}
+
+Table "security"."entitlement_resources" {
+  "security_entitlement_resource_id" UUID [pk, note: "Unique identifier for this entitlement-resource relationship"]
+  "security_entitlement_id" UUID [not null, ref: > "security"."enhanced_entitlements"."security_entitlement_id", note: "Reference to the entitlement"]
+  "security_resource_id" UUID [not null, ref: > "security"."resource_definitions"."security_resource_id", note: "Reference to the resource"]
+  "permission_type" "security"."permission_type" [not null, note: "Type of permission granted on the resource"]
+  "context_conditions" VARCHAR(1000) [note: "Context conditions that restrict when this entitlement is applicable"]
+  "resource_details" VARCHAR(1000) [note: "Resource-specific details like column filters, row filters, access parameters"]
+  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the relationship was created"]
+  "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who created the relationship"]
+
+  Indexes {
+    (security_entitlement_id, security_resource_id, permission_type) [unique, note: "Ensures unique resource-permission combinations per entitlement"]
+    security_resource_id [note: "Index for faster resource-based queries"]
+  }
+
+  Note: "Maps entitlements to resources with specific permission types and contexts"
+}
+
+//
+
+Enum "security"."resource_type" {
+  DATA [note: "Database tables, views, columns, and other data elements"]
+  APPLICATION [note: "Application functions, screens, and features"]
+  HOST [note: "Servers, workstations, and similar systems"]
+  NETWORK_DEVICE [note: "Network devices like routers, switches, firewalls"]
+}
+
+Enum "security"."permission_type" {
+  READ [note: "Permission to view or read a resource"]
+  MASKED [note: "Permission to partially view or read a resource"]
+  WRITE [note: "Permission to create or modify a resource"]
+  DELETE [note: "Permission to delete a resource"]
+  EXECUTE [note: "Permission to run or execute a resource"]
+  ADMIN [note: "Administrative permission over a resource"]
+}
+
+Enum "security"."sync_status" {
+  PENDING [note: "Synchronization pending"]
+  IN_PROGRESS [note: "Synchronization in progress"]
+  COMPLETED [note: "Synchronization completed successfully"]
+  FAILED [note: "Synchronization failed"]
+}
+
+
+Table "security"."resource_definitions" {
+  "security_resource_id" UUID [pk, note: 'Unique identifier for the resource']
+  "resource_name" VARCHAR(255) [not null, note: 'Name of the resource']
+  "resource_type" "security"."resource_type" [not null, note: 'Type of resource (DATA, APPLICATION, HOST, NETWORK_DEVICE)']
+  "resource_identifier" VARCHAR(500) [not null, note: 'Unique identifier for the resource (table name, API endpoint, hostname, IP address, etc.)']
+  "application_id" UUID [null, ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: 'Owner application that manages this resource (for APPLICATION and DATA types)']
+  "host_id" UUID [null, ref: > "security"."hosts"."security_host_id", note: 'Host where the resource is located (for HOST types)']
+  "network_device_id" INET [null, ref: > "security"."devices"."security_device_id", note: 'Network device where the resource is located (for NETWORK_DEVICE types)']
+  "description" TEXT [note: 'Description of the resource']
+  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: 'When the resource definition was created']
+  "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Who created the resource definition']
+
+  Indexes {
+    resource_identifier [note: 'Index for faster resource lookups']
+  }
+
+  Note: 'Defines resources that can be secured through entitlements'
+}
 
 Table "security"."devices" {
   "security_device_id" INET [not null, pk, note: 'The unique IP address of the device. Serves as the primary key.']
@@ -3564,7 +4641,7 @@ Table "security"."network_events" {
   "source_port" INTEGER [not null, note: 'Source port of the network event.']
   "dest_ip" INET [not null, note: 'Destination IP address of the network event.']
   "dest_port" INTEGER [not null, note: 'Destination port of the network event.']
-  "protocol" VARCHAR(20) [not null, note: 'Network protocol used (e.g., TCP, UDP, ICMP).']
+  "protocol" security.network_protocols [not null, note: 'Network protocol used (e.g., TCP, UDP, ICMP).']
   "status" VARCHAR(50) [not null, note: 'Status of the network event (e.g., success, failure, blocked).']
   "tcp_flag" security.tcp_flag_type [note: 'TCP flags associated with the event, if applicable.']
   "sequence" BIGINT [note: 'TCP sequence number, if applicable.']
@@ -3584,8 +4661,12 @@ Table "security"."policies" {
   "security_policy_id" UUID [not null, pk, note: 'Unique identifier for the policy.']
   "name" VARCHAR(200) [not null, unique, note: 'Name of the policy. Must be unique.']
   "description" TEXT [not null, note: 'Detailed description of the policy.']
+  "created_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: 'Who created the policy']
+  "updated_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: 'Who updated the policy']
   "created_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the policy was created.']
   "updated_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the policy was last updated.']
+  "started_at" TIMESTAMP(6) [not null, note: 'Timestamp when the policy became effective.']
+  "ended_at" TIMESTAMP(6) [note: 'Timestamp when the policy was no longer effective.']
   "active" BOOLEAN [default: true, note: 'Indicates whether the policy is currently active.']
 
   Indexes {
@@ -3600,10 +4681,6 @@ Table "security"."policy_attributes" {
   "attribute_name" VARCHAR(200) [not null, note: 'Name of the policy attribute.']
   "attribute_value" VARCHAR(200) [note: 'Value of the policy attribute.']
 
-  Indexes {
-    (security_policy_id, attribute_name) [pk, note: 'Composite primary key on policy_id and attribute_name. Ensures uniqueness of attributes per policy.']
-  }
-
   Note: 'Table storing attributes associated with security policies. Allows for flexible policy configuration.'
 }
 
@@ -3614,28 +4691,6 @@ Table "security"."policy_rules" {
   "rule_description" TEXT [not null, note: 'Detailed description of the policy rule.']
 
   Note: 'Table storing specific rules associated with security policies.'
-}
-
-Table "security"."access_profiles" {
-  "security_access_profile_id" UUID [not null, pk, note: 'Unique identifier for the access profile.']
-  "name" VARCHAR(200) [note: 'Internal name of the access profile.']
-  "display_name" VARCHAR(200) [note: 'User-friendly name of the access profile.']
-  "description" VARCHAR(200) [note: 'Description of the access profile.']
-  "owner_id" INTEGER [note: 'Identifier of the owner of the access profile.', ref: > enterprise.associates.enterprise_associate_id]
-
-  Note: 'Table storing information about access profiles, defining sets of permissions or roles.'
-}
-
-Table "security"."account_entitlement_attributes" {
-  "security_account_id" UUID [not null, note: 'Unique identifier for the account.', ref: > "security"."accounts"."security_account_id"]
-  "attribute_name" VARCHAR(200) [not null, note: 'Name of the entitlement attribute.']
-  "attribute_value" VARCHAR(200) [not null, note: 'Value of the entitlement attribute.']
-
-  Indexes {
-    (security_account_id, attribute_name, attribute_value) [pk, note: 'Composite primary key on account_id, attribute_name, and attribute_value. Ensures uniqueness of entitlement attributes per account.']
-  }
-
-  Note: 'Table storing specific attributes related to account entitlements. Allows for granular control over account permissions and access.'
 }
 
 Table "security"."accounts" {
@@ -3650,21 +4705,9 @@ Table "security"."accounts" {
   "manually_correlated" BOOLEAN [note: 'Indicates if the account was manually correlated.']
   "password_last_set" TIMESTAMP(6) [note: 'Timestamp when the account password was last set.']
   "created" TIMESTAMP(6) [note: 'Timestamp when the account was created.']
+  "status_update_date_time" TIMESTAMP(6) [note: 'Timestamp when the account status was last updated']
 
   Note: 'Table storing information about user accounts across various systems.'
-}
-
-Table "security"."entitlements" {
-  "security_entitlement_id" UUID [not null, pk, note: 'Unique identifier for the entitlement.']
-  "name" VARCHAR(200) [note: 'Name of the entitlement.']
-  "display_name" VARCHAR(200) [note: 'User-friendly name of the entitlement.']
-  "description" VARCHAR(200) [note: 'Description of the entitlement.']
-  "attribute" VARCHAR(200) [note: 'Attribute associated with the entitlement.']
-  "security_source_id" UUID [note: 'Identifier of the source system for the entitlement.', ref: > "app_mgmt"."applications"."app_mgmt_application_id"]
-  "value" VARCHAR(200) [note: 'Value of the entitlement.']
-  "privileged" BOOLEAN [note: 'Indicates if the entitlement is privileged.']
-
-  Note: 'Table storing information about entitlements, representing permissions or access rights.'
 }
 
 Table "security"."governance_groups" {
@@ -3677,13 +4720,13 @@ Table "security"."governance_groups" {
 
 Table "security"."iam_logins" {
   "security_login_id" UUID [not null, pk, note: 'Unique identifier for the IAM login.']
-  "system_id" UUID [note: 'Identifier of the system where the login occurred.']
+  "security_account_id" UUID [not null, ref: > "security"."accounts"."security_account_id", note: 'Identifier of the account used for the login.']
   "user_name" VARCHAR(200) [note: 'Username used for the login.']
-  "login_time" TIMESTAMP(6) [note: 'Timestamp when the login occurred.']
+  "login_time" TIMESTAMP(6) [not null, note: 'Timestamp when the login occurred.']
   "logout_time" TIMESTAMP(6) [note: 'Timestamp when the logout occurred.']
-  "login_method" VARCHAR(200) [note: 'Method used for the login.']
+  "login_method" VARCHAR(200) [not null, note: 'Method used for the login.']
 
-  Note: 'Table storing information about IAM logins, tracking user access to systems.'
+  Note: 'Table storing information about IAM logins, tracking user access via accounts.'
 }
 
 Enum "security"."environment" {
@@ -3697,7 +4740,7 @@ Table "security"."identities" {
   "security_identity_id" UUID [not null, pk, note: 'Unique identifier for the identity.']
   "name" VARCHAR(200) [note: 'Internal name of the identity.']
   "display_name" VARCHAR(200) [note: 'User-friendly name of the identity.']
-  "owner" INTEGER [null, ref: > enterprise.associates.enterprise_associate_id]
+  "owner_id" INTEGER [null, ref: > enterprise.associates.enterprise_associate_id]
   "service_account" BOOL [default: false, note: 'If false than access is considered to be on behalf of the owner, otherwise this is service account used for system to system automation']
   "environment" security.environment [note: 'Identifies access to an environment e.g production, development, etc.' ]
   "created" TIMESTAMP(6) [note: 'Timestamp when the identity was created.']
@@ -3711,67 +4754,27 @@ Table "security"."identities" {
   Note: 'Table storing information about user identities, representing individuals or entities.'
 }
 
-Table "security"."identity_access_profiles" {
-  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
-  "security_access_profile_id" UUID [not null, ref: > "security"."access_profiles"."security_access_profile_id", note: 'Identifier of the associated access profile.']
-
-  Indexes {
-    (security_identity_id, security_access_profile_id) [pk, note: 'Composite primary key on identity_id and access_profile_id. Ensures unique association.']
-  }
-
-  Note: 'Table linking identities to access profiles, granting specific permissions.'
-}
-
-Table "security"."identity_attributes" {
-  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
-  "attribute_name" VARCHAR(200) [not null, note: 'Name of the identity attribute.']
-  "attribute_value" VARCHAR(200) [note: 'Value of the identity attribute.']
-
-  Indexes {
-    (security_identity_id, attribute_name) [pk, note: 'Composite primary key on identity_id and attribute_name. Ensures unique attributes per identity.']
-  }
-
-  Note: 'Table storing attributes associated with identities, providing additional identity information.'
-}
-
-Table "security"."identity_entitlements" {
-  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
-  "security_entitlement_id" UUID [not null, ref: > "security"."entitlements"."security_entitlement_id", note: 'Identifier of the associated entitlement.']
-
-  Indexes {
-    (security_identity_id, security_entitlement_id) [pk, note: 'Composite primary key on identity_id and entitlement_id. Ensures unique entitlement assignments.']
-  }
-
-  Note: 'Table linking identities to entitlements, granting specific access rights.'
+Enum "security"."risk_level" {
+  LOW [note: 'Minimal risk, standard security controls sufficient']
+  MEDIUM [note: 'Moderate risk, requires additional monitoring']
+  HIGH [note: 'Significant risk, enhanced security controls required']
+  CRITICAL [note: 'Highest risk level, maximum security controls and oversight required']
 }
 
 Table "security"."identity_profiles" {
   "security_identity_profile_id" UUID [not null, pk, note: 'Unique identifier for the identity profile.']
   "name" VARCHAR(200) [note: 'Name of the identity profile.']
+  "description" TEXT [note: 'Detailed description of the profile and its purpose.']
+  "access_review_frequency_days" INTEGER [note: 'How often accounts with this profile should be reviewed, in days.']
+  "max_inactive_days" INTEGER [note: 'Maximum number of days an identity can be inactive before automatic disablement.']
+  "requires_mfa" BOOLEAN [default: false, note: 'Whether multi-factor authentication is required for identities with this profile.']
+  "password_expiry_days" INTEGER [note: 'Number of days before password expiration for this profile type.']
+  "default_session_timeout_minutes" INTEGER [note: 'Default session timeout in minutes for identities with this profile.']
+  "risk_level" security.risk_level [not null, default: "MEDIUM", note: 'Risk classification level for this profile type.']
+  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: 'When the profile was created.']
+  "updated_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: 'When the profile was last updated.']
 
   Note: 'Table storing information about identity profiles, defining sets of attributes and rules for identities.'
-}
-
-Table "security"."identity_roles" {
-  "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: 'Identifier of the associated identity.']
-  "security_role_id" UUID [not null, ref: > "security"."roles"."security_role_id", note: 'Identifier of the associated role.']
-
-  Indexes {
-    (security_identity_id, security_role_id) [pk, note: 'Composite primary key on identity_id and role_id. Ensures unique role assignments.']
-  }
-
-  Note: 'Table linking identities to roles, granting specific sets of permissions.'
-}
-
-Table "security"."roles" {
-  "security_role_id" UUID [not null, pk, note: 'Unique identifier for the role.']
-  "name" VARCHAR(200) [note: 'Internal name of the role.']
-  "display_name" VARCHAR(200) [note: 'User-friendly name of the role.']
-  "description" VARCHAR(200) [note: 'Description of the role.']
-  "disabled" BOOLEAN [note: 'Indicates if the role is disabled.']
-  "owner_id" INTEGER [note: 'Identifier of the owner of the role.', ref: > enterprise.associates.enterprise_associate_id]
-
-  Note: 'Table storing information about roles, defining sets of permissions and access rights.'
 }
 
 Table "security"."file_accesses" {
@@ -3785,9 +4788,17 @@ Table "security"."file_accesses" {
   Note: 'Table storing information about file access events, tracking file usage and access patterns.'
 }
 
+Enum "security"."threat_level_type" {
+  HIGH [note: 'Critical threat requiring immediate attention and remediation']
+  MEDIUM [note: 'Significant threat requiring scheduled remediation']
+  LOW [note: 'Minor threat requiring monitoring']
+  INFORMATIONAL [note: 'Potential concern, no immediate action required']
+  UNKNOWN [note: 'Threat level not yet determined']
+}
+
 Table "security"."file_threats" {
   "security_file_threat_hash" VARCHAR(64) [not null, pk, note: 'Hash of the file, used to identify threats.']
-  "threat_level" VARCHAR(10) [note: 'Level of threat associated with the file (e.g., high, medium, low).']
+  "threat_level" security.threat_level_type [not null, default: "UNKNOWN", note: 'Level of threat associated with the file.']
   "threat_description" TEXT [note: 'Description of the threat associated with the file.']
 
   Note: 'Table storing information about file threats, linking file hashes to threat levels and descriptions.'
@@ -3805,14 +4816,10 @@ Table "security"."files" {
 }
 
 Table "security"."installed_applications" {
-  "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the application is installed.']
-  "installed_application_name" VARCHAR(100) [not null, note: 'Name of the installed application.']
+  "security_host_id" UUID [not null, pk, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the application is installed.']
+  "app_mgmt_application_id" UUID [not null, pk, ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: 'Reference to the application definition.']
   "application_version" VARCHAR(50) [note: 'Version of the installed application.']
   "installation_date" TIMESTAMP(6) [note: 'Timestamp when the application was installed.']
-
-  Indexes {
-    (security_host_id, installed_application_name) [pk, note: 'Composite primary key on system_id and application_name. Ensures unique application installations.']
-  }
 
   Note: 'Table storing information about installed applications on servers, tracking software installations.'
 }
@@ -3822,10 +4829,10 @@ Table "security"."network_connections" {
   "security_host_id" UUID [not null, ref: > "security"."hosts"."security_host_id", note: 'Identifier of the system where the connection originated.']
   "security_process_execution_id" UUID [not null, ref: > "security"."process_executions"."security_process_execution_id", note: 'Identifier of the process execution that initiated the connection.']
   "connection_type" VARCHAR(10) [note: 'Type of network connection (e.g., TCP, UDP).']
-  "protocol" VARCHAR(10) [note: 'Network protocol used for the connection.']
-  "local_ip" VARCHAR(15) [note: 'Local IP address of the connection.']
+  "protocol" security.network_protocols [note: 'Network protocol used for the connection.']
+  "local_ip" INET [note: 'Local IP address of the connection.']
   "local_port" INTEGER [note: 'Local port number of the connection.']
-  "remote_ip" VARCHAR(15) [note: 'Remote IP address of the connection.']
+  "remote_ip" INET [note: 'Remote IP address of the connection.']
   "remote_port" INTEGER [note: 'Remote port number of the connection.']
   "start_time" TIMESTAMP(6) [note: 'Timestamp when the connection started.']
   "end_time" TIMESTAMP(6) [note: 'Timestamp when the connection ended.']
@@ -3896,23 +4903,54 @@ Table "security"."system_stats" {
   Note: 'Table storing system statistics, tracking resource usage and performance metrics.'
 }
 
+Enum "security"."system_type" {
+  SERVER [note: 'General purpose server system']
+  WORKSTATION [note: 'Office desktop computer']
+  LAPTOP [note: 'Portable personal computer']
+  VIRTUAL_MACHINE [note: 'Virtualized system running on a hypervisor']
+  CONTAINER [note: 'Containerized instance such as Docker or Kubernetes pod']
+  APPLIANCE [note: 'Specialized hardware/software combination for a specific purpose']
+}
+
+Enum "security"."agent_status" {
+  ACTIVE [note: 'Agent is connected and functioning properly']
+  INACTIVE [note: 'Agent is installed but not currently running']
+  PENDING [note: 'Agent installation or activation is in progress']
+  ERROR [note: 'Agent has encountered an error']
+  DISCONNECTED [note: 'Agent has lost connection to management server']
+}
+
+Enum "security"."patch_status" {
+  CURRENT [note: 'System has all latest patches (0-7 days)']
+  UP_TO_DATE [note: 'System has recent patches (8-30 days)']
+  OUTDATED [note: 'System is missing important patches (31-90 days)']
+  CRITICAL [note: 'System is severely out of date (90+ days)']
+  UNKNOWN [note: 'Patch status cannot be determined']
+}
+
+Enum "security"."compliance_status" {
+  COMPLIANT [note: 'System meets all compliance requirements']
+  NON_COMPLIANT [note: 'System fails to meet one or more compliance requirements']
+  EXCEPTION [note: 'System has an approved exception to compliance requirements']
+  UNKNOWN [note: 'Compliance status cannot be determined']
+}
 
 Table "security"."hosts" {
   "security_host_id" UUID [not null, pk, note: 'Unique identifier for the system.']
   "hostname" VARCHAR(255) [note: 'Hostname of the system.']
-  "agent_id" VARCHAR(36) [note: 'Identifier of the agent installed on the system.']
-  "ip_address_internal" VARCHAR(15) [note: 'Internal IP address of the system.']
-  "ip_address_external" VARCHAR(15) [note: 'External IP address of the system.']
+  "agent_identifier" VARCHAR(36) [note: 'Identifier of the agent installed on the system.']
+  "ip_address_internal" INET [note: 'Internal IP address of the system.']
+  "ip_address_external" INET [note: 'External IP address of the system.']
   "mac_address" VARCHAR(17) [note: 'MAC address of the system.']
-  "system_type" VARCHAR(50) [note: 'Type of the system (e.g., server, workstation).']
+  "system_type" security.system_type [note: 'Type of the system (e.g., server, workstation).']
   "os" VARCHAR(50) [note: 'Operating system of the system.']
   "os_version" VARCHAR(100) [note: 'Operating system version.']
   "last_seen" TIMESTAMP(6) [note: 'Timestamp when the system was last seen.']
   "agent_version" VARCHAR(50) [note: 'Version of the agent installed on the system.']
-  "agent_status" VARCHAR(20) [note: 'Status of the agent installed on the system.']
-  "patch_status" VARCHAR(20) [note: 'Status of system patches.']
+  "agent_status" security.agent_status [note: 'Status of the agent installed on the system.']
+  "patch_status" security.patch_status [note: 'Status of system patches.']
   "last_patched" TIMESTAMP(6) [note: 'Timestamp when the system was last patched.']
-  "compliance" VARCHAR(20) [note: 'Compliance status of the system.']
+  "compliance" security.compliance_status [note: 'Compliance status of the system.']
   "checked_out_date" DATE [note: 'Date when the system was checked out.']
   "asset_owner_name" VARCHAR(50) [note: 'Name of the asset owner.']
   "asset_owner_email" VARCHAR(50) [note: 'Email of the asset owner.']
@@ -4004,7 +5042,7 @@ Table "app_mgmt"."architectures" {
   "architecture_name" VARCHAR(255) [note: 'Name given to the architectural design.']
   "description" TEXT [note: 'Detailed explanation of the architectural design.']
   "approval_date" TIMESTAMP [note: 'Date when the architectural design was officially approved.']
-  "approved_by" INTEGER [note: 'Identifier of the employee who approved the design.', ref: > "enterprise"."associates"."enterprise_associate_id"]
+  "approved_by_id" INTEGER [note: 'Identifier of the employee who approved the design.', ref: > "enterprise"."associates"."enterprise_associate_id"]
   "documentation_url" VARCHAR(2048) [note: 'Link to the full documentation for the architectural design.']
   "status" VARCHAR(50) [note: 'Current state of the architecture (e.g., approved, deprecated, proposed).']
   "sdlc_process_id" UUID [ref: > "app_mgmt"."sdlc_processes"."app_mgmt_sdlc_process_id", note: 'Identifier for the software development lifecycle process this architecture aligns with.']
@@ -4017,7 +5055,7 @@ Table "app_mgmt"."sdlc_processes" {
   "app_mgmt_sdlc_process_id" UUID [pk, note: 'Unique identifier for a defined software development lifecycle process.']
   "process_name" VARCHAR(255) [note: 'Name of the software development lifecycle process.']
   "description" TEXT [note: 'Description of the steps and activities within the SDLC process.']
-  "process_owner" VARCHAR(255) [note: 'Name of the individual or team responsible for the SDLC process.']
+  "process_owner" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'The individual responsible for the SDLC process.']
   "version" VARCHAR(50) [note: 'Version number or identifier for the SDLC process.']
   "documentation_url" VARCHAR(2048) [note: 'Link to the full documentation for the SDLC process.']
   "app_mgmt_team_id" UUID [ref: > "app_mgmt"."teams"."app_mgmt_team_id", note: 'Identifier for the team that manages this SDLC process.']
@@ -4079,7 +5117,6 @@ Table "app_mgmt"."applications" {
   "sdlc_process_id" UUID [ref: > "app_mgmt"."sdlc_processes"."app_mgmt_sdlc_process_id", note: 'Identifier for the SDLC process used to develop or manage the application.']
   "source_code_repository" VARCHAR(2048) [note: 'Link to the repository where the application\'s source code is stored.']
   "documentation_url" VARCHAR(2048) [note: 'Link to the application\'s documentation.']
-  "parent_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: 'Identifier for a parent application if this application is a component or part of a larger system.']
   "created_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who initially created the application record.']
   "modified_by_user_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier of the employee who last modified the application record.']
   "rto" INTERVAL [note: 'Recovery Time Objective (RTO): The maximum acceptable downtime for the application.']
@@ -4121,12 +5158,12 @@ Table "app_mgmt"."component_dependencies" {
   "parent_component_id" UUID [ref: > "app_mgmt"."components"."app_mgmt_component_id", pk, note: 'Identifier for the component that depends on another component.']
   "child_component_id" UUID [ref: > "app_mgmt"."components"."app_mgmt_component_id", pk, note: 'Identifier for the component being depended upon.']
   "quantity" INTEGER [note: 'Number of times the child component is used by the parent.']
-  "dependency_type" app_mgmt.dependency_types [pk, note: 'Type of dependency (e.g., runtime, build, test).']
+  "dependency_type" app_mgmt.dependency_types [note: 'Type of dependency (e.g., runtime, build, test).']
   note: 'Table to store component dependencies (BOM relationships).'
 }
 
 Table "app_mgmt"."application_components" {
-  "application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the application that uses the component.']
+  "app_mgmt_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", pk, note: 'Identifier for the application that uses the component.']
   "app_mgmt_component_id" UUID [ref: > "app_mgmt"."components"."app_mgmt_component_id", pk, note: 'Identifier for the software component used by the application.']
   "dependency_type" app_mgmt.dependency_types [pk, note: 'Type of dependency (e.g., runtime, build, test).']
   note: 'Table to store dependencies between applications and their software components.'

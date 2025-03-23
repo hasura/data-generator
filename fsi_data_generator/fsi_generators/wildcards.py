@@ -2,30 +2,38 @@ from datetime import datetime, timedelta
 
 from faker import Faker
 
-from fsi_data_generator.fsi_generators.helpers.generate_email import generate_email
-from fsi_data_generator.fsi_generators.helpers.generate_identification import generate_identification
-from fsi_data_generator.fsi_generators.helpers.generate_leis import generate_leis
-from fsi_data_generator.fsi_generators.helpers.generate_permission_name import generate_all_permission_names
-from fsi_data_generator.fsi_generators.helpers.generate_random_date_between import generate_random_date_between
-from fsi_data_generator.fsi_generators.helpers.generate_random_forex_contract_id import generate_random_forex_contract_id
-from fsi_data_generator.fsi_generators.helpers.probability_return_string import probability_return_string
+from fsi_data_generator.fsi_generators.helpers.generate_leis import \
+    generate_leis
+from fsi_data_generator.fsi_generators.helpers.generate_permission_name import \
+    generate_all_permission_names
 from fsi_data_generator.fsi_generators.helpers.text_list import text_list
-from fsi_data_generator.fsi_text.wildcards.____account_role import ____account_role
-from fsi_data_generator.fsi_text.wildcards.____address_type import ____address_type
-from fsi_data_generator.fsi_text.wildcards.____direct_debit_status_code import ____direct_debit_status_code
-from fsi_data_generator.fsi_text.wildcards.____frequency_point_in_time import ____frequency_point_in_time
-from fsi_data_generator.fsi_text.wildcards.____frequency_type import ____frequency_type
-from fsi_data_generator.fsi_text.wildcards.____legal_structure import ____legal_structure
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.generate_random_date_between import \
+    generate_random_date_between
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.generate_random_forex_contract_id import \
+    generate_random_forex_contract_id
+from fsi_data_generator.fsi_text.wildcards.____direct_debit_status_code import \
+    ____direct_debit_status_code
+from fsi_data_generator.fsi_text.wildcards.____frequency_point_in_time import \
+    ____frequency_point_in_time
+from fsi_data_generator.fsi_text.wildcards.____frequency_type import \
+    ____frequency_type
 from fsi_data_generator.fsi_text.wildcards.____offer_type import ____offer_type
-from fsi_data_generator.fsi_text.wildcards.____scheme_name import ____scheme_name
-from fsi_data_generator.fsi_text.wildcards.____standing_order_status_code import ____standing_order_status_code
-from fsi_data_generator.fsi_text.wildcards.__balances__sub_type import __balances__sub_type
-from fsi_data_generator.fsi_text.wildcards.__balances__type import __balances__type
-from fsi_data_generator.fsi_text.wildcards.__statement__rate_type import __statement__rate_type
-from fsi_data_generator.fsi_text.wildcards.__statement_benefits__type import __statement_benefits__type
-from fsi_data_generator.fsi_text.wildcards.__statement_fees__frequency import __statement_fees__frequency
-from fsi_data_generator.fsi_text.wildcards.__statement_fees__type import __statement_fees__type
-from fsi_data_generator.fsi_text.wildcards.__statements__type import __statements__type
+from fsi_data_generator.fsi_text.wildcards.____standing_order_status_code import \
+    ____standing_order_status_code
+from fsi_data_generator.fsi_text.wildcards.__balances__sub_type import \
+    __balances__sub_type
+from fsi_data_generator.fsi_text.wildcards.__balances__type import \
+    __balances__type
+from fsi_data_generator.fsi_text.wildcards.__statement__rate_type import \
+    __statement__rate_type
+from fsi_data_generator.fsi_text.wildcards.__statement_benefits__type import \
+    __statement_benefits__type
+from fsi_data_generator.fsi_text.wildcards.__statement_fees__frequency import \
+    __statement_fees__frequency
+from fsi_data_generator.fsi_text.wildcards.__statement_fees__type import \
+    __statement_fees__type
+from fsi_data_generator.fsi_text.wildcards.__statements__type import \
+    __statements__type
 
 fake = Faker()
 fake_ca = Faker('en_CA')
@@ -44,13 +52,13 @@ def status_update_date_time(a, _b, _c):
 
 
 wildcards = [
-    ('^.*\\.accounts', '^status_update_date_time$', status_update_date_time),
-    ('.*', '^mobile$', lambda a, b, c: fake.phone_number()),
-    ('.*', '^first_name$', lambda a, b, c: fake.first_name()),
-    ('.*', '^middle_name$', lambda a, b, c: fake.first_name()),
-    ('.*', '^last_name$', lambda a, b, c: fake.last_name()),
-    ('.*', '^surname$', lambda a, b, c: fake.last_name()),
-    ('.*', '^email$', generate_email),
+    # ('^.*\\.accounts', '^status_update_date_time$', status_update_date_time),
+    # ('.*', '^mobile$', lambda a, b, c: fake.phone_number()),
+    # ('.*', '^first_name$', lambda a, b, c: fake.first_name()),
+    # ('.*', '^middle_name$', lambda a, b, c: fake.first_name()),
+    # ('.*', '^last_name$', lambda a, b, c: fake.last_name()),
+    # ('.*', '^surname$', lambda a, b, c: fake.last_name()),
+    # ('.*', '^email$', generate_email),
     ('.*', '^standing_order_status_code$', text_list(____standing_order_status_code)),
     ('.*', '^permission_name$',
      lambda a, b, c: fake.unique.random_element(tuple(generate_all_permission_names()))),
@@ -65,20 +73,6 @@ wildcards = [
      text_list(["PDF", "Paper", "CSV", "HTML", "XML", "Plain Text"])),
     ('^.*\\.account_statement_preferences', '^communication_method$',
      text_list(["EMAIL", "POSTAL", "ONLINE_BANKING", "MOBILE_APP", "SMS"])),
-    ('.*', '^street_name$', lambda a, b, c: fake.street_name()),
-    ('.*', '^department$', lambda a, b, c: fake.unique.random_element(three_word_tuple)),
-    ('.*', '^building_name$', lambda a, b, c: fake.unique.random_element(three_word_tuple)),
-    ('.*', '^floor$', probability_return_string('2nd Floor', .05)),
-    ('.*', '^unit_number$', probability_return_string('A', .05)),
-    ('.*', '^room$', lambda a, b, c: ''),
-    ('.*', '^post_box$', lambda a, b, c: ''),
-    ('.*', '^town_location_name$', lambda a, b, c: fake.unique.random_element(three_word_tuple)),
-    ('.*', '^district_name$', lambda a, b, c: fake.unique.random_element(three_word_tuple)),
-    ('.*', '^town_name$', text_list(['', fake.city()])),
-    ('.*', '^post_code$', lambda a, b, c: fake.postcode()),
-    ('.*', '^country$', lambda a, b, c: fake.country_code(representation='alpha-2')),
-    ('.*', '^country_sub_division$',
-     text_list(['', fake.state(), fake_ca.province()])),
     ('.*', '^switch_status$', text_list(
         ["Initiated", "In Progress", "Completed", "Failed", "Cancelled", "Pending", "Awaiting Confirmation",
          "Validation Error", "Transferred", "Rejected"])),
@@ -93,7 +87,6 @@ wildcards = [
         "Fallback",
         "Manual"
     ])),
-    ('.*', '^institution_name$', lambda a, b, c: fake.company()),
     ('^.*\\.transaction_debtor_agents', '^name$', lambda a, b, c: fake.company()),
     ('.*', '^merchant_category_code$', lambda a, b, c: fake.merchant_category_code()),
     ('^.*\\.transaction_balances', '^type$', text_list([
@@ -278,12 +271,6 @@ wildcards = [
             "RECURRING"
         ], lower=True)
     ),
-
-    (
-        '.*', '^address_type$', text_list(____address_type, lower=True)
-    ),
-    ('^(?!app_mgmt\\.application_relationships$).*', '^account_role|relationship_type$', text_list(____account_role, lower=True)),
-    ('^(?!enterprise\\.parties).*', '^legal_structure$', text_list(____legal_structure, lower=True)),
     (
         '.*', '^issuer|merchant_name$', lambda a, b, c: fake.company()
     ),
@@ -309,26 +296,11 @@ wildcards = [
         '.*\\.balances', '^sub_type$', text_list(__balances__sub_type, lower=True)
     ),
     (
-        '.*\\.(balances|transactions)', '^currency|source_currency|target_currency|unit_currency$',text_list([
+        '.*\\.(balances|transactions)', '^currency|source_currency|target_currency|unit_currency$', text_list([
             "USD",
             "EUR",
             "GBP",
             "JPY"
         ]
-    )),
-    (
-        '.*', '^scheme_name$',
-        text_list(____scheme_name)
-    ),
-    (
-        '.*', '^beneficiary_type|party_type$',
-        text_list(["Individual", "Organization"], lower=True)
-    ),
-    (
-        '.*', '^identification$',
-        text_list(generate_identification(fake))
-    ),
-    (
-        '^(?!enterprise\\.parties).*', '^.*lei$', text_list(fake_leis)
-    ),
+        ))
 ]

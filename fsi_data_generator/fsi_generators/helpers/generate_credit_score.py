@@ -1,6 +1,7 @@
 import random
 
-def generate_credit_score(_a,_b,_c):
+
+def generate_credit_score(_a, _b, _c):
     """
     Generates a random credit score based on the distribution
     of credit scores in the United States in Q3 2024.
