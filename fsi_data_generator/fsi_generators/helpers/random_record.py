@@ -1,9 +1,9 @@
 from typing import Dict
 
-from data_generator import DataGenerator
+# from data_generator import DataGenerator
 
 
-def random_record(dg: DataGenerator, fn):
+def random_record(dg, fn):
     def get_it(record: Dict, _b, field):
         record.update(fn(record, dg))
         return record.get(field)
