@@ -1024,14 +1024,14 @@ Enum "mortgage_services"."income_type" {
 }
 
 Enum "mortgage_services"."income_frequency" {
-  "WEEKLY"
-  "BI_WEEKLY"
-  "SEMI_MONTHLY"
-  "MONTHLY"
-  "QUARTERLY"
-  "SEMI_ANNUALLY"
-  "ANNUALLY"
-  "IRREGULAR"
+  WEEKLY [note: 'Income received once per week']
+  BI_WEEKLY [note: 'Income received every two weeks']
+  SEMI_MONTHLY [note: 'Income received twice per month']
+  MONTHLY [note: 'Income received once per month']
+  QUARTERLY [note: 'Income received every three months']
+  SEMI_ANNUALLY [note: 'Income received twice per year']
+  ANNUALLY [note: 'Income received once per year']
+  IRREGULAR [note: 'Income received on an irregular basis']
 }
 
 Table "mortgage_services"."borrower_assets" {
@@ -1069,11 +1069,31 @@ Enum "mortgage_services"."asset_type" {
   "OTHER"
 }
 
+// Create DBML enum for mortgage_services.liability_type
+
+Enum "mortgage_services"."liability_type" {
+  CREDIT_CARD [note: 'Revolving credit card debt']
+  AUTO_LOAN [note: 'Loan for vehicle purchase']
+  STUDENT_LOAN [note: 'Educational loan']
+  PERSONAL_LOAN [note: 'Unsecured personal loan']
+  MORTGAGE [note: 'Home mortgage loan']
+  HOME_EQUITY_LOAN [note: 'Loan secured by home equity']
+  HOME_EQUITY_LINE_OF_CREDIT [note: 'Revolving line of credit secured by home equity']
+  MEDICAL_DEBT [note: 'Outstanding medical bills or healthcare-related debt']
+  BUSINESS_LOAN [note: 'Loan for business purposes']
+  RETAIL_CREDIT [note: 'Credit account with a retailer']
+  INSTALLMENT_LOAN [note: 'Fixed-term loan with regular payments']
+  PAYDAY_LOAN [note: 'Short-term, high-interest loan']
+  TAX_DEBT [note: 'Outstanding tax liabilities']
+  OTHER [note: 'Liability type not covered by standard categories']
+}
+
+// Update the borrower_liabilities table to use the enum
 Table "mortgage_services"."borrower_liabilities" {
   "mortgage_services_liability_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each liability record"]
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower this liability belongs to"]
-  "liability_type" VARCHAR(50) [not null, note: "Type of debt or obligation"]
-  "creditor_name" VARCHAR(100) [not null, note: "Name of the creditor"]
+  "liability_type" mortgage_services.liability_type [not null, note: "Type of debt or obligation"]
+  "creditor_name" VARCHAR(100) [not null, note: "Name of creditor"]
   "account_number" VARCHAR(50) [note: "Account number for the liability"]
   "monthly_payment" NUMERIC(18,2) [not null, note: "Regular monthly payment amount"]
   "current_balance" NUMERIC(18,2) [not null, note: "Current outstanding balance"]
@@ -1081,9 +1101,9 @@ Table "mortgage_services"."borrower_liabilities" {
   "interest_rate" NUMERIC(6,3) [note: "Current interest rate on the liability"]
   "origination_date" DATE [note: "When the liability was originated"]
   "maturity_date" DATE [note: "When the liability is scheduled to be fully paid"]
-  "verification_status" VARCHAR(20) [not null, note: "Status of liability verification process"]
+  "verification_status" mortgage_services.verification_status [not null, note: "Status of liability verification process"]
   "verification_date" DATE [note: "When the liability was verified"]
-  "will_be_paid_off" BOOLEAN [default: false, note: "Indicates if this liability will be paid off with the mortgage proceeds"]
+  "will_be_paid_off" BOOLEAN [not null, default: false, note: "Whether this liability will be paid off with the mortgage proceeds"]
 
   note: "Tracks debts and financial obligations of mortgage borrowers"
 }
