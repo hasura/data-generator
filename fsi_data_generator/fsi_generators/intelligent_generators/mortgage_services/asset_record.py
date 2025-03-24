@@ -1,51 +1,42 @@
 import logging
 import random
 from datetime import datetime, timedelta
-from typing import cast
+from enum import Enum
+from typing import Dict, Any, Optional
 
-import psycopg2
 from faker import Faker
 from psycopg2.extras import RealDictCursor
 
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-
-# from data_generator import DataGenerator
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.asset_type import AssetType
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.verification_status import \
+    VerificationStatus
 
 fake = Faker()
-
 logger = logging.getLogger(__name__)
 
 
-def generate_borrower_asset(ids_dict, dg: DataGenerator):
+def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
     Generate a single random, realistic borrower asset record for a mortgage application.
     The verification date will be set shortly after the application date.
 
     Args:
-        ids_dict
-        dg
+        ids_dict: Dictionary containing the required ID fields
+        dg: DataGenerator instance
 
     Returns:
         dict: A dictionary containing a realistic borrower asset record
     """
     try:
-        try:
-            conn = dg.conn
-        except AttributeError:
-            conn = dg
+        conn = dg.conn
 
         # First, find the application date by following the relationship model
         application_date = get_application_date(ids_dict.get('mortgage_services_borrower_id'), conn)
 
-        # Asset types commonly reported on mortgage applications
-        asset_types = [
-            "checking account", "savings account", "money market account",
-            "certificate of deposit", "investment account", "retirement account",
-            "stocks", "bonds", "mutual funds", "real estate property",
-            "vehicle", "cash value life insurance"
-        ]
+
 
         # Financial institutions
         financial_institutions = generate_unique_json_array(
@@ -55,37 +46,34 @@ def generate_borrower_asset(ids_dict, dg: DataGenerator):
             cache_key='financial_institutions'
         )
 
-        # Verification statuses
-        verification_statuses = [
-            "verified", "pending", "partial verification", "not verified"
-        ]
-
-        # Select an asset type
-        asset_type = random.choice(asset_types)
+        # Select an asset type using weighted random choice
+        asset_type = AssetType.get_random()
 
         # Generate institution name based on asset type
-        if asset_type in ["checking account", "savings account", "money market account", "certificate of deposit"]:
+        if asset_type in [AssetType.CHECKING_ACCOUNT, AssetType.SAVINGS_ACCOUNT, AssetType.MONEY_MARKET,
+                          AssetType.CERTIFICATE_OF_DEPOSIT]:
             # Banks more likely for deposit accounts
             institution_name = random.choice(financial_institutions[:12])
-        elif asset_type in ["investment account", "retirement account", "stocks", "bonds", "mutual funds"]:
+        elif asset_type in [AssetType.BROKERAGE_ACCOUNT, AssetType.RETIREMENT_ACCOUNT, AssetType.STOCK_EQUITY,
+                            AssetType.BONDS, AssetType.MUTUAL_FUND]:
             # Investment firms more likely for investment accounts
             institution_name = random.choice(financial_institutions[12:18])
-        elif asset_type == "cash value life insurance":
+        elif asset_type == AssetType.LIFE_INSURANCE:
             # Insurance companies for life insurance
             institution_name = random.choice(financial_institutions[18:21])
-        elif asset_type == "real estate property":
-            # No institution for real estate
-            institution_name = None
-        elif asset_type == "vehicle":
-            # No institution for vehicle
+        elif asset_type in [AssetType.INVESTMENT_PROPERTY, AssetType.PRIMARY_RESIDENCE, AssetType.SECONDARY_RESIDENCE,
+                            AssetType.VEHICLE]:
+            # No institution for real estate or vehicles
             institution_name = None
         else:
             institution_name = random.choice(financial_institutions)
 
         # Generate account number if applicable
-        if asset_type in ["checking account", "savings account", "money market account",
-                          "certificate of deposit", "investment account", "retirement account",
-                          "cash value life insurance"]:
+        if asset_type in [
+            AssetType.CHECKING_ACCOUNT, AssetType.SAVINGS_ACCOUNT, AssetType.MONEY_MARKET,
+            AssetType.CERTIFICATE_OF_DEPOSIT, AssetType.BROKERAGE_ACCOUNT, AssetType.RETIREMENT_ACCOUNT,
+            AssetType.LIFE_INSURANCE, AssetType.TRUST_ACCOUNT
+        ]:
             account_number = "".join([str(random.randint(0, 9)) for _ in range(8)])
             # Sometimes mask part of the number for security
             if random.random() < 0.7:  # 70% chance of masking
@@ -97,68 +85,86 @@ def generate_borrower_asset(ids_dict, dg: DataGenerator):
 
         # Generate current value based on asset type
         value_ranges = {
-            "checking account": (500, 20000),
-            "savings account": (1000, 50000),
-            "money market account": (5000, 100000),
-            "certificate of deposit": (1000, 50000),
-            "investment account": (10000, 500000),
-            "retirement account": (20000, 1000000),
-            "stocks": (5000, 300000),
-            "bonds": (10000, 200000),
-            "mutual funds": (10000, 300000),
-            "real estate property": (100000, 2000000),
-            "vehicle": (5000, 75000),
-            "cash value life insurance": (10000, 500000)
+            AssetType.CHECKING_ACCOUNT: (500, 20000),
+            AssetType.SAVINGS_ACCOUNT: (1000, 50000),
+            AssetType.MONEY_MARKET: (5000, 100000),
+            AssetType.CERTIFICATE_OF_DEPOSIT: (1000, 50000),
+            AssetType.BROKERAGE_ACCOUNT: (10000, 500000),
+            AssetType.RETIREMENT_ACCOUNT: (20000, 1000000),
+            AssetType.STOCK_EQUITY: (5000, 300000),
+            AssetType.BONDS: (10000, 200000),
+            AssetType.MUTUAL_FUND: (10000, 300000),
+            AssetType.INVESTMENT_PROPERTY: (100000, 2000000),
+            AssetType.PRIMARY_RESIDENCE: (150000, 3000000),
+            AssetType.SECONDARY_RESIDENCE: (100000, 2000000),
+            AssetType.VEHICLE: (5000, 75000),
+            AssetType.LIFE_INSURANCE: (10000, 500000),
+            AssetType.TRUST_ACCOUNT: (50000, 1000000),
+            AssetType.CRYPTOCURRENCY: (1000, 100000),
+            AssetType.BUSINESS_EQUITY: (20000, 1000000),
+            AssetType.OTHER: (1000, 50000)
         }
 
-        min_value, max_value = value_ranges[asset_type]
+        min_value, max_value = value_ranges.get(asset_type, (1000, 50000))
         current_value = round(random.uniform(min_value, max_value), 2)
 
-        # Generate verification status
-        verification_status = random.choice(verification_statuses)
+        verification_status = VerificationStatus.get_random([0.4, 0.3, 0.1, 0.15, 0.05] )
 
         # Generate verification date only if verification status indicates completion
-        if verification_status in ["verified", "partial verification"]:
+        verification_date_str = None
+        if verification_status == VerificationStatus.VERIFIED:
             if application_date:
                 verification_date = application_date + timedelta(days=random.randint(3, 30))
                 verification_date_str = verification_date.strftime("%Y-%m-%d")
             else:
                 # If we couldn't find application date, use a recent date
                 verification_date_str = (datetime.now() - timedelta(days=random.randint(10, 90))).strftime("%Y-%m-%d")
-        else:
-            # For pending or not verified statuses, set verification_date to None
-            verification_date_str = None
 
-        # Note: We're not handling property_address_id as requested
-        # For real estate property, the property_address_id would typically be set,
-        # but we're assuming it's already populated
+        # Determine if we need a property address ID
+        property_address_id = None
+        if asset_type in [AssetType.INVESTMENT_PROPERTY, AssetType.PRIMARY_RESIDENCE, AssetType.SECONDARY_RESIDENCE]:
+            # Get a real address ID from the database
+            try:
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT enterprise_address_id FROM enterprise.addresses
+                    ORDER BY RANDOM() LIMIT 1
+                """)
+                result = cursor.fetchone()
+                if result:
+                    property_address_id = result[0]
+                cursor.close()
+            except Exception as e:
+                logger.error(f"Error getting property address ID: {e}")
 
         # Create and return the asset record
-        # Skip fields ending with _id as they're already populated
         asset_record = {
-            "asset_type": asset_type,
+            "asset_type": asset_type.value,  # Store enum value as string
             "institution_name": institution_name,
             "account_number": account_number,
             "current_value": current_value,
-            "verification_status": verification_status,
-            "verification_date": verification_date_str
+            "verification_status": verification_status.value,  # Store enum value as string
+            "verification_date": verification_date_str,
+            "property_address_id": property_address_id
         }
 
         return asset_record
 
     except Exception as e:
         logger.error(f"Error generating borrower asset: {e}")
+        # Return a default record using enum values
         return {
-            "asset_type": "checking account",
+            "asset_type": AssetType.CHECKING_ACCOUNT.value,
             "institution_name": "Default Bank",
             "account_number": "XXXX1234",
             "current_value": 10000.00,
-            "verification_status": "pending",
-            "verification_date": None  # No verification date for pending status
+            "verification_status": VerificationStatus.PENDING.value,
+            "verification_date": None,
+            "property_address_id": None
         }
 
 
-def get_application_date(borrower_id, conn):
+def get_application_date(borrower_id: Optional[int], conn) -> Optional[datetime]:
     """
     Get the application date by following the relationship model:
     borrower -> application_borrowers -> applications
@@ -170,7 +176,6 @@ def get_application_date(borrower_id, conn):
     Returns:
         datetime: The application date or None if not found
     """
-
     cursor = None
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -201,27 +206,3 @@ def get_application_date(borrower_id, conn):
     finally:
         if cursor:
             cursor.close()
-
-
-# Removed get_random_address_id function as we're not handling _id fields
-
-# Example usage
-if __name__ == "__main__":
-    # This would be replaced with actual database connection in production
-    connection_string = "postgresql://postgres:password@localhost:5432/postgres"
-    conn = None
-    try:
-        # Connect to the database
-        conn = psycopg2.connect(connection_string)
-
-        # Generate an asset record for borrower ID 123
-        asset = generate_borrower_asset({'mortgage_services_borrower_id': 40}, cast(DataGenerator, {conn: conn}))
-
-        # Print the generated asset record
-        # logger.debug(json.dumps(asset, indent=2))
-
-    except Exception as e:
-        logger.error(f"Error: {e}")
-    finally:
-        if conn:
-            conn.close()

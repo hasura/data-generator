@@ -4,56 +4,24 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, Set
 
 import anthropic
-from faker import Faker
 
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+
+from .enums import AccountStatus
 
 # Track previously generated account descriptions for uniqueness if needed
 prev_account_descriptions: Set[str] = set()
 logger = logging.getLogger(__name__)
 
 
-class AccountStatus:
+def generate_random_account(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
-    Enum-like class for account status values that match the enterprise.account_status enum
-    """
-    ACTIVE = "ACTIVE"
-    PENDING = "PENDING"
-    INACTIVE = "INACTIVE"
-    SUSPENDED = "SUSPENDED"
-    DORMANT = "DORMANT"
-    FROZEN = "FROZEN"
-    CLOSED = "CLOSED"
-    ARCHIVED = "ARCHIVED"
-
-    @classmethod
-    def get_random(cls):
-        """Return a random status value, weighted toward ACTIVE"""
-        choices = [
-            (cls.ACTIVE, 70),  # 70% chance of active
-            (cls.PENDING, 5),  # 5% chance of pending
-            (cls.INACTIVE, 5),  # 5% chance of inactive
-            (cls.SUSPENDED, 3),  # 3% chance of suspended
-            (cls.DORMANT, 5),  # 5% chance of dormant
-            (cls.FROZEN, 2),  # 2% chance of frozen
-            (cls.CLOSED, 8),  # 8% chance of closed
-            (cls.ARCHIVED, 2)  # 2% chance of archived
-        ]
-        return random.choices(
-            [status for status, _ in choices],
-            weights=[weight for _, weight in choices],
-            k=1
-        )[0]
-
-
-def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
-    """
-    Generate a random enterprise.accounts record.
+    Generate a random "enterprise.accounts" record.
 
     Args:
-        id_fields: Dictionary containing predetermined ID fields
+        _id_fields: Dictionary containing predetermined ID fields
                   (enterprise_account_id)
         dg: DataGenerator instance
 
@@ -61,7 +29,6 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
         Dict containing a random account record
         (without ID fields)
     """
-    fake = Faker()
 
     # Generate opened_date (between 10 years ago and yesterday)
     now = datetime.now()

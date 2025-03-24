@@ -1,0 +1,15 @@
+from enum import Enum
+
+
+class PartyEntityAddressType(Enum):
+    RESIDENTIAL = "RESIDENTIAL"
+    MAILING = "MAILING"
+    BUSINESS = "BUSINESS"
+    BRANCH = "BRANCH"
+    BILLING = "BILLING"
+    SHIPPING = "SHIPPING"
+    LEGAL = "LEGAL"
+    SEASONAL = "SEASONAL"
+    VACATION = "VACATION"
+    PREVIOUS = "PREVIOUS"
+    OTHER = "OTHER"

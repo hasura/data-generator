@@ -9,6 +9,8 @@ from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.parse_address import \
     parse_address
 
+from .enums import AddressType
+
 logger = logging.getLogger(__name__)
 fake = Faker()  # Initialize Faker
 
@@ -24,11 +26,9 @@ def generate_random_address(_id_fields: Dict[str, Any], _dg: DataGenerator) -> D
     Returns:
         Dictionary containing randomly generated address data (without ID fields)
     """
-    # Define address types
-    address_types = ["HOME", "WORK", "MAIL", "BILL", "SHIP"]
 
     # Choose a random address type
-    address_type = random.choice(address_types)
+    address_type = AddressType.get_random()
 
     # Generate a standard street address (keep trying until we get one)
     parsed_address = None
@@ -126,7 +126,7 @@ def generate_random_address(_id_fields: Dict[str, Any], _dg: DataGenerator) -> D
 
     # Create the address record
     address = {
-        "address_type": address_type,
+        "address_type": address_type.value,
         "department": department,
         "sub_department": sub_department,
         "street_name": street_name,

@@ -1,11 +1,5 @@
 """Automatically generated __init__.py"""
-__all__ = ['application', 'application_component', 'application_relationship', 'architecture', 'component',
-           'component_dependency', 'determine_rto_rpo', 'generate_random_application',
-           'generate_random_application_component', 'generate_random_application_relationship',
-           'generate_random_architecture', 'generate_random_component', 'generate_random_component_dependency',
-           'generate_random_sdlc_process', 'generate_random_team', 'generate_random_team_member',
-           'get_existing_application_names', 'get_license_data', 'is_critical_application', 'sdlc_process', 'team',
-           'team_member']
+__all__ = ['application', 'application_component', 'application_relationship', 'architecture', 'component', 'component_dependency', 'determine_rto_rpo', 'generate_random_application', 'generate_random_application_component', 'generate_random_application_relationship', 'generate_random_architecture', 'generate_random_component', 'generate_random_component_dependency', 'generate_random_sdlc_process', 'generate_random_team', 'generate_random_team_member', 'get_existing_application_names', 'get_license_data', 'is_critical_application', 'sdlc_process', 'team', 'team_member']
 
 from . import (application, application_component, application_relationship,
                architecture, component, component_dependency, sdlc_process,

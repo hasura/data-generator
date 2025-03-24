@@ -10,13 +10,15 @@ from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
 
+from .enums import BuildingType
+
 logger = logging.getLogger(__name__)
 fake = Faker()  # Initialize Faker
 
 
 def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
-    Generate a random enterprise.buildings record with reasonable values.
+    Generate a random "enterprise.buildings" record with reasonable values.
 
     Args:
         _id_fields: Dictionary containing the required ID fields (enterprise_building_id)
@@ -25,6 +27,7 @@ def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> D
     Returns:
         Dictionary containing randomly generated building data (without ID fields)
     """
+
     # Get connection for fetching related data
     conn = dg.conn
 
@@ -34,21 +37,6 @@ def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> D
     # Default fallback values for building names
     building_prefixes = ["Main", "Downtown", "Corporate", "Regional", "North", "South", "East", "West", "Central"]
     building_suffixes = ["Branch", "Office", "Tower", "Plaza", "Building", "Campus", "Center", "Facility"]
-
-    # Building type enum values from DBML
-    building_types = [
-        "BRANCH",
-        "HEADQUARTERS",
-        "OPERATIONS_CENTER",
-        "DATA_CENTER",
-        "ADMINISTRATIVE",
-        "WAREHOUSE",
-        "TRAINING_CENTER",
-        "DISASTER_RECOVERY",
-        "CALL_CENTER",
-        "ATM_LOCATION",
-        "OTHER"
-    ]
 
     # Try to use generate_unique_json_array for building names
     try:
@@ -78,27 +66,9 @@ def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> D
     else:
         building_name = random.choice(available_names)
 
-    # Choose building type with appropriate weighting
+    # Choose building type with appropriate weighting using enum
     # BRANCH should be the most common type
-    type_weights = {
-        "BRANCH": 0.5,  # 50% chance
-        "HEADQUARTERS": 0.05,  # 5% chance
-        "OPERATIONS_CENTER": 0.1,
-        "DATA_CENTER": 0.05,
-        "ADMINISTRATIVE": 0.1,
-        "WAREHOUSE": 0.05,
-        "TRAINING_CENTER": 0.03,
-        "DISASTER_RECOVERY": 0.02,
-        "CALL_CENTER": 0.05,
-        "ATM_LOCATION": 0.03,
-        "OTHER": 0.02
-    }
-
-    building_type = random.choices(
-        population=list(type_weights.keys()),
-        weights=list(type_weights.values()),
-        k=1
-    )[0]
+    building_type = BuildingType.get_random()
 
     # Generate phone number
     phone_number = fake.phone_number()
@@ -107,13 +77,13 @@ def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> D
     today = datetime.date.today()
 
     # Buildings should have different likely ages based on type
-    if building_type in ["HEADQUARTERS", "BRANCH"]:
+    if building_type in [BuildingType.HEADQUARTERS, BuildingType.BRANCH]:
         # These could be very old
         max_years_ago = 50
-    elif building_type in ["OPERATIONS_CENTER", "ADMINISTRATIVE"]:
+    elif building_type in [BuildingType.OPERATIONS_CENTER, BuildingType.ADMINISTRATIVE]:
         # These might be moderately old
         max_years_ago = 30
-    elif building_type in ["DATA_CENTER", "DISASTER_RECOVERY"]:
+    elif building_type in [BuildingType.DATA_CENTER, BuildingType.DISASTER_RECOVERY]:
         # These are likely newer
         max_years_ago = 15
     else:
@@ -125,17 +95,17 @@ def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> D
 
     # Different building types have different probabilities of being closed
     close_probabilities = {
-        "BRANCH": 0.1,  # 10% chance of being closed
-        "HEADQUARTERS": 0.02,  # 2% chance
-        "OPERATIONS_CENTER": 0.05,
-        "DATA_CENTER": 0.05,
-        "ADMINISTRATIVE": 0.1,
-        "WAREHOUSE": 0.15,
-        "TRAINING_CENTER": 0.1,
-        "DISASTER_RECOVERY": 0.05,
-        "CALL_CENTER": 0.1,
-        "ATM_LOCATION": 0.2,
-        "OTHER": 0.15
+        BuildingType.BRANCH: 0.1,  # 10% chance of being closed
+        BuildingType.HEADQUARTERS: 0.02,  # 2% chance
+        BuildingType.OPERATIONS_CENTER: 0.05,
+        BuildingType.DATA_CENTER: 0.05,
+        BuildingType.ADMINISTRATIVE: 0.1,
+        BuildingType.WAREHOUSE: 0.15,
+        BuildingType.TRAINING_CENTER: 0.1,
+        BuildingType.DISASTER_RECOVERY: 0.05,
+        BuildingType.CALL_CENTER: 0.1,
+        BuildingType.ATM_LOCATION: 0.2,
+        BuildingType.OTHER: 0.15
     }
 
     # Determine if building is closed based on its type
@@ -154,7 +124,7 @@ def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> D
     # Create the building record
     building = {
         "building_name": building_name,
-        "building_type": building_type,
+        "building_type": building_type.value,  # Use .value to get the string representation
         "phone_number": phone_number,
         "open_date": open_date,
         "close_date": close_date

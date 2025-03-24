@@ -1,119 +1,108 @@
 import datetime
+import logging
 import random
+import sys
 from datetime import timedelta
+from typing import Any, Dict
 
+import psycopg2
 from faker import Faker
+from psycopg2.extras import RealDictCursor
+
+from data_generator import DataGenerator
+from .enums import (OccupancyType, PropertyType)
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 
-def generate_random_property(loan_application):
+def generate_random_property(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
     Generate a random, plausible property record based on the loan application and product type.
 
     Args:
-        loan_application (dict): The loan application data
+        id_fields: Dictionary containing the required ID fields (mortgage_services_application_id)
+        dg: DataGenerator instance
 
     Returns:
-        dict: A dictionary with property details
+        Dictionary containing randomly generated property data (without ID fields)
     """
     # Initialize Faker for address generation
     fake = Faker()
 
+    # Get the loan application from the application ID
+    conn = dg.conn
+    application_id = id_fields.get("mortgage_services_application_id")
+
+    # Query the database for loan application details
+    loan_application = {}
+    if conn and application_id:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        try:
+            try:
+                cursor.execute("""
+                    SELECT * FROM mortgage_services.applications
+                    WHERE mortgage_services_application_id = %s
+                """, (application_id,))
+            except psycopg2.ProgrammingError as e:
+                logger.critical(f"Programming error detected in the SQL query: {e}")
+                sys.exit(1)
+
+            application_row = cursor.fetchone()
+            if application_row:
+                loan_application = dict(application_row)
+        finally:
+            cursor.close()
+
     # Extract relevant information from the application
     application_type = loan_application.get("application_type")
     loan_purpose = loan_application.get("loan_purpose")
-    estimated_property_value = loan_application.get("estimated_property_value")
-    product_type = loan_application.get("loan_product", "conventional").lower()
-    lot_options = None
-    lot_weights = None
+    estimated_property_value = float(loan_application.get("estimated_property_value"))
+
+    # Get loan product information
+    product_type = "conventional"  # default
+    if loan_application.get("mortgage_services_loan_product_id"):
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        try:
+            try:
+                cursor.execute("""
+                    SELECT * FROM mortgage_services.loan_products
+                    WHERE mortgage_services_loan_product_id = %s
+                """, (loan_application.get("mortgage_services_loan_product_id"),))
+            except psycopg2.ProgrammingError as e:
+                logger.critical(f"Programming error detected in the SQL query: {e}")
+                sys.exit(1)
+
+            product_row = cursor.fetchone()
+            if product_row:
+                product_dict = dict(product_row)
+                loan_type = product_dict.get("loan_type", "").lower()
+                if "jumbo" in loan_type:
+                    product_type = "jumbo"
+                elif "fha" in loan_type:
+                    product_type = "fha"
+                elif "va" in loan_type:
+                    product_type = "va"
+                elif "usda" in loan_type:
+                    product_type = "usda"
+                elif "construction" in loan_type:
+                    product_type = "construction loan"
+                elif "heloc" in loan_type:
+                    product_type = "heloc"
+                elif "reverse" in loan_type:
+                    product_type = "reverse mortgage"
+        finally:
+            cursor.close()
+
     lot_size = None
 
-    # Determine plausible property type based on loan product and purpose
-    # Property types with weights - adjust based on product type
-    if product_type == "jumbo":
-        # Jumbo loans are often for larger, luxury properties
-        property_types = {
-            "single family": 0.7,
-            "condo": 0.15,
-            "townhouse": 0.05,
-            "multi-family": 0.05,
-            "luxury condo": 0.05
-        }
-    elif product_type == "fha":
-        # FHA loans are often for modest starter homes
-        property_types = {
-            "single family": 0.6,
-            "condo": 0.2,
-            "townhouse": 0.15,
-            "multi-family (2-4 units)": 0.05
-        }
-    elif product_type == "va":
-        # VA loans typically for residential properties
-        property_types = {
-            "single family": 0.7,
-            "condo": 0.15,
-            "townhouse": 0.1,
-            "multi-family (2-4 units)": 0.05
-        }
-    elif product_type == "usda":
-        # USDA loans are for rural properties
-        property_types = {
-            "single family": 0.85,
-            "manufactured home": 0.1,
-            "modular home": 0.05
-        }
-    elif product_type == "heloc" or product_type == "reverse mortgage":
-        # These typically apply to existing homes
-        property_types = {
-            "single family": 0.75,
-            "condo": 0.15,
-            "townhouse": 0.05,
-            "multi-family (2-4 units)": 0.05
-        }
-    elif product_type == "construction loan":
-        # Construction loans are for new builds
-        property_types = {
-            "single family": 0.8,
-            "custom home": 0.15,
-            "luxury home": 0.05
-        }
-    else:  # conventional
-        property_types = {
-            "single family": 0.65,
-            "condo": 0.15,
-            "townhouse": 0.1,
-            "multi-family (2-4 units)": 0.05,
-            "manufactured home": 0.05
-        }
-
-    # Select property type based on weights
-    property_type = random.choices(
-        list(property_types.keys()),
-        weights=list(property_types.values())
-    )[0]
-
-    # Determine occupancy type based on loan purpose
-    if loan_purpose == "primary residence":
-        occupancy_type = "primary residence"
-    elif loan_purpose == "second home":
-        occupancy_type = "second home"
-    elif loan_purpose == "investment property":
-        occupancy_type = "investment"
-    elif loan_purpose == "home improvement" and random.random() < 0.9:
-        occupancy_type = "primary residence"  # Most home improvement loans are for primary homes
-    elif loan_purpose == "refinancing" or loan_purpose == "cash-out refinancing":
-        # For refinancing, use the original occupancy of the home
-        occupancy_options = ["primary residence", "second home", "investment"]
-        occupancy_weights = [0.8, 0.15, 0.05]  # Most refinances are for primary homes
-        occupancy_type = random.choices(occupancy_options, weights=occupancy_weights)[0]
-    else:
-        # Default or fallback based on weighted probabilities
-        occupancy_options = ["primary residence", "second home", "investment"]
-        occupancy_weights = [0.7, 0.15, 0.15]
-        occupancy_type = random.choices(occupancy_options, weights=occupancy_weights)[0]
+    # Get property type and occupancy type using enums
+    property_type_enum = PropertyType.get_random(product_type)
+    occupancy_type_enum = OccupancyType.get_random(loan_purpose)
 
     # Generate a complete address using Faker
     # Customize based on property type
-    if property_type in ["condo", "townhouse", "luxury condo"]:
+    if property_type_enum in [PropertyType.CONDO, PropertyType.TOWNHOUSE]:
         # Generate address with unit number for condos and townhouses
         street_address = fake.street_address()
         unit_number = f"Unit {random.choice(['A', 'B', 'C', '1', '2', '3'])}{random.randint(1, 999)}"
@@ -159,7 +148,7 @@ def generate_random_property(loan_application):
         year_built = current_year if random.random() < 0.7 else current_year + 1
     else:
         # Determine age distribution based on property type and value
-        if property_type in ["luxury home", "luxury condo", "custom home"] or (
+        if property_type_enum in [PropertyType.PUD, PropertyType.CONDO] and (
                 estimated_property_value and estimated_property_value > 1000000):
             # Luxury properties - either newer or completely renovated older homes
             if random.random() < 0.7:
@@ -168,10 +157,10 @@ def generate_random_property(loan_application):
             else:
                 # Renovated historic or classic homes (20-100 years old)
                 year_built = random.randint(current_year - 100, current_year - 20)
-        elif property_type in ["condo", "townhouse"]:
+        elif property_type_enum in [PropertyType.CONDO, PropertyType.TOWNHOUSE]:
             # Condos and townhouses tend to be newer
             year_built = random.randint(current_year - 40, current_year - 1)
-        elif property_type == "manufactured home":
+        elif property_type_enum == PropertyType.MANUFACTURED_HOME:
             # Manufactured homes tend to be newer
             year_built = random.randint(current_year - 30, current_year - 1)
         else:
@@ -186,24 +175,24 @@ def generate_random_property(loan_application):
             year_built = random.choices(age_options, weights=age_weights)[0]
 
     # Generate bedrooms based on property type
-    if property_type in ["single family", "custom home", "luxury home"]:
+    if property_type_enum == PropertyType.SINGLE_FAMILY:
         bedrooms = random.choices([2, 3, 4, 5, 6], weights=[0.05, 0.3, 0.4, 0.2, 0.05])[0]
-    elif property_type in ["condo", "townhouse", "manufactured home"]:
+    elif property_type_enum in [PropertyType.CONDO, PropertyType.TOWNHOUSE, PropertyType.MANUFACTURED_HOME]:
         bedrooms = random.choices([1, 2, 3, 4], weights=[0.1, 0.4, 0.4, 0.1])[0]
-    elif property_type == "multi-family (2-4 units)":
+    elif property_type_enum == PropertyType.MULTI_FAMILY:
         bedrooms = random.randint(4, 8)  # Total across all units
     else:
         bedrooms = random.choices([2, 3, 4, 5], weights=[0.1, 0.4, 0.4, 0.1])[0]
 
     # Generate bathrooms (allowing for half baths)
-    if property_type in ["luxury home", "luxury condo", "custom home"]:
+    if property_type_enum in [PropertyType.PUD, PropertyType.COMMERCIAL]:
         # Luxury homes have more bathrooms
         bath_options = [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
         bath_weights = [0.05, 0.1, 0.2, 0.2, 0.2, 0.1, 0.1, 0.05]
-    elif property_type in ["condo", "townhouse", "manufactured home"]:
+    elif property_type_enum in [PropertyType.CONDO, PropertyType.TOWNHOUSE, PropertyType.MANUFACTURED_HOME]:
         bath_options = [1.0, 1.5, 2.0, 2.5, 3.0]
         bath_weights = [0.1, 0.2, 0.4, 0.2, 0.1]
-    elif property_type == "multi-family (2-4 units)":
+    elif property_type_enum == PropertyType.MULTI_FAMILY:
         bath_options = [2.0, 3.0, 4.0, 5.0, 6.0]
         bath_weights = [0.1, 0.3, 0.3, 0.2, 0.1]
     else:
@@ -213,19 +202,19 @@ def generate_random_property(loan_application):
     bathrooms = random.choices(bath_options, weights=bath_weights)[0]
 
     # Generate square footage based on property type and bedrooms
-    if property_type in ["luxury home", "custom home"]:
+    if property_type_enum in [PropertyType.PUD, PropertyType.COMMERCIAL]:
         base_sqft = 2500 + (bedrooms * 500)
         variation = random.uniform(0.8, 1.2)
-    elif property_type == "luxury condo":
+    elif property_type_enum == PropertyType.CONDO:
         base_sqft = 1800 + (bedrooms * 400)
         variation = random.uniform(0.9, 1.1)
-    elif property_type in ["condo", "townhouse"]:
+    elif property_type_enum in [PropertyType.CONDO, PropertyType.TOWNHOUSE]:
         base_sqft = 800 + (bedrooms * 300)
         variation = random.uniform(0.9, 1.1)
-    elif property_type == "manufactured home":
+    elif property_type_enum == PropertyType.MANUFACTURED_HOME:
         base_sqft = 900 + (bedrooms * 200)
         variation = random.uniform(0.9, 1.1)
-    elif property_type == "multi-family (2-4 units)":
+    elif property_type_enum == PropertyType.MULTI_FAMILY:
         base_sqft = 1200 + (bedrooms * 300)
         variation = random.uniform(0.9, 1.1)
     else:  # Standard single family
@@ -237,13 +226,13 @@ def generate_random_property(loan_application):
     square_feet = (square_feet // 50) * 50
 
     # Generate lot size based on property type and location
-    if property_type in ["condo", "townhouse", "luxury condo"]:
+    if property_type_enum in [PropertyType.CONDO, PropertyType.TOWNHOUSE]:
         # Condos and townhouses typically don't have significant lots
         lot_size = 0
-    elif property_type == "manufactured home":
+    elif property_type_enum == PropertyType.MANUFACTURED_HOME:
         lot_options = [0.1, 0.25, 0.5, 1.0]  # Acres
         lot_weights = [0.4, 0.3, 0.2, 0.1]
-    elif property_type == "multi-family (2-4 units)":
+    elif property_type_enum == PropertyType.MULTI_FAMILY:
         lot_options = [0.1, 0.25, 0.5, 0.75]  # Acres
         lot_weights = [0.3, 0.4, 0.2, 0.1]
     elif product_type == "usda":
@@ -255,12 +244,12 @@ def generate_random_property(loan_application):
         lot_options = [0.1, 0.25, 0.33, 0.5, 1.0, 2.0]  # Acres
         lot_weights = [0.15, 0.3, 0.2, 0.2, 0.1, 0.05]
 
-    if property_type not in ["condo", "townhouse", "luxury condo"]:
+    if property_type_enum not in [PropertyType.CONDO, PropertyType.TOWNHOUSE]:
         lot_size = random.choices(lot_options, weights=lot_weights)[0]
 
     # Generate HOA dues based on property type
-    if property_type in ["condo", "townhouse", "luxury condo"]:
-        if property_type == "luxury condo":
+    if property_type_enum in [PropertyType.CONDO, PropertyType.TOWNHOUSE]:
+        if property_type_enum == PropertyType.CONDO:
             # Luxury condos have higher HOA dues
             hoa_base = random.randint(400, 1200)
         else:
@@ -274,11 +263,12 @@ def generate_random_property(loan_application):
     else:
         hoa_dues = 0
 
-    # Create the property dictionary
-    _property_record = {
+    # Create the property dictionary with enum values - NO IDs included
+    property_record = {
+        "mortgage_services_application_id": application_id,
         "address": address,
-        "property_type": property_type,
-        "occupancy_type": occupancy_type,
+        "property_type": property_type_enum.value,  # Use enum value directly
+        "occupancy_type": occupancy_type_enum.value,  # Use enum value directly
         "year_built": year_built,
         "bedrooms": bedrooms,
         "bathrooms": bathrooms,
@@ -289,8 +279,4 @@ def generate_random_property(loan_application):
         "construction_completion_date": construction_completion_date
     }
 
-    # Include application ID if provided in the loan application
-    if "mortgage_services_application_id" in loan_application:
-        _property_record["mortgage_services_application_id"] = loan_application["mortgage_services_application_id"]
-
-    return _property_record
+    return property_record

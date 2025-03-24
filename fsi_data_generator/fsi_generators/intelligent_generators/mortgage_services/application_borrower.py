@@ -3,11 +3,12 @@ import uuid
 from decimal import Decimal
 
 from psycopg2.extras import RealDictCursor
-
 from data_generator import DataGenerator
+from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import PartyRelationshipType
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums import BorrowerType
 
 
-def generate_application_borrower_record(ids_dict, dg: DataGenerator):
+def generate_random_application_borrower(ids_dict, dg: DataGenerator):
     """
     Generate a realistic random mortgage_services.application_borrowers record.
     Adjusts contribution percentages of existing records if needed to maintain
@@ -76,14 +77,14 @@ def generate_application_borrower_record(ids_dict, dg: DataGenerator):
 
         # For the first record, it's simple - this is the primary borrower
         if is_first_record:
-            borrower_type = "primary"
+            borrower_type = BorrowerType.PRIMARY
             relationship_to_primary = None
             contribution_percentage = Decimal('100.00')
         else:
             # Find the primary borrower record
             primary_borrower = None
             for b in existing_borrowers:
-                if b.get('borrower_type') == 'primary':
+                if b.get('borrower_type') == BorrowerType.PRIMARY.value:
                     primary_borrower = b
                     break
 
@@ -123,11 +124,11 @@ def generate_application_borrower_record(ids_dict, dg: DataGenerator):
             contribution_percentage = max(contribution_percentage, Decimal('0.01'))
 
             # Determine relationship to primary borrower
-            formal_relationship = get_formal_relationship(
+            formal_relationship = PartyRelationshipType[get_formal_relationship(
                 conn,
                 current_borrower_info.get('enterprise_party_id'),
                 primary_borrower_info.get('enterprise_party_id')
-            )
+            )]
 
             # Set relationship_to_primary based on formal relationship or inference
             if formal_relationship:
@@ -135,24 +136,24 @@ def generate_application_borrower_record(ids_dict, dg: DataGenerator):
                 relationship_to_primary = formal_relationship
 
                 # Determine borrower type based on the formal relationship
-                if formal_relationship == "spouse":
+                if formal_relationship == PartyRelationshipType.SPOUSE:
                     borrower_type = random.choices(
-                        ["co-borrower", "co-signer"],
+                        [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.95, 0.05]
                     )[0]
-                elif formal_relationship in ["power_of_attorney", "guardian", "trustee"]:
+                elif formal_relationship in [PartyRelationshipType.POWER_OF_ATTORNEY, PartyRelationshipType.GUARDIAN, PartyRelationshipType.TRUSTEE]:
                     borrower_type = random.choices(
-                        ["co-borrower", "co-signer"],
+                        [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.7, 0.3]
                     )[0]
-                elif formal_relationship in ["beneficiary", "authorized_user"]:
+                elif formal_relationship in [PartyRelationshipType.BENEFICIARY, PartyRelationshipType.AUTHORIZED_USER]:
                     borrower_type = random.choices(
-                        ["co-borrower", "co-signer"],
+                        [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.2, 0.8]
                     )[0]
                 else:  # administrator, executor, or other formal relationships
                     borrower_type = random.choices(
-                        ["co-borrower", "co-signer"],
+                        [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.4, 0.6]
                     )[0]
             else:
@@ -163,22 +164,22 @@ def generate_application_borrower_record(ids_dict, dg: DataGenerator):
                 # Determine borrower type based on inferred personal relationship
                 if personal_relationship == 'spouse':
                     borrower_type = random.choices(
-                        ["co-borrower", "co-signer"],
+                        [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.9, 0.1]
                     )[0]
                 elif personal_relationship in ['parent', 'child']:
                     borrower_type = random.choices(
-                        ["co-borrower", "co-signer"],
+                        [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.3, 0.7]
                     )[0]
                 else:  # sibling, friend, other
                     borrower_type = random.choices(
-                        ["co-borrower", "co-signer"],
+                        [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.4, 0.6]
                     )[0]
 
             # If this is a co-signer, reduce the contribution percentage
-            if borrower_type == "co-signer":
+            if borrower_type == BorrowerType.COSIGNER:
                 contribution_percentage = contribution_percentage * Decimal('0.5')
                 contribution_percentage = contribution_percentage.quantize(Decimal('0.01'))
 
@@ -196,23 +197,12 @@ def generate_application_borrower_record(ids_dict, dg: DataGenerator):
                         WHERE mortgage_services_application_borrower_id = %s
                     """, (new_primary_contribution, primary_borrower.get('mortgage_services_application_borrower_id')))
 
-                    # Commit the transaction
-                    # conn.commit()
                 except Exception as e:
-                    # Roll back the transaction in case of error
-                    # conn.rollback()
                     raise e
-                # finally:
-                # Reset autocommit
-                # conn.autocommit = True
 
         # Create the application_borrowers record (but don't insert it - that's handled by the parent)
         record = {
-            "mortgage_services_application_borrower_id": ids_dict.get('mortgage_services_application_borrower_id',
-                                                                      str(uuid.uuid4())),
-            "mortgage_services_application_id": application_id,
-            "mortgage_services_borrower_id": borrower_id,
-            "borrower_type": borrower_type,
+            "borrower_type": borrower_type.value,
             "relationship_to_primary": relationship_to_primary,
             "contribution_percentage": float(contribution_percentage)
         }
@@ -238,21 +228,21 @@ def determine_base_contribution(conn, borrower_info, primary_info):
     Decimal: Base contribution percentage
     """
     # Get formal relationship if it exists
-    formal_relationship = get_formal_relationship(
+    formal_relationship = PartyRelationshipType[get_formal_relationship(
         conn,
         borrower_info.get('enterprise_party_id'),
         primary_info.get('enterprise_party_id')
-    )
+    )]
 
     # Determine base contribution based on relationship
-    if formal_relationship == "spouse":
+    if formal_relationship == PartyRelationshipType.SPOUSE:
         # Spouses typically have higher contributions
         return Decimal(str(random.uniform(35.0, 50.0))).quantize(Decimal('0.01'))
 
-    elif formal_relationship in ["power_of_attorney", "guardian", "trustee"]:
+    elif formal_relationship in [PartyRelationshipType.POWER_OF_ATTORNEY, PartyRelationshipType.GUARDIAN, PartyRelationshipType.TRUSTEE]:
         return Decimal(str(random.uniform(20.0, 40.0))).quantize(Decimal('0.01'))
 
-    elif formal_relationship in ["beneficiary", "authorized_user"]:
+    elif formal_relationship in [PartyRelationshipType.BENEFICIARY, PartyRelationshipType.AUTHORIZED_USER]:
         return Decimal(str(random.uniform(5.0, 20.0))).quantize(Decimal('0.01'))
 
     else:
@@ -408,3 +398,4 @@ def get_age_from_info(info):
             pass
 
     return None
+

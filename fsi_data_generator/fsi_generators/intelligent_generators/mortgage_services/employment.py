@@ -6,6 +6,11 @@ from typing import Any, Dict, Optional
 import psycopg2
 from faker import Faker
 
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.employment_type import \
+    EmploymentType
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.verification_status import \
+    VerificationStatus
+
 # Initialize Faker
 fake = Faker()
 logger = logging.getLogger(__name__)
@@ -17,7 +22,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
 
     Args:
         id_fields: Dictionary containing the required ID fields (mortgage_services_borrower_id)
-        dg: DataGenertor instance
+        dg: DataGenerator instance
 
     Returns:
         Dictionary containing randomly generated borrower employment data (without ID fields)
@@ -27,38 +32,20 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
     borrower_info = get_borrower_info(id_fields.get("mortgage_services_borrower_id"), conn)
     application_info = get_application_info_for_borrower(id_fields.get("mortgage_services_borrower_id"), conn)
 
-    # Define possible values for categorical fields
-    employment_types = [
-        "full-time",
-        "part-time",
-        "self-employed",
-        "contract",
-        "seasonal"
-    ]
-
-    employment_type_weights = [0.7, 0.1, 0.15, 0.03, 0.02]  # Full-time is most common
-
-    verification_statuses = [
-        "verified",
-        "pending verification",
-        "verification failed",
-        "not verified"
-    ]
-
     # Determine if current employment based on borrower info
     is_current = True  # Default to current employment
     if borrower_info and random.random() < 0.2:  # 20% chance of past employment
         is_current = False
 
     # Select employment type
-    employment_type = random.choices(employment_types, weights=employment_type_weights, k=1)[0]
+    employment_type = EmploymentType.get_random()
 
     # Generate employer name using Faker
     employer_name = fake.company()
 
     # Generate position based on employment type
     positions_by_type = {
-        "full-time": [
+        EmploymentType.FULL_TIME: [
             "Software Engineer", "Project Manager", "Sales Representative", "Accountant",
             "Marketing Specialist", "Human Resources Manager", "Operations Director",
             "Financial Analyst", "Customer Service Representative", "Administrative Assistant",
@@ -68,17 +55,16 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
             "Compliance Officer", "UX Designer", "Brand Manager", "IT Support Specialist",
             "Web Developer", "Benefits Administrator", "Public Relations Specialist", "Sales Engineer"
         ],
-        "part-time": [
+        EmploymentType.PART_TIME: [
             "Sales Associate", "Office Assistant", "Customer Service Rep", "Cashier",
             "Delivery Driver", "Warehouse Associate", "Retail Associate", "Server",
-            "Tutor", "Security Guard",
-            "Barista", "Receptionist", "Bank Teller", "Data Entry Clerk",
+            "Tutor", "Security Guard", "Barista", "Receptionist", "Bank Teller", "Data Entry Clerk",
             "Library Assistant", "Dental Assistant", "Medical Receptionist", "Tour Guide",
             "Research Assistant", "Brand Ambassador", "Caregiver", "Fitness Instructor",
             "Teaching Assistant", "Pharmacy Technician", "Event Staff", "Restaurant Host",
             "Retail Merchandiser", "Social Media Moderator", "Call Center Representative", "Museum Guide"
         ],
-        "self-employed": [
+        EmploymentType.SELF_EMPLOYED: [
             "Independent Consultant", "Freelance Designer", "Business Owner", "Contractor",
             "Realtor", "Attorney", "Photographer", "Writer", "Therapist", "Handyman",
             "Personal Trainer", "Life Coach", "Mobile App Developer", "Tax Preparer",
@@ -87,7 +73,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
             "Private Chef", "Career Coach", "Music Teacher", "Wedding Planner",
             "E-commerce Store Owner", "Notary Public", "Yoga Instructor", "Web Designer"
         ],
-        "contract": [
+        EmploymentType.CONTRACTOR: [
             "IT Consultant", "Project Coordinator", "Content Writer", "Web Developer",
             "Graphic Designer", "Technical Writer", "Marketing Consultant", "Data Analyst",
             "Software Developer", "UX/UI Designer", "Systems Architect", "SEO Specialist",
@@ -97,7 +83,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
             "Video Editor", "Virtual Assistant", "Social Media Strategist", "Product Designer",
             "Market Research Analyst", "Scientific Researcher", "Curriculum Developer", "Interim Manager"
         ],
-        "seasonal": [
+        EmploymentType.SEASONAL: [
             "Tax Preparer", "Retail Sales Associate", "Delivery Driver", "Resort Staff",
             "Landscaper", "Agricultural Worker", "Camp Counselor", "Tour Guide",
             "Election Worker", "Snow Removal Technician", "Ski Instructor", "Holiday Gift Wrapper",
@@ -106,10 +92,63 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
             "Summer Camp Director", "Cruise Ship Staff", "National Park Ranger", "Beach Attendant",
             "Event Security", "Christmas Tree Lot Worker", "Sports Venue Staff", "Tax Season Accountant",
             "Seasonal Baker", "Pumpkin Patch Worker", "Flower Shop Assistant", "Hotel Housekeeper"
+        ],
+        EmploymentType.COMMISSION: [
+            "Sales Representative", "Real Estate Agent", "Insurance Agent", "Financial Advisor",
+            "Mortgage Broker", "Car Salesperson", "Retail Sales Associate", "Travel Agent",
+            "Account Executive", "Business Development Representative", "Recruiter", "Art Dealer",
+            "Advertising Sales Representative", "Luxury Goods Consultant", "Stockbroker", "Investment Advisor",
+            "Direct Sales Consultant", "Pharmaceutical Sales Rep", "Jewelry Sales Associate", "Territory Manager",
+            "Electronics Sales Associate", "Solar Energy Consultant", "Home Improvement Sales", "Franchise Sales",
+            "Membership Sales Specialist", "Timeshare Sales Executive", "Furniture Sales Associate",
+            "Medical Device Sales",
+            "Software Sales Representative", "Telecom Sales Representative", "B2B Sales Executive", "Yacht Broker"
+        ],
+        EmploymentType.RETIRED: [
+            "Retired Teacher", "Retired Executive", "Retired Military Officer", "Retired Physician",
+            "Retired Civil Servant", "Retired Engineer", "Retired Business Owner", "Retired Professor",
+            "Retired Nurse", "Retired Police Officer", "Retired Firefighter", "Retired Accountant",
+            "Retired Attorney", "Retired Dentist", "Retired Pilot", "Retired Judge",
+            "Retired Architect", "Retired Psychologist", "Retired Postal Worker", "Retired Electrician",
+            "Retired Banker", "Retired Sales Manager", "Retired Principal", "Retired Government Official",
+            "Retired Chef", "Retired Pharmacist", "Retired Social Worker", "Retired Journalist",
+            "Retired Administrator", "Retired Construction Manager", "Retired Financial Planner",
+            "Retired IT Professional"
+        ],
+        EmploymentType.MILITARY: [
+            "Army Officer", "Navy Officer", "Air Force Officer", "Marine Corps Officer",
+            "Army Enlisted", "Navy Enlisted", "Air Force Enlisted", "Marine Corps Enlisted",
+            "Military Specialist", "Military Technician", "Military Instructor", "Military Logistics",
+            "Military Intelligence", "Combat Medic", "Military Police", "Aviation Mechanic",
+            "Communications Specialist", "Cyber Operations Specialist", "Special Forces", "Combat Engineer",
+            "Military Recruiter", "Tank Crew Member", "Missile Defense Crew", "Naval Operations Specialist",
+            "Air Traffic Controller", "Aircraft Crew", "Tactical Operations Officer", "Military Research Scientist",
+            "Weapons Specialist", "Field Artillery", "Infantry", "Explosive Ordnance Disposal"
+        ],
+        EmploymentType.UNEMPLOYED: [
+            "Previously Employed", "Job Seeker", "Recent Graduate", "Career Changer",
+            "Temporarily Unemployed", "Returning to Workforce", "Between Jobs", "Recent Retiree",
+            "Recently Relocated", "Recent Medical Leave", "Full-time Student", "Former Business Owner",
+            "Former Military", "Former Contractor", "Recently Laid Off", "Former Self-Employed",
+            "Former Seasonal Worker", "Recent Caregiver", "Former Commission Worker", "Newly Graduated",
+            "Former Part-time Worker", "Recent Travel Break", "Former Freelancer", "After Sabbatical",
+            "Job Transition", "Following Relocation", "After Company Closure", "Former Startup Founder",
+            "Career Break", "Marketplace Transition", "Industry Change", "Skill Development Phase"
+        ],
+        EmploymentType.OTHER: [
+            "Gig Worker", "Intern", "Volunteer", "Board Member", "Advisor",
+            "Entrepreneur", "Student Worker", "Apprentice", "Fellow", "Grant Recipient",
+            "Research Assistant", "Graduate Assistant", "Visiting Professor", "Scholar-in-Residence",
+            "Artist-in-Residence",
+            "Elected Official", "Peace Corps Volunteer", "AmeriCorps Member", "Exchange Program Participant", "Clergy",
+            "Diplomatic Staff", "Foreign Service Officer", "Non-profit Director", "Cooperative Member",
+            "Professional Athlete",
+            "Performance Artist", "Author", "Composer", "Inventor", "Professional Speaker",
+            "Venture Capitalist", "Angel Investor", "Disability Pension Recipient", "Researcher", "Sabbatical"
         ]
     }
 
-    position = random.choice(positions_by_type.get(employment_type, positions_by_type["full-time"]))
+    position = random.choice(positions_by_type.get(employment_type, positions_by_type[EmploymentType.FULL_TIME]))
 
     # Generate reasonable employment dates
     today = datetime.date.today()
@@ -146,24 +185,34 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
                                  min(start_date.day, [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][end_month - 1]))
 
     # Generate years in profession (may be longer than current job)
-    if employment_type == "self-employed":
+    if employment_type == EmploymentType.SELF_EMPLOYED:
         # Self-employed people often have many years in profession
         years_in_profession = random.randint(years_ago, min(years_ago + 15, 40))
     else:
         # Other employment types might be close to current job duration
         years_in_profession = random.randint(years_ago, min(years_ago + 5, 30))
 
-    # Generate monthly income
-    if employment_type == "full-time":
+    # Generate monthly income based on employment type
+    if employment_type == EmploymentType.FULL_TIME:
         monthly_income = round(random.uniform(3000, 12000), 2)
-    elif employment_type == "part-time":
+    elif employment_type == EmploymentType.PART_TIME:
         monthly_income = round(random.uniform(1000, 3000), 2)
-    elif employment_type == "self-employed":
+    elif employment_type == EmploymentType.SELF_EMPLOYED:
         monthly_income = round(random.uniform(4000, 18000), 2)
-    elif employment_type == "contract":
+    elif employment_type == EmploymentType.CONTRACTOR:
         monthly_income = round(random.uniform(4000, 15000), 2)
-    else:  # seasonal
+    elif employment_type == EmploymentType.SEASONAL:
         monthly_income = round(random.uniform(2000, 6000), 2)
+    elif employment_type == EmploymentType.COMMISSION:
+        monthly_income = round(random.uniform(5000, 20000), 2)
+    elif employment_type == EmploymentType.RETIRED:
+        monthly_income = round(random.uniform(2000, 8000), 2)
+    elif employment_type == EmploymentType.MILITARY:
+        monthly_income = round(random.uniform(3500, 10000), 2)
+    elif employment_type == EmploymentType.UNEMPLOYED:
+        monthly_income = round(random.uniform(0, 1000), 2)
+    else:  # OTHER
+        monthly_income = round(random.uniform(2000, 5000), 2)
 
     # Get a random address ID for the employer - use the updated function
     enterprise_address_id = get_random_business_address_id(conn)
@@ -178,7 +227,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
         if app_status in ["approved", "conditionally approved", "closing", "closed"]:
             # For approved applications, current employment must be verified
             if is_current:
-                verification_status = "verified"
+                verification_status = VerificationStatus.VERIFIED
                 verification_date = application_info.get('submission_date')
                 if not verification_date:
                     # If no submission date, set verification date to 1-30 days before today
@@ -186,9 +235,8 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
                     verification_date = today - datetime.timedelta(days=days_ago)
             else:
                 # Past employment for approved apps might be verified or not
-                verification_status_weights = [0.7, 0.0, 0.0, 0.3]  # Mostly verified or not verified
-                verification_status = random.choices(verification_statuses, weights=verification_status_weights, k=1)[0]
-                if verification_status == "verified":
+                verification_status = VerificationStatus.get_random([0.7, 0.0, 0.0, 0.3, 0.0])
+                if verification_status == VerificationStatus.VERIFIED:
                     days_ago = random.randint(1, 60)
                     verification_date = today - datetime.timedelta(days=days_ago)
                 else:
@@ -196,13 +244,11 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
         elif app_status in ["submitted", "in review"]:
             # For in-process applications, verification could be pending or completed
             if is_current:
-                verification_status_weights = [0.3, 0.7, 0.0, 0.0]  # Mostly pending
-                verification_status = random.choices(verification_statuses, weights=verification_status_weights, k=1)[0]
+                verification_status = VerificationStatus.get_random([0.3, 0.7, 0.0, 0.0, 0.0])
             else:
-                verification_status_weights = [0.2, 0.3, 0.0, 0.5]  # Past jobs often not verified
-                verification_status = random.choices(verification_statuses, weights=verification_status_weights, k=1)[0]
+                verification_status = VerificationStatus.get_random([0.2, 0.3, 0.0, 0., 0.0])
 
-            if verification_status == "verified":
+            if verification_status == VerificationStatus.VERIFIED:
                 days_ago = random.randint(1, 30)
                 verification_date = today - datetime.timedelta(days=days_ago)
             else:
@@ -210,31 +256,28 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
         elif app_status == "denied":
             # Denied applications might have failed verification
             if is_current and random.random() < 0.3:  # 30% chance current job verification failed
-                verification_status = "verification failed"
+                verification_status = VerificationStatus.FAILED
                 days_ago = random.randint(1, 30)
                 verification_date = today - datetime.timedelta(days=days_ago)
             else:
-                verification_status_weights = [0.2, 0.2, 0.1, 0.5]  # Mix of statuses
-                verification_status = random.choices(verification_statuses, weights=verification_status_weights, k=1)[0]
-                if verification_status in ["verified", "verification failed"]:
+                verification_status = VerificationStatus.get_random([0.2, 0.2, 0.1, 0.5, 0.0])
+                if verification_status in [VerificationStatus.VERIFIED, VerificationStatus.FAILED]:
                     days_ago = random.randint(1, 60)
                     verification_date = today - datetime.timedelta(days=days_ago)
                 else:
                     verification_date = None
         else:  # draft or other status
             # For draft applications, often no verification yet
-            verification_status_weights = [0.1, 0.2, 0.0, 0.7]  # Mostly not verified
-            verification_status = random.choices(verification_statuses, weights=verification_status_weights, k=1)[0]
-            if verification_status == "verified":
+            verification_status = VerificationStatus.get_random([0.1, 0.2, 0.0, 0.7, 0.0])
+            if verification_status == VerificationStatus.VERIFIED:
                 days_ago = random.randint(1, 30)
                 verification_date = today - datetime.timedelta(days=days_ago)
             else:
                 verification_date = None
     else:
         # If no application info, use default verification distribution
-        verification_status_weights = [0.3, 0.2, 0.1, 0.4]
-        verification_status = random.choices(verification_statuses, weights=verification_status_weights, k=1)[0]
-        if verification_status == "verified":
+        verification_status = VerificationStatus.get_random([0.3, 0.2, 0.1, 0.4, 0.0])
+        if verification_status == VerificationStatus.VERIFIED:
             days_ago = random.randint(1, 60)
             verification_date = today - datetime.timedelta(days=days_ago)
         else:
@@ -246,13 +289,13 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
         "position": position,
         "enterprise_address_id": enterprise_address_id,
         "phone": phone,
-        "employment_type": employment_type,
+        "employment_type": employment_type.value,  # Use .value to get the string value
         "start_date": start_date,
         "end_date": end_date,
         "is_current": is_current,
         "years_in_profession": years_in_profession,
         "monthly_income": float(monthly_income),
-        "verification_status": verification_status,
+        "verification_status": verification_status.value,  # Use .value to get the string value
         "verification_date": verification_date
     }
 

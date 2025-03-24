@@ -1,16 +1,10 @@
 """Automatically generated __init__.py"""
-__all__ = ['AccountStatus', 'account', 'account_identifier', 'address', 'associate', 'building', 'department',
-           'generate_identification_for_scheme', 'generate_random_account', 'generate_random_account_identifier',
-           'generate_random_address', 'generate_random_associate', 'generate_random_building',
-           'generate_random_department', 'generate_random_party', 'generate_random_party_entity_address',
-           'generate_random_party_relationship', 'generate_random_permission', 'get_existing_building_names',
-           'get_existing_department_names', 'get_existing_party_names', 'get_existing_permission_names',
-           'party', 'party_entity_address', 'party_relationship', 'permission']
+__all__ = ['account', 'account_identifier', 'address', 'associate', 'building', 'department', 'generate_identification_for_scheme', 'generate_random_account', 'generate_random_account_identifier', 'generate_random_address', 'generate_random_associate', 'generate_random_building', 'generate_random_department', 'generate_random_party', 'generate_random_party_entity_address', 'generate_random_party_relationship', 'generate_random_permission', 'get_existing_building_names', 'get_existing_department_names', 'get_existing_party_names', 'get_existing_permission_names', 'party', 'party_entity_address', 'party_relationship', 'permission']
 
 from . import (account, account_identifier, address, associate, building,
                department, party, party_entity_address, party_relationship,
                permission)
-from .account import AccountStatus, generate_random_account
+from .account import generate_random_account
 from .account_identifier import (generate_identification_for_scheme,
                                  generate_random_account_identifier)
 from .address import generate_random_address

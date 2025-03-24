@@ -9,11 +9,33 @@ Table "enterprise"."permissions" {
   note: "Defines all possible permission types that can be granted in the system"
 }
 
+Enum "enterprise"."identifier_scheme" {
+  IBAN [note: 'International Bank Account Number - standard international account identifier used in cross-border transactions']
+  BIC [note: 'Bank Identifier Code (also known as SWIFT code) - identifies banks in international transactions']
+  ACCOUNT_NUMBER [note: 'Standard bank account number used within a specific institution']
+  ROUTING_NUMBER [note: 'ABA routing number used in US banking system']
+  SORT_CODE [note: 'Bank sort code used in UK and Ireland banking systems']
+  CREDIT_CARD [note: 'Credit card number']
+  CLABE [note: 'Banking standardization code used in Mexico']
+  BSB [note: 'Bank-State-Branch number used in Australia and South Pacific']
+  IFSC [note: 'Indian Financial System Code used in India']
+  CNAPS [note: 'China National Advanced Payment System code']
+  LEI [note: 'Legal Entity Identifier - global standard for identifying financial entities']
+  TAX_ID [note: 'Tax identification number']
+  CIF [note: 'Customer Information File number - internal bank identifier']
+  DDA [note: 'Demand Deposit Account number']
+  PROPRIETARY [note: 'Custom identification scheme specific to an institution']
+  PASSPORT [note: 'Passport number for identity verification']
+  DRIVERS_LICENSE [note: 'Driver\'s license number for identity verification']
+  NATIONAL_ID [note: 'National identification number']
+  OTHER [note: 'Other identification scheme not covered by standard categories']
+}
+
 Table "enterprise"."account_identifiers" {
   "enterprise_account_identifier_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each account identifier entry"]
   "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the main account"]
   "identification" VARCHAR(256) [not null, note: "The actual identifier value"]
-  "scheme_name" VARCHAR(50) [not null, note: "Naming scheme for the identifier (e.g., IBAN, BIC)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Naming scheme for the identifier"]
   "name" VARCHAR(350) [note: "Optional display name for this identifier"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier (if applicable)"]
   "secondary_identification" VARCHAR(34) [note: "Additional identification value (if applicable)"]
@@ -67,10 +89,24 @@ Enum "enterprise"."marital_status" {
   NOT_SPECIFIED [note: 'Marital status not provided or specified']
 }
 
+Enum "enterprise"."party_type" {
+  INDIVIDUAL [note: 'A natural person']
+  ORGANIZATION [note: 'A business entity, group, or institution']
+}
+
+Enum "enterprise"."party_status" {
+  ACTIVE [note: 'Party is currently active and in good standing']
+  INACTIVE [note: 'Party is temporarily inactive']
+  PENDING [note: 'Party is in process of being established']
+  SUSPENDED [note: 'Party has been suspended due to compliance or other issues']
+  DECEASED [note: 'Individual party is deceased']
+  DISSOLVED [note: 'Organization has been legally dissolved']
+}
+
 Table "enterprise"."parties" {
   "enterprise_party_id" SERIAL [pk, increment, note: "Unique identifier for each party"]
   "party_number" VARCHAR(35) [note: "Alternative reference number for the party"]
-  "party_type" VARCHAR(20) [not null, note: "Type of party (e.g., individual, organization)"]
+  "party_type" enterprise.party_type [not null, note: "Type of party (individual or organization)"]
   "name" VARCHAR(350) [not null, note: "Name of the party"]
   "full_business_legal_name" VARCHAR(350) [note: "Complete legal name for business entities"]
   "legal_structure" enterprise.legal_structure [note: "Legal structure of the organization"]
@@ -83,58 +119,69 @@ Table "enterprise"."parties" {
   "ssn" VARCHAR(11) [note: "Social Security Number (for US individuals)"]
   "marital_status" enterprise.marital_status [note: "Marital status (for individuals)"]
   "citizenship_status" enterprise.citizenship_status [note: "Citizenship or residency status (for individuals)"]
+  "party_status" enterprise.party_status [not null, default: "ACTIVE", note: "Current status of the party"]
 
   note: "Stores information about individuals and organizations that interact with accounts, now with additional common personal attributes for individuals"
+}
+
+Enum "enterprise"."party_relationship_type" {
+  POWER_OF_ATTORNEY [note: 'One party is legally authorized to act on behalf of the other party']
+  GUARDIAN [note: 'One party is legally responsible for the care of the other party']
+  TRUSTEE [note: 'One party manages assets or property for the benefit of the other party']
+  BENEFICIARY [note: 'One party is designated to receive benefits or assets from the other party']
+  EXECUTOR [note: 'One party is appointed to administer the estate of the deceased other party']
+  CUSTODIAN [note: 'One party has custody of assets for a minor or incapacitated other party']
+  AUTHORIZED_USER [note: 'One party is authorized to use accounts owned by the other party']
+  BUSINESS_PARTNER [note: 'Parties have a formal business partnership relationship']
+  SPOUSE [note: 'Parties are legally married']
+  DEPENDENT [note: 'One party is financially dependent on the other party']
+  CO_SIGNER [note: 'One party has co-signed a loan or financial obligation with the other party']
+  EMPLOYER_EMPLOYEE [note: 'One party employs the other party']
+  AGENT [note: 'One party acts as an agent or representative for the other party']
+  PARENT_CHILD [note: 'One party is the parent of the other party']
+  SIBLING [note: 'Parties are siblings']
+  CORPORATE_OFFICER [note: 'One party is an officer of the corporate other party']
+  MEMBER [note: 'One party is a member of the organization other party']
+  OWNER [note: 'One party owns or has controlling interest in the other party']
+  OTHER [note: 'Relationship type not covered by other categories']
 }
 
 Table "enterprise"."party_relationships" {
   "enterprise_party_relationship_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each relationship record"]
   "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the to the party being represented or acted upon"]
-  "related_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party taking the role e.g. power of attorney, guardin, etc."]
-  "relationship_type" VARCHAR(50) [note: "Describes the role of the related party relative to the enterprise party, e.g. related party is the 'guardian' of enterprise party'"]
+  "related_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party taking the role e.g. power of attorney, guardian, etc."]
+  "relationship_type" enterprise.party_relationship_type [note: "Describes the role of the related party relative to the enterprise party"]
   "priority" INT [note: "Order of precedence for the relationship type (lower number = higher priority)"]
 
   note: "Defines the role of related party acts to the the enterprise party, such as power of attorney, beneficiary designations, etc."
 }
 
+Enum "enterprise"."address_relationship_type" {
+  RESIDENTIAL [note: 'Primary living address for an individual']
+  MAILING [note: 'Address used for receiving mail and correspondence']
+  BUSINESS [note: 'Primary business or work location']
+  BRANCH [note: 'Secondary business location or branch office']
+  BILLING [note: 'Address used for billing purposes']
+  SHIPPING [note: 'Address used for shipping or delivery']
+  LEGAL [note: 'Official legal address for documentation or registration']
+  SEASONAL [note: 'Temporary or seasonal residence']
+  VACATION [note: 'Vacation or second home']
+  PREVIOUS [note: 'Former address no longer in use']
+  OTHER [note: 'Address relationship that does not fit standard categories']
+}
+
 Table "enterprise"."party_entity_addresses" {
   "enterprise_party_entity_address_id" SERIAL [pk, increment, note: "Unique identifier for party-entity address association"]
   "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "Reference to the party"]
-  "enterprise_entity_address_id" INTEGER [not null, ref: > enterprise.entity_addresses.enterprise_entity_address_id, note: "Reference to the entity address"]
-  "relationship_type" VARCHAR(50) [note: "Type of relationship (e.g., work location, meeting venue, service location)"]
-
-  Indexes {
-    (enterprise_party_id, enterprise_entity_address_id) [unique, note: "Ensures unique party-entity address associations"]
-  }
+  "enterprise_address_id" INTEGER [not null, ref: > enterprise.addresses.enterprise_address_id, note: "Reference to the entity address"]
+  "relationship_type" enterprise.address_relationship_type [note: "Type of relationship between the party and the address"]
 
   note: "Links parties to entity addresses with a defined relationship"
 }
 
-// Table "enterprise"."party_addresses" {
-//   "enterprise_party_address_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each address record"]
-//   "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "References the party this address belongs to"]
-//   "address_type" VARCHAR(5) [not null, note: "Type of address (e.g., home, business, mailing)"]
-//   "address_line" VARCHAR(70) [not null, note: "Main address line"]
-//   "building_number" VARCHAR(16) [note: "Building or house number"]
-//   "building_name" VARCHAR(140) [note: "Name of building if applicable"]
-//   "floor" VARCHAR(70) [note: "Floor number or description"]
-//   "unit_number" VARCHAR(16) [note: "Apartment or unit number"]
-//   "room" VARCHAR(70) [note: "Room identifier if applicable"]
-//   "post_box" VARCHAR(16) [note: "Post office box number"]
-//   "town_location_name" VARCHAR(140) [note: "Name of area within town"]
-//   "district_name" VARCHAR(140) [note: "District or county"]
-//   "care_of" VARCHAR(140) [note: "Person to whose attention mail should be sent"]
-//   "post_code" VARCHAR(16) [note: "Postal or zip code"]
-//   "town_name" VARCHAR(140) [note: "City or town name"]
-//   "country_sub_division" VARCHAR(35) [note: "State, province, or region"]
-//   "country" VARCHAR(2) [note: "Two-letter country code"]
-
-//   note: "Stores address information for parties with detailed address components"
-// }
-
 Table "enterprise"."addresses" {
   "enterprise_address_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each address record"]
-  "address_type" VARCHAR(5) [note: "Type of address (e.g., home, work, mailing)"]
+  "address_type" enterprise.address_type [note: "Type of address (e.g., home, work, mailing)"]
   "department" VARCHAR(70) [note: "Department name for organizational addresses"]
   "sub_department" VARCHAR(70) [note: "Sub-department name for organizational addresses"]
   "street_name" VARCHAR(140) [note: "Street name component of the address"]
@@ -155,30 +202,12 @@ Table "enterprise"."addresses" {
   note: "Central repository for address information used across the system"
 }
 
-Table "enterprise"."address_lines" {
-  "enterprise_address_line_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each address line"]
-  "enterprise_address_id" INTEGER [not null, ref: > enterprise.addresses.enterprise_address_id, note: "References the parent address record"]
-  "line_number" INTEGER [not null, note: "Sequential number indicating the order of address lines"]
-  "address_line" VARCHAR(70) [not null, note: "Text content of the address line"]
-
-  Indexes {
-    (enterprise_address_id, line_number) [unique, note: "Ensures unique combination of address ID and line number"]
-  }
-
-  note: "Stores multiple address lines for addresses that require them"
-}
-
-Table "enterprise"."entity_addresses" {
-  "enterprise_entity_address_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each entity-address association"]
-  "enterprise_address_id" INTEGER [not null, ref: > enterprise.addresses.enterprise_address_id, note: "References the address record"]
-  "entity_type" VARCHAR(50) [not null, note: "Type of entity (e.g., customer, borrower, business)"]
-  "entity_id" VARCHAR(255) [not null, note: "Identifier of the entity this address belongs to"]
-
-  Indexes {
-    (entity_type, entity_id, enterprise_address_id) [unique, note: "Ensures unique combination of entity type, entity ID, and address ID"]
-  }
-
-  note: "Junction table linking addresses to various entities across the system"
+Enum "enterprise"."address_type" {
+  "HOME" [note: "Residential address"]
+  "WORK" [note: "Business or workplace address"]
+  "MAIL" [note: "Mailing address"]
+  "BILL" [note: "Billing address"]
+  "SHIP" [note: "Shipping address"]
 }
 
 Enum "enterprise"."account_status" {
@@ -259,15 +288,26 @@ Table "enterprise"."departments" {
   note: 'Stores information about the various departments within the enterprise.'
 }
 
+Enum "enterprise"."building_type" {
+  BRANCH [note: 'Customer-facing banking location providing direct services to clients']
+  HEADQUARTERS [note: 'Main administrative building housing executive offices and central operations']
+  OPERATIONS_CENTER [note: 'Facility focused on back-office banking operations and processing']
+  DATA_CENTER [note: 'Specialized facility housing IT infrastructure and computing resources']
+  ADMINISTRATIVE [note: 'Office building for administrative staff and support functions']
+  WAREHOUSE [note: 'Storage facility for equipment, supplies, and records']
+  TRAINING_CENTER [note: 'Facility dedicated to employee training and development']
+  DISASTER_RECOVERY [note: 'Backup facility for business continuity during emergencies']
+  CALL_CENTER [note: 'Facility handling customer service calls and inquiries']
+  ATM_LOCATION [note: 'Standalone ATM facility without full branch services']
+  OTHER [note: 'Building type not covered by other categories']
+}
+
 Table "enterprise"."buildings" {
   "enterprise_building_id" SERIAL [pk, increment, note: 'Unique identifier for each building.']
+  "enterprise_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: 'Address of the building']
   "building_name" VARCHAR(255) [note: 'Name of the building.']
-  "street_address" VARCHAR(255) [note: 'Street address of the building.']
-  "city" VARCHAR(255) [note: 'City where the building is located.']
-  "state" VARCHAR(2) [note: 'State where the building is located.']
-  "post_code" VARCHAR(10) [note: 'Postal code of the building.']
-  "building_type" VARCHAR(50) [note: 'Type of building (e.g., Branch, Headquarters, Warehouse).']
-  "phone_number" VARCHAR(20) [note: 'Phone number of the building.']
+  "building_type" enterprise.building_type [not null, note: 'Type of building classified by primary function.']
+  "phone_number" VARCHAR(30) [note: 'Phone number of the building.']
   "open_date" DATE [note: 'Date the building was opened.']
   "close_date" DATE [note: 'Date the building was closed, if applicable.']
 
@@ -298,8 +338,6 @@ TableGroup "Enterprise Infra" [color: #1E69FD] {
 
 TableGroup "Addresses" [color: #1E69FD] {
   "enterprise"."addresses"
-  "enterprise"."address_lines"
-  "enterprise"."entity_addresses"
 
   note: "Central address management structure used across all domains"
 }
@@ -870,15 +908,35 @@ TableGroup "Transactions" [color: #2D6512] {
 // MORTGAGE SERVICES
 //
 
+// Create enum types for borrower_type
+Enum "mortgage_services"."borrower_type" {
+  PRIMARY [note: 'Main applicant responsible for the loan']
+  CO_BORROWER [note: 'Additional applicant with equal responsibility']
+  GUARANTOR [note: 'Person who guarantees the loan but does not have ownership']
+  COSIGNER [note: 'Additional person who shares liability for the loan']
+}
+
+// Create enum types for relationship_type
+Enum "mortgage_services"."relationship_type" {
+  SPOUSE [note: 'Married partner of the primary borrower']
+  PARENT [note: 'Parent of the primary borrower']
+  CHILD [note: 'Child of the primary borrower']
+  SIBLING [note: 'Brother or sister of the primary borrower']
+  FRIEND [note: 'Non-related personal acquaintance']
+  BUSINESS_PARTNER [note: 'Professional business relationship']
+  OTHER [note: 'Relationship not covered by other categories']
+}
+
+// Modified application_borrowers table
 Table "mortgage_services"."application_borrowers" {
   "mortgage_services_application_borrower_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each application-borrower relationship"]
   "mortgage_services_application_id" INTEGER [pk, not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application"]
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower associated with this application"]
-  "borrower_type" VARCHAR(20) [not null, note: "Role of this borrower (e.g., Primary, Co-Borrower)"]
-  "relationship_to_primary" VARCHAR(50) [note: "Relationship of co-borrower to primary borrower"]
+  "borrower_type" mortgage_services.borrower_type [not null, note: "Role of this borrower (Primary, Co-Borrower, etc.)"]
+  "relationship_to_primary" mortgage_services.relationship_type [note: "Relationship of co-borrower to primary borrower"]
   "contribution_percentage" NUMERIC(5,2) [note: "Percentage of financial contribution to the loan"]
 
-  note: "Junction table linking mortgage applications to borrowers, supporting multiple borrowers per application"
+  note: "Junction table linking mortgage applications to borrowers, supporting multiple borrowers per application and tracking their roles and relationships"
 }
 
 Table "mortgage_services"."borrowers" {
@@ -900,42 +958,115 @@ Table "mortgage_services"."borrower_employments" {
   "position" VARCHAR(100) [not null, note: "Job title or position"]
   "enterprise_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the employer's address"]
   "phone" VARCHAR(30) [note: "Employer's phone number"]
-  "employment_type" VARCHAR(30) [not null, note: "Type of employment arrangement"]
+  "employment_type" "mortgage_services"."employment_type" [not null, note: "Type of employment arrangement"]
   "start_date" DATE [not null, note: "When employment began"]
   "end_date" DATE [note: "When employment ended, if applicable"]
   "is_current" BOOLEAN [not null, note: "Indicates if this is the borrower's current job"]
   "years_in_profession" INTEGER [note: "Total years in this profession, even at different employers"]
   "monthly_income" NUMERIC(18,2) [not null, note: "Gross monthly income from this employment"]
-  "verification_status" VARCHAR(20) [not null, note: "Status of income verification process"]
+  "verification_status" "mortgage_services"."verification_status" [not null, note: "Status of income verification process"]
   "verification_date" DATE [note: "When the income was verified"]
 
   note: "Tracks employment history and income sources for mortgage borrowers"
 }
 
+Enum "mortgage_services"."employment_type" {
+  "FULL_TIME"
+  "PART_TIME"
+  "SELF_EMPLOYED"
+  "CONTRACTOR"
+  "SEASONAL"
+  "COMMISSION"
+  "RETIRED"
+  "UNEMPLOYED"
+  "MILITARY"
+  "OTHER"
+}
+
+Enum "mortgage_services"."verification_status" {
+  "VERIFIED"
+  "PENDING"
+  "UNVERIFIED"
+  "FAILED"
+  "WAIVED"
+}
+
 Table "mortgage_services"."borrower_incomes" {
   "mortgage_services_income_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each income record"]
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower this income belongs to"]
-  "income_type" VARCHAR(50) [not null, note: "Source or type of income"]
+  "income_type" "mortgage_services"."income_type" [not null, note: "Source or type of income"]
   "amount" NUMERIC(18,2) [not null, note: "Income amount"]
-  "frequency" VARCHAR(20) [not null, note: "How often income is received"]
-  "verification_status" VARCHAR(20) [not null, note: "Status of income verification process"]
+  "frequency" "mortgage_services"."income_frequency" [not null, note: "How often income is received"]
+  "verification_status" "mortgage_services"."verification_status" [not null, note: "Status of income verification process"]
   "verification_date" DATE [note: "When the income was verified"]
 
   note: "Tracks various income sources for mortgage borrowers beyond employment"
 }
 
+Enum "mortgage_services"."income_type" {
+  "SALARY"
+  "BONUS"
+  "COMMISSION"
+  "OVERTIME"
+  "SELF_EMPLOYMENT"
+  "RENTAL"
+  "INVESTMENT"
+  "RETIREMENT"
+  "PENSION"
+  "SOCIAL_SECURITY"
+  "DISABILITY"
+  "ALIMONY"
+  "CHILD_SUPPORT"
+  "TRUST"
+  "GOVERNMENT_ASSISTANCE"
+  "ROYALTIES"
+  "OTHER"
+}
+
+Enum "mortgage_services"."income_frequency" {
+  "WEEKLY"
+  "BI_WEEKLY"
+  "SEMI_MONTHLY"
+  "MONTHLY"
+  "QUARTERLY"
+  "SEMI_ANNUALLY"
+  "ANNUALLY"
+  "IRREGULAR"
+}
+
 Table "mortgage_services"."borrower_assets" {
   "mortgage_services_asset_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each asset record"]
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower this asset belongs to"]
-  "asset_type" VARCHAR(50) [not null, note: "Type of asset (e.g., bank account, property)"]
+  "asset_type" "mortgage_services"."asset_type" [not null, note: "Type of asset (e.g., bank account, property)"]
   "institution_name" VARCHAR(100) [note: "Financial institution holding the asset"]
   "account_number" VARCHAR(50) [note: "Account number for financial assets"]
   "current_value" NUMERIC(18,2) [not null, note: "Current estimated value of the asset"]
-  "verification_status" VARCHAR(20) [not null, note: "Status of asset verification process"]
+  "verification_status" "mortgage_services"."verification_status" [not null, note: "Status of asset verification process"]
   "verification_date" DATE [note: "When the asset was verified"]
   "property_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the address if asset is a property"]
 
   note: "Tracks assets owned by borrowers that may be relevant to mortgage qualification"
+}
+
+Enum "mortgage_services"."asset_type" {
+  "CHECKING_ACCOUNT"
+  "SAVINGS_ACCOUNT"
+  "MONEY_MARKET"
+  "CERTIFICATE_OF_DEPOSIT"
+  "BROKERAGE_ACCOUNT"
+  "RETIREMENT_ACCOUNT"
+  "INVESTMENT_PROPERTY"
+  "PRIMARY_RESIDENCE"
+  "SECONDARY_RESIDENCE"
+  "MUTUAL_FUND"
+  "STOCK_EQUITY"
+  "BONDS"
+  "LIFE_INSURANCE"
+  "VEHICLE"
+  "BUSINESS_EQUITY"
+  "TRUST_ACCOUNT"
+  "CRYPTOCURRENCY"
+  "OTHER"
 }
 
 Table "mortgage_services"."borrower_liabilities" {
@@ -957,12 +1088,38 @@ Table "mortgage_services"."borrower_liabilities" {
   note: "Tracks debts and financial obligations of mortgage borrowers"
 }
 
+// Create new enums for mortgage_services.properties
+
+Enum "mortgage_services"."property_type" {
+  SINGLE_FAMILY [note: 'Single family detached home']
+  CONDO [note: 'Condominium unit']
+  TOWNHOUSE [note: 'Townhouse or row house']
+  MULTI_FAMILY [note: 'Multi-family dwelling (2-4 units)']
+  APARTMENT_BUILDING [note: 'Apartment building (5+ units)']
+  MANUFACTURED_HOME [note: 'Manufactured or mobile home']
+  COOPERATIVE [note: 'Housing cooperative unit']
+  PUD [note: 'Planned Unit Development']
+  VACANT_LAND [note: 'Undeveloped land parcel']
+  COMMERCIAL [note: 'Commercial property']
+  MIXED_USE [note: 'Property with both residential and commercial components']
+  FARM [note: 'Agricultural property']
+  OTHER [note: 'Property type not covered by standard categories']
+}
+
+Enum "mortgage_services"."occupancy_type" {
+  PRIMARY_RESIDENCE [note: 'Property will be used as the borrower\'s primary residence']
+  SECONDARY_RESIDENCE [note: 'Property will be used as a vacation or second home']
+  INVESTMENT [note: 'Property will be used as an investment (e.g., rental)']
+  NOT_APPLICABLE [note: 'Occupancy type not applicable or unspecified']
+}
+
+// Update the properties table definition to use the new enums
 Table "mortgage_services"."properties" {
   "mortgage_services_property_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each property record"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application this property is associated with"]
   "address" VARCHAR(500) [not null, note: "References the complete property address"]
-  "property_type" VARCHAR(50) [not null, note: "Type of property (e.g., Single Family, Condo)"]
-  "occupancy_type" VARCHAR(30) [not null, note: "How the property will be used by the borrower"]
+  "property_type" mortgage_services.property_type [not null, note: "Type of property"]
+  "occupancy_type" mortgage_services.occupancy_type [not null, note: "How the property will be used by the borrower"]
   "year_built" INTEGER [note: "Year the property was constructed"]
   "bedrooms" INTEGER [note: "Number of bedrooms"]
   "bathrooms" NUMERIC(3,1) [note: "Number of bathrooms (allows for half baths)"]

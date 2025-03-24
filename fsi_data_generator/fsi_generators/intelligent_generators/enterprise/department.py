@@ -15,7 +15,7 @@ fake = Faker()  # Initialize Faker
 
 def generate_random_department(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
-    Generate a random enterprise.departments record with reasonable values.
+    Generate a random "enterprise.departments" record with reasonable values.
 
     Args:
         _id_fields: Dictionary containing the required ID fields (enterprise_department_id)

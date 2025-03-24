@@ -1,8 +1,8 @@
 from faker import Faker
 
-from fsi_data_generator.fsi_generators.helpers import (
-    apply_schema_to_regex, generate_unique_composite_key, random_record)
-from fsi_data_generator.fsi_generators.intelligent_generators.security import (
+from .helpers import (apply_schema_to_regex, generate_unique_composite_key,
+                      random_record)
+from .intelligent_generators.security import (
     generate_random_account, generate_random_device,
     generate_random_enhanced_entitlement, generate_random_entitlement_resource,
     generate_random_file, generate_random_file_access,

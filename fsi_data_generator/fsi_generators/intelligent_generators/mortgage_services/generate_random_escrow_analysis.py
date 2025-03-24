@@ -25,7 +25,7 @@ def generate_random_escrow_analysis(id_fields: Dict[str, Any], dg) -> Dict[str, 
     """
     # Get servicing account information to make escrow analysis data reasonable
     conn = dg.conn
-    servicing_account_info = get_servicing_account_info(id_fields["mortgage_services_servicing_account_id"], conn)
+    servicing_account_info = _get_servicing_account_info(id_fields["mortgage_services_servicing_account_id"], conn)
 
     if not servicing_account_info:
         # Use default values if no servicing account info is found
@@ -90,16 +90,16 @@ def generate_random_escrow_analysis(id_fields: Dict[str, Any], dg) -> Dict[str, 
             previous_monthly_escrow = Decimal(str(previous_analysis["new_monthly_escrow"]))
         else:
             # Estimate based on typical escrow portion of payment
-            previous_monthly_escrow = estimate_monthly_escrow(servicing_account_info)
+            previous_monthly_escrow = _estimate_monthly_escrow(servicing_account_info)
     else:
         # Estimate based on typical escrow portion of payment
-        previous_monthly_escrow = estimate_monthly_escrow(servicing_account_info)
+        previous_monthly_escrow = _estimate_monthly_escrow(servicing_account_info)
 
     # Calculate new monthly escrow amount based on projections and any shortage/surplus
     # First, estimate annual escrow expenses
-    annual_property_tax = estimate_annual_property_tax(servicing_account_info)
+    annual_property_tax = _estimate_annual_property_tax(servicing_account_info)
     annual_homeowners_insurance = estimate_annual_homeowners_insurance(servicing_account_info)
-    other_annual_expenses = estimate_other_escrow_expenses(servicing_account_info)
+    other_annual_expenses = _estimate_other_escrow_expenses(servicing_account_info)
 
     total_annual_expenses = annual_property_tax + annual_homeowners_insurance + other_annual_expenses
 
@@ -179,7 +179,7 @@ def generate_random_escrow_analysis(id_fields: Dict[str, Any], dg) -> Dict[str, 
     return escrow_analysis
 
 
-def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict[str, Any]]:
+def _get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict[str, Any]]:
     """
     Get servicing account information to make escrow analysis data reasonable.
 
@@ -281,7 +281,7 @@ def get_previous_escrow_analyses(servicing_account_id: int, conn) -> list:
         return []
 
 
-def estimate_monthly_escrow(servicing_account_info: Dict[str, Any]) -> Decimal:
+def _estimate_monthly_escrow(servicing_account_info: Dict[str, Any]) -> Decimal:
     """
     Estimate monthly escrow payment based on payment amount.
 
@@ -306,7 +306,7 @@ def estimate_monthly_escrow(servicing_account_info: Dict[str, Any]) -> Decimal:
         return annual_escrow / Decimal('12')
 
 
-def estimate_annual_property_tax(servicing_account_info: Dict[str, Any]) -> Decimal:
+def _estimate_annual_property_tax(servicing_account_info: Dict[str, Any]) -> Decimal:
     """
     Estimate annual property tax based on loan amount.
 
@@ -352,7 +352,7 @@ def estimate_annual_homeowners_insurance(servicing_account_info: Dict[str, Any])
     return annual_insurance.quantize(Decimal('0.01'))
 
 
-def estimate_other_escrow_expenses(servicing_account_info: Dict[str, Any]) -> Decimal:
+def _estimate_other_escrow_expenses(servicing_account_info: Dict[str, Any]) -> Decimal:
     """
     Estimate other annual escrow expenses (HOA, PMI, etc.)
 

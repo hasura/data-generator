@@ -6,16 +6,14 @@ from data_generator import DataGenerator, SkipRowGenerationError
 
 from .helpers.apply_schema_to_regex import apply_schema_to_regex
 from .helpers.random_record import random_record
+from .intelligent_generators.mortgage_services.application_borrower import generate_random_application_borrower
 from .intelligent_generators.mortgage_services.borrower import \
     generate_random_borrower
-from .intelligent_generators.mortgage_services.borrower_record import \
-    generate_application_borrower_record
+from .intelligent_generators.mortgage_services.borrower_income import generate_random_borrower_income
 from .intelligent_generators.mortgage_services.employment import \
     generate_random_borrower_employment
-from .intelligent_generators.mortgage_services.generate_borrower_asset_record import \
+from .intelligent_generators.mortgage_services.asset_record import \
     generate_borrower_asset
-from .intelligent_generators.mortgage_services.generate_borrower_income import \
-    generate_borrower_income
 from .intelligent_generators.mortgage_services.generate_random_application import \
     generate_random_application
 from .intelligent_generators.mortgage_services.generate_random_appraisal import \
@@ -60,46 +58,12 @@ from .intelligent_generators.mortgage_services.generate_random_mortgage import \
     generate_random_mortgage
 from .intelligent_generators.mortgage_services.generate_random_payment import \
     generate_random_payment
-from .intelligent_generators.mortgage_services.generate_random_property import \
+from .intelligent_generators.mortgage_services.property import \
     generate_random_property
 from .intelligent_generators.mortgage_services.generate_random_servicing_account import \
     generate_random_servicing_account
 
 fake = Faker()
-
-
-def generate_property(ids_dict, dg: DataGenerator):
-    conn = dg.conn
-
-    # Randomly choose an application ID
-    application_id = ids_dict.get('mortgage_services_application_id')
-
-    # SQL query to get the application details via the application_id
-    query = """
-            SELECT app.*
-            FROM mortgage_services.applications AS app
-            WHERE app.mortgage_services_application_id = %s
-            """
-
-    # Execute the query
-    with conn.cursor() as cursor:
-        cursor.execute(query, (application_id,))  # Parameterized query
-        record = cursor.fetchone()  # Fetch the resulting record
-
-    # If a record is found, convert it to a dictionary
-    if record:
-        record_dict = {desc[0]: value for desc, value in zip(cursor.description, record)}
-
-        # Convert DECIMAL to float in the dictionary
-        for key, value in record_dict.items():
-            if isinstance(value, Decimal):
-                record_dict[key] = float(value)
-    else:
-        raise ValueError(f"No loan application found for application_id: {application_id}")
-
-    property_ = generate_random_property(record_dict)
-
-    return property_
 
 
 def generate_mortgage(ids_dict, dg: DataGenerator):
@@ -224,13 +188,13 @@ def mortgage_services(dg):
         ('appraisals', random_record(dg, generate_random_appraisal)),
         ('loan_rate_locks', random_record(dg, generate_random_loan_rate_lock)),
         ('borrower_liabilities', random_record(dg, generate_random_borrower_liability)),
-        ('application_borrowers', random_record(dg, generate_application_borrower_record)),
+        ('application_borrowers', random_record(dg, generate_random_application_borrower)),
         ('borrower_employments', random_record(dg, generate_random_borrower_employment)),
-        ('borrower_incomes', random_record(dg, generate_borrower_income)),
+        ('borrower_incomes', random_record(dg, generate_random_borrower_income)),
         ('borrower_assets', random_record(dg, generate_borrower_asset)),
         ('loan_products', random_record(dg, generate_random_loan_product)),
         ('applications', random_record(dg, generate_application)),
-        ('properties', random_record(dg, generate_property)),
+        ('properties', random_record(dg, generate_random_property)),
         ('loans', random_record(dg, generate_mortgage)),
         ('hmda_records', random_record(dg, generate_random_hmda_record)),
         ('hmda_edits', random_record(dg, generate_random_hmda_edit)),

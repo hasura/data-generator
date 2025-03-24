@@ -197,12 +197,13 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
                         # Get additional income from borrower_incomes table with proper frequency conversion
                         cursor.execute("""
                             SELECT COALESCE(SUM(CASE
-                                WHEN bi.frequency = 'monthly' THEN bi.amount * 12
-                                WHEN bi.frequency = 'annually' THEN bi.amount
-                                WHEN bi.frequency = 'weekly' THEN bi.amount * 52
-                                WHEN bi.frequency = 'bi-weekly' THEN bi.amount * 26
-                                WHEN bi.frequency = 'semi-monthly' THEN bi.amount * 24
-                                WHEN bi.frequency = 'one-time' THEN bi.amount
+                                WHEN bi.frequency = 'MONTHLY' THEN bi.amount * 12
+                                WHEN bi.frequency = 'ANNUALLY' THEN bi.amount
+                                WHEN bi.frequency = 'SEMI_ANNUALLY' THEN bi.amount * 2
+                                WHEN bi.frequency = 'QUARTERLY' THEN bi.amount * 4
+                                WHEN bi.frequency = 'WEEKLY' THEN bi.amount * 52
+                                WHEN bi.frequency = 'BI_WEEKLY' THEN bi.amount * 26
+                                WHEN bi.frequency = 'SEMI_MONTHLY' THEN bi.amount * 24
                                 ELSE bi.amount  -- Default case
                             END), 0)
                             FROM mortgage_services.application_borrowers ab
