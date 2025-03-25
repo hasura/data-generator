@@ -6,15 +6,15 @@ definition:
   description: Table storing information about installed applications on servers,
     tracking software installations.
   fields:
+    - name: appMgmtApplicationId
+      type: Uuid!
+      description: Reference to the application definition.
     - name: applicationVersion
       type: Varchar
       description: Version of the installed application.
     - name: installationDate
       type: Timestamp
       description: Timestamp when the application was installed.
-    - name: installedApplicationName
-      type: Varchar!
-      description: Name of the installed application.
     - name: securityHostId
       type: Uuid!
       description: Identifier of the system where the application is installed.
@@ -25,15 +25,15 @@ definition:
     - dataConnectorName: security
       dataConnectorObjectType: security_installed_applications
       fieldMapping:
+        appMgmtApplicationId:
+          column:
+            name: app_mgmt_application_id
         applicationVersion:
           column:
             name: application_version
         installationDate:
           column:
             name: installation_date
-        installedApplicationName:
-          column:
-            name: installed_application_name
         securityHostId:
           column:
             name: security_host_id
@@ -47,9 +47,9 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - appMgmtApplicationId
           - applicationVersion
           - installationDate
-          - installedApplicationName
           - securityHostId
 
 ---
@@ -61,12 +61,12 @@ definition:
     object:
       type: SecurityInstalledApplications
       comparableFields:
+        - fieldName: appMgmtApplicationId
+          booleanExpressionType: UuidBoolExp
         - fieldName: applicationVersion
           booleanExpressionType: VarcharBoolExp
         - fieldName: installationDate
           booleanExpressionType: TimestampBoolExp
-        - fieldName: installedApplicationName
-          booleanExpressionType: VarcharBoolExp
         - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
       comparableRelationships:
@@ -87,12 +87,12 @@ definition:
     object:
       aggregatedType: SecurityInstalledApplications
       aggregatableFields:
+        - fieldName: appMgmtApplicationId
+          aggregateExpression: UuidAggExp
         - fieldName: applicationVersion
           aggregateExpression: VarcharAggExp
         - fieldName: installationDate
           aggregateExpression: TimestampAggExp
-        - fieldName: installedApplicationName
-          aggregateExpression: VarcharAggExp
         - fieldName: securityHostId
           aggregateExpression: UuidAggExp
   count:
@@ -109,12 +109,12 @@ definition:
     object:
       orderedType: SecurityInstalledApplications
       orderableFields:
+        - fieldName: appMgmtApplicationId
+          orderByExpression: UuidOrderByExp
         - fieldName: applicationVersion
           orderByExpression: VarcharOrderByExp
         - fieldName: installationDate
           orderByExpression: TimestampOrderByExp
-        - fieldName: installedApplicationName
-          orderByExpression: VarcharOrderByExp
         - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
       orderableRelationships:
@@ -142,7 +142,7 @@ definition:
     selectUniques:
       - queryRootField: securityInstalledApplicationsByInstalledApplicationsPkey
         uniqueIdentifier:
-          - installedApplicationName
+          - appMgmtApplicationId
           - securityHostId
         subscription:
           rootField: securityInstalledApplicationsByInstalledApplicationsPkey

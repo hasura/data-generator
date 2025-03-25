@@ -11,15 +11,21 @@ definition:
     - name: description
       type: Text
       description: Detailed description of the loan product and its features
+    - name: discontinueDate
+      type: Date
+      description: Date when product was discontinued if applicable
     - name: interestRateType
-      type: Varchar!
-      description: Whether the rate is fixed or adjustable
+      type: MortgageServicesInterestRateType!
+      description: Type of interest rate structure
     - name: isActive
       type: Bool!
       description: Whether this product is currently offered
+    - name: launchDate
+      type: Date
+      description: Date when product was launched
     - name: loanType
-      type: Varchar!
-      description: Category of loan (e.g., Conventional, FHA, VA, USDA)
+      type: MortgageServicesLoanType!
+      description: Type of loan product
     - name: maxLoanAmount
       type: Numeric
       description: Maximum principal amount for this product
@@ -28,7 +34,7 @@ definition:
       description: Maximum loan duration in months
     - name: minCreditScore
       type: Int4
-      description: Minimum credit score required for approval
+      description: Minimum credit score typically required
     - name: minDownPaymentPercentage
       type: Numeric
       description: Minimum down payment as percentage of purchase price
@@ -40,8 +46,8 @@ definition:
       description: Minimum loan duration in months
     - name: mortgageServicesLoanProductId
       type: Int4!
-      description: Auto-incrementing identifier for each loan product
-    - name: mortgageServicesLoanProductsProductCode
+      description: Unique identifier for each loan product
+    - name: productCode
       type: Varchar!
       description: Internal code identifying the loan product
     - name: productName
@@ -63,12 +69,18 @@ definition:
         description:
           column:
             name: description
+        discontinueDate:
+          column:
+            name: discontinue_date
         interestRateType:
           column:
             name: interest_rate_type
         isActive:
           column:
             name: is_active
+        launchDate:
+          column:
+            name: launch_date
         loanType:
           column:
             name: loan_type
@@ -93,9 +105,9 @@ definition:
         mortgageServicesLoanProductId:
           column:
             name: mortgage_services_loan_product_id
-        mortgageServicesLoanProductsProductCode:
+        productCode:
           column:
-            name: mortgage_services_loan_products_product_code
+            name: product_code
         productName:
           column:
             name: product_name
@@ -114,8 +126,10 @@ definition:
         allowedFields:
           - baseInterestRate
           - description
+          - discontinueDate
           - interestRateType
           - isActive
+          - launchDate
           - loanType
           - maxLoanAmount
           - maxTermMonths
@@ -124,7 +138,7 @@ definition:
           - minLoanAmount
           - minTermMonths
           - mortgageServicesLoanProductId
-          - mortgageServicesLoanProductsProductCode
+          - productCode
           - productName
           - requiresPmi
 
@@ -141,12 +155,16 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: description
           booleanExpressionType: TextBoolExp
+        - fieldName: discontinueDate
+          booleanExpressionType: DateBoolExp
         - fieldName: interestRateType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesInterestRateTypeBoolExp
         - fieldName: isActive
           booleanExpressionType: BoolBoolExp
+        - fieldName: launchDate
+          booleanExpressionType: DateBoolExp
         - fieldName: loanType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesLoanTypeBoolExp
         - fieldName: maxLoanAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: maxTermMonths
@@ -161,7 +179,7 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesLoanProductId
           booleanExpressionType: Int4BoolExp
-        - fieldName: mortgageServicesLoanProductsProductCode
+        - fieldName: productCode
           booleanExpressionType: VarcharBoolExp
         - fieldName: productName
           booleanExpressionType: VarcharBoolExp
@@ -190,12 +208,16 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: description
           aggregateExpression: TextAggExp
+        - fieldName: discontinueDate
+          aggregateExpression: DateAggExp
         - fieldName: interestRateType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesInterestRateTypeAggExp
         - fieldName: isActive
           aggregateExpression: BoolAggExp
+        - fieldName: launchDate
+          aggregateExpression: DateAggExp
         - fieldName: loanType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesLoanTypeAggExp
         - fieldName: maxLoanAmount
           aggregateExpression: NumericAggExp
         - fieldName: maxTermMonths
@@ -210,7 +232,7 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesLoanProductId
           aggregateExpression: Int4AggExp
-        - fieldName: mortgageServicesLoanProductsProductCode
+        - fieldName: productCode
           aggregateExpression: VarcharAggExp
         - fieldName: productName
           aggregateExpression: VarcharAggExp
@@ -234,12 +256,16 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: description
           orderByExpression: TextOrderByExp
+        - fieldName: discontinueDate
+          orderByExpression: DateOrderByExp
         - fieldName: interestRateType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesInterestRateTypeOrderByExp
         - fieldName: isActive
           orderByExpression: BoolOrderByExp
+        - fieldName: launchDate
+          orderByExpression: DateOrderByExp
         - fieldName: loanType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesLoanTypeOrderByExp
         - fieldName: maxLoanAmount
           orderByExpression: NumericOrderByExp
         - fieldName: maxTermMonths
@@ -254,7 +280,7 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesLoanProductId
           orderByExpression: Int4OrderByExp
-        - fieldName: mortgageServicesLoanProductsProductCode
+        - fieldName: productCode
           orderByExpression: VarcharOrderByExp
         - fieldName: productName
           orderByExpression: VarcharOrderByExp

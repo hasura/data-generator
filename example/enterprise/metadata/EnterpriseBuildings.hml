@@ -10,14 +10,14 @@ definition:
       type: Varchar
       description: Name of the building.
     - name: buildingType
-      type: Varchar
-      description: Type of building (e.g., Branch, Headquarters, Warehouse).
-    - name: city
-      type: Varchar
-      description: City where the building is located.
+      type: EnterpriseBuildingType!
+      description: Type of building classified by primary function.
     - name: closeDate
       type: Date
       description: Date the building was closed, if applicable.
+    - name: enterpriseAddressId
+      type: Int4
+      description: Address of the building
     - name: enterpriseBuildingId
       type: Int4!
       description: Unique identifier for each building.
@@ -27,15 +27,6 @@ definition:
     - name: phoneNumber
       type: Varchar
       description: Phone number of the building.
-    - name: postCode
-      type: Varchar
-      description: Postal code of the building.
-    - name: state
-      type: Varchar
-      description: State where the building is located.
-    - name: streetAddress
-      type: Varchar
-      description: Street address of the building.
   graphql:
     typeName: Enterprise_EnterpriseBuildings
     inputTypeName: Enterprise_EnterpriseBuildingsInput
@@ -49,12 +40,12 @@ definition:
         buildingType:
           column:
             name: building_type
-        city:
-          column:
-            name: city
         closeDate:
           column:
             name: close_date
+        enterpriseAddressId:
+          column:
+            name: enterprise_address_id
         enterpriseBuildingId:
           column:
             name: enterprise_building_id
@@ -64,15 +55,6 @@ definition:
         phoneNumber:
           column:
             name: phone_number
-        postCode:
-          column:
-            name: post_code
-        state:
-          column:
-            name: state
-        streetAddress:
-          column:
-            name: street_address
 
 ---
 kind: TypePermissions
@@ -85,14 +67,11 @@ definition:
         allowedFields:
           - buildingName
           - buildingType
-          - city
           - closeDate
+          - enterpriseAddressId
           - enterpriseBuildingId
           - openDate
           - phoneNumber
-          - postCode
-          - state
-          - streetAddress
 
 ---
 kind: BooleanExpressionType
@@ -106,25 +85,20 @@ definition:
         - fieldName: buildingName
           booleanExpressionType: VarcharBoolExp
         - fieldName: buildingType
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: city
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseBuildingTypeBoolExp
         - fieldName: closeDate
           booleanExpressionType: DateBoolExp
+        - fieldName: enterpriseAddressId
+          booleanExpressionType: Int4BoolExp
         - fieldName: enterpriseBuildingId
           booleanExpressionType: Int4BoolExp
         - fieldName: openDate
           booleanExpressionType: DateBoolExp
         - fieldName: phoneNumber
           booleanExpressionType: VarcharBoolExp
-        - fieldName: postCode
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: state
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: streetAddress
-          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAssociates
+        - relationshipName: enterpriseAddress
   logicalOperators:
     enable: true
   isNull:
@@ -144,22 +118,16 @@ definition:
         - fieldName: buildingName
           aggregateExpression: VarcharAggExp
         - fieldName: buildingType
-          aggregateExpression: VarcharAggExp
-        - fieldName: city
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseBuildingTypeAggExp
         - fieldName: closeDate
           aggregateExpression: DateAggExp
+        - fieldName: enterpriseAddressId
+          aggregateExpression: Int4AggExp
         - fieldName: enterpriseBuildingId
           aggregateExpression: Int4AggExp
         - fieldName: openDate
           aggregateExpression: DateAggExp
         - fieldName: phoneNumber
-          aggregateExpression: VarcharAggExp
-        - fieldName: postCode
-          aggregateExpression: VarcharAggExp
-        - fieldName: state
-          aggregateExpression: VarcharAggExp
-        - fieldName: streetAddress
           aggregateExpression: VarcharAggExp
   count:
     enable: true
@@ -178,24 +146,19 @@ definition:
         - fieldName: buildingName
           orderByExpression: VarcharOrderByExp
         - fieldName: buildingType
-          orderByExpression: VarcharOrderByExp
-        - fieldName: city
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseBuildingTypeOrderByExp
         - fieldName: closeDate
           orderByExpression: DateOrderByExp
+        - fieldName: enterpriseAddressId
+          orderByExpression: Int4OrderByExp
         - fieldName: enterpriseBuildingId
           orderByExpression: Int4OrderByExp
         - fieldName: openDate
           orderByExpression: DateOrderByExp
         - fieldName: phoneNumber
           orderByExpression: VarcharOrderByExp
-        - fieldName: postCode
-          orderByExpression: VarcharOrderByExp
-        - fieldName: state
-          orderByExpression: VarcharOrderByExp
-        - fieldName: streetAddress
-          orderByExpression: VarcharOrderByExp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: enterpriseAddress
   graphql:
     expressionTypeName: Enterprise_EnterpriseBuildingsOrderByExp
 
@@ -262,4 +225,22 @@ definition:
           - fieldName: enterpriseBuildingId
   graphql:
     aggregateFieldName: enterpriseAssociatesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseAddress
+  sourceType: EnterpriseBuildings
+  target:
+    model:
+      name: EnterpriseAddresses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseAddressId
+      target:
+        modelField:
+          - fieldName: enterpriseAddressId
 

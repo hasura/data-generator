@@ -6,7 +6,7 @@ definition:
   description: Records payment arrangements made with borrowers to resolve
     delinquent accounts.
   fields:
-    - name: approvedBy
+    - name: approvedById
       type: Int4
       description: User who approved arrangement
     - name: arrangementDate
@@ -31,11 +31,11 @@ definition:
       type: Numeric!
       description: Amount of each payment
     - name: paymentFrequency
-      type: Varchar!
-      description: Weekly, Bi-weekly, Monthly
+      type: ConsumerLendingPaymentFrequency!
+      description: Frequency of payments
     - name: status
-      type: Varchar!
-      description: Active, Completed, Broken
+      type: ConsumerLendingPaymentArrangementStatus!
+      description: Current status of payment arrangement
     - name: totalAmount
       type: Numeric!
       description: Total amount to be paid
@@ -46,9 +46,9 @@ definition:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_payment_arrangements
       fieldMapping:
-        approvedBy:
+        approvedById:
           column:
-            name: approved_by
+            name: approved_by_id
         arrangementDate:
           column:
             name: arrangement_date
@@ -89,7 +89,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - approvedBy
+          - approvedById
           - arrangementDate
           - consumerLendingArrangementId
           - consumerLendingCollectionId
@@ -110,7 +110,7 @@ definition:
     object:
       type: ConsumerLendingPaymentArrangements
       comparableFields:
-        - fieldName: approvedBy
+        - fieldName: approvedById
           booleanExpressionType: Int4BoolExp
         - fieldName: arrangementDate
           booleanExpressionType: DateBoolExp
@@ -127,9 +127,9 @@ definition:
         - fieldName: paymentAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: paymentFrequency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPaymentFrequencyBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPaymentArrangementStatusBoolExp
         - fieldName: totalAmount
           booleanExpressionType: NumericBoolExp
       comparableRelationships:
@@ -150,7 +150,7 @@ definition:
     object:
       aggregatedType: ConsumerLendingPaymentArrangements
       aggregatableFields:
-        - fieldName: approvedBy
+        - fieldName: approvedById
           aggregateExpression: Int4AggExp
         - fieldName: arrangementDate
           aggregateExpression: DateAggExp
@@ -167,9 +167,9 @@ definition:
         - fieldName: paymentAmount
           aggregateExpression: NumericAggExp
         - fieldName: paymentFrequency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPaymentFrequencyAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPaymentArrangementStatusAggExp
         - fieldName: totalAmount
           aggregateExpression: NumericAggExp
   count:
@@ -186,7 +186,7 @@ definition:
     object:
       orderedType: ConsumerLendingPaymentArrangements
       orderableFields:
-        - fieldName: approvedBy
+        - fieldName: approvedById
           orderByExpression: Int4OrderByExp
         - fieldName: arrangementDate
           orderByExpression: DateOrderByExp
@@ -203,9 +203,9 @@ definition:
         - fieldName: paymentAmount
           orderByExpression: NumericOrderByExp
         - fieldName: paymentFrequency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPaymentFrequencyOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPaymentArrangementStatusOrderByExp
         - fieldName: totalAmount
           orderByExpression: NumericOrderByExp
       orderableRelationships:

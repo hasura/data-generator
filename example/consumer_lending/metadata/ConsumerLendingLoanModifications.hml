@@ -9,7 +9,7 @@ definition:
     - name: approvalDate
       type: Date
       description: Date modification was approved
-    - name: approvedBy
+    - name: approvedById
       type: Int4
       description: User who approved modification
     - name: capitalizedAmount
@@ -31,8 +31,8 @@ definition:
       type: Int4!
       description: Reference to loan account
     - name: modificationType
-      type: Varchar!
-      description: Rate Reduction, Term Extension, etc.
+      type: ConsumerLendingLoanModificationType!
+      description: Type of loan modification
     - name: newPrincipalBalance
       type: Numeric
       description: Principal balance after modification
@@ -55,8 +55,8 @@ definition:
       type: Date!
       description: Date modification was requested
     - name: status
-      type: Varchar!
-      description: Pending, Approved, Denied, Completed
+      type: ConsumerLendingLoanModificationStatus!
+      description: Current status of the modification
   graphql:
     typeName: ConsumerLending_ConsumerLendingLoanModifications
     inputTypeName: ConsumerLending_ConsumerLendingLoanModificationsInput
@@ -67,9 +67,9 @@ definition:
         approvalDate:
           column:
             name: approval_date
-        approvedBy:
+        approvedById:
           column:
-            name: approved_by
+            name: approved_by_id
         capitalizedAmount:
           column:
             name: capitalized_amount
@@ -126,7 +126,7 @@ definition:
       output:
         allowedFields:
           - approvalDate
-          - approvedBy
+          - approvedById
           - capitalizedAmount
           - consumerLendingModificationId
           - documentPath
@@ -154,7 +154,7 @@ definition:
       comparableFields:
         - fieldName: approvalDate
           booleanExpressionType: DateBoolExp
-        - fieldName: approvedBy
+        - fieldName: approvedById
           booleanExpressionType: Int4BoolExp
         - fieldName: capitalizedAmount
           booleanExpressionType: NumericBoolExp
@@ -169,7 +169,7 @@ definition:
         - fieldName: loanAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: modificationType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingLoanModificationTypeBoolExp
         - fieldName: newPrincipalBalance
           booleanExpressionType: NumericBoolExp
         - fieldName: newRate
@@ -185,7 +185,7 @@ definition:
         - fieldName: requestDate
           booleanExpressionType: DateBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingLoanModificationStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanAccount
   logicalOperators:
@@ -206,7 +206,7 @@ definition:
       aggregatableFields:
         - fieldName: approvalDate
           aggregateExpression: DateAggExp
-        - fieldName: approvedBy
+        - fieldName: approvedById
           aggregateExpression: Int4AggExp
         - fieldName: capitalizedAmount
           aggregateExpression: NumericAggExp
@@ -221,7 +221,7 @@ definition:
         - fieldName: loanAccountId
           aggregateExpression: Int4AggExp
         - fieldName: modificationType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingLoanModificationTypeAggExp
         - fieldName: newPrincipalBalance
           aggregateExpression: NumericAggExp
         - fieldName: newRate
@@ -237,7 +237,7 @@ definition:
         - fieldName: requestDate
           aggregateExpression: DateAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingLoanModificationStatusAggExp
   count:
     enable: true
   graphql:
@@ -254,7 +254,7 @@ definition:
       orderableFields:
         - fieldName: approvalDate
           orderByExpression: DateOrderByExp
-        - fieldName: approvedBy
+        - fieldName: approvedById
           orderByExpression: Int4OrderByExp
         - fieldName: capitalizedAmount
           orderByExpression: NumericOrderByExp
@@ -269,7 +269,7 @@ definition:
         - fieldName: loanAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: modificationType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingLoanModificationTypeOrderByExp
         - fieldName: newPrincipalBalance
           orderByExpression: NumericOrderByExp
         - fieldName: newRate
@@ -285,7 +285,7 @@ definition:
         - fieldName: requestDate
           orderByExpression: DateOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingLoanModificationStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanAccount
   graphql:

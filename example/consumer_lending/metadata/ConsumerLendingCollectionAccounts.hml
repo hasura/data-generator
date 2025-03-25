@@ -37,17 +37,17 @@ definition:
       type: Date
       description: Date of next scheduled action
     - name: priority
-      type: Varchar
-      description: High, Medium, Low
+      type: ConsumerLendingCollectionPriority
+      description: Priority level of the collection account
     - name: resolutionDate
       type: Date
       description: Date collection was resolved
     - name: resolutionType
-      type: Varchar
-      description: Paid, Settlement, Modification, Charge Off
+      type: ConsumerLendingCollectionResolutionType
+      description: Type of resolution for the collection account
     - name: status
-      type: Varchar!
-      description: Active, Resolved, Charged Off
+      type: ConsumerLendingCollectionStatus!
+      description: Current status of collection account
   graphql:
     typeName: ConsumerLending_ConsumerLendingCollectionAccounts
     inputTypeName: ConsumerLending_ConsumerLendingCollectionAccountsInput
@@ -152,13 +152,13 @@ definition:
         - fieldName: nextActionDate
           booleanExpressionType: DateBoolExp
         - fieldName: priority
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCollectionPriorityBoolExp
         - fieldName: resolutionDate
           booleanExpressionType: DateBoolExp
         - fieldName: resolutionType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCollectionResolutionTypeBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCollectionStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanAccount
         - relationshipName: consumerLendingCollectionActions
@@ -200,13 +200,13 @@ definition:
         - fieldName: nextActionDate
           aggregateExpression: DateAggExp
         - fieldName: priority
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCollectionPriorityAggExp
         - fieldName: resolutionDate
           aggregateExpression: DateAggExp
         - fieldName: resolutionType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCollectionResolutionTypeAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCollectionStatusAggExp
   count:
     enable: true
   graphql:
@@ -242,13 +242,13 @@ definition:
         - fieldName: nextActionDate
           orderByExpression: DateOrderByExp
         - fieldName: priority
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCollectionPriorityOrderByExp
         - fieldName: resolutionDate
           orderByExpression: DateOrderByExp
         - fieldName: resolutionType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCollectionResolutionTypeOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCollectionStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanAccount
   graphql:

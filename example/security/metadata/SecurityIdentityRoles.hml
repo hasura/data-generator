@@ -3,14 +3,29 @@ kind: ObjectType
 version: v1
 definition:
   name: SecurityIdentityRoles
-  description: Table linking identities to roles, granting specific sets of permissions.
+  description: Associates identities with roles
   fields:
+    - name: active
+      type: Bool!
+      description: Whether this assignment is currently active
+    - name: assignedById
+      type: Int4
+      description: Who assigned the role
+    - name: endDate
+      type: Timestamp
+      description: When the role was no longer effective
     - name: securityIdentityId
       type: Uuid!
-      description: Identifier of the associated identity.
+      description: Reference to the identity
+    - name: securityIdentityRoleId
+      type: Uuid!
+      description: Reference to the identity role assignment
     - name: securityRoleId
       type: Uuid!
-      description: Identifier of the associated role.
+      description: Reference to the role
+    - name: startDate
+      type: Timestamp
+      description: When the role became effective
   graphql:
     typeName: Security_SecurityIdentityRoles
     inputTypeName: Security_SecurityIdentityRolesInput
@@ -18,12 +33,27 @@ definition:
     - dataConnectorName: security
       dataConnectorObjectType: security_identity_roles
       fieldMapping:
+        active:
+          column:
+            name: active
+        assignedById:
+          column:
+            name: assigned_by_id
+        endDate:
+          column:
+            name: end_date
         securityIdentityId:
           column:
             name: security_identity_id
+        securityIdentityRoleId:
+          column:
+            name: security_identity_role_id
         securityRoleId:
           column:
             name: security_role_id
+        startDate:
+          column:
+            name: start_date
 
 ---
 kind: TypePermissions
@@ -34,8 +64,13 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - active
+          - assignedById
+          - endDate
           - securityIdentityId
+          - securityIdentityRoleId
           - securityRoleId
+          - startDate
 
 ---
 kind: BooleanExpressionType
@@ -46,10 +81,20 @@ definition:
     object:
       type: SecurityIdentityRoles
       comparableFields:
+        - fieldName: active
+          booleanExpressionType: BoolBoolExp
+        - fieldName: assignedById
+          booleanExpressionType: Int4BoolExp
+        - fieldName: endDate
+          booleanExpressionType: TimestampBoolExp
         - fieldName: securityIdentityId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityIdentityRoleId
           booleanExpressionType: UuidBoolExp
         - fieldName: securityRoleId
           booleanExpressionType: UuidBoolExp
+        - fieldName: startDate
+          booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: securityIdentity
         - relationshipName: securityRole
@@ -69,10 +114,20 @@ definition:
     object:
       aggregatedType: SecurityIdentityRoles
       aggregatableFields:
+        - fieldName: active
+          aggregateExpression: BoolAggExp
+        - fieldName: assignedById
+          aggregateExpression: Int4AggExp
+        - fieldName: endDate
+          aggregateExpression: TimestampAggExp
         - fieldName: securityIdentityId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityIdentityRoleId
           aggregateExpression: UuidAggExp
         - fieldName: securityRoleId
           aggregateExpression: UuidAggExp
+        - fieldName: startDate
+          aggregateExpression: TimestampAggExp
   count:
     enable: true
   graphql:
@@ -87,10 +142,20 @@ definition:
     object:
       orderedType: SecurityIdentityRoles
       orderableFields:
+        - fieldName: active
+          orderByExpression: BoolOrderByExp
+        - fieldName: assignedById
+          orderByExpression: Int4OrderByExp
+        - fieldName: endDate
+          orderByExpression: TimestampOrderByExp
         - fieldName: securityIdentityId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityIdentityRoleId
           orderByExpression: UuidOrderByExp
         - fieldName: securityRoleId
           orderByExpression: UuidOrderByExp
+        - fieldName: startDate
+          orderByExpression: TimestampOrderByExp
       orderableRelationships:
         - relationshipName: securityIdentity
         - relationshipName: securityRole
@@ -115,18 +180,17 @@ definition:
       subscription:
         rootField: securityIdentityRoles
     selectUniques:
-      - queryRootField: securityIdentityRolesByIdentityRolesPkey
+      - queryRootField: securityIdentityRolesBySecurityIdentityRoleId
         uniqueIdentifier:
-          - securityIdentityId
-          - securityRoleId
+          - securityIdentityRoleId
         subscription:
-          rootField: securityIdentityRolesByIdentityRolesPkey
+          rootField: securityIdentityRolesBySecurityIdentityRoleId
     filterInputTypeName: Security_SecurityIdentityRolesFilterInput
     aggregate:
       queryRootField: securityIdentityRolesAggregate
       subscription:
         rootField: securityIdentityRolesAggregate
-  description: Table linking identities to roles, granting specific sets of permissions.
+  description: Associates identities with roles
 
 ---
 kind: ModelPermissions

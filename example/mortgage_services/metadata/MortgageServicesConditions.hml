@@ -5,16 +5,16 @@ definition:
   name: MortgageServicesConditions
   description: Tracks underwriting conditions that must be cleared for loan approval
   fields:
-    - name: clearedBy
+    - name: clearedById
       type: Int4
       description: References the staff member who cleared the condition
     - name: clearedDate
       type: Timestamp
       description: When the condition was satisfied or waived
     - name: conditionType
-      type: Varchar!
-      description: When the condition must be satisfied (e.g., Prior to Approval)
-    - name: createdBy
+      type: MortgageServicesConditionType!
+      description: When the condition must be satisfied
+    - name: createdById
       type: Int4!
       description: References the staff member who created the condition
     - name: createdDate
@@ -33,7 +33,7 @@ definition:
       type: Int4!
       description: Auto-incrementing identifier for each condition
     - name: status
-      type: Varchar!
+      type: MortgageServicesConditionStatus!
       description: Current status of the condition
   graphql:
     typeName: MortgageServices_MortgageServicesConditions
@@ -42,18 +42,18 @@ definition:
     - dataConnectorName: mortgage_services
       dataConnectorObjectType: mortgage_services_conditions
       fieldMapping:
-        clearedBy:
+        clearedById:
           column:
-            name: cleared_by
+            name: cleared_by_id
         clearedDate:
           column:
             name: cleared_date
         conditionType:
           column:
             name: condition_type
-        createdBy:
+        createdById:
           column:
-            name: created_by
+            name: created_by_id
         createdDate:
           column:
             name: created_date
@@ -82,10 +82,10 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - clearedBy
+          - clearedById
           - clearedDate
           - conditionType
-          - createdBy
+          - createdById
           - createdDate
           - description
           - dueDate
@@ -102,13 +102,13 @@ definition:
     object:
       type: MortgageServicesConditions
       comparableFields:
-        - fieldName: clearedBy
+        - fieldName: clearedById
           booleanExpressionType: Int4BoolExp
         - fieldName: clearedDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: conditionType
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: createdBy
+          booleanExpressionType: MortgageServicesConditionTypeBoolExp
+        - fieldName: createdById
           booleanExpressionType: Int4BoolExp
         - fieldName: createdDate
           booleanExpressionType: TimestampBoolExp
@@ -121,7 +121,7 @@ definition:
         - fieldName: mortgageServicesConditionId
           booleanExpressionType: Int4BoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesConditionStatusBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesApplication
   logicalOperators:
@@ -140,13 +140,13 @@ definition:
     object:
       aggregatedType: MortgageServicesConditions
       aggregatableFields:
-        - fieldName: clearedBy
+        - fieldName: clearedById
           aggregateExpression: Int4AggExp
         - fieldName: clearedDate
           aggregateExpression: TimestampAggExp
         - fieldName: conditionType
-          aggregateExpression: VarcharAggExp
-        - fieldName: createdBy
+          aggregateExpression: MortgageServicesConditionTypeAggExp
+        - fieldName: createdById
           aggregateExpression: Int4AggExp
         - fieldName: createdDate
           aggregateExpression: TimestampAggExp
@@ -159,7 +159,7 @@ definition:
         - fieldName: mortgageServicesConditionId
           aggregateExpression: Int4AggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesConditionStatusAggExp
   count:
     enable: true
   graphql:
@@ -174,13 +174,13 @@ definition:
     object:
       orderedType: MortgageServicesConditions
       orderableFields:
-        - fieldName: clearedBy
+        - fieldName: clearedById
           orderByExpression: Int4OrderByExp
         - fieldName: clearedDate
           orderByExpression: TimestampOrderByExp
         - fieldName: conditionType
-          orderByExpression: VarcharOrderByExp
-        - fieldName: createdBy
+          orderByExpression: MortgageServicesConditionTypeOrderByExp
+        - fieldName: createdById
           orderByExpression: Int4OrderByExp
         - fieldName: createdDate
           orderByExpression: TimestampOrderByExp
@@ -193,7 +193,7 @@ definition:
         - fieldName: mortgageServicesConditionId
           orderByExpression: Int4OrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesConditionStatusOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesApplication
   graphql:

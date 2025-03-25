@@ -5,7 +5,7 @@ definition:
   name: SmallBusinessBankingBusinessTransactionCategories
   description: Maps credit card transactions to business expense categories
   fields:
-    - name: createdBy
+    - name: createdById
       type: Int4
       description: User who created this categorization
     - name: notes
@@ -36,9 +36,9 @@ definition:
     - dataConnectorName: small_business_banking
       dataConnectorObjectType: small_business_banking_business_transaction_categories
       fieldMapping:
-        createdBy:
+        createdById:
           column:
-            name: created_by
+            name: created_by_id
         notes:
           column:
             name: notes
@@ -70,7 +70,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - createdBy
+          - createdById
           - notes
           - receiptImagePath
           - smallBusinessBankingBusinessId
@@ -88,7 +88,7 @@ definition:
     object:
       type: SmallBusinessBankingBusinessTransactionCategories
       comparableFields:
-        - fieldName: createdBy
+        - fieldName: createdById
           booleanExpressionType: Int4BoolExp
         - fieldName: notes
           booleanExpressionType: TextBoolExp
@@ -123,7 +123,7 @@ definition:
     object:
       aggregatedType: SmallBusinessBankingBusinessTransactionCategories
       aggregatableFields:
-        - fieldName: createdBy
+        - fieldName: createdById
           aggregateExpression: Int4AggExp
         - fieldName: notes
           aggregateExpression: TextAggExp
@@ -153,7 +153,7 @@ definition:
     object:
       orderedType: SmallBusinessBankingBusinessTransactionCategories
       orderableFields:
-        - fieldName: createdBy
+        - fieldName: createdById
           orderByExpression: Int4OrderByExp
         - fieldName: notes
           orderByExpression: TextOrderByExp

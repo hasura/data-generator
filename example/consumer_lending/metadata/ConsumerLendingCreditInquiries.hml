@@ -19,8 +19,8 @@ definition:
       type: Date!
       description: Date of credit inquiry
     - name: inquiryType
-      type: Varchar
-      description: Hard inquiry, soft inquiry
+      type: ConsumerLendingInquiryType
+      description: Type of credit inquiry
   graphql:
     typeName: ConsumerLending_ConsumerLendingCreditInquiries
     inputTypeName: ConsumerLending_ConsumerLendingCreditInquiriesInput
@@ -77,7 +77,7 @@ definition:
         - fieldName: inquiryDate
           booleanExpressionType: DateBoolExp
         - fieldName: inquiryType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingInquiryTypeBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingCreditReport
   logicalOperators:
@@ -105,7 +105,7 @@ definition:
         - fieldName: inquiryDate
           aggregateExpression: DateAggExp
         - fieldName: inquiryType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingInquiryTypeAggExp
   count:
     enable: true
   graphql:
@@ -129,7 +129,7 @@ definition:
         - fieldName: inquiryDate
           orderByExpression: DateOrderByExp
         - fieldName: inquiryType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingInquiryTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingCreditReport
   graphql:

@@ -8,9 +8,9 @@ definition:
     - name: amount
       type: Numeric!
       description: Transaction amount
-    - name: createdBy
-      type: Varchar
-      description: User or system that created the transaction
+    - name: createdById
+      type: Int4
+      description: User that created the transaction
     - name: currency
       type: Bpchar!
       description: Currency of the transaction
@@ -51,9 +51,9 @@ definition:
         amount:
           column:
             name: amount
-        createdBy:
+        createdById:
           column:
-            name: created_by
+            name: created_by_id
         currency:
           column:
             name: currency
@@ -95,7 +95,7 @@ definition:
       output:
         allowedFields:
           - amount
-          - createdBy
+          - createdById
           - currency
           - description
           - postDate
@@ -118,8 +118,8 @@ definition:
       comparableFields:
         - fieldName: amount
           booleanExpressionType: NumericBoolExp
-        - fieldName: createdBy
-          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdById
+          booleanExpressionType: Int4BoolExp
         - fieldName: currency
           booleanExpressionType: BpcharBoolExp
         - fieldName: description
@@ -160,8 +160,8 @@ definition:
       aggregatableFields:
         - fieldName: amount
           aggregateExpression: NumericAggExp
-        - fieldName: createdBy
-          aggregateExpression: VarcharAggExp
+        - fieldName: createdById
+          aggregateExpression: Int4AggExp
         - fieldName: currency
           aggregateExpression: BpcharAggExp
         - fieldName: description
@@ -198,8 +198,8 @@ definition:
       orderableFields:
         - fieldName: amount
           orderByExpression: NumericOrderByExp
-        - fieldName: createdBy
-          orderByExpression: VarcharOrderByExp
+        - fieldName: createdById
+          orderByExpression: Int4OrderByExp
         - fieldName: currency
           orderByExpression: BpcharOrderByExp
         - fieldName: description

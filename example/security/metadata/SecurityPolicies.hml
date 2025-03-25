@@ -11,18 +11,30 @@ definition:
     - name: createdAt
       type: Timestamp
       description: Timestamp when the policy was created.
+    - name: createdById
+      type: Int4
+      description: Who created the policy
     - name: description
       type: Text!
       description: Detailed description of the policy.
+    - name: endedAt
+      type: Timestamp
+      description: Timestamp when the policy was no longer effective.
     - name: name
       type: Varchar!
       description: Name of the policy. Must be unique.
     - name: securityPolicyId
       type: Uuid!
       description: Unique identifier for the policy.
+    - name: startedAt
+      type: Timestamp!
+      description: Timestamp when the policy became effective.
     - name: updatedAt
       type: Timestamp
       description: Timestamp when the policy was last updated.
+    - name: updatedById
+      type: Int4
+      description: Who updated the policy
   graphql:
     typeName: Security_SecurityPolicies
     inputTypeName: Security_SecurityPoliciesInput
@@ -36,18 +48,30 @@ definition:
         createdAt:
           column:
             name: created_at
+        createdById:
+          column:
+            name: created_by_id
         description:
           column:
             name: description
+        endedAt:
+          column:
+            name: ended_at
         name:
           column:
             name: name
         securityPolicyId:
           column:
             name: security_policy_id
+        startedAt:
+          column:
+            name: started_at
         updatedAt:
           column:
             name: updated_at
+        updatedById:
+          column:
+            name: updated_by_id
 
 ---
 kind: TypePermissions
@@ -60,10 +84,14 @@ definition:
         allowedFields:
           - active
           - createdAt
+          - createdById
           - description
+          - endedAt
           - name
           - securityPolicyId
+          - startedAt
           - updatedAt
+          - updatedById
 
 ---
 kind: BooleanExpressionType
@@ -78,14 +106,22 @@ definition:
           booleanExpressionType: BoolBoolExp
         - fieldName: createdAt
           booleanExpressionType: TimestampBoolExp
+        - fieldName: createdById
+          booleanExpressionType: Int4BoolExp
         - fieldName: description
           booleanExpressionType: TextBoolExp
+        - fieldName: endedAt
+          booleanExpressionType: TimestampBoolExp
         - fieldName: name
           booleanExpressionType: VarcharBoolExp
         - fieldName: securityPolicyId
           booleanExpressionType: UuidBoolExp
+        - fieldName: startedAt
+          booleanExpressionType: TimestampBoolExp
         - fieldName: updatedAt
           booleanExpressionType: TimestampBoolExp
+        - fieldName: updatedById
+          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: securityPolicyAttributes
         - relationshipName: securityPolicyRules
@@ -109,14 +145,22 @@ definition:
           aggregateExpression: BoolAggExp
         - fieldName: createdAt
           aggregateExpression: TimestampAggExp
+        - fieldName: createdById
+          aggregateExpression: Int4AggExp
         - fieldName: description
           aggregateExpression: TextAggExp
+        - fieldName: endedAt
+          aggregateExpression: TimestampAggExp
         - fieldName: name
           aggregateExpression: VarcharAggExp
         - fieldName: securityPolicyId
           aggregateExpression: UuidAggExp
+        - fieldName: startedAt
+          aggregateExpression: TimestampAggExp
         - fieldName: updatedAt
           aggregateExpression: TimestampAggExp
+        - fieldName: updatedById
+          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
@@ -135,14 +179,22 @@ definition:
           orderByExpression: BoolOrderByExp
         - fieldName: createdAt
           orderByExpression: TimestampOrderByExp
+        - fieldName: createdById
+          orderByExpression: Int4OrderByExp
         - fieldName: description
           orderByExpression: TextOrderByExp
+        - fieldName: endedAt
+          orderByExpression: TimestampOrderByExp
         - fieldName: name
           orderByExpression: VarcharOrderByExp
         - fieldName: securityPolicyId
           orderByExpression: UuidOrderByExp
+        - fieldName: startedAt
+          orderByExpression: TimestampOrderByExp
         - fieldName: updatedAt
           orderByExpression: TimestampOrderByExp
+        - fieldName: updatedById
+          orderByExpression: Int4OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_SecurityPoliciesOrderByExp

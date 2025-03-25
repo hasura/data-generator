@@ -10,8 +10,8 @@ definition:
       type: Varchar
       description: Account number, stored encrypted
     - name: assetType
-      type: Varchar!
-      description: Checking, Savings, Investments, Property
+      type: ConsumerLendingAssetType!
+      description: Type of asset
     - name: consumerLendingApplicantId
       type: Int4!
       description: Reference to applicant
@@ -31,7 +31,7 @@ definition:
       type: Date
       description: Date asset was verified
     - name: verificationStatus
-      type: Varchar!
+      type: ConsumerLendingVerificationStatus!
       description: Self-reported, Verified, Failed
   graphql:
     typeName: ConsumerLending_ConsumerLendingApplicantAssets
@@ -99,7 +99,7 @@ definition:
         - fieldName: accountNumber
           booleanExpressionType: VarcharBoolExp
         - fieldName: assetType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingAssetTypeBoolExp
         - fieldName: consumerLendingApplicantId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingAssetId
@@ -113,7 +113,7 @@ definition:
         - fieldName: verificationDate
           booleanExpressionType: DateBoolExp
         - fieldName: verificationStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingVerificationStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicant
   logicalOperators:
@@ -135,7 +135,7 @@ definition:
         - fieldName: accountNumber
           aggregateExpression: VarcharAggExp
         - fieldName: assetType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingAssetTypeAggExp
         - fieldName: consumerLendingApplicantId
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingAssetId
@@ -149,7 +149,7 @@ definition:
         - fieldName: verificationDate
           aggregateExpression: DateAggExp
         - fieldName: verificationStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingVerificationStatusAggExp
   count:
     enable: true
   graphql:
@@ -167,7 +167,7 @@ definition:
         - fieldName: accountNumber
           orderByExpression: VarcharOrderByExp
         - fieldName: assetType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingAssetTypeOrderByExp
         - fieldName: consumerLendingApplicantId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingAssetId
@@ -181,7 +181,7 @@ definition:
         - fieldName: verificationDate
           orderByExpression: DateOrderByExp
         - fieldName: verificationStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingVerificationStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
   graphql:

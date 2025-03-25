@@ -22,15 +22,15 @@ definition:
       type: Date!
       description: Date fee was assessed
     - name: feeStatus
-      type: Varchar!
-      description: Pending, Charged, Waived, Paid
+      type: ConsumerLendingLoanFeeStatus!
+      description: Current status of the fee
     - name: feeType
-      type: Varchar!
-      description: Late Fee, NSF Fee, Origination Fee
+      type: ConsumerLendingLoanFeeType!
+      description: Type of fee charged
     - name: paidDate
       type: Date
       description: Date fee was paid
-    - name: waivedBy
+    - name: waivedById
       type: Int4
       description: User who waived the fee
     - name: waivedDate
@@ -70,9 +70,9 @@ definition:
         paidDate:
           column:
             name: paid_date
-        waivedBy:
+        waivedById:
           column:
-            name: waived_by
+            name: waived_by_id
         waivedDate:
           column:
             name: waived_date
@@ -97,7 +97,7 @@ definition:
           - feeStatus
           - feeType
           - paidDate
-          - waivedBy
+          - waivedById
           - waivedDate
           - waiverReason
 
@@ -121,12 +121,12 @@ definition:
         - fieldName: feeDate
           booleanExpressionType: DateBoolExp
         - fieldName: feeStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingLoanFeeStatusBoolExp
         - fieldName: feeType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingLoanFeeTypeBoolExp
         - fieldName: paidDate
           booleanExpressionType: DateBoolExp
-        - fieldName: waivedBy
+        - fieldName: waivedById
           booleanExpressionType: Int4BoolExp
         - fieldName: waivedDate
           booleanExpressionType: DateBoolExp
@@ -162,12 +162,12 @@ definition:
         - fieldName: feeDate
           aggregateExpression: DateAggExp
         - fieldName: feeStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingLoanFeeStatusAggExp
         - fieldName: feeType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingLoanFeeTypeAggExp
         - fieldName: paidDate
           aggregateExpression: DateAggExp
-        - fieldName: waivedBy
+        - fieldName: waivedById
           aggregateExpression: Int4AggExp
         - fieldName: waivedDate
           aggregateExpression: DateAggExp
@@ -198,12 +198,12 @@ definition:
         - fieldName: feeDate
           orderByExpression: DateOrderByExp
         - fieldName: feeStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingLoanFeeStatusOrderByExp
         - fieldName: feeType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingLoanFeeTypeOrderByExp
         - fieldName: paidDate
           orderByExpression: DateOrderByExp
-        - fieldName: waivedBy
+        - fieldName: waivedById
           orderByExpression: Int4OrderByExp
         - fieldName: waivedDate
           orderByExpression: DateOrderByExp

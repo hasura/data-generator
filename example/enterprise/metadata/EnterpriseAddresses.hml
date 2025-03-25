@@ -6,7 +6,7 @@ definition:
   description: Central repository for address information used across the system
   fields:
     - name: addressType
-      type: Varchar
+      type: EnterpriseAddressType
       description: Type of address (e.g., home, work, mailing)
     - name: buildingName
       type: Varchar
@@ -159,7 +159,7 @@ definition:
       type: EnterpriseAddresses
       comparableFields:
         - fieldName: addressType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseAddressTypeBoolExp
         - fieldName: buildingName
           booleanExpressionType: VarcharBoolExp
         - fieldName: buildingNumber
@@ -195,8 +195,8 @@ definition:
         - fieldName: unitNumber
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
-        - relationshipName: enterpriseAddressLines
-        - relationshipName: enterpriseEntityAddresses
+        - relationshipName: enterpriseBuildings
+        - relationshipName: enterprisePartyEntityAddresses
   logicalOperators:
     enable: true
   isNull:
@@ -214,7 +214,7 @@ definition:
       aggregatedType: EnterpriseAddresses
       aggregatableFields:
         - fieldName: addressType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseAddressTypeAggExp
         - fieldName: buildingName
           aggregateExpression: VarcharAggExp
         - fieldName: buildingNumber
@@ -264,7 +264,7 @@ definition:
       orderedType: EnterpriseAddresses
       orderableFields:
         - fieldName: addressType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseAddressTypeOrderByExp
         - fieldName: buildingName
           orderByExpression: VarcharOrderByExp
         - fieldName: buildingNumber
@@ -348,14 +348,14 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: enterpriseAddressLines
+  name: enterpriseBuildings
   sourceType: EnterpriseAddresses
   target:
     model:
-      name: EnterpriseAddressLines
+      name: EnterpriseBuildings
       relationshipType: Array
       aggregate:
-        aggregateExpression: EnterpriseAddressLinesAggExp
+        aggregateExpression: EnterpriseBuildingsAggExp
   mapping:
     - source:
         fieldPath:
@@ -364,20 +364,20 @@ definition:
         modelField:
           - fieldName: enterpriseAddressId
   graphql:
-    aggregateFieldName: enterpriseAddressLinesAggregate
+    aggregateFieldName: enterpriseBuildingsAggregate
 
 ---
 kind: Relationship
 version: v1
 definition:
-  name: enterpriseEntityAddresses
+  name: enterprisePartyEntityAddresses
   sourceType: EnterpriseAddresses
   target:
     model:
-      name: EnterpriseEntityAddresses
+      name: EnterprisePartyEntityAddresses
       relationshipType: Array
       aggregate:
-        aggregateExpression: EnterpriseEntityAddressesAggExp
+        aggregateExpression: EnterprisePartyEntityAddressesAggExp
   mapping:
     - source:
         fieldPath:
@@ -386,5 +386,5 @@ definition:
         modelField:
           - fieldName: enterpriseAddressId
   graphql:
-    aggregateFieldName: enterpriseEntityAddressesAggregate
+    aggregateFieldName: enterprisePartyEntityAddressesAggregate
 

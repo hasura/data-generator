@@ -6,12 +6,12 @@ definition:
   description: Table to store dependencies between applications and their software
     components.
   fields:
+    - name: appMgmtApplicationId
+      type: Uuid!
+      description: Identifier for the application that uses the component.
     - name: appMgmtComponentId
       type: Uuid!
       description: Identifier for the software component used by the application.
-    - name: applicationId
-      type: Uuid!
-      description: Identifier for the application that uses the component.
     - name: dependencyType
       type: AppMgmtDependencyTypes!
       description: Type of dependency (e.g., runtime, build, test).
@@ -22,12 +22,12 @@ definition:
     - dataConnectorName: app_mgmt
       dataConnectorObjectType: app_mgmt_application_components
       fieldMapping:
+        appMgmtApplicationId:
+          column:
+            name: app_mgmt_application_id
         appMgmtComponentId:
           column:
             name: app_mgmt_component_id
-        applicationId:
-          column:
-            name: application_id
         dependencyType:
           column:
             name: dependency_type
@@ -41,8 +41,8 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - appMgmtApplicationId
           - appMgmtComponentId
-          - applicationId
           - dependencyType
 
 ---
@@ -54,15 +54,15 @@ definition:
     object:
       type: AppMgmtApplicationComponents
       comparableFields:
-        - fieldName: appMgmtComponentId
+        - fieldName: appMgmtApplicationId
           booleanExpressionType: UuidBoolExp
-        - fieldName: applicationId
+        - fieldName: appMgmtComponentId
           booleanExpressionType: UuidBoolExp
         - fieldName: dependencyType
           booleanExpressionType: AppMgmtDependencyTypesBoolExp
       comparableRelationships:
-        - relationshipName: appMgmtComponent
         - relationshipName: appMgmtApplication
+        - relationshipName: appMgmtComponent
   logicalOperators:
     enable: true
   isNull:
@@ -79,9 +79,9 @@ definition:
     object:
       aggregatedType: AppMgmtApplicationComponents
       aggregatableFields:
-        - fieldName: appMgmtComponentId
+        - fieldName: appMgmtApplicationId
           aggregateExpression: UuidAggExp
-        - fieldName: applicationId
+        - fieldName: appMgmtComponentId
           aggregateExpression: UuidAggExp
         - fieldName: dependencyType
           aggregateExpression: AppMgmtDependencyTypesAggExp
@@ -99,15 +99,15 @@ definition:
     object:
       orderedType: AppMgmtApplicationComponents
       orderableFields:
-        - fieldName: appMgmtComponentId
+        - fieldName: appMgmtApplicationId
           orderByExpression: UuidOrderByExp
-        - fieldName: applicationId
+        - fieldName: appMgmtComponentId
           orderByExpression: UuidOrderByExp
         - fieldName: dependencyType
           orderByExpression: AppMgmtDependencyTypesOrderByExp
       orderableRelationships:
-        - relationshipName: appMgmtComponent
         - relationshipName: appMgmtApplication
+        - relationshipName: appMgmtComponent
   graphql:
     expressionTypeName: App_Mgmt_AppMgmtApplicationComponentsOrderByExp
 
@@ -131,8 +131,8 @@ definition:
     selectUniques:
       - queryRootField: appMgmtApplicationComponentsByApplicationComponentsPkey
         uniqueIdentifier:
+          - appMgmtApplicationId
           - appMgmtComponentId
-          - applicationId
           - dependencyType
         subscription:
           rootField: appMgmtApplicationComponentsByApplicationComponentsPkey
@@ -159,6 +159,24 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: appMgmtApplication
+  sourceType: AppMgmtApplicationComponents
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtApplicationId
+      target:
+        modelField:
+          - fieldName: appMgmtApplicationId
+
+---
+kind: Relationship
+version: v1
+definition:
   name: appMgmtComponent
   sourceType: AppMgmtApplicationComponents
   target:
@@ -172,22 +190,4 @@ definition:
       target:
         modelField:
           - fieldName: appMgmtComponentId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: appMgmtApplication
-  sourceType: AppMgmtApplicationComponents
-  target:
-    model:
-      name: AppMgmtApplications
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: applicationId
-      target:
-        modelField:
-          - fieldName: appMgmtApplicationId
 

@@ -3,27 +3,35 @@ kind: ObjectType
 version: v1
 definition:
   name: SecurityRoles
-  description: Table storing information about roles, defining sets of permissions
-    and access rights.
+  description: Defines roles that can be assigned to identities
   fields:
+    - name: createdAt
+      type: Timestamp
+      description: When the role was created
+    - name: createdById
+      type: Int4
+      description: Who created the role
     - name: description
-      type: Varchar
-      description: Description of the role.
-    - name: disabled
-      type: Bool
-      description: Indicates if the role is disabled.
+      type: Text
+      description: Description of the role's purpose and scope
     - name: displayName
       type: Varchar
-      description: User-friendly name of the role.
-    - name: name
-      type: Varchar
-      description: Internal name of the role.
+      description: User-friendly name for the role
+    - name: managingApplicationId
+      type: Uuid
+      description: Application that manages this role
     - name: ownerId
       type: Int4
-      description: Identifier of the owner of the role.
+      description: Who owns/manages this role
+    - name: roleName
+      type: Varchar!
+      description: Internal name for the role
     - name: securityRoleId
       type: Uuid!
-      description: Unique identifier for the role.
+      description: Unique identifier for the role
+    - name: status
+      type: SecurityRoleStatus!
+      description: Current status of the role
   graphql:
     typeName: Security_SecurityRoles
     inputTypeName: Security_SecurityRolesInput
@@ -31,24 +39,33 @@ definition:
     - dataConnectorName: security
       dataConnectorObjectType: security_roles
       fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        createdById:
+          column:
+            name: created_by_id
         description:
           column:
             name: description
-        disabled:
-          column:
-            name: disabled
         displayName:
           column:
             name: display_name
-        name:
+        managingApplicationId:
           column:
-            name: name
+            name: managing_application_id
         ownerId:
           column:
             name: owner_id
+        roleName:
+          column:
+            name: role_name
         securityRoleId:
           column:
             name: security_role_id
+        status:
+          column:
+            name: status
 
 ---
 kind: TypePermissions
@@ -59,12 +76,15 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - createdAt
+          - createdById
           - description
-          - disabled
           - displayName
-          - name
+          - managingApplicationId
           - ownerId
+          - roleName
           - securityRoleId
+          - status
 
 ---
 kind: BooleanExpressionType
@@ -75,20 +95,27 @@ definition:
     object:
       type: SecurityRoles
       comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: createdById
+          booleanExpressionType: Int4BoolExp
         - fieldName: description
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: disabled
-          booleanExpressionType: BoolBoolExp
+          booleanExpressionType: TextBoolExp
         - fieldName: displayName
           booleanExpressionType: VarcharBoolExp
-        - fieldName: name
-          booleanExpressionType: VarcharBoolExp
+        - fieldName: managingApplicationId
+          booleanExpressionType: UuidBoolExp
         - fieldName: ownerId
           booleanExpressionType: Int4BoolExp
+        - fieldName: roleName
+          booleanExpressionType: VarcharBoolExp
         - fieldName: securityRoleId
           booleanExpressionType: UuidBoolExp
+        - fieldName: status
+          booleanExpressionType: SecurityRoleStatusBoolExp
       comparableRelationships:
         - relationshipName: securityIdentityRoles
+        - relationshipName: securityRoleEntitlements
   logicalOperators:
     enable: true
   isNull:
@@ -105,18 +132,24 @@ definition:
     object:
       aggregatedType: SecurityRoles
       aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampAggExp
+        - fieldName: createdById
+          aggregateExpression: Int4AggExp
         - fieldName: description
-          aggregateExpression: VarcharAggExp
-        - fieldName: disabled
-          aggregateExpression: BoolAggExp
+          aggregateExpression: TextAggExp
         - fieldName: displayName
           aggregateExpression: VarcharAggExp
-        - fieldName: name
-          aggregateExpression: VarcharAggExp
+        - fieldName: managingApplicationId
+          aggregateExpression: UuidAggExp
         - fieldName: ownerId
           aggregateExpression: Int4AggExp
+        - fieldName: roleName
+          aggregateExpression: VarcharAggExp
         - fieldName: securityRoleId
           aggregateExpression: UuidAggExp
+        - fieldName: status
+          aggregateExpression: SecurityRoleStatusAggExp
   count:
     enable: true
   graphql:
@@ -131,18 +164,24 @@ definition:
     object:
       orderedType: SecurityRoles
       orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: createdById
+          orderByExpression: Int4OrderByExp
         - fieldName: description
-          orderByExpression: VarcharOrderByExp
-        - fieldName: disabled
-          orderByExpression: BoolOrderByExp
+          orderByExpression: TextOrderByExp
         - fieldName: displayName
           orderByExpression: VarcharOrderByExp
-        - fieldName: name
-          orderByExpression: VarcharOrderByExp
+        - fieldName: managingApplicationId
+          orderByExpression: UuidOrderByExp
         - fieldName: ownerId
           orderByExpression: Int4OrderByExp
+        - fieldName: roleName
+          orderByExpression: VarcharOrderByExp
         - fieldName: securityRoleId
           orderByExpression: UuidOrderByExp
+        - fieldName: status
+          orderByExpression: SecurityRoleStatusOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_SecurityRolesOrderByExp
@@ -175,8 +214,7 @@ definition:
       queryRootField: securityRolesAggregate
       subscription:
         rootField: securityRolesAggregate
-  description: Table storing information about roles, defining sets of permissions
-    and access rights.
+  description: Defines roles that can be assigned to identities
 
 ---
 kind: ModelPermissions
@@ -210,4 +248,26 @@ definition:
           - fieldName: securityRoleId
   graphql:
     aggregateFieldName: securityIdentityRolesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityRoleEntitlements
+  sourceType: SecurityRoles
+  target:
+    model:
+      name: SecurityRoleEntitlements
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityRoleEntitlementsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityRoleId
+      target:
+        modelField:
+          - fieldName: securityRoleId
+  graphql:
+    aggregateFieldName: securityRoleEntitlementsAggregate
 

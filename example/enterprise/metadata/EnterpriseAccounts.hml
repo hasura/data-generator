@@ -23,9 +23,9 @@ definition:
       description: When the enterprise account was created, typically coincides with
         first LOB account.
     - name: status
-      type: Varchar!
-      description: Current status of the account (e.g., active, closed). When set to
-        'closed', all linked LOB accounts must be closed or in a terminal state.
+      type: EnterpriseAccountStatus!
+      description: Current status of the account. When set to 'CLOSED', all linked LOB
+        accounts must be closed or in a terminal state.
     - name: statusUpdateDateTime
       type: Timestamptz!
       description: When the status was last updated. Updates here may trigger required
@@ -90,7 +90,7 @@ definition:
         - fieldName: openedDate
           booleanExpressionType: TimestamptzBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseAccountStatusBoolExp
         - fieldName: statusUpdateDateTime
           booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
@@ -121,7 +121,7 @@ definition:
         - fieldName: openedDate
           aggregateExpression: TimestamptzAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseAccountStatusAggExp
         - fieldName: statusUpdateDateTime
           aggregateExpression: TimestamptzAggExp
   count:
@@ -147,7 +147,7 @@ definition:
         - fieldName: openedDate
           orderByExpression: TimestamptzOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseAccountStatusOrderByExp
         - fieldName: statusUpdateDateTime
           orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []

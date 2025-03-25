@@ -50,8 +50,8 @@ definition:
       type: Varchar
       description: Associate's postal code.
     - name: relationshipType
-      type: Varchar
-      description: Type of relationship with the company (e.g., Employee, Contractor).
+      type: EnterpriseRelationshipStatus
+      description: Type of relationship with the company.
     - name: releaseDate
       type: Date
       description: Date the associate was released from employment, if applicable.
@@ -62,8 +62,8 @@ definition:
       type: Varchar
       description: Associate's state of residence.
     - name: status
-      type: Varchar
-      description: Current status of the associate (e.g., Active, Inactive).
+      type: EnterpriseAssociateStatus
+      description: Current status of the associate.
     - name: streetAddress
       type: Varchar
       description: Associate's street address.
@@ -203,7 +203,7 @@ definition:
         - fieldName: postCode
           booleanExpressionType: VarcharBoolExp
         - fieldName: relationshipType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseRelationshipStatusBoolExp
         - fieldName: releaseDate
           booleanExpressionType: DateBoolExp
         - fieldName: salary
@@ -211,7 +211,7 @@ definition:
         - fieldName: state
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseAssociateStatusBoolExp
         - fieldName: streetAddress
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
@@ -264,7 +264,7 @@ definition:
         - fieldName: postCode
           aggregateExpression: VarcharAggExp
         - fieldName: relationshipType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseRelationshipStatusAggExp
         - fieldName: releaseDate
           aggregateExpression: DateAggExp
         - fieldName: salary
@@ -272,7 +272,7 @@ definition:
         - fieldName: state
           aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseAssociateStatusAggExp
         - fieldName: streetAddress
           aggregateExpression: VarcharAggExp
   count:
@@ -318,7 +318,7 @@ definition:
         - fieldName: postCode
           orderByExpression: VarcharOrderByExp
         - fieldName: relationshipType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseRelationshipStatusOrderByExp
         - fieldName: releaseDate
           orderByExpression: DateOrderByExp
         - fieldName: salary
@@ -326,7 +326,7 @@ definition:
         - fieldName: state
           orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseAssociateStatusOrderByExp
         - fieldName: streetAddress
           orderByExpression: VarcharOrderByExp
       orderableRelationships:

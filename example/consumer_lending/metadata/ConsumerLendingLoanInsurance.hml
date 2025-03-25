@@ -31,8 +31,8 @@ definition:
       type: Date!
       description: Policy end date
     - name: insuranceType
-      type: Varchar!
-      description: Auto, Hazard, Credit Life, Disability
+      type: ConsumerLendingInsuranceType!
+      description: Type of insurance
     - name: policyNumber
       type: Varchar!
       description: Insurance policy number
@@ -40,11 +40,11 @@ definition:
       type: Numeric!
       description: Cost of insurance premium
     - name: premiumFrequency
-      type: Varchar!
-      description: Annual, Monthly
+      type: ConsumerLendingPremiumFrequency!
+      description: Frequency of premium payments
     - name: status
-      type: Varchar!
-      description: Active, Lapsed, Canceled
+      type: ConsumerLendingInsuranceStatus!
+      description: Current status of the insurance policy
   graphql:
     typeName: ConsumerLending_ConsumerLendingLoanInsurance
     inputTypeName: ConsumerLending_ConsumerLendingLoanInsuranceInput
@@ -141,15 +141,15 @@ definition:
         - fieldName: expirationDate
           booleanExpressionType: DateBoolExp
         - fieldName: insuranceType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingInsuranceTypeBoolExp
         - fieldName: policyNumber
           booleanExpressionType: VarcharBoolExp
         - fieldName: premiumAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: premiumFrequency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPremiumFrequencyBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingInsuranceStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanCollateral
         - relationshipName: consumerLendingLoanAccount
@@ -186,15 +186,15 @@ definition:
         - fieldName: expirationDate
           aggregateExpression: DateAggExp
         - fieldName: insuranceType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingInsuranceTypeAggExp
         - fieldName: policyNumber
           aggregateExpression: VarcharAggExp
         - fieldName: premiumAmount
           aggregateExpression: NumericAggExp
         - fieldName: premiumFrequency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPremiumFrequencyAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingInsuranceStatusAggExp
   count:
     enable: true
   graphql:
@@ -226,15 +226,15 @@ definition:
         - fieldName: expirationDate
           orderByExpression: DateOrderByExp
         - fieldName: insuranceType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingInsuranceTypeOrderByExp
         - fieldName: policyNumber
           orderByExpression: VarcharOrderByExp
         - fieldName: premiumAmount
           orderByExpression: NumericOrderByExp
         - fieldName: premiumFrequency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPremiumFrequencyOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingInsuranceStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanCollateral
         - relationshipName: consumerLendingLoanAccount

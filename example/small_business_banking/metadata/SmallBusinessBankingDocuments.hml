@@ -6,9 +6,9 @@ definition:
   description: Stores metadata about business documents with references to their
     file locations
   fields:
-    - name: createdBy
-      type: Varchar
-      description: User or system that created the document record
+    - name: createdById
+      type: Int4
+      description: User that created the document record
     - name: description
       type: Varchar!
       description: Description of the document
@@ -53,9 +53,9 @@ definition:
     - dataConnectorName: small_business_banking
       dataConnectorObjectType: small_business_banking_documents
       fieldMapping:
-        createdBy:
+        createdById:
           column:
-            name: created_by
+            name: created_by_id
         description:
           column:
             name: description
@@ -102,7 +102,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - createdBy
+          - createdById
           - description
           - documentDate
           - documentType
@@ -125,8 +125,8 @@ definition:
     object:
       type: SmallBusinessBankingDocuments
       comparableFields:
-        - fieldName: createdBy
-          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdById
+          booleanExpressionType: Int4BoolExp
         - fieldName: description
           booleanExpressionType: VarcharBoolExp
         - fieldName: documentDate
@@ -169,8 +169,8 @@ definition:
     object:
       aggregatedType: SmallBusinessBankingDocuments
       aggregatableFields:
-        - fieldName: createdBy
-          aggregateExpression: VarcharAggExp
+        - fieldName: createdById
+          aggregateExpression: Int4AggExp
         - fieldName: description
           aggregateExpression: VarcharAggExp
         - fieldName: documentDate
@@ -209,8 +209,8 @@ definition:
     object:
       orderedType: SmallBusinessBankingDocuments
       orderableFields:
-        - fieldName: createdBy
-          orderByExpression: VarcharOrderByExp
+        - fieldName: createdById
+          orderByExpression: Int4OrderByExp
         - fieldName: description
           orderByExpression: VarcharOrderByExp
         - fieldName: documentDate

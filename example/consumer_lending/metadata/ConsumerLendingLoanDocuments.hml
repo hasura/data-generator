@@ -19,8 +19,8 @@ definition:
       type: Varchar!
       description: Path to stored document
     - name: documentType
-      type: Varchar!
-      description: Application, Contract, Statement, etc.
+      type: ConsumerLendingDocumentType!
+      description: Type of document
     - name: expirationDate
       type: Date
       description: Document expiration date if applicable
@@ -37,8 +37,8 @@ definition:
       type: Int4
       description: User who reviewed document
     - name: status
-      type: Varchar!
-      description: Pending, Reviewed, Accepted, Rejected
+      type: ConsumerLendingDocumentStatus!
+      description: Current status of the document
     - name: uploadDate
       type: Timestamp!
       description: When document was created/uploaded
@@ -126,7 +126,7 @@ definition:
         - fieldName: documentPath
           booleanExpressionType: VarcharBoolExp
         - fieldName: documentType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingDocumentTypeBoolExp
         - fieldName: expirationDate
           booleanExpressionType: DateBoolExp
         - fieldName: loanAccountId
@@ -138,7 +138,7 @@ definition:
         - fieldName: reviewerId
           booleanExpressionType: Int4BoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingDocumentStatusBoolExp
         - fieldName: uploadDate
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
@@ -169,7 +169,7 @@ definition:
         - fieldName: documentPath
           aggregateExpression: VarcharAggExp
         - fieldName: documentType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingDocumentTypeAggExp
         - fieldName: expirationDate
           aggregateExpression: DateAggExp
         - fieldName: loanAccountId
@@ -181,7 +181,7 @@ definition:
         - fieldName: reviewerId
           aggregateExpression: Int4AggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingDocumentStatusAggExp
         - fieldName: uploadDate
           aggregateExpression: TimestampAggExp
   count:
@@ -207,7 +207,7 @@ definition:
         - fieldName: documentPath
           orderByExpression: VarcharOrderByExp
         - fieldName: documentType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingDocumentTypeOrderByExp
         - fieldName: expirationDate
           orderByExpression: DateOrderByExp
         - fieldName: loanAccountId
@@ -219,7 +219,7 @@ definition:
         - fieldName: reviewerId
           orderByExpression: Int4OrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingDocumentStatusOrderByExp
         - fieldName: uploadDate
           orderByExpression: TimestampOrderByExp
       orderableRelationships:

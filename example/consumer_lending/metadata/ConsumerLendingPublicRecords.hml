@@ -19,14 +19,14 @@ definition:
       type: Date!
       description: Date record was filed
     - name: recordType
-      type: Varchar!
-      description: Bankruptcy, Lien, Judgment
+      type: ConsumerLendingPublicRecordType!
+      description: Type of public record
     - name: referenceNumber
       type: Varchar
       description: Court or filing reference number
     - name: status
-      type: Varchar!
-      description: Active, Satisfied, Discharged
+      type: ConsumerLendingPublicRecordStatus!
+      description: Current status of the public record
   graphql:
     typeName: ConsumerLending_ConsumerLendingPublicRecords
     inputTypeName: ConsumerLending_ConsumerLendingPublicRecordsInput
@@ -91,11 +91,11 @@ definition:
         - fieldName: filingDate
           booleanExpressionType: DateBoolExp
         - fieldName: recordType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPublicRecordTypeBoolExp
         - fieldName: referenceNumber
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPublicRecordStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingCreditReport
   logicalOperators:
@@ -123,11 +123,11 @@ definition:
         - fieldName: filingDate
           aggregateExpression: DateAggExp
         - fieldName: recordType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPublicRecordTypeAggExp
         - fieldName: referenceNumber
           aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPublicRecordStatusAggExp
   count:
     enable: true
   graphql:
@@ -151,11 +151,11 @@ definition:
         - fieldName: filingDate
           orderByExpression: DateOrderByExp
         - fieldName: recordType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPublicRecordTypeOrderByExp
         - fieldName: referenceNumber
           orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPublicRecordStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingCreditReport
   graphql:

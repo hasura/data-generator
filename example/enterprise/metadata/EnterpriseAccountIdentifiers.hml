@@ -22,8 +22,8 @@ definition:
       type: Varchar
       description: Optional display name for this identifier
     - name: schemeName
-      type: Varchar!
-      description: Naming scheme for the identifier (e.g., IBAN, BIC)
+      type: EnterpriseIdentifierScheme!
+      description: Naming scheme for the identifier
     - name: secondaryIdentification
       type: Varchar
       description: Additional identification value (if applicable)
@@ -93,7 +93,7 @@ definition:
         - fieldName: name
           booleanExpressionType: VarcharBoolExp
         - fieldName: schemeName
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseIdentifierSchemeBoolExp
         - fieldName: secondaryIdentification
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
@@ -125,7 +125,7 @@ definition:
         - fieldName: name
           aggregateExpression: VarcharAggExp
         - fieldName: schemeName
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseIdentifierSchemeAggExp
         - fieldName: secondaryIdentification
           aggregateExpression: VarcharAggExp
   count:
@@ -153,7 +153,7 @@ definition:
         - fieldName: name
           orderByExpression: VarcharOrderByExp
         - fieldName: schemeName
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseIdentifierSchemeOrderByExp
         - fieldName: secondaryIdentification
           orderByExpression: VarcharOrderByExp
       orderableRelationships:

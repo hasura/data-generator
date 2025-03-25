@@ -11,7 +11,7 @@ definition:
       type: Bool
       description: Indicates if this party has beneficial ownership
     - name: citizenshipStatus
-      type: Varchar
+      type: EnterpriseCitizenshipStatus
       description: Citizenship or residency status (for individuals)
     - name: dateOfBirth
       type: Date
@@ -26,13 +26,13 @@ definition:
       type: Varchar
       description: Complete legal name for business entities
     - name: legalStructure
-      type: Varchar
-      description: Legal structure of the organization (e.g., LLC, corporation)
+      type: EnterpriseLegalStructure
+      description: Legal structure of the organization
     - name: lei
       type: Varchar
       description: Legal Entity Identifier for organizations
     - name: maritalStatus
-      type: Varchar
+      type: EnterpriseMaritalStatus
       description: Marital status (for individuals)
     - name: mobile
       type: Varchar
@@ -43,9 +43,12 @@ definition:
     - name: partyNumber
       type: Varchar
       description: Alternative reference number for the party
+    - name: partyStatus
+      type: EnterprisePartyStatus!
+      description: Current status of the party
     - name: partyType
-      type: Varchar!
-      description: Type of party (e.g., individual, organization)
+      type: EnterprisePartyType!
+      description: Type of party (individual or organization)
     - name: phone
       type: Varchar
       description: Primary phone contact
@@ -95,6 +98,9 @@ definition:
         partyNumber:
           column:
             name: party_number
+        partyStatus:
+          column:
+            name: party_status
         partyType:
           column:
             name: party_type
@@ -126,6 +132,7 @@ definition:
           - mobile
           - name
           - partyNumber
+          - partyStatus
           - partyType
           - phone
           - ssn
@@ -142,7 +149,7 @@ definition:
         - fieldName: beneficialOwnership
           booleanExpressionType: BoolBoolExp
         - fieldName: citizenshipStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCitizenshipStatusBoolExp
         - fieldName: dateOfBirth
           booleanExpressionType: DateBoolExp
         - fieldName: emailAddress
@@ -152,26 +159,28 @@ definition:
         - fieldName: fullBusinessLegalName
           booleanExpressionType: VarcharBoolExp
         - fieldName: legalStructure
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseLegalStructureBoolExp
         - fieldName: lei
           booleanExpressionType: VarcharBoolExp
         - fieldName: maritalStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseMaritalStatusBoolExp
         - fieldName: mobile
           booleanExpressionType: VarcharBoolExp
         - fieldName: name
           booleanExpressionType: VarcharBoolExp
         - fieldName: partyNumber
           booleanExpressionType: VarcharBoolExp
+        - fieldName: partyStatus
+          booleanExpressionType: EnterprisePartyStatusBoolExp
         - fieldName: partyType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterprisePartyTypeBoolExp
         - fieldName: phone
           booleanExpressionType: VarcharBoolExp
         - fieldName: ssn
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAccountOwnerships
-        - relationshipName: enterprisePartyAddresses
+        - relationshipName: enterprisePartyEntityAddresses
         - relationshipName: enterprisePartyRelationships
         - relationshipName: enterprisePartyRelationshipsByRelatedPartyId
   logicalOperators:
@@ -193,7 +202,7 @@ definition:
         - fieldName: beneficialOwnership
           aggregateExpression: BoolAggExp
         - fieldName: citizenshipStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCitizenshipStatusAggExp
         - fieldName: dateOfBirth
           aggregateExpression: DateAggExp
         - fieldName: emailAddress
@@ -203,19 +212,21 @@ definition:
         - fieldName: fullBusinessLegalName
           aggregateExpression: VarcharAggExp
         - fieldName: legalStructure
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseLegalStructureAggExp
         - fieldName: lei
           aggregateExpression: VarcharAggExp
         - fieldName: maritalStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseMaritalStatusAggExp
         - fieldName: mobile
           aggregateExpression: VarcharAggExp
         - fieldName: name
           aggregateExpression: VarcharAggExp
         - fieldName: partyNumber
           aggregateExpression: VarcharAggExp
+        - fieldName: partyStatus
+          aggregateExpression: EnterprisePartyStatusAggExp
         - fieldName: partyType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterprisePartyTypeAggExp
         - fieldName: phone
           aggregateExpression: VarcharAggExp
         - fieldName: ssn
@@ -237,7 +248,7 @@ definition:
         - fieldName: beneficialOwnership
           orderByExpression: BoolOrderByExp
         - fieldName: citizenshipStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCitizenshipStatusOrderByExp
         - fieldName: dateOfBirth
           orderByExpression: DateOrderByExp
         - fieldName: emailAddress
@@ -247,19 +258,21 @@ definition:
         - fieldName: fullBusinessLegalName
           orderByExpression: VarcharOrderByExp
         - fieldName: legalStructure
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseLegalStructureOrderByExp
         - fieldName: lei
           orderByExpression: VarcharOrderByExp
         - fieldName: maritalStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseMaritalStatusOrderByExp
         - fieldName: mobile
           orderByExpression: VarcharOrderByExp
         - fieldName: name
           orderByExpression: VarcharOrderByExp
         - fieldName: partyNumber
           orderByExpression: VarcharOrderByExp
+        - fieldName: partyStatus
+          orderByExpression: EnterprisePartyStatusOrderByExp
         - fieldName: partyType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterprisePartyTypeOrderByExp
         - fieldName: phone
           orderByExpression: VarcharOrderByExp
         - fieldName: ssn
@@ -337,14 +350,14 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: enterprisePartyAddresses
+  name: enterprisePartyEntityAddresses
   sourceType: EnterpriseParties
   target:
     model:
-      name: EnterprisePartyAddresses
+      name: EnterprisePartyEntityAddresses
       relationshipType: Array
       aggregate:
-        aggregateExpression: EnterprisePartyAddressesAggExp
+        aggregateExpression: EnterprisePartyEntityAddressesAggExp
   mapping:
     - source:
         fieldPath:
@@ -353,7 +366,7 @@ definition:
         modelField:
           - fieldName: enterprisePartyId
   graphql:
-    aggregateFieldName: enterprisePartyAddressesAggregate
+    aggregateFieldName: enterprisePartyEntityAddressesAggregate
 
 ---
 kind: Relationship

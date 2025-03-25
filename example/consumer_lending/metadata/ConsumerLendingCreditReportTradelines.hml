@@ -10,8 +10,8 @@ definition:
       type: Varchar
       description: Masked account number
     - name: accountType
-      type: Varchar!
-      description: Mortgage, Installment, Revolving, etc.
+      type: ConsumerLendingAccountType!
+      description: Type of credit account
     - name: consumerLendingCreditReportId
       type: Int4!
       description: Reference to credit report
@@ -40,10 +40,10 @@ definition:
       type: Date
       description: When account was opened
     - name: paymentStatus
-      type: Varchar
-      description: Current, 30 days late, etc.
+      type: ConsumerLendingPaymentStatus
+      description: Current status of account payments
     - name: worstDelinquency
-      type: Varchar
+      type: ConsumerLendingDelinquencySeverity
       description: Worst historical delinquency
     - name: worstDelinquencyDate
       type: Date
@@ -134,7 +134,7 @@ definition:
         - fieldName: accountNumber
           booleanExpressionType: VarcharBoolExp
         - fieldName: accountType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingAccountTypeBoolExp
         - fieldName: consumerLendingCreditReportId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingTradelineId
@@ -154,9 +154,9 @@ definition:
         - fieldName: openDate
           booleanExpressionType: DateBoolExp
         - fieldName: paymentStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPaymentStatusBoolExp
         - fieldName: worstDelinquency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingDelinquencySeverityBoolExp
         - fieldName: worstDelinquencyDate
           booleanExpressionType: DateBoolExp
       comparableRelationships:
@@ -180,7 +180,7 @@ definition:
         - fieldName: accountNumber
           aggregateExpression: VarcharAggExp
         - fieldName: accountType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingAccountTypeAggExp
         - fieldName: consumerLendingCreditReportId
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingTradelineId
@@ -200,9 +200,9 @@ definition:
         - fieldName: openDate
           aggregateExpression: DateAggExp
         - fieldName: paymentStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPaymentStatusAggExp
         - fieldName: worstDelinquency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingDelinquencySeverityAggExp
         - fieldName: worstDelinquencyDate
           aggregateExpression: DateAggExp
   count:
@@ -222,7 +222,7 @@ definition:
         - fieldName: accountNumber
           orderByExpression: VarcharOrderByExp
         - fieldName: accountType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingAccountTypeOrderByExp
         - fieldName: consumerLendingCreditReportId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingTradelineId
@@ -242,9 +242,9 @@ definition:
         - fieldName: openDate
           orderByExpression: DateOrderByExp
         - fieldName: paymentStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPaymentStatusOrderByExp
         - fieldName: worstDelinquency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingDelinquencySeverityOrderByExp
         - fieldName: worstDelinquencyDate
           orderByExpression: DateOrderByExp
       orderableRelationships:

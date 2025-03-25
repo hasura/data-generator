@@ -6,18 +6,18 @@ definition:
   description: Logs specific actions taken to collect on delinquent loan accounts,
     such as calls, letters, and emails.
   fields:
-    - name: actionBy
+    - name: actionById
       type: Int4!
       description: User who performed action
     - name: actionDate
       type: Timestamp!
       description: Date/time action was taken
     - name: actionResult
-      type: Varchar
-      description: Contact Made, Left Message, No Answer
+      type: ConsumerLendingCollectionActionResult
+      description: Result of the collection action
     - name: actionType
-      type: Varchar!
-      description: Call, Letter, Email, Field Visit
+      type: ConsumerLendingCollectionActionType!
+      description: Type of collection action
     - name: consumerLendingActionId
       type: Int4!
       description: Unique identifier for collection action
@@ -28,7 +28,7 @@ definition:
       type: Date
       description: Date for next planned action
     - name: nextActionType
-      type: Varchar
+      type: ConsumerLendingNextCollectionActionType
       description: Type of next planned action
     - name: notes
       type: Text
@@ -46,9 +46,9 @@ definition:
     - dataConnectorName: consumer_lending
       dataConnectorObjectType: consumer_lending_collection_actions
       fieldMapping:
-        actionBy:
+        actionById:
           column:
-            name: action_by
+            name: action_by_id
         actionDate:
           column:
             name: action_date
@@ -89,7 +89,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - actionBy
+          - actionById
           - actionDate
           - actionResult
           - actionType
@@ -110,14 +110,14 @@ definition:
     object:
       type: ConsumerLendingCollectionActions
       comparableFields:
-        - fieldName: actionBy
+        - fieldName: actionById
           booleanExpressionType: Int4BoolExp
         - fieldName: actionDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: actionResult
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCollectionActionResultBoolExp
         - fieldName: actionType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCollectionActionTypeBoolExp
         - fieldName: consumerLendingActionId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingCollectionId
@@ -125,7 +125,7 @@ definition:
         - fieldName: nextActionDate
           booleanExpressionType: DateBoolExp
         - fieldName: nextActionType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingNextCollectionActionTypeBoolExp
         - fieldName: notes
           booleanExpressionType: TextBoolExp
         - fieldName: promiseToPayAmount
@@ -150,14 +150,14 @@ definition:
     object:
       aggregatedType: ConsumerLendingCollectionActions
       aggregatableFields:
-        - fieldName: actionBy
+        - fieldName: actionById
           aggregateExpression: Int4AggExp
         - fieldName: actionDate
           aggregateExpression: TimestampAggExp
         - fieldName: actionResult
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCollectionActionResultAggExp
         - fieldName: actionType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCollectionActionTypeAggExp
         - fieldName: consumerLendingActionId
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingCollectionId
@@ -165,7 +165,7 @@ definition:
         - fieldName: nextActionDate
           aggregateExpression: DateAggExp
         - fieldName: nextActionType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingNextCollectionActionTypeAggExp
         - fieldName: notes
           aggregateExpression: TextAggExp
         - fieldName: promiseToPayAmount
@@ -186,14 +186,14 @@ definition:
     object:
       orderedType: ConsumerLendingCollectionActions
       orderableFields:
-        - fieldName: actionBy
+        - fieldName: actionById
           orderByExpression: Int4OrderByExp
         - fieldName: actionDate
           orderByExpression: TimestampOrderByExp
         - fieldName: actionResult
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCollectionActionResultOrderByExp
         - fieldName: actionType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCollectionActionTypeOrderByExp
         - fieldName: consumerLendingActionId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingCollectionId
@@ -201,7 +201,7 @@ definition:
         - fieldName: nextActionDate
           orderByExpression: DateOrderByExp
         - fieldName: nextActionType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingNextCollectionActionTypeOrderByExp
         - fieldName: notes
           orderByExpression: TextOrderByExp
         - fieldName: promiseToPayAmount

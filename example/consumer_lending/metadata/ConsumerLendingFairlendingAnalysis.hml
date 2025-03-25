@@ -13,8 +13,8 @@ definition:
       type: Date!
       description: Date analysis was performed
     - name: analysisType
-      type: Varchar!
-      description: Pricing, Underwriting, Marketing
+      type: ConsumerLendingAnalysisType!
+      description: Type of fair lending analysis
     - name: analyst
       type: Int4
       description: Person who performed analysis
@@ -37,14 +37,14 @@ definition:
       type: Text
       description: Summary of findings
     - name: outcomeVariable
-      type: Varchar!
-      description: Approval Rate, APR, Fees, etc.
+      type: ConsumerLendingOutcomeVariable!
+      description: Outcome being measured
     - name: pValue
       type: Numeric
       description: Statistical significance level
     - name: protectedClass
-      type: Varchar!
-      description: Race, Ethnicity, Sex, Age, etc.
+      type: ConsumerLendingProtectedClass!
+      description: Protected class being analyzed
     - name: reportPath
       type: Varchar
       description: Path to full analysis report
@@ -58,8 +58,8 @@ definition:
       type: Int4!
       description: Number in test group
     - name: statisticalTest
-      type: Varchar
-      description: t-test, chi-square, regression
+      type: ConsumerLendingStatisticalTest
+      description: Statistical method used
     - name: statisticallySignificant
       type: Bool
       description: Whether result is statistically significant
@@ -192,7 +192,7 @@ definition:
         - fieldName: analysisDate
           booleanExpressionType: DateBoolExp
         - fieldName: analysisType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingAnalysisTypeBoolExp
         - fieldName: analyst
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingAnalysisId
@@ -208,11 +208,11 @@ definition:
         - fieldName: findings
           booleanExpressionType: TextBoolExp
         - fieldName: outcomeVariable
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingOutcomeVariableBoolExp
         - fieldName: pValue
           booleanExpressionType: NumericBoolExp
         - fieldName: protectedClass
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingProtectedClassBoolExp
         - fieldName: reportPath
           booleanExpressionType: VarcharBoolExp
         - fieldName: reviewer
@@ -222,7 +222,7 @@ definition:
         - fieldName: sampleSizeTest
           booleanExpressionType: Int4BoolExp
         - fieldName: statisticalTest
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingStatisticalTestBoolExp
         - fieldName: statisticallySignificant
           booleanExpressionType: BoolBoolExp
         - fieldName: testGroup
@@ -254,7 +254,7 @@ definition:
         - fieldName: analysisDate
           aggregateExpression: DateAggExp
         - fieldName: analysisType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingAnalysisTypeAggExp
         - fieldName: analyst
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingAnalysisId
@@ -270,11 +270,11 @@ definition:
         - fieldName: findings
           aggregateExpression: TextAggExp
         - fieldName: outcomeVariable
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingOutcomeVariableAggExp
         - fieldName: pValue
           aggregateExpression: NumericAggExp
         - fieldName: protectedClass
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingProtectedClassAggExp
         - fieldName: reportPath
           aggregateExpression: VarcharAggExp
         - fieldName: reviewer
@@ -284,7 +284,7 @@ definition:
         - fieldName: sampleSizeTest
           aggregateExpression: Int4AggExp
         - fieldName: statisticalTest
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingStatisticalTestAggExp
         - fieldName: statisticallySignificant
           aggregateExpression: BoolAggExp
         - fieldName: testGroup
@@ -312,7 +312,7 @@ definition:
         - fieldName: analysisDate
           orderByExpression: DateOrderByExp
         - fieldName: analysisType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingAnalysisTypeOrderByExp
         - fieldName: analyst
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingAnalysisId
@@ -328,11 +328,11 @@ definition:
         - fieldName: findings
           orderByExpression: TextOrderByExp
         - fieldName: outcomeVariable
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingOutcomeVariableOrderByExp
         - fieldName: pValue
           orderByExpression: NumericOrderByExp
         - fieldName: protectedClass
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingProtectedClassOrderByExp
         - fieldName: reportPath
           orderByExpression: VarcharOrderByExp
         - fieldName: reviewer
@@ -342,7 +342,7 @@ definition:
         - fieldName: sampleSizeTest
           orderByExpression: Int4OrderByExp
         - fieldName: statisticalTest
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingStatisticalTestOrderByExp
         - fieldName: statisticallySignificant
           orderByExpression: BoolOrderByExp
         - fieldName: testGroup

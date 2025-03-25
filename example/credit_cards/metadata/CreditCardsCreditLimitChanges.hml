@@ -5,7 +5,7 @@ definition:
   name: CreditCardsCreditLimitChanges
   description: Tracks history of credit limit changes
   fields:
-    - name: approvedBy
+    - name: approvedById
       type: Int4
       description: User who approved change
     - name: changeDate
@@ -36,9 +36,9 @@ definition:
     - dataConnectorName: credit_cards
       dataConnectorObjectType: credit_cards_credit_limit_changes
       fieldMapping:
-        approvedBy:
+        approvedById:
           column:
-            name: approved_by
+            name: approved_by_id
         changeDate:
           column:
             name: change_date
@@ -70,7 +70,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - approvedBy
+          - approvedById
           - changeDate
           - changeReason
           - creditCardsCardAccountId
@@ -88,7 +88,7 @@ definition:
     object:
       type: CreditCardsCreditLimitChanges
       comparableFields:
-        - fieldName: approvedBy
+        - fieldName: approvedById
           booleanExpressionType: Int4BoolExp
         - fieldName: changeDate
           booleanExpressionType: DateBoolExp
@@ -122,7 +122,7 @@ definition:
     object:
       aggregatedType: CreditCardsCreditLimitChanges
       aggregatableFields:
-        - fieldName: approvedBy
+        - fieldName: approvedById
           aggregateExpression: Int4AggExp
         - fieldName: changeDate
           aggregateExpression: DateAggExp
@@ -152,7 +152,7 @@ definition:
     object:
       orderedType: CreditCardsCreditLimitChanges
       orderableFields:
-        - fieldName: approvedBy
+        - fieldName: approvedById
           orderByExpression: Int4OrderByExp
         - fieldName: changeDate
           orderByExpression: DateOrderByExp

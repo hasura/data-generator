@@ -34,14 +34,14 @@ definition:
       type: Date!
       description: Date payment is effective
     - name: paymentMethod
-      type: Varchar!
-      description: ACH, Check, Online, etc.
+      type: ConsumerLendingPaymentMethod!
+      description: Method used to make payment
     - name: paymentStatus
-      type: Varchar!
-      description: Pending, Completed, Returned, Canceled
+      type: ConsumerLendingLoanPaymentStatus!
+      description: Current status of the payment
     - name: paymentType
-      type: Varchar!
-      description: Regular, Extra Principal, Late
+      type: ConsumerLendingPaymentType!
+      description: Type of payment
     - name: principalAmount
       type: Numeric!
       description: Amount applied to principal
@@ -164,11 +164,11 @@ definition:
         - fieldName: paymentEffectiveDate
           booleanExpressionType: DateBoolExp
         - fieldName: paymentMethod
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPaymentMethodBoolExp
         - fieldName: paymentStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingLoanPaymentStatusBoolExp
         - fieldName: paymentType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPaymentTypeBoolExp
         - fieldName: principalAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: returnedDate
@@ -216,11 +216,11 @@ definition:
         - fieldName: paymentEffectiveDate
           aggregateExpression: DateAggExp
         - fieldName: paymentMethod
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPaymentMethodAggExp
         - fieldName: paymentStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingLoanPaymentStatusAggExp
         - fieldName: paymentType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPaymentTypeAggExp
         - fieldName: principalAmount
           aggregateExpression: NumericAggExp
         - fieldName: returnedDate
@@ -262,11 +262,11 @@ definition:
         - fieldName: paymentEffectiveDate
           orderByExpression: DateOrderByExp
         - fieldName: paymentMethod
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPaymentMethodOrderByExp
         - fieldName: paymentStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingLoanPaymentStatusOrderByExp
         - fieldName: paymentType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPaymentTypeOrderByExp
         - fieldName: principalAmount
           orderByExpression: NumericOrderByExp
         - fieldName: returnedDate

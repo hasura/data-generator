@@ -6,11 +6,11 @@ definition:
   description: Table storing information about systems, including hardware,
     software, and status details.
   fields:
-    - name: agentId
+    - name: agentIdentifier
       type: Varchar
       description: Identifier of the agent installed on the system.
     - name: agentStatus
-      type: Varchar
+      type: SecurityAgentStatus
       description: Status of the agent installed on the system.
     - name: agentVersion
       type: Varchar
@@ -25,16 +25,16 @@ definition:
       type: Date
       description: Date when the system was checked out.
     - name: compliance
-      type: Varchar
+      type: SecurityComplianceStatus
       description: Compliance status of the system.
     - name: hostname
       type: Varchar
       description: Hostname of the system.
     - name: ipAddressExternal
-      type: Varchar
+      type: Inet
       description: External IP address of the system.
     - name: ipAddressInternal
-      type: Varchar
+      type: Inet
       description: Internal IP address of the system.
     - name: lastPatched
       type: Timestamp
@@ -55,7 +55,7 @@ definition:
       type: Varchar
       description: Patch level of the system.
     - name: patchStatus
-      type: Varchar
+      type: SecurityPatchStatus
       description: Status of system patches.
     - name: patchUpdateAvailable
       type: Bool
@@ -64,7 +64,7 @@ definition:
       type: Uuid!
       description: Unique identifier for the system.
     - name: systemType
-      type: Varchar
+      type: SecuritySystemType
       description: Type of the system (e.g., server, workstation).
   graphql:
     typeName: Security_SecurityHosts
@@ -73,9 +73,9 @@ definition:
     - dataConnectorName: security
       dataConnectorObjectType: security_hosts
       fieldMapping:
-        agentId:
+        agentIdentifier:
           column:
-            name: agent_id
+            name: agent_identifier
         agentStatus:
           column:
             name: agent_status
@@ -143,7 +143,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - agentId
+          - agentIdentifier
           - agentStatus
           - agentVersion
           - assetOwnerEmail
@@ -173,10 +173,10 @@ definition:
     object:
       type: SecurityHosts
       comparableFields:
-        - fieldName: agentId
+        - fieldName: agentIdentifier
           booleanExpressionType: VarcharBoolExp
         - fieldName: agentStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: SecurityAgentStatusBoolExp
         - fieldName: agentVersion
           booleanExpressionType: VarcharBoolExp
         - fieldName: assetOwnerEmail
@@ -186,13 +186,13 @@ definition:
         - fieldName: checkedOutDate
           booleanExpressionType: DateBoolExp
         - fieldName: compliance
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: SecurityComplianceStatusBoolExp
         - fieldName: hostname
           booleanExpressionType: VarcharBoolExp
         - fieldName: ipAddressExternal
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: InetBoolExp
         - fieldName: ipAddressInternal
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: InetBoolExp
         - fieldName: lastPatched
           booleanExpressionType: TimestampBoolExp
         - fieldName: lastSeen
@@ -206,13 +206,13 @@ definition:
         - fieldName: patchLevel
           booleanExpressionType: VarcharBoolExp
         - fieldName: patchStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: SecurityPatchStatusBoolExp
         - fieldName: patchUpdateAvailable
           booleanExpressionType: BoolBoolExp
         - fieldName: securityHostId
           booleanExpressionType: UuidBoolExp
         - fieldName: systemType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: SecuritySystemTypeBoolExp
       comparableRelationships:
         - relationshipName: securityFileAccesses
         - relationshipName: securityFiles
@@ -220,6 +220,7 @@ definition:
         - relationshipName: securityNetworkConnections
         - relationshipName: securityOpenPorts
         - relationshipName: securityProcessExecutions
+        - relationshipName: securityResourceDefinitions
         - relationshipName: securityRunningServices
         - relationshipName: securitySystemStats
         - relationshipName: securityUsbDeviceUsages
@@ -239,10 +240,10 @@ definition:
     object:
       aggregatedType: SecurityHosts
       aggregatableFields:
-        - fieldName: agentId
+        - fieldName: agentIdentifier
           aggregateExpression: VarcharAggExp
         - fieldName: agentStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: SecurityAgentStatusAggExp
         - fieldName: agentVersion
           aggregateExpression: VarcharAggExp
         - fieldName: assetOwnerEmail
@@ -252,13 +253,13 @@ definition:
         - fieldName: checkedOutDate
           aggregateExpression: DateAggExp
         - fieldName: compliance
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: SecurityComplianceStatusAggExp
         - fieldName: hostname
           aggregateExpression: VarcharAggExp
         - fieldName: ipAddressExternal
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: InetAggExp
         - fieldName: ipAddressInternal
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: InetAggExp
         - fieldName: lastPatched
           aggregateExpression: TimestampAggExp
         - fieldName: lastSeen
@@ -272,13 +273,13 @@ definition:
         - fieldName: patchLevel
           aggregateExpression: VarcharAggExp
         - fieldName: patchStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: SecurityPatchStatusAggExp
         - fieldName: patchUpdateAvailable
           aggregateExpression: BoolAggExp
         - fieldName: securityHostId
           aggregateExpression: UuidAggExp
         - fieldName: systemType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: SecuritySystemTypeAggExp
   count:
     enable: true
   graphql:
@@ -293,10 +294,10 @@ definition:
     object:
       orderedType: SecurityHosts
       orderableFields:
-        - fieldName: agentId
+        - fieldName: agentIdentifier
           orderByExpression: VarcharOrderByExp
         - fieldName: agentStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: SecurityAgentStatusOrderByExp
         - fieldName: agentVersion
           orderByExpression: VarcharOrderByExp
         - fieldName: assetOwnerEmail
@@ -306,13 +307,13 @@ definition:
         - fieldName: checkedOutDate
           orderByExpression: DateOrderByExp
         - fieldName: compliance
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: SecurityComplianceStatusOrderByExp
         - fieldName: hostname
           orderByExpression: VarcharOrderByExp
         - fieldName: ipAddressExternal
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: InetOrderByExp
         - fieldName: ipAddressInternal
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: InetOrderByExp
         - fieldName: lastPatched
           orderByExpression: TimestampOrderByExp
         - fieldName: lastSeen
@@ -326,13 +327,13 @@ definition:
         - fieldName: patchLevel
           orderByExpression: VarcharOrderByExp
         - fieldName: patchStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: SecurityPatchStatusOrderByExp
         - fieldName: patchUpdateAvailable
           orderByExpression: BoolOrderByExp
         - fieldName: securityHostId
           orderByExpression: UuidOrderByExp
         - fieldName: systemType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: SecuritySystemTypeOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_SecurityHostsOrderByExp
@@ -510,6 +511,28 @@ definition:
           - fieldName: securityHostId
   graphql:
     aggregateFieldName: securityProcessExecutionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityResourceDefinitions
+  sourceType: SecurityHosts
+  target:
+    model:
+      name: SecurityResourceDefinitions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityResourceDefinitionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityHostId
+      target:
+        modelField:
+          - fieldName: hostId
+  graphql:
+    aggregateFieldName: securityResourceDefinitionsAggregate
 
 ---
 kind: Relationship

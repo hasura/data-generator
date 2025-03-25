@@ -13,8 +13,8 @@ definition:
       type: Text
       description: Description of the threat associated with the file.
     - name: threatLevel
-      type: Varchar
-      description: Level of threat associated with the file (e.g., high, medium, low).
+      type: SecurityThreatLevelType!
+      description: Level of threat associated with the file.
   graphql:
     typeName: Security_SecurityFileThreats
     inputTypeName: Security_SecurityFileThreatsInput
@@ -59,7 +59,7 @@ definition:
         - fieldName: threatDescription
           booleanExpressionType: TextBoolExp
         - fieldName: threatLevel
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: SecurityThreatLevelTypeBoolExp
       comparableRelationships: []
   logicalOperators:
     enable: true
@@ -82,7 +82,7 @@ definition:
         - fieldName: threatDescription
           aggregateExpression: TextAggExp
         - fieldName: threatLevel
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: SecurityThreatLevelTypeAggExp
   count:
     enable: true
   graphql:
@@ -102,7 +102,7 @@ definition:
         - fieldName: threatDescription
           orderByExpression: TextOrderByExp
         - fieldName: threatLevel
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: SecurityThreatLevelTypeOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_SecurityFileThreatsOrderByExp

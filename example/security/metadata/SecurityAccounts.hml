@@ -38,6 +38,9 @@ definition:
     - name: securitySourceId
       type: Uuid
       description: Identifier of the source system for the account.
+    - name: statusUpdateDateTime
+      type: Timestamp
+      description: Timestamp when the account status was last updated
   graphql:
     typeName: Security_SecurityAccounts
     inputTypeName: Security_SecurityAccountsInput
@@ -78,6 +81,9 @@ definition:
         securitySourceId:
           column:
             name: security_source_id
+        statusUpdateDateTime:
+          column:
+            name: status_update_date_time
 
 ---
 kind: TypePermissions
@@ -99,6 +105,7 @@ definition:
           - securityAccountId
           - securityIdentityId
           - securitySourceId
+          - statusUpdateDateTime
 
 ---
 kind: BooleanExpressionType
@@ -131,9 +138,11 @@ definition:
           booleanExpressionType: UuidBoolExp
         - fieldName: securitySourceId
           booleanExpressionType: UuidBoolExp
+        - fieldName: statusUpdateDateTime
+          booleanExpressionType: TimestampBoolExp
       comparableRelationships:
-        - relationshipName: securityAccountEntitlementAttributes
         - relationshipName: securityIdentity
+        - relationshipName: securityIamLogins
   logicalOperators:
     enable: true
   isNull:
@@ -172,6 +181,8 @@ definition:
           aggregateExpression: UuidAggExp
         - fieldName: securitySourceId
           aggregateExpression: UuidAggExp
+        - fieldName: statusUpdateDateTime
+          aggregateExpression: TimestampAggExp
   count:
     enable: true
   graphql:
@@ -208,6 +219,8 @@ definition:
           orderByExpression: UuidOrderByExp
         - fieldName: securitySourceId
           orderByExpression: UuidOrderByExp
+        - fieldName: statusUpdateDateTime
+          orderByExpression: TimestampOrderByExp
       orderableRelationships:
         - relationshipName: securityIdentity
   graphql:
@@ -258,28 +271,6 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: securityAccountEntitlementAttributes
-  sourceType: SecurityAccounts
-  target:
-    model:
-      name: SecurityAccountEntitlementAttributes
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: SecurityAccountEntitlementAttributesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securityAccountId
-      target:
-        modelField:
-          - fieldName: securityAccountId
-  graphql:
-    aggregateFieldName: securityAccountEntitlementAttributesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
   name: securityIdentity
   sourceType: SecurityAccounts
   target:
@@ -293,4 +284,26 @@ definition:
       target:
         modelField:
           - fieldName: securityIdentityId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityIamLogins
+  sourceType: SecurityAccounts
+  target:
+    model:
+      name: SecurityIamLogins
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityIamLoginsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityAccountId
+      target:
+        modelField:
+          - fieldName: securityAccountId
+  graphql:
+    aggregateFieldName: securityIamLoginsAggregate
 

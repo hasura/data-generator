@@ -10,7 +10,7 @@ definition:
       description: Account number for the liability
     - name: creditorName
       type: Varchar!
-      description: Name of the creditor
+      description: Name of creditor
     - name: currentBalance
       type: Numeric!
       description: Current outstanding balance
@@ -18,7 +18,7 @@ definition:
       type: Numeric
       description: Current interest rate on the liability
     - name: liabilityType
-      type: Varchar!
+      type: MortgageServicesLiabilityType!
       description: Type of debt or obligation
     - name: maturityDate
       type: Date
@@ -42,11 +42,11 @@ definition:
       type: Date
       description: When the liability was verified
     - name: verificationStatus
-      type: Varchar!
+      type: MortgageServicesVerificationStatus!
       description: Status of liability verification process
     - name: willBePaidOff
-      type: Bool
-      description: Indicates if this liability will be paid off with the mortgage proceeds
+      type: Bool!
+      description: Whether this liability will be paid off with the mortgage proceeds
   graphql:
     typeName: MortgageServices_MortgageServicesBorrowerLiabilities
     inputTypeName: MortgageServices_MortgageServicesBorrowerLiabilitiesInput
@@ -139,7 +139,7 @@ definition:
         - fieldName: interestRate
           booleanExpressionType: NumericBoolExp
         - fieldName: liabilityType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesLiabilityTypeBoolExp
         - fieldName: maturityDate
           booleanExpressionType: DateBoolExp
         - fieldName: monthlyPayment
@@ -155,7 +155,7 @@ definition:
         - fieldName: verificationDate
           booleanExpressionType: DateBoolExp
         - fieldName: verificationStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesVerificationStatusBoolExp
         - fieldName: willBePaidOff
           booleanExpressionType: BoolBoolExp
       comparableRelationships:
@@ -185,7 +185,7 @@ definition:
         - fieldName: interestRate
           aggregateExpression: NumericAggExp
         - fieldName: liabilityType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesLiabilityTypeAggExp
         - fieldName: maturityDate
           aggregateExpression: DateAggExp
         - fieldName: monthlyPayment
@@ -201,7 +201,7 @@ definition:
         - fieldName: verificationDate
           aggregateExpression: DateAggExp
         - fieldName: verificationStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesVerificationStatusAggExp
         - fieldName: willBePaidOff
           aggregateExpression: BoolAggExp
   count:
@@ -227,7 +227,7 @@ definition:
         - fieldName: interestRate
           orderByExpression: NumericOrderByExp
         - fieldName: liabilityType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesLiabilityTypeOrderByExp
         - fieldName: maturityDate
           orderByExpression: DateOrderByExp
         - fieldName: monthlyPayment
@@ -243,7 +243,7 @@ definition:
         - fieldName: verificationDate
           orderByExpression: DateOrderByExp
         - fieldName: verificationStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesVerificationStatusOrderByExp
         - fieldName: willBePaidOff
           orderByExpression: BoolOrderByExp
       orderableRelationships:

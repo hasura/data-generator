@@ -10,8 +10,8 @@ definition:
       type: Timestamp!
       description: Date/time of communication
     - name: communicationType
-      type: Varchar!
-      description: Email, Letter, Phone Call, Text
+      type: ConsumerLendingCommunicationType!
+      description: Method of communication
     - name: consumerLendingApplicationId
       type: Int4
       description: Reference to loan application if applicable
@@ -22,8 +22,8 @@ definition:
       type: Text
       description: Communication content or transcript
     - name: direction
-      type: Varchar!
-      description: Inbound, Outbound
+      type: ConsumerLendingCommunicationDirection!
+      description: Direction of communication
     - name: documentPath
       type: Varchar
       description: Path to stored communication document
@@ -34,14 +34,14 @@ definition:
       type: Varchar
       description: Person who received communication
     - name: relatedTo
-      type: Varchar
-      description: Payment Reminder, Statement, Notice, etc.
+      type: ConsumerLendingCommunicationContext
+      description: Context or purpose of communication
     - name: sender
       type: Varchar
       description: Person or system that sent communication
     - name: status
-      type: Varchar!
-      description: Sent, Delivered, Failed, Received
+      type: ConsumerLendingCommunicationStatus!
+      description: Current status of communication
     - name: subject
       type: Varchar
       description: Communication subject
@@ -134,7 +134,7 @@ definition:
         - fieldName: communicationDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: communicationType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCommunicationTypeBoolExp
         - fieldName: consumerLendingApplicationId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingCommunicationId
@@ -142,7 +142,7 @@ definition:
         - fieldName: content
           booleanExpressionType: TextBoolExp
         - fieldName: direction
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCommunicationDirectionBoolExp
         - fieldName: documentPath
           booleanExpressionType: VarcharBoolExp
         - fieldName: loanAccountId
@@ -150,11 +150,11 @@ definition:
         - fieldName: recipient
           booleanExpressionType: VarcharBoolExp
         - fieldName: relatedTo
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCommunicationContextBoolExp
         - fieldName: sender
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCommunicationStatusBoolExp
         - fieldName: subject
           booleanExpressionType: VarcharBoolExp
         - fieldName: templateId
@@ -181,7 +181,7 @@ definition:
         - fieldName: communicationDate
           aggregateExpression: TimestampAggExp
         - fieldName: communicationType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCommunicationTypeAggExp
         - fieldName: consumerLendingApplicationId
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingCommunicationId
@@ -189,7 +189,7 @@ definition:
         - fieldName: content
           aggregateExpression: TextAggExp
         - fieldName: direction
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCommunicationDirectionAggExp
         - fieldName: documentPath
           aggregateExpression: VarcharAggExp
         - fieldName: loanAccountId
@@ -197,11 +197,11 @@ definition:
         - fieldName: recipient
           aggregateExpression: VarcharAggExp
         - fieldName: relatedTo
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCommunicationContextAggExp
         - fieldName: sender
           aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCommunicationStatusAggExp
         - fieldName: subject
           aggregateExpression: VarcharAggExp
         - fieldName: templateId
@@ -223,7 +223,7 @@ definition:
         - fieldName: communicationDate
           orderByExpression: TimestampOrderByExp
         - fieldName: communicationType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCommunicationTypeOrderByExp
         - fieldName: consumerLendingApplicationId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingCommunicationId
@@ -231,7 +231,7 @@ definition:
         - fieldName: content
           orderByExpression: TextOrderByExp
         - fieldName: direction
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCommunicationDirectionOrderByExp
         - fieldName: documentPath
           orderByExpression: VarcharOrderByExp
         - fieldName: loanAccountId
@@ -239,11 +239,11 @@ definition:
         - fieldName: recipient
           orderByExpression: VarcharOrderByExp
         - fieldName: relatedTo
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCommunicationContextOrderByExp
         - fieldName: sender
           orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCommunicationStatusOrderByExp
         - fieldName: subject
           orderByExpression: VarcharOrderByExp
         - fieldName: templateId

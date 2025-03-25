@@ -4,11 +4,12 @@ version: v1
 definition:
   name: MortgageServicesApplicationBorrowers
   description: Junction table linking mortgage applications to borrowers,
-    supporting multiple borrowers per application
+    supporting multiple borrowers per application and tracking their roles and
+    relationships
   fields:
     - name: borrowerType
-      type: Varchar!
-      description: Role of this borrower (e.g., Primary, Co-Borrower)
+      type: MortgageServicesBorrowerType!
+      description: Role of this borrower (Primary, Co-Borrower, etc.)
     - name: contributionPercentage
       type: Numeric
       description: Percentage of financial contribution to the loan
@@ -22,7 +23,7 @@ definition:
       type: Int4!
       description: References the borrower associated with this application
     - name: relationshipToPrimary
-      type: Varchar
+      type: MortgageServicesRelationshipType
       description: Relationship of co-borrower to primary borrower
   graphql:
     typeName: MortgageServices_MortgageServicesApplicationBorrowers
@@ -76,7 +77,7 @@ definition:
       type: MortgageServicesApplicationBorrowers
       comparableFields:
         - fieldName: borrowerType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesBorrowerTypeBoolExp
         - fieldName: contributionPercentage
           booleanExpressionType: NumericBoolExp
         - fieldName: mortgageServicesApplicationBorrowerId
@@ -86,7 +87,7 @@ definition:
         - fieldName: mortgageServicesBorrowerId
           booleanExpressionType: Int4BoolExp
         - fieldName: relationshipToPrimary
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesRelationshipTypeBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesBorrower
@@ -107,7 +108,7 @@ definition:
       aggregatedType: MortgageServicesApplicationBorrowers
       aggregatableFields:
         - fieldName: borrowerType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesBorrowerTypeAggExp
         - fieldName: contributionPercentage
           aggregateExpression: NumericAggExp
         - fieldName: mortgageServicesApplicationBorrowerId
@@ -117,7 +118,7 @@ definition:
         - fieldName: mortgageServicesBorrowerId
           aggregateExpression: Int4AggExp
         - fieldName: relationshipToPrimary
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesRelationshipTypeAggExp
   count:
     enable: true
   graphql:
@@ -133,7 +134,7 @@ definition:
       orderedType: MortgageServicesApplicationBorrowers
       orderableFields:
         - fieldName: borrowerType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesBorrowerTypeOrderByExp
         - fieldName: contributionPercentage
           orderByExpression: NumericOrderByExp
         - fieldName: mortgageServicesApplicationBorrowerId
@@ -143,7 +144,7 @@ definition:
         - fieldName: mortgageServicesBorrowerId
           orderByExpression: Int4OrderByExp
         - fieldName: relationshipToPrimary
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesRelationshipTypeOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesBorrower
@@ -180,7 +181,8 @@ definition:
       subscription:
         rootField: mortgageServicesApplicationBorrowersAggregate
   description: Junction table linking mortgage applications to borrowers,
-    supporting multiple borrowers per application
+    supporting multiple borrowers per application and tracking their roles and
+    relationships
 
 ---
 kind: ModelPermissions

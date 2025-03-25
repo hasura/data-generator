@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SecurityEnhancedEntitlements
+  description: Defines granular entitlements that can be granted to roles
+  fields:
+    - name: createdAt
+      type: Timestamp
+      description: When the entitlement was created
+    - name: createdById
+      type: Int4
+      description: Who created the entitlement
+    - name: description
+      type: Text
+      description: Description of what the entitlement grants access to
+    - name: displayName
+      type: Varchar
+      description: User-friendly name for the entitlement
+    - name: entitlementName
+      type: Varchar!
+      description: Internal name for the entitlement
+    - name: managingApplicationId
+      type: Uuid
+      description: Application that manages this entitlement
+    - name: securityEntitlementId
+      type: Uuid!
+      description: Unique identifier for the entitlement
+    - name: status
+      type: SecurityEntitlementStatus!
+      description: Current status of the entitlement
+  graphql:
+    typeName: Security_SecurityEnhancedEntitlements
+    inputTypeName: Security_SecurityEnhancedEntitlementsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_enhanced_entitlements
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        createdById:
+          column:
+            name: created_by_id
+        description:
+          column:
+            name: description
+        displayName:
+          column:
+            name: display_name
+        entitlementName:
+          column:
+            name: entitlement_name
+        managingApplicationId:
+          column:
+            name: managing_application_id
+        securityEntitlementId:
+          column:
+            name: security_entitlement_id
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SecurityEnhancedEntitlements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - createdById
+          - description
+          - displayName
+          - entitlementName
+          - managingApplicationId
+          - securityEntitlementId
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityEnhancedEntitlementsBoolExp
+  operand:
+    object:
+      type: SecurityEnhancedEntitlements
+      comparableFields:
+        - fieldName: createdAt
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: createdById
+          booleanExpressionType: Int4BoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: displayName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: entitlementName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: managingApplicationId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: securityEntitlementId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: status
+          booleanExpressionType: SecurityEntitlementStatusBoolExp
+      comparableRelationships:
+        - relationshipName: securityEntitlementResources
+        - relationshipName: securityRoleEntitlements
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityEnhancedEntitlementsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityEnhancedEntitlementsAggExp
+  operand:
+    object:
+      aggregatedType: SecurityEnhancedEntitlements
+      aggregatableFields:
+        - fieldName: createdAt
+          aggregateExpression: TimestampAggExp
+        - fieldName: createdById
+          aggregateExpression: Int4AggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: displayName
+          aggregateExpression: VarcharAggExp
+        - fieldName: entitlementName
+          aggregateExpression: VarcharAggExp
+        - fieldName: managingApplicationId
+          aggregateExpression: UuidAggExp
+        - fieldName: securityEntitlementId
+          aggregateExpression: UuidAggExp
+        - fieldName: status
+          aggregateExpression: SecurityEntitlementStatusAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityEnhancedEntitlementsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityEnhancedEntitlementsOrderByExp
+  operand:
+    object:
+      orderedType: SecurityEnhancedEntitlements
+      orderableFields:
+        - fieldName: createdAt
+          orderByExpression: TimestampOrderByExp
+        - fieldName: createdById
+          orderByExpression: Int4OrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: displayName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: entitlementName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: managingApplicationId
+          orderByExpression: UuidOrderByExp
+        - fieldName: securityEntitlementId
+          orderByExpression: UuidOrderByExp
+        - fieldName: status
+          orderByExpression: SecurityEntitlementStatusOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_SecurityEnhancedEntitlementsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SecurityEnhancedEntitlements
+  objectType: SecurityEnhancedEntitlements
+  source:
+    dataConnectorName: security
+    collection: security_enhanced_entitlements
+  filterExpressionType: SecurityEnhancedEntitlementsBoolExp
+  aggregateExpression: SecurityEnhancedEntitlementsAggExp
+  orderByExpression: SecurityEnhancedEntitlementsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: securityEnhancedEntitlements
+      subscription:
+        rootField: securityEnhancedEntitlements
+    selectUniques:
+      - queryRootField: securityEnhancedEntitlementsBySecurityEntitlementId
+        uniqueIdentifier:
+          - securityEntitlementId
+        subscription:
+          rootField: securityEnhancedEntitlementsBySecurityEntitlementId
+    filterInputTypeName: Security_SecurityEnhancedEntitlementsFilterInput
+    aggregate:
+      queryRootField: securityEnhancedEntitlementsAggregate
+      subscription:
+        rootField: securityEnhancedEntitlementsAggregate
+  description: Defines granular entitlements that can be granted to roles
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SecurityEnhancedEntitlements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityEntitlementResources
+  sourceType: SecurityEnhancedEntitlements
+  target:
+    model:
+      name: SecurityEntitlementResources
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityEntitlementResourcesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityEntitlementId
+      target:
+        modelField:
+          - fieldName: securityEntitlementId
+  graphql:
+    aggregateFieldName: securityEntitlementResourcesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityRoleEntitlements
+  sourceType: SecurityEnhancedEntitlements
+  target:
+    model:
+      name: SecurityRoleEntitlements
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityRoleEntitlementsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityEntitlementId
+      target:
+        modelField:
+          - fieldName: securityEntitlementId
+  graphql:
+    aggregateFieldName: securityRoleEntitlementsAggregate
+

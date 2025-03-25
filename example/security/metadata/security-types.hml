@@ -74,53 +74,105 @@ definition:
 kind: ScalarType
 version: v1
 definition:
-  name: Int4
+  name: Timestamp
   graphql:
-    typeName: Security_Int4
+    typeName: Security_Timestamp
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: Int4BoolExp
+  name: TimestampBoolExp
   operand:
     scalar:
-      type: Int4
+      type: Timestamp
       comparisonOperators:
         - name: _eq
-          argumentType: Int4!
+          argumentType: Timestamp!
         - name: _gt
-          argumentType: Int4!
+          argumentType: Timestamp!
         - name: _gte
-          argumentType: Int4!
+          argumentType: Timestamp!
         - name: _in
-          argumentType: "[Int4!]!"
+          argumentType: "[Timestamp!]!"
         - name: _lt
-          argumentType: Int4!
+          argumentType: Timestamp!
         - name: _lte
-          argumentType: Int4!
+          argumentType: Timestamp!
         - name: _neq
-          argumentType: Int4!
+          argumentType: Timestamp!
       dataConnectorOperatorMapping:
         - dataConnectorName: security
-          dataConnectorScalarType: int4
+          dataConnectorScalarType: timestamp
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: Security_Int4BoolExp
+    typeName: Security_TimestampBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: security
-  dataConnectorScalarType: int4
-  representation: Int4
+  dataConnectorScalarType: timestamp
+  representation: Timestamp
   graphql:
-    comparisonExpressionTypeName: Security_Int4ComparisonExp
+    comparisonExpressionTypeName: Security_TimestampComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Bool
+  graphql:
+    typeName: Security_Bool
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BoolBoolExp
+  operand:
+    scalar:
+      type: Bool
+      comparisonOperators:
+        - name: _eq
+          argumentType: Bool!
+        - name: _gt
+          argumentType: Bool!
+        - name: _gte
+          argumentType: Bool!
+        - name: _in
+          argumentType: "[Bool!]!"
+        - name: _lt
+          argumentType: Bool!
+        - name: _lte
+          argumentType: Bool!
+        - name: _neq
+          argumentType: Bool!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: bool
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_BoolBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: bool
+  representation: Bool
+  graphql:
+    comparisonExpressionTypeName: Security_BoolComparisonExp
 
 ---
 kind: ScalarType
@@ -273,6 +325,231 @@ definition:
     enable: true
   graphql:
     selectTypeName: Security_VarcharAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: TimestampAggExp
+  operand:
+    scalar:
+      aggregatedType: Timestamp
+      aggregationFunctions:
+        - name: max
+          returnType: Timestamp
+        - name: min
+          returnType: Timestamp
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: timestamp
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_TimestampAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: BoolAggExp
+  operand:
+    scalar:
+      aggregatedType: Bool
+      aggregationFunctions:
+        - name: bool_and
+          returnType: Bool
+        - name: bool_or
+          returnType: Bool
+        - name: every
+          returnType: Bool
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: bool
+          functionMapping:
+            bool_and:
+              name: bool_and
+            bool_or:
+              name: bool_or
+            every:
+              name: every
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_BoolAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: UuidAggExp
+  operand:
+    scalar:
+      aggregatedType: Uuid
+      aggregationFunctions: []
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: uuid
+          functionMapping: {}
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_UuidAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: VarcharOrderByExp
+  operand:
+    scalar:
+      orderedType: Varchar
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_VarcharOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: TimestampOrderByExp
+  operand:
+    scalar:
+      orderedType: Timestamp
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_TimestampOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: BoolOrderByExp
+  operand:
+    scalar:
+      orderedType: Bool
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_BoolOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: UuidOrderByExp
+  operand:
+    scalar:
+      orderedType: Uuid
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_UuidOrderByExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: TextAggExp
+  operand:
+    scalar:
+      aggregatedType: Text
+      aggregationFunctions:
+        - name: max
+          returnType: Text
+        - name: min
+          returnType: Text
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: text
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_TextAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: TextOrderByExp
+  operand:
+    scalar:
+      orderedType: Text
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_TextOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Int4
+  graphql:
+    typeName: Security_Int4
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Int4BoolExp
+  operand:
+    scalar:
+      type: Int4
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int4!
+        - name: _gt
+          argumentType: Int4!
+        - name: _gte
+          argumentType: Int4!
+        - name: _in
+          argumentType: "[Int4!]!"
+        - name: _lt
+          argumentType: Int4!
+        - name: _lte
+          argumentType: Int4!
+        - name: _neq
+          argumentType: Int4!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: int4
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_Int4BoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: int4
+  representation: Int4
+  graphql:
+    comparisonExpressionTypeName: Security_Int4ComparisonExp
 
 ---
 kind: ScalarType
@@ -451,39 +728,6 @@ definition:
     selectTypeName: Security_Int4AggExp
 
 ---
-kind: AggregateExpression
-version: v1
-definition:
-  name: UuidAggExp
-  operand:
-    scalar:
-      aggregatedType: Uuid
-      aggregationFunctions: []
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: security
-          dataConnectorScalarType: uuid
-          functionMapping: {}
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: Security_UuidAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: VarcharOrderByExp
-  operand:
-    scalar:
-      orderedType: Varchar
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: Security_VarcharOrderByExp
-
----
 kind: OrderByExpression
 version: v1
 definition:
@@ -495,250 +739,6 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: Security_Int4OrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: UuidOrderByExp
-  operand:
-    scalar:
-      orderedType: Uuid
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: Security_UuidOrderByExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Timestamp
-  graphql:
-    typeName: Security_Timestamp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: TimestampBoolExp
-  operand:
-    scalar:
-      type: Timestamp
-      comparisonOperators:
-        - name: _eq
-          argumentType: Timestamp!
-        - name: _gt
-          argumentType: Timestamp!
-        - name: _gte
-          argumentType: Timestamp!
-        - name: _in
-          argumentType: "[Timestamp!]!"
-        - name: _lt
-          argumentType: Timestamp!
-        - name: _lte
-          argumentType: Timestamp!
-        - name: _neq
-          argumentType: Timestamp!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: security
-          dataConnectorScalarType: timestamp
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: Security_TimestampBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: security
-  dataConnectorScalarType: timestamp
-  representation: Timestamp
-  graphql:
-    comparisonExpressionTypeName: Security_TimestampComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Bool
-  graphql:
-    typeName: Security_Bool
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: BoolBoolExp
-  operand:
-    scalar:
-      type: Bool
-      comparisonOperators:
-        - name: _eq
-          argumentType: Bool!
-        - name: _gt
-          argumentType: Bool!
-        - name: _gte
-          argumentType: Bool!
-        - name: _in
-          argumentType: "[Bool!]!"
-        - name: _lt
-          argumentType: Bool!
-        - name: _lte
-          argumentType: Bool!
-        - name: _neq
-          argumentType: Bool!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: security
-          dataConnectorScalarType: bool
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: Security_BoolBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: security
-  dataConnectorScalarType: bool
-  representation: Bool
-  graphql:
-    comparisonExpressionTypeName: Security_BoolComparisonExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: TimestampAggExp
-  operand:
-    scalar:
-      aggregatedType: Timestamp
-      aggregationFunctions:
-        - name: max
-          returnType: Timestamp
-        - name: min
-          returnType: Timestamp
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: security
-          dataConnectorScalarType: timestamp
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: Security_TimestampAggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: BoolAggExp
-  operand:
-    scalar:
-      aggregatedType: Bool
-      aggregationFunctions:
-        - name: bool_and
-          returnType: Bool
-        - name: bool_or
-          returnType: Bool
-        - name: every
-          returnType: Bool
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: security
-          dataConnectorScalarType: bool
-          functionMapping:
-            bool_and:
-              name: bool_and
-            bool_or:
-              name: bool_or
-            every:
-              name: every
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: Security_BoolAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: TimestampOrderByExp
-  operand:
-    scalar:
-      orderedType: Timestamp
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: Security_TimestampOrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: BoolOrderByExp
-  operand:
-    scalar:
-      orderedType: Bool
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: Security_BoolOrderByExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: TextAggExp
-  operand:
-    scalar:
-      aggregatedType: Text
-      aggregationFunctions:
-        - name: max
-          returnType: Text
-        - name: min
-          returnType: Text
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: security
-          dataConnectorScalarType: text
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: Security_TextAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: TextOrderByExp
-  operand:
-    scalar:
-      orderedType: Text
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: Security_TextOrderByExp
 
 ---
 kind: ScalarType
@@ -1116,6 +1116,285 @@ definition:
     expressionTypeName: Security_InetOrderByExp
 
 ---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityEntitlementStatus
+  graphql:
+    typeName: Security_SecurityEntitlementStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityEntitlementStatusBoolExp
+  operand:
+    scalar:
+      type: SecurityEntitlementStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityEntitlementStatus!
+        - name: _gt
+          argumentType: SecurityEntitlementStatus!
+        - name: _gte
+          argumentType: SecurityEntitlementStatus!
+        - name: _in
+          argumentType: "[SecurityEntitlementStatus!]!"
+        - name: _lt
+          argumentType: SecurityEntitlementStatus!
+        - name: _lte
+          argumentType: SecurityEntitlementStatus!
+        - name: _neq
+          argumentType: SecurityEntitlementStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_entitlement_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityEntitlementStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_entitlement_status
+  representation: SecurityEntitlementStatus
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityEntitlementStatusComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityEntitlementStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityEntitlementStatus
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityEntitlementStatus
+        - name: min
+          returnType: SecurityEntitlementStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_entitlement_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityEntitlementStatusAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityEntitlementStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityEntitlementStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityEntitlementStatusOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityPermissionType
+  graphql:
+    typeName: Security_SecurityPermissionType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityPermissionTypeBoolExp
+  operand:
+    scalar:
+      type: SecurityPermissionType
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityPermissionType!
+        - name: _gt
+          argumentType: SecurityPermissionType!
+        - name: _gte
+          argumentType: SecurityPermissionType!
+        - name: _in
+          argumentType: "[SecurityPermissionType!]!"
+        - name: _lt
+          argumentType: SecurityPermissionType!
+        - name: _lte
+          argumentType: SecurityPermissionType!
+        - name: _neq
+          argumentType: SecurityPermissionType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_permission_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityPermissionTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_permission_type
+  representation: SecurityPermissionType
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityPermissionTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityPermissionTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityPermissionType
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityPermissionType
+        - name: min
+          returnType: SecurityPermissionType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_permission_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityPermissionTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityPermissionTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityPermissionType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityPermissionTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityThreatLevelType
+  graphql:
+    typeName: Security_SecurityThreatLevelType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityThreatLevelTypeBoolExp
+  operand:
+    scalar:
+      type: SecurityThreatLevelType
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityThreatLevelType!
+        - name: _gt
+          argumentType: SecurityThreatLevelType!
+        - name: _gte
+          argumentType: SecurityThreatLevelType!
+        - name: _in
+          argumentType: "[SecurityThreatLevelType!]!"
+        - name: _lt
+          argumentType: SecurityThreatLevelType!
+        - name: _lte
+          argumentType: SecurityThreatLevelType!
+        - name: _neq
+          argumentType: SecurityThreatLevelType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_threat_level_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityThreatLevelTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_threat_level_type
+  representation: SecurityThreatLevelType
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityThreatLevelTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityThreatLevelTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityThreatLevelType
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityThreatLevelType
+        - name: min
+          returnType: SecurityThreatLevelType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_threat_level_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityThreatLevelTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityThreatLevelTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityThreatLevelType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityThreatLevelTypeOrderByExp
+
+---
 kind: AggregateExpression
 version: v1
 definition:
@@ -1199,6 +1478,378 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: Security_Int8OrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityAgentStatus
+  graphql:
+    typeName: Security_SecurityAgentStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityAgentStatusBoolExp
+  operand:
+    scalar:
+      type: SecurityAgentStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityAgentStatus!
+        - name: _gt
+          argumentType: SecurityAgentStatus!
+        - name: _gte
+          argumentType: SecurityAgentStatus!
+        - name: _in
+          argumentType: "[SecurityAgentStatus!]!"
+        - name: _lt
+          argumentType: SecurityAgentStatus!
+        - name: _lte
+          argumentType: SecurityAgentStatus!
+        - name: _neq
+          argumentType: SecurityAgentStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_agent_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityAgentStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_agent_status
+  representation: SecurityAgentStatus
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityAgentStatusComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityComplianceStatus
+  graphql:
+    typeName: Security_SecurityComplianceStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityComplianceStatusBoolExp
+  operand:
+    scalar:
+      type: SecurityComplianceStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityComplianceStatus!
+        - name: _gt
+          argumentType: SecurityComplianceStatus!
+        - name: _gte
+          argumentType: SecurityComplianceStatus!
+        - name: _in
+          argumentType: "[SecurityComplianceStatus!]!"
+        - name: _lt
+          argumentType: SecurityComplianceStatus!
+        - name: _lte
+          argumentType: SecurityComplianceStatus!
+        - name: _neq
+          argumentType: SecurityComplianceStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_compliance_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityComplianceStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_compliance_status
+  representation: SecurityComplianceStatus
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityComplianceStatusComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityPatchStatus
+  graphql:
+    typeName: Security_SecurityPatchStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityPatchStatusBoolExp
+  operand:
+    scalar:
+      type: SecurityPatchStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityPatchStatus!
+        - name: _gt
+          argumentType: SecurityPatchStatus!
+        - name: _gte
+          argumentType: SecurityPatchStatus!
+        - name: _in
+          argumentType: "[SecurityPatchStatus!]!"
+        - name: _lt
+          argumentType: SecurityPatchStatus!
+        - name: _lte
+          argumentType: SecurityPatchStatus!
+        - name: _neq
+          argumentType: SecurityPatchStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_patch_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityPatchStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_patch_status
+  representation: SecurityPatchStatus
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityPatchStatusComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecuritySystemType
+  graphql:
+    typeName: Security_SecuritySystemType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecuritySystemTypeBoolExp
+  operand:
+    scalar:
+      type: SecuritySystemType
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecuritySystemType!
+        - name: _gt
+          argumentType: SecuritySystemType!
+        - name: _gte
+          argumentType: SecuritySystemType!
+        - name: _in
+          argumentType: "[SecuritySystemType!]!"
+        - name: _lt
+          argumentType: SecuritySystemType!
+        - name: _lte
+          argumentType: SecuritySystemType!
+        - name: _neq
+          argumentType: SecuritySystemType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_system_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecuritySystemTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_system_type
+  representation: SecuritySystemType
+  graphql:
+    comparisonExpressionTypeName: Security_SecuritySystemTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityAgentStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityAgentStatus
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityAgentStatus
+        - name: min
+          returnType: SecurityAgentStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_agent_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityAgentStatusAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityComplianceStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityComplianceStatus
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityComplianceStatus
+        - name: min
+          returnType: SecurityComplianceStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_compliance_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityComplianceStatusAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityPatchStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityPatchStatus
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityPatchStatus
+        - name: min
+          returnType: SecurityPatchStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_patch_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityPatchStatusAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecuritySystemTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: SecuritySystemType
+      aggregationFunctions:
+        - name: max
+          returnType: SecuritySystemType
+        - name: min
+          returnType: SecuritySystemType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_system_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecuritySystemTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityAgentStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityAgentStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityAgentStatusOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityComplianceStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityComplianceStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityComplianceStatusOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityPatchStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityPatchStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityPatchStatusOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecuritySystemTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: SecuritySystemType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecuritySystemTypeOrderByExp
 
 ---
 kind: ScalarType
@@ -1297,70 +1948,70 @@ definition:
 kind: ScalarType
 version: v1
 definition:
-  name: SecurityTcpFlagType
+  name: SecurityRiskLevel
   graphql:
-    typeName: Security_SecurityTcpFlagType
+    typeName: Security_SecurityRiskLevel
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: SecurityTcpFlagTypeBoolExp
+  name: SecurityRiskLevelBoolExp
   operand:
     scalar:
-      type: SecurityTcpFlagType
+      type: SecurityRiskLevel
       comparisonOperators:
         - name: _eq
-          argumentType: SecurityTcpFlagType!
+          argumentType: SecurityRiskLevel!
         - name: _gt
-          argumentType: SecurityTcpFlagType!
+          argumentType: SecurityRiskLevel!
         - name: _gte
-          argumentType: SecurityTcpFlagType!
+          argumentType: SecurityRiskLevel!
         - name: _in
-          argumentType: "[SecurityTcpFlagType!]!"
+          argumentType: "[SecurityRiskLevel!]!"
         - name: _lt
-          argumentType: SecurityTcpFlagType!
+          argumentType: SecurityRiskLevel!
         - name: _lte
-          argumentType: SecurityTcpFlagType!
+          argumentType: SecurityRiskLevel!
         - name: _neq
-          argumentType: SecurityTcpFlagType!
+          argumentType: SecurityRiskLevel!
       dataConnectorOperatorMapping:
         - dataConnectorName: security
-          dataConnectorScalarType: security_tcp_flag_type
+          dataConnectorScalarType: security_risk_level
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: Security_SecurityTcpFlagTypeBoolExp
+    typeName: Security_SecurityRiskLevelBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: security
-  dataConnectorScalarType: security_tcp_flag_type
-  representation: SecurityTcpFlagType
+  dataConnectorScalarType: security_risk_level
+  representation: SecurityRiskLevel
   graphql:
-    comparisonExpressionTypeName: Security_SecurityTcpFlagTypeComparisonExp
+    comparisonExpressionTypeName: Security_SecurityRiskLevelComparisonExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: SecurityTcpFlagTypeAggExp
+  name: SecurityRiskLevelAggExp
   operand:
     scalar:
-      aggregatedType: SecurityTcpFlagType
+      aggregatedType: SecurityRiskLevel
       aggregationFunctions:
         - name: max
-          returnType: SecurityTcpFlagType
+          returnType: SecurityRiskLevel
         - name: min
-          returnType: SecurityTcpFlagType
+          returnType: SecurityRiskLevel
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: security
-          dataConnectorScalarType: security_tcp_flag_type
+          dataConnectorScalarType: security_risk_level
           functionMapping:
             max:
               name: max
@@ -1371,20 +2022,20 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: Security_SecurityTcpFlagTypeAggExp
+    selectTypeName: Security_SecurityRiskLevelAggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: SecurityTcpFlagTypeOrderByExp
+  name: SecurityRiskLevelOrderByExp
   operand:
     scalar:
-      orderedType: SecurityTcpFlagType
+      orderedType: SecurityRiskLevel
       enableOrderByDirections:
         enableAll: true
   graphql:
-    expressionTypeName: Security_SecurityTcpFlagTypeOrderByExp
+    expressionTypeName: Security_SecurityRiskLevelOrderByExp
 
 ---
 kind: ScalarType
@@ -1478,6 +2129,285 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: Security_SecurityNetworkProtocolsOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityTcpFlagType
+  graphql:
+    typeName: Security_SecurityTcpFlagType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityTcpFlagTypeBoolExp
+  operand:
+    scalar:
+      type: SecurityTcpFlagType
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityTcpFlagType!
+        - name: _gt
+          argumentType: SecurityTcpFlagType!
+        - name: _gte
+          argumentType: SecurityTcpFlagType!
+        - name: _in
+          argumentType: "[SecurityTcpFlagType!]!"
+        - name: _lt
+          argumentType: SecurityTcpFlagType!
+        - name: _lte
+          argumentType: SecurityTcpFlagType!
+        - name: _neq
+          argumentType: SecurityTcpFlagType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_tcp_flag_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityTcpFlagTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_tcp_flag_type
+  representation: SecurityTcpFlagType
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityTcpFlagTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityTcpFlagTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityTcpFlagType
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityTcpFlagType
+        - name: min
+          returnType: SecurityTcpFlagType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_tcp_flag_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityTcpFlagTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityTcpFlagTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityTcpFlagType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityTcpFlagTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityResourceType
+  graphql:
+    typeName: Security_SecurityResourceType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityResourceTypeBoolExp
+  operand:
+    scalar:
+      type: SecurityResourceType
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityResourceType!
+        - name: _gt
+          argumentType: SecurityResourceType!
+        - name: _gte
+          argumentType: SecurityResourceType!
+        - name: _in
+          argumentType: "[SecurityResourceType!]!"
+        - name: _lt
+          argumentType: SecurityResourceType!
+        - name: _lte
+          argumentType: SecurityResourceType!
+        - name: _neq
+          argumentType: SecurityResourceType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_resource_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityResourceTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_resource_type
+  representation: SecurityResourceType
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityResourceTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityResourceTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityResourceType
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityResourceType
+        - name: min
+          returnType: SecurityResourceType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_resource_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityResourceTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityResourceTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityResourceType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityResourceTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: SecurityRoleStatus
+  graphql:
+    typeName: Security_SecurityRoleStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SecurityRoleStatusBoolExp
+  operand:
+    scalar:
+      type: SecurityRoleStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: SecurityRoleStatus!
+        - name: _gt
+          argumentType: SecurityRoleStatus!
+        - name: _gte
+          argumentType: SecurityRoleStatus!
+        - name: _in
+          argumentType: "[SecurityRoleStatus!]!"
+        - name: _lt
+          argumentType: SecurityRoleStatus!
+        - name: _lte
+          argumentType: SecurityRoleStatus!
+        - name: _neq
+          argumentType: SecurityRoleStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_role_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_SecurityRoleStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: security
+  dataConnectorScalarType: security_role_status
+  representation: SecurityRoleStatus
+  graphql:
+    comparisonExpressionTypeName: Security_SecurityRoleStatusComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SecurityRoleStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: SecurityRoleStatus
+      aggregationFunctions:
+        - name: max
+          returnType: SecurityRoleStatus
+        - name: min
+          returnType: SecurityRoleStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: security
+          dataConnectorScalarType: security_role_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Security_SecurityRoleStatusAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SecurityRoleStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: SecurityRoleStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Security_SecurityRoleStatusOrderByExp
 
 ---
 kind: AggregateExpression

@@ -6,7 +6,7 @@ definition:
   description: Stores personal and contact information for loan applicants.
   fields:
     - name: citizenshipStatus
-      type: Varchar!
+      type: EnterpriseCitizenshipStatus!
       description: US Citizen, Permanent Resident, etc.
     - name: consumerLendingApplicantId
       type: Int4!
@@ -24,8 +24,8 @@ definition:
       type: Varchar!
       description: Applicant's legal first name
     - name: housingStatus
-      type: Varchar!
-      description: Own, Rent, Live with Parents, etc.
+      type: ConsumerLendingHousingStatus!
+      description: Current housing situation
     - name: lastName
       type: Varchar!
       description: Applicant's legal last name
@@ -33,7 +33,7 @@ definition:
       type: Int4
       description: Reference to enterprise.addresses if different from current
     - name: maritalStatus
-      type: Varchar
+      type: EnterpriseMaritalStatus
       description: Married, Single, Divorced, etc.
     - name: middleName
       type: Varchar
@@ -152,7 +152,7 @@ definition:
       type: ConsumerLendingApplicants
       comparableFields:
         - fieldName: citizenshipStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCitizenshipStatusBoolExp
         - fieldName: consumerLendingApplicantId
           booleanExpressionType: Int4BoolExp
         - fieldName: currentAddressId
@@ -164,13 +164,13 @@ definition:
         - fieldName: firstName
           booleanExpressionType: VarcharBoolExp
         - fieldName: housingStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingHousingStatusBoolExp
         - fieldName: lastName
           booleanExpressionType: VarcharBoolExp
         - fieldName: mailingAddressId
           booleanExpressionType: Int4BoolExp
         - fieldName: maritalStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseMaritalStatusBoolExp
         - fieldName: middleName
           booleanExpressionType: VarcharBoolExp
         - fieldName: mobilePhone
@@ -211,7 +211,7 @@ definition:
       aggregatedType: ConsumerLendingApplicants
       aggregatableFields:
         - fieldName: citizenshipStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCitizenshipStatusAggExp
         - fieldName: consumerLendingApplicantId
           aggregateExpression: Int4AggExp
         - fieldName: currentAddressId
@@ -223,13 +223,13 @@ definition:
         - fieldName: firstName
           aggregateExpression: VarcharAggExp
         - fieldName: housingStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingHousingStatusAggExp
         - fieldName: lastName
           aggregateExpression: VarcharAggExp
         - fieldName: mailingAddressId
           aggregateExpression: Int4AggExp
         - fieldName: maritalStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseMaritalStatusAggExp
         - fieldName: middleName
           aggregateExpression: VarcharAggExp
         - fieldName: mobilePhone
@@ -259,7 +259,7 @@ definition:
       orderedType: ConsumerLendingApplicants
       orderableFields:
         - fieldName: citizenshipStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCitizenshipStatusOrderByExp
         - fieldName: consumerLendingApplicantId
           orderByExpression: Int4OrderByExp
         - fieldName: currentAddressId
@@ -271,13 +271,13 @@ definition:
         - fieldName: firstName
           orderByExpression: VarcharOrderByExp
         - fieldName: housingStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingHousingStatusOrderByExp
         - fieldName: lastName
           orderByExpression: VarcharOrderByExp
         - fieldName: mailingAddressId
           orderByExpression: Int4OrderByExp
         - fieldName: maritalStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseMaritalStatusOrderByExp
         - fieldName: middleName
           orderByExpression: VarcharOrderByExp
         - fieldName: mobilePhone

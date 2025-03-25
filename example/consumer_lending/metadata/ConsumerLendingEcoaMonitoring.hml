@@ -10,8 +10,8 @@ definition:
       type: Date!
       description: Date of action
     - name: actionTaken
-      type: Varchar!
-      description: Approved, Denied, Withdrawn, Incomplete
+      type: ConsumerLendingActionTaken!
+      description: Action taken on the loan application
     - name: age
       type: Int4
       description: Applicant age
@@ -31,10 +31,10 @@ definition:
       type: Numeric
       description: Income used for decision
     - name: informationMethod
-      type: Varchar!
-      description: Self-reported, Observed, Not Provided
+      type: ConsumerLendingInformationMethod!
+      description: Method of obtaining information
     - name: maritalStatus
-      type: Varchar
+      type: EnterpriseMaritalStatus
       description: Marital status
     - name: race
       type: Varchar
@@ -45,7 +45,7 @@ definition:
     - name: submissionDate
       type: Date!
       description: Date monitoring info submitted
-    - name: submittedBy
+    - name: submittedById
       type: Int4
       description: User who submitted monitoring info
   graphql:
@@ -94,9 +94,9 @@ definition:
         submissionDate:
           column:
             name: submission_date
-        submittedBy:
+        submittedById:
           column:
-            name: submitted_by
+            name: submitted_by_id
 
 ---
 kind: TypePermissions
@@ -120,7 +120,7 @@ definition:
           - race
           - sex
           - submissionDate
-          - submittedBy
+          - submittedById
 
 ---
 kind: BooleanExpressionType
@@ -134,7 +134,7 @@ definition:
         - fieldName: actionDate
           booleanExpressionType: DateBoolExp
         - fieldName: actionTaken
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingActionTakenBoolExp
         - fieldName: age
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingApplicantId
@@ -148,16 +148,16 @@ definition:
         - fieldName: incomeMonitored
           booleanExpressionType: NumericBoolExp
         - fieldName: informationMethod
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingInformationMethodBoolExp
         - fieldName: maritalStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseMaritalStatusBoolExp
         - fieldName: race
           booleanExpressionType: VarcharBoolExp
         - fieldName: sex
           booleanExpressionType: VarcharBoolExp
         - fieldName: submissionDate
           booleanExpressionType: DateBoolExp
-        - fieldName: submittedBy
+        - fieldName: submittedById
           booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerLendingApplicant
@@ -181,7 +181,7 @@ definition:
         - fieldName: actionDate
           aggregateExpression: DateAggExp
         - fieldName: actionTaken
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingActionTakenAggExp
         - fieldName: age
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingApplicantId
@@ -195,16 +195,16 @@ definition:
         - fieldName: incomeMonitored
           aggregateExpression: NumericAggExp
         - fieldName: informationMethod
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingInformationMethodAggExp
         - fieldName: maritalStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseMaritalStatusAggExp
         - fieldName: race
           aggregateExpression: VarcharAggExp
         - fieldName: sex
           aggregateExpression: VarcharAggExp
         - fieldName: submissionDate
           aggregateExpression: DateAggExp
-        - fieldName: submittedBy
+        - fieldName: submittedById
           aggregateExpression: Int4AggExp
   count:
     enable: true
@@ -223,7 +223,7 @@ definition:
         - fieldName: actionDate
           orderByExpression: DateOrderByExp
         - fieldName: actionTaken
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingActionTakenOrderByExp
         - fieldName: age
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingApplicantId
@@ -237,16 +237,16 @@ definition:
         - fieldName: incomeMonitored
           orderByExpression: NumericOrderByExp
         - fieldName: informationMethod
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingInformationMethodOrderByExp
         - fieldName: maritalStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseMaritalStatusOrderByExp
         - fieldName: race
           orderByExpression: VarcharOrderByExp
         - fieldName: sex
           orderByExpression: VarcharOrderByExp
         - fieldName: submissionDate
           orderByExpression: DateOrderByExp
-        - fieldName: submittedBy
+        - fieldName: submittedById
           orderByExpression: Int4OrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant

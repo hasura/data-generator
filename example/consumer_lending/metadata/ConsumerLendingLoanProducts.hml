@@ -16,14 +16,14 @@ definition:
       type: Text
       description: Detailed product description
     - name: disbursementOptions
-      type: Varchar
-      description: Direct Deposit, Check, Dealer Direct, etc.
+      type: ConsumerLendingDisbursementOption
+      description: Method of loan disbursement
     - name: earlyRepaymentPenalty
       type: Bool!
       description: Whether penalty applies for early payoff
     - name: interestRateType
-      type: Varchar!
-      description: Fixed, Variable
+      type: ConsumerLendingInterestRateType!
+      description: Type of interest rate
     - name: isActive
       type: Bool!
       description: Whether product is currently offered
@@ -31,11 +31,11 @@ definition:
       type: Numeric
       description: Amount or percentage of late fee
     - name: lateFeeType
-      type: Varchar
-      description: Flat, Percentage
+      type: ConsumerLendingFeeType
+      description: Type of late fee
     - name: loanType
-      type: Varchar!
-      description: Personal, Auto, Student, etc.
+      type: ConsumerLendingLoanType!
+      description: Type of loan product
     - name: maxLoanAmount
       type: Numeric
       description: Maximum allowed loan amount
@@ -55,8 +55,8 @@ definition:
       type: Numeric
       description: Amount or percentage of origination fee
     - name: originationFeeType
-      type: Varchar
-      description: Flat, Percentage
+      type: ConsumerLendingFeeType
+      description: Type of origination fee
     - name: productCode
       type: Varchar!
       description: Internal code for the product
@@ -180,19 +180,19 @@ definition:
         - fieldName: description
           booleanExpressionType: TextBoolExp
         - fieldName: disbursementOptions
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingDisbursementOptionBoolExp
         - fieldName: earlyRepaymentPenalty
           booleanExpressionType: BoolBoolExp
         - fieldName: interestRateType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingInterestRateTypeBoolExp
         - fieldName: isActive
           booleanExpressionType: BoolBoolExp
         - fieldName: lateFeeAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: lateFeeType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingFeeTypeBoolExp
         - fieldName: loanType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingLoanTypeBoolExp
         - fieldName: maxLoanAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: maxTermMonths
@@ -206,7 +206,7 @@ definition:
         - fieldName: originationFeeAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: originationFeeType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingFeeTypeBoolExp
         - fieldName: productCode
           booleanExpressionType: VarcharBoolExp
         - fieldName: productName
@@ -241,19 +241,19 @@ definition:
         - fieldName: description
           aggregateExpression: TextAggExp
         - fieldName: disbursementOptions
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingDisbursementOptionAggExp
         - fieldName: earlyRepaymentPenalty
           aggregateExpression: BoolAggExp
         - fieldName: interestRateType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingInterestRateTypeAggExp
         - fieldName: isActive
           aggregateExpression: BoolAggExp
         - fieldName: lateFeeAmount
           aggregateExpression: NumericAggExp
         - fieldName: lateFeeType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingFeeTypeAggExp
         - fieldName: loanType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingLoanTypeAggExp
         - fieldName: maxLoanAmount
           aggregateExpression: NumericAggExp
         - fieldName: maxTermMonths
@@ -267,7 +267,7 @@ definition:
         - fieldName: originationFeeAmount
           aggregateExpression: NumericAggExp
         - fieldName: originationFeeType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingFeeTypeAggExp
         - fieldName: productCode
           aggregateExpression: VarcharAggExp
         - fieldName: productName
@@ -295,19 +295,19 @@ definition:
         - fieldName: description
           orderByExpression: TextOrderByExp
         - fieldName: disbursementOptions
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingDisbursementOptionOrderByExp
         - fieldName: earlyRepaymentPenalty
           orderByExpression: BoolOrderByExp
         - fieldName: interestRateType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingInterestRateTypeOrderByExp
         - fieldName: isActive
           orderByExpression: BoolOrderByExp
         - fieldName: lateFeeAmount
           orderByExpression: NumericOrderByExp
         - fieldName: lateFeeType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingFeeTypeOrderByExp
         - fieldName: loanType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingLoanTypeOrderByExp
         - fieldName: maxLoanAmount
           orderByExpression: NumericOrderByExp
         - fieldName: maxTermMonths
@@ -321,7 +321,7 @@ definition:
         - fieldName: originationFeeAmount
           orderByExpression: NumericOrderByExp
         - fieldName: originationFeeType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingFeeTypeOrderByExp
         - fieldName: productCode
           orderByExpression: VarcharOrderByExp
         - fieldName: productName

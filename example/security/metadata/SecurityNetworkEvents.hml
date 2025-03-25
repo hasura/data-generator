@@ -31,12 +31,12 @@ definition:
       type: Text
       description: Detailed log message associated with the network event.
     - name: protocol
-      type: Varchar!
+      type: SecurityNetworkProtocols!
       description: Network protocol used (e.g., TCP, UDP, ICMP).
     - name: securityDeviceId
       type: Inet!
-      description: IP address of the device involved in the event, foreign key
-        referencing the devices table.
+      description: IP address of the device involved in the event (likely the device
+        that logged the event)
     - name: securityNetworkEventId
       type: Int8!
       description: Unique identifier for the network event. Automatically incrementing.
@@ -177,7 +177,7 @@ definition:
         - fieldName: logMessage
           booleanExpressionType: TextBoolExp
         - fieldName: protocol
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: SecurityNetworkProtocolsBoolExp
         - fieldName: securityDeviceId
           booleanExpressionType: InetBoolExp
         - fieldName: securityNetworkEventId
@@ -231,7 +231,7 @@ definition:
         - fieldName: logMessage
           aggregateExpression: TextAggExp
         - fieldName: protocol
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: SecurityNetworkProtocolsAggExp
         - fieldName: securityDeviceId
           aggregateExpression: InetAggExp
         - fieldName: securityNetworkEventId
@@ -281,7 +281,7 @@ definition:
         - fieldName: logMessage
           orderByExpression: TextOrderByExp
         - fieldName: protocol
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: SecurityNetworkProtocolsOrderByExp
         - fieldName: securityDeviceId
           orderByExpression: InetOrderByExp
         - fieldName: securityNetworkEventId

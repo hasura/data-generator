@@ -21,9 +21,9 @@ definition:
     - name: exceptionType
       type: Varchar!
       description: Documentation, Disclosure, Timing, etc.
-    - name: identifiedBy
-      type: Varchar!
-      description: Person or process that identified exception
+    - name: identifiedById
+      type: Int4!
+      description: Person that identified exception
     - name: loanAccountId
       type: Int4
       description: Reference to loan account if applicable
@@ -36,7 +36,7 @@ definition:
     - name: regulation
       type: Varchar!
       description: Reg Z, Reg B, FCRA, etc.
-    - name: remediatedBy
+    - name: remediatedById
       type: Int4
       description: Person who remediated exception
     - name: remediationDate
@@ -76,9 +76,9 @@ definition:
         exceptionType:
           column:
             name: exception_type
-        identifiedBy:
+        identifiedById:
           column:
-            name: identified_by
+            name: identified_by_id
         loanAccountId:
           column:
             name: loan_account_id
@@ -91,9 +91,9 @@ definition:
         regulation:
           column:
             name: regulation
-        remediatedBy:
+        remediatedById:
           column:
-            name: remediated_by
+            name: remediated_by_id
         remediationDate:
           column:
             name: remediation_date
@@ -124,12 +124,12 @@ definition:
           - description
           - exceptionDate
           - exceptionType
-          - identifiedBy
+          - identifiedById
           - loanAccountId
           - notes
           - preventiveAction
           - regulation
-          - remediatedBy
+          - remediatedById
           - remediationDate
           - remediationPlan
           - rootCause
@@ -155,8 +155,8 @@ definition:
           booleanExpressionType: TimestampBoolExp
         - fieldName: exceptionType
           booleanExpressionType: VarcharBoolExp
-        - fieldName: identifiedBy
-          booleanExpressionType: VarcharBoolExp
+        - fieldName: identifiedById
+          booleanExpressionType: Int4BoolExp
         - fieldName: loanAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: notes
@@ -165,7 +165,7 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: regulation
           booleanExpressionType: VarcharBoolExp
-        - fieldName: remediatedBy
+        - fieldName: remediatedById
           booleanExpressionType: Int4BoolExp
         - fieldName: remediationDate
           booleanExpressionType: DateBoolExp
@@ -206,8 +206,8 @@ definition:
           aggregateExpression: TimestampAggExp
         - fieldName: exceptionType
           aggregateExpression: VarcharAggExp
-        - fieldName: identifiedBy
-          aggregateExpression: VarcharAggExp
+        - fieldName: identifiedById
+          aggregateExpression: Int4AggExp
         - fieldName: loanAccountId
           aggregateExpression: Int4AggExp
         - fieldName: notes
@@ -216,7 +216,7 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: regulation
           aggregateExpression: VarcharAggExp
-        - fieldName: remediatedBy
+        - fieldName: remediatedById
           aggregateExpression: Int4AggExp
         - fieldName: remediationDate
           aggregateExpression: DateAggExp
@@ -252,8 +252,8 @@ definition:
           orderByExpression: TimestampOrderByExp
         - fieldName: exceptionType
           orderByExpression: VarcharOrderByExp
-        - fieldName: identifiedBy
-          orderByExpression: VarcharOrderByExp
+        - fieldName: identifiedById
+          orderByExpression: Int4OrderByExp
         - fieldName: loanAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: notes
@@ -262,7 +262,7 @@ definition:
           orderByExpression: TextOrderByExp
         - fieldName: regulation
           orderByExpression: VarcharOrderByExp
-        - fieldName: remediatedBy
+        - fieldName: remediatedById
           orderByExpression: Int4OrderByExp
         - fieldName: remediationDate
           orderByExpression: DateOrderByExp

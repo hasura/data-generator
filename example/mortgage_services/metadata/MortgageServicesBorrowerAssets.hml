@@ -10,7 +10,7 @@ definition:
       type: Varchar
       description: Account number for financial assets
     - name: assetType
-      type: Varchar!
+      type: MortgageServicesAssetType!
       description: Type of asset (e.g., bank account, property)
     - name: currentValue
       type: Numeric!
@@ -24,14 +24,14 @@ definition:
     - name: mortgageServicesBorrowerId
       type: Int4!
       description: References the borrower this asset belongs to
-    - name: propertyAddressId
-      type: Int4
-      description: References the address if asset is a property
+    - name: propertyAddress
+      type: Varchar
+      description: Full text address for real estate assets
     - name: verificationDate
       type: Date
       description: When the asset was verified
     - name: verificationStatus
-      type: Varchar!
+      type: MortgageServicesVerificationStatus!
       description: Status of asset verification process
   graphql:
     typeName: MortgageServices_MortgageServicesBorrowerAssets
@@ -58,9 +58,9 @@ definition:
         mortgageServicesBorrowerId:
           column:
             name: mortgage_services_borrower_id
-        propertyAddressId:
+        propertyAddress:
           column:
-            name: property_address_id
+            name: property_address
         verificationDate:
           column:
             name: verification_date
@@ -83,7 +83,7 @@ definition:
           - institutionName
           - mortgageServicesAssetId
           - mortgageServicesBorrowerId
-          - propertyAddressId
+          - propertyAddress
           - verificationDate
           - verificationStatus
 
@@ -99,7 +99,7 @@ definition:
         - fieldName: accountNumber
           booleanExpressionType: VarcharBoolExp
         - fieldName: assetType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesAssetTypeBoolExp
         - fieldName: currentValue
           booleanExpressionType: NumericBoolExp
         - fieldName: institutionName
@@ -108,12 +108,12 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesBorrowerId
           booleanExpressionType: Int4BoolExp
-        - fieldName: propertyAddressId
-          booleanExpressionType: Int4BoolExp
+        - fieldName: propertyAddress
+          booleanExpressionType: VarcharBoolExp
         - fieldName: verificationDate
           booleanExpressionType: DateBoolExp
         - fieldName: verificationStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesVerificationStatusBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesBorrower
   logicalOperators:
@@ -135,7 +135,7 @@ definition:
         - fieldName: accountNumber
           aggregateExpression: VarcharAggExp
         - fieldName: assetType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesAssetTypeAggExp
         - fieldName: currentValue
           aggregateExpression: NumericAggExp
         - fieldName: institutionName
@@ -144,12 +144,12 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesBorrowerId
           aggregateExpression: Int4AggExp
-        - fieldName: propertyAddressId
-          aggregateExpression: Int4AggExp
+        - fieldName: propertyAddress
+          aggregateExpression: VarcharAggExp
         - fieldName: verificationDate
           aggregateExpression: DateAggExp
         - fieldName: verificationStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesVerificationStatusAggExp
   count:
     enable: true
   graphql:
@@ -167,7 +167,7 @@ definition:
         - fieldName: accountNumber
           orderByExpression: VarcharOrderByExp
         - fieldName: assetType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesAssetTypeOrderByExp
         - fieldName: currentValue
           orderByExpression: NumericOrderByExp
         - fieldName: institutionName
@@ -176,12 +176,12 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesBorrowerId
           orderByExpression: Int4OrderByExp
-        - fieldName: propertyAddressId
-          orderByExpression: Int4OrderByExp
+        - fieldName: propertyAddress
+          orderByExpression: VarcharOrderByExp
         - fieldName: verificationDate
           orderByExpression: DateOrderByExp
         - fieldName: verificationStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesVerificationStatusOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesBorrower
   graphql:

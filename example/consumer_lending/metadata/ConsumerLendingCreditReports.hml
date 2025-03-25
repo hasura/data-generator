@@ -7,8 +7,8 @@ definition:
     credit scores and other relevant information.
   fields:
     - name: bureauName
-      type: Varchar
-      description: Equifax, Experian, TransUnion
+      type: ConsumerLendingCreditBureau
+      description: Credit bureau providing the report
     - name: consumerLendingApplicantId
       type: Int4!
       description: Reference to applicant
@@ -34,11 +34,11 @@ definition:
       type: Varchar
       description: External reference ID from bureau
     - name: reportType
-      type: Varchar!
-      description: Tri-merge, Single Bureau
+      type: ConsumerLendingCreditReportType!
+      description: Type of credit report
     - name: status
-      type: Varchar!
-      description: Completed, Failed, Pending
+      type: ConsumerLendingCreditReportStatus!
+      description: Status of credit report retrieval
   graphql:
     typeName: ConsumerLending_ConsumerLendingCreditReports
     inputTypeName: ConsumerLending_ConsumerLendingCreditReportsInput
@@ -111,7 +111,7 @@ definition:
       type: ConsumerLendingCreditReports
       comparableFields:
         - fieldName: bureauName
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCreditBureauBoolExp
         - fieldName: consumerLendingApplicantId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingApplicationId
@@ -129,9 +129,9 @@ definition:
         - fieldName: reportReference
           booleanExpressionType: VarcharBoolExp
         - fieldName: reportType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCreditReportTypeBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingCreditReportStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingCreditInquiries
         - relationshipName: consumerLendingCreditReportTradelines
@@ -155,7 +155,7 @@ definition:
       aggregatedType: ConsumerLendingCreditReports
       aggregatableFields:
         - fieldName: bureauName
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCreditBureauAggExp
         - fieldName: consumerLendingApplicantId
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingApplicationId
@@ -173,9 +173,9 @@ definition:
         - fieldName: reportReference
           aggregateExpression: VarcharAggExp
         - fieldName: reportType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCreditReportTypeAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingCreditReportStatusAggExp
   count:
     enable: true
   graphql:
@@ -191,7 +191,7 @@ definition:
       orderedType: ConsumerLendingCreditReports
       orderableFields:
         - fieldName: bureauName
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCreditBureauOrderByExp
         - fieldName: consumerLendingApplicantId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingApplicationId
@@ -209,9 +209,9 @@ definition:
         - fieldName: reportReference
           orderByExpression: VarcharOrderByExp
         - fieldName: reportType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCreditReportTypeOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingCreditReportStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingApplicant
         - relationshipName: consumerLendingLoanApplication

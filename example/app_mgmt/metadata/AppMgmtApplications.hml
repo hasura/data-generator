@@ -58,10 +58,6 @@ definition:
       type: Uuid
       description: Identifier for the team responsible for the day-to-day operation of
         the application.
-    - name: parentApplicationId
-      type: Uuid
-      description: Identifier for a parent application if this application is a
-        component or part of a larger system.
     - name: rpo
       type: Interval
       description: "Recovery Point Objective (RPO): The maximum acceptable data loss
@@ -138,9 +134,6 @@ definition:
         operatedByTeamId:
           column:
             name: operated_by_team_id
-        parentApplicationId:
-          column:
-            name: parent_application_id
         rpo:
           column:
             name: rpo
@@ -185,7 +178,6 @@ definition:
           - maintainedByTeamId
           - modifiedByUserId
           - operatedByTeamId
-          - parentApplicationId
           - rpo
           - rto
           - sdlcProcessId
@@ -234,8 +226,6 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: operatedByTeamId
           booleanExpressionType: UuidBoolExp
-        - fieldName: parentApplicationId
-          booleanExpressionType: UuidBoolExp
         - fieldName: rpo
           booleanExpressionType: IntervalBoolExp
         - fieldName: rto
@@ -257,8 +247,6 @@ definition:
         - relationshipName: appMgmtTeam
         - relationshipName: appMgmtTeamByMaintainedByTeamId
         - relationshipName: appMgmtTeamByOperatedByTeamId
-        - relationshipName: appMgmtApplication
-        - relationshipName: appMgmtApplications
         - relationshipName: appMgmtSdlcProcess
   logicalOperators:
     enable: true
@@ -307,8 +295,6 @@ definition:
         - fieldName: modifiedByUserId
           aggregateExpression: Int4AggExp
         - fieldName: operatedByTeamId
-          aggregateExpression: UuidAggExp
-        - fieldName: parentApplicationId
           aggregateExpression: UuidAggExp
         - fieldName: rpo
           aggregateExpression: IntervalAggExp
@@ -368,8 +354,6 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: operatedByTeamId
           orderByExpression: UuidOrderByExp
-        - fieldName: parentApplicationId
-          orderByExpression: UuidOrderByExp
         - fieldName: rpo
           orderByExpression: IntervalOrderByExp
         - fieldName: rto
@@ -387,7 +371,6 @@ definition:
         - relationshipName: appMgmtTeam
         - relationshipName: appMgmtTeamByMaintainedByTeamId
         - relationshipName: appMgmtTeamByOperatedByTeamId
-        - relationshipName: appMgmtApplication
         - relationshipName: appMgmtSdlcProcess
   graphql:
     expressionTypeName: App_Mgmt_AppMgmtApplicationsOrderByExp
@@ -452,7 +435,7 @@ definition:
           - fieldName: appMgmtApplicationId
       target:
         modelField:
-          - fieldName: applicationId
+          - fieldName: appMgmtApplicationId
   graphql:
     aggregateFieldName: appMgmtApplicationComponentsAggregate
 
@@ -593,46 +576,6 @@ definition:
       target:
         modelField:
           - fieldName: appMgmtTeamId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: appMgmtApplication
-  sourceType: AppMgmtApplications
-  target:
-    model:
-      name: AppMgmtApplications
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: parentApplicationId
-      target:
-        modelField:
-          - fieldName: appMgmtApplicationId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: appMgmtApplications
-  sourceType: AppMgmtApplications
-  target:
-    model:
-      name: AppMgmtApplications
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: AppMgmtApplicationsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: appMgmtApplicationId
-      target:
-        modelField:
-          - fieldName: parentApplicationId
-  graphql:
-    aggregateFieldName: appMgmtApplicationsAggregate
 
 ---
 kind: Relationship

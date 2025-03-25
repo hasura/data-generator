@@ -8,8 +8,8 @@ definition:
     application_borrowers table, not directly from this table.
   fields:
     - name: applicationType
-      type: Varchar!
-      description: Type of mortgage application (e.g., Purchase, Refinance, HELOC)
+      type: MortgageServicesApplicationType!
+      description: Type of mortgage application
     - name: branchId
       type: Int4
       description: References the branch processing the application
@@ -29,8 +29,8 @@ definition:
       type: Int4
       description: References the loan officer handling the application
     - name: loanPurpose
-      type: Varchar
-      description: Purpose of the loan (e.g., Primary Residence, Investment)
+      type: MortgageServicesLoanPurpose
+      description: Purpose of the loan
     - name: mortgageServicesApplicationId
       type: Int4!
       description: Unique identifier for each mortgage application
@@ -47,8 +47,11 @@ definition:
       type: Int4!
       description: Requested duration of the loan in months
     - name: status
-      type: Varchar!
+      type: MortgageServicesApplicationStatus!
       description: Current status in the application workflow
+    - name: submissionChannel
+      type: MortgageServicesSubmissionChannel
+      description: Channel through which application was submitted
     - name: submissionDateTime
       type: Timestamp
       description: When the application was formally submitted
@@ -101,6 +104,9 @@ definition:
         status:
           column:
             name: status
+        submissionChannel:
+          column:
+            name: submission_channel
         submissionDateTime:
           column:
             name: submission_date_time
@@ -128,6 +134,7 @@ definition:
           - requestedLoanAmount
           - requestedLoanTermMonths
           - status
+          - submissionChannel
           - submissionDateTime
 
 ---
@@ -140,7 +147,7 @@ definition:
       type: MortgageServicesApplications
       comparableFields:
         - fieldName: applicationType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesApplicationTypeBoolExp
         - fieldName: branchId
           booleanExpressionType: Int4BoolExp
         - fieldName: creationDateTime
@@ -154,7 +161,7 @@ definition:
         - fieldName: loanOfficerId
           booleanExpressionType: Int4BoolExp
         - fieldName: loanPurpose
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesLoanPurposeBoolExp
         - fieldName: mortgageServicesApplicationId
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesLoanProductId
@@ -166,7 +173,9 @@ definition:
         - fieldName: requestedLoanTermMonths
           booleanExpressionType: Int4BoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesApplicationStatusBoolExp
+        - fieldName: submissionChannel
+          booleanExpressionType: MortgageServicesSubmissionChannelBoolExp
         - fieldName: submissionDateTime
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
@@ -197,7 +206,7 @@ definition:
       aggregatedType: MortgageServicesApplications
       aggregatableFields:
         - fieldName: applicationType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesApplicationTypeAggExp
         - fieldName: branchId
           aggregateExpression: Int4AggExp
         - fieldName: creationDateTime
@@ -211,7 +220,7 @@ definition:
         - fieldName: loanOfficerId
           aggregateExpression: Int4AggExp
         - fieldName: loanPurpose
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesLoanPurposeAggExp
         - fieldName: mortgageServicesApplicationId
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesLoanProductId
@@ -223,7 +232,9 @@ definition:
         - fieldName: requestedLoanTermMonths
           aggregateExpression: Int4AggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesApplicationStatusAggExp
+        - fieldName: submissionChannel
+          aggregateExpression: MortgageServicesSubmissionChannelAggExp
         - fieldName: submissionDateTime
           aggregateExpression: TimestampAggExp
   count:
@@ -241,7 +252,7 @@ definition:
       orderedType: MortgageServicesApplications
       orderableFields:
         - fieldName: applicationType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesApplicationTypeOrderByExp
         - fieldName: branchId
           orderByExpression: Int4OrderByExp
         - fieldName: creationDateTime
@@ -255,7 +266,7 @@ definition:
         - fieldName: loanOfficerId
           orderByExpression: Int4OrderByExp
         - fieldName: loanPurpose
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesLoanPurposeOrderByExp
         - fieldName: mortgageServicesApplicationId
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesLoanProductId
@@ -267,7 +278,9 @@ definition:
         - fieldName: requestedLoanTermMonths
           orderByExpression: Int4OrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesApplicationStatusOrderByExp
+        - fieldName: submissionChannel
+          orderByExpression: MortgageServicesSubmissionChannelOrderByExp
         - fieldName: submissionDateTime
           orderByExpression: TimestampOrderByExp
       orderableRelationships:

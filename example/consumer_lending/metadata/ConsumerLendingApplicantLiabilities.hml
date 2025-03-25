@@ -24,8 +24,8 @@ definition:
       type: Numeric
       description: Current interest rate percentage
     - name: liabilityType
-      type: Varchar!
-      description: Credit Card, Auto Loan, Student Loan
+      type: ConsumerLendingLiabilityType!
+      description: Type of liability
     - name: maturityDate
       type: Date
       description: When debt will be paid off
@@ -42,8 +42,8 @@ definition:
       type: Date
       description: Date liability was verified
     - name: verificationStatus
-      type: Varchar!
-      description: Self-reported, Verified, Failed
+      type: ConsumerLendingVerificationStatus!
+      description: Status of liability verification
     - name: willBePaidOff
       type: Bool
       description: Indicates if debt will be paid off with loan
@@ -143,7 +143,7 @@ definition:
         - fieldName: interestRate
           booleanExpressionType: NumericBoolExp
         - fieldName: liabilityType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingLiabilityTypeBoolExp
         - fieldName: maturityDate
           booleanExpressionType: DateBoolExp
         - fieldName: monthlyPayment
@@ -155,7 +155,7 @@ definition:
         - fieldName: verificationDate
           booleanExpressionType: DateBoolExp
         - fieldName: verificationStatus
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingVerificationStatusBoolExp
         - fieldName: willBePaidOff
           booleanExpressionType: BoolBoolExp
       comparableRelationships:
@@ -189,7 +189,7 @@ definition:
         - fieldName: interestRate
           aggregateExpression: NumericAggExp
         - fieldName: liabilityType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingLiabilityTypeAggExp
         - fieldName: maturityDate
           aggregateExpression: DateAggExp
         - fieldName: monthlyPayment
@@ -201,7 +201,7 @@ definition:
         - fieldName: verificationDate
           aggregateExpression: DateAggExp
         - fieldName: verificationStatus
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingVerificationStatusAggExp
         - fieldName: willBePaidOff
           aggregateExpression: BoolAggExp
   count:
@@ -231,7 +231,7 @@ definition:
         - fieldName: interestRate
           orderByExpression: NumericOrderByExp
         - fieldName: liabilityType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingLiabilityTypeOrderByExp
         - fieldName: maturityDate
           orderByExpression: DateOrderByExp
         - fieldName: monthlyPayment
@@ -243,7 +243,7 @@ definition:
         - fieldName: verificationDate
           orderByExpression: DateOrderByExp
         - fieldName: verificationStatus
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingVerificationStatusOrderByExp
         - fieldName: willBePaidOff
           orderByExpression: BoolOrderByExp
       orderableRelationships:

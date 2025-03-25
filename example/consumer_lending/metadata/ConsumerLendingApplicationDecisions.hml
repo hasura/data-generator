@@ -33,21 +33,21 @@ definition:
     - name: consumerLendingPricingTierId
       type: Int4
       description: Reference to pricing tier if approved
-    - name: decisionBy
-      type: Varchar
-      description: User ID or System that made decision
+    - name: decisionById
+      type: Int4
+      description: User that made decision
     - name: decisionDateTime
       type: Timestamp!
       description: When decision was made
     - name: decisionResult
-      type: Varchar!
-      description: Approved, Denied, Pending Review
+      type: ConsumerLendingDecisionResult!
+      description: Result of the decision
     - name: decisionScore
       type: Numeric
       description: Numeric score from decision model
     - name: decisionType
-      type: Varchar!
-      description: Prequalification, Initial, Final
+      type: ConsumerLendingDecisionType!
+      description: Type of decision
     - name: expiresDate
       type: Date
       description: When approval or prequalification expires
@@ -88,9 +88,9 @@ definition:
         consumerLendingPricingTierId:
           column:
             name: consumer_lending_pricing_tier_id
-        decisionBy:
+        decisionById:
           column:
-            name: decision_by
+            name: decision_by_id
         decisionDateTime:
           column:
             name: decision_date_time
@@ -128,7 +128,7 @@ definition:
           - consumerLendingDecisionId
           - consumerLendingModelId
           - consumerLendingPricingTierId
-          - decisionBy
+          - decisionById
           - decisionDateTime
           - decisionResult
           - decisionScore
@@ -163,16 +163,16 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingPricingTierId
           booleanExpressionType: Int4BoolExp
-        - fieldName: decisionBy
-          booleanExpressionType: VarcharBoolExp
+        - fieldName: decisionById
+          booleanExpressionType: Int4BoolExp
         - fieldName: decisionDateTime
           booleanExpressionType: TimestampBoolExp
         - fieldName: decisionResult
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingDecisionResultBoolExp
         - fieldName: decisionScore
           booleanExpressionType: NumericBoolExp
         - fieldName: decisionType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingDecisionTypeBoolExp
         - fieldName: expiresDate
           booleanExpressionType: DateBoolExp
         - fieldName: notes
@@ -216,16 +216,16 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: consumerLendingPricingTierId
           aggregateExpression: Int4AggExp
-        - fieldName: decisionBy
-          aggregateExpression: VarcharAggExp
+        - fieldName: decisionById
+          aggregateExpression: Int4AggExp
         - fieldName: decisionDateTime
           aggregateExpression: TimestampAggExp
         - fieldName: decisionResult
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingDecisionResultAggExp
         - fieldName: decisionScore
           aggregateExpression: NumericAggExp
         - fieldName: decisionType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingDecisionTypeAggExp
         - fieldName: expiresDate
           aggregateExpression: DateAggExp
         - fieldName: notes
@@ -262,16 +262,16 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingPricingTierId
           orderByExpression: Int4OrderByExp
-        - fieldName: decisionBy
-          orderByExpression: VarcharOrderByExp
+        - fieldName: decisionById
+          orderByExpression: Int4OrderByExp
         - fieldName: decisionDateTime
           orderByExpression: TimestampOrderByExp
         - fieldName: decisionResult
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingDecisionResultOrderByExp
         - fieldName: decisionScore
           orderByExpression: NumericOrderByExp
         - fieldName: decisionType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingDecisionTypeOrderByExp
         - fieldName: expiresDate
           orderByExpression: DateOrderByExp
         - fieldName: notes

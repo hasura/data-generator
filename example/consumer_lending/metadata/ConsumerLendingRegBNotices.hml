@@ -23,8 +23,8 @@ definition:
       type: Date
       description: Deadline for response if applicable
     - name: deliveryMethod
-      type: Varchar!
-      description: Email, Mail, Electronic
+      type: ConsumerLendingDeliveryMethod!
+      description: Method of delivering the notice
     - name: documentPath
       type: Varchar
       description: Path to stored notice document
@@ -35,8 +35,8 @@ definition:
       type: Text
       description: Items needed if incompleteness notice
     - name: noticeType
-      type: Varchar!
-      description: Incompleteness, Counteroffer, Notice of Action Taken
+      type: ConsumerLendingRegBNoticeType!
+      description: Type of Regulation B notice
     - name: sentDate
       type: Timestamp!
       description: Date notice was sent
@@ -129,7 +129,7 @@ definition:
         - fieldName: deadlineDate
           booleanExpressionType: DateBoolExp
         - fieldName: deliveryMethod
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingDeliveryMethodBoolExp
         - fieldName: documentPath
           booleanExpressionType: VarcharBoolExp
         - fieldName: generatedDate
@@ -137,7 +137,7 @@ definition:
         - fieldName: incompleteItems
           booleanExpressionType: TextBoolExp
         - fieldName: noticeType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingRegBNoticeTypeBoolExp
         - fieldName: sentDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: userId
@@ -171,7 +171,7 @@ definition:
         - fieldName: deadlineDate
           aggregateExpression: DateAggExp
         - fieldName: deliveryMethod
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingDeliveryMethodAggExp
         - fieldName: documentPath
           aggregateExpression: VarcharAggExp
         - fieldName: generatedDate
@@ -179,7 +179,7 @@ definition:
         - fieldName: incompleteItems
           aggregateExpression: TextAggExp
         - fieldName: noticeType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingRegBNoticeTypeAggExp
         - fieldName: sentDate
           aggregateExpression: TimestampAggExp
         - fieldName: userId
@@ -209,7 +209,7 @@ definition:
         - fieldName: deadlineDate
           orderByExpression: DateOrderByExp
         - fieldName: deliveryMethod
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingDeliveryMethodOrderByExp
         - fieldName: documentPath
           orderByExpression: VarcharOrderByExp
         - fieldName: generatedDate
@@ -217,7 +217,7 @@ definition:
         - fieldName: incompleteItems
           orderByExpression: TextOrderByExp
         - fieldName: noticeType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingRegBNoticeTypeOrderByExp
         - fieldName: sentDate
           orderByExpression: TimestampOrderByExp
         - fieldName: userId

@@ -19,11 +19,10 @@ definition:
     - name: relatedPartyId
       type: Int4!
       description: References the party taking the role e.g. power of attorney,
-        guardin, etc.
+        guardian, etc.
     - name: relationshipType
-      type: Varchar
-      description: Describes the role of the related party relative to the enterprise
-        party, e.g. related party is the 'guardian' of enterprise party'
+      type: EnterprisePartyRelationshipType
+      description: Describes the role of the related party relative to the enterprise party
   graphql:
     typeName: Enterprise_EnterprisePartyRelationships
     inputTypeName: Enterprise_EnterprisePartyRelationshipsInput
@@ -80,7 +79,7 @@ definition:
         - fieldName: relatedPartyId
           booleanExpressionType: Int4BoolExp
         - fieldName: relationshipType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterprisePartyRelationshipTypeBoolExp
       comparableRelationships:
         - relationshipName: enterpriseParty
         - relationshipName: enterprisePartyByRelatedPartyId
@@ -109,7 +108,7 @@ definition:
         - fieldName: relatedPartyId
           aggregateExpression: Int4AggExp
         - fieldName: relationshipType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterprisePartyRelationshipTypeAggExp
   count:
     enable: true
   graphql:
@@ -133,7 +132,7 @@ definition:
         - fieldName: relatedPartyId
           orderByExpression: Int4OrderByExp
         - fieldName: relationshipType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterprisePartyRelationshipTypeOrderByExp
       orderableRelationships:
         - relationshipName: enterpriseParty
         - relationshipName: enterprisePartyByRelatedPartyId

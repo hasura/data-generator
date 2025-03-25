@@ -88,6 +88,7 @@ definition:
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: securityNetworkEvents
+        - relationshipName: securityResourceDefinitions
   logicalOperators:
     enable: true
   isNull:
@@ -208,4 +209,26 @@ definition:
           - fieldName: securityDeviceId
   graphql:
     aggregateFieldName: securityNetworkEventsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityResourceDefinitions
+  sourceType: SecurityDevices
+  target:
+    model:
+      name: SecurityResourceDefinitions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecurityResourceDefinitionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityDeviceId
+      target:
+        modelField:
+          - fieldName: networkDeviceId
+  graphql:
+    aggregateFieldName: securityResourceDefinitionsAggregate
 

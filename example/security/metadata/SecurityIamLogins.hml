@@ -3,23 +3,24 @@ kind: ObjectType
 version: v1
 definition:
   name: SecurityIamLogins
-  description: Table storing information about IAM logins, tracking user access to systems.
+  description: Table storing information about IAM logins, tracking user access
+    via accounts.
   fields:
     - name: loginMethod
-      type: Varchar
+      type: Varchar!
       description: Method used for the login.
     - name: loginTime
-      type: Timestamp
+      type: Timestamp!
       description: Timestamp when the login occurred.
     - name: logoutTime
       type: Timestamp
       description: Timestamp when the logout occurred.
+    - name: securityAccountId
+      type: Uuid!
+      description: Identifier of the account used for the login.
     - name: securityLoginId
       type: Uuid!
       description: Unique identifier for the IAM login.
-    - name: systemId
-      type: Uuid
-      description: Identifier of the system where the login occurred.
     - name: userName
       type: Varchar
       description: Username used for the login.
@@ -39,12 +40,12 @@ definition:
         logoutTime:
           column:
             name: logout_time
+        securityAccountId:
+          column:
+            name: security_account_id
         securityLoginId:
           column:
             name: security_login_id
-        systemId:
-          column:
-            name: system_id
         userName:
           column:
             name: user_name
@@ -61,8 +62,8 @@ definition:
           - loginMethod
           - loginTime
           - logoutTime
+          - securityAccountId
           - securityLoginId
-          - systemId
           - userName
 
 ---
@@ -80,13 +81,14 @@ definition:
           booleanExpressionType: TimestampBoolExp
         - fieldName: logoutTime
           booleanExpressionType: TimestampBoolExp
-        - fieldName: securityLoginId
+        - fieldName: securityAccountId
           booleanExpressionType: UuidBoolExp
-        - fieldName: systemId
+        - fieldName: securityLoginId
           booleanExpressionType: UuidBoolExp
         - fieldName: userName
           booleanExpressionType: VarcharBoolExp
-      comparableRelationships: []
+      comparableRelationships:
+        - relationshipName: securityAccount
   logicalOperators:
     enable: true
   isNull:
@@ -109,9 +111,9 @@ definition:
           aggregateExpression: TimestampAggExp
         - fieldName: logoutTime
           aggregateExpression: TimestampAggExp
-        - fieldName: securityLoginId
+        - fieldName: securityAccountId
           aggregateExpression: UuidAggExp
-        - fieldName: systemId
+        - fieldName: securityLoginId
           aggregateExpression: UuidAggExp
         - fieldName: userName
           aggregateExpression: VarcharAggExp
@@ -135,13 +137,14 @@ definition:
           orderByExpression: TimestampOrderByExp
         - fieldName: logoutTime
           orderByExpression: TimestampOrderByExp
-        - fieldName: securityLoginId
+        - fieldName: securityAccountId
           orderByExpression: UuidOrderByExp
-        - fieldName: systemId
+        - fieldName: securityLoginId
           orderByExpression: UuidOrderByExp
         - fieldName: userName
           orderByExpression: VarcharOrderByExp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: securityAccount
   graphql:
     expressionTypeName: Security_SecurityIamLoginsOrderByExp
 
@@ -173,7 +176,8 @@ definition:
       queryRootField: securityIamLoginsAggregate
       subscription:
         rootField: securityIamLoginsAggregate
-  description: Table storing information about IAM logins, tracking user access to systems.
+  description: Table storing information about IAM logins, tracking user access
+    via accounts.
 
 ---
 kind: ModelPermissions
@@ -185,4 +189,22 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securityAccount
+  sourceType: SecurityIamLogins
+  target:
+    model:
+      name: SecurityAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityAccountId
+      target:
+        modelField:
+          - fieldName: securityAccountId
 

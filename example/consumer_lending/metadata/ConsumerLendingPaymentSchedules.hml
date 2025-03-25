@@ -40,8 +40,8 @@ definition:
       type: Date!
       description: Date payment is scheduled
     - name: status
-      type: Varchar!
-      description: Scheduled, Paid, Past Due
+      type: ConsumerLendingPaymentScheduleStatus!
+      description: Current status of the payment schedule entry
   graphql:
     typeName: ConsumerLending_ConsumerLendingPaymentSchedules
     inputTypeName: ConsumerLending_ConsumerLendingPaymentSchedulesInput
@@ -140,7 +140,7 @@ definition:
         - fieldName: scheduledDate
           booleanExpressionType: DateBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerLendingPaymentScheduleStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerLendingLoanPayment
         - relationshipName: consumerLendingLoanAccount
@@ -183,7 +183,7 @@ definition:
         - fieldName: scheduledDate
           aggregateExpression: DateAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerLendingPaymentScheduleStatusAggExp
   count:
     enable: true
   graphql:
@@ -221,7 +221,7 @@ definition:
         - fieldName: scheduledDate
           orderByExpression: DateOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerLendingPaymentScheduleStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerLendingLoanPayment
         - relationshipName: consumerLendingLoanAccount

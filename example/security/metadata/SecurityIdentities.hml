@@ -27,7 +27,7 @@ definition:
     - name: name
       type: Varchar
       description: Internal name of the identity.
-    - name: owner
+    - name: ownerId
       type: Int4
     - name: securityIdentityId
       type: Uuid!
@@ -73,9 +73,9 @@ definition:
         name:
           column:
             name: name
-        owner:
+        ownerId:
           column:
-            name: owner
+            name: owner_id
         securityIdentityId:
           column:
             name: security_identity_id
@@ -108,7 +108,7 @@ definition:
           - isFallbackApprover
           - modified
           - name
-          - owner
+          - ownerId
           - securityIdentityId
           - securityIdentityProfileId
           - serviceAccount
@@ -138,7 +138,7 @@ definition:
           booleanExpressionType: TimestampBoolExp
         - fieldName: name
           booleanExpressionType: VarcharBoolExp
-        - fieldName: owner
+        - fieldName: ownerId
           booleanExpressionType: Int4BoolExp
         - fieldName: securityIdentityId
           booleanExpressionType: UuidBoolExp
@@ -153,9 +153,6 @@ definition:
       comparableRelationships:
         - relationshipName: securityAccounts
         - relationshipName: securityIdentityProfile
-        - relationshipName: securityIdentityAccessProfiles
-        - relationshipName: securityIdentityAttributes
-        - relationshipName: securityIdentityEntitlements
         - relationshipName: securityIdentityRoles
   logicalOperators:
     enable: true
@@ -187,7 +184,7 @@ definition:
           aggregateExpression: TimestampAggExp
         - fieldName: name
           aggregateExpression: VarcharAggExp
-        - fieldName: owner
+        - fieldName: ownerId
           aggregateExpression: Int4AggExp
         - fieldName: securityIdentityId
           aggregateExpression: UuidAggExp
@@ -227,7 +224,7 @@ definition:
           orderByExpression: TimestampOrderByExp
         - fieldName: name
           orderByExpression: VarcharOrderByExp
-        - fieldName: owner
+        - fieldName: ownerId
           orderByExpression: Int4OrderByExp
         - fieldName: securityIdentityId
           orderByExpression: UuidOrderByExp
@@ -325,72 +322,6 @@ definition:
       target:
         modelField:
           - fieldName: securityIdentityProfileId
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securityIdentityAccessProfiles
-  sourceType: SecurityIdentities
-  target:
-    model:
-      name: SecurityIdentityAccessProfiles
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: SecurityIdentityAccessProfilesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securityIdentityId
-      target:
-        modelField:
-          - fieldName: securityIdentityId
-  graphql:
-    aggregateFieldName: securityIdentityAccessProfilesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securityIdentityAttributes
-  sourceType: SecurityIdentities
-  target:
-    model:
-      name: SecurityIdentityAttributes
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: SecurityIdentityAttributesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securityIdentityId
-      target:
-        modelField:
-          - fieldName: securityIdentityId
-  graphql:
-    aggregateFieldName: securityIdentityAttributesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: securityIdentityEntitlements
-  sourceType: SecurityIdentities
-  target:
-    model:
-      name: SecurityIdentityEntitlements
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: SecurityIdentityEntitlementsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: securityIdentityId
-      target:
-        modelField:
-          - fieldName: securityIdentityId
-  graphql:
-    aggregateFieldName: securityIdentityEntitlementsAggregate
 
 ---
 kind: Relationship
