@@ -956,7 +956,6 @@ Table "mortgage_services"."borrower_employments" {
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower this employment belongs to"]
   "employer_name" VARCHAR(150) [not null, note: "Name of the employer"]
   "position" VARCHAR(100) [not null, note: "Job title or position"]
-  "enterprise_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the employer's address"]
   "phone" VARCHAR(30) [note: "Employer's phone number"]
   "employment_type" "mortgage_services"."employment_type" [not null, note: "Type of employment arrangement"]
   "start_date" DATE [not null, note: "When employment began"]
@@ -989,6 +988,7 @@ Enum "mortgage_services"."verification_status" {
   "UNVERIFIED"
   "FAILED"
   "WAIVED"
+  "EXPIRED"
 }
 
 Table "mortgage_services"."borrower_incomes" {
@@ -1037,13 +1037,13 @@ Enum "mortgage_services"."income_frequency" {
 Table "mortgage_services"."borrower_assets" {
   "mortgage_services_asset_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each asset record"]
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower this asset belongs to"]
-  "asset_type" "mortgage_services"."asset_type" [not null, note: "Type of asset (e.g., bank account, property)"]
+  "asset_type" mortgage_services.asset_type [not null, note: "Type of asset (e.g., bank account, property)"]
   "institution_name" VARCHAR(100) [note: "Financial institution holding the asset"]
   "account_number" VARCHAR(50) [note: "Account number for financial assets"]
   "current_value" NUMERIC(18,2) [not null, note: "Current estimated value of the asset"]
   "verification_status" "mortgage_services"."verification_status" [not null, note: "Status of asset verification process"]
   "verification_date" DATE [note: "When the asset was verified"]
-  "property_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the address if asset is a property"]
+  "property_address" VARCHAR(500) [note: "Full text address for real estate assets"]
 
   note: "Tracks assets owned by borrowers that may be relevant to mortgage qualification"
 }
@@ -1058,6 +1058,7 @@ Enum "mortgage_services"."asset_type" {
   "INVESTMENT_PROPERTY"
   "PRIMARY_RESIDENCE"
   "SECONDARY_RESIDENCE"
+  "OTHER_REAL_ESTATE"
   "MUTUAL_FUND"
   "STOCK_EQUITY"
   "BONDS"
@@ -1152,15 +1153,71 @@ Table "mortgage_services"."properties" {
   note: "Stores information about properties being purchased or refinanced"
 }
 
+// Enums for Mortgage Services Applications
+
+Enum "mortgage_services"."application_type" {
+  PURCHASE [note: 'Buying a new home']
+  REFINANCE [note: 'Refinancing an existing mortgage']
+  CASH_OUT [note: 'Refinancing to access home equity']
+  CONSTRUCTION [note: 'New home construction loan']
+  HOME_IMPROVEMENT [note: 'Loan for home renovations']
+  RENOVATION [note: 'Loan specifically for property renovation']
+  REVERSE_MORTGAGE [note: 'Mortgage for older homeowners to access home equity']
+  JUMBO [note: 'Loan exceeding conventional loan limits']
+  FHA [note: 'Federal Housing Administration insured loan']
+  VA [note: 'Veterans Affairs guaranteed loan']
+  USDA [note: 'United States Department of Agriculture rural development loan']
+  LAND [note: 'Land purchase loan']
+  OTHER [note: 'Other types of mortgage applications']
+}
+
+Enum "mortgage_services"."application_status" {
+  DRAFT [note: 'Application is in initial drafting stage']
+  SUBMITTED [note: 'Application has been submitted for initial review']
+  IN_REVIEW [note: 'Application is being reviewed by underwriting']
+  ADDITIONAL_INFO_REQUIRED [note: 'More information needed from applicant']
+  CONDITIONAL_APPROVAL [note: 'Approved with specific conditions']
+  APPROVED [note: 'Application fully approved']
+  DENIED [note: 'Application has been rejected']
+  WITHDRAWN [note: 'Applicant withdrew the application']
+  EXPIRED [note: 'Application has passed its validity period']
+  SUSPENDED [note: 'Application review is temporarily paused']
+}
+
+Enum "mortgage_services"."loan_purpose" {
+  PRIMARY_RESIDENCE [note: 'Home will be primary residence']
+  SECOND_HOME [note: 'Home will be a secondary/vacation residence']
+  INVESTMENT_PROPERTY [note: 'Property purchased as an investment']
+  RENTAL [note: 'Property intended for rental income']
+  VACATION_HOME [note: 'Vacation or recreational property']
+  MULTI_FAMILY [note: 'Property with multiple residential units']
+  RELOCATION [note: 'Home purchase due to job relocation']
+  OTHER [note: 'Other purpose not specified']
+}
+
+Enum "mortgage_services"."submission_channel" {
+  ONLINE [note: 'Application submitted through online portal']
+  MOBILE_APP [note: 'Application submitted via mobile application']
+  BRANCH [note: 'Application submitted in-person at a branch']
+  PHONE [note: 'Application submitted over the phone']
+  MAIL [note: 'Application submitted via postal mail']
+  REFERRAL [note: 'Application submitted through a referral']
+  BROKER [note: 'Application submitted through a mortgage broker']
+  EMAIL [note: 'Application submitted via email']
+  OTHER [note: 'Submission through other channels']
+}
+
+// Update the applications table with new enums
 Table "mortgage_services"."applications" {
   "mortgage_services_application_id" SERIAL [pk, increment, note: "Unique identifier for each mortgage application"]
   "mortgage_services_loan_product_id" INTEGER [not null, ref: > mortgage_services.loan_products.mortgage_services_loan_product_id, note: "References the loan product being applied for"]
-  "application_type" VARCHAR(50) [not null, note: "Type of mortgage application (e.g., Purchase, Refinance, HELOC)"]
-  "status" VARCHAR(20) [not null, note: "Current status in the application workflow"]
+  "application_type" mortgage_services.application_type [not null, note: "Type of mortgage application"]
+  "status" mortgage_services.application_status [not null, note: "Current status in the application workflow"]
+  "loan_purpose" mortgage_services.loan_purpose [note: "Purpose of the loan"]
+  "submission_channel" mortgage_services.submission_channel [note: "Channel through which application was submitted"]
   "creation_date_time" TIMESTAMP [not null, note: "When the application was created"]
   "submission_date_time" TIMESTAMP [note: "When the application was formally submitted"]
   "last_updated_date_time" TIMESTAMP [not null, note: "When the application was last modified"]
-  "loan_purpose" VARCHAR(50) [note: "Purpose of the loan (e.g., Primary Residence, Investment)"]
   "requested_loan_amount" NUMERIC(18,2) [not null, note: "Amount of financing requested"]
   "requested_loan_term_months" INTEGER [not null, note: "Requested duration of the loan in months"]
   "estimated_property_value" NUMERIC(18,2) [note: "Estimated value of the property"]
@@ -1176,9 +1233,9 @@ Table "mortgage_services"."loans" {
   "mortgage_services_loan_id" SERIAL [pk, increment, note: "Unique identifier for each loan"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the mortgage application this loan is associated with"]
   "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the enterprise account for this loan"]
-  "interest_rate" NUMERIC(6,3) [not null, note: "Final annual percentage rate for the loan"]
-  "loan_term_months" INTEGER [not null, note: "Final duration of the loan in months"]
-  "loan_amount" NUMERIC(18,2) [not null, note: "Final principal amount of the loan"]
+  "interest_rate" NUMERIC(6,3) [note: "Final annual percentage rate for the loan"]
+  "loan_term_months" INTEGER [note: "Final duration of the loan in months"]
+  "loan_amount" NUMERIC(18,2) [note: "Final principal amount of the loan"]
   "down_payment" NUMERIC(18,2) [note: "Final amount paid upfront by the borrower"]
   "down_payment_percentage" NUMERIC(5,2) [note: "Final down payment as a percentage of purchase price"]
   "closing_costs" NUMERIC(18,2) [note: "Actual fees and costs paid at closing"]
@@ -1186,31 +1243,65 @@ Table "mortgage_services"."loans" {
   "private_mortgage_insurance" BOOLEAN [note: "Whether PMI is required for this loan"]
   "pmi_rate" NUMERIC(5,3) [note: "Actual PMI rate applied to this loan"]
   "escrow_amount" NUMERIC(18,2) [note: "Actual monthly amount collected for taxes and insurance"]
-  "origination_date" DATE [not null, note: "When the loan was originated"]
-  "first_payment_date" DATE [not null, note: "Due date of the first loan payment"]
-  "maturity_date" DATE [not null, note: "When the loan will be fully paid off"]
+  "origination_date" DATE [note: "When the loan was originated"]
+  "first_payment_date" DATE [note: "Due date of the first loan payment"]
+  "maturity_date" DATE [note: "When the loan will be fully paid off"]
 
   note: "Stores final, actual loan details after closing. Now includes reference to enterprise account."
 }
 
+// Enums for Mortgage Services Loan Products
+
+Enum "mortgage_services"."loan_type" {
+  CONVENTIONAL [note: 'Standard mortgage not insured by government']
+  FHA [note: 'Federal Housing Administration insured loan']
+  VA [note: 'Veterans Affairs guaranteed loan']
+  USDA [note: 'United States Department of Agriculture rural development loan']
+  JUMBO [note: 'Loan exceeding conventional loan limits']
+  CONSTRUCTION [note: 'Loan for new home construction']
+  HOME_EQUITY [note: 'Line of credit or loan using home equity']
+  REFINANCE [note: 'Loan to replace existing mortgage']
+  REVERSE_MORTGAGE [note: 'Loan for seniors to access home equity']
+  OTHER [note: 'Other loan types not specified']
+}
+
+Enum "mortgage_services"."interest_rate_type" {
+  FIXED [note: 'Interest rate remains constant throughout loan term']
+  ADJUSTABLE [note: 'Interest rate can change periodically based on market index']
+  HYBRID [note: 'Combines fixed and adjustable rate periods (e.g., 5/1 ARM)']
+  INTEREST_ONLY [note: 'Periods where only interest is paid']
+  STEP_RATE [note: 'Interest rate increases or decreases in predetermined steps']
+  BALLOON [note: 'Large final payment after a series of smaller payments']
+  OTHER [note: 'Other interest rate structures']
+}
+
 Table "mortgage_services"."loan_products" {
-  "mortgage_services_loan_product_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each loan product"]
+  "mortgage_services_loan_product_id" SERIAL [pk, increment, note: "Unique identifier for each loan product"]
   "product_name" VARCHAR(100) [not null, note: "Marketing name of the loan product"]
-  "mortgage_services_loan_products_product_code" VARCHAR(20) [not null, note: "Internal code identifying the loan product"]
+  "product_code" VARCHAR(20) [not null, note: "Internal code identifying the loan product"]
+  "loan_type" mortgage_services.loan_type [not null, note: "Type of loan product"]
+  "interest_rate_type" mortgage_services.interest_rate_type [not null, note: "Type of interest rate structure"]
   "description" TEXT [note: "Detailed description of the loan product and its features"]
-  "loan_type" VARCHAR(50) [not null, note: "Category of loan (e.g., Conventional, FHA, VA, USDA)"]
-  "interest_rate_type" VARCHAR(20) [not null, note: "Whether the rate is fixed or adjustable"]
   "base_interest_rate" NUMERIC(6,3) [not null, note: "Starting interest rate for this product"]
   "min_term_months" INTEGER [not null, note: "Minimum loan duration in months"]
   "max_term_months" INTEGER [not null, note: "Maximum loan duration in months"]
   "min_loan_amount" NUMERIC(18,2) [note: "Minimum principal amount for this product"]
   "max_loan_amount" NUMERIC(18,2) [note: "Maximum principal amount for this product"]
-  "min_credit_score" INTEGER [note: "Minimum credit score required for approval"]
+  "min_credit_score" INTEGER [note: "Minimum credit score typically required"]
   "min_down_payment_percentage" NUMERIC(5,2) [note: "Minimum down payment as percentage of purchase price"]
   "requires_pmi" BOOLEAN [note: "Whether private mortgage insurance is required"]
   "is_active" BOOLEAN [not null, default: true, note: "Whether this product is currently offered"]
+  "launch_date" DATE [note: "Date when product was launched"]
+  "discontinue_date" DATE [note: "Date when product was discontinued if applicable"]
 
   note: "Defines mortgage loan products available to applicants"
+}
+
+Enum "mortgage_services"."loan_rate_lock_status" {
+  Active
+  Locked
+  Expired
+  Closed
 }
 
 Table "mortgage_services"."loan_rate_locks" {
@@ -1220,7 +1311,7 @@ Table "mortgage_services"."loan_rate_locks" {
   "expiration_date" TIMESTAMP [not null, note: "When the rate lock expires"]
   "locked_interest_rate" NUMERIC(6,3) [not null, note: "The interest rate secured by this lock"]
   "lock_period_days" INTEGER [not null, note: "Duration of the lock in days"]
-  "status" VARCHAR(20) [not null, note: "Current status of the rate lock"]
+  "status" mortgage_services.loan_rate_lock_status [not null, note: "Current status of the rate lock"]
   "lock_fee" NUMERIC(10,2) [note: "Fee charged for the rate lock, if any"]
   "extension_date" TIMESTAMP [note: "Date the lock was extended, if applicable"]
   "extension_fee" NUMERIC(10,2) [note: "Fee charged for extending the lock, if any"]
@@ -1228,14 +1319,50 @@ Table "mortgage_services"."loan_rate_locks" {
   note: "Tracks interest rate locks for mortgage loans"
 }
 
+Enum "mortgage_services"."document_type" {
+  TAX_RETURN [note: 'Personal or business tax documents']
+  W2 [note: 'Wage and tax statement forms']
+  PAY_STUB [note: 'Employment income documentation']
+  BANK_STATEMENT [note: 'Financial account statements showing cash flow and balances']
+  CREDIT_REPORT [note: 'Credit history documentation']
+  ASSET_STATEMENT [note: 'Documentation verifying ownership of assets']
+  IDENTITY_VERIFICATION [note: 'Documents verifying borrower identity']
+  PROPERTY_APPRAISAL [note: 'Property value assessment report']
+  PURCHASE_AGREEMENT [note: 'Contract for the purchase of property']
+  TITLE_INSURANCE [note: 'Documentation of title insurance']
+  CLOSING_DISCLOSURE [note: 'Final loan terms and closing costs']
+  LOAN_ESTIMATE [note: 'Initial estimate of loan terms and costs']
+  MORTGAGE_NOTE [note: 'Promise to repay the mortgage loan']
+  DEED [note: 'Legal document showing property ownership']
+  INSURANCE_PROOF [note: 'Documentation of property insurance']
+  LETTER_OF_EXPLANATION [note: 'Clarification of specific financial or credit issues']
+  GIFT_LETTER [note: 'Documentation of financial gift for down payment']
+  SELF_EMPLOYMENT [note: 'Business documentation for self-employed borrowers']
+  BANKRUPTCY_DISCHARGE [note: 'Documentation of bankruptcy resolution']
+  DIVORCE_DECREE [note: 'Legal documentation of divorce settlement']
+  OTHER [note: 'Document type not falling into standard categories']
+}
+
+Enum "mortgage_services"."document_status" {
+  PENDING [note: 'Document awaiting initial review']
+  REVIEWED [note: 'Document has been examined']
+  ACCEPTED [note: 'Document has been approved and accepted']
+  REJECTED [note: 'Document was not accepted']
+  REQUIRES_REVISION [note: 'Document needs updates or corrections']
+  IN_REVIEW [note: 'Document is currently being reviewed']
+  ARCHIVED [note: 'Document has been filed and stored']
+  EXPIRED [note: 'Document is no longer valid']
+  OTHER [note: 'Document status not falling into standard categories']
+}
+
 Table "mortgage_services"."documents" {
   "mortgage_services_document_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each document"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this document belongs to"]
-  "document_type" VARCHAR(50) [not null, note: "Category of document (e.g., W2, Tax Return)"]
+  "document_type" mortgage_services.document_type [not null, note: "Category of document (e.g., W2, Tax Return)"]
   "document_name" VARCHAR(255) [not null, note: "Filename or display name of the document"]
   "document_path" VARCHAR(500) [not null, note: "Storage location or path to access the document"]
   "upload_date" TIMESTAMP [not null, note: "When the document was uploaded"]
-  "status" VARCHAR(20) [not null, note: "Current review status of the document"]
+  "status" mortgage_services.document_status [not null, note: "Current review status of the document"]
   "review_date" TIMESTAMP [note: "When the document was reviewed"]
   "reviewer_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who reviewed the document"]
   "expiration_date" DATE [note: "When the document expires or needs to be updated"]
@@ -1244,60 +1371,165 @@ Table "mortgage_services"."documents" {
   note: "Stores and tracks documents submitted for mortgage applications"
 }
 
+Enum "mortgage_services"."condition_type" {
+  PRIOR_TO_APPROVAL [note: 'Condition must be satisfied before loan approval']
+  PRIOR_TO_CLOSING [note: 'Condition must be satisfied before loan closing']
+  PRIOR_TO_FUNDING [note: 'Condition must be satisfied before loan funding']
+  PRIOR_TO_DOCS [note: 'Condition must be satisfied before document preparation']
+  AT_CLOSING [note: 'Condition must be satisfied at loan closing']
+  POST_CLOSING [note: 'Condition must be satisfied after loan closing']
+  UNDERWRITER_REQUIREMENT [note: 'General underwriter requirement']
+  AGENCY_REQUIREMENT [note: 'Required by government agency or investor']
+  OTHER [note: 'Condition type not falling into standard categories']
+}
+
+Enum "mortgage_services"."condition_status" {
+  PENDING [note: 'Condition has been created but not yet reviewed or fulfilled']
+  IN_PROCESS [note: 'Condition is being actively worked on']
+  SUBMITTED [note: 'Documentation for the condition has been submitted for review']
+  ACCEPTED [note: 'Condition has been satisfied and accepted']
+  REJECTED [note: 'Submitted documentation was rejected']
+  WAIVED [note: 'Condition requirement has been waived']
+  EXPIRED [note: 'Condition has expired and is no longer relevant']
+  CLEARED [note: 'Condition has been successfully cleared']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
 Table "mortgage_services"."conditions" {
   "mortgage_services_condition_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each condition"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this condition applies to"]
-  "condition_type" VARCHAR(50) [not null, note: "When the condition must be satisfied (e.g., Prior to Approval)"]
+  "condition_type" mortgage_services.condition_type [not null, note: "When the condition must be satisfied"]
   "description" TEXT [not null, note: "Detailed explanation of what must be provided or resolved"]
-  "status" VARCHAR(20) [not null, note: "Current status of the condition"]
+  "status" mortgage_services.condition_status [not null, note: "Current status of the condition"]
   "created_date" TIMESTAMP [not null, note: "When the condition was created"]
   "created_by_id" INTEGER [not null, ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who created the condition"]
   "due_date" DATE [note: "Deadline for satisfying the condition"]
   "cleared_date" TIMESTAMP [note: "When the condition was satisfied or waived"]
-  "cleared_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who cleared the condition"]
+  "cleared_by_id" INTEGER [null, ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who cleared the condition"]
 
   note: "Tracks underwriting conditions that must be cleared for loan approval"
+}
+
+Enum "mortgage_services"."appraisal_type" {
+  FULL_APPRAISAL [note: 'Complete property evaluation with interior and exterior inspection']
+  DRIVE_BY [note: 'Exterior-only appraisal without interior inspection']
+  DESKTOP [note: 'Appraisal completed without a physical inspection of the property']
+  BPO [note: 'Broker Price Opinion conducted by a real estate agent rather than a licensed appraiser']
+  AVM [note: 'Automated Valuation Model using statistical analysis without physical inspection']
+  APPRAISAL_UPDATE [note: 'Update to a previous appraisal report']
+  FIELD_REVIEW [note: 'Review of another appraiser\'s work including a physical inspection']
+  DESK_REVIEW [note: 'Review of another appraiser\'s work without physical inspection']
+  RECERTIFICATION [note: 'Verification that a property\'s condition and value remain unchanged']
+  FHA_APPRAISAL [note: 'Specialized appraisal meeting Federal Housing Administration requirements']
+  VA_APPRAISAL [note: 'Specialized appraisal meeting Veterans Affairs requirements']
+  USDA_APPRAISAL [note: 'Specialized appraisal meeting USDA Rural Development requirements']
+  OTHER [note: 'Appraisal type not falling into standard categories']
+}
+
+Enum "mortgage_services"."appraisal_status" {
+  ORDERED [note: 'Appraisal has been requested but not yet assigned to an appraiser']
+  ASSIGNED [note: 'Appraisal has been assigned to an appraiser']
+  SCHEDULED [note: 'Inspection date has been scheduled']
+  INSPECTION_COMPLETED [note: 'Property inspection has been completed']
+  IN_PROGRESS [note: 'Appraisal report is being prepared']
+  SUBMITTED [note: 'Appraisal report has been submitted for review']
+  UNDER_REVIEW [note: 'Appraisal report is being reviewed']
+  REVISION_NEEDED [note: 'Revisions requested to the appraisal report']
+  COMPLETED [note: 'Appraisal is complete and approved']
+  REJECTED [note: 'Appraisal has been rejected']
+  CANCELLED [note: 'Appraisal has been cancelled before completion']
+  EXPIRED [note: 'Appraisal has passed its validity period']
+  OTHER [note: 'Status not falling into standard categories']
 }
 
 Table "mortgage_services"."appraisals" {
   "mortgage_services_appraisal_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each appraisal"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this appraisal is for"]
   "mortgage_services_property_id" INTEGER [not null, ref: > mortgage_services.properties.mortgage_services_property_id, note: "References the property being appraised"]
-  "appraisal_type" VARCHAR(50) [not null, note: "Type of appraisal being performed"]
+  "appraisal_type" mortgage_services.appraisal_type [not null, note: "Type of appraisal being performed"]
   "ordered_date" TIMESTAMP [not null, note: "When the appraisal was ordered"]
   "appraiser_name" VARCHAR(100) [note: "Name of the assigned appraiser"]
   "appraisal_company" VARCHAR(100) [note: "Company performing the appraisal"]
   "inspection_date" DATE [note: "When the property was inspected"]
   "completion_date" DATE [note: "When the appraisal was completed"]
   "appraised_value" NUMERIC(18,2) [note: "Value determined by the appraisal"]
-  "status" VARCHAR(20) [not null, note: "Current status of the appraisal process"]
+  "status" mortgage_services.appraisal_status [not null, note: "Current status of the appraisal process"]
   "appraisal_fee" NUMERIC(10,2) [note: "Fee charged for the appraisal"]
   "report_path" VARCHAR(500) [note: "Storage location of the appraisal report"]
 
   note: "Manages property appraisals for mortgage loans"
 }
 
+// First, let's create the missing enums for credit reports
+
+Enum "mortgage_services"."credit_report_type" {
+  TRI_MERGE [note: 'Credit report combining data from all three major bureaus']
+  SINGLE_BUREAU [note: 'Credit report from a single credit bureau']
+  MERGED_BUREAU [note: 'Credit report merging data from two bureaus']
+  EXPANDED [note: 'Comprehensive report with additional details']
+  CUSTOM [note: 'Customized report with specific requirements']
+  OTHER [note: 'Report type not falling into standard categories']
+}
+
+Enum "mortgage_services"."credit_bureau" {
+  EQUIFAX [note: 'Equifax credit reporting agency']
+  EXPERIAN [note: 'Experian credit reporting agency']
+  TRANSUNION [note: 'TransUnion credit reporting agency']
+  INNOVIS [note: 'Innovis credit reporting agency']
+  CLEAR_REPORT [note: 'Alternative credit reporting service']
+  OTHER [note: 'Credit bureau not listed']
+}
+
+// Now, let's update the credit_reports table to use these enums
+// We'll also reuse the existing mortgage_services.verification_status enum for the report status
+
 Table "mortgage_services"."credit_reports" {
   "mortgage_services_credit_report_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each credit report"]
-  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this credit report is for"]
-  "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "References the borrower this credit report is for"]
-  "report_date" TIMESTAMP [not null, note: "When the credit report was pulled"]
-  "expiration_date" DATE [not null, note: "When the credit report expires"]
+  "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "Reference to applications"]
+  "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "Reference to borrower this credit report is for"]
+  "report_date" TIMESTAMP [not null, note: "When credit report was pulled"]
+  "expiration_date" DATE [not null, note: "When credit report expires"]
   "credit_score" INTEGER [note: "Credit score from the report"]
-  "report_type" VARCHAR(20) [not null, note: "Type of credit report pulled"]
-  "report_path" VARCHAR(500) [note: "Storage location of the credit report"]
-  "status" VARCHAR(20) [not null, note: "Status of the credit report"]
+  "report_type" mortgage_services.credit_report_type [not null, note: "Type of credit report pulled"]
+  "bureau_name" mortgage_services.credit_bureau [note: "Credit bureau providing the report"]
+  "report_path" VARCHAR(500) [note: "Path to stored credit report"]
+  "status" mortgage_services.verification_status [not null, note: "Status of credit report retrieval"]
 
   note: "Tracks credit reports pulled for mortgage applications"
 }
 
+// Create enum for disclosure types
+Enum "mortgage_services"."disclosure_type" {
+  LOAN_ESTIMATE [note: 'Initial disclosure of loan terms and estimated costs']
+  CLOSING_DISCLOSURE [note: 'Final disclosure showing actual loan terms and closing costs']
+  CHANGE_IN_TERMS [note: 'Notification of changes to previously disclosed terms']
+  REVISED_CLOSING_DISCLOSURE [note: 'Updated closing disclosure due to changes before closing']
+  CORRECTED_CLOSING_DISCLOSURE [note: 'Corrected disclosure issued after closing']
+  FEE_ESTIMATE [note: 'Preliminary estimate of closing fees']
+  INITIAL_ESCROW_STATEMENT [note: 'Details about the escrow account and payments']
+  OTHER [note: 'Other disclosure types not categorized above']
+}
+
+// Create enum for delivery methods
+Enum "mortgage_services"."delivery_method" {
+  EMAIL [note: 'Disclosure sent via electronic mail']
+  MAIL [note: 'Physical disclosure sent through postal service']
+  IN_PERSON [note: 'Disclosure provided in person during meeting']
+  ELECTRONIC_PORTAL [note: 'Disclosure made available through secure electronic portal']
+  COURIER [note: 'Disclosure delivered via courier or delivery service']
+  FAX [note: 'Disclosure sent via facsimile']
+  OTHER [note: 'Other delivery methods not categorized above']
+}
+
+// Now update the closing_disclosures table to use these enums
 Table "mortgage_services"."closing_disclosures" {
   "mortgage_services_disclosure_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each disclosure"]
-  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this disclosure is for"]
-  "disclosure_type" VARCHAR(50) [not null, note: "Type of disclosure document"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "Reference to the loan this disclosure is for"]
+  "disclosure_type" mortgage_services.disclosure_type [not null, note: "Type of disclosure document"]
   "created_date" TIMESTAMP [not null, note: "When the disclosure was created"]
   "sent_date" TIMESTAMP [note: "When the disclosure was sent to borrowers"]
   "received_date" TIMESTAMP [note: "When signed disclosure was received back"]
+  "delivery_method" mortgage_services.delivery_method [not null, note: "How disclosure was delivered"]
   "document_path" VARCHAR(500) [note: "Storage location of the disclosure document"]
   "loan_amount" NUMERIC(18,2) [not null, note: "Loan amount shown on disclosure"]
   "interest_rate" NUMERIC(6,3) [not null, note: "Interest rate shown on disclosure"]
@@ -1308,12 +1540,38 @@ Table "mortgage_services"."closing_disclosures" {
   note: "Manages closing disclosure documents required by regulations"
 }
 
+// Create enum for appointment status
+Enum "mortgage_services"."appointment_status" {
+  SCHEDULED [note: 'Appointment has been scheduled but not yet occurred']
+  RESCHEDULED [note: 'Appointment has been rescheduled from its original date/time']
+  CONFIRMED [note: 'Appointment has been confirmed by all required parties']
+  IN_PROGRESS [note: 'Appointment is currently underway']
+  COMPLETED [note: 'Appointment has taken place successfully']
+  CANCELLED [note: 'Appointment was cancelled and not rescheduled']
+  MISSED [note: 'Scheduled appointment was missed by one or more parties']
+  PENDING [note: 'Appointment is waiting for confirmation']
+}
+
+// Create enum for closing types
+Enum "mortgage_services"."closing_type" {
+  IN_PERSON [note: 'Traditional in-person closing with all parties present']
+  HYBRID [note: 'Some parties attend in person while others participate remotely']
+  REMOTE [note: 'All parties participate remotely through electronic means']
+  MAIL_AWAY [note: 'Documents are sent by mail for signature and return']
+  ESCROW [note: 'Closing handled through an escrow process']
+  POWER_OF_ATTORNEY [note: 'Closing conducted by authorized representative with power of attorney']
+  DRY_CLOSING [note: 'Documents are signed but funds are not yet disbursed']
+  WET_CLOSING [note: 'Documents are signed and funds are disbursed on the same day']
+}
+
+// Now update the closing_appointments table to use these enums
 Table "mortgage_services"."closing_appointments" {
   "mortgage_services_appointment_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each appointment"]
-  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this closing is for"]
+  "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "Reference to the loan this closing is for"]
   "scheduled_date" TIMESTAMP [not null, note: "When the closing is scheduled"]
   "location_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the address where closing will occur"]
-  "status" VARCHAR(20) [not null, note: "Current status of the closing appointment"]
+  "status" mortgage_services.appointment_status [not null, note: "Current status of the closing appointment"]
+  "closing_type" mortgage_services.closing_type [not null, note: "Type of closing process being used"]
   "closing_agent" VARCHAR(100) [note: "Name of the closing agent"]
   "closing_company" VARCHAR(100) [note: "Company handling the closing"]
   "closing_fee" NUMERIC(10,2) [note: "Fee charged for closing services"]
@@ -4827,9 +5085,9 @@ Table "security"."network_events" {
   "length" INTEGER [not null, default: 0, note: 'Length of the data packet in bytes.']
   "bytes_sent" INTEGER [not null, default: 0, note: 'Number of bytes sent during the event.']
   "bytes_received" INTEGER [not null, default: 0, note: 'Number of bytes received during the event.']
-  "security_device_id" INET [not null, ref: > security.devices.security_device_id, note: 'IP address of the device involved in the event, foreign key referencing the devices table.']
+  "security_device_id" INET [not null, ref: > security.devices.security_device_id, note: 'IP address of the device involved in the event (likely the device that logged the event)']
   "log_message" TEXT [note: 'Detailed log message associated with the network event.']
-  "created_at" TIMESTAMP(6) [default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the event record was created.']
+  "created_at" TIMESTAMP(6) [note: 'Timestamp when the event record was created.']
 
   Note: 'Table storing detailed information about network events for security monitoring and analysis.'
 }

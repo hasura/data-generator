@@ -66,7 +66,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: createdBy
+          - fieldName: createdById
       target:
         modelField:
           - fieldName: enterpriseAssociateId
@@ -84,7 +84,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: clearedBy
+          - fieldName: clearedById
       target:
         modelField:
           - fieldName: enterpriseAssociateId
@@ -146,42 +146,6 @@ definition:
 kind: Relationship # New relationship
 version: v1
 definition:
-  name: employerAddress
-  sourceType: MortgageServicesBorrowerEmployments
-  target:
-    model:
-      subgraph: enterprise
-      name: EnterpriseAddresses
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: enterpriseAddressId
-      target:
-        modelField:
-          - fieldName: enterpriseAddressId
----
-kind: Relationship # New relationship
-version: v1
-definition:
-  name: propertyAddress
-  sourceType: MortgageServicesBorrowerAssets
-  target:
-    model:
-      subgraph: enterprise
-      name: EnterpriseAddresses
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: propertyAddressId
-      target:
-        modelField:
-          - fieldName: enterpriseAddressId
----
-kind: Relationship # New relationship
-version: v1
-definition:
   name: locationAddress
   sourceType: MortgageServicesClosingAppointments
   target:
@@ -196,3 +160,39 @@ definition:
       target:
         modelField:
           - fieldName: enterpriseAddressId
+---
+kind: Relationship
+version: v1
+definition:
+  name: hmdaEditResolvedBy
+  sourceType: MortgageServicesHmdaEdits
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: resolvedById
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
+---
+kind: Relationship
+version: v1
+definition:
+  name: hmdaSubmissionSubmittedBy
+  sourceType: MortgageServicesHmdaSubmissions
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: submittedById
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
