@@ -1,6 +1,7 @@
 import datetime
 import logging
 import random
+import sys
 from typing import Any, Dict, Optional
 
 import psycopg2
@@ -233,14 +234,7 @@ def get_servicing_info(servicing_account_id: Optional[int], conn) -> Optional[Di
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "mortgage_services_loan_id": result[0],
-                "original_principal_balance": float(result[1]) if result[1] is not None else None,
-                "homeowners_insurance_due_date": result[2]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching servicing account information: {error}")
@@ -273,11 +267,11 @@ def get_property_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
 
         loan_result = cursor.fetchone()
 
-        if not loan_result or not loan_result[0]:
+        if not loan_result or not loan_result.get('mortgage_services_application_id'):
             cursor.close()
             return None
 
-        application_id = loan_result[0]
+        application_id = loan_result.get('mortgage_services_application_id')
 
         # Then get property details from the application
         cursor.execute("""
@@ -289,13 +283,11 @@ def get_property_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
         app_result = cursor.fetchone()
         cursor.close()
 
-        if app_result:
-            return {
-                "estimated_property_value": float(app_result[0]) if app_result[0] is not None else None
-            }
-        else:
-            return None
+        return app_result
 
+    except psycopg2.ProgrammingError as error:
+        logger.error(f"Error fetching property information: {error}")
+        sys.exit(-1)
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching property information: {error}")
         return None

@@ -1,11 +1,11 @@
 import random
-import uuid
 from decimal import Decimal
 
-from psycopg2.extras import RealDictCursor
 from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import PartyRelationshipType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums import BorrowerType
+from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import \
+    PartyRelationshipType
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums import \
+    BorrowerType
 
 
 def generate_random_application_borrower(ids_dict, dg: DataGenerator):
@@ -32,7 +32,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
     if not application_id or not borrower_id:
         raise ValueError("Must provide both application_id and borrower_id")
 
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor = conn.cursor()
 
     try:
         # First check if this borrower is already associated with the application
@@ -104,7 +104,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
 
             # Determine the appropriate contribution percentage
             # Start with a base percentage based on the relationship
-            base_contribution = determine_base_contribution(
+            base_contribution = _determine_base_contribution(
                 conn,
                 current_borrower_info,
                 primary_borrower_info
@@ -124,7 +124,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
             contribution_percentage = max(contribution_percentage, Decimal('0.01'))
 
             # Determine relationship to primary borrower
-            formal_relationship = PartyRelationshipType[get_formal_relationship(
+            formal_relationship = PartyRelationshipType[_get_formal_relationship(
                 conn,
                 current_borrower_info.get('enterprise_party_id'),
                 primary_borrower_info.get('enterprise_party_id')
@@ -141,7 +141,8 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
                         [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.95, 0.05]
                     )[0]
-                elif formal_relationship in [PartyRelationshipType.POWER_OF_ATTORNEY, PartyRelationshipType.GUARDIAN, PartyRelationshipType.TRUSTEE]:
+                elif formal_relationship in [PartyRelationshipType.POWER_OF_ATTORNEY, PartyRelationshipType.GUARDIAN,
+                                             PartyRelationshipType.TRUSTEE]:
                     borrower_type = random.choices(
                         [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.7, 0.3]
@@ -158,7 +159,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
                     )[0]
             else:
                 # No formal relationship exists, so we need to infer a personal relationship
-                personal_relationship = infer_personal_relationship(current_borrower_info, primary_borrower_info)
+                personal_relationship = _infer_personal_relationship(current_borrower_info, primary_borrower_info)
                 relationship_to_primary = personal_relationship
 
                 # Determine borrower type based on inferred personal relationship
@@ -214,7 +215,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
         cursor.close()
 
 
-def determine_base_contribution(conn, borrower_info, primary_info):
+def _determine_base_contribution(conn, borrower_info, primary_info):
     """
     Determine a base contribution percentage based on the relationship
     between the borrower and primary borrower.
@@ -228,7 +229,7 @@ def determine_base_contribution(conn, borrower_info, primary_info):
     Decimal: Base contribution percentage
     """
     # Get formal relationship if it exists
-    formal_relationship = PartyRelationshipType[get_formal_relationship(
+    formal_relationship = PartyRelationshipType[_get_formal_relationship(
         conn,
         borrower_info.get('enterprise_party_id'),
         primary_info.get('enterprise_party_id')
@@ -239,7 +240,8 @@ def determine_base_contribution(conn, borrower_info, primary_info):
         # Spouses typically have higher contributions
         return Decimal(str(random.uniform(35.0, 50.0))).quantize(Decimal('0.01'))
 
-    elif formal_relationship in [PartyRelationshipType.POWER_OF_ATTORNEY, PartyRelationshipType.GUARDIAN, PartyRelationshipType.TRUSTEE]:
+    elif formal_relationship in [PartyRelationshipType.POWER_OF_ATTORNEY, PartyRelationshipType.GUARDIAN,
+                                 PartyRelationshipType.TRUSTEE]:
         return Decimal(str(random.uniform(20.0, 40.0))).quantize(Decimal('0.01'))
 
     elif formal_relationship in [PartyRelationshipType.BENEFICIARY, PartyRelationshipType.AUTHORIZED_USER]:
@@ -247,7 +249,7 @@ def determine_base_contribution(conn, borrower_info, primary_info):
 
     else:
         # No formal relationship - infer personal relationship
-        personal_relationship = infer_personal_relationship(borrower_info, primary_info)
+        personal_relationship = _infer_personal_relationship(borrower_info, primary_info)
 
         if personal_relationship == 'spouse':
             return Decimal(str(random.uniform(30.0, 45.0))).quantize(Decimal('0.01'))
@@ -259,7 +261,7 @@ def determine_base_contribution(conn, borrower_info, primary_info):
             return Decimal(str(random.uniform(5.0, 25.0))).quantize(Decimal('0.01'))
 
 
-def get_formal_relationship(conn, party_id1, party_id2):
+def _get_formal_relationship(conn, party_id1, party_id2):
     """
     Get the formal relationship between two parties from the database.
 
@@ -274,7 +276,7 @@ def get_formal_relationship(conn, party_id1, party_id2):
     if not party_id1 or not party_id2:
         return None
 
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor = conn.cursor()
 
     try:
         cursor.execute("""
@@ -293,7 +295,7 @@ def get_formal_relationship(conn, party_id1, party_id2):
         cursor.close()
 
 
-def infer_personal_relationship(borrower_info, primary_info):
+def _infer_personal_relationship(borrower_info, primary_info):
     """
     Infer the personal relationship between borrowers based on available information.
     This is separate from formal legal relationships in party_relationships.
@@ -309,8 +311,8 @@ def infer_personal_relationship(borrower_info, primary_info):
         return random.choice(["spouse", "parent", "child", "sibling", "friend", "other"])
 
     # Get age differences
-    borrower_age = get_age_from_info(borrower_info)
-    primary_age = get_age_from_info(primary_info)
+    borrower_age = _get_age_from_info(borrower_info)
+    primary_age = _get_age_from_info(primary_info)
 
     # Check if they have the same last name
     same_last_name = False
@@ -370,7 +372,7 @@ def infer_personal_relationship(borrower_info, primary_info):
         return random.choice(["spouse", "parent", "child", "sibling", "friend", "other"])
 
 
-def get_age_from_info(info):
+def _get_age_from_info(info):
     """
     Extract age from party/borrower information if available.
 
@@ -398,4 +400,3 @@ def get_age_from_info(info):
             pass
 
     return None
-

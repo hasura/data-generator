@@ -8,7 +8,6 @@ import psycopg2
 from faker import Faker
 
 from data_generator import DataGenerator
-
 from .enums import (CitizenshipStatus, LegalStructure, MaritalStatus,
                     PartyStatus, PartyType)
 
@@ -159,7 +158,7 @@ def get_existing_party_names(conn) -> list:
         cursor.close()
 
         # Extract the names from the results
-        return [result[0] for result in results] if results else []
+        return [result.get('name') for result in results] if results else []
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching existing party names: {error}")

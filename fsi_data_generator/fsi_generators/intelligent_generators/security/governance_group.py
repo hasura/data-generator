@@ -232,13 +232,7 @@ def _fetch_owner_info(owner_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (owner_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'first_name': result[0],
-                'last_name': result[1],
-                'email': result[2],
-                'job_title': result[3]
-            }
+        return result
     except Exception as e:
         logger.error(e)
         # Handle connection errors or other issues

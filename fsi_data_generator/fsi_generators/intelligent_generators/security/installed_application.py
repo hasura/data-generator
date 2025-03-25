@@ -30,9 +30,6 @@ def generate_random_installed_application(id_fields: Dict[str, Any], dg: DataGen
         logger.error("Both host_id and application_id are required to generate an installed application record")
         raise SkipRowGenerationError("Missing required IDs")
 
-    # Fetch host information to determine OS type
-    host_info = _fetch_host_info(host_id, dg)
-
     # Fetch application information from app_mgmt
     application_info = _fetch_application_info(application_id, dg)
 
@@ -77,46 +74,6 @@ def generate_random_installed_application(id_fields: Dict[str, Any], dg: DataGen
     return installed_app
 
 
-def _fetch_host_info(host_id: Any, dg: DataGenerator) -> Dict[str, Any]:
-    """
-    Fetch host information from the database
-
-    Args:
-        host_id: UUID of the host
-        dg: DataGenerator instance
-
-    Returns:
-        Dictionary with host information, or empty dict if not found
-    """
-    if not host_id:
-        return {}
-
-    try:
-        # Try to query the host information
-        query = """
-        SELECT hostname, system_type, os, os_version
-        FROM security.hosts
-        WHERE security_host_id = %s
-        """
-
-        with dg.conn.cursor() as cursor:
-            cursor.execute(query, (host_id,))
-            result = cursor.fetchone()
-
-        if result:
-            return {
-                'hostname': result[0],
-                'system_type': result[1],
-                'os': result[2],
-                'os_version': result[3]
-            }
-    except Exception as e:
-        # Log the error
-        logger.error(f"Error fetching host info for ID {host_id}: {str(e)}")
-
-    return {}
-
-
 def _fetch_application_info(application_id: Any, dg: DataGenerator) -> Dict[str, Any]:
     """
     Fetch application information from the app_mgmt.applications table
@@ -144,18 +101,8 @@ def _fetch_application_info(application_id: Any, dg: DataGenerator) -> Dict[str,
             cursor.execute(query, (application_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'application_name': result[0],
-                'description': result[1],
-                'application_type': result[2],
-                'vendor': result[3],
-                'version': result[4],
-                'deployment_environment': result[5],
-                'lifecycle_status': result[6],
-                'date_deployed': result[7],
-                'date_retired': result[8]
-            }
+        return result
+
     except Exception as e:
         # Log the error
         logger.error(f"Error fetching application info for ID {application_id}: {str(e)}")

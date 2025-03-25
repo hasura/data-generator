@@ -258,13 +258,8 @@ def _fetch_system_info(system_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (system_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'hostname': result[0],
-                'system_type': result[1],
-                'os': result[2],
-                'os_version': result[3]
-            }
+        return result
+
     except Exception as e:
         # Log the error
         logger.error(f"Error fetching system info for ID {system_id}: {str(e)}")
@@ -298,16 +293,8 @@ def _fetch_process_execution_info(process_execution_id: Any, dg: DataGenerator) 
             cursor.execute(query, (process_execution_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'process_name': result[0],
-                'process_id': result[1],
-                'parent_process_id': result[2],
-                'start_time': result[3],
-                'end_time': result[4],
-                'command_line': result[5],
-                'user_name': result[6]
-            }
+        return result
+
     except Exception as e:
         # Log the error
         logger.error(f"Error fetching process execution info for ID {process_execution_id}: {str(e)}")
@@ -341,14 +328,8 @@ def _fetch_associate_by_username(username: Any, dg: DataGenerator) -> Dict[str, 
             cursor.execute(query, (username,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'enterprise_associate_id': result[0],
-                'first_name': result[1],
-                'last_name': result[2],
-                'email': result[3],
-                'job_title': result[4]
-            }
+        return result
+
     except Exception as e:
         # Log the error
         logger.error(f"Error fetching associate info for username {username}: {str(e)}")
@@ -382,13 +363,8 @@ def _fetch_file_info(file_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (file_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'file_path': result[0],
-                'file_hash': result[1],
-                'file_size': result[2],
-                'last_modified': result[3]
-            }
+        return result
+
     except Exception as e:
         # Log the error
         logger.error(f"Error fetching file info from security.files for ID {file_id}: {str(e)}")
@@ -406,15 +382,8 @@ def _fetch_file_info(file_id: Any, dg: DataGenerator) -> Dict[str, Any]:
                 cursor.execute(query, (file_id,))
                 result = cursor.fetchone()
 
-            if result:
-                return {
-                    'file_name': result[0],
-                    'file_path': result[1],
-                    'file_type': result[2],
-                    'created_by': result[3],
-                    'created_at': result[4],
-                    'sensitivity_level': result[5] if len(result) > 5 else None
-                }
+            return result
+
         except Exception as e:
             # Log the error from the second attempt
             logger.error(f"Error fetching file info from document.files for ID {file_id}: {str(e)}")

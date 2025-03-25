@@ -1,16 +1,15 @@
 import logging
 import random
 from datetime import datetime, timedelta
-from enum import Enum
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 from faker import Faker
-from psycopg2.extras import RealDictCursor
 
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.asset_type import AssetType
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.asset_type import \
+    AssetType
 from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.verification_status import \
     VerificationStatus
 
@@ -34,9 +33,7 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
         conn = dg.conn
 
         # First, find the application date by following the relationship model
-        application_date = get_application_date(ids_dict.get('mortgage_services_borrower_id'), conn)
-
-
+        application_date = _get_application_date(ids_dict.get('mortgage_services_borrower_id'), conn)
 
         # Financial institutions
         financial_institutions = generate_unique_json_array(
@@ -62,7 +59,7 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
             # Insurance companies for life insurance
             institution_name = random.choice(financial_institutions[18:21])
         elif asset_type in [AssetType.INVESTMENT_PROPERTY, AssetType.PRIMARY_RESIDENCE, AssetType.SECONDARY_RESIDENCE,
-                            AssetType.VEHICLE]:
+                            AssetType.VEHICLE, AssetType.OTHER_REAL_ESTATE]:
             # No institution for real estate or vehicles
             institution_name = None
         else:
@@ -95,6 +92,7 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
             AssetType.BONDS: (10000, 200000),
             AssetType.MUTUAL_FUND: (10000, 300000),
             AssetType.INVESTMENT_PROPERTY: (100000, 2000000),
+            AssetType.OTHER_REAL_ESTATE: (100000, 2000000),
             AssetType.PRIMARY_RESIDENCE: (150000, 3000000),
             AssetType.SECONDARY_RESIDENCE: (100000, 2000000),
             AssetType.VEHICLE: (5000, 75000),
@@ -108,11 +106,11 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
         min_value, max_value = value_ranges.get(asset_type, (1000, 50000))
         current_value = round(random.uniform(min_value, max_value), 2)
 
-        verification_status = VerificationStatus.get_random([0.4, 0.3, 0.1, 0.15, 0.05] )
+        verification_status = VerificationStatus.get_random([0.4, 0.3, 0.1, 0.15, 0.05, 0.0])
 
         # Generate verification date only if verification status indicates completion
         verification_date_str = None
-        if verification_status == VerificationStatus.VERIFIED:
+        if verification_status not in [VerificationStatus.UNVERIFIED, VerificationStatus.PENDING]:
             if application_date:
                 verification_date = application_date + timedelta(days=random.randint(3, 30))
                 verification_date_str = verification_date.strftime("%Y-%m-%d")
@@ -121,21 +119,10 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
                 verification_date_str = (datetime.now() - timedelta(days=random.randint(10, 90))).strftime("%Y-%m-%d")
 
         # Determine if we need a property address ID
-        property_address_id = None
-        if asset_type in [AssetType.INVESTMENT_PROPERTY, AssetType.PRIMARY_RESIDENCE, AssetType.SECONDARY_RESIDENCE]:
-            # Get a real address ID from the database
-            try:
-                cursor = conn.cursor()
-                cursor.execute("""
-                    SELECT enterprise_address_id FROM enterprise.addresses
-                    ORDER BY RANDOM() LIMIT 1
-                """)
-                result = cursor.fetchone()
-                if result:
-                    property_address_id = result[0]
-                cursor.close()
-            except Exception as e:
-                logger.error(f"Error getting property address ID: {e}")
+        property_address = None
+        if asset_type in [AssetType.OTHER_REAL_ESTATE, AssetType.INVESTMENT_PROPERTY, AssetType.PRIMARY_RESIDENCE,
+                          AssetType.SECONDARY_RESIDENCE]:
+            property_address = fake.address()
 
         # Create and return the asset record
         asset_record = {
@@ -145,7 +132,7 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
             "current_value": current_value,
             "verification_status": verification_status.value,  # Store enum value as string
             "verification_date": verification_date_str,
-            "property_address_id": property_address_id
+            "property_address": property_address
         }
 
         return asset_record
@@ -160,11 +147,11 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
             "current_value": 10000.00,
             "verification_status": VerificationStatus.PENDING.value,
             "verification_date": None,
-            "property_address_id": None
+            "property_address": None
         }
 
 
-def get_application_date(borrower_id: Optional[int], conn) -> Optional[datetime]:
+def _get_application_date(borrower_id: Optional[int], conn) -> Optional[datetime]:
     """
     Get the application date by following the relationship model:
     borrower -> application_borrowers -> applications
@@ -178,7 +165,7 @@ def get_application_date(borrower_id: Optional[int], conn) -> Optional[datetime]
     """
     cursor = None
     try:
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
 
         # Query to get the application date through the relationship chain
         query = """

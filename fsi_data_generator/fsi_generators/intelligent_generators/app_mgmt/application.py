@@ -268,7 +268,7 @@ def get_existing_application_names(conn) -> list:
         cursor.close()
 
         # Extract the names from the results
-        return [result[0] for result in results] if results else []
+        return [result.get('application_name') for result in results] if results else []
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching existing application names: {error}")

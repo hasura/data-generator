@@ -7,4 +7,3 @@ class AddressType(BaseEnum):
     MAIL = "MAIL"
     BILL = "BILL"
     SHIP = "SHIP"
-

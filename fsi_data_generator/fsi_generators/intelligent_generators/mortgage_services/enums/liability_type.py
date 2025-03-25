@@ -16,4 +16,3 @@ class LiabilityType(BaseEnum):
     PAYDAY_LOAN = "PAYDAY_LOAN"  # Short-term, high-interest loan
     TAX_DEBT = "TAX_DEBT"  # Outstanding tax liabilities
     OTHER = "OTHER"  # Liability type not covered by standard categories
-

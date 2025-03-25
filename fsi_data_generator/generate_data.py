@@ -2,9 +2,13 @@ import glob
 import logging
 import os
 import sys
+from decimal import Decimal
 
 import psycopg2
 from dotenv import load_dotenv
+from psycopg2._psycopg import register_type
+from psycopg2.extensions import register_adapter
+from psycopg2.extras import RealDictCursor
 
 import cve_manager
 from fsi_data_generator.banking_generators import custom_generators
@@ -13,6 +17,15 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
+
+register_adapter(Decimal, lambda d: float(d))
+
+# Register a custom type caster to handle DECIMAL for output (from the DB)
+register_type(psycopg2.extensions.new_type(
+    psycopg2.extensions.DECIMAL.values,  # Map all DECIMAL types
+    'DECIMAL',
+    lambda value, curs: float(value) if value is not None else None  # Convert to float
+))
 
 # Import the DataGenerator class
 # Assuming the DataGenerator code is in a file named data_generator.py
@@ -68,7 +81,8 @@ def generate_banking_data():
         "database": "postgres",  # Connect to default postgres database first
         "user": os.environ.get("DB_USER", "postgres"),
         "password": os.environ.get("DB_PASSWORD", "password"),
-        "port": os.environ.get("DB_PORT", "5432")
+        "port": os.environ.get("DB_PORT", "5432"),
+        "cursor_factory": RealDictCursor
     }
 
     # Get the SQL file path from the environment variable

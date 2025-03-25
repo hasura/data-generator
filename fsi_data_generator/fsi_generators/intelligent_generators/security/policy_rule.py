@@ -226,11 +226,7 @@ def _fetch_policy_info(policy_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (policy_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'name': result[0],
-                'description': result[1]
-            }
+        return result
 
     except psycopg2.ProgrammingError as e:
         # Log the critical error
@@ -238,5 +234,3 @@ def _fetch_policy_info(policy_id: Any, dg: DataGenerator) -> Dict[str, Any]:
 
         # Exit the program immediately with a non-zero status code
         sys.exit(1)
-
-    return {}

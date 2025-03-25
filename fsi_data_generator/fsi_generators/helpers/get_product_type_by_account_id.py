@@ -28,7 +28,7 @@ def get_product_type_by_account_id(conn, account_id):
                 raise Exception(f"No product_type found for account_id {account_id}")
 
             # Return the product_type
-            return result[0]
+            return result.get('product_type')
 
     except Exception as e:
         # Reraise any exceptions that occur

@@ -260,6 +260,7 @@ CREATE TYPE "mortgage_services"."asset_type" AS ENUM (
     'INVESTMENT_PROPERTY',
     'PRIMARY_RESIDENCE',
     'SECONDARY_RESIDENCE',
+    'OTHER_REAL_ESTATE',
     'MUTUAL_FUND',
     'STOCK_EQUITY',
     'BONDS',
@@ -272,21 +273,21 @@ CREATE TYPE "mortgage_services"."asset_type" AS ENUM (
     );
 
 CREATE TYPE "mortgage_services"."liability_type" AS ENUM (
-  'CREDIT_CARD',
-  'AUTO_LOAN',
-  'STUDENT_LOAN',
-  'PERSONAL_LOAN',
-  'MORTGAGE',
-  'HOME_EQUITY_LOAN',
-  'HOME_EQUITY_LINE_OF_CREDIT',
-  'MEDICAL_DEBT',
-  'BUSINESS_LOAN',
-  'RETAIL_CREDIT',
-  'INSTALLMENT_LOAN',
-  'PAYDAY_LOAN',
-  'TAX_DEBT',
-  'OTHER'
-);
+    'CREDIT_CARD',
+    'AUTO_LOAN',
+    'STUDENT_LOAN',
+    'PERSONAL_LOAN',
+    'MORTGAGE',
+    'HOME_EQUITY_LOAN',
+    'HOME_EQUITY_LINE_OF_CREDIT',
+    'MEDICAL_DEBT',
+    'BUSINESS_LOAN',
+    'RETAIL_CREDIT',
+    'INSTALLMENT_LOAN',
+    'PAYDAY_LOAN',
+    'TAX_DEBT',
+    'OTHER'
+    );
 
 CREATE TYPE "mortgage_services"."property_type" AS ENUM (
     'SINGLE_FAMILY',
@@ -309,6 +310,180 @@ CREATE TYPE "mortgage_services"."occupancy_type" AS ENUM (
     'SECONDARY_RESIDENCE',
     'INVESTMENT',
     'NOT_APPLICABLE'
+    );
+
+CREATE TYPE "mortgage_services"."application_type" AS ENUM (
+    'PURCHASE',
+    'REFINANCE',
+    'CASH_OUT',
+    'CONSTRUCTION',
+    'HOME_IMPROVEMENT',
+    'RENOVATION',
+    'REVERSE_MORTGAGE',
+    'JUMBO',
+    'FHA',
+    'VA',
+    'USDA',
+    'LAND',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."application_status" AS ENUM (
+    'DRAFT',
+    'SUBMITTED',
+    'IN_REVIEW',
+    'ADDITIONAL_INFO_REQUIRED',
+    'CONDITIONAL_APPROVAL',
+    'APPROVED',
+    'DENIED',
+    'WITHDRAWN',
+    'EXPIRED',
+    'SUSPENDED'
+    );
+
+CREATE TYPE "mortgage_services"."loan_purpose" AS ENUM (
+    'PRIMARY_RESIDENCE',
+    'SECOND_HOME',
+    'INVESTMENT_PROPERTY',
+    'RENTAL',
+    'VACATION_HOME',
+    'MULTI_FAMILY',
+    'RELOCATION',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."submission_channel" AS ENUM (
+    'ONLINE',
+    'MOBILE_APP',
+    'BRANCH',
+    'PHONE',
+    'MAIL',
+    'REFERRAL',
+    'BROKER',
+    'EMAIL',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."loan_type" AS ENUM (
+    'CONVENTIONAL',
+    'FHA',
+    'VA',
+    'USDA',
+    'JUMBO',
+    'CONSTRUCTION',
+    'HOME_EQUITY',
+    'REFINANCE',
+    'REVERSE_MORTGAGE',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."interest_rate_type" AS ENUM (
+    'FIXED',
+    'ADJUSTABLE',
+    'HYBRID',
+    'INTEREST_ONLY',
+    'STEP_RATE',
+    'BALLOON',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."loan_rate_lock_status" AS ENUM (
+    'Active',
+    'Locked',
+    'Expired',
+    'Closed'
+    );
+
+CREATE TYPE "mortgage_services"."document_type" AS ENUM (
+    'TAX_RETURN',
+    'W2',
+    'PAY_STUB',
+    'BANK_STATEMENT',
+    'CREDIT_REPORT',
+    'ASSET_STATEMENT',
+    'IDENTITY_VERIFICATION',
+    'PROPERTY_APPRAISAL',
+    'PURCHASE_AGREEMENT',
+    'TITLE_INSURANCE',
+    'CLOSING_DISCLOSURE',
+    'LOAN_ESTIMATE',
+    'MORTGAGE_NOTE',
+    'DEED',
+    'INSURANCE_PROOF',
+    'LETTER_OF_EXPLANATION',
+    'GIFT_LETTER',
+    'SELF_EMPLOYMENT',
+    'BANKRUPTCY_DISCHARGE',
+    'DIVORCE_DECREE',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."document_status" AS ENUM (
+    'PENDING',
+    'REVIEWED',
+    'ACCEPTED',
+    'REJECTED',
+    'REQUIRES_REVISION',
+    'IN_REVIEW',
+    'ARCHIVED',
+    'EXPIRED',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."condition_type" AS ENUM (
+    'PRIOR_TO_APPROVAL',
+    'PRIOR_TO_CLOSING',
+    'PRIOR_TO_FUNDING',
+    'PRIOR_TO_DOCS',
+    'AT_CLOSING',
+    'POST_CLOSING',
+    'UNDERWRITER_REQUIREMENT',
+    'AGENCY_REQUIREMENT',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."condition_status" AS ENUM (
+    'PENDING',
+    'IN_PROCESS',
+    'SUBMITTED',
+    'ACCEPTED',
+    'REJECTED',
+    'WAIVED',
+    'EXPIRED',
+    'CLEARED',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."appraisal_type" AS ENUM (
+    'FULL_APPRAISAL',
+    'DRIVE_BY',
+    'DESKTOP',
+    'BPO',
+    'AVM',
+    'APPRAISAL_UPDATE',
+    'FIELD_REVIEW',
+    'DESK_REVIEW',
+    'RECERTIFICATION',
+    'FHA_APPRAISAL',
+    'VA_APPRAISAL',
+    'USDA_APPRAISAL',
+    'OTHER'
+    );
+
+CREATE TYPE "mortgage_services"."appraisal_status" AS ENUM (
+    'ORDERED',
+    'ASSIGNED',
+    'SCHEDULED',
+    'INSPECTION_COMPLETED',
+    'IN_PROGRESS',
+    'SUBMITTED',
+    'UNDER_REVIEW',
+    'REVISION_NEEDED',
+    'COMPLETED',
+    'REJECTED',
+    'CANCELLED',
+    'EXPIRED',
+    'OTHER'
     );
 
 CREATE TYPE "consumer_lending"."housing_status" AS ENUM (
@@ -1569,25 +1744,25 @@ CREATE TABLE "mortgage_services"."borrower_assets"
     "current_value"                 NUMERIC(18, 2)                        NOT NULL,
     "verification_status"           mortgage_services.verification_status NOT NULL,
     "verification_date"             DATE,
-    "property_address_id"           INTEGER
+    "property_address"              VARCHAR(500)
 );
 
 CREATE TABLE "mortgage_services"."borrower_liabilities"
 (
     "mortgage_services_liability_id" SERIAL PRIMARY KEY,
-    "mortgage_services_borrower_id"  INTEGER        NOT NULL,
-  "liability_type" mortgage_services.liability_type NOT NULL,
-    "creditor_name"                  VARCHAR(100)   NOT NULL,
+    "mortgage_services_borrower_id"  INTEGER                               NOT NULL,
+    "liability_type"                 mortgage_services.liability_type      NOT NULL,
+    "creditor_name"                  VARCHAR(100)                          NOT NULL,
     "account_number"                 VARCHAR(50),
-    "monthly_payment"                NUMERIC(18, 2) NOT NULL,
-    "current_balance"                NUMERIC(18, 2) NOT NULL,
+    "monthly_payment"                NUMERIC(18, 2)                        NOT NULL,
+    "current_balance"                NUMERIC(18, 2)                        NOT NULL,
     "original_amount"                NUMERIC(18, 2),
     "interest_rate"                  NUMERIC(6, 3),
     "origination_date"               DATE,
     "maturity_date"                  DATE,
-  "verification_status" mortgage_services.verification_status NOT NULL,
+    "verification_status"            mortgage_services.verification_status NOT NULL,
     "verification_date"              DATE,
-  "will_be_paid_off" BOOLEAN NOT NULL DEFAULT false
+    "will_be_paid_off"               BOOLEAN                               NOT NULL DEFAULT false
 );
 
 CREATE TABLE "mortgage_services"."properties"
@@ -1610,15 +1785,16 @@ CREATE TABLE "mortgage_services"."properties"
 CREATE TABLE "mortgage_services"."applications"
 (
     "mortgage_services_application_id"  SERIAL PRIMARY KEY,
-    "mortgage_services_loan_product_id" INTEGER        NOT NULL,
-    "application_type"                  VARCHAR(50)    NOT NULL,
-    "status"                            VARCHAR(20)    NOT NULL,
-    "creation_date_time"                TIMESTAMP      NOT NULL,
+    "mortgage_services_loan_product_id" INTEGER                              NOT NULL,
+    "application_type"                  mortgage_services.application_type   NOT NULL,
+    "status"                            mortgage_services.application_status NOT NULL,
+    "loan_purpose"                      mortgage_services.loan_purpose,
+    "submission_channel"                mortgage_services.submission_channel,
+    "creation_date_time"                TIMESTAMP                            NOT NULL,
     "submission_date_time"              TIMESTAMP,
-    "last_updated_date_time"            TIMESTAMP      NOT NULL,
-    "loan_purpose"                      VARCHAR(50),
-    "requested_loan_amount"             NUMERIC(18, 2) NOT NULL,
-    "requested_loan_term_months"        INTEGER        NOT NULL,
+    "last_updated_date_time"            TIMESTAMP                            NOT NULL,
+    "requested_loan_amount"             NUMERIC(18, 2)                       NOT NULL,
+    "requested_loan_term_months"        INTEGER                              NOT NULL,
     "estimated_property_value"          NUMERIC(18, 2),
     "estimated_credit_score"            INTEGER,
     "referral_source"                   VARCHAR(100),
@@ -1629,11 +1805,11 @@ CREATE TABLE "mortgage_services"."applications"
 CREATE TABLE "mortgage_services"."loans"
 (
     "mortgage_services_loan_id"        SERIAL PRIMARY KEY,
-    "mortgage_services_application_id" INTEGER        NOT NULL,
-    "enterprise_account_id"            INTEGER        NOT NULL,
-    "interest_rate"                    NUMERIC(6, 3)  NOT NULL,
-    "loan_term_months"                 INTEGER        NOT NULL,
-    "loan_amount"                      NUMERIC(18, 2) NOT NULL,
+    "mortgage_services_application_id" INTEGER NOT NULL,
+    "enterprise_account_id"            INTEGER NOT NULL,
+    "interest_rate"                    NUMERIC(6, 3),
+    "loan_term_months"                 INTEGER,
+    "loan_amount"                      NUMERIC(18, 2),
     "down_payment"                     NUMERIC(18, 2),
     "down_payment_percentage"          NUMERIC(5, 2),
     "closing_costs"                    NUMERIC(18, 2),
@@ -1641,39 +1817,41 @@ CREATE TABLE "mortgage_services"."loans"
     "private_mortgage_insurance"       BOOLEAN,
     "pmi_rate"                         NUMERIC(5, 3),
     "escrow_amount"                    NUMERIC(18, 2),
-    "origination_date"                 DATE           NOT NULL,
-    "first_payment_date"               DATE           NOT NULL,
-    "maturity_date"                    DATE           NOT NULL
+    "origination_date"                 DATE,
+    "first_payment_date"               DATE,
+    "maturity_date"                    DATE
 );
 
 CREATE TABLE "mortgage_services"."loan_products"
 (
-    "mortgage_services_loan_product_id"            SERIAL PRIMARY KEY,
-    "product_name"                                 VARCHAR(100)  NOT NULL,
-    "mortgage_services_loan_products_product_code" VARCHAR(20)   NOT NULL,
-    "description"                                  TEXT,
-    "loan_type"                                    VARCHAR(50)   NOT NULL,
-    "interest_rate_type"                           VARCHAR(20)   NOT NULL,
-    "base_interest_rate"                           NUMERIC(6, 3) NOT NULL,
-    "min_term_months"                              INTEGER       NOT NULL,
-    "max_term_months"                              INTEGER       NOT NULL,
-    "min_loan_amount"                              NUMERIC(18, 2),
-    "max_loan_amount"                              NUMERIC(18, 2),
-    "min_credit_score"                             INTEGER,
-    "min_down_payment_percentage"                  NUMERIC(5, 2),
-    "requires_pmi"                                 BOOLEAN,
-    "is_active"                                    BOOLEAN       NOT NULL DEFAULT true
+    "mortgage_services_loan_product_id" SERIAL PRIMARY KEY,
+    "product_name"                      VARCHAR(100)                         NOT NULL,
+    "product_code"                      VARCHAR(20)                          NOT NULL,
+    "loan_type"                         mortgage_services.loan_type          NOT NULL,
+    "interest_rate_type"                mortgage_services.interest_rate_type NOT NULL,
+    "description"                       TEXT,
+    "base_interest_rate"                NUMERIC(6, 3)                        NOT NULL,
+    "min_term_months"                   INTEGER                              NOT NULL,
+    "max_term_months"                   INTEGER                              NOT NULL,
+    "min_loan_amount"                   NUMERIC(18, 2),
+    "max_loan_amount"                   NUMERIC(18, 2),
+    "min_credit_score"                  INTEGER,
+    "min_down_payment_percentage"       NUMERIC(5, 2),
+    "requires_pmi"                      BOOLEAN,
+    "is_active"                         BOOLEAN                              NOT NULL DEFAULT true,
+    "launch_date"                       DATE,
+    "discontinue_date"                  DATE
 );
 
 CREATE TABLE "mortgage_services"."loan_rate_locks"
 (
     "mortgage_services_rate_lock_id" SERIAL PRIMARY KEY,
-    "mortgage_services_loan_id"      INTEGER       NOT NULL,
-    "lock_date"                      TIMESTAMP     NOT NULL,
-    "expiration_date"                TIMESTAMP     NOT NULL,
-    "locked_interest_rate"           NUMERIC(6, 3) NOT NULL,
-    "lock_period_days"               INTEGER       NOT NULL,
-    "status"                         VARCHAR(20)   NOT NULL,
+    "mortgage_services_loan_id"      INTEGER                                 NOT NULL,
+    "lock_date"                      TIMESTAMP                               NOT NULL,
+    "expiration_date"                TIMESTAMP                               NOT NULL,
+    "locked_interest_rate"           NUMERIC(6, 3)                           NOT NULL,
+    "lock_period_days"               INTEGER                                 NOT NULL,
+    "status"                         mortgage_services.loan_rate_lock_status NOT NULL,
     "lock_fee"                       NUMERIC(10, 2),
     "extension_date"                 TIMESTAMP,
     "extension_fee"                  NUMERIC(10, 2)
@@ -1682,12 +1860,12 @@ CREATE TABLE "mortgage_services"."loan_rate_locks"
 CREATE TABLE "mortgage_services"."documents"
 (
     "mortgage_services_document_id"    SERIAL PRIMARY KEY,
-    "mortgage_services_application_id" INTEGER      NOT NULL,
-    "document_type"                    VARCHAR(50)  NOT NULL,
-    "document_name"                    VARCHAR(255) NOT NULL,
-    "document_path"                    VARCHAR(500) NOT NULL,
-    "upload_date"                      TIMESTAMP    NOT NULL,
-    "status"                           VARCHAR(20)  NOT NULL,
+    "mortgage_services_application_id" INTEGER                           NOT NULL,
+    "document_type"                    mortgage_services.document_type   NOT NULL,
+    "document_name"                    VARCHAR(255)                      NOT NULL,
+    "document_path"                    VARCHAR(500)                      NOT NULL,
+    "upload_date"                      TIMESTAMP                         NOT NULL,
+    "status"                           mortgage_services.document_status NOT NULL,
     "review_date"                      TIMESTAMP,
     "reviewer_id"                      INTEGER,
     "expiration_date"                  DATE,
@@ -1697,12 +1875,12 @@ CREATE TABLE "mortgage_services"."documents"
 CREATE TABLE "mortgage_services"."conditions"
 (
     "mortgage_services_condition_id"   SERIAL PRIMARY KEY,
-    "mortgage_services_application_id" INTEGER     NOT NULL,
-    "condition_type"                   VARCHAR(50) NOT NULL,
-    "description"                      TEXT        NOT NULL,
-    "status"                           VARCHAR(20) NOT NULL,
-    "created_date"                     TIMESTAMP   NOT NULL,
-    "created_by_id"                    INTEGER     NOT NULL,
+    "mortgage_services_application_id" INTEGER                            NOT NULL,
+    "condition_type"                   mortgage_services.condition_type   NOT NULL,
+    "description"                      TEXT                               NOT NULL,
+    "status"                           mortgage_services.condition_status NOT NULL,
+    "created_date"                     TIMESTAMP                          NOT NULL,
+    "created_by_id"                    INTEGER                            NOT NULL,
     "due_date"                         DATE,
     "cleared_date"                     TIMESTAMP,
     "cleared_by_id"                    INTEGER
@@ -1711,16 +1889,16 @@ CREATE TABLE "mortgage_services"."conditions"
 CREATE TABLE "mortgage_services"."appraisals"
 (
     "mortgage_services_appraisal_id"   SERIAL PRIMARY KEY,
-    "mortgage_services_application_id" INTEGER     NOT NULL,
-    "mortgage_services_property_id"    INTEGER     NOT NULL,
-    "appraisal_type"                   VARCHAR(50) NOT NULL,
-    "ordered_date"                     TIMESTAMP   NOT NULL,
+    "mortgage_services_application_id" INTEGER                            NOT NULL,
+    "mortgage_services_property_id"    INTEGER                            NOT NULL,
+    "appraisal_type"                   mortgage_services.appraisal_type   NOT NULL,
+    "ordered_date"                     TIMESTAMP                          NOT NULL,
     "appraiser_name"                   VARCHAR(100),
     "appraisal_company"                VARCHAR(100),
     "inspection_date"                  DATE,
     "completion_date"                  DATE,
     "appraised_value"                  NUMERIC(18, 2),
-    "status"                           VARCHAR(20) NOT NULL,
+    "status"                           mortgage_services.appraisal_status NOT NULL,
     "appraisal_fee"                    NUMERIC(10, 2),
     "report_path"                      VARCHAR(500)
 );
@@ -2861,7 +3039,7 @@ CREATE TABLE "security"."network_events"
     "bytes_received"            INTEGER                    NOT NULL DEFAULT 0,
     "security_device_id"        INET                       NOT NULL,
     "log_message"               TEXT,
-    "created_at"                TIMESTAMP(6)                        DEFAULT (CURRENT_TIMESTAMP)
+    "created_at"                TIMESTAMP(6)
 );
 
 CREATE TABLE "security"."policies"
@@ -5124,7 +5302,7 @@ COMMENT ON COLUMN "mortgage_services"."borrower_assets"."verification_status" IS
 
 COMMENT ON COLUMN "mortgage_services"."borrower_assets"."verification_date" IS 'When the asset was verified';
 
-COMMENT ON COLUMN "mortgage_services"."borrower_assets"."property_address_id" IS 'References the address if asset is a property';
+COMMENT ON COLUMN "mortgage_services"."borrower_assets"."property_address" IS 'Full text address for real estate assets';
 
 COMMENT ON TABLE "mortgage_services"."borrower_liabilities" IS 'Tracks debts and financial obligations of mortgage borrowers';
 
@@ -5190,17 +5368,19 @@ COMMENT ON COLUMN "mortgage_services"."applications"."mortgage_services_applicat
 
 COMMENT ON COLUMN "mortgage_services"."applications"."mortgage_services_loan_product_id" IS 'References the loan product being applied for';
 
-COMMENT ON COLUMN "mortgage_services"."applications"."application_type" IS 'Type of mortgage application (e.g., Purchase, Refinance, HELOC)';
+COMMENT ON COLUMN "mortgage_services"."applications"."application_type" IS 'Type of mortgage application';
 
 COMMENT ON COLUMN "mortgage_services"."applications"."status" IS 'Current status in the application workflow';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."loan_purpose" IS 'Purpose of the loan';
+
+COMMENT ON COLUMN "mortgage_services"."applications"."submission_channel" IS 'Channel through which application was submitted';
 
 COMMENT ON COLUMN "mortgage_services"."applications"."creation_date_time" IS 'When the application was created';
 
 COMMENT ON COLUMN "mortgage_services"."applications"."submission_date_time" IS 'When the application was formally submitted';
 
 COMMENT ON COLUMN "mortgage_services"."applications"."last_updated_date_time" IS 'When the application was last modified';
-
-COMMENT ON COLUMN "mortgage_services"."applications"."loan_purpose" IS 'Purpose of the loan (e.g., Primary Residence, Investment)';
 
 COMMENT ON COLUMN "mortgage_services"."applications"."requested_loan_amount" IS 'Amount of financing requested';
 
@@ -5252,17 +5432,17 @@ COMMENT ON COLUMN "mortgage_services"."loans"."maturity_date" IS 'When the loan 
 
 COMMENT ON TABLE "mortgage_services"."loan_products" IS 'Defines mortgage loan products available to applicants';
 
-COMMENT ON COLUMN "mortgage_services"."loan_products"."mortgage_services_loan_product_id" IS 'Auto-incrementing identifier for each loan product';
+COMMENT ON COLUMN "mortgage_services"."loan_products"."mortgage_services_loan_product_id" IS 'Unique identifier for each loan product';
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."product_name" IS 'Marketing name of the loan product';
 
-COMMENT ON COLUMN "mortgage_services"."loan_products"."mortgage_services_loan_products_product_code" IS 'Internal code identifying the loan product';
+COMMENT ON COLUMN "mortgage_services"."loan_products"."product_code" IS 'Internal code identifying the loan product';
+
+COMMENT ON COLUMN "mortgage_services"."loan_products"."loan_type" IS 'Type of loan product';
+
+COMMENT ON COLUMN "mortgage_services"."loan_products"."interest_rate_type" IS 'Type of interest rate structure';
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."description" IS 'Detailed description of the loan product and its features';
-
-COMMENT ON COLUMN "mortgage_services"."loan_products"."loan_type" IS 'Category of loan (e.g., Conventional, FHA, VA, USDA)';
-
-COMMENT ON COLUMN "mortgage_services"."loan_products"."interest_rate_type" IS 'Whether the rate is fixed or adjustable';
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."base_interest_rate" IS 'Starting interest rate for this product';
 
@@ -5274,13 +5454,17 @@ COMMENT ON COLUMN "mortgage_services"."loan_products"."min_loan_amount" IS 'Mini
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."max_loan_amount" IS 'Maximum principal amount for this product';
 
-COMMENT ON COLUMN "mortgage_services"."loan_products"."min_credit_score" IS 'Minimum credit score required for approval';
+COMMENT ON COLUMN "mortgage_services"."loan_products"."min_credit_score" IS 'Minimum credit score typically required';
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."min_down_payment_percentage" IS 'Minimum down payment as percentage of purchase price';
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."requires_pmi" IS 'Whether private mortgage insurance is required';
 
 COMMENT ON COLUMN "mortgage_services"."loan_products"."is_active" IS 'Whether this product is currently offered';
+
+COMMENT ON COLUMN "mortgage_services"."loan_products"."launch_date" IS 'Date when product was launched';
+
+COMMENT ON COLUMN "mortgage_services"."loan_products"."discontinue_date" IS 'Date when product was discontinued if applicable';
 
 COMMENT ON TABLE "mortgage_services"."loan_rate_locks" IS 'Tracks interest rate locks for mortgage loans';
 
@@ -5334,7 +5518,7 @@ COMMENT ON COLUMN "mortgage_services"."conditions"."mortgage_services_condition_
 
 COMMENT ON COLUMN "mortgage_services"."conditions"."mortgage_services_application_id" IS 'References the application this condition applies to';
 
-COMMENT ON COLUMN "mortgage_services"."conditions"."condition_type" IS 'When the condition must be satisfied (e.g., Prior to Approval)';
+COMMENT ON COLUMN "mortgage_services"."conditions"."condition_type" IS 'When the condition must be satisfied';
 
 COMMENT ON COLUMN "mortgage_services"."conditions"."description" IS 'Detailed explanation of what must be provided or resolved';
 
@@ -7260,7 +7444,7 @@ COMMENT ON COLUMN "security"."network_events"."bytes_sent" IS 'Number of bytes s
 
 COMMENT ON COLUMN "security"."network_events"."bytes_received" IS 'Number of bytes received during the event.';
 
-COMMENT ON COLUMN "security"."network_events"."security_device_id" IS 'IP address of the device involved in the event, foreign key referencing the devices table.';
+COMMENT ON COLUMN "security"."network_events"."security_device_id" IS 'IP address of the device involved in the event (likely the device that logged the event)';
 
 COMMENT ON COLUMN "security"."network_events"."log_message" IS 'Detailed log message associated with the network event.';
 
@@ -10445,9 +10629,6 @@ ALTER TABLE "mortgage_services"."borrower_incomes"
 
 ALTER TABLE "mortgage_services"."borrower_assets"
     ADD FOREIGN KEY ("mortgage_services_borrower_id") REFERENCES "mortgage_services"."borrowers" ("mortgage_services_borrower_id");
-
-ALTER TABLE "mortgage_services"."borrower_assets"
-    ADD FOREIGN KEY ("property_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
 
 ALTER TABLE "mortgage_services"."borrower_liabilities"
     ADD FOREIGN KEY ("mortgage_services_borrower_id") REFERENCES "mortgage_services"."borrowers" ("mortgage_services_borrower_id");

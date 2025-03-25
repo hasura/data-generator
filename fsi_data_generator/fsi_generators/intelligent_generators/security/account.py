@@ -148,12 +148,8 @@ def _fetch_identity_info(identity_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (identity_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'name': result[0],
-                'display_name': result[1],
-                'owner_id': result[2]
-            }
+        return result
+
     except Exception as e:
         logger.error(e)
         # Handle connection errors or other issues
@@ -188,11 +184,8 @@ def _fetch_source_system_info(source_id: Any, dg: DataGenerator) -> Dict[str, An
             cursor.execute(query, (source_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'application_name': result[0],
-                'application_type': result[1]
-            }
+        return result
+
     except Exception as e:
         logger.error(e)
         # Handle connection errors or other issues

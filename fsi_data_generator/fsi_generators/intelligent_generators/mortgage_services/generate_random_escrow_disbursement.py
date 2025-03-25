@@ -243,17 +243,7 @@ def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Opt
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "mortgage_services_loan_id": result[0],
-                "original_principal": result[1],
-                "current_principal": result[2],
-                "escrow_balance": result[3],
-                "property_tax_due_date": result[4],
-                "homeowners_insurance_due_date": result[5]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching servicing account information: {error}")
@@ -293,7 +283,7 @@ def get_property_info_from_servicing(servicing_account_info: Optional[Dict[str, 
             cursor.close()
             return None
 
-        application_id = result[0]
+        application_id = result.get('mortgage_services_application_id')
 
         # Then get the property information from the application
         cursor.execute("""
@@ -307,18 +297,7 @@ def get_property_info_from_servicing(servicing_account_info: Optional[Dict[str, 
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "property_id": result[0],
-                "property_type": result[1],
-                "bedrooms": result[2],
-                "bathrooms": result[3],
-                "square_feet": result[4],
-                "lot_size": result[5],
-                "property_value": result[6]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching property information: {error}")

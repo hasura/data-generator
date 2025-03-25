@@ -1,10 +1,8 @@
 import logging
 import random
-from typing import Dict, Any
-
+from typing import Any, Dict
 
 from data_generator import DataGenerator
-
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -36,4 +34,3 @@ def generate_random_borrower(_id_fields: Dict[str, Any], _dg: DataGenerator) -> 
     }
 
     return borrower
-

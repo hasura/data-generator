@@ -92,18 +92,15 @@ def get_host_info(system_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (system_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'hostname': result[0],
-                'system_type': result[1],
-                'os': result[2]
-            }
+        return result
+
     except psycopg2.ProgrammingError as e:
         # Log the critical error
         logger.critical(f"Programming error detected in the SQL query: {e}")
 
         # Exit the program immediately with a non-zero status code
         sys.exit(1)
+
     except Exception as e:
         logger.error(f"Error fetching host info: {e}")
 
@@ -116,7 +113,6 @@ def generate_device_info(host_info: Dict[str, Any]) -> tuple:
     Generate appropriate USB device name and type based on host information
     """
     system_type = host_info.get('system_type', 'WORKSTATION').upper()
-    os = host_info.get('os', 'Windows')
 
     # Common USB device types
     device_types = [

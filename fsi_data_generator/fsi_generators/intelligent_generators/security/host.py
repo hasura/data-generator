@@ -39,26 +39,25 @@ def generate_random_host(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[
     fake = Faker()
 
     # Try to get hostname patterns from DBML if available
-    hostname_patterns = []
+    hostname_patterns = [
+        "srv-{dept}-{num:03d}",
+        "ws-{dept}-{num:03d}",
+        "{dept}{num:03d}-{loc}",
+        "{dept}-{role}-{num:02d}",
+        "srv-{loc}-{num:02d}",
+        "vm-{project}-{env}{num:02d}",
+        "app-{app}-{env}-{num:02d}",
+        "db-{db_type}-{env}-{num:02d}"
+    ]
     try:
-        hostname_patterns = generate_unique_json_array(
+        hostname_patterns = hostname_patterns + generate_unique_json_array(
             dbml_string=dg.dbml,
             fully_qualified_column_name='security.hosts.hostname',
             count=20,
             cache_key='host_hostnames'
         )
     except anthropic.APIStatusError:
-        # Fallback hostname patterns if not found in DBML
-        hostname_patterns = [
-            "srv-{dept}-{num:03d}",
-            "ws-{dept}-{num:03d}",
-            "{dept}{num:03d}-{loc}",
-            "{dept}-{role}-{num:02d}",
-            "srv-{loc}-{num:02d}",
-            "vm-{project}-{env}{num:02d}",
-            "app-{app}-{env}-{num:02d}",
-            "db-{db_type}-{env}-{num:02d}"
-        ]
+        pass
 
     # Generate hostname
     for _ in range(10):  # Try up to 10 times to generate a unique hostname

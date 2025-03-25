@@ -10,14 +10,14 @@ active_role_entitlement_pairs: Set[Tuple[str, str]] = set()
 logger = logging.getLogger(__name__)
 
 
-def generate_random_role_entitlement(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
+def generate_random_role_entitlement(id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:
     """
     Generate a random security.role_entitlements record.
 
     Args:
         id_fields: Dictionary containing predetermined ID fields
                   (security_role_entitlement_id, security_role_id, security_entitlement_id, created_by_id, updated_by_id)
-        dg: DataGenerator instance
+        _dg: DataGenerator instance
 
     Returns:
         Dict containing a random role entitlement record

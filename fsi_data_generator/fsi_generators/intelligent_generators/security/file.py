@@ -27,7 +27,6 @@ def generate_random_file(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[s
     fake = Faker()
 
     # Get the required IDs from id_fields
-    file_id = id_fields.get('security_file_id')
     host_id = id_fields.get('security_host_id')
 
     if not host_id:
@@ -54,12 +53,6 @@ def generate_random_file(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[s
 
     # Generate appropriate file path based on OS
     file_path = _generate_file_path(os_type, fake)
-
-    # Extract just the filename from the path
-    if os_type == "Windows":
-        file_name = file_path.split("\\")[-1]
-    else:
-        file_name = file_path.split("/")[-1]
 
     # Generate file size (weighted towards smaller files)
     file_size_weights = [
@@ -129,13 +122,8 @@ def _fetch_host_info(host_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (host_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'hostname': result[0],
-                'system_type': result[1],
-                'os': result[2],
-                'os_version': result[3]
-            }
+        return result
+
     except Exception as e:
         # Log the error
         logger.error(f"Error fetching host info for ID {host_id}: {str(e)}")

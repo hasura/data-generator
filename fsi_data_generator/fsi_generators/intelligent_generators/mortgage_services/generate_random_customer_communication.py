@@ -343,17 +343,7 @@ def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Opt
 
         result = cursor.fetchone()
         cursor.close()
-
-        if result:
-            return {
-                "mortgage_services_loan_id": result[0],
-                "current_principal": result[1],
-                "current_interest_rate": result[2],
-                "status": result[3],
-                "next_payment_due_date": result[4]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching servicing account information: {error}")
@@ -392,18 +382,7 @@ def get_application_info(application_id: Optional[int], conn) -> Optional[Dict[s
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "status": result[0],
-                "application_type": result[1],
-                "requested_loan_amount": result[2],
-                "loan_purpose": result[3],
-                "creation_date": result[4],
-                "submission_date": result[5],
-                "last_updated_date": result[6]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching application information: {error}")

@@ -3,6 +3,8 @@ import logging
 import os
 import random
 import re
+import sys
+import traceback
 from typing import Dict, List
 
 import faker
@@ -11,7 +13,7 @@ import psycopg2
 from anthropic import AnthropicError
 from dotenv import load_dotenv
 from faker.exceptions import UniquenessException
-from psycopg2 import Error
+from psycopg2 import Error, extensions
 from sentence_transformers import SentenceTransformer, util
 
 from fsi_data_generator.fsi_generators.helpers.generate_random_interval import \
@@ -85,6 +87,7 @@ class DataGenerator:
                                               These are processed after all other columns and can access previously generated values.
             batch_size (int, optional): Number of rows to collect before executing a batch insert. Default is 100.
         """
+        self.tuple_cursor = None
         self.column_order = None
         self.conn_params = conn_params
         self.fake = faker.Faker()
@@ -134,6 +137,7 @@ class DataGenerator:
         try:
             self.conn = psycopg2.connect(**self.conn_params)
             self.cur = self.conn.cursor()
+            self.tuple_cursor = self.conn.cursor(cursor_factory=extensions.cursor)
 
             # If no specific schemas were provided, get all available non-system schemas
             if self.schemas is None:
@@ -159,8 +163,8 @@ class DataGenerator:
                 WHERE table_schema = %s
                 ORDER BY table_name, ordinal_position
             """
-            self.cur.execute(query, (schema,))
-            ordered_columns = self.cur.fetchall()
+            self.tuple_cursor.execute(query, (schema,))
+            ordered_columns = self.tuple_cursor.fetchall()
 
             # Process columns in their original order
             for table_name, column_name, data_type, column_default, is_nullable, \
@@ -260,7 +264,8 @@ class DataGenerator:
 
                 # Get all foreign key columns for this table
                 table_fk_columns = set()
-                for _, fk_schema, fk_table, fk_column, _, _, _ in self.foreign_keys:
+                for d in self.foreign_keys:
+                    _, fk_schema, fk_table, fk_column, _, _, _ = d.values()
                     if fk_schema == schema and fk_table == table:
                         table_fk_columns.add(fk_column)
 
@@ -360,7 +365,7 @@ class DataGenerator:
                                 # Standard FK handling for columns without custom generators
                                 fk_info = next(
                                     (fk for fk in self.foreign_keys
-                                     if fk[1] == schema and fk[2] == table and fk[3] == column), None
+                                     if fk.get('table_schema') == schema and fk.get('table_name') == table and fk.get('column_name') == column), None
                                 )
                                 if fk_info:
                                     self._handle_foreign_key(fk_info, table_key, column, is_nullable, values)
@@ -402,7 +407,10 @@ class DataGenerator:
                                         values.append(val)
                                         # logger.debug(f"Added valid extra column {col} from custom generator")
 
-                            except AttributeError:
+                            except AttributeError as e:
+                                stack_trace = traceback.format_exc()
+                                logger.error(e)
+                                logger.error(stack_trace)
                                 if is_nullable == 'YES':
                                     row_values[column] = None
                                     column_names.append(column)
@@ -576,10 +584,10 @@ class DataGenerator:
         try:
             # logger.debug(f"Executing batch query: {query}")
             # logger.debug(f"all_values={all_values}")
-            self.cur.execute(query, all_values)
+            self.tuple_cursor.execute(query, all_values)
 
             # Process returned rows to store primary keys
-            inserted_rows = self.cur.fetchall()
+            inserted_rows = self.tuple_cursor.fetchall()
             for row in inserted_rows:
                 self._store_primary_key(table_key, row)
             # if inserted_rows:
@@ -620,8 +628,8 @@ class DataGenerator:
                     WHERE table_schema = %s
                     AND (is_generated = 'ALWAYS' OR generation_expression IS NOT NULL)
                 """
-                self.cur.execute(generated_query, (schema_name,))
-                generated_cols = self.cur.fetchall()
+                self.tuple_cursor.execute(generated_query, (schema_name,))
+                generated_cols = self.tuple_cursor.fetchall()
 
                 # Process the results
                 for table_name, column_name in generated_cols:
@@ -639,8 +647,8 @@ class DataGenerator:
                     WHERE table_schema = %s
                     AND (column_default LIKE 'nextval%%' OR is_identity = 'YES')
                 """
-                self.cur.execute(identity_query, (schema_name,))
-                identity_cols = self.cur.fetchall()
+                self.tuple_cursor.execute(identity_query, (schema_name,))
+                identity_cols = self.tuple_cursor.fetchall()
 
                 # Process the identity columns
                 for table_name, column_name in identity_cols:
@@ -697,7 +705,7 @@ class DataGenerator:
         try:
             # Query to get all schemas
             self.cur.execute("SELECT schema_name FROM information_schema.schemata;")
-            all_schemas = [row[0] for row in self.cur.fetchall()]
+            all_schemas = [row['schema_name'] for row in self.cur.fetchall()]
 
             # Filter out excluded schemas
             self.schemas = [schema for schema in all_schemas
@@ -891,7 +899,7 @@ class DataGenerator:
             result = self.cur.fetchall()
 
             # Flatten result into a simple list of table names
-            self.all_tables = [row[0] for row in result]
+            self.all_tables = [row.get('table_full_name') for row in result]
 
             logger.debug(f"Total tables retrieved: {len(self.all_tables)}")
 
@@ -919,8 +927,8 @@ class DataGenerator:
 
         # Build a list of all table.column combinations for exclusion matching
         self.all_table_column_pairs = []
-        for schema, table, column, *_ in self.columns:
-            self.all_table_column_pairs.append((f"{schema}.{table}", column))
+        for column in self.columns:
+            self.all_table_column_pairs.append((f"{column.get('table_schema')}.{column.get('table_name')}", column.get('column_name')))
 
         logger.debug(f"Retrieved information for {len(self.columns)} columns across {len(self.schemas)} schemas")
 
@@ -1015,9 +1023,10 @@ class DataGenerator:
         """Determine table dependencies based on foreign key relationships,
         including tables with no upstream or downstream dependencies."""
 
-        for _, child_schema, child_table, _, parent_schema, parent_table, _ in self.foreign_keys:
-            child_key = f"{child_schema}.{child_table}"
-            parent_key = f"{parent_schema}.{parent_table}"
+        for fk in self.foreign_keys:
+        # for _, child_schema, child_table, _, parent_schema, parent_table, _ in self.foreign_keys:
+            child_key = f"{fk.get('table_schema')}.{fk.get('table_name')}"
+            parent_key = f"{fk.get('foreign_table_schema')}.{fk.get('foreign_table_name')}"
 
             if parent_key not in self.table_dependencies:
                 self.table_dependencies[parent_key] = []  # Ensure parent exists as a key
@@ -1210,7 +1219,7 @@ class DataGenerator:
 
     def _handle_foreign_key(self, fk_info, table_key, column, is_nullable, values):
         """Handle foreign key constraints when generating data."""
-        fk_schema, fk_table, fk_column = fk_info[4], fk_info[5], fk_info[6]
+        fk_schema, fk_table, fk_column = fk_info.get('foreign_table_schema'), fk_info.get('foreign_table_name'), fk_info.get('foreign_column_name')
         fk_table_key = f"{fk_schema}.{fk_table}"
 
         if fk_table_key in self.inserted_pks and self.inserted_pks[fk_table_key]:
@@ -1266,8 +1275,8 @@ class DataGenerator:
                 WHERE pg_class.relname = %s
                 AND pg_namespace.nspname = %s
             """
-            self.cur.execute(query, (table_name, schema))
-            result = self.cur.fetchone()
+            self.tuple_cursor.execute(query, (table_name, schema))
+            result = self.tuple_cursor.fetchone()
             if result and result[0]:
                 return result[0]
             return None
@@ -1288,8 +1297,8 @@ class DataGenerator:
                 AND pg_namespace.nspname = %s
                 AND pg_attribute.attname = %s
             """
-            self.cur.execute(query, (table_name, schema, column_name))
-            result = self.cur.fetchone()
+            self.tuple_cursor.execute(query, (table_name, schema, column_name))
+            result = self.tuple_cursor.fetchone()
             if result and result[0]:
                 return result[0]
             return None
@@ -1452,7 +1461,7 @@ class DataGenerator:
                     AND tc.table_name = %s
                 ORDER BY kcu.ordinal_position
             """
-            pk_cursor = self.conn.cursor()
+            pk_cursor = self.conn.cursor(cursor_factory=extensions.cursor)
             pk_cursor.execute(pk_query, (schema, table))
             pk_columns = [row[0] for row in pk_cursor.fetchall()]
             pk_cursor.close()
@@ -1462,7 +1471,7 @@ class DataGenerator:
                 return
 
             # Get the column names from the INSERT query
-            query_cursor = self.conn.cursor()
+            query_cursor = self.conn.cursor(cursor_factory=extensions.cursor)
             query_cursor.execute(f'SELECT * FROM "{schema}"."{table}" WHERE FALSE')
             column_names = [desc.name for desc in query_cursor.description]
             query_cursor.close()
@@ -1588,8 +1597,8 @@ class DataGenerator:
             for table_key in self.ordered_tables:
                 schema, table = table_key.split('.')
                 try:
-                    self.cur.execute(f'SELECT COUNT(*) FROM "{schema}"."{table}"')
-                    result = self.cur.fetchone()
+                    self.tuple_cursor.execute(f'SELECT COUNT(*) FROM "{schema}"."{table}"')
+                    result = self.tuple_cursor.fetchone()
                     if result and result[0]:
                         total_rows += result[0]
                 except psycopg2.Error as e:

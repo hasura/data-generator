@@ -3,7 +3,9 @@ import random
 from typing import Any, Dict
 
 from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.employment import \
-    get_application_info_for_borrower
+    _get_application_info_for_borrower
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.application_status import \
+    ApplicationStatus
 from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.income_frequency import \
     IncomeFrequency
 from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.income_type import \
@@ -25,11 +27,10 @@ def generate_random_borrower_income(id_fields: Dict[str, Any], dg) -> Dict[str, 
     """
     # Get borrower information and application status to make income data reasonable
     conn = dg.conn
-    application_info = get_application_info_for_borrower(id_fields.get("mortgage_services_borrower_id"), conn)
+    application_info = _get_application_info_for_borrower(id_fields.get("mortgage_services_borrower_id"), conn)
 
     # Select income type using weighted random choice
     income_type = IncomeType.get_random()
-
 
     # Generate income amount based on type
     if income_type == IncomeType.SALARY:
@@ -91,16 +92,15 @@ def generate_random_borrower_income(id_fields: Dict[str, Any], dg) -> Dict[str, 
         amount = round(random.uniform(500, 5000), 2)
         frequency = IncomeFrequency.get_random()
 
-    # Initialize verification status and date
-    verification_status = VerificationStatus.UNVERIFIED
+    # Initialize verification date
     verification_date = None
 
     # Determine verification status based on application status
     if application_info and 'status' in application_info:
-        app_status = application_info['status']
+        app_status = ApplicationStatus[application_info['status']]
         today = datetime.date.today()
 
-        if app_status in ["approved", "conditionally approved", "closing", "closed"]:
+        if app_status in [ApplicationStatus.APPROVED, ApplicationStatus.CONDITIONAL_APPROVAL]:
             # For approved applications, incomes are usually verified
             verification_status = VerificationStatus.get_random([0.8, 0.0, 0.0, 0.1, 0.1])
 
@@ -109,7 +109,7 @@ def generate_random_borrower_income(id_fields: Dict[str, Any], dg) -> Dict[str, 
                 days_ago = random.randint(1, 30)
                 verification_date = today - datetime.timedelta(days=days_ago)
 
-        elif app_status in ["submitted", "in review"]:
+        elif app_status in [ApplicationStatus.SUBMITTED, ApplicationStatus.IN_REVIEW]:
             # For in-process applications, verification could be pending or completed
             verification_status = VerificationStatus.get_random([0.3, 0.6, 0.0, 0.1, 0.0])
 
@@ -117,9 +117,9 @@ def generate_random_borrower_income(id_fields: Dict[str, Any], dg) -> Dict[str, 
                 days_ago = random.randint(1, 15)
                 verification_date = today - datetime.timedelta(days=days_ago)
 
-        elif app_status == "denied":
+        elif app_status == ApplicationStatus.DENIED:
             # Denied applications might have failed verification
-            verification_status = VerificationStatus.get_random( [0.2, 0.1, 0.4, 0.3, 0.0] )
+            verification_status = VerificationStatus.get_random([0.2, 0.1, 0.4, 0.3, 0.0])
 
             if verification_status in [VerificationStatus.VERIFIED, VerificationStatus.FAILED]:
                 days_ago = random.randint(1, 30)
@@ -127,16 +127,16 @@ def generate_random_borrower_income(id_fields: Dict[str, Any], dg) -> Dict[str, 
 
         else:  # draft or other status
             # For draft applications, often no verification yet
-            verification_status = VerificationStatus.get_random( [0.05, 0.15, 0.0, 0.8, 0.0] )
+            verification_status = VerificationStatus.get_random([0.05, 0.15, 0.0, 0.8, 0.0])
 
             if verification_status == VerificationStatus.VERIFIED:
                 days_ago = random.randint(1, 15)
                 verification_date = today - datetime.timedelta(days=days_ago)
     else:
         # If no application info, use default verification distribution
-        verification_status = VerificationStatus.get_random([0.2, 0.2, 0.1, 0.5, 0.0])
+        verification_status = VerificationStatus.get_random([0.2, 0.2, 0.1, 0.5, 0.0, 0.0])
 
-        if verification_status == VerificationStatus.VERIFIED:
+        if verification_status not in [VerificationStatus.UNVERIFIED, VerificationStatus.PENDING]:
             days_ago = random.randint(1, 30)
             verification_date = datetime.date.today() - datetime.timedelta(days=days_ago)
 

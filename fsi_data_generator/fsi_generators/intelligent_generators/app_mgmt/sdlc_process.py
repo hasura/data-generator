@@ -2,6 +2,8 @@ import logging
 import random
 from typing import Any, Dict
 
+import anthropic
+
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
@@ -21,7 +23,7 @@ def generate_random_sdlc_process(_id_fields: Dict[str, Any], dg: DataGenerator) 
         Dictionary containing randomly generated SDLC process data (without ID fields or FK fields)
     """
     # Define common SDLC process names
-    default_process_names = [
+    process_names = [
         "Agile Banking Development Framework",
         "Financial Regulatory Compliance Process",
         "Secure Banking DevOps Pipeline",
@@ -46,17 +48,14 @@ def generate_random_sdlc_process(_id_fields: Dict[str, Any], dg: DataGenerator) 
 
     # Try to use generate_unique_json_array for process names
     try:
-        process_names = generate_unique_json_array(
+        process_names = process_names + generate_unique_json_array(
             dbml_string=dg.dbml,
             fully_qualified_column_name='app_mgmt.sdlc_processes.process_name - Banking-specific software development methodologies including regulatory compliance integration, security-focused development, and financial data handling procedures',
             count=50,
             cache_key='sdlc_process_names'
         )
-        if not process_names:
-            process_names = default_process_names
-    except Exception as e:
-        logger.error(f"Error generating process names: {e}")
-        process_names = default_process_names
+    except anthropic.APIStatusError:
+        pass
 
     # Generate process name
     process_name = random.choice(process_names)

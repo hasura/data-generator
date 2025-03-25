@@ -7,10 +7,9 @@ from typing import Any, Dict
 
 import psycopg2
 from faker import Faker
-from psycopg2.extras import RealDictCursor
 
 from data_generator import DataGenerator
-from .enums import (OccupancyType, PropertyType)
+from .enums import OccupancyType, PropertyType
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -33,11 +32,13 @@ def generate_random_property(id_fields: Dict[str, Any], dg: DataGenerator) -> Di
     # Get the loan application from the application ID
     conn = dg.conn
     application_id = id_fields.get("mortgage_services_application_id")
+    lot_options = None
+    lot_weights = None
 
     # Query the database for loan application details
     loan_application = {}
     if conn and application_id:
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
         try:
             try:
                 cursor.execute("""
@@ -62,7 +63,7 @@ def generate_random_property(id_fields: Dict[str, Any], dg: DataGenerator) -> Di
     # Get loan product information
     product_type = "conventional"  # default
     if loan_application.get("mortgage_services_loan_product_id"):
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
         try:
             try:
                 cursor.execute("""

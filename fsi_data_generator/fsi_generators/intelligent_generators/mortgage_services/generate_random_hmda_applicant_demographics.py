@@ -138,15 +138,9 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
 
         if result:
             # Create the base result dictionary with values we know exist
-            hmda_info = {
-                "reporting_year": result[0],
-                "loan_amount": float(result[1]) if result[1] is not None else None,
-                "action_taken": result[2],
-                "mortgage_services_application_id": result[3]
-                # annual_income will be added only if we can find it
-            }
+            hmda_info = result
 
-            application_id = result[3]
+            application_id = result.get('mortgage_services_application_id')
 
             # Only try to get income if application_id exists
             if application_id:
@@ -162,13 +156,13 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
                         )
                     """, (application_id,))
 
-                    employment_exists = cursor.fetchone()[0]
+                    employment_exists = cursor.fetchone()
                     employment_income = 0.0
 
-                    if employment_exists:
+                    if employment_exists.get('exists', False):
                         # Get income from borrower_employments (monthly income * 12)
                         cursor.execute("""
-                            SELECT COALESCE(SUM(be.monthly_income), 0) * 12
+                            SELECT COALESCE(SUM(be.monthly_income), 0) * 12 as income
                             FROM mortgage_services.application_borrowers ab
                             JOIN mortgage_services.borrowers b ON ab.mortgage_services_borrower_id = b.mortgage_services_borrower_id
                             JOIN mortgage_services.borrower_employments be ON b.mortgage_services_borrower_id = be.mortgage_services_borrower_id
@@ -176,8 +170,8 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
                         """, (application_id,))
 
                         employment_income_result = cursor.fetchone()
-                        if employment_income_result and employment_income_result[0]:
-                            employment_income = float(employment_income_result[0])
+                        if employment_income_result and employment_income_result.get('income'):
+                            employment_income = employment_income_result.get('income')
 
                     # Check if borrower_incomes records exist (might be 0 records)
                     cursor.execute("""
@@ -190,10 +184,10 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
                         )
                     """, (application_id,))
 
-                    additional_income_exists = cursor.fetchone()[0]
+                    additional_income_exists = cursor.fetchone()
                     additional_income = 0.0
 
-                    if additional_income_exists:
+                    if additional_income_exists.get('exists', False):
                         # Get additional income from borrower_incomes table with proper frequency conversion
                         cursor.execute("""
                             SELECT COALESCE(SUM(CASE
@@ -205,7 +199,7 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
                                 WHEN bi.frequency = 'BI_WEEKLY' THEN bi.amount * 26
                                 WHEN bi.frequency = 'SEMI_MONTHLY' THEN bi.amount * 24
                                 ELSE bi.amount  -- Default case
-                            END), 0)
+                            END), 0) as income
                             FROM mortgage_services.application_borrowers ab
                             JOIN mortgage_services.borrowers b ON ab.mortgage_services_borrower_id = b.mortgage_services_borrower_id
                             JOIN mortgage_services.borrower_incomes bi ON b.mortgage_services_borrower_id = bi.mortgage_services_borrower_id
@@ -213,8 +207,8 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
                         """, (application_id,))
 
                         additional_income_result = cursor.fetchone()
-                        if additional_income_result and additional_income_result[0]:
-                            additional_income = float(additional_income_result[0])
+                        if additional_income_result and additional_income_result.get('income'):
+                            additional_income = additional_income_result.get('income', 0)
 
                     # Only add annual_income to the result if we found any income
                     total_income = employment_income + additional_income

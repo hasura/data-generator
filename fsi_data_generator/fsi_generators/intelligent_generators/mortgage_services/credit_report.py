@@ -1,9 +1,17 @@
 import datetime
 import logging
 import random
+import sys
 from typing import Any, Dict, Optional
 
 import psycopg2
+
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums import \
+    VerificationStatus
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.credit_bureau import \
+    CreditBureau
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.credit_report_type import \
+    CreditReportType
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +32,6 @@ def generate_random_credit_report(id_fields: Dict[str, Any], dg) -> Dict[str, An
     conn = dg.conn
     borrower_info = get_borrower_info(id_fields.get("mortgage_services_borrower_id"), conn)
 
-    # Define possible values for categorical fields
-    report_types = ["tri-merge", "single bureau", "soft pull", "pre-qualification"]
-    status_options = ["completed", "pending", "failed", "expired"]
-
     # Generate report date (typically within the last 120 days)
     today = datetime.datetime.now()
     days_ago = random.randint(7, 120)
@@ -37,15 +41,20 @@ def generate_random_credit_report(id_fields: Dict[str, Any], dg) -> Dict[str, An
     expiration_days = random.randint(90, 120)
     expiration_date = (report_date + datetime.timedelta(days=expiration_days)).date()
 
-    # Determine report type
-    report_type = random.choice(report_types)
+    # Use the CreditReportType enum with weight distribution to favor certain report types
+    report_type_weights = [0.4, 0.3, 0.15, 0.1, 0.025, 0.025]  # Favoring TRI_MERGE and SINGLE_BUREAU
+    report_type = CreditReportType.get_random(weights=report_type_weights)
 
     # Set bureau name based on report type
-    if report_type == "tri-merge":
-        bureau_name = "tri-merge"
+    if report_type == CreditReportType.TRI_MERGE:
+        bureau_name = None  # No specific bureau for tri-merge reports
+    elif report_type == CreditReportType.MERGED_BUREAU:
+        # For merged bureau reports, we don't specify a single bureau
+        bureau_name = None
     else:
-        # For single bureau reports, pick one of the three major bureaus
-        bureau_name = random.choice(["equifax", "experian", "transunion"])
+        # For single bureau reports, pick one of the three major bureaus with weighted distribution
+        bureau_weights = [0.4, 0.35, 0.25, 0, 0, 0]  # Weights for Equifax, Experian, TransUnion, etc.
+        bureau_name = CreditBureau.get_random(weights=bureau_weights)
 
     # Generate a realistic credit score
     # If we got borrower info with an estimated credit score, base the score on that
@@ -78,30 +87,32 @@ def generate_random_credit_report(id_fields: Dict[str, Any], dg) -> Dict[str, An
         credit_score = random.randint(selected_range[0], selected_range[1])
 
     # Generate a report reference ID
-    report_reference = f"{bureau_name[:3].upper()}-{random.randint(10000, 99999)}-{report_date.strftime('%y%m%d')}"
+    bureau_prefix = bureau_name.name[:3] if bureau_name else "TRI"
+    report_reference = f"{bureau_prefix}-{random.randint(10000, 99999)}-{report_date.strftime('%y%m%d')}"
 
     # Determine status based on report date and expiration
     if report_date.date() > today.date() - datetime.timedelta(days=7):
         # Very recent reports might still be pending
-        status = "pending" if random.random() < 0.2 else "completed"
+        status_weights = [0.0, 0.8, 0.2, 0.0, 0.0, 0.0]  # favor PENDING for recent reports
     elif expiration_date < today.date():
         # Expired reports
-        status = "expired"
+        status_weights = [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]  # always EXPIRED for reports past expiration date
     else:
         # Most reports should be completed
-        status_weights = [0.9, 0.0, 0.1, 0.0]  # completed, pending, failed, expired
-        status = random.choices(status_options, weights=status_weights, k=1)[0]
+        status_weights = [0.85, 0.05, 0.05, 0.0, 0.05, 0.0]  # mostly VERIFIED, some PENDING, FAILED or WAIVED
+
+    status = VerificationStatus.get_random(weights=status_weights)
 
     # Generate file path for completed reports
     report_path = None
-    if status == "completed":
+    if status == VerificationStatus.VERIFIED:
         app_id = id_fields.get("mortgage_services_application_id")
         borrower_id = id_fields.get("mortgage_services_borrower_id")
         file_id = random.randint(10000, 99999)
         report_path = f"/documents/credit/{app_id}/borrower_{borrower_id}/report_{file_id}.pdf"
 
     # Credit score should be None for pending or failed reports
-    if status in ["pending", "failed"]:
+    if status in [VerificationStatus.PENDING, VerificationStatus.FAILED]:
         credit_score = None
 
     # Create the credit report record
@@ -109,11 +120,10 @@ def generate_random_credit_report(id_fields: Dict[str, Any], dg) -> Dict[str, An
         "report_date": report_date,
         "expiration_date": expiration_date,
         "credit_score": credit_score,
-        "report_type": report_type,
-        "bureau_name": bureau_name,
+        "report_type": report_type.value,
         "report_reference": report_reference,
         "report_path": report_path,
-        "status": status
+        "status": status.value
     }
 
     return credit_report
@@ -147,9 +157,9 @@ def get_borrower_info(borrower_id: Optional[int], conn) -> Optional[Dict[str, An
 
         if not result:
             cursor.close()
-            return None
+            return {}
 
-        enterprise_party_id = result[0]
+        enterprise_party_id = result.get('enterprise_party_id')
 
         # Try to get estimated credit score from applications associated with this borrower
         cursor.execute("""
@@ -163,17 +173,20 @@ def get_borrower_info(borrower_id: Optional[int], conn) -> Optional[Dict[str, An
         """, (borrower_id,))
 
         result = cursor.fetchone()
-        cursor.close()
+        if not result:
+            cursor.close()
+            return {}
 
-        estimated_credit_score = None
-        if result and result[0]:
-            estimated_credit_score = result[0]
+        estimated_credit_score = result.get('estimated_credit_score')
 
         return {
             "enterprise_party_id": enterprise_party_id,
             "estimated_credit_score": estimated_credit_score
         }
 
+    except psycopg2.ProgrammingError as error:
+        logger.error(f"Error fetching borrower information: {error}")
+        sys.exit(-1)
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching borrower information: {error}")
         return None

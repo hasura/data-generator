@@ -92,9 +92,6 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
     if submission_status in ["submitted", "accepted"]:
         confirmation_number = f"HMDA-{reporting_year}-{random.randint(100000, 999999)}"
 
-    # Generate submitted_by (associate ID)
-    submitted_by = generate_associate_id(dg)
-
     # Generate submission file path
     submission_file_path = None
     if submission_status != "pending":
@@ -180,7 +177,6 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
         "submission_date": submission_date,
         "submission_method": submission_method,
         "confirmation_number": confirmation_number,
-        "submitted_by": submitted_by,
         "submission_file_path": submission_file_path,
         "response_date": response_date,
         "response_status": response_status,
@@ -224,18 +220,17 @@ def get_report_info(report_id: int, conn) -> Dict[str, Any]:
 
         if result:
             # Check if there's a valid year, otherwise use period start date
-            reporting_year = result[0]
-            if not reporting_year and result[1]:
-                reporting_year = result[1].year
+            reporting_year = result.get('reporting_year')
+            if not reporting_year and result.get('period_start_date'):
+                reporting_year = result.get('period_start_date').year
 
             # Generate LEI based on regulatory agency
-            regulatory_agency = result[3] if result[3] else "CFPB"
+            regulatory_agency = result.get('regulatory_agency', "CFPB")
             institution_lei = generate_agency_based_lei(regulatory_agency)
 
             return {
+                **result,
                 "reporting_year": reporting_year,
-                "period_start_date": result[1],
-                "period_end_date": result[2],
                 "regulatory_agency": regulatory_agency,
                 "institution_lei": institution_lei
             }
@@ -303,36 +298,3 @@ def generate_agency_based_lei(agency: str):
     checksum = f"{random.randint(0, 9)}{random.randint(0, 9)}"
 
     return f"{lou_prefix}{entity_part}{checksum}"
-
-
-def generate_associate_id(dg: DataGenerator):
-    """
-    Get a valid associate ID from the database or generate a plausible one.
-
-    Args:
-        dg: DataGenerator instance
-
-    Returns:
-        An associate ID
-    """
-    try:
-        cursor = dg.conn.cursor()
-
-        # Try to get a random associate ID from the database
-        cursor.execute("""
-            SELECT enterprise_associate_id 
-            FROM enterprise.associates 
-            ORDER BY RANDOM() 
-            LIMIT 1
-        """)
-
-        result = cursor.fetchone()
-        cursor.close()
-
-        if result and result[0]:
-            return result[0]
-    except Exception as e:
-        logger.error(f"Warning: Couldn't fetch associate ID: {e}")
-
-    # Fallback to random ID
-    return random.randint(1, 500)

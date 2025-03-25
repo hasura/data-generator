@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, Set
 
 import anthropic
-from faker import Faker
 
 from data_generator import DataGenerator, SkipRowGenerationError
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
@@ -15,12 +14,12 @@ prev_policy_names: Set[str] = set()
 logger = logging.getLogger(__name__)
 
 
-def generate_random_policy(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
+def generate_random_policy(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
     Generate a random security.policies record.
 
     Args:
-        id_fields: Dictionary containing predetermined ID fields
+        _id_fields: Dictionary containing predetermined ID fields
                   (security_policy_id, created_by_id, updated_by_id)
         dg: DataGenerator instance
 
@@ -28,7 +27,6 @@ def generate_random_policy(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict
         Dict containing a random policy record
         (without ID fields)
     """
-    fake = Faker()
 
     # Try to get policy name examples from DBML if available
     policy_prefixes = [

@@ -131,18 +131,11 @@ def get_host_info(host_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (host_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'hostname': result[0],
-                'system_type': result[1],
-                'agent_status': result[2]
-            }
+        return result
+
     except psycopg2.ProgrammingError as e:
         # Log the critical error
         logger.critical(f"Programming error detected in the SQL query: {e}")
 
         # Exit the program immediately with a non-zero status code
         sys.exit(1)
-
-    # If no result or error, return empty dict
-    return {}

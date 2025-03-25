@@ -108,12 +108,7 @@ def _fetch_resource_definition(resource_id: Optional[str], conn) -> Dict[str, An
         if not result:
             raise ValueError(f"No resource definition found for resource_id: {resource_id}")
 
-        # Convert result to dictionary
-        return {
-            'resource_type': result[0],
-            'resource_name': result[1],
-            'resource_identifier': result[2]
-        }
+        return result
 
     except Exception as e:
         # Handle potential database errors

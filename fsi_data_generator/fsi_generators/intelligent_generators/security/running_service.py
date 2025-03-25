@@ -47,7 +47,6 @@ def generate_random_running_service(id_fields: Dict[str, Any], dg: DataGenerator
         is_windows = 'windows' in host_info['os'].lower()
 
     # Get system type from host info
-    system_type = None
     if host_info and 'system_type' in host_info:
         try:
             system_type = SystemType(host_info['system_type'])
@@ -85,7 +84,6 @@ def generate_random_running_service(id_fields: Dict[str, Any], dg: DataGenerator
         start_time = now - timedelta(days=random.randint(1, 60))
 
     # Get agent status to determine typical service status
-    agent_status = None
     if host_info and 'agent_status' in host_info:
         try:
             agent_status = AgentStatus(host_info['agent_status'])
@@ -106,6 +104,7 @@ def generate_random_running_service(id_fields: Dict[str, Any], dg: DataGenerator
     }
 
     key = (security_host_id, running_service_name)
+    global prev_services
     if key in prev_services:
         raise SkipRowGenerationError
 
@@ -129,24 +128,14 @@ def get_host_info(host_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (host_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'hostname': result[0],
-                'os': result[1],
-                'os_version': result[2],
-                'system_type': result[3],
-                'last_seen': result[4],
-                'agent_status': result[5]
-            }
+        return result
+
     except psycopg2.ProgrammingError as e:
         # Log the critical error
         logger.critical(f"Programming error detected in the SQL query: {e}")
 
         # Exit the program immediately with a non-zero status code
         sys.exit(1)
-
-    # If no result or error, return bare minimum
-    return {'os': 'linux', 'hostname': f'unknown-{host_id}', 'system_type': 'server'}
 
 
 def get_windows_services(system_type: SystemType) -> list:
@@ -343,7 +332,6 @@ def select_service_for_host(service_options: list, host_info: Dict[str, Any]) ->
         return f"service-{random.randint(1, 999)}"
 
     # Get host OS from host_info
-    os_info = host_info.get('os', '').lower() if host_info else ''
     hostname = host_info.get('hostname', '') if host_info else ''
 
     # Special case: select services that match hostname patterns

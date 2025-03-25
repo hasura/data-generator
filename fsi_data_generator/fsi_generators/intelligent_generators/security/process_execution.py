@@ -161,15 +161,8 @@ def get_host_info(host_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (host_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'hostname': result[0],
-                'os': result[1],
-                'os_version': result[2],
-                'system_type': result[3],
-                'last_seen': result[4],
-                'agent_status': result[5]
-            }
+        return result
+
     except Exception as e:
         # Handle database errors gracefully
         logger.error(e)
@@ -199,8 +192,8 @@ def get_host_users(host_id: Any, dg: DataGenerator) -> list:
         with dg.conn.cursor() as cursor:
             cursor.execute(query, (host_id,))
             for row in cursor.fetchall():
-                if row[0]:  # Ensure name is not None
-                    users.append({'name': row[0], 'is_service': row[1]})
+                if row.get('name'):  # Ensure name is not None
+                    users.append(row)
 
         # If no users found, try through network connections
         if not users:
@@ -216,8 +209,8 @@ def get_host_users(host_id: Any, dg: DataGenerator) -> list:
             with dg.conn.cursor() as cursor:
                 cursor.execute(query, (host_id,))
                 for row in cursor.fetchall():
-                    if row[0]:  # Ensure name is not None
-                        users.append({'name': row[0], 'is_service': row[1]})
+                    if row.get('name'):  # Ensure name is not None
+                        users.append(row)
 
         # If still no users found, get users from process executions directly
         if not users:
@@ -230,8 +223,8 @@ def get_host_users(host_id: Any, dg: DataGenerator) -> list:
             with dg.conn.cursor() as cursor:
                 cursor.execute(query, (host_id,))
                 for row in cursor.fetchall():
-                    if row[0]:  # Ensure name is not None
-                        users.append({'name': row[0], 'is_service': False})
+                    if row.get('name'):  # Ensure name is not None
+                        users.append({'name': row['name'], 'is_service': False})
 
         # If still no users found, get some random enterprise associates
         if not users:
@@ -439,8 +432,8 @@ def get_host_owner(host_id, dg):
             cursor.execute(query, (host_id,))
             result = cursor.fetchone()
 
-        if result and result[0]:
-            return result[0]
+        if result and result.get('asset_owner_name'):
+            return result.get('asset_owner_name')
 
         # If no asset owner, try to find owner through process executions on this host
         query = """
@@ -455,8 +448,8 @@ def get_host_owner(host_id, dg):
             cursor.execute(query, (host_id,))
             result = cursor.fetchone()
 
-        if result and result[0]:
-            return result[0]
+        if result and result.get('user_name'):
+            return result.get('user_name')
 
         # Last resort - try to find a relevant associate
         query = """
@@ -470,8 +463,8 @@ def get_host_owner(host_id, dg):
             cursor.execute(query)
             result = cursor.fetchone()
 
-        if result and result[0]:
-            return result[0].lower()
+        if result and result.get('fullname'):
+            return result.get('fullname').lower()
 
     except Exception as e:
         # Handle database errors gracefully
@@ -497,9 +490,9 @@ def get_random_associate(dg):
             cursor.execute(query)
             result = cursor.fetchone()
 
-        if result and result[0] and result[1]:
+        if result:
             # Create username from first name and first character of last name
-            username = f"{result[0].lower()}{result[1][0].lower()}"
+            username = f"{result.get('first_name', '').lower()}{result.get('last_name', 'X')[0].lower()}"
             return username
 
     except Exception as e:

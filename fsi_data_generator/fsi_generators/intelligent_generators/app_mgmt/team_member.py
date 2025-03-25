@@ -81,22 +81,14 @@ def _fetch_associate_info(associate_id: Any, dg: DataGenerator) -> Dict[str, Any
             cursor.execute(query, (associate_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'first_name': result[0],
-                'last_name': result[1],
-                'email': result[2],
-                'job_title': result[3],
-                'department_id': result[4]
-            }
+        return result
+
     except psycopg2.ProgrammingError as e:
         # Log the critical error
         logger.critical(f"Programming error detected in the SQL query: {e}")
 
         # Exit the program immediately with a non-zero status code
         sys.exit(1)
-
-    return {}
 
 
 def _fetch_team_info(team_id: Any, dg: DataGenerator) -> Dict[str, Any]:
@@ -124,20 +116,14 @@ def _fetch_team_info(team_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (team_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'team_name': result[0],
-                'description': result[1],
-                'team_lead_id': result[2]
-            }
+        return result
+
     except psycopg2.ProgrammingError as e:
         # Log the critical error
         logger.critical(f"Programming error detected in the SQL query: {e}")
 
         # Exit the program immediately with a non-zero status code
         sys.exit(1)
-
-    return {}
 
 
 def _generate_team_function(associate_info: Dict[str, Any], team_info: Dict[str, Any]) -> str:

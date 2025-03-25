@@ -29,8 +29,8 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
     """
     # Get borrower information and application status to make employment data reasonable
     conn = dg.conn
-    borrower_info = get_borrower_info(id_fields.get("mortgage_services_borrower_id"), conn)
-    application_info = get_application_info_for_borrower(id_fields.get("mortgage_services_borrower_id"), conn)
+    borrower_info = _get_borrower_info(id_fields.get("mortgage_services_borrower_id"), conn)
+    application_info = _get_application_info_for_borrower(id_fields.get("mortgage_services_borrower_id"), conn)
 
     # Determine if current employment based on borrower info
     is_current = True  # Default to current employment
@@ -215,7 +215,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
         monthly_income = round(random.uniform(2000, 5000), 2)
 
     # Get a random address ID for the employer - use the updated function
-    enterprise_address_id = get_random_business_address_id(conn)
+    enterprise_address_id = _get_random_business_address_id(conn)
 
     # Generate phone with Faker
     phone = fake.phone_number()
@@ -235,7 +235,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
                     verification_date = today - datetime.timedelta(days=days_ago)
             else:
                 # Past employment for approved apps might be verified or not
-                verification_status = VerificationStatus.get_random([0.7, 0.0, 0.0, 0.3, 0.0])
+                verification_status = VerificationStatus.get_random([0.7, 0.0, 0.0, 0.3, 0.0, 0.0])
                 if verification_status == VerificationStatus.VERIFIED:
                     days_ago = random.randint(1, 60)
                     verification_date = today - datetime.timedelta(days=days_ago)
@@ -244,9 +244,9 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
         elif app_status in ["submitted", "in review"]:
             # For in-process applications, verification could be pending or completed
             if is_current:
-                verification_status = VerificationStatus.get_random([0.3, 0.7, 0.0, 0.0, 0.0])
+                verification_status = VerificationStatus.get_random([0.3, 0.7, 0.0, 0.0, 0.0, 0.0])
             else:
-                verification_status = VerificationStatus.get_random([0.2, 0.3, 0.0, 0., 0.0])
+                verification_status = VerificationStatus.get_random([0.2, 0.3, 0.0, 0., 0.0, 0.0])
 
             if verification_status == VerificationStatus.VERIFIED:
                 days_ago = random.randint(1, 30)
@@ -260,7 +260,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
                 days_ago = random.randint(1, 30)
                 verification_date = today - datetime.timedelta(days=days_ago)
             else:
-                verification_status = VerificationStatus.get_random([0.2, 0.2, 0.1, 0.5, 0.0])
+                verification_status = VerificationStatus.get_random([0.2, 0.2, 0.1, 0.5, 0.0, 0.0])
                 if verification_status in [VerificationStatus.VERIFIED, VerificationStatus.FAILED]:
                     days_ago = random.randint(1, 60)
                     verification_date = today - datetime.timedelta(days=days_ago)
@@ -268,7 +268,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
                     verification_date = None
         else:  # draft or other status
             # For draft applications, often no verification yet
-            verification_status = VerificationStatus.get_random([0.1, 0.2, 0.0, 0.7, 0.0])
+            verification_status = VerificationStatus.get_random([0.1, 0.2, 0.0, 0.7, 0.0, 0.0])
             if verification_status == VerificationStatus.VERIFIED:
                 days_ago = random.randint(1, 30)
                 verification_date = today - datetime.timedelta(days=days_ago)
@@ -276,7 +276,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
                 verification_date = None
     else:
         # If no application info, use default verification distribution
-        verification_status = VerificationStatus.get_random([0.3, 0.2, 0.1, 0.4, 0.0])
+        verification_status = VerificationStatus.get_random([0.3, 0.2, 0.1, 0.4, 0.0, 0.0])
         if verification_status == VerificationStatus.VERIFIED:
             days_ago = random.randint(1, 60)
             verification_date = today - datetime.timedelta(days=days_ago)
@@ -302,7 +302,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
     return borrower_employment
 
 
-def get_borrower_info(borrower_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_borrower_info(borrower_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get borrower information to make employment data reasonable.
 
@@ -329,21 +329,14 @@ def get_borrower_info(borrower_id: Optional[int], conn) -> Optional[Dict[str, An
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "enterprise_party_id": result[0],
-                "name": result[1],
-                "date_of_birth": result[2]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching borrower information: {error}")
         return None
 
 
-def get_application_info_for_borrower(borrower_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_application_info_for_borrower(borrower_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get application information for a borrower to make employment data reasonable.
 
@@ -373,22 +366,14 @@ def get_application_info_for_borrower(borrower_id: Optional[int], conn) -> Optio
 
         result = cursor.fetchone()
         cursor.close()
-
-        if result:
-            return {
-                "mortgage_services_application_id": result[0],
-                "status": result[1],
-                "submission_date": result[2]  # Changed from decision_date to submission_date
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching application information: {error}")
         return None
 
 
-def get_random_business_address_id(conn) -> Optional[int]:
+def _get_random_business_address_id(conn) -> Optional[int]:
     """
     Get a random business address ID from the database.
 
@@ -438,11 +423,8 @@ def get_random_business_address_id(conn) -> Optional[int]:
 
         cursor.close()
 
-        if result:
-            return result[0]
-        else:
-            # If no addresses found, return None
-            return None
+        return result.get('enterprise_address_id')
+
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching random business address ID: {error}")
@@ -464,7 +446,7 @@ def get_random_address_id(conn, is_business: bool = False) -> Optional[int]:
         Random address ID or None if query fails
     """
     if is_business:
-        return get_random_business_address_id(conn)
+        return _get_random_business_address_id(conn)
 
     try:
         cursor = conn.cursor()

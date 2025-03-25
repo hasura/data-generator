@@ -152,16 +152,8 @@ def _fetch_account_info(account_id: Any, dg: DataGenerator) -> Dict[str, Any]:
             cursor.execute(query, (account_id,))
             result = cursor.fetchone()
 
-        if result:
-            return {
-                'name': result[0],
-                'account_id_string': result[1],
-                'disabled': result[2],
-                'locked': result[3],
-                'security_source_id': result[4],
-                'status_update_date_time': result[5],
-                'created': result[6]
-            }
+        return result
+
     except Exception as e:
         # Handle connection errors or other issues
         logger.error(f"Error fetching account info: {e}")

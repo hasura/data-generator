@@ -181,17 +181,7 @@ def get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "loan_amount": float(result[0]) if result[0] is not None else None,
-                "interest_rate": float(result[1]) if result[1] is not None else None,
-                "loan_term_months": result[2],
-                "monthly_payment": float(result[3]) if result[3] is not None else None,
-                "down_payment": float(result[4]) if result[4] is not None else None,
-                "origination_date": result[5]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching loan information: {error}")

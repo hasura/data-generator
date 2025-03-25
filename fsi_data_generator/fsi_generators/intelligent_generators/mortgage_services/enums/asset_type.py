@@ -21,6 +21,7 @@ class AssetType(str, Enum):
     TRUST_ACCOUNT = "TRUST_ACCOUNT"
     CRYPTOCURRENCY = "CRYPTOCURRENCY"
     OTHER = "OTHER"
+    OTHER_REAL_ESTATE = "OTHER_REAL_ESTATE"
 
     @classmethod
     def get_random(cls):
@@ -32,7 +33,7 @@ class AssetType(str, Enum):
             0.08,  # MONEY_MARKET
             0.05,  # CERTIFICATE_OF_DEPOSIT
             0.08,  # BROKERAGE_ACCOUNT
-            0.1,   # RETIREMENT_ACCOUNT
+            0.10,  # RETIREMENT_ACCOUNT
             0.05,  # STOCK_EQUITY
             0.03,  # BONDS
             0.05,  # MUTUAL_FUND
@@ -44,7 +45,9 @@ class AssetType(str, Enum):
             0.02,  # TRUST_ACCOUNT
             0.02,  # CRYPTOCURRENCY
             0.02,  # BUSINESS_EQUITY
-            0.02   # OTHER
+            0.01,  # OTHER
+            0.01  # OTHER REAL ESTATE
+
         ]
 
         return random.choices(choices, weights=weights, k=1)[0]

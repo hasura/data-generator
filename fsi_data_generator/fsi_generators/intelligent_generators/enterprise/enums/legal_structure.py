@@ -21,5 +21,3 @@ class LegalStructure(BaseEnum):
     FOREIGN_ENTITY = "FOREIGN_ENTITY"
     NOT_APPLICABLE = "NOT_APPLICABLE"
     OTHER = "OTHER"
-
-

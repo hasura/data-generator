@@ -37,4 +37,3 @@ class BuildingType(Enum):
             weights=list(type_weights.values()),
             k=1
         )[0]
-

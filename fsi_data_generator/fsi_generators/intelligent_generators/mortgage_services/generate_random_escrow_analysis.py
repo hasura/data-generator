@@ -1,7 +1,6 @@
 import datetime
 import logging
 import random
-from decimal import Decimal
 from typing import Any, Dict, Optional
 
 import psycopg2
@@ -30,14 +29,14 @@ def generate_random_escrow_analysis(id_fields: Dict[str, Any], dg) -> Dict[str, 
     if not servicing_account_info:
         # Use default values if no servicing account info is found
         servicing_account_info = {
-            "escrow_balance": Decimal('1200.00'),
-            "next_payment_amount": Decimal('1500.00'),
+            "escrow_balance": 1200.0,
+            "next_payment_amount": 1500.0,
             "property_tax_due_date": datetime.date.today() + datetime.timedelta(days=90),
             "homeowners_insurance_due_date": datetime.date.today() + datetime.timedelta(days=180)
         }
 
     # Get previous escrow analyses to ensure consistency and avoid duplicates
-    previous_analyses = get_previous_escrow_analyses(id_fields["mortgage_services_servicing_account_id"], conn)
+    previous_analyses = _get_previous_escrow_analyses(id_fields["mortgage_services_servicing_account_id"], conn)
 
     # Check if we already have multiple recent analyses (fewer than 6 months old)
     today = datetime.date.today()
@@ -87,7 +86,7 @@ def generate_random_escrow_analysis(id_fields: Dict[str, Any], dg) -> Dict[str, 
                 previous_analysis = a
 
         if previous_analysis and "new_monthly_escrow" in previous_analysis and previous_analysis["new_monthly_escrow"]:
-            previous_monthly_escrow = Decimal(str(previous_analysis["new_monthly_escrow"]))
+            previous_monthly_escrow = previous_analysis["new_monthly_escrow"]
         else:
             # Estimate based on typical escrow portion of payment
             previous_monthly_escrow = _estimate_monthly_escrow(servicing_account_info)
@@ -98,59 +97,59 @@ def generate_random_escrow_analysis(id_fields: Dict[str, Any], dg) -> Dict[str, 
     # Calculate new monthly escrow amount based on projections and any shortage/surplus
     # First, estimate annual escrow expenses
     annual_property_tax = _estimate_annual_property_tax(servicing_account_info)
-    annual_homeowners_insurance = estimate_annual_homeowners_insurance(servicing_account_info)
+    annual_homeowners_insurance = _estimate_annual_homeowners_insurance(servicing_account_info)
     other_annual_expenses = _estimate_other_escrow_expenses(servicing_account_info)
 
     total_annual_expenses = annual_property_tax + annual_homeowners_insurance + other_annual_expenses
 
     # New base monthly escrow would be annual expenses divided by 12
-    base_monthly_escrow = total_annual_expenses / Decimal('12')
+    base_monthly_escrow = total_annual_expenses / 12
 
     # Determine if there's a shortage or surplus
     # This would be based on current escrow balance vs. required cushion
-    escrow_balance = servicing_account_info.get("escrow_balance", Decimal('0'))
+    escrow_balance = servicing_account_info.get("escrow_balance", 0)
 
     # Required cushion is typically 2 months of escrow payments
-    required_cushion = base_monthly_escrow * Decimal('2')
+    required_cushion = base_monthly_escrow * 2
 
     # Calculate shortage or surplus
     if escrow_balance < required_cushion:
         # There's a shortage
         escrow_shortage = required_cushion - escrow_balance
-        escrow_surplus = Decimal('0')
+        escrow_surplus = 0
     else:
         # There's a surplus
-        escrow_shortage = Decimal('0')
+        escrow_shortage = 0
         escrow_surplus = escrow_balance - required_cushion
 
     # Determine how to handle the shortage (if any)
     shortage_spread_months = 0
-    if escrow_shortage > Decimal('0'):
+    if escrow_shortage > 0:
         # Typically spread over 12 months, but can range from 1-24 months
         shortage_spread_months = random.choice([1, 3, 6, 12, 24])
 
         # Add the shortage spread to the monthly amount
-        monthly_shortage_payment = escrow_shortage / Decimal(str(shortage_spread_months))
+        monthly_shortage_payment = escrow_shortage / shortage_spread_months
         new_monthly_escrow = base_monthly_escrow + monthly_shortage_payment
     else:
         new_monthly_escrow = base_monthly_escrow
 
     # If there's a large surplus, it might be refunded to the borrower
-    surplus_refund_amount = Decimal('0')
+    surplus_refund_amount = 0
     if escrow_surplus > base_monthly_escrow:
         # Large surplus - some might be refunded
         surplus_refund_amount = escrow_surplus - base_monthly_escrow
 
         # But sometimes they keep the whole surplus in the account
         if random.random() < 0.3:  # 30% chance of no refund
-            surplus_refund_amount = Decimal('0')
+            surplus_refund_amount = 0
 
     # Round all monetary values to 2 decimal places
-    previous_monthly_escrow = previous_monthly_escrow.quantize(Decimal('0.01'))
-    new_monthly_escrow = new_monthly_escrow.quantize(Decimal('0.01'))
-    escrow_shortage = escrow_shortage.quantize(Decimal('0.01'))
-    escrow_surplus = escrow_surplus.quantize(Decimal('0.01'))
-    surplus_refund_amount = surplus_refund_amount.quantize(Decimal('0.01'))
+    previous_monthly_escrow = round(previous_monthly_escrow, 2)
+    new_monthly_escrow = round(new_monthly_escrow, 2)
+    escrow_shortage = round(escrow_shortage, 2)
+    escrow_surplus = round(escrow_surplus, 2)
+    surplus_refund_amount = round(surplus_refund_amount, 2)
 
     # Generate notification date (typically a few days after analysis)
     days_after_for_notification = random.randint(3, 10)
@@ -208,24 +207,14 @@ def _get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dic
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "current_principal_balance": result[0],
-                "original_principal_balance": result[1],
-                "escrow_balance": result[2],
-                "next_payment_amount": result[3],
-                "property_tax_due_date": result[4],
-                "homeowners_insurance_due_date": result[5]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching servicing account information: {error}")
         return None
 
 
-def get_previous_escrow_analyses(servicing_account_id: int, conn) -> list:
+def _get_previous_escrow_analyses(servicing_account_id: int, conn) -> list:
     """
     Get previous escrow analyses for consistency checking.
 
@@ -261,18 +250,7 @@ def get_previous_escrow_analyses(servicing_account_id: int, conn) -> list:
 
         analyses = []
         for row in results:
-            analyses.append({
-                "analysis_date": row[0],
-                "effective_date": row[1],
-                "previous_monthly_escrow": row[2],
-                "new_monthly_escrow": row[3],
-                "escrow_shortage": row[4],
-                "escrow_surplus": row[5],
-                "shortage_spread_months": row[6],
-                "surplus_refund_amount": row[7],
-                "status": row[8],
-                "customer_notification_date": row[9]
-            })
+            analyses.append(row)
 
         return analyses
 
@@ -281,7 +259,7 @@ def get_previous_escrow_analyses(servicing_account_id: int, conn) -> list:
         return []
 
 
-def _estimate_monthly_escrow(servicing_account_info: Dict[str, Any]) -> Decimal:
+def _estimate_monthly_escrow(servicing_account_info: Dict[str, Any]) -> float:
     """
     Estimate monthly escrow payment based on payment amount.
 
@@ -295,18 +273,18 @@ def _estimate_monthly_escrow(servicing_account_info: Dict[str, Any]) -> Decimal:
 
     if payment_amount:
         # Escrow is typically 15-35% of the payment
-        escrow_percentage = Decimal(str(random.uniform(0.15, 0.35)))
+        escrow_percentage = random.uniform(0.15, 0.35)
         return payment_amount * escrow_percentage
     else:
         # If no payment info, estimate based on loan size
-        principal_balance = servicing_account_info.get("current_principal_balance", Decimal('200000'))
+        principal_balance = servicing_account_info.get("current_principal_balance", 200000)
         # Rough estimate: annual escrow of 1-2% of loan balance divided by 12
-        annual_percentage = Decimal(str(random.uniform(0.01, 0.02)))
+        annual_percentage = random.uniform(0.01, 0.02)
         annual_escrow = principal_balance * annual_percentage
-        return annual_escrow / Decimal('12')
+        return annual_escrow / 12
 
 
-def _estimate_annual_property_tax(servicing_account_info: Dict[str, Any]) -> Decimal:
+def _estimate_annual_property_tax(servicing_account_info: Dict[str, Any]) -> float:
     """
     Estimate annual property tax based on loan amount.
 
@@ -316,20 +294,20 @@ def _estimate_annual_property_tax(servicing_account_info: Dict[str, Any]) -> Dec
     Returns:
         Estimated annual property tax
     """
-    loan_amount = servicing_account_info.get("original_principal_balance", Decimal('200000'))
+    loan_amount = servicing_account_info.get("original_principal_balance", 200000.0)
 
     # Property value is typically higher than loan amount (80-95% LTV)
-    ltv_ratio = Decimal(str(random.uniform(0.8, 0.95)))
+    ltv_ratio = random.uniform(0.8, 0.95)
     property_value = loan_amount / ltv_ratio
 
     # Property tax rate typically 0.5-2.5% of property value
-    tax_rate = Decimal(str(random.uniform(0.005, 0.025)))
+    tax_rate = random.uniform(0.005, 0.025)
 
     annual_tax = property_value * tax_rate
-    return annual_tax.quantize(Decimal('0.01'))
+    return round(annual_tax, 2)
 
 
-def estimate_annual_homeowners_insurance(servicing_account_info: Dict[str, Any]) -> Decimal:
+def _estimate_annual_homeowners_insurance(servicing_account_info: Dict[str, Any]) -> float:
     """
     Estimate annual homeowners insurance based on loan amount.
 
@@ -339,20 +317,20 @@ def estimate_annual_homeowners_insurance(servicing_account_info: Dict[str, Any])
     Returns:
         Estimated annual homeowners insurance
     """
-    loan_amount = servicing_account_info.get("original_principal_balance", Decimal('200000'))
+    loan_amount = servicing_account_info.get("original_principal_balance", 200000.0)
 
     # Property value is typically higher than loan amount (80-95% LTV)
-    ltv_ratio = Decimal(str(random.uniform(0.8, 0.95)))
-    property_value = loan_amount / ltv_ratio
+    ltv_ratio = random.uniform(0.8, 0.95)
 
     # Insurance typically 0.25-0.5% of property value
-    insurance_rate = Decimal(str(random.uniform(0.0025, 0.005)))
+    insurance_rate = random.uniform(0.0025, 0.005)
+    property_value = loan_amount / ltv_ratio
 
     annual_insurance = property_value * insurance_rate
-    return annual_insurance.quantize(Decimal('0.01'))
+    return round(annual_insurance, 2)
 
 
-def _estimate_other_escrow_expenses(servicing_account_info: Dict[str, Any]) -> Decimal:
+def _estimate_other_escrow_expenses(servicing_account_info: Dict[str, Any]) -> float:
     """
     Estimate other annual escrow expenses (HOA, PMI, etc.)
 
@@ -362,13 +340,13 @@ def _estimate_other_escrow_expenses(servicing_account_info: Dict[str, Any]) -> D
     Returns:
         Estimated annual other escrow expenses
     """
-    loan_amount = servicing_account_info.get("original_principal_balance", Decimal('200000'))
+    loan_amount = servicing_account_info.get("original_principal_balance", 200000.0)
 
     # Small chance of other escrow expenses
     if random.random() < 0.2:  # 20% chance
         # Typically 0.1-0.5% of loan amount
-        expense_rate = Decimal(str(random.uniform(0.001, 0.005)))
+        expense_rate = random.uniform(0.001, 0.005)
         annual_expense = loan_amount * expense_rate
-        return annual_expense.quantize(Decimal('0.01'))
+        return round(annual_expense, 2)
     else:
-        return Decimal('0.00')
+        return 0.0

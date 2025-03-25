@@ -8,7 +8,6 @@ import anthropic
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-
 from .enums import AccountStatus
 
 # Track previously generated account descriptions for uniqueness if needed
@@ -79,7 +78,6 @@ def generate_random_account(_id_fields: Dict[str, Any], dg: DataGenerator) -> Di
     account_category = random.choice(categories)
 
     # Generate description - more meaningful for the higher-level categories
-    descriptions = []
 
     if account_category == "personal":
         descriptions = [

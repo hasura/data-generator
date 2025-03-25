@@ -2,11 +2,9 @@ import datetime
 import logging
 import random
 import sys
-from decimal import Decimal
 from typing import Any, Dict
 
 import psycopg2
-from psycopg2.extras import RealDictCursor
 
 from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.income_frequency import \
     IncomeFrequency
@@ -24,13 +22,14 @@ def generate_random_borrower_liability(id_fields: Dict[str, Any], dg) -> Dict[st
 
     Args:
         id_fields: Dictionary containing the required ID fields (like mortgage_services_borrower_id)
-        dg: DataGenertor instance
+        dg: DataGenerator instance
 
     Returns:
         Dictionary containing randomly generated borrower liability data (without ID fields)
     """
     # Get database connection
     conn = dg.conn
+    progress_through_loan = None
 
     # Define creditor names for different liability types
     creditor_names = {
@@ -103,7 +102,7 @@ def generate_random_borrower_liability(id_fields: Dict[str, Any], dg) -> Dict[st
     }
 
     max_percentage = max_payment_percentages.get(liability_type, 0.08)
-    max_monthly_payment = borrower_income * Decimal(str(max_percentage))
+    max_monthly_payment = borrower_income * max_percentage
 
     # Set minimum payment based on liability type
     min_payments = {
@@ -268,7 +267,7 @@ def generate_random_borrower_liability(id_fields: Dict[str, Any], dg) -> Dict[st
     return liability
 
 
-def get_borrower_income(borrower_id: int, conn) -> Decimal:
+def get_borrower_income(borrower_id: int, conn) -> float:
     """
     Get the borrower's monthly income to make liability data reasonable.
     Sums all income sources after converting to monthly values.
@@ -278,11 +277,11 @@ def get_borrower_income(borrower_id: int, conn) -> Decimal:
         conn: PostgreSQL connection object
 
     Returns:
-        Monthly income as a Decimal
+        Monthly income as a float
     """
     try:
-        monthly_total = Decimal('0.00')
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        monthly_total = 0.0
+        cursor = conn.cursor()
 
         # Get income from borrower_employments
         try:
@@ -299,8 +298,7 @@ def get_borrower_income(borrower_id: int, conn) -> Decimal:
 
         # Sum all employment income
         for result in employment_results:
-            if result["monthly_income"]:
-                monthly_total += Decimal(str(result["monthly_income"]))
+            monthly_total += result.get("monthly_income", 0)
 
         # Get all income from borrower_incomes with appropriate frequency conversions
         try:
@@ -317,35 +315,35 @@ def get_borrower_income(borrower_id: int, conn) -> Decimal:
 
         # Process all additional income sources
         for record in income_records:
-            amount = record["amount"] if record["amount"] else Decimal('0.00')
-            frequency = record["frequency"] if record["frequency"] else IncomeFrequency.MONTHLY.value
+            amount = record.get('amount', 0)
+            frequency = record.get('frequency', IncomeFrequency.MONTHLY.value)
 
             # Convert to monthly based on frequency
             if frequency == IncomeFrequency.WEEKLY.value:
                 # Weekly × 52 ÷ 12
-                monthly_amount = amount * Decimal('4.33')
+                monthly_amount = amount * 4.33
             elif frequency == IncomeFrequency.BI_WEEKLY.value:
                 # Bi-weekly × 26 ÷ 12
-                monthly_amount = amount * Decimal('2.17')
+                monthly_amount = amount * 2.17
             elif frequency == IncomeFrequency.SEMI_MONTHLY.value:
                 # Semi-monthly × 2
-                monthly_amount = amount * Decimal('2.0')
+                monthly_amount = amount * 2.0
             elif frequency == IncomeFrequency.MONTHLY.value:
                 # Already monthly
                 monthly_amount = amount
             elif frequency == IncomeFrequency.QUARTERLY.value:
                 # Quarterly ÷ 3
-                monthly_amount = amount / Decimal('3.0')
+                monthly_amount = amount / 3.0
             elif frequency == IncomeFrequency.SEMI_ANNUALLY.value:
                 # Semi-annually ÷ 6
-                monthly_amount = amount / Decimal('6.0')
+                monthly_amount = amount / 6.0
             elif frequency == IncomeFrequency.ANNUALLY.value:
                 # Annually ÷ 12
-                monthly_amount = amount / Decimal('12.0')
+                monthly_amount = amount / 12.0
             elif frequency == IncomeFrequency.IRREGULAR.value:
                 # For irregular income, use a conservative approach
                 # Assume it's spread over 6 months
-                monthly_amount = amount / Decimal('6.0')
+                monthly_amount = amount / 6.0
             else:
                 # Default to monthly if unknown
                 monthly_amount = amount
@@ -356,11 +354,11 @@ def get_borrower_income(borrower_id: int, conn) -> Decimal:
 
         # If no income found, use a reasonable default
         if monthly_total <= 0:
-            monthly_total = Decimal('5000.00')  # Reasonable default monthly income
+            monthly_total = 5000.00  # Reasonable default monthly income
 
         return monthly_total
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching borrower income: {error}")
         # Return a reasonable default if there's an error
-        return Decimal('5000.00')
+        return 5000.0

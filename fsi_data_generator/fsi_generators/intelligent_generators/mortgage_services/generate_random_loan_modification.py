@@ -236,9 +236,9 @@ def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Opt
 
         cursor.execute("""
             SELECT l.mortgage_services_loan_id, 
-                   CAST(sa.original_principal_balance AS FLOAT), 
-                   CAST(sa.current_principal_balance AS FLOAT), 
-                   CAST(sa.current_interest_rate AS FLOAT), 
+                   sa.original_principal_balance, 
+                   sa.current_principal_balance, 
+                   sa.current_interest_rate, 
                    l.loan_term_months AS original_term_months, 
                    /* Calculate remaining term based on maturity date and current date */
                    CASE 
@@ -255,17 +255,7 @@ def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Opt
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "mortgage_services_loan_id": result[0],
-                "original_principal": result[1],
-                "current_principal": result[2],
-                "current_interest_rate": result[3],
-                "original_term_months": result[4],
-                "remaining_term_months": result[5]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching servicing account information: {error}")

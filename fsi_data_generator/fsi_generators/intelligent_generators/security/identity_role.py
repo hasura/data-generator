@@ -10,14 +10,14 @@ active_role_assignments: Set[Tuple[str, str]] = set()
 logger = logging.getLogger(__name__)
 
 
-def generate_random_identity_role(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
+def generate_random_identity_role(id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:
     """
     Generate a random security.identity_roles record.
 
     Args:
         id_fields: Dictionary containing predetermined ID fields
                   (security_identity_role_id, security_identity_id, security_role_id, assigned_by_id)
-        dg: DataGenerator instance
+        _dg: DataGenerator instance
 
     Returns:
         Dict containing a random identity role record

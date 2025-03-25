@@ -1,103 +1,72 @@
 import random
 from datetime import datetime, timedelta
+from typing import Any, Dict
 
-import numpy as np
+from data_generator import DataGenerator, SkipRowGenerationError
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.application_status import \
+    ApplicationStatus
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.interest_rate_type import \
+    InterestRateType
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_type import \
+    LoanType
+
+prev_app = set()
 
 
-def generate_random_mortgage(loan_product=None, loan_application=None):
+def generate_random_mortgage(_ids_dict: Dict[str, Any], dg: DataGenerator):
     """
     Generate a random mortgage with plausible correlations between various factors.
-
-    Args:
-        loan_product (dict, optional): Loan product details to use as constraints.
-            If provided, the generated mortgage will conform to the product specifications.
-        loan_application (dict, optional): Loan application details to base mortgage on.
-            If provided, the mortgage will be consistent with the application details.
 
     Returns:
         dict: A dictionary with comprehensive mortgage details.
     """
+
+    conn = dg.conn
+
+    # Randomly choose an application ID
+    application_id = _get_approved_application_id(dg)
+
+    # SQL query to get the loan product details via the application_id
+    query = """
+        SELECT lp.*
+        FROM mortgage_services.applications AS app
+        JOIN mortgage_services.loan_products AS lp
+        ON app.mortgage_services_loan_product_id = lp.mortgage_services_loan_product_id
+        WHERE app.mortgage_services_application_id = %s
+        """
+
+    # Execute the query
+    with conn.cursor() as cursor:
+        cursor.execute(query, (application_id,))  # Parameterized query
+        record = cursor.fetchone()  # Fetch the resulting record
+
+    loan_product = record
+
+    # SQL query to get the loan product details via the application_id
+    query = """
+                SELECT app.*
+                FROM mortgage_services.applications AS app
+                WHERE app.mortgage_services_application_id = %s
+                """
+
+    # Execute the query
+    with conn.cursor() as cursor:
+        cursor.execute(query, (application_id,))  # Parameterized query
+        record = cursor.fetchone()  # Fetch the resulting record
+
+    loan_application = record
+    application_status = loan_application.get("status", "approved")
+
     max_amount = None
-    # If no loan product provided, randomly select one
-    if loan_product is None:
-        # List of possible loan products
-        product_options = ['conventional', 'FHA', 'VA', 'USDA', 'jumbo', 'HELOC',
-                           'reverse mortgage', 'construction loan']
 
-        # Generate credit score (300-850)
-        # Higher probability of scores in middle ranges
-        credit_distribution = np.random.normal(loc=700, scale=75)
-        credit_score = max(300, min(850, int(credit_distribution)))
-
-        # Determine loan type based on credit score (better scores more likely to get fixed)
-        fixed_probability = 0.5 + ((credit_score - 575) / 575)  # Higher score = more likely fixed
-        loan_type = "fixed" if random.random() < fixed_probability else "adjustable"
-
-        # Select loan product with weighting based on credit score
-        product_weights = []
-        for product in product_options:
-            # Assign weights based on product and credit score
-            if product == "conventional":
-                # Conventional loans favor higher credit scores
-                weight = 0.1 + (credit_score - 300) / 550 * 0.5
-            elif product == "FHA":
-                # FHA loans are more accessible for lower credit scores
-                weight = 0.5 - (credit_score - 300) / 550 * 0.3
-            elif product == "VA":
-                # VA loans have modest credit requirements
-                weight = 0.2
-            elif product == "USDA":
-                # USDA loans have modest credit requirements
-                weight = 0.15
-            elif product == "jumbo":
-                # Jumbo loans require excellent credit
-                weight = 0 if credit_score < 700 else (credit_score - 700) / 150 * 0.3
-            elif product == "HELOC":
-                # HELOCs favor higher scores
-                weight = 0 if credit_score < 680 else (credit_score - 680) / 170 * 0.25
-            elif product == "reverse mortgage":
-                # Reverse mortgages have age requirements more than credit
-                weight = 0.1
-            elif product == "construction loan":
-                # Construction loans favor higher scores
-                weight = 0 if credit_score < 680 else (credit_score - 680) / 170 * 0.2
-            else:
-                # Default weight for any unlisted products
-                weight = 0.1
-
-            product_weights.append(max(0.01, weight))  # Ensure at least small chance
-
-        # Normalize weights
-        total = sum(product_weights)
-        product_weights = [w / total for w in product_weights]
-
-        # Select product type
-        product_type = random.choices(product_options, weights=product_weights)[0]
-
-        # Create minimal loan product dict
-        loan_product = {
-            "loan_type": product_type,
-            "interest_rate_type": loan_type
-        }
-
-    # Default application values if no application provided
-    if loan_application is None:
-        application_credit_score = 700  # Default credit score
-        application_loan_amount = 300000  # Default loan amount
-        application_loan_term = 360  # Default to 30 years
-        application_property_value = 375000  # Default property value
-        application_status = "approved"  # Default status
-    else:
-        # Extract values from provided application
-        application_credit_score = loan_application.get("estimated_credit_score", 700)
-        application_loan_amount = loan_application.get("requested_loan_amount", 300000)
-        application_loan_term = loan_application.get("requested_loan_term_months", 360)
-        application_property_value = loan_application.get("estimated_property_value", 375000)
-        application_status = loan_application.get("status", "approved")
+    application_credit_score = loan_application.get("estimated_credit_score", 700)
+    application_loan_amount = loan_application.get("requested_loan_amount", 300000)
+    application_loan_term = loan_application.get("requested_loan_term_months", 360)
+    application_property_value = loan_application.get("estimated_property_value", 375000)
 
     # Extract loan details from the product
-    product_type = loan_product["loan_type"]
-    interest_rate_type = loan_product["interest_rate_type"]
+    product_type = LoanType[loan_product["loan_type"]]
+    interest_rate_type = InterestRateType[loan_product["interest_rate_type"]]
 
     # Generate credit score that meets product requirements (if specified)
     min_credit_score = loan_product.get("min_credit_score", 0)
@@ -110,12 +79,12 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
 
     # Generate ARM details if adjustable rate
     arm_details = {}
-    if interest_rate_type == "adjustable" or product_type == "HELOC":
+    if interest_rate_type == InterestRateType.ADJUSTABLE or product_type == LoanType.HOME_EQUITY:
         # Force adjustable for HELOC
-        interest_rate_type = "adjustable"
+        interest_rate_type = InterestRateType.ADJUSTABLE
 
         # Initial fixed period
-        if product_type == "HELOC":
+        if product_type == LoanType.HOME_EQUITY:
             # HELOCs typically have 5-10 year draw periods
             initial_fixed_years = random.choice([5, 7, 10])
             arm_details["draw_period_years"] = initial_fixed_years
@@ -144,7 +113,7 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
         arm_details["current_index_value"] = index_value
 
         # ARM naming convention (e.g., 5/1, 7/6)
-        if product_type != "HELOC":
+        if product_type != LoanType.HOME_EQUITY:
             adjustment_frequency_years = arm_details["adjustment_frequency_months"] / 12
             if adjustment_frequency_years.is_integer():
                 arm_details["arm_name"] = f"{initial_fixed_years}/{int(adjustment_frequency_years)}"
@@ -154,13 +123,13 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
     # Set loan amount constraints based on product or default values
     if "min_loan_amount" in loan_product:
         min_amount = loan_product["min_loan_amount"]
-    elif product_type == "jumbo":
+    elif product_type == LoanType.JUMBO:
         min_amount = 750000
-    elif product_type == "HELOC":
+    elif product_type == LoanType.HOME_EQUITY:
         min_amount = 10000
-    elif product_type == "reverse mortgage":
+    elif product_type == LoanType.REVERSE_MORTGAGE:
         min_amount = 50000
-    elif product_type == "construction loan":
+    elif product_type == LoanType.CONSTRUCTION:
         min_amount = 100000
     else:
         min_amount = 50000
@@ -168,13 +137,13 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
     if "max_loan_amount" in loan_product:
         max_amount = loan_product["max_loan_amount"]
         max_amount_factor = 1.0  # Not needed but keeping for code structure
-    elif product_type == "jumbo":
+    elif product_type == LoanType.JUMBO:
         max_amount_factor = 0.7 + ((credit_score - 300) / 550) * 0.3  # Higher credit requirement
-    elif product_type == "HELOC":
+    elif product_type == LoanType.HOME_EQUITY:
         max_amount_factor = 0.3 + ((credit_score - 300) / 550) * 0.3
-    elif product_type == "reverse mortgage":
+    elif product_type == LoanType.REVERSE_MORTGAGE:
         max_amount_factor = 0.4 + ((credit_score - 300) / 550) * 0.2
-    elif product_type == "construction loan":
+    elif product_type == LoanType.CONSTRUCTION:
         max_amount_factor = 0.5 + ((credit_score - 300) / 550) * 0.3
     else:
         max_amount_factor = 0.5 + ((credit_score - 300) / 550) * 0.5
@@ -197,32 +166,6 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
     # Also, slight variation can occur during underwriting (±5%)
     loan_amount_adjustment = random.uniform(0.95, 1.05)  # Underwriting may adjust amount slightly
     loan_amount = round(max(min_amount, min(max_amount, application_loan_amount * loan_amount_adjustment)), 2)
-
-    # For applications that aren't approved, the loan amount might not materialize
-    if application_status not in ["approved", "funded"]:
-        # Return an empty object or minimal data for non-approved applications
-        return {
-            # Fields required by mortgage_services.loans table with null values
-            "interest_rate": None,
-            "loan_term_months": None,
-            "loan_amount": None,
-            "down_payment": None,
-            "down_payment_percentage": None,
-            "closing_costs": None,
-            "monthly_payment": None,
-            "private_mortgage_insurance": None,
-            "pmi_rate": None,
-            "escrow_amount": None,
-            "origination_date": None,
-            "first_payment_date": None,
-            "maturity_date": None,
-
-            # Additional reference fields
-            "application_status": application_status,
-            "credit_score": credit_score,
-            "loan_type": interest_rate_type,
-            "loan_product": product_type
-        }
 
     # Generate start date (within last 30 years or next 2 months)
     now = datetime.now()
@@ -284,22 +227,22 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
         base_rate = loan_product["base_interest_rate"]
     else:
         # Default base rate by loan type and interest rate type
-        if product_type == "FHA":
-            base_rate = 4.0 if interest_rate_type == "fixed" else 3.2
-        elif product_type == "VA":
-            base_rate = 3.7 if interest_rate_type == "fixed" else 3.0
-        elif product_type == "USDA":
-            base_rate = 3.9 if interest_rate_type == "fixed" else 3.2
-        elif product_type == "jumbo":
-            base_rate = 4.2 if interest_rate_type == "fixed" else 3.5
-        elif product_type == "HELOC":
+        if product_type == LoanType.FHA:
+            base_rate = 4.0 if interest_rate_type == InterestRateType.FIXED else 3.2
+        elif product_type == LoanType.VA:
+            base_rate = 3.7 if interest_rate_type == InterestRateType.FIXED else 3.0
+        elif product_type == LoanType.USDA:
+            base_rate = 3.9 if interest_rate_type == InterestRateType.FIXED else 3.2
+        elif product_type == LoanType.JUMBO:
+            base_rate = 4.2 if interest_rate_type == InterestRateType.FIXED else 3.5
+        elif product_type == LoanType.HOME_EQUITY:
             base_rate = 5.5  # HELOCs typically higher
-        elif product_type == "reverse mortgage":
+        elif product_type == LoanType.REVERSE_MORTGAGE:
             base_rate = 4.5
-        elif product_type == "construction loan":
-            base_rate = 5.0 if interest_rate_type == "fixed" else 4.2
+        elif product_type == LoanType.CONSTRUCTION:
+            base_rate = 5.0 if interest_rate_type == InterestRateType.FIXED else 4.2
         else:  # conventional
-            base_rate = 3.8 if interest_rate_type == "fixed" else 3.0
+            base_rate = 3.8 if interest_rate_type == InterestRateType.FIXED else 3.0
 
     # Credit score adjustment (higher score = lower rate)
     credit_adjustment = (800 - credit_score) / 100
@@ -314,7 +257,7 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
     amount_adjustment = -0.1 * (loan_amount / 2000000)
 
     # ARM adjustment (longer initial fixed periods get higher rates)
-    if interest_rate_type == "adjustable" and "initial_fixed_years" in arm_details:
+    if interest_rate_type == InterestRateType.ADJUSTABLE and "initial_fixed_years" in arm_details:
         arm_adjustment = arm_details["initial_fixed_years"] / 30  # Longer fixed = higher rate
     else:
         arm_adjustment = 0
@@ -345,10 +288,10 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
                 0]
     else:
         # No product constraints, use defaults based on loan type
-        if product_type == "VA":
+        if product_type == LoanType.VA:
             # VA loans can be 0% down
             down_payment_percentage = random.choices([0, 5, 10], weights=[0.7, 0.2, 0.1])[0]
-        elif product_type == "FHA":
+        elif product_type == LoanType.FHA:
             # FHA requires at least 3.5%
             down_payment_percentage = random.choices([3.5, 5, 10], weights=[0.6, 0.3, 0.1])[0]
         elif product_type == "conventional":
@@ -359,10 +302,10 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
                 down_payment_percentage = random.choices([5, 10, 15, 20], weights=[0.3, 0.3, 0.2, 0.2])[0]
             else:
                 down_payment_percentage = random.choices([10, 15, 20], weights=[0.4, 0.3, 0.3])[0]
-        elif product_type == "jumbo":
+        elif product_type == LoanType.JUMBO:
             # Jumbo loans typically require higher down payments
             down_payment_percentage = random.choices([10, 15, 20, 25, 30], weights=[0.1, 0.2, 0.3, 0.2, 0.2])[0]
-        elif product_type == "HELOC" or product_type == "reverse mortgage":
+        elif product_type == LoanType.HOME_EQUITY or product_type == LoanType.REVERSE_MORTGAGE:
             # These products don't have traditional down payments
             down_payment_percentage = 0
         else:
@@ -410,14 +353,14 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
     estimated_closing_costs = round(loan_amount * (closing_cost_percentage / 100), 2)
 
     # Calculate monthly payment (principal and interest)
-    if product_type == "reverse mortgage":
+    if product_type == LoanType.REVERSE_MORTGAGE:
         estimated_monthly_payment = 0  # Reverse mortgages pay the borrower
     else:
-        estimated_monthly_payment = calculate_monthly_payment(loan_amount, interest_rate, loan_term_months)
+        estimated_monthly_payment = _calculate_monthly_payment(loan_amount, interest_rate, loan_term_months)
 
     # Calculate escrow amount (property taxes and insurance)
     # Typically around 0.25-0.5% of purchase price monthly
-    if product_type not in ["HELOC", "reverse mortgage"]:
+    if product_type not in [LoanType.HOME_EQUITY, LoanType.REVERSE_MORTGAGE]:
         yearly_escrow_percentage = round(random.uniform(2.0, 5.0), 2)  # Annual percentage
         yearly_escrow = purchase_price * (yearly_escrow_percentage / 100)
         escrow_amount = round(yearly_escrow / 12, 2)  # Monthly amount
@@ -467,10 +410,50 @@ def generate_random_mortgage(loan_product=None, loan_application=None):
     # Merge the extras into the main mortgage dict
     _mortgage.update(mortgage_extras)
 
+    prev_app.add(application_id)
+
     return _mortgage
 
 
-def calculate_monthly_payment(principal, rate, term_months):
+def _get_approved_application_id(dg: DataGenerator):
+    """
+    Find an application ID that is approved and hasn't been used yet.
+
+    Args:
+        dg: DataGenerator instance with database connection
+
+    Returns:
+        An approved application ID that hasn't been used
+
+    Raises:
+        SkipRowGenerationError: If no valid applications found
+    """
+    conn = dg.conn
+    global prev_app
+
+    query = """
+        SELECT mortgage_services_application_id 
+        FROM mortgage_services.applications 
+        WHERE status = %s
+    """
+
+    with conn.cursor() as cursor:
+        cursor.execute(query, (ApplicationStatus.APPROVED.name,))
+        approved_applications = [row.get('mortgage_services_application_id') for row in cursor.fetchall()]
+
+    # Filter out applications that have already been used
+    available_applications = [app_id for app_id in approved_applications if app_id not in prev_app]
+
+    if not available_applications:
+        raise SkipRowGenerationError("No approved applications available")
+
+    # Return a random available application ID
+    result = random.choice(available_applications)
+    prev_app.add(result)
+    return result
+
+
+def _calculate_monthly_payment(principal, rate, term_months):
     """
     Calculate the monthly payment for a mortgage.
 

@@ -60,6 +60,7 @@ def generate_random_network_event(_id_fields: Dict[str, Any], _dg: DataGenerator
     # Create log message
     action = "allowed" if random.random() > 0.3 else "blocked"
     log_message = f"{protocol} connection from {source_ip}:{source_port} to {dest_ip}:{dest_port} was {action}"
+    created_at = timestamp + datetime.timedelta(seconds=random.uniform(0.1, 5.0))
 
     # Construct the network event record (without ID fields)
     network_event = {
@@ -78,6 +79,7 @@ def generate_random_network_event(_id_fields: Dict[str, Any], _dg: DataGenerator
         "bytes_sent": bytes_sent,
         "bytes_received": bytes_received,
         "log_message": log_message,
+        "created_at": created_at.isoformat()
     }
 
     return network_event

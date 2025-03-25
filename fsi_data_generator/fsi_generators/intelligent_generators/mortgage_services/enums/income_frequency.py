@@ -17,4 +17,4 @@ class IncomeFrequency(str, Enum):
         """Return a random status value, weighted toward ACTIVE"""
         choices = [income_type for income_type in cls]
         weights = [0.1, 0.25, 0.15, 0.3, 0.05, 0.03, 0.07, 0.05]
-        return random.choices(choices,weights=weights,k=1)[0]
+        return random.choices(choices, weights=weights, k=1)[0]

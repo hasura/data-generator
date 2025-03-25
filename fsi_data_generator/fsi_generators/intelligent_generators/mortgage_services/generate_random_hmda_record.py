@@ -523,17 +523,7 @@ def get_application_info(application_id: Optional[int], conn) -> Optional[Dict[s
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "application_type": result[0],
-                "status": result[1],
-                "submission_date": result[2],
-                "requested_loan_amount": float(result[3]) if result[3] is not None else None,
-                "estimated_property_value": float(result[4]) if result[4] is not None else None,
-                "estimated_credit_score": result[5]
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching application information: {error}")
@@ -566,13 +556,7 @@ def get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
         result = cursor.fetchone()
         cursor.close()
 
-        if result:
-            return {
-                "loan_amount": float(result[0]) if result[0] is not None else None,
-                "interest_rate": float(result[1]) if result[1] is not None else None
-            }
-        else:
-            return None
+        return result
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching loan information: {error}")

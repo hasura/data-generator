@@ -8,7 +8,6 @@ from faker import Faker
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.parse_address import \
     parse_address
-
 from .enums import AddressType
 
 logger = logging.getLogger(__name__)
@@ -32,6 +31,7 @@ def generate_random_address(_id_fields: Dict[str, Any], _dg: DataGenerator) -> D
 
     # Generate a standard street address (keep trying until we get one)
     parsed_address = None
+    parsed = None
     attempts = 0
     max_attempts = 10
 

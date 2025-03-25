@@ -8,53 +8,6 @@ import psycopg2
 logger = logging.getLogger(__name__)
 
 
-def get_loan_origination_date(servicing_account_id: int, conn) -> Optional[datetime.date]:
-    """
-    Get the loan origination date to determine expected payment history length.
-
-    Args:
-        servicing_account_id: The ID of the servicing account
-        conn: PostgreSQL connection object
-
-    Returns:
-        Loan origination date or None if not found
-    """
-    try:
-        cursor = conn.cursor()
-
-        # First try to get origination date from the servicing account
-        cursor.execute("""
-            SELECT mortgage_services_loan_id
-            FROM mortgage_services.servicing_accounts 
-            WHERE mortgage_services_servicing_account_id = %s
-        """, (servicing_account_id,))
-
-        result = cursor.fetchone()
-
-        if result and result[0]:
-            loan_id = result[0]
-
-            # Now get the origination date from the loan
-            cursor.execute("""
-                SELECT origination_date
-                FROM mortgage_services.loans 
-                WHERE mortgage_services_loan_id = %s
-            """, (loan_id,))
-
-            result = cursor.fetchone()
-            cursor.close()
-
-            if result and result[0]:
-                return result[0]
-
-        cursor.close()
-        return None
-
-    except (Exception, psycopg2.Error) as error:
-        logger.error(f"Error fetching loan origination date: {error}")
-        return None
-
-
 def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     """
     Generate a random mortgage services payment record with reasonable values.
@@ -71,7 +24,7 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     """
     # Get loan servicing account information to make payment data reasonable
     conn = dg.conn
-    servicing_account_info = get_servicing_account_info(id_fields["mortgage_services_servicing_account_id"], conn)
+    servicing_account_info = _get_servicing_account_info(id_fields["mortgage_services_servicing_account_id"], conn)
 
     if not servicing_account_info:
         # Use default values if no servicing account info is found
@@ -83,10 +36,10 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
         }
 
     # Get previous payments to ensure consistency
-    previous_payments = get_previous_payments(id_fields["mortgage_services_servicing_account_id"], conn)
+    previous_payments = _get_previous_payments(id_fields["mortgage_services_servicing_account_id"], conn)
 
     # Get loan origination date to avoid generating payments before the loan existed
-    loan_origination_date = get_loan_origination_date(id_fields["mortgage_services_servicing_account_id"], conn)
+    loan_origination_date = _get_loan_origination_date(id_fields["mortgage_services_servicing_account_id"], conn)
 
     # Define possible values for categorical fields
     payment_types = ["regular", "extra principal", "late", "escrow only"]
@@ -261,7 +214,6 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
             interest_amount = 0.0
 
     # Determine escrow amount based on servicing account info
-    escrow_amount = 0.0
     if payment_type == "escrow only":
         # For Escrow Only payments, the entire amount goes to escrow
         escrow_amount = payment_amount
@@ -332,7 +284,53 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     return payment
 
 
-def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict[str, Any]]:
+def _get_loan_origination_date(servicing_account_id: int, conn) -> Optional[datetime.date]:
+    """
+    Get the loan origination date to determine expected payment history length.
+
+    Args:
+        servicing_account_id: The ID of the servicing account
+        conn: PostgreSQL connection object
+
+    Returns:
+        Loan origination date or None if not found
+    """
+    try:
+        cursor = conn.cursor()
+
+        # First try to get origination date from the servicing account
+        cursor.execute("""
+            SELECT mortgage_services_loan_id
+            FROM mortgage_services.servicing_accounts 
+            WHERE mortgage_services_servicing_account_id = %s
+        """, (servicing_account_id,))
+
+        result = cursor.fetchone()
+
+        if result and result.get('mortgage_services_loan_id'):
+            loan_id = result.get('mortgage_services_loan_id')
+
+            # Now get the origination date from the loan
+            cursor.execute("""
+                SELECT origination_date
+                FROM mortgage_services.loans 
+                WHERE mortgage_services_loan_id = %s
+            """, (loan_id,))
+
+            result = cursor.fetchone()
+            cursor.close()
+
+            return result.get('origination_date')
+
+        cursor.close()
+        return None
+
+    except (Exception, psycopg2.Error) as error:
+        logger.error(f"Error fetching loan origination date: {error}")
+        return None
+
+
+def _get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict[str, Any]]:
     """
     Get loan servicing account information to make payment data reasonable.
 
@@ -348,14 +346,14 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
 
         cursor.execute("""
             SELECT 
-                CAST(current_principal_balance AS FLOAT), 
-                CAST(original_principal_balance AS FLOAT),
-                CAST(current_interest_rate AS FLOAT),
-                CAST(next_payment_amount AS FLOAT),
+                current_principal_balance, 
+                original_principal_balance,
+                current_interest_rate,
+                next_payment_amount,
                 next_payment_due_date,
                 last_payment_date,
-                CAST(last_payment_amount AS FLOAT),
-                CAST(escrow_balance AS FLOAT)
+                last_payment_amount,
+                escrow_balance
             FROM mortgage_services.servicing_accounts 
             WHERE mortgage_services_servicing_account_id = %s
         """, (servicing_account_id,))
@@ -366,14 +364,15 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
         if result:
             # Calculate monthly escrow amount based on the difference between total payment and principal+interest
             monthly_escrow_amount = None
-            payment_amount = result[3]  # next_payment_amount
+            payment_amount = result.get('next_payment_amount')  # next_payment_amount
 
             # If we have a principal balance and interest rate, we can calculate the P&I portion
             # Add null checks before calculations
-            if result[0] is not None and result[2] is not None:  # current_principal_balance and current_interest_rate
+            if result.get('current_principal_balance') is not None and result.get(
+                    'current_interest_rate') is not None:  # current_principal_balance and current_interest_rate
                 # Convert to float to ensure safe calculations
-                principal_balance = float(result[0])
-                interest_rate = float(result[2])
+                principal_balance = result.get('current_principal_balance')
+                interest_rate = result.get('current_interest_rate')
 
                 # Calculate monthly principal and interest payment (P&I)
                 # This is an approximation based on remaining balance and rate
@@ -383,7 +382,7 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
                 # The monthly escrow would be the difference between total payment and estimated P&I
                 # Ensure payment_amount is not None before calculations
                 if payment_amount is not None:
-                    payment_amount_float = float(payment_amount)
+                    payment_amount_float = payment_amount
                     # Estimate P&I by calculating interest and assuming the rest is principal
                     estimated_pi_payment = monthly_interest + (
                             payment_amount_float * 0.7)  # Assume ~70% of payment is P&I
@@ -397,19 +396,19 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
 
             # If we couldn't calculate it, set a reasonable default
             if monthly_escrow_amount is None and payment_amount is not None:
-                monthly_escrow_amount = float(payment_amount) * 0.25  # Typical escrow is about 25% of payment
+                monthly_escrow_amount = payment_amount * 0.25  # Typical escrow is about 25% of payment
             elif monthly_escrow_amount is None:
                 monthly_escrow_amount = 250.00  # Default value if no payment amount
 
             return {
-                "current_principal_balance": result[0],
-                "original_principal_balance": result[1],
-                "interest_rate": result[2],
-                "payment_amount": result[3],  # Using next_payment_amount as payment_amount
-                "next_payment_due_date": result[4],
-                "last_payment_date": result[5],
-                "last_payment_amount": result[6],
-                "escrow_balance": result[7],
+                "current_principal_balance": result.get('current_principal_balance'),
+                "original_principal_balance": result.get('original_principal_balance'),
+                "interest_rate": result.get('current_interest_rate'),
+                "payment_amount": result.get('next_payment_amount'),  # Using next_payment_amount as payment_amount
+                "next_payment_due_date": result.get('next_payment_due_date'),
+                "last_payment_date": result.get('last_payment_date'),
+                "last_payment_amount": result.get('last_payment_amount'),
+                "escrow_balance": result.get('escrow_balance'),
                 "monthly_escrow_amount": monthly_escrow_amount
             }
         else:
@@ -420,7 +419,7 @@ def get_servicing_account_info(servicing_account_id: int, conn) -> Optional[Dict
         return None
 
 
-def get_previous_payments(servicing_account_id: int, conn) -> list:
+def _get_previous_payments(servicing_account_id: int, conn) -> list:
     """
     Get previous payments for consistency checking.
 
@@ -438,10 +437,10 @@ def get_previous_payments(servicing_account_id: int, conn) -> list:
             SELECT 
                 payment_date,
                 payment_type,
-                CAST(payment_amount AS FLOAT),
-                CAST(principal_amount AS FLOAT),
-                CAST(interest_amount AS FLOAT),
-                CAST(escrow_amount AS FLOAT)
+                payment_amount,
+                principal_amount,
+                interest_amount,
+                escrow_amount
             FROM mortgage_services.payments 
             WHERE mortgage_services_servicing_account_id = %s
             ORDER BY payment_date DESC
@@ -452,14 +451,7 @@ def get_previous_payments(servicing_account_id: int, conn) -> list:
 
         payments = []
         for row in results:
-            payments.append({
-                "payment_date": row[0],
-                "payment_type": row[1],
-                "payment_amount": row[2],
-                "principal_amount": row[3],
-                "interest_amount": row[4],
-                "escrow_amount": row[5]
-            })
+            payments.append(row)
 
         return payments
 

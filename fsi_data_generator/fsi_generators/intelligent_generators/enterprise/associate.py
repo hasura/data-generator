@@ -5,7 +5,8 @@ from typing import Any, Dict
 from faker import Faker
 
 from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.helpers.parse_address import parse_address
+from fsi_data_generator.fsi_generators.helpers.parse_address import \
+    parse_address
 
 
 def generate_random_associate(_id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:

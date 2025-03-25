@@ -8,6 +8,7 @@ class VerificationStatus(str, Enum):
     FAILED = "FAILED"
     UNVERIFIED = "UNVERIFIED"
     WAIVED = "WAIVED"
+    EXPIRED = "EXPIRED"
 
     @classmethod
     def get_random(cls, weights: list = None):
@@ -17,7 +18,8 @@ class VerificationStatus(str, Enum):
             (cls.PENDING, 0),
             (cls.FAILED, 0),
             (cls.UNVERIFIED, 3),
-            (cls.WAIVED, 0)
+            (cls.WAIVED, 0),
+            (cls.EXPIRED, 0),
         ]
         return random.choices(
             [status for status, _ in choices],

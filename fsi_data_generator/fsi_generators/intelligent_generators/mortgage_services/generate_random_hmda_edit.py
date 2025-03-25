@@ -126,21 +126,7 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
 
         result = cursor.fetchone()
         cursor.close()
-
-        if result:
-            return {
-                "reporting_year": result[0],
-                "loan_amount": float(result[1]) if result[1] is not None else None,
-                "action_taken": result[2],
-                "census_tract": result[3],
-                "rate_spread": float(result[4]) if result[4] is not None else None,
-                "credit_score_applicant": result[5],
-                "property_value": float(result[6]) if result[6] is not None else None,
-                "loan_purpose": result[7]
-            }
-        else:
-            # If record not found, return empty dict rather than None to prevent errors
-            return {}
+        return result or {}
 
     except (Exception, psycopg2.Error) as error:
         logger.error(f"Error fetching HMDA record information: {error}")

@@ -34,4 +34,3 @@ class EmploymentType(str, Enum):
             weights=[weight for _, weight in choices],
             k=1
         )[0]
-

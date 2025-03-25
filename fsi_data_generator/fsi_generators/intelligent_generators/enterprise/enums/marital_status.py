@@ -9,4 +9,3 @@ class MaritalStatus(BaseEnum):
     DIVORCED = "DIVORCED"
     WIDOWED = "WIDOWED"
     NOT_SPECIFIED = "NOT_SPECIFIED"
-

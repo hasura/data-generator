@@ -1,5 +1,9 @@
 """Automatically generated __init__.py"""
-__all__ = ['AccountIdentifierScheme', 'AccountStatus', 'AddressType', 'BuildingType', 'CitizenshipStatus', 'LegalStructure', 'MaritalStatus', 'PartyEntityAddressType', 'PartyRelationshipType', 'PartyStatus', 'PartyType', 'account_identifier_scheme', 'account_status', 'address_type', 'building_type', 'citizenship_status', 'legal_structure', 'marital_status', 'party_entity_address_type', 'party_relationship_type', 'party_status', 'party_type']
+__all__ = ['AccountIdentifierScheme', 'AccountStatus', 'AddressType', 'BuildingType', 'CitizenshipStatus',
+           'LegalStructure', 'MaritalStatus', 'PartyEntityAddressType', 'PartyRelationshipType', 'PartyStatus',
+           'PartyType', 'account_identifier_scheme', 'account_status', 'address_type', 'building_type',
+           'citizenship_status', 'legal_structure', 'marital_status', 'party_entity_address_type',
+           'party_relationship_type', 'party_status', 'party_type']
 
 from . import (account_identifier_scheme, account_status, address_type,
                building_type, citizenship_status, legal_structure,
