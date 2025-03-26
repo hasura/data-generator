@@ -5,6 +5,9 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.escrow_analysis_status import \
+    EscrowAnalysisStatus
+
 logger = logging.getLogger(__name__)
 
 
@@ -157,21 +160,25 @@ def generate_random_escrow_analysis(id_fields: Dict[str, Any], dg) -> Dict[str, 
 
     # Set status based on dates and current date
     if effective_date > today:
-        status = "pending"
+        # Future effective date - status could be one of several early states
+        status_weights = [0.4, 0.2, 0.2, 0.1, 0.05, 0.05, 0, 0, 0, 0, 0, 0, 0]  # Weights for statuses in order
+        status = EscrowAnalysisStatus.get_random(status_weights)
     else:
-        status = "active"
+        # Past effective date - status should be one of the later states
+        status_weights = [0, 0.05, 0.1, 0.2, 0.05, 0, 0.05, 0.1, 0.15, 0.2, 0.05, 0.05, 0]
+        status = EscrowAnalysisStatus.get_random(status_weights)
 
     # Create the escrow analysis record
     escrow_analysis = {
         "analysis_date": analysis_date,
         "effective_date": effective_date,
-        "previous_monthly_escrow": float(previous_monthly_escrow),
-        "new_monthly_escrow": float(new_monthly_escrow),
-        "escrow_shortage": float(escrow_shortage) if escrow_shortage > 0 else None,
-        "escrow_surplus": float(escrow_surplus) if escrow_surplus > 0 else None,
+        "previous_monthly_escrow": previous_monthly_escrow,
+        "new_monthly_escrow": new_monthly_escrow,
+        "escrow_shortage": escrow_shortage if escrow_shortage > 0 else None,
+        "escrow_surplus": escrow_surplus if escrow_surplus > 0 else None,
         "shortage_spread_months": shortage_spread_months if escrow_shortage > 0 else None,
-        "surplus_refund_amount": float(surplus_refund_amount) if surplus_refund_amount > 0 else None,
-        "status": status,
+        "surplus_refund_amount": surplus_refund_amount if surplus_refund_amount > 0 else None,
+        "status": status.value,
         "customer_notification_date": customer_notification_date
     }
 

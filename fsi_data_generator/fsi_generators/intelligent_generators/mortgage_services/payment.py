@@ -5,7 +5,8 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.payment_type import PaymentType
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.payment_type import \
+    PaymentType
 
 logger = logging.getLogger(__name__)
 

@@ -252,7 +252,8 @@ def _get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Op
         return None
 
 
-def _get_property_info_from_servicing(servicing_account_info: Optional[Dict[str, Any]], conn) -> Optional[Dict[str, Any]]:
+def _get_property_info_from_servicing(servicing_account_info: Optional[Dict[str, Any]], conn) -> Optional[
+    Dict[str, Any]]:
     """
     Get property information from loan data to make disbursement amounts realistic.
 

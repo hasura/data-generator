@@ -84,11 +84,13 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
             status_weights = [0.80, 0.06, 0.03, 0.01, 0.02, 0.03, 0.01, 0.01, 0.01, 0.01, 0.005, 0.005, 0.0, 0.0, 0.005]
         else:
             # Older accounts (higher payoff probability)
-            status_weights = [0.75, 0.05, 0.02, 0.01, 0.01, 0.10, 0.01, 0.01, 0.01, 0.01, 0.005, 0.005, 0.005, 0.01, 0.005]
+            status_weights = [0.75, 0.05, 0.02, 0.01, 0.01, 0.10, 0.01, 0.01, 0.01, 0.01, 0.005, 0.005, 0.005, 0.01,
+                              0.005]
 
     # Validate that weights match enum length
     if len(status_weights) != len(ServicingAccountStatus):
-        raise ValueError(f"Status weights length ({len(status_weights)}) must match number of enum values ({len(ServicingAccountStatus)})")
+        raise ValueError(
+            f"Status weights length ({len(status_weights)}) must match number of enum values ({len(ServicingAccountStatus)})")
 
     # Use the enum's get_random method to select a status based on weights
     status = ServicingAccountStatus.get_random(status_weights)
@@ -221,7 +223,8 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         homeowners_insurance_due_date = None
 
     # Generate past due information
-    if status in [ServicingAccountStatus.DELINQUENT, ServicingAccountStatus.DEFAULT, ServicingAccountStatus.FORECLOSURE]:
+    if status in [ServicingAccountStatus.DELINQUENT, ServicingAccountStatus.DEFAULT,
+                  ServicingAccountStatus.FORECLOSURE]:
         # 30/60/90 day delinquency
         delinquency_level = random.choices([30, 60, 90], weights=[0.6, 0.3, 0.1], k=1)[0]
         days_past_due = delinquency_level + random.randint(1, 15)
@@ -231,7 +234,8 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         past_due_amount = 0.0
 
     # Generate late payment counts
-    if status in [ServicingAccountStatus.DELINQUENT, ServicingAccountStatus.DEFAULT, ServicingAccountStatus.FORECLOSURE] or random.random() < 0.2:
+    if status in [ServicingAccountStatus.DELINQUENT, ServicingAccountStatus.DEFAULT,
+                  ServicingAccountStatus.FORECLOSURE] or random.random() < 0.2:
         late_count_30 = random.randint(1, 3)
         late_count_60 = random.randint(0, late_count_30)
         late_count_90 = random.randint(0, late_count_60)

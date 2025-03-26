@@ -1729,6 +1729,22 @@ Table "mortgage_services"."escrow_disbursements" {
   note: "Tracks payments made from escrow accounts for taxes, insurance, etc."
 }
 
+Enum "mortgage_services"."escrow_analysis_status" {
+  PENDING [note: 'Analysis has been initiated but not completed']
+  COMPLETED [note: 'Analysis has been completed successfully']
+  REVIEWED [note: 'Analysis has been reviewed by a servicing specialist']
+  APPROVED [note: 'Analysis has been approved and finalized']
+  REJECTED [note: 'Analysis has been rejected due to errors or issues']
+  IN_PROGRESS [note: 'Analysis is currently being processed']
+  CANCELLED [note: 'Analysis has been cancelled before completion']
+  CUSTOMER_NOTIFIED [note: 'Customer has been notified of analysis results']
+  ADJUSTMENT_PENDING [note: 'Payment adjustment is pending based on analysis']
+  ADJUSTMENT_APPLIED [note: 'Payment adjustment has been applied to account']
+  EXCEPTION [note: 'Analysis resulted in an exception requiring manual review']
+  EXPIRED [note: 'Analysis has expired and is no longer valid']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
 Table "mortgage_services"."escrow_analyses" {
   "mortgage_services_analysis_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each analysis"]
   "mortgage_services_servicing_account_id" INTEGER [not null, ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account being analyzed"]
@@ -1740,7 +1756,7 @@ Table "mortgage_services"."escrow_analyses" {
   "escrow_surplus" NUMERIC(18,2) [note: "Amount by which the escrow account exceeds requirements"]
   "shortage_spread_months" INTEGER [note: "Number of months to spread shortage payment"]
   "surplus_refund_amount" NUMERIC(18,2) [note: "Amount of surplus to be refunded"]
-  "status" VARCHAR(20) [not null, note: "Current status of the analysis"]
+  "status" mortgage_services.escrow_analysis_status [not null, note: "Current status of the analysis"]
   "customer_notification_date" DATE [note: "When the customer was notified of the analysis results"]
 
   note: "Records periodic analyses of escrow accounts to determine payment adjustments"
