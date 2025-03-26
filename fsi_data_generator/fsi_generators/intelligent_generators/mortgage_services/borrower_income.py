@@ -2,16 +2,9 @@ import datetime
 import random
 from typing import Any, Dict
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.employment import \
-    _get_application_info_for_borrower
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.application_status import \
-    ApplicationStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.income_frequency import \
-    IncomeFrequency
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.income_type import \
-    IncomeType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.verification_status import \
-    VerificationStatus
+from .employment import _get_application_info_for_borrower
+from .enums import (ApplicationStatus, IncomeFrequency, IncomeType,
+                    VerificationStatus)
 
 
 def generate_random_borrower_income(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:

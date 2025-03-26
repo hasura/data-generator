@@ -4,8 +4,8 @@ from decimal import Decimal
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import \
     PartyRelationshipType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums import \
-    BorrowerType
+
+from .enums import BorrowerType
 
 
 def generate_random_application_borrower(ids_dict, dg: DataGenerator):

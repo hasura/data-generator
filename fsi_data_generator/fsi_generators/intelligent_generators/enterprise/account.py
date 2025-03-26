@@ -8,7 +8,6 @@ import anthropic
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-
 from .enums import AccountStatus
 
 # Track previously generated account descriptions for uniqueness if needed

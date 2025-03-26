@@ -5,10 +5,7 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.appointment_status import \
-    AppointmentStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.closing_type import \
-    ClosingType
+from .enums import AppointmentStatus, ClosingType
 
 logger = logging.getLogger(__name__)
 

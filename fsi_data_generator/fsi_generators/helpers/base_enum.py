@@ -1,31 +1,10 @@
-import random
-from typing import List, Optional
-
-from fsi_data_generator.fsi_generators.helpers.auto_name import AutoName
+from .auto_name import AutoName
+from .enum_utilities import EnumUtilities
 
 
-class BaseEnum(AutoName):
+class BaseEnum(EnumUtilities, AutoName):
     """
-    Base class for custom enums with additional utility methods.
+    Base class for Enums that combines auto() functionality
+    (name-as-value) with utility methods (e.g., get_random()).
     """
-
-    @classmethod
-    def get_random(cls, weights: Optional[List[float]] = None) -> 'BaseEnum':
-        """
-        Get a random enum value, optionally with weighted probabilities.
-
-        Args:
-            weights (Optional[List[float]]): Optional list of weights for each enum value.
-                If not provided, equal weights are used.
-
-        Returns:
-            BaseEnum: Randomly selected enum value
-        """
-        if weights is None:
-            return random.choice(list(cls))
-
-        # Validate weights match the number of enum values
-        if len(weights) != len(cls):
-            raise ValueError(f"Number of weights must match number of enum values ({len(cls)})")
-
-        return random.choices(list(cls), weights=weights)[0]
+    pass

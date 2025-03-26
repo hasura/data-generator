@@ -9,10 +9,7 @@ import psycopg2
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.appraisal_status import \
-    AppraisalStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.appraisal_type import \
-    AppraisalType
+from .enums import AppraisalStatus, AppraisalType
 
 logger = logging.getLogger(__name__)
 

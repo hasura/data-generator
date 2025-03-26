@@ -16,3 +16,5 @@ class ApplicationType(BaseEnum):
     USDA = "USDA"
     LAND = "LAND"
     OTHER = "OTHER"
+
+    _DEFAULT_WEIGHTS = [0.4, 0.3, 0.05, 0.05, 0.05, 0.05, 0.02, 0.02, 0.02, 0.02, 0.01, 0.01, 0.0]

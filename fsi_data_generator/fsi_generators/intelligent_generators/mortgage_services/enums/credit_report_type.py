@@ -10,3 +10,5 @@ class CreditReportType(BaseEnum):
     EXPANDED = auto()
     CUSTOM = auto()
     OTHER = auto()
+
+    _DEFAULT_WEIGHTS = [0.4, 0.3, 0.15, 0.1, 0.025, 0.025]  # Favoring TRI_MERGE and SINGLE_BUREAU

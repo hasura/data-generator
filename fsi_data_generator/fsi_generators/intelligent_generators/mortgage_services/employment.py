@@ -6,10 +6,7 @@ from typing import Any, Dict, Optional
 import psycopg2
 from faker import Faker
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.employment_type import \
-    EmploymentType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.verification_status import \
-    VerificationStatus
+from .enums import EmploymentType, VerificationStatus
 
 # Initialize Faker
 fake = Faker()

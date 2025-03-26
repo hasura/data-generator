@@ -8,7 +8,6 @@ import psycopg2
 from faker import Faker
 
 from data_generator import DataGenerator
-
 from .enums import (CitizenshipStatus, LegalStructure, MaritalStatus,
                     PartyStatus, PartyType)
 

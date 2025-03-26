@@ -9,7 +9,6 @@ import psycopg2
 from faker import Faker
 
 from data_generator import DataGenerator
-
 from .enums import OccupancyType, PropertyType
 
 # Set up logging

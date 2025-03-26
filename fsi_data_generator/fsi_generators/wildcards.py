@@ -1,5 +1,33 @@
-from datetime import datetime, timedelta
+from faker import Faker
 
+from fsi_data_generator.fsi_generators.helpers.generate_leis import \
+    generate_leis
+from fsi_data_generator.fsi_generators.helpers.generate_permission_name import \
+    generate_all_permission_names
+from fsi_data_generator.fsi_generators.helpers.text_list import text_list
+from fsi_data_generator.fsi_text.wildcards.____direct_debit_status_code import \
+    ____direct_debit_status_code
+from fsi_data_generator.fsi_text.wildcards.____frequency_point_in_time import \
+    ____frequency_point_in_time
+from fsi_data_generator.fsi_text.wildcards.____frequency_type import \
+    ____frequency_type
+from fsi_data_generator.fsi_text.wildcards.____offer_type import ____offer_type
+from fsi_data_generator.fsi_text.wildcards.____standing_order_status_code import \
+    ____standing_order_status_code
+from fsi_data_generator.fsi_text.wildcards.__balances__sub_type import \
+    __balances__sub_type
+from fsi_data_generator.fsi_text.wildcards.__balances__type import \
+    __balances__type
+from fsi_data_generator.fsi_text.wildcards.__statement__rate_type import \
+    __statement__rate_type
+from fsi_data_generator.fsi_text.wildcards.__statement_benefits__type import \
+    __statement_benefits__type
+from fsi_data_generator.fsi_text.wildcards.__statement_fees__frequency import \
+    __statement_fees__frequency
+from fsi_data_generator.fsi_text.wildcards.__statement_fees__type import \
+    __statement_fees__type
+from fsi_data_generator.fsi_text.wildcards.__statements__type import \
+    __statements__type
 from faker import Faker
 
 from fsi_data_generator.fsi_generators.helpers.generate_leis import \
@@ -38,14 +66,6 @@ fake_leis = generate_leis()
 three_word_strings = [" ".join((fake.word(), fake.word(), fake.word())) for _ in range(10000)]
 three_word_strings.append('')
 three_word_tuple = tuple(three_word_strings)
-
-
-def status_update_date_time(a, _b, _c):
-    opening_date = a.get("opened_date")
-    if opening_date is None:
-        return fake.date_time_between_dates(datetime_start=timedelta(weeks=-10 * 52), datetime_end=datetime.now())
-    return generate_random_date_between(opening_date)
-
 
 wildcards = [
     # ('^.*\\.accounts', '^status_update_date_time$', status_update_date_time),
@@ -162,7 +182,6 @@ wildcards = [
         "FUEL",
         "INSURANCE"
     ], lower=True)),
-    ('.*', '^contract_identification$', lambda a, b, c: generate_random_forex_contract_id()),
 
     (
         '.*\\.statement_values', '^type$', text_list([

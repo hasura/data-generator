@@ -6,12 +6,7 @@ from typing import Any, Dict
 
 import psycopg2
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.income_frequency import \
-    IncomeFrequency
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.liability_type import \
-    LiabilityType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.verification_status import \
-    VerificationStatus
+from .enums import IncomeFrequency, LiabilityType, VerificationStatus
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +69,7 @@ def generate_random_borrower_liability(id_fields: Dict[str, Any], dg) -> Dict[st
     }
 
     # Get borrower income information to make liability data reasonable
-    borrower_income = get_borrower_income(id_fields["mortgage_services_borrower_id"], conn)
+    borrower_income = _get_borrower_income(id_fields["mortgage_services_borrower_id"], conn)
 
     # Select a random liability type
     liability_type = LiabilityType.get_random()
@@ -267,7 +262,7 @@ def generate_random_borrower_liability(id_fields: Dict[str, Any], dg) -> Dict[st
     return liability
 
 
-def get_borrower_income(borrower_id: int, conn) -> float:
+def _get_borrower_income(borrower_id: int, conn) -> float:
     """
     Get the borrower's monthly income to make liability data reasonable.
     Sums all income sources after converting to monthly values.

@@ -3,12 +3,7 @@ from datetime import datetime, timedelta
 from typing import Any, Dict
 
 from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.application_status import \
-    ApplicationStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.interest_rate_type import \
-    InterestRateType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_type import \
-    LoanType
+from .enums import ApplicationStatus, InterestRateType, LoanType
 
 prev_app = set()
 

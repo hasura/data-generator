@@ -132,7 +132,7 @@ def generate_banking_data():
         generator.custom_generators = custom_generators(generator)
 
         # Step 3: Generate data
-        scale = .1
+        scale = float(os.environ.get("SCALE", .1))
 
         # For consumer_banking.products, we want to ensure exactly 9 rows regardless of scale
         # If scale is 0.1, then we'd set it to 9/0.1 = 90 to achieve 9 rows after scaling

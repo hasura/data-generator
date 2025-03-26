@@ -3,7 +3,6 @@ import random
 from typing import Any, Dict
 
 from data_generator import DataGenerator
-
 from .enums import PartyEntityAddressType
 
 logger = logging.getLogger(__name__)

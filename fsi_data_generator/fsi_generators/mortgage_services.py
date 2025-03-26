@@ -36,13 +36,13 @@ from .intelligent_generators.mortgage_services.escrow_analysis import \
     generate_random_escrow_analysis
 from .intelligent_generators.mortgage_services.escrow_disbursement import \
     generate_random_escrow_disbursement
-from .intelligent_generators.mortgage_services.generate_random_hmda_applicant_demographics import \
+from .intelligent_generators.mortgage_services.hmda_applicant_demographics import \
     generate_random_hmda_applicant_demographics
-from .intelligent_generators.mortgage_services.generate_random_hmda_edit import \
+from .intelligent_generators.mortgage_services.hmda_edit import \
     generate_random_hmda_edit
-from .intelligent_generators.mortgage_services.generate_random_hmda_record import \
+from .intelligent_generators.mortgage_services.hmda_record import \
     generate_random_hmda_record
-from .intelligent_generators.mortgage_services.generate_random_hmda_submission import \
+from .intelligent_generators.mortgage_services.hmda_submission import \
     generate_random_hmda_submission
 from .intelligent_generators.mortgage_services.insurance_policy import \
     generate_random_insurance_policy

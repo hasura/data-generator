@@ -9,6 +9,8 @@ from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
 
+from .enums import HmdaEditStatus, HmdaEditType
+
 logger = logging.getLogger(__name__)
 
 
@@ -26,77 +28,88 @@ def generate_random_hmda_edit(ids_dict, dg: DataGenerator) -> Dict[str, Any]:
     # Get HMDA record information to make edit data reasonable
     conn = dg.conn
     hmda_record_id = ids_dict["mortgage_services_hmda_record_id"]
-    hmda_record_info = get_hmda_record_info(hmda_record_id, conn)
+    hmda_record_info = _get_hmda_record_info(hmda_record_id, conn)
 
     # Define edit types with their weights
-    edit_types = {
-        "syntactical": 0.2,  # 20% chance
-        "validity": 0.3,  # 30% chance
-        "quality": 0.4,  # 40% chance
-        "macro": 0.1  # 10% chance
-    }
+    edit_type_weights = [0.2, 0.3, 0.4, 0.1]  # SYNTACTICAL, VALIDITY, QUALITY, MACRO
 
-    edit_type = random.choices(list(edit_types.keys()), weights=list(edit_types.values()), k=1)[0]
+    # Use get_random from HmdaEditType with weights
+    edit_type = HmdaEditType.get_random(weights=edit_type_weights)
 
     # Generate realistic edit codes based on the type
-    edit_code = generate_edit_code(edit_type)
+    edit_code = _generate_edit_code(edit_type.value)
 
     # Generate edit description based on type and code
-    edit_description = generate_edit_description(edit_type, edit_code, hmda_record_info, dg)
+    edit_description = _generate_edit_description(edit_type.value, edit_code, hmda_record_info, dg)
 
-    # Define possible statuses with their weights
-    statuses = {
-        "open": 0.5,  # 50% chance
-        "verified": 0.3,  # 30% chance
-        "corrected": 0.2  # 20% chance
-    }
+    status = HmdaEditStatus.get_random()
 
-    status = random.choices(list(statuses.keys()), weights=list(statuses.values()), k=1)[0]
+    # Generate dates that are tied to the HMDA record's timeline
+    # Get reporting year from the HMDA record
+    reporting_year = hmda_record_info.get('reporting_year')
+    if not reporting_year:
+        # Default to previous year if not found
+        reporting_year = datetime.datetime.now().year - 1
 
-    # Generate created date (usually within the last 30 days)
-    days_ago = random.randint(0, 30)
-    created_date = datetime.datetime.now() - datetime.timedelta(days=days_ago)
+    # Convert to integer if it's a string
+    if isinstance(reporting_year, str):
+        try:
+            reporting_year = int(reporting_year)
+        except (ValueError, TypeError):
+            reporting_year = datetime.datetime.now().year - 1
 
-    # Generate resolved info if status is not open
+    # HMDA submissions typically happen in early months of the following year
+    # For records from the previous year, edits usually occur Jan-Mar of current year
+    current_year = datetime.datetime.now().year
+    if reporting_year == current_year - 1:
+        # Generate date in Jan-Mar of current year for previous year's data
+        month = random.randint(1, 3)  # Jan-Mar
+        day = random.randint(1, 28)  # Safe for all months
+        created_date = datetime.datetime(current_year, month, day)
+    else:
+        # For older records, generate date around March of the year following reporting_year
+        month = random.randint(2, 4)  # Feb-Apr
+        day = random.randint(1, 28)  # Safe for all months
+        # Make sure we don't create future dates
+        year = min(reporting_year + 1, current_year)
+        created_date = datetime.datetime(year, month, day)
+
+    # Generate resolved info if status is not OPEN
     resolved_date = None
-    resolved_by = None
+    resolved_by_id = ids_dict.get('resolved_by_id')
     resolution_notes = None
 
-    if status in ["verified", "corrected"]:
-        # Resolution date is after creation but before now
-        max_resolution_days = min(days_ago, 7)  # Usually resolved within 7 days
-        if max_resolution_days > 0:
-            days_after_creation = random.randint(1, max_resolution_days)
-            resolved_date = created_date + datetime.timedelta(days=days_after_creation)
-        else:
-            resolved_date = created_date + datetime.timedelta(hours=random.randint(1, 24))
+    if status in [HmdaEditStatus.CORRECTED, HmdaEditStatus.VERIFIED, HmdaEditStatus.WAIVED]:
+        # Resolution typically happens within 1-7 days of identification for HMDA edits
+        days_after_creation = random.randint(1, 7)
+        resolved_date = created_date + datetime.timedelta(days=days_after_creation)
 
-        # Generate a random associate ID between 1 and 100
-        resolved_by = str(random.randint(1, 100))
+        # Make sure resolved_date is not in the future
+        if resolved_date > datetime.datetime.now():
+            resolved_date = datetime.datetime.now() - datetime.timedelta(days=random.randint(1, 3))
 
         # Generate resolution notes
-        resolution_notes = generate_resolution_notes(status, edit_type, edit_code, dg)
-
-    # Print debug information
-    # logger.debug(f"Generated HMDA edit - Type: {edit_type}, Code: {edit_code}, Status: {status}")
+        resolution_notes = _generate_resolution_notes(status.value, edit_type.value, edit_code, dg)
+    else:
+        resolved_by_id = None
 
     # Create the HMDA edit record
     hmda_edit = {
         "mortgage_services_hmda_record_id": hmda_record_id,
         "edit_code": edit_code,
-        "edit_type": edit_type,
+        "edit_type": edit_type.value,
         "edit_description": edit_description,
-        "status": status,
+        "status": status.value,
         "created_date": created_date,
         "resolved_date": resolved_date,
-        "resolved_by": resolved_by,
+        "resolved_by_id": resolved_by_id,
         "resolution_notes": resolution_notes
     }
 
     return hmda_edit
 
 
-def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
+def _get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
     """
     Get HMDA record information to make edit data reasonable.
 
@@ -133,35 +146,35 @@ def get_hmda_record_info(hmda_record_id: int, conn) -> Optional[Dict[str, Any]]:
         return {}  # Return empty dict rather than None
 
 
-def generate_edit_code(edit_type: str) -> str:
+def _generate_edit_code(edit_type: str) -> str:
     """
     Generate a realistic edit code based on the edit type.
 
     Args:
-        edit_type: The type of the edit (syntactical, validity, quality, macro)
+        edit_type: The type of the edit (SYNTACTICAL, VALIDITY, QUALITY, MACRO)
 
     Returns:
         A realistic edit code string
     """
-    if edit_type == "syntactical":
+    if edit_type == "SYNTACTICAL":
         # Syntactical edit codes typically start with S and are followed by a number
         return f"S{random.randint(1, 999):03d}"
-    elif edit_type == "validity":
+    elif edit_type == "VALIDITY":
         # Validity edit codes typically start with V and are followed by a number
         return f"V{random.randint(1, 999):03d}"
-    elif edit_type == "quality":
+    elif edit_type == "QUALITY":
         # Quality edit codes typically start with Q and are followed by a number
-        return f"Q{random.randint(1, 999):03d}"
-    elif edit_type == "macro":
-        # Macro edit codes typically start with M and are followed by a number
-        return f"M{random.randint(1, 999):03d}"
+        return f"Q{random.randint(1, 499):03d}"
+    elif edit_type == "MACRO":
+        # Macro quality edit codes also start with Q but typically have higher numbers
+        return f"Q{random.randint(500, 999):03d}"
     else:
         # Default case
         return f"E{random.randint(1, 999):03d}"
 
 
-def generate_edit_description(edit_type: str, edit_code: str, hmda_info: Optional[Dict[str, Any]],
-                              dg: DataGenerator) -> str:
+def _generate_edit_description(edit_type: str, edit_code: str, hmda_info: Optional[Dict[str, Any]],
+                               dg: DataGenerator) -> str:
     """
     Generate a realistic edit description based on the type, code, and HMDA record info.
 
@@ -185,7 +198,7 @@ def generate_edit_description(edit_type: str, edit_code: str, hmda_info: Optiona
     ]
 
     # Syntactical errors relate to formatting and identification issues
-    if edit_type == "syntactical":
+    if edit_type == "SYNTACTICAL":
         try:
             alt_syntactical_messages = generate_unique_json_array(dbml_string=dg.dbml,
                                                                   fully_qualified_column_name='description of a syntactical HMDA error',
@@ -204,7 +217,7 @@ def generate_edit_description(edit_type: str, edit_code: str, hmda_info: Optiona
         return random.choice(syntactical_messages)
 
     # Validity errors relate to invalid values or combinations
-    elif edit_type == "validity":
+    elif edit_type == "VALIDITY":
         try:
             alt_validity_messages = generate_unique_json_array(dbml_string=dg.dbml,
                                                                fully_qualified_column_name='description of a validity HMDA error',
@@ -222,7 +235,7 @@ def generate_edit_description(edit_type: str, edit_code: str, hmda_info: Optiona
         return random.choice(validity_messages)
 
     # Quality errors indicate unusual but not necessarily incorrect values
-    elif edit_type == "quality":
+    elif edit_type == "QUALITY":
         quality_messages = [
             f"The loan amount ({hmda_info.get('loan_amount', 'N/A')}) to property value ({hmda_info.get('property_value', 'N/A')}) ratio exceeds normal thresholds.",
             f"The reported debt-to-income ratio is unusually high.",
@@ -233,7 +246,7 @@ def generate_edit_description(edit_type: str, edit_code: str, hmda_info: Optiona
         return random.choice(quality_messages)
 
     # Macro errors relate to patterns across multiple records
-    elif edit_type == "macro":
+    elif edit_type == "MACRO":
         macro_messages = [
             f"The percentage of loans with action taken as {hmda_info.get('action_taken', 'N/A')} is significantly higher than industry averages.",
             f"The institution's denial rate for this reporting period differs significantly from prior years.",
@@ -248,12 +261,12 @@ def generate_edit_description(edit_type: str, edit_code: str, hmda_info: Optiona
         return f"Edit {edit_code} requires review of the {random.choice(fields)} field."
 
 
-def generate_resolution_notes(status: str, _edit_type: str, edit_code: str, dg: DataGenerator) -> str:
+def _generate_resolution_notes(status: str, _edit_type: str, edit_code: str, dg: DataGenerator) -> str:
     """
     Generate realistic resolution notes based on status and edit type.
 
     Args:
-        status: The status of the edit (verified, corrected)
+        status: The status of the edit (VERIFIED, CORRECTED, WAIVED)
         _edit_type: The type of the edit
         edit_code: The edit code
         dg: DataGenerator instance
@@ -261,7 +274,7 @@ def generate_resolution_notes(status: str, _edit_type: str, edit_code: str, dg: 
     Returns:
         Resolution notes text
     """
-    if status == "verified":
+    if status == "VERIFIED":
         # Try to get custom notes from DataGenerator, but handle possible failure
         try:
             alt_verified_notes = generate_unique_json_array(dbml_string=dg.dbml,
@@ -279,7 +292,7 @@ def generate_resolution_notes(status: str, _edit_type: str, edit_code: str, dg: 
                          ] + alt_verified_notes
         return random.choice(verified_notes)
 
-    elif status == "corrected":
+    elif status == "CORRECTED":
         # Try to get custom notes from DataGenerator, but handle possible failure
         try:
             alt_corrected_notes = generate_unique_json_array(dbml_string=dg.dbml,
@@ -296,6 +309,16 @@ def generate_resolution_notes(status: str, _edit_type: str, edit_code: str, dg: 
                               f"Recalculated and corrected the value based on loan documentation."
                           ] + alt_corrected_notes
         return random.choice(corrected_notes)
+
+    elif status == "WAIVED":
+        waived_notes = [
+            f"Edit {edit_code} waived per regulatory exception guidance.",
+            f"Waived by supervisory approval due to special circumstances.",
+            f"Regulatory exemption applied to this reporting requirement.",
+            f"Waived based on written documentation from regulatory agency.",
+            f"Exception granted per institutional policy for this specific case."
+        ]
+        return random.choice(waived_notes)
 
     else:
         return ""

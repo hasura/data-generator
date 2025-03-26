@@ -8,10 +8,8 @@ import psycopg2
 
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.disbursement_status import \
-    DisbursementStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.disbursement_type import \
-    DisbursementType
+
+from .enums import DisbursementStatus, DisbursementType
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +29,8 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
     conn = dg.conn
     servicing_account_info = _get_servicing_account_info(id_fields.get("mortgage_services_servicing_account_id"), conn)
 
-    # Define weights for the enum values we want to select from
-    # Only selecting a subset of the disbursement types, with specific weights
-    disbursement_type_weights = [0.4, 0.3, 0.1, 0.1, 0.05, 0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
     # Use the BaseEnum.get_random method with the weights
-    disbursement_type = DisbursementType.get_random(disbursement_type_weights)
+    disbursement_type = DisbursementType.get_random()
 
     # Generate payee names based on disbursement type
     if disbursement_type == DisbursementType.PROPERTY_TAX:

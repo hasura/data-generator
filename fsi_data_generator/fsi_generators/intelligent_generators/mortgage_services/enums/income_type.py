@@ -1,8 +1,7 @@
-import random
-from enum import Enum
+from fsi_data_generator.fsi_generators.helpers import BaseEnum
 
 
-class IncomeType(str, Enum):
+class IncomeType(BaseEnum):
     SALARY = "SALARY"
     BONUS = "BONUS"
     COMMISSION = "COMMISSION"
@@ -21,27 +20,22 @@ class IncomeType(str, Enum):
     ROYALTIES = "ROYALTIES"
     OTHER = "OTHER"
 
-    @classmethod
-    def get_random(cls):
-        """Return a random status value, weighted toward ACTIVE"""
-        choices = [income_type for income_type in cls]
-        weights = [
-            0.3,
-            0.08,
-            0.07,
-            0.05,
-            0.1,
-            0.1,
-            0.05,
-            0.05,
-            0.03,
-            0.04,
-            0.02,
-            0.02,
-            0.02,
-            0.01,
-            0.02,
-            0.01,
-            0.03
-        ]
-        return random.choices(choices, weights=weights, k=1)[0]
+    _DEFAULT_WEIGHTS = [
+        0.50,  # SALARY
+        0.06,  # BONUS
+        0.05,  # COMMISSION
+        0.05,  # OVERTIME
+        0.10,  # SELF_EMPLOYMENT
+        0.05,  # RENTAL
+        0.03,  # INVESTMENT
+        0.03,  # RETIREMENT
+        0.02,  # PENSION
+        0.03,  # SOCIAL_SECURITY
+        0.01,  # DISABILITY
+        0.01,  # ALIMONY
+        0.01,  # CHILD_SUPPORT
+        0.01,  # TRUST
+        0.01,  # GOVERNMENT_ASSISTANCE
+        0.01,  # ROYALTIES
+        0.02  # OTHER
+    ]

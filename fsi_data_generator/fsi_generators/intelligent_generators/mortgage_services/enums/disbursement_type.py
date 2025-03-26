@@ -19,3 +19,5 @@ class DisbursementType(BaseEnum):
     ESCROW_REFUND = auto()
     ESCROW_SHORTAGE = auto()
     OTHER = auto()
+
+    _DEFAULT_WEIGHTS = [0.4, 0.3, 0.1, 0.1, 0.05, 0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0]

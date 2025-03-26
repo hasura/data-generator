@@ -10,10 +10,8 @@ import psycopg2
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.insurance_policy_status import \
-    InsurancePolicyStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.insurance_type import \
-    InsuranceType
+
+from .enums import InsurancePolicyStatus, InsuranceType
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +36,6 @@ def generate_random_insurance_policy(id_fields: Dict[str, Any], dg: DataGenerato
     if servicing_info and 'mortgage_services_loan_id' in servicing_info:
         property_info = _get_property_info(servicing_info['mortgage_services_loan_id'], conn)
 
-    insurance_type_weights = [0.7, 0.15, 0.05, 0.02, 0.05, 0.02, 0.01]  # Hazard is most common
-
     carrier_names = [
         "State Farm Insurance",
         "Allstate Insurance",
@@ -60,7 +56,7 @@ def generate_random_insurance_policy(id_fields: Dict[str, Any], dg: DataGenerato
         pass
 
     # Select insurance type and carrier
-    insurance_type = InsuranceType.get_random(weights=insurance_type_weights)
+    insurance_type = InsuranceType.get_random()
     carrier_name = random.choice(carrier_names)
 
     # Generate policy number

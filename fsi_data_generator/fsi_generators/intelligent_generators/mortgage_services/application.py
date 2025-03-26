@@ -3,14 +3,9 @@ import random
 from typing import Any, Dict
 
 from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.application_status import \
-    ApplicationStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.application_type import \
-    ApplicationType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_purpose import \
-    LoanPurpose
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.submission_channel import \
-    SubmissionChannel
+
+from .enums import (ApplicationStatus, ApplicationType, LoanPurpose,
+                    SubmissionChannel)
 
 
 def generate_random_application(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
@@ -59,8 +54,7 @@ def generate_random_application(id_fields: Dict[str, Any], dg: DataGenerator) ->
         last_updated_date = submission_date
 
     # Generate application type
-    application_type = ApplicationType.get_random(
-        [0.4, 0.3, 0.05, 0.05, 0.05, 0.05, 0.02, 0.02, 0.02, 0.02, 0.01, 0.01, 0.0])
+    application_type = ApplicationType.get_random()
 
     # Generate loan purpose
     loan_purpose = LoanPurpose.get_random()
@@ -76,6 +70,15 @@ def generate_random_application(id_fields: Dict[str, Any], dg: DataGenerator) ->
     else:
         status = ApplicationStatus.get_random([0.1, 0.1, 0.1, 0.1, 0.0, 0.1, 0.2, 0.2, 0.05, 0.05])
 
+    # First generate the property value
+    estimated_property_value = round(random.uniform(100000, 1000000), 2)
+
+    # Then generate loan amount based on property value with a realistic LTV ratio
+    max_ltv = 0.95  # Maximum loan-to-value ratio (e.g., 95%)
+    min_ltv = 0.50  # Minimum loan-to-value ratio (e.g., 50%)
+    ltv_ratio = random.uniform(min_ltv, max_ltv)
+    requested_loan_amount = round(estimated_property_value * ltv_ratio, 2)
+
     # Create the application dictionary
     application = {
         "mortgage_services_loan_product_id": id_fields['mortgage_services_loan_product_id'],
@@ -86,9 +89,9 @@ def generate_random_application(id_fields: Dict[str, Any], dg: DataGenerator) ->
         "creation_date_time": creation_date,
         "submission_date_time": submission_date,
         "last_updated_date_time": last_updated_date,
-        "requested_loan_amount": round(random.uniform(50000, 647200), 2),
+        "requested_loan_amount": requested_loan_amount,
         "requested_loan_term_months": random.choice([180, 240, 360]),
-        "estimated_property_value": round(random.uniform(100000, 1000000), 2),
+        "estimated_property_value": estimated_property_value,
         "estimated_credit_score": random.randint(640, 850),
         "referral_source": random.choice([
             "ONLINE_AD", "REAL_ESTATE_AGENT", "DIRECT_MAIL",

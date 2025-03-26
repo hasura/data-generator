@@ -8,12 +8,9 @@ import psycopg2
 
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.communication_direction import \
-    CommunicationDirection
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.communication_status import \
-    CommunicationStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.communication_type import \
-    CommunicationType
+
+from .enums import (CommunicationDirection, CommunicationPurpose,
+                    CommunicationStatus, CommunicationType)
 
 logger = logging.getLogger(__name__)
 
@@ -291,13 +288,6 @@ def generate_random_customer_communication(id_fields: Dict[str, Any], dg) -> Dic
             "closing", "rate lock", "appraisal", "disclosures", "underwriting"
         ])
 
-    # General options for both
-    related_to_options.extend([
-        "general inquiry", "contact update", "complaint", "information request"
-    ])
-
-    related_to = random.choice(related_to_options)
-
     # Create the customer communication record
     # Ensure all fields match the mortgage_services.customer_communications table in DBML
     communication = {
@@ -311,7 +301,7 @@ def generate_random_customer_communication(id_fields: Dict[str, Any], dg) -> Dic
         "template_id": template_id,
         "status": status.value,
         "document_path": document_path,
-        "related_to": related_to
+        "related_to": CommunicationPurpose.get_random().value,
     }
 
     return communication

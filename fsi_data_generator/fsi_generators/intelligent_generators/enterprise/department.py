@@ -5,12 +5,14 @@ from typing import Any, Dict
 import psycopg2
 from faker import Faker
 
-from data_generator import DataGenerator
+from data_generator import DataGenerator, SkipRowGenerationError
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
 
 logger = logging.getLogger(__name__)
 fake = Faker()  # Initialize Faker
+
+prev_department = set()
 
 
 def generate_random_department(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
@@ -82,6 +84,11 @@ def generate_random_department(_id_fields: Dict[str, Any], dg: DataGenerator) ->
         # No need to generate enterprise_building_id as it will be provided
         # in _id_fields or managed by the system/data insertion process
     }
+
+    if department_name in prev_department:
+        raise SkipRowGenerationError
+
+    prev_department.add(department_name)
 
     return department
 

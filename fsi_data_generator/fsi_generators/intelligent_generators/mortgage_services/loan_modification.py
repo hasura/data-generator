@@ -5,12 +5,7 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.hardship_reason import \
-    HardshipReason
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_modification_status import \
-    LoanModificationStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_modification_type import \
-    LoanModificationType
+from .enums import HardshipReason, LoanModificationStatus, LoanModificationType
 
 logger = logging.getLogger(__name__)
 

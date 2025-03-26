@@ -3,10 +3,8 @@ import string
 from datetime import datetime, timedelta
 
 from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.interest_rate_type import \
-    InterestRateType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_type import \
-    LoanType
+
+from .enums import InterestRateType, LoanType
 
 
 def generate_random_loan_product(ids_dict, dg: DataGenerator):
@@ -298,13 +296,22 @@ def generate_random_loan_product(ids_dict, dg: DataGenerator):
         min_down_payment_percentage = 0.0
         requires_pmi = False
 
-    else:  # LoanType.CONSTRUCTION:
+    elif loan_type == LoanType.CONSTRUCTION:
         min_term_months = random.choice([6, 12, 18])
         max_term_months = random.choice([24, 36, 60])
         min_loan_amount = random.choice([50000, 100000])
         max_loan_amount = random.choice([500000, 750000, 1000000, 2000000])
         min_credit_score = random.choice([660, 680, 700])
         min_down_payment_percentage = random.choice([10.0, 15.0, 20.0, 25.0])
+        requires_pmi = min_down_payment_percentage < 20.0
+    else:
+        min_term_months = random.choice([120, 180, 240])  # 10, 15, 20 years
+        max_term_months = 360  # 30 years
+        min_loan_amount = random.choice([10000, 25000, 50000])
+        max_loan_amount = random.choice(
+            [417000, 510400, 548250, 647200, 822375])  # Conforming limits from different years
+        min_credit_score = random.choice([620, 640, 660])
+        min_down_payment_percentage = random.choice([3.0, 5.0, 10.0])
         requires_pmi = min_down_payment_percentage < 20.0
 
     # Adjust for historical products

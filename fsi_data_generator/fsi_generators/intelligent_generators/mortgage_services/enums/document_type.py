@@ -27,3 +27,27 @@ class DocumentType(BaseEnum):
     MORTGAGE_NOTE = "MORTGAGE_NOTE"
     DEED = "DEED"
     OTHER = "OTHER"
+
+    _DEFAULT_WEIGHTS = [
+        0.1,  # TAX_RETURN
+        0.1,  # W2
+        0.12,  # PAY_STUB
+        0.12,  # BANK_STATEMENT
+        0.05,  # CREDIT_REPORT
+        0.07,  # IDENTITY_VERIFICATION
+        0.08,  # ASSET_STATEMENT
+        0.05,  # PURCHASE_AGREEMENT
+        0.04,  # TITLE_INSURANCE
+        0.04,  # PROPERTY_APPRAISAL
+        0.03,  # INSURANCE_PROOF
+        0.02,  # LOAN_ESTIMATE
+        0.02,  # CLOSING_DISCLOSURE
+        0.01,  # LETTER_OF_EXPLANATION
+        0.01,  # GIFT_LETTER
+        0.01,  # SELF_EMPLOYMENT
+        0.01,  # BANKRUPTCY_DISCHARGE
+        0.01,  # DIVORCE_DECREE
+        0.01,  # MORTGAGE_NOTE
+        0.01,  # DEED
+        0.01  # OTHER
+    ]

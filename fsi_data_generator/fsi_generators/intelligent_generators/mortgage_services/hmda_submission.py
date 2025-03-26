@@ -9,6 +9,9 @@ from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
 
+from .enums import (HmdaReportingPeriod, HmdaSubmissionStatus,
+                    HmdaSubmissionStatusDetail)
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,7 +32,7 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
     # Get report information if available
     report_info = {}
     if report_id:
-        report_info = get_report_info(report_id, dg.conn)
+        report_info = _get_report_info(report_id, dg.conn)
 
     # Generate reporting year (current or previous year)
     reporting_year = report_info.get("reporting_year")
@@ -37,65 +40,52 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
         current_year = datetime.datetime.now().year
         reporting_year = random.choice([current_year, current_year - 1])
 
-    # Generate reporting period
-    reporting_periods = {
-        "annual": 0.7,  # 70% chance
-        "quarterly_q1": 0.1,  # 10% chance
-        "quarterly_q2": 0.1,  # 10% chance
-        "quarterly_q3": 0.05,  # 5% chance
-        "quarterly_q4": 0.05  # 5% chance
-    }
-    reporting_period = random.choices(
-        list(reporting_periods.keys()),
-        weights=list(reporting_periods.values()),
-        k=1
-    )[0]
+    reporting_period = HmdaReportingPeriod.get_random()
 
     # Generate institution LEI (Legal Entity Identifier)
     institution_lei = report_info.get("institution_lei")
     if not institution_lei:
-        institution_lei = generate_random_lei()
+        institution_lei = _generate_random_lei()
 
     # Generate submission date (within the past year)
     days_ago = random.randint(1, 365)
     submission_date = datetime.datetime.now() - datetime.timedelta(days=days_ago)
 
-    # Generate submission status with realistic distribution
-    submission_statuses = {
-        "pending": 0.15,  # 15% chance
-        "in progress": 0.15,  # 15% chance
-        "submitted": 0.20,  # 20% chance
-        "accepted": 0.40,  # 40% chance
-        "rejected": 0.10  # 10% chance
-    }
-    submission_status = random.choices(
-        list(submission_statuses.keys()),
-        weights=list(submission_statuses.values()),
-        k=1
-    )[0]
+    submission_status = HmdaSubmissionStatus.get_random()
 
-    # Generate submission method
-    submission_methods = {
-        "portal": 0.6,  # 60% chance
-        "api": 0.3,  # 30% chance
-        "mail": 0.05,  # 5% chance
-        "email": 0.05  # 5% chance
-    }
-    submission_method = random.choices(
-        list(submission_methods.keys()),
-        weights=list(submission_methods.values()),
-        k=1
-    )[0]
+    # Generate detailed submission status based on the main status using HmdaSubmissionStatusDetail enum
+    detailed_status = None
+    if submission_status == HmdaSubmissionStatus.PENDING:
+        detailed_status = random.choice([
+            HmdaSubmissionStatusDetail.NO_DATA_UPLOADED,
+            HmdaSubmissionStatusDetail.UPLOAD_IN_PROGRESS
+        ])
+    elif submission_status == HmdaSubmissionStatus.SUBMITTED:
+        detailed_status = random.choice([
+            HmdaSubmissionStatusDetail.VALIDATED_WITH_VERIFICATION_NEEDED,
+            HmdaSubmissionStatusDetail.VALIDATED_READY_FOR_VERIFICATION,
+            HmdaSubmissionStatusDetail.VERIFICATION_IN_PROGRESS,
+            HmdaSubmissionStatusDetail.MACRO_EDITS_NEED_REVIEW,
+            HmdaSubmissionStatusDetail.READY_FOR_SUBMISSION
+        ])
+    elif submission_status == HmdaSubmissionStatus.ACCEPTED:
+        detailed_status = HmdaSubmissionStatusDetail.SUBMISSION_ACCEPTED
+    else:
+        detailed_status = random.choice([
+            HmdaSubmissionStatusDetail.PARSED_WITH_ERRORS,
+            HmdaSubmissionStatusDetail.VALIDATION_ERRORS,
+            HmdaSubmissionStatusDetail.VALIDATION_ERRORS_REQUIRE_CORRECTION
+        ])
 
     # Generate confirmation number if submitted
     confirmation_number = None
-    if submission_status in ["submitted", "accepted"]:
+    if submission_status in [HmdaSubmissionStatus.SUBMITTED, HmdaSubmissionStatus.ACCEPTED]:
         confirmation_number = f"HMDA-{reporting_year}-{random.randint(100000, 999999)}"
 
     # Generate submission file path
     submission_file_path = None
-    if submission_status != "pending":
-        file_name = f"hmda_submission_{reporting_year}_{reporting_period}_{random.randint(1000, 9999)}.dat"
+    if submission_status != HmdaSubmissionStatus.PENDING:
+        file_name = f"hmda_submission_{reporting_year}_{reporting_period.value}_{random.randint(1000, 9999)}.dat"
         submission_file_path = f"/data/hmda_submissions/{reporting_year}/{file_name}"
 
     # Generate response date and status for submissions
@@ -103,12 +93,12 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
     response_status = None
     response_details = None
 
-    if submission_status in ["accepted", "rejected"]:
+    if submission_status in [HmdaSubmissionStatus.ACCEPTED, HmdaSubmissionStatus.REJECTED]:
         # Response typically 1-14 days after submission
         response_days = random.randint(1, 14)
         response_date = submission_date + datetime.timedelta(days=response_days)
 
-        if submission_status == "accepted":
+        if submission_status == HmdaSubmissionStatus.ACCEPTED:
             response_status = "accepted"
 
             # Start with hardcoded acceptance messages
@@ -138,7 +128,7 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
             # Choose a random message
             response_details = random.choice(acceptance_messages)
 
-        elif submission_status == "rejected":
+        elif submission_status == HmdaSubmissionStatus.REJECTED:
             response_status = "rejected"
 
             # Start with hardcoded rejection messages
@@ -168,30 +158,34 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
             # Choose a random message
             response_details = random.choice(rejection_messages)
 
+    # Extract just the filename from the path, or generate a new one if needed
+    file_name = None
+    if submission_status != HmdaSubmissionStatus.PENDING:
+        file_name = f"hmda_submission_{reporting_year}_{reporting_period.value}_{random.randint(1000, 9999)}.dat"
+
     # Create the HMDA submission record
     hmda_submission = {
-        "mortgage_services_report_id": report_id,
+        # We don't include mortgage_services_submission_id as it's auto-incremented
         "reporting_year": reporting_year,
-        "reporting_period": reporting_period,
+        "reporting_period": reporting_period.value,
         "institution_lei": institution_lei,
         "submission_date": submission_date,
-        "submission_method": submission_method,
+        "submission_status": detailed_status.value,
+        "file_name": file_name if submission_status != HmdaSubmissionStatus.PENDING else None,
+        "file_size": random.randint(1000, 10000000) if submission_status != HmdaSubmissionStatus.PENDING else None,
+        "record_count": random.randint(100, 10000) if submission_status != HmdaSubmissionStatus.PENDING else None,
+        "error_count": random.randint(0, 100) if submission_status == HmdaSubmissionStatus.REJECTED else 0,
+        "warning_count": random.randint(0, 50) if submission_status != HmdaSubmissionStatus.PENDING else 0,
+        "submitted_by_id": random.randint(1000, 9999),  # Reference to enterprise associate
+        "submission_notes": response_details,  # Using the response details as notes
         "confirmation_number": confirmation_number,
-        "submission_file_path": submission_file_path,
-        "response_date": response_date,
-        "response_status": response_status,
-        "response_details": response_details,
-        "submission_status": submission_status
+        "completion_date": response_date if submission_status == HmdaSubmissionStatus.ACCEPTED else None
     }
-
-    # Print debug information
-    # logger.debug(
-    #     f"Generated HMDA Submission - Year: {reporting_year}, Period: {reporting_period}, Status: {submission_status}")
 
     return hmda_submission
 
 
-def get_report_info(report_id: int, conn) -> Dict[str, Any]:
+def _get_report_info(report_id: int, conn) -> Dict[str, Any]:
     """
     Get report information to make submission data reasonable.
 
@@ -226,7 +220,7 @@ def get_report_info(report_id: int, conn) -> Dict[str, Any]:
 
             # Generate LEI based on regulatory agency
             regulatory_agency = result.get('regulatory_agency', "CFPB")
-            institution_lei = generate_agency_based_lei(regulatory_agency)
+            institution_lei = _generate_agency_based_lei(regulatory_agency)
 
             return {
                 **result,
@@ -242,7 +236,7 @@ def get_report_info(report_id: int, conn) -> Dict[str, Any]:
         return {}
 
 
-def generate_random_lei():
+def _generate_random_lei():
     """
     Generate a realistic Legal Entity Identifier (LEI).
 
@@ -268,7 +262,7 @@ def generate_random_lei():
     return f"{random.choice(lou_prefixes)}{entity_part}{checksum}"
 
 
-def generate_agency_based_lei(agency: str):
+def _generate_agency_based_lei(agency: str):
     """
     Generate an LEI with prefix that might be associated with a regulatory agency.
 

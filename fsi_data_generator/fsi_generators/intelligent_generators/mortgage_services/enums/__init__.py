@@ -1,17 +1,43 @@
 """Automatically generated __init__.py"""
-__all__ = ['ApplicationStatus', 'ApplicationType', 'AppointmentStatus', 'AppraisalStatus', 'AppraisalType', 'AssetType', 'BorrowRelationshipType', 'BorrowerType', 'ClosingType', 'CommunicationDirection', 'CommunicationStatus', 'CommunicationType', 'ConditionStatus', 'ConditionType', 'CreditBureau', 'CreditReportType', 'DeliveryMethod', 'DisbursementStatus', 'DisbursementType', 'DisclosureType', 'DocumentStatus', 'DocumentType', 'EmploymentType', 'EscrowAnalysisStatus', 'HardshipReason', 'IncomeFrequency', 'IncomeType', 'InsurancePolicyStatus', 'InsuranceType', 'InterestRateType', 'LiabilityType', 'LoanModificationStatus', 'LoanModificationType', 'LoanPurpose', 'LoanType', 'OccupancyType', 'PaymentType', 'PropertyType', 'ServicingAccountStatus', 'SubmissionChannel', 'VerificationStatus', 'application_status', 'application_type', 'appointment_status', 'appraisal_status', 'appraisal_type', 'asset_type', 'borrow_type', 'borrower_relationship_type', 'closing_type', 'communication_direction', 'communication_status', 'communication_type', 'condition_status', 'condition_type', 'credit_bureau', 'credit_report_type', 'delivery_method', 'disbursement_status', 'disbursement_type', 'disclosure_type', 'document_status', 'document_type', 'employment_type', 'escrow_analysis_status', 'hardship_reason', 'income_frequency', 'income_type', 'insurance_policy_status', 'insurance_type', 'interest_rate_type', 'liability_type', 'loan_modification_status', 'loan_modification_type', 'loan_purpose', 'loan_type', 'occupancy_type', 'payment_type', 'property_type', 'servicing_account_status', 'submission_channel', 'verification_status']
+__all__ = ['ApplicationStatus', 'ApplicationType', 'AppointmentStatus', 'AppraisalStatus', 'AppraisalType', 'AssetType',
+           'BorrowRelationshipType', 'BorrowerType', 'ClosingType', 'CommunicationDirection', 'CommunicationPurpose',
+           'CommunicationStatus', 'CommunicationType', 'ConditionStatus', 'ConditionType', 'CreditBureau',
+           'CreditReportType', 'DeliveryMethod', 'DisbursementStatus', 'DisbursementType', 'DisclosureType',
+           'DocumentStatus', 'DocumentType', 'EmploymentType', 'EscrowAnalysisStatus', 'HardshipReason',
+           'HmdaActionTaken', 'HmdaAgeGroup', 'HmdaApplicantPresent', 'HmdaApplicantType', 'HmdaAus',
+           'HmdaBalloonPayment', 'HmdaBusinessOrCommercialPurpose', 'HmdaCollectionMethod', 'HmdaConstructionMethod',
+           'HmdaCreditScoreModel', 'HmdaDenialReason', 'HmdaEditStatus', 'HmdaEditType', 'HmdaEthnicity',
+           'HmdaEthnicityDetail', 'HmdaHoepaStatus', 'HmdaInterestOnly', 'HmdaLienStatus', 'HmdaLoanPurpose',
+           'HmdaManufacturedHomeType', 'HmdaManufacturedLandPropertyInterest', 'HmdaNegativeAmortization',
+           'HmdaOccupancyType', 'HmdaOpenEndLineOfCredit', 'HmdaOtherNonAmortizing', 'HmdaPreapproval', 'HmdaRace',
+           'HmdaRaceAsianDetail', 'HmdaRacePacificIslanderDetail', 'HmdaRecordEditStatus', 'HmdaReportingPeriod',
+           'HmdaReverseMortgage', 'HmdaSex', 'HmdaSubmissionMethod', 'HmdaSubmissionStatus',
+           'HmdaSubmissionStatusDetail', 'IncomeFrequency', 'IncomeType', 'InsurancePolicyStatus', 'InsuranceType',
+           'InterestRateType', 'LiabilityType', 'LoanModificationStatus', 'LoanModificationType', 'LoanPurpose',
+           'LoanType', 'OccupancyType', 'PaymentType', 'PropertyType', 'ServicingAccountStatus', 'SubmissionChannel',
+           'VerificationStatus', 'application_status', 'application_type', 'appointment_status', 'appraisal_status',
+           'appraisal_type', 'asset_type', 'borrow_type', 'borrower_relationship_type', 'closing_type',
+           'communication_direction', 'communication_purpose', 'communication_status', 'communication_type',
+           'condition_status', 'condition_type', 'credit_bureau', 'credit_report_type', 'delivery_method',
+           'disbursement_status', 'disbursement_type', 'disclosure_type', 'document_status', 'document_type',
+           'employment_type', 'escrow_analysis_status', 'hardship_reason', 'hmda', 'hmda_demographics',
+           'income_frequency', 'income_type', 'insurance_policy_status', 'insurance_type', 'interest_rate_type',
+           'liability_type', 'loan_modification_status', 'loan_modification_type', 'loan_purpose', 'loan_type',
+           'occupancy_type', 'payment_type', 'property_type', 'servicing_account_status', 'submission_channel',
+           'verification_status']
 
 from . import (application_status, application_type, appointment_status,
                appraisal_status, appraisal_type, asset_type, borrow_type,
                borrower_relationship_type, closing_type,
-               communication_direction, communication_status,
-               communication_type, condition_status, condition_type,
-               credit_bureau, credit_report_type, delivery_method,
-               disbursement_status, disbursement_type, disclosure_type,
-               document_status, document_type, employment_type,
-               escrow_analysis_status, hardship_reason, income_frequency,
-               income_type, insurance_policy_status, insurance_type,
-               interest_rate_type, liability_type, loan_modification_status,
+               communication_direction, communication_purpose,
+               communication_status, communication_type, condition_status,
+               condition_type, credit_bureau, credit_report_type,
+               delivery_method, disbursement_status, disbursement_type,
+               disclosure_type, document_status, document_type,
+               employment_type, escrow_analysis_status, hardship_reason, hmda,
+               hmda_demographics, income_frequency, income_type,
+               insurance_policy_status, insurance_type, interest_rate_type,
+               liability_type, loan_modification_status,
                loan_modification_type, loan_purpose, loan_type, occupancy_type,
                payment_type, property_type, servicing_account_status,
                submission_channel, verification_status)
@@ -25,6 +51,7 @@ from .borrow_type import BorrowerType
 from .borrower_relationship_type import BorrowRelationshipType
 from .closing_type import ClosingType
 from .communication_direction import CommunicationDirection
+from .communication_purpose import CommunicationPurpose
 from .communication_status import CommunicationStatus
 from .communication_type import CommunicationType
 from .condition_status import ConditionStatus
@@ -40,6 +67,22 @@ from .document_type import DocumentType
 from .employment_type import EmploymentType
 from .escrow_analysis_status import EscrowAnalysisStatus
 from .hardship_reason import HardshipReason
+from .hmda import (HmdaActionTaken, HmdaAus, HmdaBalloonPayment,
+                   HmdaBusinessOrCommercialPurpose, HmdaConstructionMethod,
+                   HmdaCreditScoreModel, HmdaDenialReason, HmdaEditStatus,
+                   HmdaEditType, HmdaHoepaStatus, HmdaInterestOnly,
+                   HmdaLienStatus, HmdaLoanPurpose, HmdaManufacturedHomeType,
+                   HmdaManufacturedLandPropertyInterest,
+                   HmdaNegativeAmortization, HmdaOccupancyType,
+                   HmdaOpenEndLineOfCredit, HmdaOtherNonAmortizing,
+                   HmdaPreapproval, HmdaRecordEditStatus, HmdaReportingPeriod,
+                   HmdaReverseMortgage, HmdaSubmissionMethod,
+                   HmdaSubmissionStatus, HmdaSubmissionStatusDetail)
+from .hmda_demographics import (HmdaAgeGroup, HmdaApplicantPresent,
+                                HmdaApplicantType, HmdaCollectionMethod,
+                                HmdaEthnicity, HmdaEthnicityDetail, HmdaRace,
+                                HmdaRaceAsianDetail,
+                                HmdaRacePacificIslanderDetail, HmdaSex)
 from .income_frequency import IncomeFrequency
 from .income_type import IncomeType
 from .insurance_policy_status import InsurancePolicyStatus

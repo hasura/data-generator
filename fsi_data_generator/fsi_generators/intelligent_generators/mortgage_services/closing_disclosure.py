@@ -5,10 +5,7 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.delivery_method import \
-    DeliveryMethod
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.disclosure_type import \
-    DisclosureType
+from .enums import DeliveryMethod, DisclosureType
 
 logger = logging.getLogger(__name__)
 
@@ -72,8 +69,7 @@ def generate_random_closing_disclosure(id_fields: Dict[str, Any], dg) -> Dict[st
         received_date = None
 
     # Select delivery method
-    delivery_method_weights = [0.4, 0.3, 0.1, 0.15, 0.03, 0.02, 0.0]  # Favor EMAIL and MAIL
-    delivery_method = DeliveryMethod.get_random(weights=delivery_method_weights)
+    delivery_method = DeliveryMethod.get_random()
 
     # Set document path
     loan_id = id_fields.get("mortgage_services_loan_id")

@@ -8,10 +8,7 @@ from faker import Faker
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.asset_type import \
-    AssetType
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.verification_status import \
-    VerificationStatus
+from .enums import AssetType, VerificationStatus
 
 fake = Faker()
 logger = logging.getLogger(__name__)

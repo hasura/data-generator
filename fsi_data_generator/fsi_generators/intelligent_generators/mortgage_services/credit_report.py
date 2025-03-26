@@ -6,12 +6,7 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums import \
-    VerificationStatus
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.credit_bureau import \
-    CreditBureau
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.credit_report_type import \
-    CreditReportType
+from .enums import CreditBureau, CreditReportType, VerificationStatus
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +37,7 @@ def generate_random_credit_report(id_fields: Dict[str, Any], dg) -> Dict[str, An
     expiration_date = (report_date + datetime.timedelta(days=expiration_days)).date()
 
     # Use the CreditReportType enum with weight distribution to favor certain report types
-    report_type_weights = [0.4, 0.3, 0.15, 0.1, 0.025, 0.025]  # Favoring TRI_MERGE and SINGLE_BUREAU
-    report_type = CreditReportType.get_random(weights=report_type_weights)
+    report_type = CreditReportType.get_random()
 
     # Set bureau name based on report type
     if report_type == CreditReportType.TRI_MERGE:

@@ -5,8 +5,7 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.servicing_account_status import \
-    ServicingAccountStatus
+from .enums import ServicingAccountStatus
 
 logger = logging.getLogger(__name__)
 
