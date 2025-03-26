@@ -1762,10 +1762,35 @@ Table "mortgage_services"."escrow_analyses" {
   note: "Records periodic analyses of escrow accounts to determine payment adjustments"
 }
 
+Enum "mortgage_services"."insurance_policy_status" {
+  ACTIVE [note: 'Policy is currently in force and providing coverage']
+  PENDING [note: 'Policy has been applied for but not yet activated']
+  EXPIRED [note: 'Policy term has ended without renewal']
+  CANCELLED [note: 'Policy was terminated before expiration date']
+  RENEWED [note: 'Policy has been renewed for another term']
+  LAPSED [note: 'Policy has expired due to non-payment']
+  REINSTATED [note: 'Previously lapsed policy that has been restored']
+  FORCE_PLACED [note: 'Insurance placed by lender due to borrower failure to maintain coverage']
+  UNDER_REVIEW [note: 'Policy is being reviewed, possibly for claims or modifications']
+  CLAIM_IN_PROGRESS [note: 'Policy has an active claim being processed']
+  NON_RENEWAL [note: 'Insurer has given notice they will not renew the policy']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
+Enum "mortgage_services"."insurance_type" {
+  HAZARD [note: 'Standard homeowners insurance covering dwelling, personal property, and liability']
+  FLOOD [note: 'Insurance specifically for flood damage, often required in flood zones']
+  WIND [note: 'Coverage for wind damage, may be separate in hurricane-prone areas']
+  EARTHQUAKE [note: 'Coverage for earthquake damage, typically a separate policy']
+  PMI [note: 'Private Mortgage Insurance required for loans with less than 20% down payment']
+  LENDERS_PLACED [note: 'Insurance placed by lender when borrower fails to maintain required coverage']
+  OTHER [note: 'Insurance type not falling into standard categories']
+}
+
 Table "mortgage_services"."insurance_policies" {
   "mortgage_services_policy_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each policy"]
   "mortgage_services_servicing_account_id" INTEGER [not null, ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account this policy protects"]
-  "insurance_type" VARCHAR(30) [not null, note: "Type of insurance coverage (e.g., Hazard, Flood)"]
+  "insurance_type" mortgage_services.insurance_type [not null, note: "Type of insurance coverage"]
   "carrier_name" VARCHAR(100) [not null, note: "Insurance company providing coverage"]
   "policy_number" VARCHAR(50) [not null, note: "Insurance policy identifier"]
   "coverage_amount" NUMERIC(18,2) [not null, note: "Amount of insurance coverage"]
@@ -1775,45 +1800,151 @@ Table "mortgage_services"."insurance_policies" {
   "paid_through_escrow" BOOLEAN [not null, note: "Whether premium is paid from escrow account"]
   "agent_name" VARCHAR(100) [note: "Insurance agent's name"]
   "agent_phone" VARCHAR(30) [note: "Insurance agent's contact number"]
-  "status" VARCHAR(20) [not null, note: "Current status of the policy"]
+  "status" mortgage_services.insurance_policy_status [not null, note: "Current status of the policy"]
 
   note: "Tracks insurance policies protecting mortgaged properties"
 }
 
+Enum "mortgage_services"."loan_modification_type" {
+  RATE_REDUCTION [note: 'Lowering of the interest rate']
+  TERM_EXTENSION [note: 'Extending the loan repayment period']
+  PRINCIPAL_REDUCTION [note: 'Reduction of the principal balance']
+  INTEREST_ONLY_PERIOD [note: 'Temporary period of interest-only payments']
+  CAPITALIZATION [note: 'Adding unpaid interest to principal balance']
+  PAYMENT_DEFERRAL [note: 'Temporary suspension or postponement of payments']
+  FORBEARANCE [note: 'Temporary reduction or suspension of payments']
+  WORKOUT [note: 'Comprehensive restructuring of loan terms']
+  REFINANCE [note: 'Replacing existing loan with new loan terms']
+  PRINCIPAL_FORGIVENESS [note: 'Partial forgiveness of loan principal']
+  BALLOON_MODIFICATION [note: 'Modification involving a balloon payment']
+  STEP_RATE [note: 'Modification with graduated interest rates over time']
+  OTHER [note: 'Modification type not falling into standard categories']
+}
+
+Enum "mortgage_services"."loan_modification_status" {
+  PENDING [note: 'Modification request is under review']
+  APPROVED [note: 'Modification has been approved']
+  DENIED [note: 'Modification request was rejected']
+  COMPLETED [note: 'Modification has been fully implemented']
+  IN_PROGRESS [note: 'Modification is being processed']
+  SUSPENDED [note: 'Modification process is temporarily on hold']
+  PARTIAL [note: 'Partial modification approved']
+  CANCELED [note: 'Modification request was withdrawn or canceled']
+  EXPIRED [note: 'Modification offer has expired without borrower acceptance']
+  TRIAL_PERIOD [note: 'Borrower is in trial payment period before final modification']
+  BORROWER_ACCEPTED [note: 'Borrower has accepted but not yet implemented']
+  BORROWER_REJECTED [note: 'Borrower has rejected the offered modification']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
+Enum "mortgage_services"."hardship_reason" {
+  FINANCIAL_HARDSHIP [note: 'General financial difficulties not otherwise specified']
+  JOB_LOSS [note: 'Loss of employment or significant reduction in work hours']
+  MEDICAL_ISSUES [note: 'Illness, injury, or significant medical expenses']
+  NATURAL_DISASTER [note: 'Property damage or disruption due to natural disaster']
+  DIVORCE [note: 'Financial impact from divorce or separation']
+  INCOME_REDUCTION [note: 'Decrease in income not related to job loss']
+  DEATH_IN_FAMILY [note: 'Financial impact from death of family member']
+  MILITARY_SERVICE [note: 'Deployment or relocation due to military service']
+  BUSINESS_FAILURE [note: 'Failure of a business owned by the borrower']
+  DISABILITY [note: 'New or worsened disability affecting income']
+  INCREASED_EXPENSES [note: 'Significant increase in necessary expenses']
+  RELOCATION [note: 'Job transfer or necessary relocation']
+  PROPERTY_ISSUES [note: 'Problems with the mortgaged property itself']
+  OTHER [note: 'Hardship reason not falling into standard categories']
+}
+
 Table "mortgage_services"."loan_modifications" {
-  "mortgage_services_modification_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each modification"]
-  "mortgage_services_servicing_account_id" INTEGER [not null, ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account being modified"]
-  "modification_type" VARCHAR(50) [not null, note: "Type of modification (e.g., Rate Reduction, Term Extension)"]
-  "request_date" DATE [not null, note: "When the modification was requested"]
-  "approval_date" DATE [note: "When the modification was approved"]
-  "effective_date" DATE [note: "When the modification takes effect"]
+  "mortgage_services_modification_id" SERIAL [pk, increment, note: "Unique identifier for loan modification"]
+  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "modification_type" mortgage_services.loan_modification_type [not null, note: "Type of loan modification"]
+  "request_date" DATE [not null, note: "Date modification was requested"]
+  "approval_date" DATE [note: "Date modification was approved"]
+  "effective_date" DATE [note: "Date modification takes effect"]
   "original_rate" NUMERIC(6,3) [note: "Interest rate before modification"]
   "new_rate" NUMERIC(6,3) [note: "Interest rate after modification"]
-  "original_term_months" INTEGER [note: "Loan term in months before modification"]
-  "new_term_months" INTEGER [note: "Loan term in months after modification"]
+  "original_term_months" INTEGER [note: "Loan term before modification"]
+  "new_term_months" INTEGER [note: "Loan term after modification"]
   "original_principal_balance" NUMERIC(18,2) [note: "Principal balance before modification"]
   "new_principal_balance" NUMERIC(18,2) [note: "Principal balance after modification"]
-  "status" VARCHAR(20) [not null, note: "Current status of the modification request"]
-  "reason" TEXT [note: "Reason for the modification"]
+  "capitalized_amount" NUMERIC(18,2) [note: "Amount of interest or fees capitalized"]
+  "status" mortgage_services.loan_modification_status [not null, note: "Current status of the modification"]
+  "hardship_reason" mortgage_services.hardship_reason [not null, note: "Customer's reason for hardship"]
+  "approved_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who approved modification"]
+  "document_path" VARCHAR(500) [note: "Path to modification agreement document"]
 
-  note: "Tracks changes to loan terms after origination"
+  note: "Tracks modifications made to existing loan accounts, such as changes to interest rates, terms, or principal balance."
+}
+
+Enum "mortgage_services"."communication_type" {
+  EMAIL [note: 'Electronic mail sent to or received from customer']
+  LETTER [note: 'Physical mail correspondence sent to or received from customer']
+  PHONE_CALL [note: 'Verbal communication via telephone']
+  SMS [note: 'Text message sent to or received from customer']
+  IN_PERSON [note: 'Face-to-face meeting with customer']
+  PORTAL_MESSAGE [note: 'Message sent or received through online customer portal']
+  VOICEMAIL [note: 'Recorded message left for customer or by customer']
+  FAX [note: 'Document transmitted via facsimile']
+  VIDEO_CALL [note: 'Visual communication via video conferencing']
+  CHAT [note: 'Real-time text-based conversation with customer']
+  OTHER [note: 'Communication method not covered by standard categories']
+}
+
+Enum "mortgage_services"."communication_direction" {
+  INBOUND [note: 'Communication initiated by the customer']
+  OUTBOUND [note: 'Communication initiated by the servicer']
+  INTERNAL [note: 'Communication between servicing personnel about the customer']
+}
+
+Enum "mortgage_services"."communication_status" {
+  SENT [note: 'Communication has been sent but not yet confirmed delivered']
+  DELIVERED [note: 'Communication successfully delivered to recipient']
+  FAILED [note: 'Communication delivery attempt unsuccessful']
+  RECEIVED [note: 'Communication received from customer']
+  READ [note: 'Communication confirmed as read by recipient']
+  PENDING [note: 'Communication scheduled but not yet sent']
+  DRAFT [note: 'Communication prepared but not ready to send']
+  CANCELLED [note: 'Communication cancelled before delivery']
+  RETURNED [note: 'Physical communication returned as undeliverable']
+  OTHER [note: 'Status not covered by standard categories']
+}
+
+Enum "mortgage_services"."communication_purpose" {
+  PAYMENT_REMINDER [note: 'Reminder about upcoming or past due payment']
+  PAYMENT_CONFIRMATION [note: 'Confirmation of received payment']
+  ESCROW_ANALYSIS [note: 'Information regarding escrow account analysis']
+  FORBEARANCE [note: 'Communication regarding forbearance request or status']
+  MODIFICATION [note: 'Communication regarding loan modification']
+  DOCUMENT_REQUEST [note: 'Request for documents from customer']
+  DOCUMENT_RECEIPT [note: 'Confirmation of document receipt']
+  STATEMENT [note: 'Regular account statement or information']
+  INSURANCE [note: 'Communication regarding hazard, flood, or other insurance']
+  TAXES [note: 'Communication regarding property taxes']
+  DEFAULT_NOTICE [note: 'Notice of default or delinquency']
+  FORECLOSURE [note: 'Communication regarding foreclosure process']
+  LOSS_MITIGATION [note: 'Options for avoiding foreclosure']
+  GENERAL_INQUIRY [note: 'General customer question or information request']
+  COMPLAINT [note: 'Customer complaint or issue resolution']
+  WELCOME [note: 'Initial communication to new customer']
+  REGULATORY [note: 'Required regulatory disclosure or notice']
+  OTHER [note: 'Purpose not covered by standard categories']
 }
 
 Table "mortgage_services"."customer_communications" {
-  "mortgage_services_communication_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each communication"]
+  "mortgage_services_communication_id" SERIAL [pk, increment, note: "Unique identifier for each communication record"]
   "mortgage_services_servicing_account_id" INTEGER [ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account if communication is about servicing"]
   "mortgage_services_application_id" INTEGER [ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application if communication is about application"]
   "communication_date" TIMESTAMP [not null, note: "When the communication occurred"]
-  "communication_type" VARCHAR(30) [not null, note: "Medium of communication (e.g., Email, Letter, Phone)"]
-  "direction" VARCHAR(10) [not null, note: "Whether communication was incoming or outgoing"]
+  "communication_type" mortgage_services.communication_type [not null, note: "Method of communication"]
+  "direction" mortgage_services.communication_direction [not null, note: "Whether communication was incoming or outgoing"]
   "subject" VARCHAR(255) [note: "Subject or topic of communication"]
   "content" TEXT [note: "Content of the communication"]
   "sender" VARCHAR(100) [note: "Person or system that sent the communication"]
   "recipient" VARCHAR(100) [note: "Person or entity that received the communication"]
   "template_id" VARCHAR(30) [note: "Template used for the communication if applicable"]
-  "status" VARCHAR(20) [not null, note: "Delivery status of the communication"]
+  "status" mortgage_services.communication_status [not null, note: "Delivery status of the communication"]
   "document_path" VARCHAR(500) [note: "Storage location for communication document if applicable"]
-  "related_to" VARCHAR(50) [note: "Purpose or context of the communication"]
+  "related_to" mortgage_services.communication_purpose [note: "Purpose or context of the communication"]
 
   note: "Tracks all communications with customers throughout application and servicing"
 }

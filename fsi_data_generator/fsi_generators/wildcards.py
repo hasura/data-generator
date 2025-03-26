@@ -7,10 +7,6 @@ from fsi_data_generator.fsi_generators.helpers.generate_leis import \
 from fsi_data_generator.fsi_generators.helpers.generate_permission_name import \
     generate_all_permission_names
 from fsi_data_generator.fsi_generators.helpers.text_list import text_list
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.generate_random_date_between import \
-    generate_random_date_between
-from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.generate_random_forex_contract_id import \
-    generate_random_forex_contract_id
 from fsi_data_generator.fsi_text.wildcards.____direct_debit_status_code import \
     ____direct_debit_status_code
 from fsi_data_generator.fsi_text.wildcards.____frequency_point_in_time import \

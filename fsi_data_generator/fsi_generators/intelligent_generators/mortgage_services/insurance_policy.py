@@ -4,11 +4,16 @@ import random
 import sys
 from typing import Any, Dict, Optional
 
+import anthropic
 import psycopg2
 
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.insurance_policy_status import \
+    InsurancePolicyStatus
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.insurance_type import \
+    InsuranceType
 
 logger = logging.getLogger(__name__)
 
@@ -26,44 +31,36 @@ def generate_random_insurance_policy(id_fields: Dict[str, Any], dg: DataGenerato
     """
     # Get servicing account information to make insurance policy data reasonable
     conn = dg.conn
-    servicing_info = get_servicing_info(id_fields.get("mortgage_services_servicing_account_id"), conn)
+    servicing_info = _get_servicing_info(id_fields.get("mortgage_services_servicing_account_id"), conn)
 
     # Get property info based on the loan ID from servicing account
     property_info = None
     if servicing_info and 'mortgage_services_loan_id' in servicing_info:
-        property_info = get_property_info(servicing_info['mortgage_services_loan_id'], conn)
+        property_info = _get_property_info(servicing_info['mortgage_services_loan_id'], conn)
 
-    # Define possible values for categorical fields
-    insurance_types = [
-        "hazard",
-        "flood",
-        "wind",
-        "earthquake",
-        "liability",
-        "umbrella"
+    insurance_type_weights = [0.7, 0.15, 0.05, 0.02, 0.05, 0.02, 0.01]  # Hazard is most common
+
+    carrier_names = [
+        "State Farm Insurance",
+        "Allstate Insurance",
+        "Liberty Mutual",
+        "Nationwide Insurance",
+        "Farmers Insurance",
+        "Progressive Insurance",
+        "USAA Insurance",
     ]
-
-    insurance_type_weights = [0.6, 0.2, 0.1, 0.05, 0.03, 0.02]  # Hazard is most common
-
-    carrier_names = generate_unique_json_array(
-        dbml_string=dg.dbml,
-        fully_qualified_column_name='mortgage_services.insurance_policies.carrier_name',
-        count=50,
-        cache_key='insurance_carrier_names'
-    )
-
-    status_options = [
-        "active",
-        "cancelled",
-        "expired",
-        "pending renewal",
-        "lapsed"
-    ]
-
-    status_weights = [0.85, 0.05, 0.05, 0.03, 0.02]  # Active is most common
+    try:
+        carrier_names = carrier_names + generate_unique_json_array(
+            dbml_string=dg.dbml,
+            fully_qualified_column_name='mortgage_services.insurance_policies.carrier_name',
+            count=50,
+            cache_key='insurance_carrier_names'
+        )
+    except anthropic.APIStatusError:
+        pass
 
     # Select insurance type and carrier
-    insurance_type = random.choices(insurance_types, weights=insurance_type_weights, k=1)[0]
+    insurance_type = InsuranceType.get_random(weights=insurance_type_weights)
     carrier_name = random.choice(carrier_names)
 
     # Generate policy number
@@ -90,49 +87,34 @@ def generate_random_insurance_policy(id_fields: Dict[str, Any], dg: DataGenerato
         base_value = random.uniform(200000, 750000)
 
     # Coverage amount varies by insurance type
-    if insurance_type == "hazard":
+    if insurance_type == InsuranceType.HAZARD:
         # Hazard insurance typically covers the replacement cost of the home
         coverage_amount = round(base_value * random.uniform(0.9, 1.1), 2)
-    elif insurance_type == "flood":
+    elif insurance_type == InsuranceType.FLOOD:
         # Flood insurance might cover less than full value
         coverage_amount = round(base_value * random.uniform(0.6, 0.9), 2)
-    elif insurance_type == "wind":
+    elif insurance_type == InsuranceType.WIND:
         coverage_amount = round(base_value * random.uniform(0.7, 0.9), 2)
-    elif insurance_type == "earthquake":
+    elif insurance_type == InsuranceType.EARTHQUAKE:
         coverage_amount = round(base_value * random.uniform(0.6, 0.8), 2)
-    elif insurance_type == "liability":
-        # Liability coverage often in standard increments
-        coverage_options = [300000, 500000, 1000000]
-        coverage_amount = random.choice(coverage_options)
-    elif insurance_type == "umbrella":
-        # Umbrella policies typically start at $1 million
-        coverage_options = [1000000, 2000000, 3000000, 5000000]
-        coverage_amount = random.choice(coverage_options)
     else:
         coverage_amount = round(base_value * random.uniform(0.8, 1.0), 2)
 
     # Generate annual premium
-    if insurance_type == "hazard":
+    if insurance_type == InsuranceType.HAZARD:
         # Hazard insurance typically 0.25% to 0.5% of home value annually
         premium_rate = random.uniform(0.0025, 0.005)
         annual_premium = round(base_value * premium_rate, 2)
-    elif insurance_type == "flood":
+    elif insurance_type == InsuranceType.FLOOD:
         # Flood insurance can be more expensive
         premium_rate = random.uniform(0.005, 0.015)
         annual_premium = round(base_value * premium_rate, 2)
-    elif insurance_type == "wind":
+    elif insurance_type == InsuranceType.WIND:
         premium_rate = random.uniform(0.003, 0.008)
         annual_premium = round(base_value * premium_rate, 2)
-    elif insurance_type == "earthquake":
+    elif insurance_type == InsuranceType.EARTHQUAKE:
         premium_rate = random.uniform(0.004, 0.01)
         annual_premium = round(base_value * premium_rate, 2)
-    elif insurance_type == "liability":
-        # Liability is typically a flat rate
-        annual_premium = round(random.uniform(150, 500), 2)
-    elif insurance_type == "umbrella":
-        # Umbrella policies often priced per million of coverage
-        rate_per_million = random.uniform(150, 300)
-        annual_premium = round(rate_per_million * (coverage_amount / 1000000), 2)
     else:
         annual_premium = round(base_value * random.uniform(0.003, 0.006), 2)
 
@@ -161,14 +143,17 @@ def generate_random_insurance_policy(id_fields: Dict[str, Any], dg: DataGenerato
 
     # Determine status based on dates
     if expiration_date < today:
-        # Policy has expired
-        status = random.choices(["expired", "cancelled"], weights=[0.8, 0.2], k=1)[0]
+        # Policy has expired - use EXPIRED or CANCELLED
+        status_weights = [0, 0, 0.8, 0.2, 0, 0, 0, 0, 0, 0, 0, 0]  # Weights for EXPIRED and CANCELLED
+        status = InsurancePolicyStatus.get_random(status_weights)
     elif (expiration_date - today).days < 30:
-        # Close to expiration
-        status = random.choices(["active", "pending renewal"], weights=[0.6, 0.4], k=1)[0]
+        # Close to expiration - use ACTIVE or PENDING
+        status_weights = [0.6, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # Weights for ACTIVE and PENDING
+        status = InsurancePolicyStatus.get_random(status_weights)
     else:
-        # Normal active policy
-        status = random.choices(status_options, weights=status_weights, k=1)[0]
+        # Normal active policy - weighted distribution with ACTIVE most common
+        status_weights = [0.85, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01, 0.02, 0.01, 0.01, 0.005, 0.005]
+        status = InsurancePolicyStatus.get_random(status_weights)
 
     # Generate paid through escrow flag
     # Most mortgage insurance is paid through escrow
@@ -192,23 +177,23 @@ def generate_random_insurance_policy(id_fields: Dict[str, Any], dg: DataGenerato
 
     # Create the insurance policy record
     insurance_policy = {
-        "insurance_type": insurance_type,
+        "insurance_type": insurance_type.value,
         "carrier_name": carrier_name,
         "policy_number": policy_number,
-        "coverage_amount": float(coverage_amount),
-        "annual_premium": float(annual_premium),
+        "coverage_amount": coverage_amount,
+        "annual_premium": annual_premium,
         "effective_date": effective_date,
         "expiration_date": expiration_date,
         "paid_through_escrow": paid_through_escrow,
         "agent_name": agent_name,
         "agent_phone": agent_phone,
-        "status": status
+        "status": status.value
     }
 
     return insurance_policy
 
 
-def get_servicing_info(servicing_account_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_servicing_info(servicing_account_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get servicing account information to make insurance policy data reasonable.
 
@@ -241,7 +226,7 @@ def get_servicing_info(servicing_account_id: Optional[int], conn) -> Optional[Di
         return None
 
 
-def get_property_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_property_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get property information to make insurance policy data reasonable.
 

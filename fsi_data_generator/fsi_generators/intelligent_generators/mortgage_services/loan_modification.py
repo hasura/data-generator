@@ -3,11 +3,14 @@ import logging
 import random
 from typing import Any, Dict, Optional
 
-import anthropic
 import psycopg2
 
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.hardship_reason import \
+    HardshipReason
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_modification_status import \
+    LoanModificationStatus
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.loan_modification_type import \
+    LoanModificationType
 
 logger = logging.getLogger(__name__)
 
@@ -25,20 +28,13 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
     """
     # Get servicing account information to make modification data reasonable
     conn = dg.conn
-    servicing_account_info = get_servicing_account_info(id_fields.get("mortgage_services_servicing_account_id"), conn)
+    servicing_account_info = _get_servicing_account_info(id_fields.get("mortgage_services_servicing_account_id"), conn)
 
-    # Define possible values for categorical fields - ensure all are lowercase for consistency
-    modification_types = [
-        "rate reduction", "term extension", "principal forbearance",
-        "principal forgiveness", "payment deferral", "interest only",
-        "fixed to adjustable", "adjustable to fixed"
-    ]
-
-    # Weight distribution for modification types
-    type_weights = [0.30, 0.25, 0.15, 0.05, 0.15, 0.05, 0.02, 0.03]
+    # Set up weights for modification types
+    type_weights = [0.30, 0.25, 0.15, 0.05, 0.15, 0.05, 0.02, 0.03, 0, 0, 0, 0, 0]
 
     # Select the modification type based on weights
-    modification_type = random.choices(modification_types, weights=type_weights, k=1)[0]
+    modification_type = LoanModificationType.get_random(type_weights)
 
     # Generate request date (typically within the last 2 years)
     today = datetime.date.today()
@@ -58,13 +54,14 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
         # 80% chance it's still pending
         if random.random() < 0.8:
             approval_date = None
-            # Make sure status values are lowercase
-            status = random.choice(["pending", "under review", "in underwriting"])
+            # Use enum status values
+            status_weights = [0.6, 0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0]  # Weights for PENDING and IN_PROGRESS
+            status = LoanModificationStatus.get_random(status_weights)
             effective_date = None
         else:
             # It got approved very recently
             approval_date = today - datetime.timedelta(days=random.randint(0, 7))
-            status = "approved"
+            status = LoanModificationStatus.APPROVED
 
             # Effective date is typically 1-30 days after approval
             days_after_approval = random.randint(1, 30)
@@ -81,11 +78,11 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
                 effective_date = None
     else:
         # Approval happened in the past, so it could be in any state
-        status_options = ["approved", "active", "completed", "rejected", "withdrawn"]
-        status_weights = [0.2, 0.4, 0.25, 0.1, 0.05]
-        status = random.choices(status_options, weights=status_weights, k=1)[0]
+        status_weights = [0, 0.2, 0.1, 0.25, 0.4, 0.05, 0, 0, 0, 0, 0, 0, 0]  # Weights for statuses in enum order
+        status = LoanModificationStatus.get_random(status_weights)
 
-        if status in ["approved", "active", "completed"]:
+        if status in [LoanModificationStatus.APPROVED, LoanModificationStatus.IN_PROGRESS,
+                      LoanModificationStatus.COMPLETED]:
             # Effective date is typically 1-30 days after approval
             days_after_approval = random.randint(1, 30)
             effective_date = approval_date + datetime.timedelta(days=days_after_approval)
@@ -95,7 +92,7 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
                                                               datetime.date) else effective_date.date() if hasattr(
                 effective_date, 'date') else None
             if effective_date_obj and effective_date_obj > today:
-                status = "approved"
+                status = LoanModificationStatus.APPROVED
         else:
             # Rejected or withdrawn doesn't have effective date
             effective_date = None
@@ -123,11 +120,11 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
     # For rate reduction
     if original_rate:
         # For rate reduction, decrease interest rate by 0.25% to 2.0%
-        if modification_type == "rate reduction":
+        if modification_type == LoanModificationType.RATE_REDUCTION:
             rate_decrease = random.uniform(0.25, 2.0)
             new_rate = max(1.0, original_rate - rate_decrease)  # Ensure rate doesn't go below 1%
-        # For fixed to adjustable, often starts with slightly lower rate
-        elif modification_type == "fixed to adjustable":
+        # For other types with similar rate reduction
+        elif modification_type in [LoanModificationType.OTHER, LoanModificationType.STEP_RATE]:
             rate_decrease = random.uniform(0.1, 0.75)
             new_rate = max(1.5, original_rate - rate_decrease)
         # For other modifications, rate typically stays the same or changes slightly
@@ -140,11 +137,11 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
 
     # For term extension
     if original_term_months:
-        if modification_type == "term extension":
+        if modification_type == LoanModificationType.TERM_EXTENSION:
             # Extend term by 60-180 months
             term_extension = random.choice([60, 120, 180])
             new_term_months = original_term_months + term_extension
-        elif modification_type == "payment deferral":
+        elif modification_type == LoanModificationType.PAYMENT_DEFERRAL:
             # Term might be extended slightly to accommodate deferral
             term_extension = random.randint(3, 24)
             new_term_months = original_term_months + term_extension
@@ -158,11 +155,11 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
 
     # For principal modifications
     if original_principal_balance:
-        if modification_type == "principal forbearance":
+        if modification_type == LoanModificationType.PRINCIPAL_REDUCTION:
             # Forbear 10-30% of principal
             forbearance_percentage = random.uniform(0.1, 0.3)
             new_principal_balance = original_principal_balance * (1 - forbearance_percentage)
-        elif modification_type == "principal forgiveness":
+        elif modification_type == LoanModificationType.PRINCIPAL_FORGIVENESS:
             # Forgive 5-15% of principal
             forgiveness_percentage = random.uniform(0.05, 0.15)
             new_principal_balance = original_principal_balance * (1 - forgiveness_percentage)
@@ -177,30 +174,12 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
     new_rate = round(new_rate, 3)
     new_principal_balance = round(new_principal_balance, 2)
 
-    # Generate reason for modification - ensure all are lowercase for consistency
-    reasons = [
-        "financial hardship", "job loss", "medical issues",
-        "natural disaster", "divorce", "income reduction",
-        "payment affordability", "interest rate reduction opportunity",
-        "simplification of loan terms"
-    ]
-
-    try:
-        reasons = reasons + generate_unique_json_array(
-            dbml_string=dg.dbml,
-            fully_qualified_column_name='mortgage_services.loan_modifications.modification_reasons',
-            count=50,
-            cache_key='modification_reasons'
-        )
-    except anthropic.APIStatusError:
-        pass
-
-    reason = random.choice(reasons)
+    reason = HardshipReason.get_random()
 
     # Create the loan modification record
     # Ensure all fields match the mortgage_services.loan_modifications table in DBML
     modification = {
-        "modification_type": modification_type,
+        "modification_type": modification_type.value,
         "request_date": request_date,
         "approval_date": approval_date,
         "effective_date": effective_date,
@@ -210,14 +189,14 @@ def generate_random_loan_modification(id_fields: Dict[str, Any], dg) -> Dict[str
         "new_term_months": new_term_months,
         "original_principal_balance": original_principal_balance,
         "new_principal_balance": new_principal_balance,
-        "status": status,
-        "reason": reason
+        "status": status.value,
+        "reason": reason.value
     }
 
     return modification
 
 
-def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get servicing account information to make modification data reasonable.
 
@@ -262,7 +241,7 @@ def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Opt
         return None
 
 
-def get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get loan information to make modification data reasonable.
 
