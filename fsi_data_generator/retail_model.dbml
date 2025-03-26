@@ -1600,10 +1600,28 @@ Table "mortgage_services"."closed_loans" {
   note: "Records final details of closed mortgage loans"
 }
 
+Enum "mortgage_services"."servicing_account_status" {
+  ACTIVE [note: 'Loan is in good standing and being actively serviced']
+  DELINQUENT [note: 'Loan payments are past due but not yet in default']
+  DEFAULT [note: 'Loan is in default due to extended payment delinquency']
+  FORECLOSURE [note: 'Loan is in foreclosure process']
+  BANKRUPTCY [note: 'Borrower has filed for bankruptcy protection']
+  PAID_OFF [note: 'Loan has been completely paid off']
+  TRANSFERRED [note: 'Servicing has been transferred to another servicer']
+  MODIFICATION_IN_PROCESS [note: 'Loan terms are currently being modified']
+  LOSS_MITIGATION [note: 'Account is in active loss mitigation process']
+  FORBEARANCE [note: 'Temporary suspension of payment requirements']
+  REO [note: 'Real Estate Owned - property has been foreclosed and is now owned by the lender']
+  SHORT_SALE [note: 'Property is being sold for less than the amount owed']
+  CHARGE_OFF [note: 'Loan has been deemed uncollectible and charged off']
+  SATISFIED [note: 'Loan obligation has been satisfied']
+  SUSPENDED [note: 'Servicing activities temporarily suspended']
+}
+
 Table "mortgage_services"."servicing_accounts" {
   "mortgage_services_servicing_account_id" SERIAL [pk, note: "Unique identifier for each servicing account"]
   "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the originated loan"]
-  "status" VARCHAR(20) [not null, note: "Current status of the loan being serviced"]
+  "status" mortgage_services.servicing_account_status [not null, note: "Current status of the loan being serviced"]
   "current_principal_balance" NUMERIC(18,2) [not null, note: "Current remaining principal balance"]
   "original_principal_balance" NUMERIC(18,2) [not null, note: "Original loan amount at closing"]
   "current_interest_rate" NUMERIC(6,3) [not null, note: "Current applicable interest rate"]
@@ -1622,11 +1640,29 @@ Table "mortgage_services"."servicing_accounts" {
   note: "Manages ongoing servicing of closed mortgage loans"
 }
 
+Enum "mortgage_services"."payment_type" {
+  PRINCIPAL_AND_INTEREST [note: 'Regular payment covering both principal and interest portions']
+  PRINCIPAL_ONLY [note: 'Payment applied only to the principal balance']
+  INTEREST_ONLY [note: 'Payment applied only to accrued interest']
+  ESCROW [note: 'Payment specifically for the escrow account (taxes, insurance)']
+  LATE_FEE [note: 'Payment to cover late payment fees']
+  PREPAYMENT_PENALTY [note: 'Payment for early loan payoff penalties']
+  FULL_PAYOFF [note: 'Complete loan payoff payment']
+  PARTIAL_PAYMENT [note: 'Incomplete regular payment']
+  BIWEEKLY [note: 'Payment made on a biweekly schedule']
+  FORBEARANCE [note: 'Reduced payment during forbearance period']
+  LOAN_MODIFICATION [note: 'Payment under modified loan terms']
+  BALLOON [note: 'Large final payment at loan maturity']
+  SERVICING_FEE [note: 'Payment for loan servicing fees']
+  EXTENSION_FEE [note: 'Payment for loan term extension fees']
+  OTHER [note: 'Payment type not covered by standard categories']
+}
+
 Table "mortgage_services"."payments" {
   "mortgage_services_payment_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each payment"]
   "mortgage_services_servicing_account_id" INTEGER [not null, ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account receiving the payment"]
   "payment_date" TIMESTAMP [not null, note: "When the payment was made"]
-  "payment_type" VARCHAR(30) [not null, note: "Type of payment (e.g., Regular, Extra Principal, Escrow Only)"]
+  "payment_type" mortgage_services.payment_type [not null, note: "Type of payment (e.g., Regular, Extra Principal, Escrow Only)"]
   "payment_method" VARCHAR(30) [not null, note: "Method used to make payment (e.g., ACH, Check, Online)"]
   "payment_amount" NUMERIC(18,2) [not null, note: "Total amount of the payment"]
   "principal_amount" NUMERIC(18,2) [not null, note: "Portion of payment applied to principal"]
@@ -1641,16 +1677,51 @@ Table "mortgage_services"."payments" {
   note: "Tracks mortgage loan payments made by borrowers"
 }
 
+Enum "mortgage_services"."disbursement_type" {
+  PROPERTY_TAX [note: 'Payment for property tax obligations']
+  HOMEOWNERS_INSURANCE [note: 'Payment for homeowners insurance premiums']
+  MORTGAGE_INSURANCE [note: 'Payment for private mortgage insurance (PMI) premiums']
+  FLOOD_INSURANCE [note: 'Payment for flood insurance premiums']
+  HOA_DUES [note: 'Payment for homeowners association fees']
+  HAZARD_INSURANCE [note: 'Payment for hazard insurance premiums']
+  CONDO_INSURANCE [note: 'Payment for condominium insurance premiums']
+  CITY_TAX [note: 'Payment for city or municipal property taxes']
+  COUNTY_TAX [note: 'Payment for county property taxes']
+  SCHOOL_TAX [note: 'Payment for school district taxes']
+  SPECIAL_ASSESSMENT [note: 'Payment for special assessment fees or taxes']
+  GROUND_RENT [note: 'Payment for ground rent in leasehold properties']
+  ESCROW_REFUND [note: 'Refund of excess escrow funds to borrower']
+  ESCROW_SHORTAGE [note: 'Payment to cover escrow account shortage']
+  OTHER [note: 'Disbursement type not covered by standard categories']
+}
+
+Enum "mortgage_services"."disbursement_status" {
+  PENDING [note: 'Disbursement is scheduled but not yet processed']
+  PROCESSING [note: 'Disbursement is currently being processed']
+  COMPLETED [note: 'Disbursement has been successfully processed and funds delivered']
+  FAILED [note: 'Disbursement processing failed']
+  RETURNED [note: 'Disbursement was returned (e.g., incorrect payee information)']
+  CANCELED [note: 'Disbursement was canceled before processing']
+  HOLD [note: 'Disbursement is on hold pending review or additional information']
+  CLEARED [note: 'Disbursement check has been cleared by the bank']
+  VOID [note: 'Disbursement was voided after issuance']
+  REISSUED [note: 'Disbursement was reissued after a previous failure or return']
+  PARTIAL [note: 'Only part of the disbursement amount was successfully processed']
+  SCHEDULED [note: 'Disbursement is scheduled for a future date']
+  SENT [note: 'Disbursement has been sent but not yet confirmed as delivered or processed']
+  OTHER [note: 'Status not covered by standard categories']
+}
+
 Table "mortgage_services"."escrow_disbursements" {
   "mortgage_services_disbursement_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each disbursement"]
   "mortgage_services_servicing_account_id" INTEGER [not null, ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account for this disbursement"]
   "disbursement_date" DATE [not null, note: "When the disbursement was made"]
-  "disbursement_type" VARCHAR(30) [not null, note: "Type of disbursement (e.g., Property Tax, Insurance, PMI)"]
+  "disbursement_type" mortgage_services.disbursement_type [not null, note: "Type of disbursement (e.g., Property Tax, Insurance, PMI)"]
   "amount" NUMERIC(18,2) [not null, note: "Amount of the disbursement"]
   "payee_name" VARCHAR(100) [not null, note: "Entity receiving the disbursement"]
   "payee_account_number" VARCHAR(50) [note: "Account number for electronic payments"]
   "check_number" VARCHAR(20) [note: "Check number for paper disbursements"]
-  "status" VARCHAR(20) [not null, note: "Current status of the disbursement"]
+  "status" mortgage_services.disbursement_status [not null, note: "Current status of the disbursement"]
   "due_date" DATE [note: "When the payment was due"]
   "coverage_start_date" DATE [note: "Start of coverage period (for insurance payments)"]
   "coverage_end_date" DATE [note: "End of coverage period (for insurance payments)"]

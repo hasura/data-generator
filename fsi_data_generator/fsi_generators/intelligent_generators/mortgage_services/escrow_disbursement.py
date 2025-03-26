@@ -8,6 +8,10 @@ import psycopg2
 
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.disbursement_status import \
+    DisbursementStatus
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.disbursement_type import \
+    DisbursementType
 
 logger = logging.getLogger(__name__)
 
@@ -25,28 +29,24 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
     """
     # Get servicing account information to make disbursement data reasonable
     conn = dg.conn
-    servicing_account_info = get_servicing_account_info(id_fields.get("mortgage_services_servicing_account_id"), conn)
+    servicing_account_info = _get_servicing_account_info(id_fields.get("mortgage_services_servicing_account_id"), conn)
 
-    # Define possible values for categorical fields
-    disbursement_types = [
-        "property tax", "homeowners insurance", "flood insurance",
-        "mortgage insurance", "hazard insurance", "hoa dues"
-    ]
+    # Define weights for the enum values we want to select from
+    # Only selecting a subset of the disbursement types, with specific weights
+    disbursement_type_weights = [0.4, 0.3, 0.1, 0.1, 0.05, 0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-    # Weight distribution for disbursement types
-    type_weights = [0.4, 0.3, 0.1, 0.1, 0.05, 0.05]
-
-    # Select the disbursement type based on weights
-    disbursement_type = random.choices(disbursement_types, weights=type_weights, k=1)[0]
+    # Use the BaseEnum.get_random method with the weights
+    disbursement_type = DisbursementType.get_random(disbursement_type_weights)
 
     # Generate payee names based on disbursement type
-    if disbursement_type == "property tax":
+    if disbursement_type == DisbursementType.PROPERTY_TAX:
         county_names = ["Adams", "Jefferson", "Washington", "Lincoln", "Franklin",
                         "Hamilton", "Jackson", "Madison", "Monroe", "Wilson"]
         state_names = ["AL", "CA", "FL", "GA", "IL", "NY", "OH", "PA", "TX", "VA"]
         payee_name = f"{random.choice(county_names)} County Tax Collector - {random.choice(state_names)}"
 
-    elif disbursement_type in ["homeowners insurance", "hazard insurance", "flood insurance"]:
+    elif disbursement_type in [DisbursementType.HOMEOWNERS_INSURANCE, DisbursementType.HAZARD_INSURANCE,
+                               DisbursementType.FLOOD_INSURANCE]:
         insurance_companies = [
             "State Farm Insurance", "Allstate Insurance", "GEICO", "Liberty Mutual",
             "Nationwide Insurance", "Farmers Insurance", "Progressive Insurance",
@@ -63,7 +63,7 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
             pass
         payee_name = random.choice(insurance_companies)
 
-    elif disbursement_type == "mortgage insurance":
+    elif disbursement_type == DisbursementType.MORTGAGE_INSURANCE:
         mi_companies = [
             "Mortgage Guaranty Insurance Corp", "Essent Guaranty", "Genworth Mortgage Insurance",
             "Radian Guaranty", "National Mortgage Insurance", "Arch Mortgage Insurance"
@@ -79,7 +79,7 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
             pass
         payee_name = random.choice(mi_companies)
 
-    elif disbursement_type == "hoa dues":
+    elif disbursement_type == DisbursementType.HOA_DUES:
         hoa_names = [
             "Willow Creek HOA", "Oakridge Community Association", "Pine Valley Homeowners",
             "Lakeside Estates HOA", "Meadowbrook Residents Association", "Highland Park HOA"
@@ -108,7 +108,7 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
     disbursement_date = today - datetime.timedelta(days=days_ago)
 
     # Determine a realistic disbursement amount based on type and property information
-    property_info = get_property_info_from_servicing(servicing_account_info, conn)
+    property_info = _get_property_info_from_servicing(servicing_account_info, conn)
 
     # Default amounts if we can't determine better values
     default_property_tax = 2500.00
@@ -150,30 +150,31 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
         annual_hoa = default_hoa
 
     # Set amount based on disbursement type - consider if payment is usually annual or semi-annual
-    if disbursement_type == "property tax":
+    if disbursement_type == DisbursementType.PROPERTY_TAX:
         # Property taxes often paid semi-annually
         amount = round(annual_property_tax / 2, 2)
-    elif disbursement_type == "homeowners insurance" or disbursement_type == "hazard insurance":
+    elif disbursement_type in [DisbursementType.HOMEOWNERS_INSURANCE, DisbursementType.HAZARD_INSURANCE]:
         # Insurance typically paid annually
         amount = round(annual_insurance, 2)
-    elif disbursement_type == "flood insurance":
+    elif disbursement_type == DisbursementType.FLOOD_INSURANCE:
         # Flood insurance typically paid annually
         amount = round(annual_flood_insurance, 2)
-    elif disbursement_type == "mortgage insurance":
+    elif disbursement_type == DisbursementType.MORTGAGE_INSURANCE:
         # Mortgage insurance might be paid annually
         amount = round(annual_mortgage_insurance, 2)
-    elif disbursement_type == "hoa dues":
+    elif disbursement_type == DisbursementType.HOA_DUES:
         # HOA dues might be paid quarterly
         amount = round(annual_hoa / 4, 2)
     else:
         # Default case
         amount = round(random.uniform(500, 2000), 2)
 
-    # Status options
-    status_options = ["pending", "processing", "completed", "failed"]
-    status_weights = [0.1, 0.2, 0.65, 0.05]
+    # Define weights for the status enum
+    # Only selecting a subset of possible status values
+    status_weights = [0.1, 0.2, 0.65, 0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # pending, processing, completed, failed
 
-    status = random.choices(status_options, weights=status_weights, k=1)[0]
+    # Use the BaseEnum.get_random method with the weights
+    status = DisbursementStatus.get_random(status_weights)
 
     # Generate payee account number (if electronic payment)
     payment_method = random.choice(["check", "electronic transfer", "wire"])
@@ -193,7 +194,8 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
     coverage_start_date = None
     coverage_end_date = None
 
-    if "insurance" in disbursement_type:
+    if disbursement_type in [DisbursementType.HOMEOWNERS_INSURANCE, DisbursementType.HAZARD_INSURANCE,
+                             DisbursementType.FLOOD_INSURANCE, DisbursementType.MORTGAGE_INSURANCE]:
         # Coverage typically starts on disbursement date or soon after
         coverage_start_date = disbursement_date + datetime.timedelta(days=random.randint(0, 15))
         # Coverage typically lasts for a year
@@ -202,12 +204,12 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
     # Create the escrow disbursement record
     disbursement = {
         "disbursement_date": disbursement_date,
-        "disbursement_type": disbursement_type,
+        "disbursement_type": disbursement_type.value,
         "amount": amount,
         "payee_name": payee_name,
         "payee_account_number": payee_account_number,
         "check_number": check_number,
-        "status": status,
+        "status": status.value,
         "due_date": due_date,
         "coverage_start_date": coverage_start_date,
         "coverage_end_date": coverage_end_date
@@ -216,7 +218,7 @@ def generate_random_escrow_disbursement(id_fields: Dict[str, Any], dg) -> Dict[s
     return disbursement
 
 
-def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get servicing account information to make disbursement data reasonable.
 
@@ -250,8 +252,7 @@ def get_servicing_account_info(servicing_account_id: Optional[int], conn) -> Opt
         return None
 
 
-def get_property_info_from_servicing(servicing_account_info: Optional[Dict[str, Any]], conn) -> Optional[
-    Dict[str, Any]]:
+def _get_property_info_from_servicing(servicing_account_info: Optional[Dict[str, Any]], conn) -> Optional[Dict[str, Any]]:
     """
     Get property information from loan data to make disbursement amounts realistic.
 

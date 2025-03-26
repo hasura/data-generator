@@ -112,7 +112,7 @@ def generate_random_closed_loan(id_fields: Dict[str, Any], dg) -> Dict[str, Any]
         final_interest_rate = round(final_interest_rate * random.uniform(0.995, 1.005), 3)
 
     if final_monthly_payment is None:
-        final_monthly_payment = round(estimate_monthly_payment(final_loan_amount, final_interest_rate, term_months), 2)
+        final_monthly_payment = round(_estimate_monthly_payment(final_loan_amount, final_interest_rate, term_months), 2)
     else:
         # Small variation from original payment
         final_monthly_payment = round(final_monthly_payment * random.uniform(0.995, 1.005), 2)
@@ -188,7 +188,7 @@ def get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
         return None
 
 
-def estimate_monthly_payment(loan_amount: float, annual_interest_rate: float, term_months: int) -> float:
+def _estimate_monthly_payment(loan_amount: float, annual_interest_rate: float, term_months: int) -> float:
     """
     Estimate monthly payment for a loan.
 

@@ -5,6 +5,8 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.payment_type import PaymentType
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,8 +43,7 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     # Get loan origination date to avoid generating payments before the loan existed
     loan_origination_date = _get_loan_origination_date(id_fields["mortgage_services_servicing_account_id"], conn)
 
-    # Define possible values for categorical fields
-    payment_types = ["regular", "extra principal", "late", "escrow only"]
+    # Define payment method and status options
     payment_methods = ["ach", "check", "online", "mobile", "wire", "branch", "phone"]
     payment_statuses = ["pending", "completed", "returned", "canceled"]
 
@@ -103,13 +104,31 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
         from data_generator import SkipRowGenerationError
         raise SkipRowGenerationError("Payment history is complete - already reached loan origination date")
 
-    # Determine payment type
+    # Define payment type weights
     # For the earliest payment in a sequence, regular payments are most common
     if not previous_payments:
+        payment_types = [
+            PaymentType.PRINCIPAL_AND_INTEREST,
+            PaymentType.PRINCIPAL_ONLY,
+            PaymentType.LATE_FEE,
+            PaymentType.ESCROW
+        ]
         payment_type_weights = [0.9, 0.05, 0.03, 0.02]  # Regular payments most common for the first payment
     else:
+        payment_types = [
+            PaymentType.PRINCIPAL_AND_INTEREST,
+            PaymentType.PRINCIPAL_ONLY,
+            PaymentType.LATE_FEE,
+            PaymentType.ESCROW
+        ]
         payment_type_weights = [0.85, 0.10, 0.03, 0.02]  # More variety in subsequent payments
 
+    # Validate weights match the length of payment types list
+    if len(payment_type_weights) != len(payment_types):
+        raise ValueError(
+            f"Payment type weights length ({len(payment_type_weights)}) must match number of payment types ({len(payment_types)})")
+
+    # Use custom weights for a subset of enum values
     payment_type = random.choices(payment_types, weights=payment_type_weights, k=1)[0]
 
     # Generate payment method
@@ -136,15 +155,15 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     payment_amount = 0.0
     principal_amount = 0.0
     interest_amount = 0.0
-    if payment_type == "regular":
+    if payment_type == PaymentType.PRINCIPAL_AND_INTEREST:
         payment_amount = regular_payment_amount
-    elif payment_type == "extra principal":
+    elif payment_type == PaymentType.PRINCIPAL_ONLY:
         # Extra principal payment is regular payment plus additional principal
         extra_amount = round(regular_payment_amount * random.uniform(0.1, 0.5), 2)
         payment_amount = regular_payment_amount + extra_amount
-    elif payment_type == "late":
+    elif payment_type == PaymentType.LATE_FEE:
         payment_amount = regular_payment_amount
-    elif payment_type == "escrow only":
+    elif payment_type == PaymentType.ESCROW:
         # Escrow only payment is typically smaller than regular payment
         payment_amount = round(regular_payment_amount * random.uniform(0.2, 0.4), 2)
 
@@ -161,45 +180,45 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
             interest_amount = round(loan_balance * monthly_interest_rate, 2)
 
             # For regular payments, principal is payment minus interest
-            if payment_type in ["regular", "late"]:
+            if payment_type in [PaymentType.PRINCIPAL_AND_INTEREST, PaymentType.LATE_FEE]:
                 principal_amount = min(payment_amount - interest_amount, payment_amount)
                 # Ensure principal amount is not negative
                 principal_amount = max(principal_amount, 0.0)
                 interest_amount = payment_amount - principal_amount
-            elif payment_type == "extra principal":
+            elif payment_type == PaymentType.PRINCIPAL_ONLY:
                 # Calculate regular principal (payment minus interest)
                 regular_principal = regular_payment_amount - interest_amount
                 # Extra payment goes entirely to principal
                 principal_amount = regular_principal + (payment_amount - regular_payment_amount)
                 interest_amount = payment_amount - principal_amount
-            elif payment_type == "escrow only":
+            elif payment_type == PaymentType.ESCROW:
                 # Escrow payments don't apply to principal or interest
                 principal_amount = 0.0
                 interest_amount = 0.0
         else:
             # Use default split if loan balance or interest rate is invalid
-            if payment_type in ["regular", "late"]:
+            if payment_type in [PaymentType.PRINCIPAL_AND_INTEREST, PaymentType.LATE_FEE]:
                 principal_ratio = random.uniform(0.3, 0.7)
                 principal_amount = round(payment_amount * principal_ratio, 2)
                 interest_amount = payment_amount - principal_amount
-            elif payment_type == "extra principal":
+            elif payment_type == PaymentType.PRINCIPAL_ONLY:
                 regular_principal_ratio = random.uniform(0.3, 0.7)
                 regular_principal = round(regular_payment_amount * regular_principal_ratio, 2)
                 regular_interest = regular_payment_amount - regular_principal
                 extra_principal = payment_amount - regular_payment_amount
                 principal_amount = regular_principal + extra_principal
                 interest_amount = regular_interest
-            elif payment_type == "escrow only":
+            elif payment_type == PaymentType.ESCROW:
                 principal_amount = 0.0
                 interest_amount = 0.0
     else:
         # Default split if loan balance is unknown
-        if payment_type in ["regular", "late"]:
+        if payment_type in [PaymentType.PRINCIPAL_AND_INTEREST, PaymentType.LATE_FEE]:
             # Typical mortgage has more interest at first, more principal later
             principal_ratio = random.uniform(0.3, 0.7)
             principal_amount = round(payment_amount * principal_ratio, 2)
             interest_amount = payment_amount - principal_amount
-        elif payment_type == "extra principal":
+        elif payment_type == PaymentType.PRINCIPAL_ONLY:
             # Regular portion split between principal and interest,
             # extra portion goes entirely to principal
             regular_principal_ratio = random.uniform(0.3, 0.7)
@@ -209,12 +228,12 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
 
             principal_amount = regular_principal + extra_principal
             interest_amount = regular_interest
-        elif payment_type == "escrow only":
+        elif payment_type == PaymentType.ESCROW:
             principal_amount = 0.0
             interest_amount = 0.0
 
     # Determine escrow amount based on servicing account info
-    if payment_type == "escrow only":
+    if payment_type == PaymentType.ESCROW:
         # For Escrow Only payments, the entire amount goes to escrow
         escrow_amount = payment_amount
     else:
@@ -232,7 +251,7 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
 
     # Generate fee amounts
     late_fee_amount = 0.0
-    if payment_type == "late":
+    if payment_type == PaymentType.LATE_FEE:
         # Typical late fee is either a percentage or a flat amount
         if random.random() < 0.5:
             # Percentage-based late fee (typically 4-5% of payment)
@@ -266,7 +285,7 @@ def generate_random_payment(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     # Create the payment record
     payment = {
         "payment_date": payment_date,
-        "payment_type": payment_type,
+        "payment_type": payment_type.value,
         "payment_method": payment_method,
         "payment_amount": payment_amount,
         "principal_amount": principal_amount,

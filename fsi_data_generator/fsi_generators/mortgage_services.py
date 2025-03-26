@@ -26,15 +26,15 @@ from .intelligent_generators.mortgage_services.document import \
     generate_random_document
 from .intelligent_generators.mortgage_services.employment import \
     generate_random_borrower_employment
-from .intelligent_generators.mortgage_services.generate_random_borrower_liability import \
+from .intelligent_generators.mortgage_services.borrower_liability import \
     generate_random_borrower_liability
-from .intelligent_generators.mortgage_services.generate_random_closed_loan import \
+from .intelligent_generators.mortgage_services.closed_loan import \
     generate_random_closed_loan
 from .intelligent_generators.mortgage_services.generate_random_customer_communication import \
     generate_random_customer_communication
 from .intelligent_generators.mortgage_services.generate_random_escrow_analysis import \
     generate_random_escrow_analysis
-from .intelligent_generators.mortgage_services.generate_random_escrow_disbursement import \
+from .intelligent_generators.mortgage_services.escrow_disbursement import \
     generate_random_escrow_disbursement
 from .intelligent_generators.mortgage_services.generate_random_hmda_applicant_demographics import \
     generate_random_hmda_applicant_demographics
@@ -48,9 +48,9 @@ from .intelligent_generators.mortgage_services.generate_random_insurance_policy 
     generate_random_insurance_policy
 from .intelligent_generators.mortgage_services.generate_random_loan_modification import \
     generate_random_loan_modification
-from .intelligent_generators.mortgage_services.generate_random_payment import \
+from .intelligent_generators.mortgage_services.payment import \
     generate_random_payment
-from .intelligent_generators.mortgage_services.generate_random_servicing_account import \
+from .intelligent_generators.mortgage_services.servicing_account import \
     generate_random_servicing_account
 from .intelligent_generators.mortgage_services.loan_product import \
     generate_random_loan_product

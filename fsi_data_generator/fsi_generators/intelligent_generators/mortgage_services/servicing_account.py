@@ -5,6 +5,9 @@ from typing import Any, Dict, Optional
 
 import psycopg2
 
+from fsi_data_generator.fsi_generators.intelligent_generators.mortgage_services.enums.servicing_account_status import \
+    ServicingAccountStatus
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,20 +24,10 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
     """
     # Get loan and closed loan information to make servicing account data reasonable
     conn = dg.conn
-    loan_info = get_loan_info(id_fields.get("mortgage_services_loan_id"), conn)
-    closed_loan_info = get_closed_loan_info(id_fields.get("mortgage_services_loan_id"), conn)
+    loan_info = _get_loan_info(id_fields.get("mortgage_services_loan_id"), conn)
+    closed_loan_info = _get_closed_loan_info(id_fields.get("mortgage_services_loan_id"), conn)
     monthly_payment: Optional[float] = None
     escrow_portion: Optional[float] = None
-
-    # Define possible values for categorical fields
-    status_options = [
-        "current",
-        "grace period",
-        "delinquent",
-        "paid off",
-        "foreclosure",
-        "forbearance"
-    ]
 
     # Get basic details from loan or closed loan info
     if closed_loan_info:
@@ -67,10 +60,14 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
     # Determine account age and current status
     today = datetime.date.today()
 
+    # Map enum values to weights based on account characteristics
+    # Weights correspond to: [ACTIVE, DELINQUENT, DEFAULT, FORECLOSURE, BANKRUPTCY, PAID_OFF, TRANSFERRED,
+    #                         MODIFICATION_IN_PROCESS, LOSS_MITIGATION, FORBEARANCE, REO, SHORT_SALE,
+    #                         CHARGE_OFF, SATISFIED, SUSPENDED]
     if first_payment_date > today:
         # Account isn't active yet (first payment in future)
         months_active = int(0)
-        status_weights = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # Only "current" is possible
+        status_weights = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # Only ACTIVE
     else:
         # Calculate months since first payment
         months_active = (today.year - first_payment_date.year) * 12 + (today.month - first_payment_date.month)
@@ -78,22 +75,27 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         # Adjust status probabilities based on account age
         if months_active < 3:
             # New accounts are usually current
-            status_weights = [0.95, 0.05, 0.0, 0.0, 0.0, 0.0]
+            status_weights = [0.95, 0.03, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0]
         elif months_active < 12:
             # Accounts under a year
-            status_weights = [0.85, 0.07, 0.06, 0.01, 0.0, 0.01]
+            status_weights = [0.85, 0.05, 0.02, 0.01, 0.01, 0.02, 0.01, 0.01, 0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0]
         elif months_active < 60:
             # Established accounts (1-5 years)
-            status_weights = [0.80, 0.08, 0.07, 0.03, 0.01, 0.01]
+            status_weights = [0.80, 0.06, 0.03, 0.01, 0.02, 0.03, 0.01, 0.01, 0.01, 0.01, 0.005, 0.005, 0.0, 0.0, 0.005]
         else:
             # Older accounts (higher payoff probability)
-            status_weights = [0.75, 0.05, 0.05, 0.12, 0.01, 0.02]
+            status_weights = [0.75, 0.05, 0.02, 0.01, 0.01, 0.10, 0.01, 0.01, 0.01, 0.01, 0.005, 0.005, 0.005, 0.01, 0.005]
 
-    status = random.choices(status_options, weights=status_weights, k=1)[0]
+    # Validate that weights match enum length
+    if len(status_weights) != len(ServicingAccountStatus):
+        raise ValueError(f"Status weights length ({len(status_weights)}) must match number of enum values ({len(ServicingAccountStatus)})")
+
+    # Use the enum's get_random method to select a status based on weights
+    status = ServicingAccountStatus.get_random(status_weights)
 
     # Calculate current principal balance based on original balance, term, and months active
     if original_principal_balance:
-        if status == "paid off":
+        if status == ServicingAccountStatus.PAID_OFF or status == ServicingAccountStatus.SATISFIED:
             current_principal_balance = 0.0
         else:
             # Simple amortization estimate
@@ -105,7 +107,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         current_principal_balance = 0.0
 
     # Set up next payment information
-    if status == "paid off":
+    if status == ServicingAccountStatus.PAID_OFF or status == ServicingAccountStatus.SATISFIED:
         next_payment_date = None
         next_payment_amount = 0.0
     else:
@@ -126,8 +128,8 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
             if remaining_months <= 0:
                 next_payment_amount = current_principal_balance  # Final payment
             else:
-                next_payment_amount = estimate_monthly_payment(current_principal_balance, current_interest_rate,
-                                                               remaining_months)
+                next_payment_amount = _estimate_monthly_payment(current_principal_balance, current_interest_rate,
+                                                                remaining_months)
 
     # Generate last payment info
     if months_active > 0:
@@ -142,7 +144,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
                 last_year -= 1
             last_payment_date = datetime.date(last_year, last_month, 1)
 
-        if status == "delinquent":
+        if status == ServicingAccountStatus.DELINQUENT or status == ServicingAccountStatus.DEFAULT:
             # Delinquent accounts might have missed last payment
             if random.random() < 0.7:  # 70% chance last payment was missed
                 # Go back one more month for last payment
@@ -165,7 +167,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         last_payment_amount = None
 
     # Generate escrow balance
-    if status != "paid off":
+    if status not in [ServicingAccountStatus.PAID_OFF, ServicingAccountStatus.SATISFIED]:
         # Escrow typically holds 2-6 months of taxes and insurance
         monthly_payment = next_payment_amount if next_payment_amount else (original_principal_balance * 0.006)
         escrow_portion = monthly_payment * 0.25  # Taxes and insurance ~25% of payment
@@ -180,7 +182,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
     # For a newly created account, YTD values should reflect payments made so far
     payments_made_this_year = min(current_month, months_active)
 
-    if status == "paid off":
+    if status == ServicingAccountStatus.PAID_OFF or status == ServicingAccountStatus.SATISFIED:
         # If paid off, YTD values include final payment
         interest_paid_ytd = round(original_principal_balance * current_interest_rate / 100 * 0.2, 2)  # Estimate
         principal_paid_ytd = original_principal_balance
@@ -198,7 +200,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         escrow_paid_ytd = round(escrow_portion * payments_made_this_year, 2)
 
     # Generate property tax and insurance due dates
-    if status != "paid off":
+    if status not in [ServicingAccountStatus.PAID_OFF, ServicingAccountStatus.SATISFIED]:
         # Property taxes typically due once or twice a year
         months_ahead = random.randint(1, 6)
         tax_month = (today.month + months_ahead) % 12
@@ -219,7 +221,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         homeowners_insurance_due_date = None
 
     # Generate past due information
-    if status == "delinquent":
+    if status in [ServicingAccountStatus.DELINQUENT, ServicingAccountStatus.DEFAULT, ServicingAccountStatus.FORECLOSURE]:
         # 30/60/90 day delinquency
         delinquency_level = random.choices([30, 60, 90], weights=[0.6, 0.3, 0.1], k=1)[0]
         days_past_due = delinquency_level + random.randint(1, 15)
@@ -229,7 +231,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         past_due_amount = 0.0
 
     # Generate late payment counts
-    if status == "delinquent" or random.random() < 0.2:  # 20% chance for non-delinquent accounts to have late history
+    if status in [ServicingAccountStatus.DELINQUENT, ServicingAccountStatus.DEFAULT, ServicingAccountStatus.FORECLOSURE] or random.random() < 0.2:
         late_count_30 = random.randint(1, 3)
         late_count_60 = random.randint(0, late_count_30)
         late_count_90 = random.randint(0, late_count_60)
@@ -239,7 +241,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         late_count_90 = 0
 
     # Generate servicing transfer date (if applicable)
-    if random.random() < 0.3:  # 30% chance of transferred servicing
+    if status == ServicingAccountStatus.TRANSFERRED or random.random() < 0.3:
         # Transfer happened between origination and now
         if first_payment_date:
             earliest_date = first_payment_date - datetime.timedelta(days=30)  # 30 days before first payment
@@ -259,28 +261,28 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
         servicing_transferred_date = None
 
     # Generate autopay status (more likely for current accounts)
-    if status in ["current", "grace period"]:
+    if status == ServicingAccountStatus.ACTIVE:
         auto_pay_enabled = random.random() < 0.7  # 70% of current accounts use autopay
     else:
         auto_pay_enabled = random.random() < 0.3  # 30% of non-current accounts use autopay
 
     # Create the servicing account record
     servicing_account = {
-        "status": status,
-        "current_principal_balance": float(current_principal_balance),
-        "original_principal_balance": float(original_principal_balance),
-        "current_interest_rate": float(current_interest_rate),
-        "escrow_balance": float(escrow_balance),
+        "status": status.value,  # Convert enum to string value
+        "current_principal_balance": current_principal_balance,
+        "original_principal_balance": original_principal_balance,
+        "current_interest_rate": current_interest_rate,
+        "escrow_balance": escrow_balance,
         "next_payment_due_date": next_payment_date,
-        "next_payment_amount": float(next_payment_amount) if next_payment_amount else None,
+        "next_payment_amount": next_payment_amount,
         "last_payment_date": last_payment_date,
-        "last_payment_amount": float(last_payment_amount) if last_payment_amount else None,
-        "interest_paid_ytd": float(interest_paid_ytd),
-        "principal_paid_ytd": float(principal_paid_ytd),
-        "escrow_paid_ytd": float(escrow_paid_ytd),
+        "last_payment_amount": last_payment_amount,
+        "interest_paid_ytd": interest_paid_ytd,
+        "principal_paid_ytd": principal_paid_ytd,
+        "escrow_paid_ytd": escrow_paid_ytd,
         "property_tax_due_date": property_tax_due_date,
         "homeowners_insurance_due_date": homeowners_insurance_due_date,
-        "past_due_amount": float(past_due_amount),
+        "past_due_amount": past_due_amount,
         "days_past_due": days_past_due,
         "late_count_30": late_count_30,
         "late_count_60": late_count_60,
@@ -292,7 +294,7 @@ def generate_random_servicing_account(id_fields: Dict[str, Any], dg) -> Dict[str
     return servicing_account
 
 
-def get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get loan information to make servicing account data reasonable.
 
@@ -325,7 +327,7 @@ def get_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
         return None
 
 
-def get_closed_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
+def _get_closed_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any]]:
     """
     Get closed loan information to make servicing account data reasonable.
 
@@ -359,7 +361,7 @@ def get_closed_loan_info(loan_id: Optional[int], conn) -> Optional[Dict[str, Any
         return None
 
 
-def estimate_monthly_payment(loan_amount: float, annual_interest_rate: float, term_months: int) -> float:
+def _estimate_monthly_payment(loan_amount: float, annual_interest_rate: float, term_months: int) -> float:
     """
     Estimate monthly payment for a loan.
 

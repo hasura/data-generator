@@ -1,0 +1,154 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: anomalies_recommendations
+  fields:
+    - name: analysis_id
+      type: int_4!
+    - name: description
+      type: text!
+    - name: id
+      type: int_4!
+  graphql:
+    typeName: anomalies_recommendations
+    inputTypeName: anomalies_recommendations_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: anomalies_recommendations
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: anomalies_recommendations
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - analysis_id
+          - description
+          - id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: anomalies_recommendations_bool_exp
+  operand:
+    object:
+      type: anomalies_recommendations
+      comparableFields:
+        - fieldName: analysis_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: anomalies_anomaly_analyasis
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: anomalies_recommendations_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: anomalies_recommendations_agg_exp
+  operand:
+    object:
+      aggregatedType: anomalies_recommendations
+      aggregatableFields:
+        - fieldName: analysis_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: anomalies_recommendations_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: anomalies_recommendations_order_by_exp
+  operand:
+    object:
+      orderedType: anomalies_recommendations
+      orderableFields:
+        - fieldName: analysis_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: anomalies_anomaly_analyasis
+  graphql:
+    expressionTypeName: anomalies_recommendations_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: anomalies_recommendations
+  objectType: anomalies_recommendations
+  source:
+    dataConnectorName: data_quality
+    collection: anomalies_recommendations
+  filterExpressionType: anomalies_recommendations_bool_exp
+  aggregateExpression: anomalies_recommendations_agg_exp
+  orderByExpression: anomalies_recommendations_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: anomalies_recommendations
+      subscription:
+        rootField: anomalies_recommendations
+    selectUniques:
+      - queryRootField: anomalies_recommendations_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: anomalies_recommendations_by_id
+    filterInputTypeName: anomalies_recommendations_filter_input
+    aggregate:
+      queryRootField: anomalies_recommendations_aggregate
+      subscription:
+        rootField: anomalies_recommendations_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: anomalies_recommendations
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: anomalies_anomaly_analyasis
+  sourceType: anomalies_recommendations
+  target:
+    model:
+      name: anomalies_anomaly_analyses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: analysis_id
+      target:
+        modelField:
+          - fieldName: id
+

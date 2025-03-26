@@ -1,0 +1,154 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: recommendations
+  fields:
+    - name: analysis_id
+      type: int_4!
+    - name: description
+      type: text!
+    - name: id
+      type: int_4!
+  graphql:
+    typeName: recommendations
+    inputTypeName: recommendations_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: recommendations
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: recommendations
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - analysis_id
+          - description
+          - id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: recommendations_bool_exp
+  operand:
+    object:
+      type: recommendations
+      comparableFields:
+        - fieldName: analysis_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: anomaly_analyasis
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: recommendations_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: recommendations_agg_exp
+  operand:
+    object:
+      aggregatedType: recommendations
+      aggregatableFields:
+        - fieldName: analysis_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: recommendations_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: recommendations_order_by_exp
+  operand:
+    object:
+      orderedType: recommendations
+      orderableFields:
+        - fieldName: analysis_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: anomaly_analyasis
+  graphql:
+    expressionTypeName: recommendations_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: recommendations
+  objectType: recommendations
+  source:
+    dataConnectorName: data_quality
+    collection: recommendations
+  filterExpressionType: recommendations_bool_exp
+  aggregateExpression: recommendations_agg_exp
+  orderByExpression: recommendations_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: recommendations
+      subscription:
+        rootField: recommendations
+    selectUniques:
+      - queryRootField: recommendations_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: recommendations_by_id
+    filterInputTypeName: recommendations_filter_input
+    aggregate:
+      queryRootField: recommendations_aggregate
+      subscription:
+        rootField: recommendations_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: recommendations
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: anomaly_analyasis
+  sourceType: recommendations
+  target:
+    model:
+      name: anomaly_analyses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: analysis_id
+      target:
+        modelField:
+          - fieldName: id
+

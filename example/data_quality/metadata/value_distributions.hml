@@ -1,0 +1,163 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: value_distributions
+  fields:
+    - name: count
+      type: int_4
+    - name: field_statistic_id
+      type: int_4!
+    - name: id
+      type: int_4!
+    - name: value
+      type: varchar
+  graphql:
+    typeName: value_distributions
+    inputTypeName: value_distributions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: value_distributions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: value_distributions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - count
+          - field_statistic_id
+          - id
+          - value
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: value_distributions_bool_exp
+  operand:
+    object:
+      type: value_distributions
+      comparableFields:
+        - fieldName: count
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: field_statistic_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: value
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: field_statistic
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: value_distributions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: value_distributions_agg_exp
+  operand:
+    object:
+      aggregatedType: value_distributions
+      aggregatableFields:
+        - fieldName: count
+          aggregateExpression: int_4_agg_exp
+        - fieldName: field_statistic_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: value
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: value_distributions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: value_distributions_order_by_exp
+  operand:
+    object:
+      orderedType: value_distributions
+      orderableFields:
+        - fieldName: count
+          orderByExpression: int_4_order_by_exp
+        - fieldName: field_statistic_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: value
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: field_statistic
+  graphql:
+    expressionTypeName: value_distributions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: value_distributions
+  objectType: value_distributions
+  source:
+    dataConnectorName: data_quality
+    collection: value_distributions
+  filterExpressionType: value_distributions_bool_exp
+  aggregateExpression: value_distributions_agg_exp
+  orderByExpression: value_distributions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: value_distributions
+      subscription:
+        rootField: value_distributions
+    selectUniques:
+      - queryRootField: value_distributions_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: value_distributions_by_id
+    filterInputTypeName: value_distributions_filter_input
+    aggregate:
+      queryRootField: value_distributions_aggregate
+      subscription:
+        rootField: value_distributions_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: value_distributions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: field_statistic
+  sourceType: value_distributions
+  target:
+    model:
+      name: field_statistics
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: field_statistic_id
+      target:
+        modelField:
+          - fieldName: id
+

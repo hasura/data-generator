@@ -1,0 +1,172 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: historical_records
+  fields:
+    - name: created_at
+      type: timestamptz
+    - name: historical_data_id
+      type: int_4!
+    - name: id
+      type: int_4!
+    - name: last_updated
+      type: timestamptz
+    - name: record_data
+      type: text!
+  graphql:
+    typeName: historical_records
+    inputTypeName: historical_records_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: historical_records
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: historical_records
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - historical_data_id
+          - id
+          - last_updated
+          - record_data
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: historical_records_bool_exp
+  operand:
+    object:
+      type: historical_records
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: historical_data_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: last_updated
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: record_data
+          booleanExpressionType: text_bool_exp
+      comparableRelationships:
+        - relationshipName: historical_datum
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: historical_records_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: historical_records_agg_exp
+  operand:
+    object:
+      aggregatedType: historical_records
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: historical_data_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: last_updated
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: record_data
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: historical_records_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: historical_records_order_by_exp
+  operand:
+    object:
+      orderedType: historical_records
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: historical_data_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: last_updated
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: record_data
+          orderByExpression: text_order_by_exp
+      orderableRelationships:
+        - relationshipName: historical_datum
+  graphql:
+    expressionTypeName: historical_records_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: historical_records
+  objectType: historical_records
+  source:
+    dataConnectorName: data_quality
+    collection: historical_records
+  filterExpressionType: historical_records_bool_exp
+  aggregateExpression: historical_records_agg_exp
+  orderByExpression: historical_records_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: historical_records
+      subscription:
+        rootField: historical_records
+    selectUniques:
+      - queryRootField: historical_records_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: historical_records_by_id
+    filterInputTypeName: historical_records_filter_input
+    aggregate:
+      queryRootField: historical_records_aggregate
+      subscription:
+        rootField: historical_records_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: historical_records
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: historical_datum
+  sourceType: historical_records
+  target:
+    model:
+      name: historical_data
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: historical_data_id
+      target:
+        modelField:
+          - fieldName: id
+

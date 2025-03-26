@@ -1,0 +1,172 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: statistical_flags
+  fields:
+    - name: analysis_id
+      type: int_4!
+    - name: description
+      type: text
+    - name: flag_type
+      type: varchar
+    - name: id
+      type: int_4!
+    - name: severity
+      type: float_8
+  graphql:
+    typeName: statistical_flags
+    inputTypeName: statistical_flags_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: statistical_flags
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: statistical_flags
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - analysis_id
+          - description
+          - flag_type
+          - id
+          - severity
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: statistical_flags_bool_exp
+  operand:
+    object:
+      type: statistical_flags
+      comparableFields:
+        - fieldName: analysis_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: flag_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: severity
+          booleanExpressionType: float_8_bool_exp
+      comparableRelationships:
+        - relationshipName: anomaly_analyasis
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: statistical_flags_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: statistical_flags_agg_exp
+  operand:
+    object:
+      aggregatedType: statistical_flags
+      aggregatableFields:
+        - fieldName: analysis_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: flag_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: severity
+          aggregateExpression: float_8_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: statistical_flags_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: statistical_flags_order_by_exp
+  operand:
+    object:
+      orderedType: statistical_flags
+      orderableFields:
+        - fieldName: analysis_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: flag_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: severity
+          orderByExpression: float_8_order_by_exp
+      orderableRelationships:
+        - relationshipName: anomaly_analyasis
+  graphql:
+    expressionTypeName: statistical_flags_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: statistical_flags
+  objectType: statistical_flags
+  source:
+    dataConnectorName: data_quality
+    collection: statistical_flags
+  filterExpressionType: statistical_flags_bool_exp
+  aggregateExpression: statistical_flags_agg_exp
+  orderByExpression: statistical_flags_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: statistical_flags
+      subscription:
+        rootField: statistical_flags
+    selectUniques:
+      - queryRootField: statistical_flags_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: statistical_flags_by_id
+    filterInputTypeName: statistical_flags_filter_input
+    aggregate:
+      queryRootField: statistical_flags_aggregate
+      subscription:
+        rootField: statistical_flags_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: statistical_flags
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: anomaly_analyasis
+  sourceType: statistical_flags
+  target:
+    model:
+      name: anomaly_analyses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: analysis_id
+      target:
+        modelField:
+          - fieldName: id
+

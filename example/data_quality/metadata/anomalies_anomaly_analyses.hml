@@ -1,0 +1,307 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: anomalies_anomaly_analyses
+  fields:
+    - name: analysis_mode
+      type: varchar
+    - name: anomalies_detected
+      type: bool
+    - name: anomalous_records_count
+      type: int_4
+    - name: historical_data_size
+      type: int_4
+    - name: id
+      type: int_4!
+    - name: operation_name
+      type: varchar
+    - name: processed_records
+      type: int_4
+    - name: query_id
+      type: varchar!
+    - name: role
+      type: varchar
+    - name: status
+      type: varchar
+    - name: timestamp
+      type: timestamptz
+    - name: user_id
+      type: varchar
+  graphql:
+    typeName: anomalies_anomaly_analyses
+    inputTypeName: anomalies_anomaly_analyses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: anomalies_anomaly_analyses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: anomalies_anomaly_analyses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - analysis_mode
+          - anomalies_detected
+          - anomalous_records_count
+          - historical_data_size
+          - id
+          - operation_name
+          - processed_records
+          - query_id
+          - role
+          - status
+          - timestamp
+          - user_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: anomalies_anomaly_analyses_bool_exp
+  operand:
+    object:
+      type: anomalies_anomaly_analyses
+      comparableFields:
+        - fieldName: analysis_mode
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: anomalies_detected
+          booleanExpressionType: bool_bool_exp
+        - fieldName: anomalous_records_count
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: historical_data_size
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: operation_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: processed_records
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: query_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: role
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: timestamp
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: user_id
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: anomalies_anomaly_records
+        - relationshipName: anomalies_query_concerns
+        - relationshipName: anomalies_recommendations
+        - relationshipName: anomalies_statistical_flags
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: anomalies_anomaly_analyses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: anomalies_anomaly_analyses_agg_exp
+  operand:
+    object:
+      aggregatedType: anomalies_anomaly_analyses
+      aggregatableFields:
+        - fieldName: analysis_mode
+          aggregateExpression: varchar_agg_exp
+        - fieldName: anomalies_detected
+          aggregateExpression: bool_agg_exp
+        - fieldName: anomalous_records_count
+          aggregateExpression: int_4_agg_exp
+        - fieldName: historical_data_size
+          aggregateExpression: int_4_agg_exp
+        - fieldName: id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: operation_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: processed_records
+          aggregateExpression: int_4_agg_exp
+        - fieldName: query_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: role
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: timestamp
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: user_id
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: anomalies_anomaly_analyses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: anomalies_anomaly_analyses_order_by_exp
+  operand:
+    object:
+      orderedType: anomalies_anomaly_analyses
+      orderableFields:
+        - fieldName: analysis_mode
+          orderByExpression: varchar_order_by_exp
+        - fieldName: anomalies_detected
+          orderByExpression: bool_order_by_exp
+        - fieldName: anomalous_records_count
+          orderByExpression: int_4_order_by_exp
+        - fieldName: historical_data_size
+          orderByExpression: int_4_order_by_exp
+        - fieldName: id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: operation_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: processed_records
+          orderByExpression: int_4_order_by_exp
+        - fieldName: query_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: role
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: timestamp
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: user_id
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: anomalies_anomaly_analyses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: anomalies_anomaly_analyses
+  objectType: anomalies_anomaly_analyses
+  source:
+    dataConnectorName: data_quality
+    collection: anomalies_anomaly_analyses
+  filterExpressionType: anomalies_anomaly_analyses_bool_exp
+  aggregateExpression: anomalies_anomaly_analyses_agg_exp
+  orderByExpression: anomalies_anomaly_analyses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: anomalies_anomaly_analyses
+      subscription:
+        rootField: anomalies_anomaly_analyses
+    selectUniques:
+      - queryRootField: anomalies_anomaly_analyses_by_id
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: anomalies_anomaly_analyses_by_id
+    filterInputTypeName: anomalies_anomaly_analyses_filter_input
+    aggregate:
+      queryRootField: anomalies_anomaly_analyses_aggregate
+      subscription:
+        rootField: anomalies_anomaly_analyses_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: anomalies_anomaly_analyses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: anomalies_anomaly_records
+  sourceType: anomalies_anomaly_analyses
+  target:
+    model:
+      name: anomalies_anomaly_records
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: anomalies_anomaly_records_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: analysis_id
+  graphql:
+    aggregateFieldName: anomalies_anomaly_records_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: anomalies_query_concerns
+  sourceType: anomalies_anomaly_analyses
+  target:
+    model:
+      name: anomalies_query_concerns
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: anomalies_query_concerns_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: analysis_id
+  graphql:
+    aggregateFieldName: anomalies_query_concerns_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: anomalies_recommendations
+  sourceType: anomalies_anomaly_analyses
+  target:
+    model:
+      name: anomalies_recommendations
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: anomalies_recommendations_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: analysis_id
+  graphql:
+    aggregateFieldName: anomalies_recommendations_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: anomalies_statistical_flags
+  sourceType: anomalies_anomaly_analyses
+  target:
+    model:
+      name: anomalies_statistical_flags
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: anomalies_statistical_flags_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: analysis_id
+  graphql:
+    aggregateFieldName: anomalies_statistical_flags_aggregate
+

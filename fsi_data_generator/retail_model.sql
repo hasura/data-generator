@@ -548,6 +548,77 @@ CREATE TYPE "mortgage_services"."closing_type" AS ENUM (
   'WET_CLOSING'
 );
 
+CREATE TYPE "mortgage_services"."servicing_account_status" AS ENUM (
+  'ACTIVE',
+  'DELINQUENT',
+  'DEFAULT',
+  'FORECLOSURE',
+  'BANKRUPTCY',
+  'PAID_OFF',
+  'TRANSFERRED',
+  'MODIFICATION_IN_PROCESS',
+  'LOSS_MITIGATION',
+  'FORBEARANCE',
+  'REO',
+  'SHORT_SALE',
+  'CHARGE_OFF',
+  'SATISFIED',
+  'SUSPENDED'
+);
+
+CREATE TYPE "mortgage_services"."payment_type" AS ENUM (
+  'PRINCIPAL_AND_INTEREST',
+  'PRINCIPAL_ONLY',
+  'INTEREST_ONLY',
+  'ESCROW',
+  'LATE_FEE',
+  'PREPAYMENT_PENALTY',
+  'FULL_PAYOFF',
+  'PARTIAL_PAYMENT',
+  'BIWEEKLY',
+  'FORBEARANCE',
+  'LOAN_MODIFICATION',
+  'BALLOON',
+  'SERVICING_FEE',
+  'EXTENSION_FEE',
+  'OTHER'
+);
+
+CREATE TYPE "mortgage_services"."disbursement_type" AS ENUM (
+  'PROPERTY_TAX',
+  'HOMEOWNERS_INSURANCE',
+  'MORTGAGE_INSURANCE',
+  'FLOOD_INSURANCE',
+  'HOA_DUES',
+  'HAZARD_INSURANCE',
+  'CONDO_INSURANCE',
+  'CITY_TAX',
+  'COUNTY_TAX',
+  'SCHOOL_TAX',
+  'SPECIAL_ASSESSMENT',
+  'GROUND_RENT',
+  'ESCROW_REFUND',
+  'ESCROW_SHORTAGE',
+  'OTHER'
+);
+
+CREATE TYPE "mortgage_services"."disbursement_status" AS ENUM (
+  'PENDING',
+  'PROCESSING',
+  'COMPLETED',
+  'FAILED',
+  'RETURNED',
+  'CANCELED',
+  'HOLD',
+  'CLEARED',
+  'VOID',
+  'REISSUED',
+  'PARTIAL',
+  'SCHEDULED',
+  'SENT',
+  'OTHER'
+);
+
 CREATE TYPE "consumer_lending"."housing_status" AS ENUM (
   'OWN',
   'RENT',
@@ -2002,7 +2073,7 @@ CREATE TABLE "mortgage_services"."closed_loans" (
 CREATE TABLE "mortgage_services"."servicing_accounts" (
   "mortgage_services_servicing_account_id" SERIAL PRIMARY KEY,
   "mortgage_services_loan_id" INTEGER NOT NULL,
-  "status" VARCHAR(20) NOT NULL,
+  "status" mortgage_services.servicing_account_status NOT NULL,
   "current_principal_balance" NUMERIC(18,2) NOT NULL,
   "original_principal_balance" NUMERIC(18,2) NOT NULL,
   "current_interest_rate" NUMERIC(6,3) NOT NULL,
@@ -2023,7 +2094,7 @@ CREATE TABLE "mortgage_services"."payments" (
   "mortgage_services_payment_id" SERIAL PRIMARY KEY,
   "mortgage_services_servicing_account_id" INTEGER NOT NULL,
   "payment_date" TIMESTAMP NOT NULL,
-  "payment_type" VARCHAR(30) NOT NULL,
+  "payment_type" mortgage_services.payment_type NOT NULL,
   "payment_method" VARCHAR(30) NOT NULL,
   "payment_amount" NUMERIC(18,2) NOT NULL,
   "principal_amount" NUMERIC(18,2) NOT NULL,
@@ -2040,12 +2111,12 @@ CREATE TABLE "mortgage_services"."escrow_disbursements" (
   "mortgage_services_disbursement_id" SERIAL PRIMARY KEY,
   "mortgage_services_servicing_account_id" INTEGER NOT NULL,
   "disbursement_date" DATE NOT NULL,
-  "disbursement_type" VARCHAR(30) NOT NULL,
+  "disbursement_type" mortgage_services.disbursement_type NOT NULL,
   "amount" NUMERIC(18,2) NOT NULL,
   "payee_name" VARCHAR(100) NOT NULL,
   "payee_account_number" VARCHAR(50),
   "check_number" VARCHAR(20),
-  "status" VARCHAR(20) NOT NULL,
+  "status" mortgage_services.disbursement_status NOT NULL,
   "due_date" DATE,
   "coverage_start_date" DATE,
   "coverage_end_date" DATE
