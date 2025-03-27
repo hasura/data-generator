@@ -27,6 +27,7 @@ except ImportError:
     print("Error: Could not import DataGenerator. Make sure data_generator.py is in the same directory.")
     sys.exit(1)
 
+
 def select_10_rows_from_each_table():
     # connect to the PostgreSQL server
     conn_params = {
@@ -71,7 +72,9 @@ def select_10_rows_from_each_table():
     cur.close()
     conn.close()
 
+
 select_10_rows_from_each_table()
+
 
 def create_test_database():
     """
@@ -336,8 +339,10 @@ def test_data_generator():
 def test_banking_data():
     generate_banking_data()
 
+
 def test_select_from_each_table():
     select_10_rows_from_each_table()
+
 
 if __name__ == "__main__":
     test_select_from_each_table()

@@ -54,7 +54,7 @@ definition:
       type: Date
       description: When servicing was transferred to current servicer
     - name: status
-      type: Varchar!
+      type: MortgageServicesServicingAccountStatus!
       description: Current status of the loan being serviced
   graphql:
     typeName: MortgageServices_MortgageServicesServicingAccounts
@@ -184,13 +184,12 @@ definition:
         - fieldName: servicingTransferredDate
           booleanExpressionType: DateBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesServicingAccountStatusBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesCustomerCommunications
         - relationshipName: mortgageServicesEscrowAnalyses
         - relationshipName: mortgageServicesEscrowDisbursements
         - relationshipName: mortgageServicesInsurancePolicies
-        - relationshipName: mortgageServicesLoanModifications
         - relationshipName: mortgageServicesPayments
         - relationshipName: mortgageServicesLoan
   logicalOperators:
@@ -242,7 +241,7 @@ definition:
         - fieldName: servicingTransferredDate
           aggregateExpression: DateAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesServicingAccountStatusAggExp
   count:
     enable: true
   graphql:
@@ -290,7 +289,7 @@ definition:
         - fieldName: servicingTransferredDate
           orderByExpression: DateOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesServicingAccountStatusOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesLoan
   graphql:
@@ -424,28 +423,6 @@ definition:
           - fieldName: mortgageServicesServicingAccountId
   graphql:
     aggregateFieldName: mortgageServicesInsurancePoliciesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: mortgageServicesLoanModifications
-  sourceType: MortgageServicesServicingAccounts
-  target:
-    model:
-      name: MortgageServicesLoanModifications
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: MortgageServicesLoanModificationsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: mortgageServicesServicingAccountId
-      target:
-        modelField:
-          - fieldName: mortgageServicesServicingAccountId
-  graphql:
-    aggregateFieldName: mortgageServicesLoanModificationsAggregate
 
 ---
 kind: Relationship

@@ -17,6 +17,9 @@ definition:
     - name: closingFee
       type: Numeric
       description: Fee charged for closing services
+    - name: closingType
+      type: MortgageServicesClosingType!
+      description: Type of closing process being used
     - name: locationAddressId
       type: Int4
       description: References the address where closing will occur
@@ -25,7 +28,7 @@ definition:
       description: Auto-incrementing identifier for each appointment
     - name: mortgageServicesLoanId
       type: Int4!
-      description: References the loan this closing is for
+      description: Reference to the loan this closing is for
     - name: notes
       type: Text
       description: Additional information about the closing
@@ -33,7 +36,7 @@ definition:
       type: Timestamp!
       description: When the closing is scheduled
     - name: status
-      type: Varchar!
+      type: MortgageServicesAppointmentStatus!
       description: Current status of the closing appointment
   graphql:
     typeName: MortgageServices_MortgageServicesClosingAppointments
@@ -54,6 +57,9 @@ definition:
         closingFee:
           column:
             name: closing_fee
+        closingType:
+          column:
+            name: closing_type
         locationAddressId:
           column:
             name: location_address_id
@@ -86,6 +92,7 @@ definition:
           - closingAgent
           - closingCompany
           - closingFee
+          - closingType
           - locationAddressId
           - mortgageServicesAppointmentId
           - mortgageServicesLoanId
@@ -110,6 +117,8 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: closingFee
           booleanExpressionType: NumericBoolExp
+        - fieldName: closingType
+          booleanExpressionType: MortgageServicesClosingTypeBoolExp
         - fieldName: locationAddressId
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesAppointmentId
@@ -121,7 +130,7 @@ definition:
         - fieldName: scheduledDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesAppointmentStatusBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesLoan
   logicalOperators:
@@ -148,6 +157,8 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: closingFee
           aggregateExpression: NumericAggExp
+        - fieldName: closingType
+          aggregateExpression: MortgageServicesClosingTypeAggExp
         - fieldName: locationAddressId
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesAppointmentId
@@ -159,7 +170,7 @@ definition:
         - fieldName: scheduledDate
           aggregateExpression: TimestampAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesAppointmentStatusAggExp
   count:
     enable: true
   graphql:
@@ -182,6 +193,8 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: closingFee
           orderByExpression: NumericOrderByExp
+        - fieldName: closingType
+          orderByExpression: MortgageServicesClosingTypeOrderByExp
         - fieldName: locationAddressId
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesAppointmentId
@@ -193,7 +206,7 @@ definition:
         - fieldName: scheduledDate
           orderByExpression: TimestampOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesAppointmentStatusOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesLoan
   graphql:

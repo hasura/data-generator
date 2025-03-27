@@ -8,36 +8,48 @@ definition:
     - name: age
       type: Int4
       description: Applicant's age in years
+    - name: ageGroup
+      type: MortgageServicesHmdaAgeGroup
+      description: Applicant's age group for reporting
+    - name: applicantPresent
+      type: MortgageServicesHmdaApplicantPresent
+      description: Whether applicant was present during application
     - name: applicantType
-      type: Varchar!
+      type: MortgageServicesHmdaApplicantType!
       description: Indicates if record is for primary applicant or co-applicant
+    - name: createdDate
+      type: Timestamp!
+      description: When the demographic record was created
     - name: debtToIncomeRatio
       type: Numeric
       description: Applicant's debt-to-income ratio percentage
     - name: ethnicity1
-      type: Varchar
+      type: MortgageServicesHmdaEthnicity
       description: Primary ethnicity selection
     - name: ethnicity2
-      type: Varchar
+      type: MortgageServicesHmdaEthnicityDetail
       description: Secondary ethnicity selection if applicable
     - name: ethnicity3
-      type: Varchar
+      type: MortgageServicesHmdaEthnicityDetail
       description: Additional ethnicity selection if applicable
     - name: ethnicity4
-      type: Varchar
+      type: MortgageServicesHmdaEthnicityDetail
       description: Additional ethnicity selection if applicable
     - name: ethnicity5
-      type: Varchar
+      type: MortgageServicesHmdaEthnicityDetail
       description: Additional ethnicity selection if applicable
     - name: ethnicityFreeForm
       type: Varchar
       description: Free-form text description of ethnicity
     - name: ethnicityObserved
-      type: Varchar
+      type: MortgageServicesHmdaCollectionMethod
       description: How ethnicity was determined if not provided by applicant
     - name: income
       type: Numeric
       description: Applicant's annual income in thousands of dollars
+    - name: modifiedDate
+      type: Timestamp
+      description: When the demographic record was last modified
     - name: mortgageServicesApplicantDemographicsId
       type: Int4!
       description: Auto-incrementing identifier for each demographics record
@@ -45,31 +57,46 @@ definition:
       type: Int4!
       description: References the associated HMDA record
     - name: race1
-      type: Varchar
+      type: MortgageServicesHmdaRace
       description: Primary race selection
     - name: race2
-      type: Varchar
+      type: MortgageServicesHmdaRace
       description: Secondary race selection if applicable
     - name: race3
-      type: Varchar
+      type: MortgageServicesHmdaRace
       description: Additional race selection if applicable
     - name: race4
-      type: Varchar
+      type: MortgageServicesHmdaRace
       description: Additional race selection if applicable
     - name: race5
-      type: Varchar
+      type: MortgageServicesHmdaRace
       description: Additional race selection if applicable
+    - name: raceDetail1
+      type: Varchar
+      description: Race detail for race_1 if applicable
+    - name: raceDetail2
+      type: Varchar
+      description: Race detail for race_2 if applicable
+    - name: raceDetail3
+      type: Varchar
+      description: Race detail for race_3 if applicable
+    - name: raceDetail4
+      type: Varchar
+      description: Race detail for race_4 if applicable
+    - name: raceDetail5
+      type: Varchar
+      description: Race detail for race_5 if applicable
     - name: raceFreeForm
       type: Varchar
       description: Free-form text description of race
     - name: raceObserved
-      type: Varchar
+      type: MortgageServicesHmdaCollectionMethod
       description: How race was determined if not provided by applicant
     - name: sex
-      type: Varchar
+      type: MortgageServicesHmdaSex
       description: Applicant's reported sex
     - name: sexObserved
-      type: Varchar
+      type: MortgageServicesHmdaCollectionMethod
       description: How sex was determined if not provided by applicant
   graphql:
     typeName: MortgageServices_MortgageServicesHmdaApplicantDemographics
@@ -81,9 +108,18 @@ definition:
         age:
           column:
             name: age
+        ageGroup:
+          column:
+            name: age_group
+        applicantPresent:
+          column:
+            name: applicant_present
         applicantType:
           column:
             name: applicant_type
+        createdDate:
+          column:
+            name: created_date
         debtToIncomeRatio:
           column:
             name: debt_to_income_ratio
@@ -111,6 +147,9 @@ definition:
         income:
           column:
             name: income
+        modifiedDate:
+          column:
+            name: modified_date
         mortgageServicesApplicantDemographicsId:
           column:
             name: mortgage_services_applicant_demographics_id
@@ -132,6 +171,21 @@ definition:
         race5:
           column:
             name: race_5
+        raceDetail1:
+          column:
+            name: race_detail_1
+        raceDetail2:
+          column:
+            name: race_detail_2
+        raceDetail3:
+          column:
+            name: race_detail_3
+        raceDetail4:
+          column:
+            name: race_detail_4
+        raceDetail5:
+          column:
+            name: race_detail_5
         raceFreeForm:
           column:
             name: race_free_form
@@ -155,7 +209,10 @@ definition:
       output:
         allowedFields:
           - age
+          - ageGroup
+          - applicantPresent
           - applicantType
+          - createdDate
           - debtToIncomeRatio
           - ethnicity1
           - ethnicity2
@@ -165,6 +222,7 @@ definition:
           - ethnicityFreeForm
           - ethnicityObserved
           - income
+          - modifiedDate
           - mortgageServicesApplicantDemographicsId
           - mortgageServicesHmdaRecordId
           - race1
@@ -172,6 +230,11 @@ definition:
           - race3
           - race4
           - race5
+          - raceDetail1
+          - raceDetail2
+          - raceDetail3
+          - raceDetail4
+          - raceDetail5
           - raceFreeForm
           - raceObserved
           - sex
@@ -188,48 +251,66 @@ definition:
       comparableFields:
         - fieldName: age
           booleanExpressionType: Int4BoolExp
+        - fieldName: ageGroup
+          booleanExpressionType: MortgageServicesHmdaAgeGroupBoolExp
+        - fieldName: applicantPresent
+          booleanExpressionType: MortgageServicesHmdaApplicantPresentBoolExp
         - fieldName: applicantType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaApplicantTypeBoolExp
+        - fieldName: createdDate
+          booleanExpressionType: TimestampBoolExp
         - fieldName: debtToIncomeRatio
           booleanExpressionType: NumericBoolExp
         - fieldName: ethnicity1
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaEthnicityBoolExp
         - fieldName: ethnicity2
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaEthnicityDetailBoolExp
         - fieldName: ethnicity3
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaEthnicityDetailBoolExp
         - fieldName: ethnicity4
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaEthnicityDetailBoolExp
         - fieldName: ethnicity5
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaEthnicityDetailBoolExp
         - fieldName: ethnicityFreeForm
           booleanExpressionType: VarcharBoolExp
         - fieldName: ethnicityObserved
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaCollectionMethodBoolExp
         - fieldName: income
           booleanExpressionType: NumericBoolExp
+        - fieldName: modifiedDate
+          booleanExpressionType: TimestampBoolExp
         - fieldName: mortgageServicesApplicantDemographicsId
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesHmdaRecordId
           booleanExpressionType: Int4BoolExp
         - fieldName: race1
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaRaceBoolExp
         - fieldName: race2
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaRaceBoolExp
         - fieldName: race3
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaRaceBoolExp
         - fieldName: race4
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaRaceBoolExp
         - fieldName: race5
+          booleanExpressionType: MortgageServicesHmdaRaceBoolExp
+        - fieldName: raceDetail1
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: raceDetail2
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: raceDetail3
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: raceDetail4
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: raceDetail5
           booleanExpressionType: VarcharBoolExp
         - fieldName: raceFreeForm
           booleanExpressionType: VarcharBoolExp
         - fieldName: raceObserved
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaCollectionMethodBoolExp
         - fieldName: sex
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaSexBoolExp
         - fieldName: sexObserved
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesHmdaCollectionMethodBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesHmdaRecord
   logicalOperators:
@@ -250,48 +331,66 @@ definition:
       aggregatableFields:
         - fieldName: age
           aggregateExpression: Int4AggExp
+        - fieldName: ageGroup
+          aggregateExpression: MortgageServicesHmdaAgeGroupAggExp
+        - fieldName: applicantPresent
+          aggregateExpression: MortgageServicesHmdaApplicantPresentAggExp
         - fieldName: applicantType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaApplicantTypeAggExp
+        - fieldName: createdDate
+          aggregateExpression: TimestampAggExp
         - fieldName: debtToIncomeRatio
           aggregateExpression: NumericAggExp
         - fieldName: ethnicity1
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaEthnicityAggExp
         - fieldName: ethnicity2
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaEthnicityDetailAggExp
         - fieldName: ethnicity3
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaEthnicityDetailAggExp
         - fieldName: ethnicity4
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaEthnicityDetailAggExp
         - fieldName: ethnicity5
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaEthnicityDetailAggExp
         - fieldName: ethnicityFreeForm
           aggregateExpression: VarcharAggExp
         - fieldName: ethnicityObserved
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaCollectionMethodAggExp
         - fieldName: income
           aggregateExpression: NumericAggExp
+        - fieldName: modifiedDate
+          aggregateExpression: TimestampAggExp
         - fieldName: mortgageServicesApplicantDemographicsId
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesHmdaRecordId
           aggregateExpression: Int4AggExp
         - fieldName: race1
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaRaceAggExp
         - fieldName: race2
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaRaceAggExp
         - fieldName: race3
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaRaceAggExp
         - fieldName: race4
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaRaceAggExp
         - fieldName: race5
+          aggregateExpression: MortgageServicesHmdaRaceAggExp
+        - fieldName: raceDetail1
+          aggregateExpression: VarcharAggExp
+        - fieldName: raceDetail2
+          aggregateExpression: VarcharAggExp
+        - fieldName: raceDetail3
+          aggregateExpression: VarcharAggExp
+        - fieldName: raceDetail4
+          aggregateExpression: VarcharAggExp
+        - fieldName: raceDetail5
           aggregateExpression: VarcharAggExp
         - fieldName: raceFreeForm
           aggregateExpression: VarcharAggExp
         - fieldName: raceObserved
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaCollectionMethodAggExp
         - fieldName: sex
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaSexAggExp
         - fieldName: sexObserved
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesHmdaCollectionMethodAggExp
   count:
     enable: true
   graphql:
@@ -308,48 +407,66 @@ definition:
       orderableFields:
         - fieldName: age
           orderByExpression: Int4OrderByExp
+        - fieldName: ageGroup
+          orderByExpression: MortgageServicesHmdaAgeGroupOrderByExp
+        - fieldName: applicantPresent
+          orderByExpression: MortgageServicesHmdaApplicantPresentOrderByExp
         - fieldName: applicantType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaApplicantTypeOrderByExp
+        - fieldName: createdDate
+          orderByExpression: TimestampOrderByExp
         - fieldName: debtToIncomeRatio
           orderByExpression: NumericOrderByExp
         - fieldName: ethnicity1
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaEthnicityOrderByExp
         - fieldName: ethnicity2
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaEthnicityDetailOrderByExp
         - fieldName: ethnicity3
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaEthnicityDetailOrderByExp
         - fieldName: ethnicity4
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaEthnicityDetailOrderByExp
         - fieldName: ethnicity5
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaEthnicityDetailOrderByExp
         - fieldName: ethnicityFreeForm
           orderByExpression: VarcharOrderByExp
         - fieldName: ethnicityObserved
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaCollectionMethodOrderByExp
         - fieldName: income
           orderByExpression: NumericOrderByExp
+        - fieldName: modifiedDate
+          orderByExpression: TimestampOrderByExp
         - fieldName: mortgageServicesApplicantDemographicsId
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesHmdaRecordId
           orderByExpression: Int4OrderByExp
         - fieldName: race1
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaRaceOrderByExp
         - fieldName: race2
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaRaceOrderByExp
         - fieldName: race3
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaRaceOrderByExp
         - fieldName: race4
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaRaceOrderByExp
         - fieldName: race5
+          orderByExpression: MortgageServicesHmdaRaceOrderByExp
+        - fieldName: raceDetail1
+          orderByExpression: VarcharOrderByExp
+        - fieldName: raceDetail2
+          orderByExpression: VarcharOrderByExp
+        - fieldName: raceDetail3
+          orderByExpression: VarcharOrderByExp
+        - fieldName: raceDetail4
+          orderByExpression: VarcharOrderByExp
+        - fieldName: raceDetail5
           orderByExpression: VarcharOrderByExp
         - fieldName: raceFreeForm
           orderByExpression: VarcharOrderByExp
         - fieldName: raceObserved
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaCollectionMethodOrderByExp
         - fieldName: sex
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaSexOrderByExp
         - fieldName: sexObserved
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesHmdaCollectionMethodOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesHmdaRecord
   graphql:

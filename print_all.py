@@ -14,6 +14,7 @@ pd.set_option('display.max_colwidth', None)  # ensures that each column shows al
 # Load environment variables from .env file
 load_dotenv()
 
+
 def select_10_rows_from_each_table():
     # connect to the PostgreSQL server
     conn_params = {
@@ -57,6 +58,7 @@ def select_10_rows_from_each_table():
     # close connection
     cur.close()
     conn.close()
+
 
 if __name__ == "__main__":
     select_10_rows_from_each_table()

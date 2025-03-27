@@ -5,33 +5,36 @@ definition:
   name: MortgageServicesCreditReports
   description: Tracks credit reports pulled for mortgage applications
   fields:
+    - name: bureauName
+      type: MortgageServicesCreditBureau
+      description: Credit bureau providing the report
     - name: creditScore
       type: Int4
       description: Credit score from the report
     - name: expirationDate
       type: Date!
-      description: When the credit report expires
+      description: When credit report expires
     - name: mortgageServicesApplicationId
       type: Int4!
-      description: References the application this credit report is for
+      description: Reference to applications
     - name: mortgageServicesBorrowerId
       type: Int4!
-      description: References the borrower this credit report is for
+      description: Reference to borrower this credit report is for
     - name: mortgageServicesCreditReportId
       type: Int4!
       description: Auto-incrementing identifier for each credit report
     - name: reportDate
       type: Timestamp!
-      description: When the credit report was pulled
+      description: When credit report was pulled
     - name: reportPath
       type: Varchar
-      description: Storage location of the credit report
+      description: Path to stored credit report
     - name: reportType
-      type: Varchar!
+      type: MortgageServicesCreditReportType!
       description: Type of credit report pulled
     - name: status
-      type: Varchar!
-      description: Status of the credit report
+      type: MortgageServicesVerificationStatus!
+      description: Status of credit report retrieval
   graphql:
     typeName: MortgageServices_MortgageServicesCreditReports
     inputTypeName: MortgageServices_MortgageServicesCreditReportsInput
@@ -39,6 +42,9 @@ definition:
     - dataConnectorName: mortgage_services
       dataConnectorObjectType: mortgage_services_credit_reports
       fieldMapping:
+        bureauName:
+          column:
+            name: bureau_name
         creditScore:
           column:
             name: credit_score
@@ -76,6 +82,7 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - bureauName
           - creditScore
           - expirationDate
           - mortgageServicesApplicationId
@@ -95,6 +102,8 @@ definition:
     object:
       type: MortgageServicesCreditReports
       comparableFields:
+        - fieldName: bureauName
+          booleanExpressionType: MortgageServicesCreditBureauBoolExp
         - fieldName: creditScore
           booleanExpressionType: Int4BoolExp
         - fieldName: expirationDate
@@ -110,9 +119,9 @@ definition:
         - fieldName: reportPath
           booleanExpressionType: VarcharBoolExp
         - fieldName: reportType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesCreditReportTypeBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesVerificationStatusBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesBorrower
@@ -132,6 +141,8 @@ definition:
     object:
       aggregatedType: MortgageServicesCreditReports
       aggregatableFields:
+        - fieldName: bureauName
+          aggregateExpression: MortgageServicesCreditBureauAggExp
         - fieldName: creditScore
           aggregateExpression: Int4AggExp
         - fieldName: expirationDate
@@ -147,9 +158,9 @@ definition:
         - fieldName: reportPath
           aggregateExpression: VarcharAggExp
         - fieldName: reportType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesCreditReportTypeAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesVerificationStatusAggExp
   count:
     enable: true
   graphql:
@@ -164,6 +175,8 @@ definition:
     object:
       orderedType: MortgageServicesCreditReports
       orderableFields:
+        - fieldName: bureauName
+          orderByExpression: MortgageServicesCreditBureauOrderByExp
         - fieldName: creditScore
           orderByExpression: Int4OrderByExp
         - fieldName: expirationDate
@@ -179,9 +192,9 @@ definition:
         - fieldName: reportPath
           orderByExpression: VarcharOrderByExp
         - fieldName: reportType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesCreditReportTypeOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesVerificationStatusOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesApplication
         - relationshipName: mortgageServicesBorrower

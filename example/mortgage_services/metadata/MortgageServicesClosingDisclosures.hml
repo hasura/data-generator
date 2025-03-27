@@ -11,8 +11,11 @@ definition:
     - name: createdDate
       type: Timestamp!
       description: When the disclosure was created
+    - name: deliveryMethod
+      type: MortgageServicesDeliveryMethod!
+      description: How disclosure was delivered
     - name: disclosureType
-      type: Varchar!
+      type: MortgageServicesDisclosureType!
       description: Type of disclosure document
     - name: documentPath
       type: Varchar
@@ -31,7 +34,7 @@ definition:
       description: Auto-incrementing identifier for each disclosure
     - name: mortgageServicesLoanId
       type: Int4!
-      description: References the loan this disclosure is for
+      description: Reference to the loan this disclosure is for
     - name: receivedDate
       type: Timestamp
       description: When signed disclosure was received back
@@ -54,6 +57,9 @@ definition:
         createdDate:
           column:
             name: created_date
+        deliveryMethod:
+          column:
+            name: delivery_method
         disclosureType:
           column:
             name: disclosure_type
@@ -96,6 +102,7 @@ definition:
         allowedFields:
           - cashToClose
           - createdDate
+          - deliveryMethod
           - disclosureType
           - documentPath
           - interestRate
@@ -120,8 +127,10 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: createdDate
           booleanExpressionType: TimestampBoolExp
+        - fieldName: deliveryMethod
+          booleanExpressionType: MortgageServicesDeliveryMethodBoolExp
         - fieldName: disclosureType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesDisclosureTypeBoolExp
         - fieldName: documentPath
           booleanExpressionType: VarcharBoolExp
         - fieldName: interestRate
@@ -162,8 +171,10 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: createdDate
           aggregateExpression: TimestampAggExp
+        - fieldName: deliveryMethod
+          aggregateExpression: MortgageServicesDeliveryMethodAggExp
         - fieldName: disclosureType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesDisclosureTypeAggExp
         - fieldName: documentPath
           aggregateExpression: VarcharAggExp
         - fieldName: interestRate
@@ -200,8 +211,10 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: createdDate
           orderByExpression: TimestampOrderByExp
+        - fieldName: deliveryMethod
+          orderByExpression: MortgageServicesDeliveryMethodOrderByExp
         - fieldName: disclosureType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesDisclosureTypeOrderByExp
         - fieldName: documentPath
           orderByExpression: VarcharOrderByExp
         - fieldName: interestRate

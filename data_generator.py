@@ -3,7 +3,6 @@ import logging
 import os
 import random
 import re
-import sys
 import traceback
 from typing import Dict, List
 
@@ -60,9 +59,11 @@ def timer_decorator(func):
 
     return wrapper
 
+
 class SkipRowGenerationError(Exception):
     """Custom exception to skip row generation for a specific column or table."""
     pass
+
 
 class DataGenerator:
     """
@@ -71,6 +72,7 @@ class DataGenerator:
     Skips auto-generated columns like SERIAL primary keys.
     """
     inserted_pks: Dict[str, List] = {}
+
     def __init__(self, conn_params, schemas=None, exclude_schemas=None, exclusions=None, custom_generators=None,
                  batch_size=100, dbml=''):
         """
@@ -365,7 +367,8 @@ class DataGenerator:
                                 # Standard FK handling for columns without custom generators
                                 fk_info = next(
                                     (fk for fk in self.foreign_keys
-                                     if fk.get('table_schema') == schema and fk.get('table_name') == table and fk.get('column_name') == column), None
+                                     if fk.get('table_schema') == schema and fk.get('table_name') == table and fk.get(
+                                        'column_name') == column), None
                                 )
                                 if fk_info:
                                     self._handle_foreign_key(fk_info, table_key, column, is_nullable, values)
@@ -451,7 +454,9 @@ class DataGenerator:
                             # Generate data for regular columns
                             if data_type == 'text':
                                 try:
-                                    generate_unique_json_array(dbml_string=self.dbml, fully_qualified_column_name=f"{table_key}.{column}", count=num_rows)
+                                    generate_unique_json_array(dbml_string=self.dbml,
+                                                               fully_qualified_column_name=f"{table_key}.{column}",
+                                                               count=num_rows)
                                 except (AnthropicError, ValueError):
                                     pass
                             self._generate_column_value(table_key,
@@ -928,7 +933,8 @@ class DataGenerator:
         # Build a list of all table.column combinations for exclusion matching
         self.all_table_column_pairs = []
         for column in self.columns:
-            self.all_table_column_pairs.append((f"{column.get('table_schema')}.{column.get('table_name')}", column.get('column_name')))
+            self.all_table_column_pairs.append(
+                (f"{column.get('table_schema')}.{column.get('table_name')}", column.get('column_name')))
 
         logger.debug(f"Retrieved information for {len(self.columns)} columns across {len(self.schemas)} schemas")
 
@@ -1024,7 +1030,7 @@ class DataGenerator:
         including tables with no upstream or downstream dependencies."""
 
         for fk in self.foreign_keys:
-        # for _, child_schema, child_table, _, parent_schema, parent_table, _ in self.foreign_keys:
+            # for _, child_schema, child_table, _, parent_schema, parent_table, _ in self.foreign_keys:
             child_key = f"{fk.get('table_schema')}.{fk.get('table_name')}"
             parent_key = f"{fk.get('foreign_table_schema')}.{fk.get('foreign_table_name')}"
 
@@ -1169,7 +1175,7 @@ class DataGenerator:
                                 test_result = attr()
                                 if not isinstance(test_result, list) and not isinstance(test_result,
                                                                                         tuple) and not isinstance(
-                                        test_result, dict):
+                                    test_result, dict):
                                     self.faker_names.append(name)
                             except:
                                 continue
@@ -1219,7 +1225,8 @@ class DataGenerator:
 
     def _handle_foreign_key(self, fk_info, table_key, column, is_nullable, values):
         """Handle foreign key constraints when generating data."""
-        fk_schema, fk_table, fk_column = fk_info.get('foreign_table_schema'), fk_info.get('foreign_table_name'), fk_info.get('foreign_column_name')
+        fk_schema, fk_table, fk_column = fk_info.get('foreign_table_schema'), fk_info.get(
+            'foreign_table_name'), fk_info.get('foreign_column_name')
         fk_table_key = f"{fk_schema}.{fk_table}"
 
         if fk_table_key in self.inserted_pks and self.inserted_pks[fk_table_key]:
@@ -1229,7 +1236,8 @@ class DataGenerator:
             if is_nullable == 'YES':
                 values.append(None)
             else:
-                raise SkipRowGenerationError(f"Warning: Required FK {table_key}.{column} references {fk_table_key}.{fk_column} but no values exist")  # This might cause an error if NOT NULL constraint exists
+                raise SkipRowGenerationError(
+                    f"Warning: Required FK {table_key}.{column} references {fk_table_key}.{fk_column} but no values exist")  # This might cause an error if NOT NULL constraint exists
 
     def _generate_column_value(self, table_key, column, data_type, _column_default, is_nullable,
                                character_maximum_length, num_precision, num_scale, values):
@@ -1307,7 +1315,8 @@ class DataGenerator:
             return None
 
     def _generate_by_data_type(self, data_type, faker_func, _is_nullable,
-                               character_maximum_length, num_precision, num_scale, values, fully_qualified_column_name=None):
+                               character_maximum_length, num_precision, num_scale, values,
+                               fully_qualified_column_name=None):
         """Generate a value based on the specific data type."""
         data_type = data_type.lower()
 
@@ -1319,7 +1328,8 @@ class DataGenerator:
             self._generate_numeric_value(num_precision, num_scale, values)
         elif data_type in ["boolean"]:
             values.append(self.fake.pybool())
-        elif data_type in ["text"] and fully_qualified_column_name and previous_responses.get(fully_qualified_column_name):
+        elif data_type in ["text"] and fully_qualified_column_name and previous_responses.get(
+                fully_qualified_column_name):
             prev = previous_responses.get(fully_qualified_column_name)
             value = random.choice(prev)
             values.append(value)

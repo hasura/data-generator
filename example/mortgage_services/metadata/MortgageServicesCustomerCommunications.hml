@@ -9,13 +9,13 @@ definition:
       type: Timestamp!
       description: When the communication occurred
     - name: communicationType
-      type: Varchar!
-      description: Medium of communication (e.g., Email, Letter, Phone)
+      type: MortgageServicesCommunicationType!
+      description: Method of communication
     - name: content
       type: Text
       description: Content of the communication
     - name: direction
-      type: Varchar!
+      type: MortgageServicesCommunicationDirection!
       description: Whether communication was incoming or outgoing
     - name: documentPath
       type: Varchar
@@ -25,7 +25,7 @@ definition:
       description: References the application if communication is about application
     - name: mortgageServicesCommunicationId
       type: Int4!
-      description: Auto-incrementing identifier for each communication
+      description: Unique identifier for each communication record
     - name: mortgageServicesServicingAccountId
       type: Int4
       description: References the servicing account if communication is about servicing
@@ -33,13 +33,13 @@ definition:
       type: Varchar
       description: Person or entity that received the communication
     - name: relatedTo
-      type: Varchar
+      type: MortgageServicesCommunicationPurpose
       description: Purpose or context of the communication
     - name: sender
       type: Varchar
       description: Person or system that sent the communication
     - name: status
-      type: Varchar!
+      type: MortgageServicesCommunicationStatus!
       description: Delivery status of the communication
     - name: subject
       type: Varchar
@@ -133,11 +133,11 @@ definition:
         - fieldName: communicationDate
           booleanExpressionType: TimestampBoolExp
         - fieldName: communicationType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesCommunicationTypeBoolExp
         - fieldName: content
           booleanExpressionType: TextBoolExp
         - fieldName: direction
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesCommunicationDirectionBoolExp
         - fieldName: documentPath
           booleanExpressionType: VarcharBoolExp
         - fieldName: mortgageServicesApplicationId
@@ -149,11 +149,11 @@ definition:
         - fieldName: recipient
           booleanExpressionType: VarcharBoolExp
         - fieldName: relatedTo
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesCommunicationPurposeBoolExp
         - fieldName: sender
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesCommunicationStatusBoolExp
         - fieldName: subject
           booleanExpressionType: VarcharBoolExp
         - fieldName: templateId
@@ -180,11 +180,11 @@ definition:
         - fieldName: communicationDate
           aggregateExpression: TimestampAggExp
         - fieldName: communicationType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesCommunicationTypeAggExp
         - fieldName: content
           aggregateExpression: TextAggExp
         - fieldName: direction
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesCommunicationDirectionAggExp
         - fieldName: documentPath
           aggregateExpression: VarcharAggExp
         - fieldName: mortgageServicesApplicationId
@@ -196,11 +196,11 @@ definition:
         - fieldName: recipient
           aggregateExpression: VarcharAggExp
         - fieldName: relatedTo
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesCommunicationPurposeAggExp
         - fieldName: sender
           aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesCommunicationStatusAggExp
         - fieldName: subject
           aggregateExpression: VarcharAggExp
         - fieldName: templateId
@@ -222,11 +222,11 @@ definition:
         - fieldName: communicationDate
           orderByExpression: TimestampOrderByExp
         - fieldName: communicationType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesCommunicationTypeOrderByExp
         - fieldName: content
           orderByExpression: TextOrderByExp
         - fieldName: direction
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesCommunicationDirectionOrderByExp
         - fieldName: documentPath
           orderByExpression: VarcharOrderByExp
         - fieldName: mortgageServicesApplicationId
@@ -238,11 +238,11 @@ definition:
         - fieldName: recipient
           orderByExpression: VarcharOrderByExp
         - fieldName: relatedTo
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesCommunicationPurposeOrderByExp
         - fieldName: sender
           orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesCommunicationStatusOrderByExp
         - fieldName: subject
           orderByExpression: VarcharOrderByExp
         - fieldName: templateId

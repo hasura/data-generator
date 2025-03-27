@@ -3,23 +3,36 @@ kind: ObjectType
 version: v1
 definition:
   name: MortgageServicesLoanModifications
-  description: Tracks changes to loan terms after origination
+  description: Tracks modifications made to existing loan accounts, such as
+    changes to interest rates, terms, or principal balance.
   fields:
     - name: approvalDate
       type: Date
-      description: When the modification was approved
+      description: Date modification was approved
+    - name: approvedById
+      type: Int4
+      description: User who approved modification
+    - name: capitalizedAmount
+      type: Numeric
+      description: Amount of interest or fees capitalized
+    - name: documentPath
+      type: Varchar
+      description: Path to modification agreement document
     - name: effectiveDate
       type: Date
-      description: When the modification takes effect
+      description: Date modification takes effect
+    - name: hardshipReason
+      type: MortgageServicesHardshipReason!
+      description: Customer's reason for hardship
+    - name: loanAccountId
+      type: Int4!
+      description: Reference to loan account
     - name: modificationType
-      type: Varchar!
-      description: Type of modification (e.g., Rate Reduction, Term Extension)
+      type: MortgageServicesLoanModificationType!
+      description: Type of loan modification
     - name: mortgageServicesModificationId
       type: Int4!
-      description: Auto-incrementing identifier for each modification
-    - name: mortgageServicesServicingAccountId
-      type: Int4!
-      description: References the servicing account being modified
+      description: Unique identifier for loan modification
     - name: newPrincipalBalance
       type: Numeric
       description: Principal balance after modification
@@ -28,7 +41,7 @@ definition:
       description: Interest rate after modification
     - name: newTermMonths
       type: Int4
-      description: Loan term in months after modification
+      description: Loan term after modification
     - name: originalPrincipalBalance
       type: Numeric
       description: Principal balance before modification
@@ -37,16 +50,13 @@ definition:
       description: Interest rate before modification
     - name: originalTermMonths
       type: Int4
-      description: Loan term in months before modification
-    - name: reason
-      type: Text
-      description: Reason for the modification
+      description: Loan term before modification
     - name: requestDate
       type: Date!
-      description: When the modification was requested
+      description: Date modification was requested
     - name: status
-      type: Varchar!
-      description: Current status of the modification request
+      type: MortgageServicesLoanModificationStatus!
+      description: Current status of the modification
   graphql:
     typeName: MortgageServices_MortgageServicesLoanModifications
     inputTypeName: MortgageServices_MortgageServicesLoanModificationsInput
@@ -57,18 +67,30 @@ definition:
         approvalDate:
           column:
             name: approval_date
+        approvedById:
+          column:
+            name: approved_by_id
+        capitalizedAmount:
+          column:
+            name: capitalized_amount
+        documentPath:
+          column:
+            name: document_path
         effectiveDate:
           column:
             name: effective_date
+        hardshipReason:
+          column:
+            name: hardship_reason
+        loanAccountId:
+          column:
+            name: loan_account_id
         modificationType:
           column:
             name: modification_type
         mortgageServicesModificationId:
           column:
             name: mortgage_services_modification_id
-        mortgageServicesServicingAccountId:
-          column:
-            name: mortgage_services_servicing_account_id
         newPrincipalBalance:
           column:
             name: new_principal_balance
@@ -87,9 +109,6 @@ definition:
         originalTermMonths:
           column:
             name: original_term_months
-        reason:
-          column:
-            name: reason
         requestDate:
           column:
             name: request_date
@@ -107,17 +126,20 @@ definition:
       output:
         allowedFields:
           - approvalDate
+          - approvedById
+          - capitalizedAmount
+          - documentPath
           - effectiveDate
+          - hardshipReason
+          - loanAccountId
           - modificationType
           - mortgageServicesModificationId
-          - mortgageServicesServicingAccountId
           - newPrincipalBalance
           - newRate
           - newTermMonths
           - originalPrincipalBalance
           - originalRate
           - originalTermMonths
-          - reason
           - requestDate
           - status
 
@@ -132,13 +154,21 @@ definition:
       comparableFields:
         - fieldName: approvalDate
           booleanExpressionType: DateBoolExp
+        - fieldName: approvedById
+          booleanExpressionType: Int4BoolExp
+        - fieldName: capitalizedAmount
+          booleanExpressionType: NumericBoolExp
+        - fieldName: documentPath
+          booleanExpressionType: VarcharBoolExp
         - fieldName: effectiveDate
           booleanExpressionType: DateBoolExp
-        - fieldName: modificationType
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: mortgageServicesModificationId
+        - fieldName: hardshipReason
+          booleanExpressionType: MortgageServicesHardshipReasonBoolExp
+        - fieldName: loanAccountId
           booleanExpressionType: Int4BoolExp
-        - fieldName: mortgageServicesServicingAccountId
+        - fieldName: modificationType
+          booleanExpressionType: MortgageServicesLoanModificationTypeBoolExp
+        - fieldName: mortgageServicesModificationId
           booleanExpressionType: Int4BoolExp
         - fieldName: newPrincipalBalance
           booleanExpressionType: NumericBoolExp
@@ -152,14 +182,11 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: originalTermMonths
           booleanExpressionType: Int4BoolExp
-        - fieldName: reason
-          booleanExpressionType: TextBoolExp
         - fieldName: requestDate
           booleanExpressionType: DateBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
-      comparableRelationships:
-        - relationshipName: mortgageServicesServicingAccount
+          booleanExpressionType: MortgageServicesLoanModificationStatusBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -178,13 +205,21 @@ definition:
       aggregatableFields:
         - fieldName: approvalDate
           aggregateExpression: DateAggExp
+        - fieldName: approvedById
+          aggregateExpression: Int4AggExp
+        - fieldName: capitalizedAmount
+          aggregateExpression: NumericAggExp
+        - fieldName: documentPath
+          aggregateExpression: VarcharAggExp
         - fieldName: effectiveDate
           aggregateExpression: DateAggExp
-        - fieldName: modificationType
-          aggregateExpression: VarcharAggExp
-        - fieldName: mortgageServicesModificationId
+        - fieldName: hardshipReason
+          aggregateExpression: MortgageServicesHardshipReasonAggExp
+        - fieldName: loanAccountId
           aggregateExpression: Int4AggExp
-        - fieldName: mortgageServicesServicingAccountId
+        - fieldName: modificationType
+          aggregateExpression: MortgageServicesLoanModificationTypeAggExp
+        - fieldName: mortgageServicesModificationId
           aggregateExpression: Int4AggExp
         - fieldName: newPrincipalBalance
           aggregateExpression: NumericAggExp
@@ -198,12 +233,10 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: originalTermMonths
           aggregateExpression: Int4AggExp
-        - fieldName: reason
-          aggregateExpression: TextAggExp
         - fieldName: requestDate
           aggregateExpression: DateAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesLoanModificationStatusAggExp
   count:
     enable: true
   graphql:
@@ -220,13 +253,21 @@ definition:
       orderableFields:
         - fieldName: approvalDate
           orderByExpression: DateOrderByExp
+        - fieldName: approvedById
+          orderByExpression: Int4OrderByExp
+        - fieldName: capitalizedAmount
+          orderByExpression: NumericOrderByExp
+        - fieldName: documentPath
+          orderByExpression: VarcharOrderByExp
         - fieldName: effectiveDate
           orderByExpression: DateOrderByExp
-        - fieldName: modificationType
-          orderByExpression: VarcharOrderByExp
-        - fieldName: mortgageServicesModificationId
+        - fieldName: hardshipReason
+          orderByExpression: MortgageServicesHardshipReasonOrderByExp
+        - fieldName: loanAccountId
           orderByExpression: Int4OrderByExp
-        - fieldName: mortgageServicesServicingAccountId
+        - fieldName: modificationType
+          orderByExpression: MortgageServicesLoanModificationTypeOrderByExp
+        - fieldName: mortgageServicesModificationId
           orderByExpression: Int4OrderByExp
         - fieldName: newPrincipalBalance
           orderByExpression: NumericOrderByExp
@@ -240,14 +281,11 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: originalTermMonths
           orderByExpression: Int4OrderByExp
-        - fieldName: reason
-          orderByExpression: TextOrderByExp
         - fieldName: requestDate
           orderByExpression: DateOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
-      orderableRelationships:
-        - relationshipName: mortgageServicesServicingAccount
+          orderByExpression: MortgageServicesLoanModificationStatusOrderByExp
+      orderableRelationships: []
   graphql:
     expressionTypeName: MortgageServices_MortgageServicesLoanModificationsOrderByExp
 
@@ -279,7 +317,8 @@ definition:
       queryRootField: mortgageServicesLoanModificationsAggregate
       subscription:
         rootField: mortgageServicesLoanModificationsAggregate
-  description: Tracks changes to loan terms after origination
+  description: Tracks modifications made to existing loan accounts, such as
+    changes to interest rates, terms, or principal balance.
 
 ---
 kind: ModelPermissions
@@ -291,22 +330,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: mortgageServicesServicingAccount
-  sourceType: MortgageServicesLoanModifications
-  target:
-    model:
-      name: MortgageServicesServicingAccounts
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: mortgageServicesServicingAccountId
-      target:
-        modelField:
-          - fieldName: mortgageServicesServicingAccountId
 

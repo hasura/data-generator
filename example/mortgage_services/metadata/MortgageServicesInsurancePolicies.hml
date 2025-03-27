@@ -27,8 +27,8 @@ definition:
       type: Date!
       description: End date of policy coverage
     - name: insuranceType
-      type: Varchar!
-      description: Type of insurance coverage (e.g., Hazard, Flood)
+      type: MortgageServicesInsuranceType!
+      description: Type of insurance coverage
     - name: mortgageServicesPolicyId
       type: Int4!
       description: Auto-incrementing identifier for each policy
@@ -42,7 +42,7 @@ definition:
       type: Varchar!
       description: Insurance policy identifier
     - name: status
-      type: Varchar!
+      type: MortgageServicesInsurancePolicyStatus!
       description: Current status of the policy
   graphql:
     typeName: MortgageServices_MortgageServicesInsurancePolicies
@@ -138,7 +138,7 @@ definition:
         - fieldName: expirationDate
           booleanExpressionType: DateBoolExp
         - fieldName: insuranceType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesInsuranceTypeBoolExp
         - fieldName: mortgageServicesPolicyId
           booleanExpressionType: Int4BoolExp
         - fieldName: mortgageServicesServicingAccountId
@@ -148,7 +148,7 @@ definition:
         - fieldName: policyNumber
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesInsurancePolicyStatusBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesServicingAccount
   logicalOperators:
@@ -182,7 +182,7 @@ definition:
         - fieldName: expirationDate
           aggregateExpression: DateAggExp
         - fieldName: insuranceType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesInsuranceTypeAggExp
         - fieldName: mortgageServicesPolicyId
           aggregateExpression: Int4AggExp
         - fieldName: mortgageServicesServicingAccountId
@@ -192,7 +192,7 @@ definition:
         - fieldName: policyNumber
           aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesInsurancePolicyStatusAggExp
   count:
     enable: true
   graphql:
@@ -222,7 +222,7 @@ definition:
         - fieldName: expirationDate
           orderByExpression: DateOrderByExp
         - fieldName: insuranceType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesInsuranceTypeOrderByExp
         - fieldName: mortgageServicesPolicyId
           orderByExpression: Int4OrderByExp
         - fieldName: mortgageServicesServicingAccountId
@@ -232,7 +232,7 @@ definition:
         - fieldName: policyNumber
           orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesInsurancePolicyStatusOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesServicingAccount
   graphql:

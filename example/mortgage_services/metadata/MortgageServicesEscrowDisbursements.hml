@@ -21,7 +21,7 @@ definition:
       type: Date!
       description: When the disbursement was made
     - name: disbursementType
-      type: Varchar!
+      type: MortgageServicesDisbursementType!
       description: Type of disbursement (e.g., Property Tax, Insurance, PMI)
     - name: dueDate
       type: Date
@@ -39,7 +39,7 @@ definition:
       type: Varchar!
       description: Entity receiving the disbursement
     - name: status
-      type: Varchar!
+      type: MortgageServicesDisbursementStatus!
       description: Current status of the disbursement
   graphql:
     typeName: MortgageServices_MortgageServicesEscrowDisbursements
@@ -127,7 +127,7 @@ definition:
         - fieldName: disbursementDate
           booleanExpressionType: DateBoolExp
         - fieldName: disbursementType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesDisbursementTypeBoolExp
         - fieldName: dueDate
           booleanExpressionType: DateBoolExp
         - fieldName: mortgageServicesDisbursementId
@@ -139,7 +139,7 @@ definition:
         - fieldName: payeeName
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: MortgageServicesDisbursementStatusBoolExp
       comparableRelationships:
         - relationshipName: mortgageServicesServicingAccount
   logicalOperators:
@@ -169,7 +169,7 @@ definition:
         - fieldName: disbursementDate
           aggregateExpression: DateAggExp
         - fieldName: disbursementType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesDisbursementTypeAggExp
         - fieldName: dueDate
           aggregateExpression: DateAggExp
         - fieldName: mortgageServicesDisbursementId
@@ -181,7 +181,7 @@ definition:
         - fieldName: payeeName
           aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: MortgageServicesDisbursementStatusAggExp
   count:
     enable: true
   graphql:
@@ -207,7 +207,7 @@ definition:
         - fieldName: disbursementDate
           orderByExpression: DateOrderByExp
         - fieldName: disbursementType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesDisbursementTypeOrderByExp
         - fieldName: dueDate
           orderByExpression: DateOrderByExp
         - fieldName: mortgageServicesDisbursementId
@@ -219,7 +219,7 @@ definition:
         - fieldName: payeeName
           orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: MortgageServicesDisbursementStatusOrderByExp
       orderableRelationships:
         - relationshipName: mortgageServicesServicingAccount
   graphql:

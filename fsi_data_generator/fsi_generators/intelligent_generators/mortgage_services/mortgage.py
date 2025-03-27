@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Any, Dict
 
 from data_generator import DataGenerator, SkipRowGenerationError
+
 from .enums import ApplicationStatus, InterestRateType, LoanType
 
 prev_app = set()

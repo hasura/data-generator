@@ -15377,14 +15377,6 @@
             "nullable": "nullable",
             "description": "When employment ended, if applicable"
           },
-          "enterprise_address_id": {
-            "name": "enterprise_address_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": "References the employer's address"
-          },
           "is_current": {
             "name": "is_current",
             "type": {
@@ -15473,13 +15465,6 @@
           ]
         },
         "foreignRelations": {
-          "borrower_employments_enterprise_address_id_fkey": {
-            "foreignSchema": "enterprise",
-            "foreignTable": "addresses",
-            "columnMapping": {
-              "enterprise_address_id": "enterprise_address_id"
-            }
-          },
           "borrower_employments_mortgage_services_borrower_id_fkey": {
             "foreignSchema": "mortgage_services",
             "foreignTable": "borrowers",
@@ -15972,6 +15957,14 @@
             "nullable": "nullable",
             "description": "Fee charged for closing services"
           },
+          "closing_type": {
+            "name": "closing_type",
+            "type": {
+              "scalarType": "mortgage_services_closing_type"
+            },
+            "nullable": "nonNullable",
+            "description": "Type of closing process being used"
+          },
           "location_address_id": {
             "name": "location_address_id",
             "type": {
@@ -15995,7 +15988,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the loan this closing is for"
+            "description": "Reference to the loan this closing is for"
           },
           "notes": {
             "name": "notes",
@@ -16016,7 +16009,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_appointment_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the closing appointment"
@@ -16065,10 +16058,18 @@
             "nullable": "nonNullable",
             "description": "When the disclosure was created"
           },
+          "delivery_method": {
+            "name": "delivery_method",
+            "type": {
+              "scalarType": "mortgage_services_delivery_method"
+            },
+            "nullable": "nonNullable",
+            "description": "How disclosure was delivered"
+          },
           "disclosure_type": {
             "name": "disclosure_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_disclosure_type"
             },
             "nullable": "nonNullable",
             "description": "Type of disclosure document"
@@ -16120,7 +16121,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the loan this disclosure is for"
+            "description": "Reference to the loan this disclosure is for"
           },
           "received_date": {
             "name": "received_date",
@@ -16283,6 +16284,14 @@
         "schemaName": "mortgage_services",
         "tableName": "credit_reports",
         "columns": {
+          "bureau_name": {
+            "name": "bureau_name",
+            "type": {
+              "scalarType": "mortgage_services_credit_bureau"
+            },
+            "nullable": "nullable",
+            "description": "Credit bureau providing the report"
+          },
           "credit_score": {
             "name": "credit_score",
             "type": {
@@ -16297,7 +16306,7 @@
               "scalarType": "date"
             },
             "nullable": "nonNullable",
-            "description": "When the credit report expires"
+            "description": "When credit report expires"
           },
           "mortgage_services_application_id": {
             "name": "mortgage_services_application_id",
@@ -16305,7 +16314,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the application this credit report is for"
+            "description": "Reference to applications"
           },
           "mortgage_services_borrower_id": {
             "name": "mortgage_services_borrower_id",
@@ -16313,7 +16322,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the borrower this credit report is for"
+            "description": "Reference to borrower this credit report is for"
           },
           "mortgage_services_credit_report_id": {
             "name": "mortgage_services_credit_report_id",
@@ -16330,7 +16339,7 @@
               "scalarType": "timestamp"
             },
             "nullable": "nonNullable",
-            "description": "When the credit report was pulled"
+            "description": "When credit report was pulled"
           },
           "report_path": {
             "name": "report_path",
@@ -16338,12 +16347,12 @@
               "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": "Storage location of the credit report"
+            "description": "Path to stored credit report"
           },
           "report_type": {
             "name": "report_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_credit_report_type"
             },
             "nullable": "nonNullable",
             "description": "Type of credit report pulled"
@@ -16351,10 +16360,10 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_verification_status"
             },
             "nullable": "nonNullable",
-            "description": "Status of the credit report"
+            "description": "Status of credit report retrieval"
           }
         },
         "uniquenessConstraints": {
@@ -16395,10 +16404,10 @@
           "communication_type": {
             "name": "communication_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_communication_type"
             },
             "nullable": "nonNullable",
-            "description": "Medium of communication (e.g., Email, Letter, Phone)"
+            "description": "Method of communication"
           },
           "content": {
             "name": "content",
@@ -16411,7 +16420,7 @@
           "direction": {
             "name": "direction",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_communication_direction"
             },
             "nullable": "nonNullable",
             "description": "Whether communication was incoming or outgoing"
@@ -16439,7 +16448,7 @@
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": "Auto-incrementing identifier for each communication"
+            "description": "Unique identifier for each communication record"
           },
           "mortgage_services_servicing_account_id": {
             "name": "mortgage_services_servicing_account_id",
@@ -16460,7 +16469,7 @@
           "related_to": {
             "name": "related_to",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_communication_purpose"
             },
             "nullable": "nullable",
             "description": "Purpose or context of the communication"
@@ -16476,7 +16485,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_communication_status"
             },
             "nullable": "nonNullable",
             "description": "Delivery status of the communication"
@@ -16726,7 +16735,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_escrow_analysis_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the analysis"
@@ -16803,7 +16812,7 @@
           "disbursement_type": {
             "name": "disbursement_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_disbursement_type"
             },
             "nullable": "nonNullable",
             "description": "Type of disbursement (e.g., Property Tax, Insurance, PMI)"
@@ -16852,7 +16861,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_disbursement_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the disbursement"
@@ -16886,13 +16895,38 @@
             "nullable": "nullable",
             "description": "Applicant's age in years"
           },
+          "age_group": {
+            "name": "age_group",
+            "type": {
+              "scalarType": "mortgage_services_hmda_age_group"
+            },
+            "nullable": "nullable",
+            "description": "Applicant's age group for reporting"
+          },
+          "applicant_present": {
+            "name": "applicant_present",
+            "type": {
+              "scalarType": "mortgage_services_hmda_applicant_present"
+            },
+            "nullable": "nullable",
+            "description": "Whether applicant was present during application"
+          },
           "applicant_type": {
             "name": "applicant_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_applicant_type"
             },
             "nullable": "nonNullable",
             "description": "Indicates if record is for primary applicant or co-applicant"
+          },
+          "created_date": {
+            "name": "created_date",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "When the demographic record was created"
           },
           "debt_to_income_ratio": {
             "name": "debt_to_income_ratio",
@@ -16905,7 +16939,7 @@
           "ethnicity_1": {
             "name": "ethnicity_1",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_ethnicity"
             },
             "nullable": "nullable",
             "description": "Primary ethnicity selection"
@@ -16913,7 +16947,7 @@
           "ethnicity_2": {
             "name": "ethnicity_2",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_ethnicity_detail"
             },
             "nullable": "nullable",
             "description": "Secondary ethnicity selection if applicable"
@@ -16921,7 +16955,7 @@
           "ethnicity_3": {
             "name": "ethnicity_3",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_ethnicity_detail"
             },
             "nullable": "nullable",
             "description": "Additional ethnicity selection if applicable"
@@ -16929,7 +16963,7 @@
           "ethnicity_4": {
             "name": "ethnicity_4",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_ethnicity_detail"
             },
             "nullable": "nullable",
             "description": "Additional ethnicity selection if applicable"
@@ -16937,7 +16971,7 @@
           "ethnicity_5": {
             "name": "ethnicity_5",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_ethnicity_detail"
             },
             "nullable": "nullable",
             "description": "Additional ethnicity selection if applicable"
@@ -16953,7 +16987,7 @@
           "ethnicity_observed": {
             "name": "ethnicity_observed",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_collection_method"
             },
             "nullable": "nullable",
             "description": "How ethnicity was determined if not provided by applicant"
@@ -16965,6 +16999,14 @@
             },
             "nullable": "nullable",
             "description": "Applicant's annual income in thousands of dollars"
+          },
+          "modified_date": {
+            "name": "modified_date",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nullable",
+            "description": "When the demographic record was last modified"
           },
           "mortgage_services_applicant_demographics_id": {
             "name": "mortgage_services_applicant_demographics_id",
@@ -16986,7 +17028,7 @@
           "race_1": {
             "name": "race_1",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_race"
             },
             "nullable": "nullable",
             "description": "Primary race selection"
@@ -16994,7 +17036,7 @@
           "race_2": {
             "name": "race_2",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_race"
             },
             "nullable": "nullable",
             "description": "Secondary race selection if applicable"
@@ -17002,7 +17044,7 @@
           "race_3": {
             "name": "race_3",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_race"
             },
             "nullable": "nullable",
             "description": "Additional race selection if applicable"
@@ -17010,7 +17052,7 @@
           "race_4": {
             "name": "race_4",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_race"
             },
             "nullable": "nullable",
             "description": "Additional race selection if applicable"
@@ -17018,10 +17060,50 @@
           "race_5": {
             "name": "race_5",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_race"
             },
             "nullable": "nullable",
             "description": "Additional race selection if applicable"
+          },
+          "race_detail_1": {
+            "name": "race_detail_1",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Race detail for race_1 if applicable"
+          },
+          "race_detail_2": {
+            "name": "race_detail_2",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Race detail for race_2 if applicable"
+          },
+          "race_detail_3": {
+            "name": "race_detail_3",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Race detail for race_3 if applicable"
+          },
+          "race_detail_4": {
+            "name": "race_detail_4",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Race detail for race_4 if applicable"
+          },
+          "race_detail_5": {
+            "name": "race_detail_5",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Race detail for race_5 if applicable"
           },
           "race_free_form": {
             "name": "race_free_form",
@@ -17034,7 +17116,7 @@
           "race_observed": {
             "name": "race_observed",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_collection_method"
             },
             "nullable": "nullable",
             "description": "How race was determined if not provided by applicant"
@@ -17042,7 +17124,7 @@
           "sex": {
             "name": "sex",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_sex"
             },
             "nullable": "nullable",
             "description": "Applicant's reported sex"
@@ -17050,7 +17132,7 @@
           "sex_observed": {
             "name": "sex_observed",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_collection_method"
             },
             "nullable": "nullable",
             "description": "How sex was determined if not provided by applicant"
@@ -17103,7 +17185,7 @@
           "edit_type": {
             "name": "edit_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_edit_type"
             },
             "nullable": "nonNullable",
             "description": "Category of edit (SYNTACTICAL, VALIDITY, QUALITY, MACRO)"
@@ -17152,7 +17234,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_edit_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the edit (OPEN, VERIFIED, CORRECTED)"
@@ -17188,10 +17270,10 @@
           "action_taken": {
             "name": "action_taken",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_action_taken"
             },
             "nullable": "nonNullable",
-            "description": "Code indicating final disposition (1=Originated, 2=Approved not accepted, etc.)"
+            "description": "Code indicating final disposition"
           },
           "action_taken_date": {
             "name": "action_taken_date",
@@ -17204,7 +17286,7 @@
           "aus1": {
             "name": "aus1",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_aus"
             },
             "nullable": "nullable",
             "description": "Primary automated underwriting system used"
@@ -17212,7 +17294,7 @@
           "aus2": {
             "name": "aus2",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_aus"
             },
             "nullable": "nullable",
             "description": "Secondary automated underwriting system used if applicable"
@@ -17220,7 +17302,7 @@
           "aus3": {
             "name": "aus3",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_aus"
             },
             "nullable": "nullable",
             "description": "Additional automated underwriting system if applicable"
@@ -17228,7 +17310,7 @@
           "aus4": {
             "name": "aus4",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_aus"
             },
             "nullable": "nullable",
             "description": "Additional automated underwriting system if applicable"
@@ -17236,7 +17318,7 @@
           "aus5": {
             "name": "aus5",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_aus"
             },
             "nullable": "nullable",
             "description": "Additional automated underwriting system if applicable"
@@ -17244,18 +17326,18 @@
           "balloon_payment": {
             "name": "balloon_payment",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_balloon_payment"
             },
             "nullable": "nullable",
-            "description": "Whether loan has balloon payment feature (1=Yes, 2=No)"
+            "description": "Whether loan has balloon payment feature"
           },
           "business_or_commercial_purpose": {
             "name": "business_or_commercial_purpose",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_business_or_commercial_purpose"
             },
             "nullable": "nullable",
-            "description": "Whether loan is for business purpose (1=Yes, 2=No)"
+            "description": "Whether loan is for business purpose"
           },
           "census_tract": {
             "name": "census_tract",
@@ -17268,10 +17350,10 @@
           "construction_method": {
             "name": "construction_method",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_construction_method"
             },
             "nullable": "nonNullable",
-            "description": "Code indicating construction method (1=Site-built, 2=Manufactured)"
+            "description": "Code indicating construction method"
           },
           "county": {
             "name": "county",
@@ -17300,7 +17382,7 @@
           "credit_score_model": {
             "name": "credit_score_model",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_credit_score_model"
             },
             "nullable": "nullable",
             "description": "Code indicating credit scoring model used"
@@ -17308,7 +17390,7 @@
           "denial_reason1": {
             "name": "denial_reason1",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_denial_reason"
             },
             "nullable": "nullable",
             "description": "Primary reason for denial if applicable"
@@ -17316,7 +17398,7 @@
           "denial_reason2": {
             "name": "denial_reason2",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_denial_reason"
             },
             "nullable": "nullable",
             "description": "Secondary reason for denial if applicable"
@@ -17324,7 +17406,7 @@
           "denial_reason3": {
             "name": "denial_reason3",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_denial_reason"
             },
             "nullable": "nullable",
             "description": "Additional reason for denial if applicable"
@@ -17332,7 +17414,7 @@
           "denial_reason4": {
             "name": "denial_reason4",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_denial_reason"
             },
             "nullable": "nullable",
             "description": "Additional reason for denial if applicable"
@@ -17348,7 +17430,7 @@
           "edit_status": {
             "name": "edit_status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_record_edit_status"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -17357,15 +17439,15 @@
           "hoepa_status": {
             "name": "hoepa_status",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "mortgage_services_hmda_hoepa_status"
             },
             "nullable": "nonNullable",
-            "description": "Code indicating if loan is subject to HOEPA (1=Yes, 2=No)"
+            "description": "Code indicating if loan is subject to HOEPA"
           },
           "initially_payable_to_institution": {
             "name": "initially_payable_to_institution",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "bool"
             },
             "nullable": "nullable",
             "description": "Whether loan was initially payable to reporting institution"
@@ -17373,10 +17455,10 @@
           "interest_only_payment": {
             "name": "interest_only_payment",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_interest_only"
             },
             "nullable": "nullable",
-            "description": "Whether loan has interest-only payments (1=Yes, 2=No)"
+            "description": "Whether loan has interest-only payments"
           },
           "intro_rate_period": {
             "name": "intro_rate_period",
@@ -17421,10 +17503,10 @@
           "lien_status": {
             "name": "lien_status",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "mortgage_services_hmda_lien_status"
             },
             "nullable": "nonNullable",
-            "description": "Code indicating lien position (1=First lien, 2=Subordinate lien)"
+            "description": "Code indicating lien position"
           },
           "loan_amount": {
             "name": "loan_amount",
@@ -17437,10 +17519,10 @@
           "loan_purpose": {
             "name": "loan_purpose",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_loan_purpose"
             },
             "nullable": "nonNullable",
-            "description": "Code indicating loan purpose (1=Home purchase, 2=Home improvement, etc.)"
+            "description": "Code indicating loan purpose"
           },
           "loan_term": {
             "name": "loan_term",
@@ -17453,7 +17535,7 @@
           "manufactured_home_land_property_interest": {
             "name": "manufactured_home_land_property_interest",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_manufactured_land_property_interest"
             },
             "nullable": "nullable",
             "description": "Code for land ownership with manufactured home"
@@ -17461,7 +17543,7 @@
           "manufactured_home_secured_property_type": {
             "name": "manufactured_home_secured_property_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_manufactured_home_type"
             },
             "nullable": "nullable",
             "description": "Code for manufactured home property type"
@@ -17510,26 +17592,26 @@
           "negative_amortization": {
             "name": "negative_amortization",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_negative_amortization"
             },
             "nullable": "nullable",
-            "description": "Whether loan allows negative amortization (1=Yes, 2=No)"
+            "description": "Whether loan allows negative amortization"
           },
           "occupancy_type": {
             "name": "occupancy_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_occupancy_type"
             },
             "nullable": "nonNullable",
-            "description": "Code indicating intended property use (1=Primary, 2=Secondary, 3=Investment)"
+            "description": "Code indicating intended property use"
           },
           "open_end_line_of_credit": {
             "name": "open_end_line_of_credit",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_open_end_line_of_credit"
             },
             "nullable": "nullable",
-            "description": "Whether loan is an open-end line of credit (1=Yes, 2=No)"
+            "description": "Whether loan is an open-end line of credit"
           },
           "origination_charges": {
             "name": "origination_charges",
@@ -17542,15 +17624,15 @@
           "other_non_amortizing_features": {
             "name": "other_non_amortizing_features",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_other_non_amortizing"
             },
             "nullable": "nullable",
-            "description": "Whether loan has other non-amortizing features (1=Yes, 2=No)"
+            "description": "Whether loan has other non-amortizing features"
           },
           "preapproval": {
             "name": "preapproval",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_preapproval"
             },
             "nullable": "nonNullable",
             "description": "Code indicating if preapproval was requested"
@@ -17582,10 +17664,10 @@
           "reverse_mortgage": {
             "name": "reverse_mortgage",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_reverse_mortgage"
             },
             "nullable": "nullable",
-            "description": "Whether loan is a reverse mortgage (1=Yes, 2=No)"
+            "description": "Whether loan is a reverse mortgage"
           },
           "state": {
             "name": "state",
@@ -17598,15 +17680,15 @@
           "submission_of_application": {
             "name": "submission_of_application",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_submission_method"
             },
             "nullable": "nullable",
-            "description": "How application was submitted (1=Direct, 2=Not direct)"
+            "description": "How application was submitted"
           },
           "submission_status": {
             "name": "submission_status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_hmda_submission_status"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -17739,7 +17821,7 @@
           "reporting_period": {
             "name": "reporting_period",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_reporting_period"
             },
             "nullable": "nonNullable",
             "description": "Reporting period (ANNUAL, QUARTERLY_Q1, etc.)"
@@ -17771,7 +17853,7 @@
           "submission_status": {
             "name": "submission_status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_submission_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the submission process"
@@ -17872,10 +17954,10 @@
           "insurance_type": {
             "name": "insurance_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_insurance_type"
             },
             "nullable": "nonNullable",
-            "description": "Type of insurance coverage (e.g., Hazard, Flood)"
+            "description": "Type of insurance coverage"
           },
           "mortgage_services_policy_id": {
             "name": "mortgage_services_policy_id",
@@ -17913,7 +17995,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_insurance_policy_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the policy"
@@ -17945,7 +18027,31 @@
               "scalarType": "date"
             },
             "nullable": "nullable",
-            "description": "When the modification was approved"
+            "description": "Date modification was approved"
+          },
+          "approved_by_id": {
+            "name": "approved_by_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "User who approved modification"
+          },
+          "capitalized_amount": {
+            "name": "capitalized_amount",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Amount of interest or fees capitalized"
+          },
+          "document_path": {
+            "name": "document_path",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Path to modification agreement document"
           },
           "effective_date": {
             "name": "effective_date",
@@ -17953,15 +18059,31 @@
               "scalarType": "date"
             },
             "nullable": "nullable",
-            "description": "When the modification takes effect"
+            "description": "Date modification takes effect"
+          },
+          "hardship_reason": {
+            "name": "hardship_reason",
+            "type": {
+              "scalarType": "mortgage_services_hardship_reason"
+            },
+            "nullable": "nonNullable",
+            "description": "Customer's reason for hardship"
+          },
+          "loan_account_id": {
+            "name": "loan_account_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Reference to loan account"
           },
           "modification_type": {
             "name": "modification_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_loan_modification_type"
             },
             "nullable": "nonNullable",
-            "description": "Type of modification (e.g., Rate Reduction, Term Extension)"
+            "description": "Type of loan modification"
           },
           "mortgage_services_modification_id": {
             "name": "mortgage_services_modification_id",
@@ -17970,15 +18092,7 @@
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": "Auto-incrementing identifier for each modification"
-          },
-          "mortgage_services_servicing_account_id": {
-            "name": "mortgage_services_servicing_account_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": "References the servicing account being modified"
+            "description": "Unique identifier for loan modification"
           },
           "new_principal_balance": {
             "name": "new_principal_balance",
@@ -18002,7 +18116,7 @@
               "scalarType": "int4"
             },
             "nullable": "nullable",
-            "description": "Loan term in months after modification"
+            "description": "Loan term after modification"
           },
           "original_principal_balance": {
             "name": "original_principal_balance",
@@ -18026,15 +18140,7 @@
               "scalarType": "int4"
             },
             "nullable": "nullable",
-            "description": "Loan term in months before modification"
-          },
-          "reason": {
-            "name": "reason",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": "Reason for the modification"
+            "description": "Loan term before modification"
           },
           "request_date": {
             "name": "request_date",
@@ -18042,15 +18148,15 @@
               "scalarType": "date"
             },
             "nullable": "nonNullable",
-            "description": "When the modification was requested"
+            "description": "Date modification was requested"
           },
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_loan_modification_status"
             },
             "nullable": "nonNullable",
-            "description": "Current status of the modification request"
+            "description": "Current status of the modification"
           }
         },
         "uniquenessConstraints": {
@@ -18059,15 +18165,22 @@
           ]
         },
         "foreignRelations": {
-          "loan_modifications_mortgage_services_servicing_account_id_fkey": {
-            "foreignSchema": "mortgage_services",
-            "foreignTable": "servicing_accounts",
+          "loan_modifications_approved_by_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
             "columnMapping": {
-              "mortgage_services_servicing_account_id": "mortgage_services_servicing_account_id"
+              "approved_by_id": "enterprise_associate_id"
+            }
+          },
+          "loan_modifications_loan_account_id_fkey": {
+            "foreignSchema": "consumer_lending",
+            "foreignTable": "loan_accounts",
+            "columnMapping": {
+              "loan_account_id": "loan_account_id"
             }
           }
         },
-        "description": "Tracks changes to loan terms after origination"
+        "description": "Tracks modifications made to existing loan accounts, such as changes to interest rates, terms, or principal balance."
       },
       "mortgage_services_loan_products": {
         "schemaName": "mortgage_services",
@@ -18567,7 +18680,7 @@
           "payment_type": {
             "name": "payment_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_payment_type"
             },
             "nullable": "nonNullable",
             "description": "Type of payment (e.g., Regular, Extra Principal, Escrow Only)"
@@ -18875,7 +18988,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "mortgage_services_servicing_account_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the loan being serviced"
@@ -33112,6 +33225,75 @@
             ]
           }
         },
+        "mortgage_services_appointment_status": {
+          "typeName": "appointment_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_appointment_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_appointment_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_appointment_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_appointment_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_appointment_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_appointment_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_appointment_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_appointment_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_appointment_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SCHEDULED",
+              "RESCHEDULED",
+              "CONFIRMED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED",
+              "MISSED",
+              "PENDING"
+            ]
+          }
+        },
         "mortgage_services_appraisal_status": {
           "typeName": "appraisal_status",
           "schemaName": "mortgage_services",
@@ -33405,6 +33587,361 @@
             ]
           }
         },
+        "mortgage_services_closing_type": {
+          "typeName": "closing_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_closing_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_closing_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_closing_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_closing_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_closing_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_closing_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_closing_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_closing_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_closing_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "IN_PERSON",
+              "HYBRID",
+              "REMOTE",
+              "MAIL_AWAY",
+              "ESCROW",
+              "POWER_OF_ATTORNEY",
+              "DRY_CLOSING",
+              "WET_CLOSING"
+            ]
+          }
+        },
+        "mortgage_services_communication_direction": {
+          "typeName": "communication_direction",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_communication_direction"
+            },
+            "min": {
+              "returnType": "mortgage_services_communication_direction"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_communication_direction",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_direction",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_direction",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_communication_direction",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_direction",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_direction",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_direction",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "INBOUND",
+              "OUTBOUND",
+              "INTERNAL"
+            ]
+          }
+        },
+        "mortgage_services_communication_purpose": {
+          "typeName": "communication_purpose",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_communication_purpose"
+            },
+            "min": {
+              "returnType": "mortgage_services_communication_purpose"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_communication_purpose",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_purpose",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_purpose",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_communication_purpose",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_purpose",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_purpose",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_purpose",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PAYMENT_REMINDER",
+              "PAYMENT_CONFIRMATION",
+              "ESCROW_ANALYSIS",
+              "FORBEARANCE",
+              "MODIFICATION",
+              "DOCUMENT_REQUEST",
+              "DOCUMENT_RECEIPT",
+              "STATEMENT",
+              "INSURANCE",
+              "TAXES",
+              "DEFAULT_NOTICE",
+              "FORECLOSURE",
+              "LOSS_MITIGATION",
+              "GENERAL_INQUIRY",
+              "COMPLAINT",
+              "WELCOME",
+              "REGULATORY",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_communication_status": {
+          "typeName": "communication_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_communication_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_communication_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_communication_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_communication_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SENT",
+              "DELIVERED",
+              "FAILED",
+              "RECEIVED",
+              "READ",
+              "PENDING",
+              "DRAFT",
+              "CANCELLED",
+              "RETURNED",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_communication_type": {
+          "typeName": "communication_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_communication_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_communication_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_communication_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_communication_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_communication_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "EMAIL",
+              "LETTER",
+              "PHONE_CALL",
+              "SMS",
+              "IN_PERSON",
+              "PORTAL_MESSAGE",
+              "VOICEMAIL",
+              "FAX",
+              "VIDEO_CALL",
+              "CHAT",
+              "OTHER"
+            ]
+          }
+        },
         "mortgage_services_condition_status": {
           "typeName": "condition_status",
           "schemaName": "mortgage_services",
@@ -33541,6 +34078,428 @@
               "POST_CLOSING",
               "UNDERWRITER_REQUIREMENT",
               "AGENCY_REQUIREMENT",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_credit_bureau": {
+          "typeName": "credit_bureau",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_credit_bureau"
+            },
+            "min": {
+              "returnType": "mortgage_services_credit_bureau"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_credit_bureau",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_bureau",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_bureau",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_credit_bureau",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_bureau",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_bureau",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_bureau",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "EQUIFAX",
+              "EXPERIAN",
+              "TRANSUNION",
+              "INNOVIS",
+              "CLEAR_REPORT",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_credit_report_type": {
+          "typeName": "credit_report_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_credit_report_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_credit_report_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_credit_report_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_report_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_report_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_credit_report_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_report_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_report_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_credit_report_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "TRI_MERGE",
+              "SINGLE_BUREAU",
+              "MERGED_BUREAU",
+              "EXPANDED",
+              "CUSTOM",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_delivery_method": {
+          "typeName": "delivery_method",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_delivery_method"
+            },
+            "min": {
+              "returnType": "mortgage_services_delivery_method"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_delivery_method",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_delivery_method",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_delivery_method",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_delivery_method",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_delivery_method",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_delivery_method",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_delivery_method",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "EMAIL",
+              "MAIL",
+              "IN_PERSON",
+              "ELECTRONIC_PORTAL",
+              "COURIER",
+              "FAX",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_disbursement_status": {
+          "typeName": "disbursement_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_disbursement_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_disbursement_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_disbursement_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_disbursement_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "COMPLETED",
+              "FAILED",
+              "RETURNED",
+              "CANCELED",
+              "HOLD",
+              "CLEARED",
+              "VOID",
+              "REISSUED",
+              "PARTIAL",
+              "SCHEDULED",
+              "SENT",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_disbursement_type": {
+          "typeName": "disbursement_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_disbursement_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_disbursement_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_disbursement_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_disbursement_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disbursement_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PROPERTY_TAX",
+              "HOMEOWNERS_INSURANCE",
+              "MORTGAGE_INSURANCE",
+              "FLOOD_INSURANCE",
+              "HOA_DUES",
+              "HAZARD_INSURANCE",
+              "CONDO_INSURANCE",
+              "CITY_TAX",
+              "COUNTY_TAX",
+              "SCHOOL_TAX",
+              "SPECIAL_ASSESSMENT",
+              "GROUND_RENT",
+              "ESCROW_REFUND",
+              "ESCROW_SHORTAGE",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_disclosure_type": {
+          "typeName": "disclosure_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_disclosure_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_disclosure_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_disclosure_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disclosure_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disclosure_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_disclosure_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disclosure_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disclosure_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_disclosure_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "LOAN_ESTIMATE",
+              "CLOSING_DISCLOSURE",
+              "CHANGE_IN_TERMS",
+              "REVISED_CLOSING_DISCLOSURE",
+              "CORRECTED_CLOSING_DISCLOSURE",
+              "FEE_ESTIMATE",
+              "INITIAL_ESCROW_STATEMENT",
               "OTHER"
             ]
           }
@@ -33768,6 +34727,2260 @@
             ]
           }
         },
+        "mortgage_services_escrow_analysis_status": {
+          "typeName": "escrow_analysis_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_escrow_analysis_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_escrow_analysis_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_escrow_analysis_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_escrow_analysis_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_escrow_analysis_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_escrow_analysis_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_escrow_analysis_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_escrow_analysis_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_escrow_analysis_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "REVIEWED",
+              "APPROVED",
+              "REJECTED",
+              "IN_PROGRESS",
+              "CANCELLED",
+              "CUSTOMER_NOTIFIED",
+              "ADJUSTMENT_PENDING",
+              "ADJUSTMENT_APPLIED",
+              "EXCEPTION",
+              "EXPIRED",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_hardship_reason": {
+          "typeName": "hardship_reason",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hardship_reason"
+            },
+            "min": {
+              "returnType": "mortgage_services_hardship_reason"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hardship_reason",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hardship_reason",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hardship_reason",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hardship_reason",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hardship_reason",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hardship_reason",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hardship_reason",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "FINANCIAL_HARDSHIP",
+              "JOB_LOSS",
+              "MEDICAL_ISSUES",
+              "NATURAL_DISASTER",
+              "DIVORCE",
+              "INCOME_REDUCTION",
+              "DEATH_IN_FAMILY",
+              "MILITARY_SERVICE",
+              "BUSINESS_FAILURE",
+              "DISABILITY",
+              "INCREASED_EXPENSES",
+              "RELOCATION",
+              "PROPERTY_ISSUES",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_hmda_action_taken": {
+          "typeName": "hmda_action_taken",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_action_taken"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_action_taken"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_action_taken",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_action_taken",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_action_taken",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_action_taken",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_action_taken",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_action_taken",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_action_taken",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ]
+          }
+        },
+        "mortgage_services_hmda_age_group": {
+          "typeName": "hmda_age_group",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_age_group"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_age_group"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_age_group",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_age_group",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_age_group",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_age_group",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_age_group",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_age_group",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_age_group",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ]
+          }
+        },
+        "mortgage_services_hmda_applicant_present": {
+          "typeName": "hmda_applicant_present",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_applicant_present"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_applicant_present"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_applicant_present",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_present",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_present",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_applicant_present",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_present",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_present",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_present",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        "mortgage_services_hmda_applicant_type": {
+          "typeName": "hmda_applicant_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_applicant_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_applicant_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_applicant_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_applicant_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_applicant_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PRIMARY",
+              "CO_APPLICANT",
+              "BORROWER",
+              "CO_BORROWER",
+              "GUARANTOR"
+            ]
+          }
+        },
+        "mortgage_services_hmda_aus": {
+          "typeName": "hmda_aus",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_aus"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_aus"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_aus",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_aus",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_aus",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_aus",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_aus",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_aus",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_aus",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "1111"
+            ]
+          }
+        },
+        "mortgage_services_hmda_balloon_payment": {
+          "typeName": "hmda_balloon_payment",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_balloon_payment"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_balloon_payment"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_balloon_payment",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_balloon_payment",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_balloon_payment",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_balloon_payment",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_balloon_payment",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_balloon_payment",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_balloon_payment",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2"
+            ]
+          }
+        },
+        "mortgage_services_hmda_business_or_commercial_purpose": {
+          "typeName": "hmda_business_or_commercial_purpose",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_business_or_commercial_purpose"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_business_or_commercial_purpose"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_business_or_commercial_purpose",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_business_or_commercial_purpose",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_business_or_commercial_purpose",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_business_or_commercial_purpose",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_business_or_commercial_purpose",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_business_or_commercial_purpose",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_business_or_commercial_purpose",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "1111"
+            ]
+          }
+        },
+        "mortgage_services_hmda_collection_method": {
+          "typeName": "hmda_collection_method",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_collection_method"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_collection_method"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_collection_method",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_collection_method",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_collection_method",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_collection_method",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_collection_method",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_collection_method",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_collection_method",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        "mortgage_services_hmda_construction_method": {
+          "typeName": "hmda_construction_method",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_construction_method"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_construction_method"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_construction_method",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_construction_method",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_construction_method",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_construction_method",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_construction_method",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_construction_method",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_construction_method",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2"
+            ]
+          }
+        },
+        "mortgage_services_hmda_credit_score_model": {
+          "typeName": "hmda_credit_score_model",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_credit_score_model"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_credit_score_model"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_credit_score_model",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_credit_score_model",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_credit_score_model",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_credit_score_model",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_credit_score_model",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_credit_score_model",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_credit_score_model",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "1111"
+            ]
+          }
+        },
+        "mortgage_services_hmda_denial_reason": {
+          "typeName": "hmda_denial_reason",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_denial_reason"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_denial_reason"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_denial_reason",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_denial_reason",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_denial_reason",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_denial_reason",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_denial_reason",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_denial_reason",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_denial_reason",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ]
+          }
+        },
+        "mortgage_services_hmda_edit_status": {
+          "typeName": "hmda_edit_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_edit_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_edit_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_edit_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_edit_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "OPEN",
+              "VERIFIED",
+              "CORRECTED",
+              "IN_PROGRESS",
+              "WAIVED"
+            ]
+          }
+        },
+        "mortgage_services_hmda_edit_type": {
+          "typeName": "hmda_edit_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_edit_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_edit_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_edit_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_edit_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_edit_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SYNTACTICAL",
+              "VALIDITY",
+              "QUALITY",
+              "MACRO"
+            ]
+          }
+        },
+        "mortgage_services_hmda_ethnicity": {
+          "typeName": "hmda_ethnicity",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_ethnicity"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_ethnicity"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_ethnicity",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_ethnicity",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ]
+          }
+        },
+        "mortgage_services_hmda_ethnicity_detail": {
+          "typeName": "hmda_ethnicity_detail",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_ethnicity_detail"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_ethnicity_detail"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_ethnicity_detail",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity_detail",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity_detail",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_ethnicity_detail",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity_detail",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity_detail",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_ethnicity_detail",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7"
+            ]
+          }
+        },
+        "mortgage_services_hmda_hoepa_status": {
+          "typeName": "hmda_hoepa_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_hoepa_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_hoepa_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_hoepa_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_hoepa_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_hoepa_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_hoepa_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_hoepa_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_hoepa_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_hoepa_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        "mortgage_services_hmda_interest_only": {
+          "typeName": "hmda_interest_only",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_interest_only"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_interest_only"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_interest_only",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_interest_only",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_interest_only",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_interest_only",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_interest_only",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_interest_only",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_interest_only",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2"
+            ]
+          }
+        },
+        "mortgage_services_hmda_lien_status": {
+          "typeName": "hmda_lien_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_lien_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_lien_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_lien_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_lien_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_lien_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_lien_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_lien_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_lien_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_lien_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4"
+            ]
+          }
+        },
+        "mortgage_services_hmda_loan_purpose": {
+          "typeName": "hmda_loan_purpose",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_loan_purpose"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_loan_purpose"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_loan_purpose",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_loan_purpose",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_loan_purpose",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_loan_purpose",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_loan_purpose",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_loan_purpose",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_loan_purpose",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "31",
+              "32",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_hmda_manufactured_home_type": {
+          "typeName": "hmda_manufactured_home_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_manufactured_home_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_manufactured_home_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_manufactured_home_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_home_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_home_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_manufactured_home_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_home_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_home_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_home_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        "mortgage_services_hmda_manufactured_land_property_interest": {
+          "typeName": "hmda_manufactured_land_property_interest",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_manufactured_land_property_interest"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_manufactured_land_property_interest"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_manufactured_land_property_interest",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_land_property_interest",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_land_property_interest",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_manufactured_land_property_interest",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_land_property_interest",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_land_property_interest",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_manufactured_land_property_interest",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ]
+          }
+        },
+        "mortgage_services_hmda_negative_amortization": {
+          "typeName": "hmda_negative_amortization",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_negative_amortization"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_negative_amortization"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_negative_amortization",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_negative_amortization",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_negative_amortization",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_negative_amortization",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_negative_amortization",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_negative_amortization",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_negative_amortization",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2"
+            ]
+          }
+        },
+        "mortgage_services_hmda_occupancy_type": {
+          "typeName": "hmda_occupancy_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_occupancy_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_occupancy_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_occupancy_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_occupancy_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_occupancy_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_occupancy_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_occupancy_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_occupancy_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_occupancy_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        "mortgage_services_hmda_open_end_line_of_credit": {
+          "typeName": "hmda_open_end_line_of_credit",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_open_end_line_of_credit"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_open_end_line_of_credit"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_open_end_line_of_credit",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_open_end_line_of_credit",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_open_end_line_of_credit",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_open_end_line_of_credit",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_open_end_line_of_credit",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_open_end_line_of_credit",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_open_end_line_of_credit",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "1111"
+            ]
+          }
+        },
+        "mortgage_services_hmda_other_non_amortizing": {
+          "typeName": "hmda_other_non_amortizing",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_other_non_amortizing"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_other_non_amortizing"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_other_non_amortizing",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_other_non_amortizing",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_other_non_amortizing",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_other_non_amortizing",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_other_non_amortizing",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_other_non_amortizing",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_other_non_amortizing",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2"
+            ]
+          }
+        },
+        "mortgage_services_hmda_preapproval": {
+          "typeName": "hmda_preapproval",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_preapproval"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_preapproval"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_preapproval",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_preapproval",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_preapproval",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_preapproval",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_preapproval",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_preapproval",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_preapproval",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        "mortgage_services_hmda_race": {
+          "typeName": "hmda_race",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_race"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_race"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_race",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_race",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_race",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_race",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_race",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_race",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_race",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ]
+          }
+        },
+        "mortgage_services_hmda_record_edit_status": {
+          "typeName": "hmda_record_edit_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_record_edit_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_record_edit_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_record_edit_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_record_edit_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_record_edit_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_record_edit_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_record_edit_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_record_edit_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_record_edit_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "VALID",
+              "INVALID",
+              "QUALITY_ISSUES",
+              "MACRO_ISSUES"
+            ]
+          }
+        },
+        "mortgage_services_hmda_reverse_mortgage": {
+          "typeName": "hmda_reverse_mortgage",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_reverse_mortgage"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_reverse_mortgage"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_reverse_mortgage",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_reverse_mortgage",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_reverse_mortgage",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_reverse_mortgage",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_reverse_mortgage",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_reverse_mortgage",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_reverse_mortgage",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "1111"
+            ]
+          }
+        },
+        "mortgage_services_hmda_sex": {
+          "typeName": "hmda_sex",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_sex"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_sex"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_sex",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_sex",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_sex",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_sex",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_sex",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_sex",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_sex",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6"
+            ]
+          }
+        },
+        "mortgage_services_hmda_submission_method": {
+          "typeName": "hmda_submission_method",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_submission_method"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_submission_method"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_submission_method",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_method",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_method",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_submission_method",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_method",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_method",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_method",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        },
+        "mortgage_services_hmda_submission_status": {
+          "typeName": "hmda_submission_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_hmda_submission_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_hmda_submission_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_hmda_submission_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_hmda_submission_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_hmda_submission_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PENDING",
+              "SUBMITTED",
+              "ACCEPTED",
+              "REJECTED",
+              "EXEMPTED"
+            ]
+          }
+        },
         "mortgage_services_income_frequency": {
           "typeName": "income_frequency",
           "schemaName": "mortgage_services",
@@ -33915,6 +37128,147 @@
             ]
           }
         },
+        "mortgage_services_insurance_policy_status": {
+          "typeName": "insurance_policy_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_insurance_policy_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_insurance_policy_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_insurance_policy_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_policy_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_policy_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_insurance_policy_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_policy_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_policy_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_policy_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "PENDING",
+              "EXPIRED",
+              "CANCELLED",
+              "RENEWED",
+              "LAPSED",
+              "REINSTATED",
+              "FORCE_PLACED",
+              "UNDER_REVIEW",
+              "CLAIM_IN_PROGRESS",
+              "NON_RENEWAL",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_insurance_type": {
+          "typeName": "insurance_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_insurance_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_insurance_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_insurance_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_insurance_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_insurance_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "HAZARD",
+              "FLOOD",
+              "WIND",
+              "EARTHQUAKE",
+              "PMI",
+              "LENDERS_PLACED",
+              "OTHER"
+            ]
+          }
+        },
         "mortgage_services_interest_rate_type": {
           "typeName": "interest_rate_type",
           "schemaName": "mortgage_services",
@@ -34054,6 +37408,154 @@
               "INSTALLMENT_LOAN",
               "PAYDAY_LOAN",
               "TAX_DEBT",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_loan_modification_status": {
+          "typeName": "loan_modification_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_loan_modification_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_loan_modification_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_loan_modification_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_loan_modification_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "DENIED",
+              "COMPLETED",
+              "IN_PROGRESS",
+              "SUSPENDED",
+              "PARTIAL",
+              "CANCELED",
+              "EXPIRED",
+              "TRIAL_PERIOD",
+              "BORROWER_ACCEPTED",
+              "BORROWER_REJECTED",
+              "OTHER"
+            ]
+          }
+        },
+        "mortgage_services_loan_modification_type": {
+          "typeName": "loan_modification_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_loan_modification_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_loan_modification_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_loan_modification_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_loan_modification_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_loan_modification_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "RATE_REDUCTION",
+              "TERM_EXTENSION",
+              "PRINCIPAL_REDUCTION",
+              "INTEREST_ONLY_PERIOD",
+              "CAPITALIZATION",
+              "PAYMENT_DEFERRAL",
+              "FORBEARANCE",
+              "WORKOUT",
+              "REFINANCE",
+              "PRINCIPAL_FORGIVENESS",
+              "BALLOON_MODIFICATION",
+              "STEP_RATE",
               "OTHER"
             ]
           }
@@ -34328,6 +37830,82 @@
             ]
           }
         },
+        "mortgage_services_payment_type": {
+          "typeName": "payment_type",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_payment_type"
+            },
+            "min": {
+              "returnType": "mortgage_services_payment_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_payment_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_payment_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_payment_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_payment_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_payment_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_payment_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_payment_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PRINCIPAL_AND_INTEREST",
+              "PRINCIPAL_ONLY",
+              "INTEREST_ONLY",
+              "ESCROW",
+              "LATE_FEE",
+              "PREPAYMENT_PENALTY",
+              "FULL_PAYOFF",
+              "PARTIAL_PAYMENT",
+              "BIWEEKLY",
+              "FORBEARANCE",
+              "LOAN_MODIFICATION",
+              "BALLOON",
+              "SERVICING_FEE",
+              "EXTENSION_FEE",
+              "OTHER"
+            ]
+          }
+        },
         "mortgage_services_property_type": {
           "typeName": "property_type",
           "schemaName": "mortgage_services",
@@ -34470,6 +38048,147 @@
             ]
           }
         },
+        "mortgage_services_reporting_period": {
+          "typeName": "reporting_period",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_reporting_period"
+            },
+            "min": {
+              "returnType": "mortgage_services_reporting_period"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_reporting_period",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_reporting_period",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_reporting_period",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_reporting_period",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_reporting_period",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_reporting_period",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_reporting_period",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ANNUAL",
+              "QUARTERLY_Q1",
+              "QUARTERLY_Q2",
+              "QUARTERLY_Q3"
+            ]
+          }
+        },
+        "mortgage_services_servicing_account_status": {
+          "typeName": "servicing_account_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_servicing_account_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_servicing_account_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_servicing_account_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_servicing_account_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_servicing_account_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_servicing_account_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_servicing_account_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_servicing_account_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_servicing_account_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "DELINQUENT",
+              "DEFAULT",
+              "FORECLOSURE",
+              "BANKRUPTCY",
+              "PAID_OFF",
+              "TRANSFERRED",
+              "MODIFICATION_IN_PROCESS",
+              "LOSS_MITIGATION",
+              "FORBEARANCE",
+              "REO",
+              "SHORT_SALE",
+              "CHARGE_OFF",
+              "SATISFIED",
+              "SUSPENDED"
+            ]
+          }
+        },
         "mortgage_services_submission_channel": {
           "typeName": "submission_channel",
           "schemaName": "mortgage_services",
@@ -34540,6 +38259,82 @@
             ]
           }
         },
+        "mortgage_services_submission_status": {
+          "typeName": "submission_status",
+          "schemaName": "mortgage_services",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "mortgage_services_submission_status"
+            },
+            "min": {
+              "returnType": "mortgage_services_submission_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "mortgage_services_submission_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_submission_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_submission_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "mortgage_services_submission_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_submission_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_submission_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "mortgage_services_submission_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15"
+            ]
+          }
+        },
         "mortgage_services_verification_status": {
           "typeName": "verification_status",
           "schemaName": "mortgage_services",
@@ -34602,7 +38397,8 @@
               "PENDING",
               "UNVERIFIED",
               "FAILED",
-              "WAIVED"
+              "WAIVED",
+              "EXPIRED"
             ]
           }
         },

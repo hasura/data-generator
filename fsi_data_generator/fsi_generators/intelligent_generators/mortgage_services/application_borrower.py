@@ -1,11 +1,10 @@
 import random
-from decimal import Decimal
 
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import \
     PartyRelationshipType
 
-from .enums import BorrowerType
+from .enums import BorrowerType, RelationshipType
 
 
 def generate_random_application_borrower(ids_dict, dg: DataGenerator):
@@ -79,7 +78,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
         if is_first_record:
             borrower_type = BorrowerType.PRIMARY
             relationship_to_primary = None
-            contribution_percentage = Decimal('100.00')
+            contribution_percentage = 100.00
         else:
             # Find the primary borrower record
             primary_borrower = None
@@ -111,29 +110,38 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
             )
 
             # Get the current primary borrower's contribution
-            primary_contribution = Decimal(str(primary_borrower.get('contribution_percentage') or 0))
+            primary_contribution = primary_borrower.get('contribution_percentage', 0)
 
             # Make sure we don't exceed 100% total and leave the primary with a reasonable amount
             # Primary should keep at least 10% contribution
-            max_available = primary_contribution - Decimal('10.00')
+            max_available = primary_contribution - 10.00
 
             # Cap the contribution at what's available from the primary
             contribution_percentage = min(base_contribution, max_available)
 
             # Ensure contribution is reasonable (min 0.01%)
-            contribution_percentage = max(contribution_percentage, Decimal('0.01'))
+            contribution_percentage = max(contribution_percentage, 0.01)
 
             # Determine relationship to primary borrower
-            formal_relationship = PartyRelationshipType[_get_formal_relationship(
+            formal_relationship = _get_formal_relationship(
                 conn,
                 current_borrower_info.get('enterprise_party_id'),
                 primary_borrower_info.get('enterprise_party_id')
-            )]
+            )
+
+            if formal_relationship == PartyRelationshipType.SPOUSE:
+                relationship_to_primary = RelationshipType.SPOUSE
+            elif formal_relationship == PartyRelationshipType.SIBLING:
+                relationship_to_primary = RelationshipType.SIBLING
+            elif formal_relationship == PartyRelationshipType.DEPENDENT:
+                relationship_to_primary = RelationshipType.CHILD
+            elif formal_relationship == PartyRelationshipType.BUSINESS_PARTNER:
+                relationship_to_primary = RelationshipType.BUSINESS_PARTNER
+            else:
+                relationship_to_primary = None
 
             # Set relationship_to_primary based on formal relationship or inference
-            if formal_relationship:
-                # If we have a formal relationship, use that directly
-                relationship_to_primary = formal_relationship
+            if relationship_to_primary and formal_relationship:
 
                 # Determine borrower type based on the formal relationship
                 if formal_relationship == PartyRelationshipType.SPOUSE:
@@ -163,12 +171,12 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
                 relationship_to_primary = personal_relationship
 
                 # Determine borrower type based on inferred personal relationship
-                if personal_relationship == 'spouse':
+                if personal_relationship == RelationshipType.SPOUSE:
                     borrower_type = random.choices(
                         [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.9, 0.1]
                     )[0]
-                elif personal_relationship in ['parent', 'child']:
+                elif personal_relationship in [RelationshipType.PARENT, RelationshipType.CHILD]:
                     borrower_type = random.choices(
                         [BorrowerType.CO_BORROWER, BorrowerType.COSIGNER],
                         weights=[0.3, 0.7]
@@ -181,8 +189,8 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
 
             # If this is a co-signer, reduce the contribution percentage
             if borrower_type == BorrowerType.COSIGNER:
-                contribution_percentage = contribution_percentage * Decimal('0.5')
-                contribution_percentage = contribution_percentage.quantize(Decimal('0.01'))
+                contribution_percentage = contribution_percentage * 0.5
+                contribution_percentage = round(contribution_percentage, 2)
 
             # Update the primary borrower's contribution percentage in the database
             # Only if this is not a simulation (indicated by having an actual connection)
@@ -204,7 +212,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
         # Create the application_borrowers record (but don't insert it - that's handled by the parent)
         record = {
             "borrower_type": borrower_type.value,
-            "relationship_to_primary": relationship_to_primary,
+            "relationship_to_primary": relationship_to_primary.value if relationship_to_primary else RelationshipType.OTHER.value,
             "contribution_percentage": float(contribution_percentage)
         }
 
@@ -215,7 +223,7 @@ def generate_random_application_borrower(ids_dict, dg: DataGenerator):
         cursor.close()
 
 
-def _determine_base_contribution(conn, borrower_info, primary_info):
+def _determine_base_contribution(conn, borrower_info, primary_info) -> float:
     """
     Determine a base contribution percentage based on the relationship
     between the borrower and primary borrower.
@@ -226,39 +234,42 @@ def _determine_base_contribution(conn, borrower_info, primary_info):
     primary_info: Dict with primary borrower information
 
     Returns:
-    Decimal: Base contribution percentage
+    float: Base contribution percentage
     """
     # Get formal relationship if it exists
-    formal_relationship = PartyRelationshipType[_get_formal_relationship(
+    formal_relationship = _get_formal_relationship(
         conn,
         borrower_info.get('enterprise_party_id'),
         primary_info.get('enterprise_party_id')
-    )]
+    )
+
+    if formal_relationship:
+        formal_relationship = PartyRelationshipType(formal_relationship)
 
     # Determine base contribution based on relationship
     if formal_relationship == PartyRelationshipType.SPOUSE:
         # Spouses typically have higher contributions
-        return Decimal(str(random.uniform(35.0, 50.0))).quantize(Decimal('0.01'))
+        return round(random.uniform(35.0, 50.0), 2)
 
     elif formal_relationship in [PartyRelationshipType.POWER_OF_ATTORNEY, PartyRelationshipType.GUARDIAN,
                                  PartyRelationshipType.TRUSTEE]:
-        return Decimal(str(random.uniform(20.0, 40.0))).quantize(Decimal('0.01'))
+        return round(random.uniform(20.0, 40.0), 2)
 
     elif formal_relationship in [PartyRelationshipType.BENEFICIARY, PartyRelationshipType.AUTHORIZED_USER]:
-        return Decimal(str(random.uniform(5.0, 20.0))).quantize(Decimal('0.01'))
+        return round(random.uniform(5.0, 20.0), 2)
 
     else:
         # No formal relationship - infer personal relationship
         personal_relationship = _infer_personal_relationship(borrower_info, primary_info)
 
-        if personal_relationship == 'spouse':
-            return Decimal(str(random.uniform(30.0, 45.0))).quantize(Decimal('0.01'))
+        if personal_relationship == RelationshipType.SPOUSE:
+            return round(random.uniform(30.0, 45.0), 2)
 
-        elif personal_relationship in ['parent', 'child']:
-            return Decimal(str(random.uniform(10.0, 30.0))).quantize(Decimal('0.01'))
+        elif personal_relationship in [RelationshipType.PARENT, RelationshipType.CHILD]:
+            return round(random.uniform(10.0, 30.0), 2)
 
         else:  # sibling, friend, other
-            return Decimal(str(random.uniform(5.0, 25.0))).quantize(Decimal('0.01'))
+            return round(random.uniform(5.0, 25.0), 2)
 
 
 def _get_formal_relationship(conn, party_id1, party_id2):
@@ -308,7 +319,7 @@ def _infer_personal_relationship(borrower_info, primary_info):
     str: Inferred personal relationship (spouse, parent, child, etc.)
     """
     if not borrower_info or not primary_info:
-        return random.choice(["spouse", "parent", "child", "sibling", "friend", "other"])
+        return RelationshipType.get_random()
 
     # Get age differences
     borrower_age = _get_age_from_info(borrower_info)
@@ -335,7 +346,7 @@ def _infer_personal_relationship(borrower_info, primary_info):
 
     # Strong indicators of spousal relationship
     if same_address and both_married and (not borrower_age or not primary_age or abs(borrower_age - primary_age) < 15):
-        return "spouse"
+        return RelationshipType.SPOUSE
 
     # If we have ages, use them to infer relationship
     if borrower_age and primary_age:
@@ -345,31 +356,32 @@ def _infer_personal_relationship(borrower_info, primary_info):
         if age_diff < 10:
             # Similar age
             if same_last_name:
-                return random.choice(["spouse"] * 3 + ["sibling"] * 2)
+                return random.choices([RelationshipType.SPOUSE, RelationshipType.SIBLING], weights=[3, 2], k=1)[0]
             elif same_address:
-                return random.choice(["spouse"] * 4 + ["friend"])
+                return random.choices([RelationshipType.SPOUSE, RelationshipType.FRIEND], [4, 1], k=1)[0]
             else:
-                return random.choice(["spouse", "friend", "sibling"])
+                return random.choice([RelationshipType.SPOUSE, RelationshipType.FRIEND, RelationshipType.SIBLING])
         elif 10 <= age_diff < 20:
             # Medium age gap
             if same_last_name:
-                return random.choice(["sibling"] * 3 + ["other"])
+                return random.choices([RelationshipType.SIBLING, RelationshipType.OTHER], [3, 1], k=1)[0]
             else:
-                return random.choice(["friend", "other"])
+                return random.choice([RelationshipType.FRIEND, RelationshipType.OTHER])
         else:
             # Large age gap (20+ years)
             if borrower_age > primary_age:
-                return "parent"
+                return RelationshipType.PARENT
             else:
-                return "child"
+                return RelationshipType.CHILD
 
     # If we don't have enough information
     if same_last_name:
-        return random.choice(["spouse", "sibling", "parent", "child"])
+        return random.choice(
+            [RelationshipType.SPOUSE, RelationshipType.SIBLING, RelationshipType.PARENT, RelationshipType.CHILD])
     elif same_address:
-        return random.choice(["spouse", "friend"])
+        return random.choice([RelationshipType.SPOUSE, RelationshipType.FRIEND])
     else:
-        return random.choice(["spouse", "parent", "child", "sibling", "friend", "other"])
+        return RelationshipType.get_random()
 
 
 def _get_age_from_info(info):
