@@ -85,6 +85,10 @@ def generate_banking_data():
         "cursor_factory": RealDictCursor
     }
 
+    # Read the environment variable and split it into a list
+    exclude_schemas = os.getenv("EXCLUDE_SCHEMAS", "public").split(",")
+    exclude_schemas = [schema.strip() for schema in exclude_schemas]
+
     # Get the SQL file path from the environment variable
     sql_file_path = os.environ.get("MODEL_FILE")
     if not sql_file_path or not os.path.isfile(sql_file_path):
@@ -123,8 +127,7 @@ def generate_banking_data():
             dbml = file.read()
         generator = DataGenerator(
             conn_params=conn_params,
-            exclude_schemas=['public', 'consumer_lending', 'credit_cards', 'consumer_banking',
-                             'small_business_banking'],
+            exclude_schemas=exclude_schemas,
             exclusions=[('security\\.cvss', '.*'), ('security\\.cpe', '.*'), ('security\\.cwe', '.*'),
                         ('security\\.cve_problem', '.*')],
             dbml=dbml

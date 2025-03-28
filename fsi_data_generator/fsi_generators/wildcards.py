@@ -74,7 +74,7 @@ wildcards = [
         "Manual"
     ])),
     ('^.*\\.transaction_debtor_agents', '^name$', lambda a, b, c: fake.company()),
-    ('.*', '^merchant_category_code$', lambda a, b, c: fake.merchant_category_code()),
+    # ('.*', '^merchant_category_code$', lambda a, b, c: fake.merchant_category_code()),
     ('^.*\\.transaction_balances', '^type$', text_list([
         "Booked",
         "Available",
