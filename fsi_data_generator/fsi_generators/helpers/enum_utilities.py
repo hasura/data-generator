@@ -1,5 +1,6 @@
-import random
 from typing import List, Optional
+
+import random
 
 
 class EnumUtilities:

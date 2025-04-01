@@ -1,7 +1,8 @@
-import ast
-import os
 from tkinter import Tk
 from tkinter.filedialog import askdirectory
+
+import ast
+import os
 
 
 def extract_public_members(file_path):

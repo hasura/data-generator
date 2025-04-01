@@ -51,7 +51,7 @@ definition:
       type: Numeric
       description: Amount in original currency if international
     - name: originalCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Original currency if international
     - name: postDate
       type: Date!
@@ -66,7 +66,7 @@ definition:
       type: Varchar!
       description: Approved, Declined, Reversed, Disputed
     - name: transactionDate
-      type: Timestamp!
+      type: Timestamptz!
       description: Date and time of transaction
     - name: transactionType
       type: Varchar!
@@ -217,7 +217,7 @@ definition:
         - fieldName: originalAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: originalCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: postDate
           booleanExpressionType: DateBoolExp
         - fieldName: referenceNumber
@@ -227,7 +227,7 @@ definition:
         - fieldName: status
           booleanExpressionType: VarcharBoolExp
         - fieldName: transactionDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: transactionType
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
@@ -285,7 +285,7 @@ definition:
         - fieldName: originalAmount
           aggregateExpression: NumericAggExp
         - fieldName: originalCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: postDate
           aggregateExpression: DateAggExp
         - fieldName: referenceNumber
@@ -295,7 +295,7 @@ definition:
         - fieldName: status
           aggregateExpression: VarcharAggExp
         - fieldName: transactionDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: transactionType
           aggregateExpression: VarcharAggExp
   count:
@@ -343,7 +343,7 @@ definition:
         - fieldName: originalAmount
           orderByExpression: NumericOrderByExp
         - fieldName: originalCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: postDate
           orderByExpression: DateOrderByExp
         - fieldName: referenceNumber
@@ -353,7 +353,7 @@ definition:
         - fieldName: status
           orderByExpression: VarcharOrderByExp
         - fieldName: transactionDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: transactionType
           orderByExpression: VarcharOrderByExp
       orderableRelationships:

@@ -1,13 +1,12 @@
-import logging
-import random
-import sys
+from data_generator import DataGenerator
 from datetime import datetime, timedelta
+from faker import Faker
 from typing import Any, Dict
 
+import logging
 import psycopg2
-from faker import Faker
-
-from data_generator import DataGenerator
+import random
+import sys
 
 fake = Faker()
 logger = logging.getLogger(__name__)

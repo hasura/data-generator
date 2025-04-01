@@ -1,11 +1,10 @@
-import logging
-import random
-import sys
+from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict, Set, Tuple
 
+import logging
 import psycopg2
-
-from data_generator import DataGenerator, SkipRowGenerationError
+import random
+import sys
 
 # Track team member assignments to prevent duplicates
 team_member_assignments: Set[Tuple[str, int]] = set()

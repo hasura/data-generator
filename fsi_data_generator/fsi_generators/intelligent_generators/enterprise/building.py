@@ -1,16 +1,13 @@
-import datetime
-import logging
-import random
+from ...helpers.generate_unique_json_array import generate_unique_json_array
+from .enums import BuildingType
+from data_generator import DataGenerator
+from faker import Faker
 from typing import Any, Dict
 
+import datetime
+import logging
 import psycopg2
-from faker import Faker
-
-from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
-
-from .enums import BuildingType
+import random
 
 logger = logging.getLogger(__name__)
 fake = Faker()  # Initialize Faker
@@ -61,7 +58,7 @@ def generate_random_building(_id_fields: Dict[str, Any], dg: DataGenerator) -> D
 
     if not available_names:
         # If we've run out of available names, create a new unique name
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
         building_name = f"{random.choice(building_prefixes)} {random.choice(building_suffixes)} {timestamp[-4:]}"
     else:
         building_name = random.choice(available_names)

@@ -1,17 +1,15 @@
+from .enums import AccountIdentifierScheme
+from typing import Any, Dict
+
 import logging
 import random
 import re
 import string
-from typing import Any, Dict
-
-from data_generator import DataGenerator
-
-from .enums import AccountIdentifierScheme
 
 logger = logging.getLogger(__name__)
 
 
-def generate_random_account_identifier(_id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:
+def generate_random_account_identifier(_id_fields: Dict[str, Any], _dg: Any) -> Dict[str, Any]:
     """
     Generate a random enterprise.account_identifiers record with reasonable values.
 

@@ -1,12 +1,11 @@
-import datetime
-import logging
-import random
-import sys
+from .enums import IncomeFrequency, LiabilityType, VerificationStatus
 from typing import Any, Dict
 
+import datetime
+import logging
 import psycopg2
-
-from .enums import IncomeFrequency, LiabilityType, VerificationStatus
+import random
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +162,7 @@ def generate_random_borrower_liability(id_fields: Dict[str, Any], dg) -> Dict[st
         else:
             interest_rate = round(random.uniform(5.0, 12.0), 3)
 
-        # Use a reasonable progress through the loan term to determine current balance
+        # Use a reasonable progression through the loan term to determine current balance
         progress_through_loan = random.uniform(0.0, 0.9)  # 0% to 90% through the loan
         remaining_months = term_length * (1 - progress_through_loan)
 

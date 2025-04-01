@@ -12,19 +12,19 @@ definition:
       type: Int4!
       description: Unique identifier for each statement
     - name: creationDateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: When the statement was generated
     - name: endDateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: End of the period covered by the statement
     - name: startDateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: Start of the period covered by the statement
     - name: statementReference
       type: Varchar
       description: Reference number for the statement
     - name: type
-      type: Varchar!
+      type: ConsumerBankingStatementType!
       description: Type of statement (e.g., regular, interim, final)
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStatements
@@ -86,16 +86,17 @@ definition:
         - fieldName: consumerBankingStatementId
           booleanExpressionType: Int4BoolExp
         - fieldName: creationDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: endDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: startDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: statementReference
           booleanExpressionType: VarcharBoolExp
         - fieldName: type
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingStatementTypeBoolExp
       comparableRelationships:
+        - relationshipName: consumerBankingAccountStatementPreferences
         - relationshipName: consumerBankingStatementAmounts
         - relationshipName: consumerBankingStatementBenefits
         - relationshipName: consumerBankingStatementDateTimes
@@ -126,15 +127,15 @@ definition:
         - fieldName: consumerBankingStatementId
           aggregateExpression: Int4AggExp
         - fieldName: creationDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: endDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: startDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: statementReference
           aggregateExpression: VarcharAggExp
         - fieldName: type
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingStatementTypeAggExp
   count:
     enable: true
   graphql:
@@ -154,15 +155,15 @@ definition:
         - fieldName: consumerBankingStatementId
           orderByExpression: Int4OrderByExp
         - fieldName: creationDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: endDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: startDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: statementReference
           orderByExpression: VarcharOrderByExp
         - fieldName: type
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingStatementTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingAccount
   graphql:
@@ -208,6 +209,28 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccountStatementPreferences
+  sourceType: ConsumerBankingStatements
+  target:
+    model:
+      name: ConsumerBankingAccountStatementPreferences
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingAccountStatementPreferencesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
+  graphql:
+    aggregateFieldName: consumerBankingAccountStatementPreferencesAggregate
 
 ---
 kind: Relationship

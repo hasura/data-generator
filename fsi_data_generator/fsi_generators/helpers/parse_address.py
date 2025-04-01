@@ -1,7 +1,7 @@
-import re
+from faker import Faker
 from typing import Dict
 
-from faker import Faker
+import re
 
 
 def parse_address(full_address: str) -> Dict[str, str]:

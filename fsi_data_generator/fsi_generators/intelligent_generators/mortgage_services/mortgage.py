@@ -1,10 +1,9 @@
-import random
-from datetime import datetime, timedelta
+from .enums import ApplicationStatus, InterestRateType, LoanType
+from data_generator import DataGenerator, SkipRowGenerationError
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict
 
-from data_generator import DataGenerator, SkipRowGenerationError
-
-from .enums import ApplicationStatus, InterestRateType, LoanType
+import random
 
 prev_app = set()
 
@@ -164,7 +163,7 @@ def generate_random_mortgage(_ids_dict: Dict[str, Any], dg: DataGenerator):
     loan_amount = round(max(min_amount, min(max_amount, application_loan_amount * loan_amount_adjustment)), 2)
 
     # Generate start date (within last 30 years or next 2 months)
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     # If application dates are provided, use them as reference
     if loan_application and "creation_date_time" in loan_application:
@@ -434,7 +433,7 @@ def _get_approved_application_id(dg: DataGenerator):
     """
 
     with conn.cursor() as cursor:
-        cursor.execute(query, (ApplicationStatus.APPROVED.name,))
+        cursor.execute(query, (ApplicationStatus.APPROVED.value,))
         approved_applications = [row.get('mortgage_services_application_id') for row in cursor.fetchall()]
 
     # Filter out applications that have already been used

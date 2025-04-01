@@ -9,6 +9,39 @@ Table "enterprise"."permissions" {
   note: "Defines all possible permission types that can be granted in the system"
 }
 
+Enum "enterprise"."currency_code" {
+  USD [note: 'United States Dollar']
+  EUR [note: 'Euro']
+  GBP [note: 'British Pound Sterling']
+  JPY [note: 'Japanese Yen']
+  AUD [note: 'Australian Dollar']
+  CAD [note: 'Canadian Dollar']
+  CHF [note: 'Swiss Franc']
+  CNY [note: 'Chinese Yuan Renminbi']
+  HKD [note: 'Hong Kong Dollar']
+  NZD [note: 'New Zealand Dollar']
+  SEK [note: 'Swedish Krona']
+  NOK [note: 'Norwegian Krone']
+  DKK [note: 'Danish Krone']
+  SGD [note: 'Singapore Dollar']
+  MXN [note: 'Mexican Peso']
+  BRL [note: 'Brazilian Real']
+  INR [note: 'Indian Rupee']
+  RUB [note: 'Russian Ruble']
+  ZAR [note: 'South African Rand']
+  TRY [note: 'Turkish Lira']
+  KRW [note: 'South Korean Won']
+  PLN [note: 'Polish Zloty']
+  ILS [note: 'Israeli Shekel']
+  AED [note: 'United Arab Emirates Dirham']
+  SAR [note: 'Saudi Riyal']
+  THB [note: 'Thai Baht']
+  MYR [note: 'Malaysian Ringgit']
+  IDR [note: 'Indonesian Rupiah']
+  PHP [note: 'Philippine Peso']
+  ARS [note: 'Argentine Peso']
+}
+
 Enum "enterprise"."identifier_scheme" {
   IBAN [note: 'International Bank Account Number - standard international account identifier used in cross-border transactions']
   BIC [note: 'Bank Identifier Code (also known as SWIFT code) - identifies banks in international transactions']
@@ -101,6 +134,21 @@ Enum "enterprise"."party_status" {
   SUSPENDED [note: 'Party has been suspended due to compliance or other issues']
   DECEASED [note: 'Individual party is deceased']
   DISSOLVED [note: 'Organization has been legally dissolved']
+}
+
+Enum "enterprise"."frequency" {
+  DAILY [note: 'Once per day']
+  WEEKLY [note: 'Once per week']
+  BI_WEEKLY [note: 'Every two weeks']
+  SEMI_MONTHLY [note: 'Twice per month']
+  MONTHLY [note: 'Once per month']
+  QUARTERLY [note: 'Every three months']
+  SEMI_ANNUALLY [note: 'Twice per year']
+  ANNUALLY [note: 'Once per year']
+  CUSTOM [note: 'Custom schedule not following standard periods']
+  IRREGULAR [note: 'No regular schedule']
+  ONE_TIME [note: 'Single occurrence, not repeated']
+  OTHER [note: 'Frequency not covered by standard categories']
 }
 
 Table "enterprise"."parties" {
@@ -347,23 +395,48 @@ TableGroup "Addresses" [color: #1E69FD] {
 // CONSUMER BANKING
 //
 
+Enum "consumer_banking"."account_status" {
+  ACTIVE [note: 'Account is in good standing and fully operational']
+  PENDING [note: 'Account creation is in progress but not yet active']
+  INACTIVE [note: 'Account exists but is not currently in use']
+  SUSPENDED [note: 'Account temporarily disabled due to policy issues']
+  DORMANT [note: 'Account with no activity for an extended period']
+  FROZEN [note: 'Account with temporarily restricted transactions']
+  CLOSED [note: 'Account permanently terminated']
+  ARCHIVED [note: 'Closed account retained for record-keeping']
+}
+
 Table "consumer_banking"."accounts" {
   "consumer_banking_account_id" SERIAL [pk, increment, note: "Unique identifier for each consumer banking account"]
   "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id]
   "consumer_banking_product_id" INTEGER [ref: > consumer_banking.products.consumer_banking_product_id, note: "References the enterprise account this consumer account belongs to. Required for all consumer accounts"]
   "opened_date" TIMESTAMPTZ [note: "When the account was opened"]
-  "status" VARCHAR(40) [not null, note: "Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed"]
+  "status" consumer_banking.account_status [not null, note: "Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed"]
   "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated. Updates to closed status do not automatically close the enterprise account."]
 
   note: "Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be 'active' if parent enterprise account is closed."
 }
 
+Enum "consumer_banking"."consent_status" {
+  PENDING [note: 'Consent has been requested but not yet approved by the customer']
+  AUTHORIZED [note: 'Consent has been actively approved by the customer']
+  ACTIVE [note: 'Consent is currently valid and being used for access']
+  SUSPENDED [note: 'Consent is temporarily paused but not revoked']
+  EXPIRED [note: 'Consent has reached its expiration date without being renewed']
+  REVOKED [note: 'Consent was actively withdrawn by the customer']
+  TERMINATED [note: 'Consent was ended by the bank or third party']
+  SUPERSEDED [note: 'Consent has been replaced by a newer consent']
+  REJECTED [note: 'Consent request was rejected by the customer']
+  ERROR [note: 'Consent has encountered an error in processing']
+}
+
 Table "consumer_banking"."account_access_consents" {
   "consumer_banking_consent_id" SERIAL [pk, increment, note: "Unique identifier for each consent record"]
-  "creation_date_time" TIMESTAMP [not null, note: "When the consent was initially created"]
-  "status" VARCHAR(50) [not null, note: "Current status of the consent (e.g., Active, Revoked)"]
-  "status_update_date_time" TIMESTAMP [not null, note: "When the status was last changed"]
-  "expiration_date_time" TIMESTAMP [note: "When the consent will expire (if applicable)"]
+  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account that the consent is related to."]
+  "creation_date_time" TIMESTAMPTZ [not null, note: "When the consent was initially created"]
+  "status" consumer_banking.consent_status [not null, note: "Current status of the consent (e.g., Active, Revoked)"]
+  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last changed"]
+  "expiration_date_time" TIMESTAMPTZ [note: "When the consent will expire (if applicable)"]
 
   note: "Stores consent records for account access, tracking when and how third parties are permitted to access consumer banking account information"
 }
@@ -379,23 +452,79 @@ Table "consumer_banking"."account_access_consents_permissions" {
   note: "Junction table linking consents to specific permissions granted, implements a many-to-many relationship"
 }
 
+Enum "consumer_banking"."balance_type" {
+  AVAILABLE [note: 'Balance that is currently available for transactions']
+  CURRENT [note: 'The total current balance including pending transactions']
+  CLOSING [note: 'Balance at the close of the previous statement period']
+  PENDING [note: 'Balance of transactions that have not yet cleared']
+  BLOCKED [note: 'Balance that is blocked or restricted']
+  RESERVED [note: 'Balance reserved for pending authorizations']
+  OVERDRAFT [note: 'Available overdraft balance']
+  HOLD [note: 'Balance on hold due to recent deposits or other restrictions']
+  INTEREST_BEARING [note: 'Balance eligible for interest calculations']
+  MINIMUM_REQUIRED [note: 'Minimum balance required to maintain account status or avoid fees']
+  PROJECTED [note: 'Estimated future balance based on scheduled transactions']
+  LEDGER [note: 'Book balance as reflected in the financial institution records']
+  OTHER [note: 'Other balance type not covered by standard categories']
+}
+
+Enum "consumer_banking"."balance_sub_type" {
+  INTRA_DAY [note: 'Balance calculated during the current business day']
+  OPENING [note: 'Balance at the start of the banking day']
+  INTERIM [note: 'Temporary balance used for interim processing']
+  FORWARD [note: 'Balance including forward-dated items']
+  EXPECTED [note: 'Expected future balance based on scheduled transactions']
+  AUTHORISED [note: 'Balance after authorized transactions']
+  PREVIOUS_DAY [note: 'Balance from the previous business day']
+  THRESHOLD [note: 'Balance related to a threshold for fees or features']
+  SWEEP [note: 'Balance related to account sweep arrangements']
+  LIMIT [note: 'Balance representing a limit (credit, withdrawal, etc.)']
+  CREDIT_LINE [note: 'Balance related to an associated credit line']
+  CUSHION [note: 'Buffer balance maintained to avoid overdrafts']
+  VALUE_DATED [note: 'Balance reflecting the value date of transactions']
+  NET [note: 'Net balance after all adjustments']
+  NONE [note: 'No specific sub-type applies']
+}
+
+Enum "enterprise"."credit_debit_indicator" {
+  CREDIT [note: 'Positive balance (in favor of the account owner)']
+  DEBIT [note: 'Negative balance (owed by the account owner)']
+}
+
 Table "consumer_banking"."balances" {
   "consumer_banking_balance_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each balance record"]
   "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
-  "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if balance is credit or debit"]
-  "type" VARCHAR(10) [not null, note: "Primary balance type (e.g., available, closing, etc.)"]
-  "date_time" TIMESTAMP [not null, note: "When this balance was recorded"]
+  "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if balance is credit or debit"]
+  "type" consumer_banking.balance_type [not null, note: "Primary balance type (e.g., available, closing, etc.)"]
+  "date_time" TIMESTAMPTZ [not null, note: "When this balance was recorded"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount with precision to 5 decimal places"]
-  "currency" VARCHAR(3) [not null, note: "Currency code (e.g., USD, EUR)"]
-  "sub_type" VARCHAR(5) [note: "Optional further classification of balance type"]
+  "currency" enterprise.currency_code [not null, note: "Currency code (e.g., USD, EUR)"]
+  "sub_type" consumer_banking.balance_sub_type [note: "Optional further classification of balance type"]
 
   note: "Tracks account balance information with history, stores different types of balances"
 }
 
+Enum "consumer_banking"."beneficiary_type" {
+  INDIVIDUAL [note: 'A natural person receiving payments']
+  ORGANIZATION [note: 'A business entity, non-profit, or institution receiving payments']
+  GOVERNMENT [note: 'A government agency or department']
+  TRUST [note: 'A legal arrangement for holding assets']
+  ESTATE [note: 'The legal estate of a deceased person']
+  CHARITY [note: 'A registered charitable organization']
+  FINANCIAL_INSTITUTION [note: 'Bank or other financial service provider']
+  MERCHANT [note: 'Commercial vendor or retailer']
+  UTILITY [note: 'Service provider for utilities like electricity, water, etc.']
+  EDUCATIONAL [note: 'School, university or educational institution']
+  HEALTHCARE [note: 'Hospital, clinic or healthcare provider']
+  SELF [note: 'Transfer to own account at same or different institution']
+  OTHER [note: 'Beneficiary type not covered by standard categories']
+}
+
+// Updated table definitions using existing enterprise.identifier_scheme enum
 Table "consumer_banking"."beneficiaries" {
   "consumer_banking_beneficiary_id" SERIAL [pk, increment, note: "Unique identifier for each beneficiary"]
   "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
-  "beneficiary_type" VARCHAR(20) [not null, note: "Type of beneficiary (e.g., individual, organization)"]
+  "beneficiary_type" consumer_banking.beneficiary_type [not null, note: "Type of beneficiary (individual, organization, etc.)"]
   "reference" VARCHAR(35) [note: "Optional reference identifier for the beneficiary"]
   "supplementary_data" TEXT [note: "Additional information in free-text format"]
 
@@ -405,7 +534,7 @@ Table "consumer_banking"."beneficiaries" {
 Table "consumer_banking"."beneficiary_creditor_agents" {
   "consumer_banking_beneficiary_creditor_agent_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each agent record"]
   "consumer_banking_beneficiary_id" INTEGER [not null, ref: > consumer_banking.beneficiaries.consumer_banking_beneficiary_id, note: "References the beneficiary this agent is associated with"]
-  "scheme_name" VARCHAR(50) [not null, note: "Identifier scheme (e.g., BIC, SORT)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Identifier scheme (e.g., BIC, SORT)"]
   "identification" VARCHAR(35) [not null, note: "The actual identifier of the institution"]
   "name" VARCHAR(140) [note: "Display name of the financial institution"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier of the institution"]
@@ -416,7 +545,7 @@ Table "consumer_banking"."beneficiary_creditor_agents" {
 Table "consumer_banking"."beneficiary_creditor_accounts" {
   "consumer_banking_beneficiary_creditor_account_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each creditor account record"]
   "consumer_banking_beneficiary_id" INTEGER [not null, ref: > consumer_banking.beneficiaries.consumer_banking_beneficiary_id, note: "References the beneficiary this account belongs to"]
-  "scheme_name" VARCHAR(50) [not null, note: "Account identifier scheme (e.g., IBAN, BBAN)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Account identifier scheme (e.g., IBAN, BBAN)"]
   "identification" VARCHAR(256) [not null, note: "The actual account identifier value"]
   "name" VARCHAR(350) [note: "Optional display name for this account"]
   "secondary_identification" VARCHAR(34) [note: "Additional account identification information"]
@@ -424,12 +553,66 @@ Table "consumer_banking"."beneficiary_creditor_accounts" {
   note: "Stores account details of beneficiaries for payment routing"
 }
 
+Enum "consumer_banking"."direct_debit_status_code" {
+  ACTIVE [note: 'The direct debit is currently active and operational']
+  PENDING [note: 'The direct debit is in the process of being set up']
+  CANCELED [note: 'The direct debit has been permanently canceled']
+  SUSPENDED [note: 'The direct debit is temporarily suspended']
+  REJECTED [note: 'The direct debit was rejected by the bank or payment processor']
+  EXPIRED [note: 'The direct debit has reached its expiration date']
+  COMPLETED [note: 'The direct debit has completed all scheduled payments']
+  FAILED [note: 'The most recent direct debit payment attempt failed']
+  ON_HOLD [note: 'The direct debit is on hold pending review or resolution']
+  AMENDED [note: 'The direct debit has been modified from its original terms']
+  OTHER [note: 'Status not covered by standard categories']
+}
+
+Enum "consumer_banking"."direct_debit_classification" {
+  PERSONAL [note: 'Direct debit for personal expenses']
+  BUSINESS [note: 'Direct debit for business expenses']
+  CHARITY [note: 'Direct debit for charitable donations']
+  HOUSEHOLD [note: 'Direct debit for household expenses']
+  SUBSCRIPTION [note: 'Direct debit for recurring subscription services']
+  UTILITY [note: 'Direct debit for utility payments']
+  INSURANCE [note: 'Direct debit for insurance premiums']
+  MORTGAGE [note: 'Direct debit for mortgage payments']
+  LOAN [note: 'Direct debit for loan repayments']
+  TAX [note: 'Direct debit for tax payments']
+  OTHER [note: 'Classification not covered by standard categories']
+}
+
+Enum "consumer_banking"."direct_debit_category" {
+  ELECTRICITY [note: 'Payments for electricity services']
+  GAS [note: 'Payments for gas/heating services']
+  WATER [note: 'Payments for water services']
+  INTERNET [note: 'Payments for internet services']
+  PHONE [note: 'Payments for telephone services']
+  TV [note: 'Payments for television services']
+  RENT [note: 'Payments for property rental']
+  MORTGAGE [note: 'Payments for property mortgage']
+  INSURANCE_HOME [note: 'Payments for home insurance']
+  INSURANCE_HEALTH [note: 'Payments for health insurance']
+  INSURANCE_LIFE [note: 'Payments for life insurance']
+  INSURANCE_AUTO [note: 'Payments for auto insurance']
+  SUBSCRIPTION_MEDIA [note: 'Payments for media subscriptions']
+  SUBSCRIPTION_SOFTWARE [note: 'Payments for software subscriptions']
+  SUBSCRIPTION_MEMBERSHIP [note: 'Payments for membership subscriptions']
+  LOAN_PAYMENT [note: 'Payments for loan repayments']
+  CREDIT_CARD [note: 'Payments for credit card bills']
+  CHARITY [note: 'Payments for charitable donations']
+  TAX_PAYMENT [note: 'Payments for tax obligations']
+  PENSION [note: 'Payments for pension contributions']
+  INVESTMENT [note: 'Payments for investment products']
+  EDUCATION [note: 'Payments for educational expenses']
+  OTHER [note: 'Category not covered by standard categories']
+}
+
 Table "consumer_banking"."direct_debits" {
   "consumer_banking_direct_debit_id" SERIAL [pk, increment, note: "Unique identifier for each direct debit mandate"]
-  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
-  "direct_debit_status_code" VARCHAR(20) [not null, note: "Status code of the direct debit (e.g., active, canceled)"]
+  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this direct debit belongs to"]
+  "direct_debit_status_code" consumer_banking.direct_debit_status_code [not null, note: "Status code of the direct debit (e.g., active, canceled)"]
   "name" VARCHAR(70) [not null, note: "Name of the merchant/organization collecting the direct debit"]
-  "previous_payment_date_time" TIMESTAMP [note: "When the last payment was made"]
+  "previous_payment_date_time" TIMESTAMPTZ [note: "When the last payment was made"]
   "previous_payment_amount" NUMERIC(18,5) [note: "Amount of the last payment"]
   "previous_payment_currency" VARCHAR(3) [note: "Currency of the last payment"]
 
@@ -440,12 +623,12 @@ Table "consumer_banking"."mandate_related_information" {
   "consumer_banking_mandate_related_information_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for mandate information"]
   "consumer_banking_direct_debit_id" INTEGER [not null, ref: > consumer_banking.direct_debits.consumer_banking_direct_debit_id, note: "References the direct debit this mandate belongs to"]
   "mandate_id" INTEGER [not null, note: "Unique reference for the direct debit mandate"]
-  "classification" VARCHAR(20) [note: "Classification of the mandate (e.g., personal, business)"]
-  "category" VARCHAR(20) [note: "Purpose code for categorizing the payment type"]
-  "first_payment_date_time" TIMESTAMP [note: "When the first payment is scheduled"]
-  "recurring_payment_date_time" TIMESTAMP [note: "When recurring payments are scheduled"]
-  "final_payment_date_time" TIMESTAMP [note: "When the final payment is scheduled (if applicable)"]
-  "frequency_type" VARCHAR(20) [not null, note: "How often payments occur (e.g., monthly, weekly)"]
+  "classification" consumer_banking.direct_debit_classification [note: "Classification of the mandate (e.g., personal, business)"]
+  "category" consumer_banking.direct_debit_category [note: "Purpose code for categorizing the payment type"]
+  "first_payment_date_time" TIMESTAMPTZ [note: "When the first payment is scheduled"]
+  "recurring_payment_date_time" TIMESTAMPTZ [note: "When recurring payments are scheduled"]
+  "final_payment_date_time" TIMESTAMPTZ [note: "When the final payment is scheduled (if applicable)"]
+  "frequency_type" enterprise.frequency [not null, note: "How often payments occur (e.g., monthly, weekly)"]
   "frequency_count_per_period" INT [note: "Number of payments in each period"]
   "frequency_point_in_time" VARCHAR(2) [note: "Specific day or time point for payments"]
   "reason" VARCHAR(256) [note: "Reason or purpose for the mandate"]
@@ -453,33 +636,117 @@ Table "consumer_banking"."mandate_related_information" {
   note: "Stores detailed information about direct debit mandates including payment schedules"
 }
 
+Enum "consumer_banking"."offer_type" {
+  LOAN [note: 'Offer for a new loan product']
+  BALANCE_TRANSFER [note: 'Offer to transfer balance from another institution']
+  CREDIT_LIMIT_INCREASE [note: 'Offer to increase existing credit limit']
+  INTEREST_RATE_REDUCTION [note: 'Offer for reduced interest rate']
+  OVERDRAFT [note: 'Offer for overdraft facility or extension']
+  INVESTMENT [note: 'Offer for investment product or service']
+  SAVINGS [note: 'Offer for savings account with preferential terms']
+  INSURANCE [note: 'Offer for insurance product']
+  CASHBACK [note: 'Offer for cash back on transactions']
+  REWARDS [note: 'Offer for reward points or benefits']
+  PREMIUM_ACCOUNT [note: 'Offer to upgrade to a premium account type']
+  FEE_WAIVER [note: 'Offer to waive certain fees']
+  BUNDLE [note: 'Offer for multiple products bundled together']
+  PREAPPROVAL [note: 'Pre-approved offer for a financial product']
+  PROMOTIONAL [note: 'Time-limited promotional offer']
+  OTHER [note: 'Offer type not covered by standard categories']
+}
+
+// Reusing the enterprise currency_code enum for the amount_currency and fee_currency fields
 Table "consumer_banking"."offers" {
   "consumer_banking_offer_id" SERIAL [pk, increment, note: "Unique identifier for each offer"]
-  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
-  "offer_type" VARCHAR(20) [not null, note: "Type of offer (e.g., loan, investment, balance transfer)"]
+  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this offer belongs to"]
+  "offer_type" consumer_banking.offer_type [not null, note: "Type of offer (e.g., loan, investment, balance transfer)"]
   "description" VARCHAR(500) [note: "Detailed description of the offer"]
-  "start_date_time" TIMESTAMP [note: "When the offer becomes available"]
-  "end_date_time" TIMESTAMP [note: "When the offer expires"]
+  "start_date_time" TIMESTAMPTZ [note: "When the offer becomes available"]
+  "end_date_time" TIMESTAMPTZ [note: "When the offer expires"]
   "rate" NUMERIC(10,4) [note: "Interest rate associated with the offer"]
   "value" INT [note: "Numerical value related to the offer (e.g., reward points)"]
   "term" VARCHAR(500) [note: "Terms and conditions of the offer"]
   "url" VARCHAR(256) [note: "Web link for more information about the offer"]
   "amount" NUMERIC(18,5) [note: "Monetary amount of the offer"]
-  "amount_currency" VARCHAR(3) [note: "Currency of the offer amount"]
+  "amount_currency" enterprise.currency_code [note: "Currency of the offer amount"]
   "fee" NUMERIC(18,5) [note: "Any fee associated with accepting the offer"]
-  "fee_currency" VARCHAR(3) [note: "Currency of the fee"]
+  "fee_currency" enterprise.currency_code [note: "Currency of the fee"]
 
   note: "Stores promotional offers made to account holders"
 }
 
+Enum "consumer_banking"."product_type" {
+  CHECKING [note: 'Standard transaction account for daily banking needs']
+  SAVINGS [note: 'Interest-bearing deposit account']
+  MONEY_MARKET [note: 'High-interest deposit account with check-writing privileges']
+  CERTIFICATE_OF_DEPOSIT [note: 'Fixed-term deposit account with higher interest rates']
+  IRA [note: 'Individual Retirement Account']
+  HSA [note: 'Health Savings Account']
+  STUDENT [note: 'Specialized accounts for students with reduced fees']
+  YOUTH [note: 'Accounts designed for minors with parental oversight']
+  SENIOR [note: 'Accounts with features tailored to older customers']
+  BUSINESS_CHECKING [note: 'Transaction accounts for business entities']
+  BUSINESS_SAVINGS [note: 'Savings accounts for business entities']
+  PREMIUM [note: 'High-end accounts with enhanced services for wealthy clients']
+  FOREIGN_CURRENCY [note: 'Accounts denominated in non-local currencies']
+  SPECIALIZED [note: 'Niche account products for specific purposes']
+}
+
+Enum "consumer_banking"."interest_calculation_method" {
+  DAILY_BALANCE [note: 'Interest calculated on the daily account balance']
+  AVERAGE_DAILY_BALANCE [note: 'Interest calculated on the average daily balance for the period']
+  MINIMUM_BALANCE [note: 'Interest calculated on the minimum balance during the period']
+  TIERED_RATE [note: 'Different interest rates applied to different balance tiers']
+  BLENDED_RATE [note: 'Combined rate based on multiple factors']
+  STEPPED_RATE [note: 'Increasing rates for higher balances']
+}
+
+Enum "consumer_banking"."account_fee_schedule" {
+  STANDARD [note: 'Regular fee structure without special conditions']
+  REDUCED [note: 'Lower fees based on qualifying factors']
+  WAIVED_WITH_MINIMUM_BALANCE [note: 'Fees waived when maintaining minimum balance']
+  WAIVED_WITH_DIRECT_DEPOSIT [note: 'Fees waived with regular direct deposits']
+  WAIVED_WITH_RELATIONSHIP [note: 'Fees waived based on overall banking relationship']
+  NO_FEE [note: 'Account with no monthly maintenance fees']
+  ACTIVITY_BASED [note: 'Fees based on account activity levels']
+  TIERED [note: 'Fee structure varies based on balance tiers']
+}
+
+Enum "consumer_banking"."product_status" {
+  ACTIVE [note: 'Product currently offered to new customers']
+  GRANDFATHERED [note: 'Product maintained for existing customers but not offered to new ones']
+  PROMOTIONAL [note: 'Limited-time product offering']
+  DISCONTINUED [note: 'Product no longer offered but still supported']
+  ARCHIVED [note: 'Product completely retired']
+  PILOT [note: 'Product in limited release for testing']
+  SEASONAL [note: 'Product offered only during specific times of year']
+}
+
 Table "consumer_banking"."products" {
   "consumer_banking_product_id" SERIAL [pk, increment, note: "Unique identifier for each product"]
-  "product_name" VARCHAR(350) [not null, note: "Name of the banking product"]
-  "secondary_product_id" VARCHAR(70) [note: "Alternative identifier for the product"]
-  "product_type" VARCHAR(30) [not null, note: "Type of product (e.g., savings, checking, loan)"]
-  "marketing_state_id" VARCHAR(35) [note: "Identifier for marketing campaign or state"]
+  "product_code" VARCHAR(20) [not null, note: "Internal code for the product"]
+  "product_name" VARCHAR(100) [not null, note: "Display name for the product"]
+  "product_type" consumer_banking.product_type [not null, note: "Type of product (checking, savings, money market, etc.)"]
+  "description" TEXT [note: "Detailed product description"]
+  "min_opening_deposit" DECIMAL(18,2) [note: "Minimum amount required to open an account of this product type"]
+  "monthly_fee" DECIMAL(10,2) [note: "Standard monthly maintenance fee"]
+  "fee_schedule" consumer_banking.account_fee_schedule [not null, default: "STANDARD", note: "Type of fee structure applicable to this product"]
+  "transaction_limit" INTEGER [note: "Number of free transactions per statement period"]
+  "transaction_fee" DECIMAL(10,2) [note: "Fee charged per transaction beyond the limit"]
+  "min_balance" DECIMAL(18,2) [note: "Minimum balance to avoid fees"]
+  "is_interest_bearing" BOOLEAN [not null, default: false, note: "Indicates if the product earns interest"]
+  "base_interest_rate" DECIMAL(6,4) [note: "Standard interest rate for the product (if applicable)"]
+  "interest_calculation_method" consumer_banking.interest_calculation_method [note: "Method used to calculate interest on the account"]
+  "term_length" INTEGER [note: "Term in months (for term products)"]
+  "status" consumer_banking.product_status [not null, default: "ACTIVE", note: "Current availability status of the product"]
+  "launch_date" DATE [note: "Date when product was first offered"]
+  "discontinue_date" DATE [note: "Date when product was discontinued if applicable"]
 
-  note: "Stores information about banking products associated with accounts"
+  Indexes {
+    "product_code" [unique, note: "Ensures product codes are unique"]
+  }
+
+  note: "Defines the financial products offered to customers"
 }
 
 Table "consumer_banking"."other_product_types" {
@@ -491,24 +758,59 @@ Table "consumer_banking"."other_product_types" {
   note: "Stores information about non-standard product types not covered in main categories"
 }
 
+Enum "consumer_banking"."scheduled_payment_type" {
+  SINGLE [note: 'One-time payment scheduled for a specific date']
+  RECURRING [note: 'Payment that repeats at regular intervals']
+  INSTALLMENT [note: 'Payment that is part of a fixed series of payments']
+  CONDITIONAL [note: 'Payment that executes based on specified conditions']
+  VARIABLE [note: 'Payment with an amount that may vary']
+}
+
+Enum "consumer_banking"."scheduled_payment_status" {
+  PENDING [note: 'Payment is scheduled but not yet processed']
+  PROCESSING [note: 'Payment is currently being processed']
+  COMPLETED [note: 'Payment has been successfully executed']
+  FAILED [note: 'Payment execution failed']
+  CANCELED [note: 'Payment was canceled before processing']
+  EXPIRED [note: 'Scheduled payment date passed without execution']
+  RECURRENCE_ENDED [note: 'Final payment in a recurring series']
+  ON_HOLD [note: 'Payment temporarily paused']
+}
+
+Enum "consumer_banking"."payment_method" {
+  ACH [note: 'Automated Clearing House electronic transfer']
+  WIRE [note: 'Wire transfer']
+  INTERNAL [note: 'Internal transfer between accounts']
+  CHECK [note: 'Paper check payment']
+  CARD [note: 'Card-based payment']
+  DIGITAL_WALLET [note: 'Payment through digital wallet service']
+  OTHER [note: 'Other payment method not listed']
+}
+
 Table "consumer_banking"."scheduled_payments" {
   "consumer_banking_scheduled_payment_id" SERIAL [pk, increment, note: "Unique identifier for each scheduled payment"]
   "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
-  "scheduled_payment_date_time" TIMESTAMP [not null, note: "When the payment is scheduled to occur"]
-  "scheduled_type" VARCHAR(10) [not null, note: "Type of scheduled payment (e.g., single, recurring)"]
+  "scheduled_payment_date_time" TIMESTAMPTZ [not null, note: "When the payment is scheduled to occur"]
+  "scheduled_type" consumer_banking.scheduled_payment_type [not null, note: "Type of scheduled payment"]
+  "payment_method" consumer_banking.payment_method [not null, note: "Method of payment execution"]
+  "payment_status" consumer_banking.scheduled_payment_status [not null, default: "PENDING", note: "Current status of the scheduled payment"]
+  "frequency" enterprise.frequency [note: "Frequency of recurring payments if applicable"]
   "reference" VARCHAR(35) [note: "Reference identifier for the payment"]
   "debtor_reference" VARCHAR(35) [note: "Reference identifier for the payer"]
   "instructed_amount" NUMERIC(18,5) [not null, note: "Amount to be paid"]
-  "instructed_amount_currency" VARCHAR(3) [not null, note: "Currency of the payment amount"]
+  "instructed_amount_currency" enterprise.currency_code [not null, note: "Currency of the payment amount"]
+  "end_date" DATE [note: "End date for recurring payments"]
+  "execution_count" INTEGER [note: "Number of times recurring payment has executed"]
+  "max_executions" INTEGER [note: "Maximum number of executions for recurring payment"]
 
-  note: "Stores information about one-time future-dated payments"
+  note: "Stores information about one-time and recurring scheduled payments"
 }
 
 Table "consumer_banking"."scheduled_payment_creditor_agents" {
   "consumer_banking_scheduled_payment_creditor_agent_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each agent record"]
   "consumer_banking_scheduled_payment_id" INTEGER [not null, ref: > consumer_banking.scheduled_payments.consumer_banking_scheduled_payment_id, note: "References the scheduled payment"]
-  "scheme_name" VARCHAR(50) [not null, note: "Identifier scheme for the receiving institution (e.g., BIC)"]
-  "identification" VARCHAR(35) [not null, note: "Identifier of the receiving financial institution"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Identifier scheme for the receiving institution (e.g., BIC)"]
+  "identification" VARCHAR(256) [not null, note: "Identifier of the receiving financial institution"]
   "name" VARCHAR(140) [note: "Name of the receiving financial institution"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier of the receiving institution"]
 
@@ -518,7 +820,7 @@ Table "consumer_banking"."scheduled_payment_creditor_agents" {
 Table "consumer_banking"."scheduled_payment_creditor_accounts" {
   "consumer_banking_scheduled_payment_creditor_account_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each creditor account"]
   "consumer_banking_scheduled_payment_id" INTEGER [not null, ref: > consumer_banking.scheduled_payments.consumer_banking_scheduled_payment_id, note: "References the scheduled payment"]
-  "scheme_name" VARCHAR(50) [not null, note: "Account identifier scheme (e.g., IBAN)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Account identifier scheme (e.g., IBAN)"]
   "identification" VARCHAR(256) [not null, note: "Account identifier for receiving the payment"]
   "name" VARCHAR(350) [note: "Name associated with the receiving account"]
   "secondary_identification" VARCHAR(34) [note: "Additional identification for the receiving account"]
@@ -526,21 +828,68 @@ Table "consumer_banking"."scheduled_payment_creditor_accounts" {
   note: "Stores information about accounts receiving scheduled payments"
 }
 
+Enum "consumer_banking"."standing_order_status_code" {
+  ACTIVE [note: 'Standing order is currently active and scheduled for execution']
+  PENDING [note: 'Standing order has been set up but is not yet active']
+  CANCELLED [note: 'Standing order has been permanently cancelled']
+  SUSPENDED [note: 'Standing order is temporarily suspended']
+  COMPLETED [note: 'Standing order has completed all scheduled payments']
+  FAILED [note: 'Most recent standing order payment attempt failed']
+  ON_HOLD [note: 'Standing order is on hold pending review or resolution']
+  EXPIRED [note: 'Standing order has reached its expiration date']
+  OTHER [note: 'Status not falling into standard categories']
+}
+
+Enum "consumer_banking"."standing_order_type" {
+  FIXED_AMOUNT [note: 'Order transfers a fixed amount each time']
+  VARIABLE_AMOUNT [note: 'Order transfers an amount that may vary each time']
+  BALANCE_SWEEP [note: 'Order transfers any balance above a specified amount']
+  FULL_BALANCE [note: 'Order transfers the entire balance']
+  PERCENTAGE [note: 'Order transfers a percentage of the balance']
+  INTEREST_ONLY [note: 'Order transfers only accrued interest']
+  OTHER [note: 'Type not falling into standard categories']
+}
+
+Enum "consumer_banking"."standing_order_category" {
+  BILL_PAYMENT [note: 'Order for paying regular bills']
+  SAVINGS [note: 'Order for transferring money to savings']
+  INVESTMENT [note: 'Order for investment funding']
+  LOAN_PAYMENT [note: 'Order for paying loans or mortgages']
+  SUBSCRIPTION [note: 'Order for subscription services']
+  CHARITY [note: 'Order for charitable donations']
+  FAMILY_SUPPORT [note: 'Order for supporting family members']
+  RENT [note: 'Order for rent payments']
+  BUSINESS_EXPENSE [note: 'Order for business-related expenses']
+  OTHER [note: 'Category not falling into standard categories']
+}
+
 Table "consumer_banking"."standing_orders" {
   "consumer_banking_standing_order_id" SERIAL [pk, increment, note: "Unique identifier for each standing order"]
-  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
-  "next_payment_date_time" TIMESTAMP [note: "When the next payment is scheduled"]
-  "last_payment_date_time" TIMESTAMP [note: "When the most recent payment was made"]
-  "standing_order_status_code" VARCHAR(5) [note: "Status code of the standing order (e.g., active, canceled)"]
+  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this standing order belongs to"]
+  "next_payment_date_time" TIMESTAMPTZ [note: "When the next payment is scheduled"]
+  "last_payment_date_time" TIMESTAMPTZ [note: "When the most recent payment was made"]
+  "standing_order_status_code" consumer_banking.standing_order_status_code [not null, default: "ACTIVE", note: "Status code of the standing order (e.g., active, canceled)"]
   "first_payment_amount" NUMERIC(18,5) [note: "Amount of the first payment (if different)"]
-  "first_payment_currency" VARCHAR(3) [note: "Currency of the first payment"]
+  "first_payment_currency" enterprise.currency_code [note: "Currency of the first payment"]
   "next_payment_amount" NUMERIC(18,5) [note: "Amount of the next scheduled payment"]
-  "next_payment_currency" VARCHAR(3) [note: "Currency of the next payment"]
+  "next_payment_currency" enterprise.currency_code [note: "Currency of the next payment"]
   "last_payment_amount" NUMERIC(18,5) [note: "Amount of the most recent payment"]
-  "last_payment_currency" VARCHAR(3) [note: "Currency of the most recent payment"]
+  "last_payment_currency" enterprise.currency_code [note: "Currency of the most recent payment"]
   "final_payment_amount" NUMERIC(18,5) [note: "Amount of the final payment (if different)"]
-  "final_payment_currency" VARCHAR(3) [note: "Currency of the final payment"]
-  "supplementary_data" TEXT [note: "Additional information about the standing order"]
+  "final_payment_currency" enterprise.currency_code [note: "Currency of the final payment"]
+  "frequency" enterprise.frequency [not null, note: "Frequency of standing order payments"]
+  "start_date" DATE [not null, note: "Date when the first payment should be made"]
+  "end_date" DATE [note: "Date when the standing order expires (if specified)"]
+  "day_of_month" INTEGER [note: "Day of month for payments (for monthly/quarterly frequencies)"]
+  "day_of_week" INTEGER [note: "Day of week for payments (for weekly frequencies)"]
+  "payment_type" consumer_banking.standing_order_type [not null, default: "FIXED_AMOUNT", note: "Type of payment (fixed, variable, etc.)"]
+  "category" consumer_banking.standing_order_category [note: "Category or purpose of the standing order"]
+  "reference" VARCHAR(100) [note: "Payment reference shown to the recipient"]
+  "description" VARCHAR(255) [note: "Description of the standing order purpose"]
+  "created_date" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: "When the standing order was created"]
+  "created_by" VARCHAR(50) [note: "Who or what created the standing order"]
+  "modified_date" TIMESTAMPTZ [note: "When the standing order was last modified"]
+  "supplementary_data" TEXT [note: "Additional information about the standing order in JSON format"]
 
   note: "Stores information about recurring payment instructions (standing orders)"
 }
@@ -548,7 +897,7 @@ Table "consumer_banking"."standing_orders" {
 Table "consumer_banking"."standing_order_creditor_agents" {
   "consumer_banking_standing_order_creditor_agent_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each agent record"]
   "consumer_banking_standing_order_id" INTEGER [not null, ref: > consumer_banking.standing_orders.consumer_banking_standing_order_id , note: "References the standing order"]
-  "scheme_name" VARCHAR(50) [not null, note: "Identifier scheme for the receiving institution"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Identifier scheme for the receiving institution"]
   "identification" VARCHAR(35) [not null, note: "Identifier of the receiving financial institution"]
   "name" VARCHAR(140) [note: "Name of the receiving financial institution"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier of the receiving institution"]
@@ -559,7 +908,7 @@ Table "consumer_banking"."standing_order_creditor_agents" {
 Table "consumer_banking"."standing_order_creditor_accounts" {
   "consumer_banking_standing_order_creditor_account_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each creditor account"]
   "consumer_banking_standing_order_id" INTEGER [not null, ref: > consumer_banking.standing_orders.consumer_banking_standing_order_id, note: "References the standing order"]
-  "scheme_name" VARCHAR(50) [not null, note: "Account identifier scheme (e.g., IBAN)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Account identifier scheme (e.g., IBAN)"]
   "identification" VARCHAR(256) [not null, note: "Account identifier for receiving the payments"]
   "name" VARCHAR(350) [note: "Name associated with the receiving account"]
   "secondary_identification" VARCHAR(34) [note: "Additional identification for the receiving account"]
@@ -567,14 +916,27 @@ Table "consumer_banking"."standing_order_creditor_accounts" {
   note: "Stores information about accounts receiving standing order payments"
 }
 
+Enum "consumer_banking"."statement_type" {
+  REGULAR [note: 'Standard periodic statement issued on the regular statement cycle']
+  INTERIM [note: 'Statement issued between regular statement dates upon request or for special circumstances']
+  FINAL [note: 'Final statement issued when an account is closed']
+  ANNUAL [note: 'Annual summary statement showing yearly activity']
+  SUPPLEMENTARY [note: 'Additional statement providing supplementary information']
+  TAX [note: 'Statement specifically for tax reporting purposes']
+  CORRECTED [note: 'Reissued statement that corrects errors in a previous statement']
+  RECONCILIATION [note: 'Statement issued for account reconciliation purposes']
+  CONSOLIDATED [note: 'Statement that consolidates information from multiple accounts']
+  OTHER [note: 'Statement type not covered by standard categories']
+}
+
 Table "consumer_banking"."statements" {
   "consumer_banking_statement_id" SERIAL [pk, increment, note: "Unique identifier for each statement"]
   "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
   "statement_reference" VARCHAR(35) [note: "Reference number for the statement"]
-  "type" VARCHAR(20) [not null, note: "Type of statement (e.g., regular, interim, final)"]
-  "start_date_time" TIMESTAMP [not null, note: "Start of the period covered by the statement"]
-  "end_date_time" TIMESTAMP [not null, note: "End of the period covered by the statement"]
-  "creation_date_time" TIMESTAMP [not null, note: "When the statement was generated"]
+  "type" consumer_banking.statement_type [not null, note: "Type of statement (e.g., regular, interim, final)"]
+  "start_date_time" TIMESTAMPTZ [not null, note: "Start of the period covered by the statement"]
+  "end_date_time" TIMESTAMPTZ [not null, note: "End of the period covered by the statement"]
+  "creation_date_time" TIMESTAMPTZ [not null, note: "When the statement was generated"]
 
   note: "Stores information about account statements"
 }
@@ -587,102 +949,348 @@ Table "consumer_banking"."statement_descriptions" {
   note: "Stores additional descriptive information for statements"
 }
 
+Enum "consumer_banking"."benefit_type" {
+  CASHBACK [note: 'Cash rewards based on card spending']
+  POINTS [note: 'Reward points earned from transactions']
+  MILES [note: 'Travel miles accumulated from purchases']
+  INTEREST [note: 'Interest earned on account balance']
+  DISCOUNT [note: 'Discount applied to purchases or services']
+  INSURANCE [note: 'Insurance coverage provided as account benefit']
+  FEE_WAIVER [note: 'Waiver of fees as a benefit']
+  PROMOTIONAL [note: 'Limited-time promotional benefit']
+  LOYALTY [note: 'Benefits from loyalty program participation']
+  REFERRAL [note: 'Rewards for referring new customers']
+  ANNIVERSARY [note: 'Benefits provided on account anniversary']
+  OTHER [note: 'Benefit type not covered by standard categories']
+}
+
 Table "consumer_banking"."statement_benefits" {
   "consumer_banking_statement_benefit_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each benefit record"]
   "consumer_banking_statement_id" INTEGER [not null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: "References the statement this benefit belongs to"]
-  "type" VARCHAR(50) [not null, note: "Type of benefit (e.g., cashback, rewards, insurance)"]
+  "type" consumer_banking.benefit_type [not null, note: "Type of benefit (e.g., cashback, rewards, insurance)"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary value of the benefit"]
   "currency" VARCHAR(3) [not null, note: "Currency code for the benefit amount"]
 
   note: "Stores information about benefits received during a statement period"
 }
 
+Enum "consumer_banking"."fee_type" {
+  SERVICE [note: 'Regular account maintenance or service fee']
+  TRANSACTION [note: 'Fee for specific transactions or activities']
+  OVERDRAFT [note: 'Fee charged when account goes into overdraft']
+  ATM [note: 'Fee for ATM usage, especially out-of-network']
+  WIRE_TRANSFER [note: 'Fee for wire transfer services']
+  FOREIGN_TRANSACTION [note: 'Fee for transactions in foreign currencies']
+  PAPER_STATEMENT [note: 'Fee for receiving physical paper statements']
+  STOP_PAYMENT [note: 'Fee for stopping payment on a check or transaction']
+  REPLACEMENT_CARD [note: 'Fee for replacing a lost or stolen card']
+  EARLY_WITHDRAWAL [note: 'Penalty for early withdrawal from time deposits']
+  INSUFFICIENT_FUNDS [note: 'Fee when transaction is rejected due to insufficient balance']
+  DORMANT_ACCOUNT [note: 'Fee for inactive accounts']
+  RESEARCH [note: 'Fee for research or investigation services']
+  SPECIAL_STATEMENT [note: 'Fee for statement copies or special formats']
+  LATE_PAYMENT [note: 'Fee charged for payments made after the due date']
+  OTHER [note: 'Fee type not covered by standard categories']
+}
+
+Enum "consumer_banking"."fee_frequency" {
+  ONE_TIME [note: 'Fee charged once for a specific event']
+  MONTHLY [note: 'Fee charged on a monthly basis']
+  QUARTERLY [note: 'Fee charged every three months']
+  ANNUALLY [note: 'Fee charged once per year']
+  PER_TRANSACTION [note: 'Fee charged for each applicable transaction']
+  CONDITIONAL [note: 'Fee charged only when specific conditions are met']
+  OTHER [note: 'Frequency not falling into standard categories']
+}
+
+Enum "consumer_banking"."rate_type" {
+  FIXED [note: 'Unchanging rate that remains constant']
+  VARIABLE [note: 'Rate that can change based on market conditions or indices']
+  TIERED [note: 'Rate that changes based on balance or activity thresholds']
+  PROMOTIONAL [note: 'Temporary special rate offered for a limited time']
+  PENALTY [note: 'Higher rate applied as a penalty for specific conditions']
+  STANDARD [note: 'Regular published rate for the product or service']
+  DISCOUNTED [note: 'Rate that includes a discount from standard rates']
+  OTHER [note: 'Rate type not covered by standard categories']
+}
+
 Table "consumer_banking"."statement_fees" {
   "consumer_banking_statement_fee_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each fee record"]
   "consumer_banking_statement_id" INTEGER [not null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: "References the statement this fee belongs to"]
   "description" VARCHAR(128) [note: "Description of the fee"]
-  "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if fee is a credit or debit"]
-  "type" VARCHAR(50) [not null, note: "Type of fee (e.g., service, transaction, late payment)"]
+  "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if fee is a credit or debit"]
+  "type" consumer_banking.fee_type [not null, note: "Type of fee (e.g., service, transaction, late payment)"]
   "rate" NUMERIC(10,4) [note: "Rate applied if fee is percentage-based"]
-  "rate_type" VARCHAR(50) [note: "Type of rate (e.g., fixed, variable)"]
-  "frequency" VARCHAR(50) [note: "How often the fee is applied (e.g., monthly, per transaction)"]
+  "rate_type" consumer_banking.rate_type [note: "Type of rate (e.g., fixed, variable)"]
+  "frequency" consumer_banking.fee_frequency [note: "How often the fee is applied (e.g., monthly, per transaction)"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount of the fee"]
-  "currency" VARCHAR(3) [not null, note: "Currency code for the fee amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the fee amount"]
 
   note: "Stores information about fees charged during a statement period"
+}
+
+Enum "consumer_banking"."interest_type" {
+  DEPOSIT [note: 'Interest earned on deposit account balances']
+  SAVINGS [note: 'Interest earned specifically on savings accounts']
+  CERTIFICATE [note: 'Interest earned on certificates of deposit or time deposits']
+  MONEY_MARKET [note: 'Interest earned on money market accounts']
+  CHECKING [note: 'Interest earned on interest-bearing checking accounts']
+  BONUS [note: 'Special bonus interest for meeting certain conditions']
+  PROMOTIONAL [note: 'Temporary promotional interest rate']
+  PENALTY [note: 'Interest charged as a penalty']
+  LOAN [note: 'Interest charged on loan balances']
+  CREDIT_CARD [note: 'Interest charged on credit card balances']
+  OVERDRAFT [note: 'Interest charged on overdraft balances']
+  LINE_OF_CREDIT [note: 'Interest charged on line of credit utilization']
+  ADJUSTMENT [note: 'Interest adjustment or correction']
+  OTHER [note: 'Interest type not covered by standard categories']
 }
 
 Table "consumer_banking"."statement_interests" {
   "consumer_banking_statement_interest_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each interest record"]
   "consumer_banking_statement_id" INTEGER [not null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: "References the statement this interest belongs to"]
   "description" VARCHAR(128) [note: "Description of the interest"]
-  "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if interest is earned (credit) or charged (debit)"]
-  "type" VARCHAR(50) [not null, note: "Type of interest (e.g., deposit, loan, credit card)"]
+  "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if interest is earned (credit) or charged (debit)"]
+  "type" consumer_banking.interest_type [not null, note: "Type of interest (e.g., deposit, loan, credit card)"]
   "rate" NUMERIC(10,4) [note: "Interest rate applied"]
-  "rate_type" VARCHAR(50) [note: "Type of rate (e.g., fixed, variable, introductory)"]
-  "frequency" VARCHAR(50) [note: "How often interest is calculated (e.g., daily, monthly)"]
+  "rate_type" consumer_banking.rate_type [note: "Type of rate (e.g., fixed, variable, promotional)"]
+  "frequency" enterprise.frequency [note: "How often interest is calculated (e.g., daily, monthly)"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount of interest earned or charged"]
-  "currency" VARCHAR(3) [not null, note: "Currency code for the interest amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the interest amount"]
 
   note: "Stores information about interest earned or charged during a statement period"
+}
+
+Enum "consumer_banking"."amount_type" {
+  OPENING_BALANCE [note: 'Balance at the start of the statement period']
+  CLOSING_BALANCE [note: 'Balance at the end of the statement period']
+  PAYMENTS [note: 'Total payments made during the statement period']
+  DEPOSITS [note: 'Total deposits made during the statement period']
+  WITHDRAWALS [note: 'Total withdrawals made during the statement period']
+  INTEREST_EARNED [note: 'Total interest earned during the statement period']
+  INTEREST_CHARGED [note: 'Total interest charged during the statement period']
+  FEES [note: 'Total fees charged during the statement period']
+  CREDITS [note: 'Total credits or refunds applied during the statement period']
+  DEBITS [note: 'Total debits or charges applied during the statement period']
+  TRANSFERS_IN [note: 'Total incoming transfers during the statement period']
+  TRANSFERS_OUT [note: 'Total outgoing transfers during the statement period']
+  MINIMUM_PAYMENT_DUE [note: 'Minimum payment due for the next cycle']
+  AVAILABLE_CREDIT [note: 'Available credit for credit accounts']
+  AVAILABLE_BALANCE [note: 'Available balance that can be withdrawn']
+  CURRENT_BALANCE [note: 'Current balance including pending transactions']
+  PENDING_BALANCE [note: 'Total of pending transactions not yet posted']
+  OVERDRAFT_LIMIT [note: 'Maximum overdraft allowed on the account']
+  OVERDRAFT_USED [note: 'Amount of overdraft currently being used']
+  OTHER [note: 'Amount type not covered by standard categories']
+}
+
+Enum "consumer_banking"."amount_sub_type" {
+  PRINCIPAL [note: 'Amount related to principal portion of balance or payments']
+  INTEREST [note: 'Amount specifically related to interest']
+  FEES [note: 'Amount specifically related to fees']
+  PENALTIES [note: 'Amount related to penalties or late charges']
+  REWARDS [note: 'Amount related to rewards or benefits']
+  PROMOTIONAL [note: 'Amount related to promotional offers or rates']
+  TEMPORARY [note: 'Temporary or provisional amount']
+  ESTIMATED [note: 'Estimated amount subject to verification']
+  ADJUSTED [note: 'Amount that has been adjusted from previous value']
+  CORRECTED [note: 'Amount that has been corrected from previous error']
+  NONE [note: 'No specific sub-type applicable']
 }
 
 Table "consumer_banking"."statement_amounts" {
   "consumer_banking_statement_amount_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each amount record"]
   "consumer_banking_statement_id" INTEGER [not null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: "References the statement this amount belongs to"]
-  "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if amount is a credit or debit"]
-  "type" VARCHAR(50) [not null, note: "Type of amount (e.g., opening balance, closing balance, payments)"]
+  "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if amount is a credit or debit"]
+  "type" consumer_banking.amount_type [not null, note: "Type of amount (e.g., opening balance, closing balance, payments)"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary value"]
-  "currency" VARCHAR(3) [not null, note: "Currency code for the amount"]
-  "sub_type" VARCHAR(15) [note: "Further classification of the amount type"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the amount"]
+  "sub_type" consumer_banking.amount_sub_type [note: "Further classification of the amount type"]
 
   note: "Stores various monetary amount totals associated with a statement"
+}
+
+Enum "consumer_banking"."statement_date_type" {
+  STATEMENT_DATE [note: 'Date the statement was generated']
+  DUE_DATE [note: 'Date payment is due']
+  PAYMENT_CUTOFF_DATE [note: 'Last date to make payment for current cycle']
+  CLOSE_DATE [note: 'Date when the statement period closed']
+  NEXT_STATEMENT_DATE [note: 'Date when the next statement will be generated']
+  MINIMUM_PAYMENT_DATE [note: 'Date by which minimum payment must be made']
+  GRACE_PERIOD_END [note: 'End date of the interest-free grace period']
+  LATE_FEE_DATE [note: 'Date when late fees will be assessed']
+  CYCLE_START_DATE [note: 'Start date of the billing cycle']
+  LAST_PAYMENT_DATE [note: 'Date when the last payment was received']
+  OTHER [note: 'Date type not covered by standard categories']
 }
 
 Table "consumer_banking"."statement_date_times" {
   "consumer_banking_statement_date_time_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each date record"]
   "consumer_banking_statement_id" INTEGER [not null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: "References the statement this date belongs to"]
-  "date_time" TIMESTAMP [not null, note: "Date and time value"]
-  "type" VARCHAR(50) [not null, note: "Type of date (e.g., payment due, minimum payment, cycle end)"]
+  "date_time" TIMESTAMPTZ [not null, note: "Date and time value"]
+  "type" consumer_banking.statement_date_type [not null, note: "Type of date (e.g., payment due, minimum payment, cycle end)"]
 
   note: "Stores important dates associated with a statement"
+}
+
+Enum "consumer_banking"."statement_rate_type" {
+  APR [note: 'Annual Percentage Rate for purchases']
+  CASH_ADVANCE_APR [note: 'Annual Percentage Rate for cash advances']
+  BALANCE_TRANSFER_APR [note: 'Annual Percentage Rate for balance transfers']
+  PENALTY_APR [note: 'Increased rate applied after payment violations']
+  PROMOTIONAL_APR [note: 'Special reduced rate for promotional periods']
+  SAVINGS_RATE [note: 'Interest rate earned on savings accounts']
+  CD_RATE [note: 'Interest rate for Certificate of Deposit']
+  EXCHANGE_RATE [note: 'Currency exchange rate used for transactions']
+  INTRODUCTORY_RATE [note: 'Special rate for new accounts or customers']
+  VARIABLE_RATE_INDEX [note: 'Index rate for variable rate products']
+  MARGIN [note: 'Margin added to index for variable rate calculation']
+  DEFAULT_RATE [note: 'Rate applied upon default']
+  REWARD_RATE [note: 'Rate for earning rewards on purchases']
+  EFFECTIVE_RATE [note: 'Effective rate after all calculations']
+  OTHER [note: 'Rate type not falling into standard categories']
 }
 
 Table "consumer_banking"."statement_rates" {
   "consumer_banking_statement_rate_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each rate record"]
   "consumer_banking_statement_id" INTEGER [not null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: "References the statement this rate belongs to"]
   "rate" NUMERIC(10,4) [not null, note: "Rate value (e.g., interest rate, exchange rate)"]
-  "type" VARCHAR(50) [not null, note: "Type of rate (e.g., APR, exchange, promotional)"]
+  "type" consumer_banking.statement_rate_type [not null, note: "Type of rate (e.g., APR, promotional rate)"]
+  "description" VARCHAR(255) [note: "Additional description of the rate's applicability"]
+  "effective_date" DATE [note: "Date when this rate became effective"]
+  "expiration_date" DATE [note: "Date when this rate expires (if applicable)"]
+  "is_variable" BOOLEAN [not null, default: false, note: "Whether this is a variable rate"]
+  "index_rate" NUMERIC(10,4) [note: "Base index rate for variable rates"]
+  "margin" NUMERIC(10,4) [note: "Margin added to index for variable rates"]
+  "balance_subject_to_rate" NUMERIC(18,2) [note: "Balance amount subject to this rate"]
+  "created_at" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: "When this record was created"]
+  "updated_at" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: "When this record was last updated"]
 
-  note: "Stores various rate information associated with a statement"
+  note: "Stores various rate information associated with statements, including interest rates, promotional rates, and exchange rates"
+}
+
+Enum "consumer_banking"."statement_value_type" {
+  LOYALTY_POINTS [note: 'Accumulated loyalty or reward points']
+  REWARD_BALANCE [note: 'Current balance of reward points or cashback']
+  CASH_BACK_EARNED [note: 'Cash back earned during the statement period']
+  POINTS_EARNED [note: 'Points earned during the statement period']
+  POINTS_REDEEMED [note: 'Points redeemed during the statement period']
+  TIER_LEVEL [note: 'Current loyalty or rewards tier level']
+  CREDIT_SCORE [note: 'Credit score information provided on statement']
+  CARBON_FOOTPRINT [note: 'Environmental impact metrics']
+  SPENDING_CATEGORY [note: 'Spending breakdown by category']
+  MILES_EARNED [note: 'Travel miles earned during the statement period']
+  MILES_BALANCE [note: 'Current balance of travel miles']
+  MERCHANT_CATEGORY [note: 'Breakdown of spending by merchant category']
+  NEXT_TIER_PROGRESS [note: 'Progress toward next loyalty tier level']
+  ANNUAL_REWARDS_SUMMARY [note: 'Year-to-date rewards summary']
+  ANNUAL_SPENDING_SUMMARY [note: 'Year-to-date spending summary']
+  OTHER [note: 'Value type not covered by standard categories']
 }
 
 Table "consumer_banking"."statement_values" {
   "consumer_banking_statement_value_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each value record"]
   "consumer_banking_statement_id" INTEGER [not null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: "References the statement this value belongs to"]
-  "value" VARCHAR(40) [not null, note: "Value content (could be string or numeric depending on type)"]
-  "type" VARCHAR(50) [not null, note: "Type of value (e.g., loyalty points, tier level, credit score)"]
+  "value" VARCHAR(255) [not null, note: "Value content (e.g., loyalty points, tier level, credit score)"]
+  "type" consumer_banking.statement_value_type [not null, note: "Type of value stored"]
+  "description" VARCHAR(255) [note: "Additional description or context for the value"]
+  "previous_value" VARCHAR(255) [note: "Previous statement's value of the same type, for comparison"]
+  "change_percentage" NUMERIC(10,2) [note: "Percentage change from previous statement"]
+  "is_estimated" BOOLEAN [not null, default: false, note: "Whether this value is estimated rather than confirmed"]
+  "reference_period_start" DATE [note: "Start of the period this value refers to, if different from statement period"]
+  "reference_period_end" DATE [note: "End of the period this value refers to, if different from statement period"]
+  "created_at" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: "When this record was created"]
+  "updated_at" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: "When this record was last updated"]
 
-  note: "Stores miscellaneous values associated with a statement that aren't monetary amounts"
+  note: "Stores miscellaneous values associated with a statement that aren't monetary amounts, such as loyalty points, credit scores, or tier levels"
+}
+
+Enum "consumer_banking"."transaction_status" {
+  PENDING [note: 'Transaction has been initiated but not yet finalized']
+  BOOKED [note: 'Transaction has been posted to the account']
+  CANCELLED [note: 'Transaction was cancelled before completion']
+  REJECTED [note: 'Transaction was rejected by the system']
+  REVERSED [note: 'Transaction was reversed after posting']
+  HELD [note: 'Transaction is on hold pending review']
+  EXPIRED [note: 'Transaction has expired without being completed']
+  OTHER [note: 'Status not covered by standard categories']
+}
+
+Enum "consumer_banking"."transaction_mutability" {
+  MUTABLE [note: 'Transaction can be modified']
+  IMMUTABLE [note: 'Transaction cannot be modified']
+  CONDITIONAL [note: 'Transaction can be modified under certain conditions']
+}
+
+Enum "consumer_banking"."transaction_category" {
+  PAYMENT [note: 'General payment transaction']
+  DEPOSIT [note: 'Deposit of funds into account']
+  WITHDRAWAL [note: 'Withdrawal of funds from account']
+  FEE [note: 'Fee charged to the account']
+  INTEREST [note: 'Interest paid or charged']
+  TRANSFER [note: 'Transfer between accounts']
+  ATM [note: 'ATM transaction']
+  POINT_OF_SALE [note: 'Point of sale purchase']
+  CARD_PAYMENT [note: 'Payment made with card']
+  DIRECT_DEBIT [note: 'Automatic withdrawal by authorized third party']
+  STANDING_ORDER [note: 'Regular automated payment']
+  CREDIT [note: 'Credit applied to account']
+  DEBIT [note: 'Debit applied to account']
+  REVERSAL [note: 'Reversal of a previous transaction']
+  ADJUSTMENT [note: 'Manual adjustment to account']
+  CHECK [note: 'Check transaction']
+  LOAN_DISBURSEMENT [note: 'Disbursement of loan funds']
+  LOAN_PAYMENT [note: 'Payment toward a loan']
+  OTHER [note: 'Category not covered by standard categories']
+}
+
+Enum "consumer_banking"."transaction_type" {
+  PURCHASE [note: 'Purchase of goods or services']
+  CASH_WITHDRAWAL [note: 'Withdrawal of cash']
+  REFUND [note: 'Refund for previous purchase']
+  BILL_PAYMENT [note: 'Payment of a bill']
+  SALARY [note: 'Salary or wage payment']
+  SUBSCRIPTION [note: 'Regular subscription payment']
+  DIVIDEND [note: 'Dividend payment']
+  TAX_PAYMENT [note: 'Payment of taxes']
+  TAX_REFUND [note: 'Refund of taxes']
+  INTERNAL_TRANSFER [note: 'Transfer between own accounts']
+  EXTERNAL_TRANSFER [note: 'Transfer to external account']
+  MERCHANT_PAYMENT [note: 'Payment to a merchant']
+  UTILITY_PAYMENT [note: 'Payment for utilities']
+  RENT_PAYMENT [note: 'Payment for rent']
+  MORTGAGE_PAYMENT [note: 'Payment for mortgage']
+  INVESTMENT [note: 'Investment transaction']
+  INSURANCE_PREMIUM [note: 'Payment for insurance']
+  DONATION [note: 'Charitable donation']
+  TRANSPORTATION [note: 'Payment for transportation']
+  FOOD_DINING [note: 'Payment for food or dining']
+  HEALTHCARE [note: 'Payment for healthcare services']
+  EDUCATION [note: 'Payment for education']
+  ENTERTAINMENT [note: 'Payment for entertainment']
+  TRAVEL [note: 'Payment for travel']
+  RETAIL [note: 'Payment for retail purchases']
+  OTHER [note: 'Type not covered by standard categories']
 }
 
 Table "consumer_banking"."transactions" {
   "consumer_banking_transaction_id" SERIAL [pk, increment, note: "Unique identifier for each transaction"]
-  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this balance belongs to"]
+  "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "References the account this transaction belongs to"]
+  "consumer_banking_balance_id" INTEGER [null, ref: > consumer_banking.balances.consumer_banking_balance_id, note: "No meaningful relationship, just guarantees that balances must exist before a transaction can be created."]
   "transaction_reference" VARCHAR(210) [note: "Reference code for the transaction"]
-  "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if transaction is a credit or debit"]
-  "status" VARCHAR(10) [not null, note: "Status of the transaction (e.g., pending, booked, rejected)"]
-  "transaction_mutability" VARCHAR(10) [note: "Whether the transaction can be changed (e.g., mutable, immutable)"]
-  "transaction_date" TIMESTAMP [not null, note: "When the transaction was recorded in the books"]
-  "category" VARCHAR(20) [note: "Code classifying the overall purpose of the transaction"]
-  "transaction_type" VARCHAR(20) [note: "Code classifying the specific purpose of the payment"]
-  "value_date" TIMESTAMP [note: "When the transaction affects the account balance"]
+  "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if transaction is a credit or debit"]
+  "status" consumer_banking.transaction_status [not null, note: "Status of the transaction (e.g., pending, booked, rejected)"]
+  "transaction_mutability" consumer_banking.transaction_mutability [note: "Whether the transaction can be changed (e.g., mutable, immutable)"]
+  "transaction_date" TIMESTAMPTZ [not null, note: "When the transaction was recorded in the books"]
+  "category" consumer_banking.transaction_category [note: "High-level categorization of the transaction"]
+  "transaction_type" consumer_banking.transaction_type [note: "Specific type of transaction with more detail"]
+  "value_date" TIMESTAMPTZ [note: "When the transaction affects the account balance"]
   "description" VARCHAR(500) [note: "Additional information about the transaction"]
   "merchant_address" VARCHAR(70) [note: "Address associated with the transaction, if applicable"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount of the transaction"]
-  "currency" VARCHAR(3) [not null, note: "Currency code for the transaction amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the transaction amount"]
   "charge_amount" NUMERIC(18,5) [note: "Any fees associated with the transaction"]
-  "charge_currency" VARCHAR(3) [note: "Currency code for the transaction fee"]
+  "charge_currency" enterprise.currency_code [note: "Currency code for the transaction fee"]
 
   note: "Stores detailed information about account transactions"
 }
@@ -690,33 +1298,91 @@ Table "consumer_banking"."transactions" {
 Table "consumer_banking"."transaction_statement_references" {
   "consumer_banking_transaction_statement_reference_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each transaction-statement reference record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this reference belongs to"]
-  "statement_reference" VARCHAR(35) [not null, note: "Statement identifier that this transaction appears on"]
-
+  "statement_reference" VARCHAR(35) [note: 'Statement reference n']
   note: "Links transactions to specific statements they appear on"
 }
 
 Table "consumer_banking"."transaction_currency_exchanges" {
   "consumer_banking_transaction_currency_exchange_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each currency exchange record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this currency exchange belongs to"]
-  "source_currency" VARCHAR(3) [not null, note: "Original currency of the transaction"]
-  "target_currency" VARCHAR(3) [note: "Destination currency after conversion"]
-  "unit_currency" VARCHAR(3) [note: "Currency used as the unit for the exchange rate"]
+  "source_currency" enterprise.currency_code [not null, note: "Original currency of the transaction"]
+  "target_currency" enterprise.currency_code [note: "Destination currency after conversion"]
+  "unit_currency" enterprise.currency_code [note: "Currency used as the unit for the exchange rate"]
   "exchange_rate" NUMERIC(10,4) [not null, note: "Rate used for the currency conversion"]
   "contract_identification" VARCHAR(39) [note: "Identifier for any forex contract used"]
-  "quotation_date" TIMESTAMP [note: "When the exchange rate was quoted"]
+  "quotation_date" TIMESTAMPTZ [note: "When the exchange rate was quoted"]
   "instructed_amount" NUMERIC(18,5) [note: "Original amount before conversion"]
-  "instructed_amount_currency" VARCHAR(3) [note: "Currency of the original instructed amount"]
+  "instructed_amount_currency" enterprise.currency_code [note: "Currency of the original instructed amount"]
 
   note: "Stores currency exchange details for cross-currency transactions"
+}
+
+Enum "consumer_banking"."transaction_bank_code" {
+  // Retail Categories
+  "RETAIL__CLOTHING_STORE" [note: 'Clothing store transaction']
+  "RETAIL__ELECTRONICS" [note: 'Electronics store transaction']
+  "RETAIL__DEPARTMENT_STORE" [note: 'Department store transaction']
+  "RETAIL__ONLINE_SHOPPING" [note: 'Online shopping transaction']
+  "RETAIL__GROCERY" [note: 'Grocery store transaction']
+  "RETAIL__CONVENIENCE_STORE" [note: 'Convenience store transaction']
+  "RETAIL__OTHER" [note: 'Other retail transaction']
+
+  // Services Categories
+  "SERVICES__RESTAURANT" [note: 'Restaurant transaction']
+  "SERVICES__ENTERTAINMENT" [note: 'Entertainment services']
+  "SERVICES__TRAVEL" [note: 'Travel-related services']
+  "SERVICES__CAR_RENTAL" [note: 'Car rental transaction']
+  "SERVICES__HOTEL" [note: 'Hotel-related transaction']
+  "SERVICES__PROFESSIONAL" [note: 'Professional services']
+  "SERVICES__UTILITIES" [note: 'Utility service payment']
+  "SERVICES__TELECOMMUNICATIONS" [note: 'Telecommunications service']
+  "SERVICES__OTHER" [note: 'Other service transaction']
+
+  // Financial Categories
+  "FINANCIAL__ATM_WITHDRAWAL" [note: 'ATM cash withdrawal']
+  "FINANCIAL__BANK_TRANSFER" [note: 'Bank transfer transaction']
+  "FINANCIAL__LOAN_PAYMENT" [note: 'Loan payment transaction']
+  "FINANCIAL__CREDIT_CARD_PAYMENT" [note: 'Credit card payment']
+  "FINANCIAL__INVESTMENT" [note: 'Investment-related transaction']
+  "FINANCIAL__INSURANCE_PAYMENT" [note: 'Insurance premium payment']
+  "FINANCIAL__WIRE_TRANSFER" [note: 'Wire transfer transaction']
+  "FINANCIAL__OTHER" [note: 'Other financial transaction']
+
+  // Regulatory Categories
+  "REGULATORY__BSA_REPORTING" [note: 'Bank Secrecy Act reporting']
+  "REGULATORY__AML_THRESHOLD" [note: 'Anti-Money Laundering threshold transaction']
+  "REGULATORY__OFAC_SCREENING" [note: 'OFAC screening transaction']
+  "REGULATORY__CTR_REPORT" [note: 'Currency Transaction Report']
+  "REGULATORY__SUSPICIOUS_ACTIVITY" [note: 'Suspicious activity flagging']
+  "REGULATORY__KYC_VERIFICATION" [note: 'Know Your Customer verification']
+  "REGULATORY__PEP_TRANSACTION" [note: 'Politically Exposed Person transaction']
+  "REGULATORY__SANCTIONS_CHECK" [note: 'Sanctions list screening']
+  "REGULATORY__TAX_REPORTING" [note: 'Tax-related transaction reporting']
+  "REGULATORY__FATCA_REPORTING" [note: 'Foreign Account Tax Compliance Act reporting']
+  "REGULATORY__OTHER" [note: 'Other regulatory transaction']
+
+  // Risk Management Categories
+  "RISK__HIGH_RISK_GEO" [note: 'High-risk geographic transaction']
+  "RISK__UNUSUAL_PATTERN" [note: 'Unusual transaction pattern']
+  "RISK__VELOCITY_CHECK" [note: 'Rapid succession transactions']
+  "RISK__LARGE_CASH_DEPOSIT" [note: 'Significant cash deposit']
+  "RISK__CROSS_BORDER" [note: 'International transaction']
+  "RISK__FIRST_TIME_MERCHANT" [note: 'Transaction with new merchant']
+  "RISK__DEVICE_ANOMALY" [note: 'Unusual device or location']
+  "RISK__REPEATED_DECLINED" [note: 'Multiple declined transaction attempts']
+  "RISK__OTHER" [note: 'Other risk-related transaction']
 }
 
 Table "consumer_banking"."transaction_bank_transaction_codes" {
   "consumer_banking_transaction_bank_transaction_code_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each transaction code record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this code belongs to"]
-  "code" VARCHAR(255) [not null, note: "Bank-specific transaction classification code"]
-  "sub_code" VARCHAR(255) [not null, note: "Sub-classification code for more detailed categorization"]
+  "code" consumer_banking.transaction_bank_code [not null, note: "Detailed bank-specific transaction classification code"]
 
-  note: "Stores standardized bank transaction codes that categorize transactions"
+  Indexes {
+    (consumer_banking_transaction_id, code) [unique, note: "Ensures unique code per transaction"]
+  }
+
+  note: "Stores standardized bank transaction codes that categorize transactions with detailed hierarchical classification"
 }
 
 Table "consumer_banking"."proprietary_transaction_codes" {
@@ -731,10 +1397,10 @@ Table "consumer_banking"."proprietary_transaction_codes" {
 Table "consumer_banking"."transaction_balances" {
   "consumer_banking_transaction_balance_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each transaction balance record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this balance belongs to"]
-  "credit_debit_indicator" VARCHAR(6) [not null, note: "Indicates if balance is credit or debit"]
-  "type" VARCHAR(20) [not null, note: "Type of balance (e.g., available, booked)"]
+  "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if balance is credit or debit"]
+  "type" consumer_banking.balance_type [not null, note: "Type of balance (e.g., available, booked)"]
   "amount" NUMERIC(18,5) [not null, note: "Balance amount after the transaction"]
-  "currency" VARCHAR(3) [not null, note: "Currency code for the balance amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the balance amount"]
 
   note: "Stores account balance information at the time of each transaction"
 }
@@ -751,7 +1417,7 @@ Table "consumer_banking"."transaction_merchant_details" {
 Table "consumer_banking"."transaction_creditor_agents" {
   "consumer_banking_transaction_creditor_agent_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each creditor agent record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this creditor agent belongs to"]
-  "scheme_name" VARCHAR(50) [not null, note: "Identifier scheme for the receiving institution (e.g., BIC)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Identifier scheme for the receiving institution (e.g., BIC)"]
   "identification" VARCHAR(35) [not null, note: "Identifier of the receiving financial institution"]
   "name" VARCHAR(140) [note: "Name of the receiving financial institution"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier of the receiving institution"]
@@ -762,7 +1428,7 @@ Table "consumer_banking"."transaction_creditor_agents" {
 Table "consumer_banking"."transaction_creditor_accounts" {
   "consumer_banking_transaction_creditor_account_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each creditor account record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this creditor account belongs to"]
-  "scheme_name" VARCHAR(50) [not null, note: "Account identifier scheme (e.g., IBAN, BBAN)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Account identifier scheme (e.g., IBAN, BBAN)"]
   "identification" VARCHAR(256) [not null, note: "Account identifier receiving the funds"]
   "name" VARCHAR(350) [note: "Name associated with the receiving account"]
   "secondary_identification" VARCHAR(34) [note: "Additional identification for the receiving account"]
@@ -773,7 +1439,7 @@ Table "consumer_banking"."transaction_creditor_accounts" {
 Table "consumer_banking"."transaction_debtor_agents" {
   "consumer_banking_transaction_debtor_agent_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each debtor agent record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this debtor agent belongs to"]
-  "scheme_name" VARCHAR(50) [not null, note: "Identifier scheme for the sending institution (e.g., BIC)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Identifier scheme for the sending institution (e.g., BIC)"]
   "identification" VARCHAR(35) [not null, note: "Identifier of the sending financial institution"]
   "name" VARCHAR(140) [note: "Name of the sending financial institution"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier of the sending institution"]
@@ -784,7 +1450,7 @@ Table "consumer_banking"."transaction_debtor_agents" {
 Table "consumer_banking"."transaction_debtor_accounts" {
   "consumer_banking_transaction_debtor_account_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each debtor account record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this debtor account belongs to"]
-  "scheme_name" VARCHAR(50) [not null, note: "Account identifier scheme (e.g., IBAN, BBAN)"]
+  "scheme_name" enterprise.identifier_scheme [not null, note: "Account identifier scheme (e.g., IBAN, BBAN)"]
   "identification" VARCHAR(256) [not null, note: "Account identifier sending the funds"]
   "name" VARCHAR(350) [note: "Name associated with the sending account"]
   "secondary_identification" VARCHAR(34) [note: "Additional identification for the sending account"]
@@ -792,11 +1458,43 @@ Table "consumer_banking"."transaction_debtor_accounts" {
   note: "Stores information about accounts sending funds in transactions"
 }
 
+Enum "consumer_banking"."card_scheme_name" {
+  VISA [note: 'Visa card network']
+  MASTERCARD [note: 'Mastercard card network']
+  AMEX [note: 'American Express card network']
+  DISCOVER [note: 'Discover card network']
+  DINERS [note: 'Diners Club card network']
+  JCB [note: 'Japan Credit Bureau card network']
+  UNIONPAY [note: 'China UnionPay card network']
+  MAESTRO [note: 'Maestro debit card network']
+  INTERAC [note: 'Interac debit card network (Canada)']
+  ELO [note: 'Elo card network (Brazil)']
+  MIR [note: 'MIR card network (Russia)']
+  RUPAY [note: 'RuPay card network (India)']
+  OTHER [note: 'Other card schemes not listed']
+}
+
+Enum "consumer_banking"."authorization_type" {
+  PIN [note: 'Transaction authorized using a Personal Identification Number']
+  SIGNATURE [note: 'Transaction authorized using a signature']
+  PIN_AND_SIGNATURE [note: 'Transaction authorized using both PIN and signature']
+  ONLINE [note: 'Transaction authorized online without physical card presence']
+  CONTACTLESS [note: 'Contactless transaction using NFC or similar technology']
+  CHIP [note: 'Transaction using EMV chip technology']
+  MAGNETIC_STRIPE [note: 'Transaction using magnetic stripe']
+  TOKENIZED [note: 'Transaction using tokenized card data (mobile wallet, etc.)']
+  BIOMETRIC [note: 'Transaction authorized using biometric data']
+  RECURRING [note: 'Pre-authorized recurring transaction']
+  MANUAL_ENTRY [note: 'Card details manually entered by merchant']
+  OTHER [note: 'Other authorization methods not listed']
+}
+
+// Updated table definition to use the enums
 Table "consumer_banking"."transaction_card_instruments" {
   "consumer_banking_transaction_card_instrument_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each card instrument record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this card instrument belongs to"]
-  "card_scheme_name" VARCHAR(50) [not null, note: "Card network (e.g., Visa, Mastercard, Amex)"]
-  "authorisation_type" VARCHAR(20) [note: "Type of authorization (e.g., PIN, signature, contactless)"]
+  "card_scheme_name" consumer_banking.card_scheme_name [not null, note: "Card network (e.g., Visa, Mastercard, Amex)"]
+  "authorisation_type" consumer_banking.authorization_type [note: "Type of authorization (e.g., PIN, signature, contactless)"]
   "name" VARCHAR(70) [note: "Name of the cardholder as printed on the card"]
   "identification" VARCHAR(34) [note: "Masked card number or other identifier"]
 
@@ -809,7 +1507,7 @@ Table "consumer_banking"."transaction_ultimate_creditors" {
   "name" VARCHAR(140) [not null, note: "Name of the final beneficiary/recipient of the funds"]
   "identification" VARCHAR(256) [note: "Identification code for the ultimate creditor"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier if the ultimate creditor is an organization"]
-  "scheme_name" VARCHAR(50) [note: "Identification scheme for the creditor's identifier"]
+  "scheme_name" VARCHAR(100) [note: "Identification scheme for the creditor's identifier"]
 
   note: "Stores information about the final recipient of funds in a transaction chain"
 }
@@ -820,21 +1518,110 @@ Table "consumer_banking"."transaction_ultimate_debtors" {
   "name" VARCHAR(140) [not null, note: "Name of the original party initiating the payment"]
   "identification" VARCHAR(256) [note: "Identification code for the ultimate debtor"]
   "lei" VARCHAR(20) [note: "Legal Entity Identifier if the ultimate debtor is an organization"]
-  "scheme_name" VARCHAR(50) [note: "Identification scheme for the debtor's identifier"]
+  "scheme_name" VARCHAR(100) [note: "Identification scheme for the debtor's identifier"]
 
   note: "Stores information about the original party that initiated the payment in a transaction chain"
 }
 
+Enum "consumer_banking"."statement_format" {
+  PDF [note: 'Statements provided in PDF format']
+  HTML [note: 'Statements provided in HTML format']
+  TEXT [note: 'Statements provided as plain text']
+  CSV [note: 'Statements provided in CSV format for data processing']
+  XML [note: 'Statements provided in XML format']
+  JSON [note: 'Statements provided in JSON format']
+}
+
+Enum "consumer_banking"."communication_method" {
+  EMAIL [note: 'Statements delivered via email']
+  MAIL [note: 'Statements delivered via postal mail']
+  PORTAL [note: 'Statements available through online banking portal']
+  MOBILE_APP [note: 'Statements available through mobile banking app']
+  SMS_NOTIFICATION [note: 'SMS notification when statement is available']
+  BRANCH_PICKUP [note: 'Statements available for pickup at branch']
+  MULTIPLE [note: 'Statements delivered via multiple methods']
+}
+
 Table "consumer_banking"."account_statement_preferences" {
   "consumer_banking_account_id" INTEGER [not null, ref: > consumer_banking.accounts.consumer_banking_account_id]
-  "frequency" VARCHAR(50) [not null]
-  "format" VARCHAR(50) [not null]
-  "communication_method" VARCHAR(50) [not null, default: 'EMAIL']
+  "consumer_banking_statement_id" INTEGER [null, ref: > consumer_banking.statements.consumer_banking_statement_id, note: 'Fake relationship, to influence data generator and make statements be created before this record.']
+  "frequency" enterprise.frequency [not null]
+  "format" consumer_banking.statement_format [not null]
+  "communication_method" consumer_banking.communication_method [not null, default: 'EMAIL']
   "next_statement_date" DATE
   "last_statement_date" DATE
-  "enterprise_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id]
+  "enterprise_address_id" INTEGER [null, ref: > enterprise.addresses.enterprise_address_id]
 
   note: "Stores customer preferences for account statements"
+}
+
+// Enums for consumer_banking.customer_interactions
+
+Enum "consumer_banking"."interaction_type" {
+  PHONE_CALL [note: 'Voice communication via telephone with a customer']
+  EMAIL [note: 'Written electronic mail communication']
+  CHAT [note: 'Real-time text-based conversation']
+  IN_PERSON [note: 'Face-to-face meeting at a branch or other location']
+  VIDEO_CALL [note: 'Video conference with customer']
+  ONLINE_FORM [note: 'Customer submitted an online form']
+  SOCIAL_MEDIA [note: 'Interaction through social media platforms']
+  ATM_INTERACTION [note: 'Customer used an ATM for service beyond transactions']
+  MOBILE_APP [note: 'Interaction through the bank\'s mobile application']
+  MAIL [note: 'Physical mail correspondence']
+  SMS [note: 'Text message communication']
+  FAX [note: 'Document transmitted via facsimile']
+}
+
+Enum "consumer_banking"."interaction_channel" {
+  PHONE [note: 'Communication via telephone system']
+  EMAIL [note: 'Communication via email system']
+  WEB [note: 'Communication through website interface']
+  BRANCH [note: 'In-person communication at a physical branch']
+  MOBILE_APP [note: 'Communication through mobile banking app']
+  ATM [note: 'Interaction via automated teller machine']
+  MAIL [note: 'Physical mail communication']
+  SOCIAL_MEDIA [note: 'Communication via social media platforms']
+  VIDEO [note: 'Communication via video conferencing']
+  SMS [note: 'Communication via text messaging']
+  THIRD_PARTY [note: 'Communication through a third-party service']
+}
+
+Enum "consumer_banking"."interaction_status" {
+  OPEN [note: 'Interaction is active and awaiting resolution']
+  PENDING [note: 'Interaction is awaiting action from customer or staff']
+  IN_PROGRESS [note: 'Work is being done to address the interaction']
+  RESOLVED [note: 'Interaction has been completed successfully']
+  ESCALATED [note: 'Interaction has been escalated to higher authority']
+  TRANSFERRED [note: 'Interaction has been transferred to another department']
+  CLOSED [note: 'Interaction is complete with no further action needed']
+  FOLLOW_UP [note: 'Resolved but requires future follow-up']
+  REOPENED [note: 'Previously resolved interaction that has been reopened']
+}
+
+Enum "consumer_banking"."interaction_priority" {
+  CRITICAL [note: 'Requires immediate attention, severe impact on customer']
+  HIGH [note: 'Urgent issue requiring prompt attention']
+  MEDIUM [note: 'Standard priority, should be handled in normal timeframe']
+  LOW [note: 'Non-urgent issue that can be addressed when convenient']
+  ROUTINE [note: 'Regular communication requiring no special attention']
+}
+
+Table "consumer_banking"."customer_interactions" {
+  "consumer_banking_interaction_id" SERIAL [pk, increment, note: 'A unique identifier for each interaction.']
+  "customer_id" INT [ref: > enterprise.parties.enterprise_party_id, note: 'The ID of the customer involved in the interaction.']
+  "account_id" INT [null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: 'The ID of the specific account related to the interaction. This can be NULL if the interaction isn\'t tied to a specific account (e.g., a general inquiry).']
+  "enterprise_associate_id" INT [null, ref: > enterprise.associates.enterprise_associate_id, note: 'The ID of the bank employee who handled the interaction. This can be NULL if it was an automated interaction.']
+  "interaction_type" consumer_banking.interaction_type [note: 'The type of interaction (e.g., "phone call," "email," "chat," "in-person," "online form," "ATM interaction").']
+  "interaction_date_time" TIMESTAMPTZ [note: 'The date and time of the interaction.']
+  "channel" consumer_banking.interaction_channel [note: 'The channel through which the interaction occurred (e.g., "phone," "email," "web," "branch," "mobile app").']
+  "subject" VARCHAR(255) [null, note: 'A brief subject or title of the interaction.']
+  "description" TEXT [null, note: 'A detailed description of the interaction.']
+  "resolution" TEXT [null, note: 'Description of how the interaction was resolved.']
+  "status" consumer_banking.interaction_status [note: 'The status of the interaction (e.g., "open," "resolved," "pending").']
+  "priority" consumer_banking.interaction_priority [null, note: 'The priority of the interaction (e.g., "high," "medium," "low").']
+  "related_transaction_id" INT [null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: 'If the interaction relates to a specific transaction, this can hold that transaction ID.']
+  "created_at" TIMESTAMPTZ [default: `now()`, note: 'When the interaction record was created.']
+  "updated_at" TIMESTAMPTZ [default: `now()`, note: 'When the interaction record was last updated.']
 }
 
 TableGroup "Consumer Accounts" [color: #2D6512] {
@@ -1215,9 +2002,9 @@ Table "mortgage_services"."applications" {
   "status" mortgage_services.application_status [not null, note: "Current status in the application workflow"]
   "loan_purpose" mortgage_services.loan_purpose [note: "Purpose of the loan"]
   "submission_channel" mortgage_services.submission_channel [note: "Channel through which application was submitted"]
-  "creation_date_time" TIMESTAMP [not null, note: "When the application was created"]
-  "submission_date_time" TIMESTAMP [note: "When the application was formally submitted"]
-  "last_updated_date_time" TIMESTAMP [not null, note: "When the application was last modified"]
+  "creation_date_time" TIMESTAMPTZ [not null, note: "When the application was created"]
+  "submission_date_time" TIMESTAMPTZ [note: "When the application was formally submitted"]
+  "last_updated_date_time" TIMESTAMPTZ [not null, note: "When the application was last modified"]
   "requested_loan_amount" NUMERIC(18,2) [not null, note: "Amount of financing requested"]
   "requested_loan_term_months" INTEGER [not null, note: "Requested duration of the loan in months"]
   "estimated_property_value" NUMERIC(18,2) [note: "Estimated value of the property"]
@@ -1307,13 +2094,13 @@ Enum "mortgage_services"."loan_rate_lock_status" {
 Table "mortgage_services"."loan_rate_locks" {
   "mortgage_services_rate_lock_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each rate lock"]
   "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "References the loan this rate lock applies to"]
-  "lock_date" TIMESTAMP [not null, note: "When the interest rate was locked"]
-  "expiration_date" TIMESTAMP [not null, note: "When the rate lock expires"]
+  "lock_date" TIMESTAMPTZ [not null, note: "When the interest rate was locked"]
+  "expiration_date" TIMESTAMPTZ [not null, note: "When the rate lock expires"]
   "locked_interest_rate" NUMERIC(6,3) [not null, note: "The interest rate secured by this lock"]
   "lock_period_days" INTEGER [not null, note: "Duration of the lock in days"]
   "status" mortgage_services.loan_rate_lock_status [not null, note: "Current status of the rate lock"]
   "lock_fee" NUMERIC(10,2) [note: "Fee charged for the rate lock, if any"]
-  "extension_date" TIMESTAMP [note: "Date the lock was extended, if applicable"]
+  "extension_date" TIMESTAMPTZ [note: "Date the lock was extended, if applicable"]
   "extension_fee" NUMERIC(10,2) [note: "Fee charged for extending the lock, if any"]
 
   note: "Tracks interest rate locks for mortgage loans"
@@ -1361,9 +2148,9 @@ Table "mortgage_services"."documents" {
   "document_type" mortgage_services.document_type [not null, note: "Category of document (e.g., W2, Tax Return)"]
   "document_name" VARCHAR(255) [not null, note: "Filename or display name of the document"]
   "document_path" VARCHAR(500) [not null, note: "Storage location or path to access the document"]
-  "upload_date" TIMESTAMP [not null, note: "When the document was uploaded"]
+  "upload_date" TIMESTAMPTZ [not null, note: "When the document was uploaded"]
   "status" mortgage_services.document_status [not null, note: "Current review status of the document"]
-  "review_date" TIMESTAMP [note: "When the document was reviewed"]
+  "review_date" TIMESTAMPTZ [note: "When the document was reviewed"]
   "reviewer_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who reviewed the document"]
   "expiration_date" DATE [note: "When the document expires or needs to be updated"]
   "notes" TEXT [note: "Additional information about the document"]
@@ -1401,10 +2188,10 @@ Table "mortgage_services"."conditions" {
   "condition_type" mortgage_services.condition_type [not null, note: "When the condition must be satisfied"]
   "description" TEXT [not null, note: "Detailed explanation of what must be provided or resolved"]
   "status" mortgage_services.condition_status [not null, note: "Current status of the condition"]
-  "created_date" TIMESTAMP [not null, note: "When the condition was created"]
+  "created_date" TIMESTAMPTZ [not null, note: "When the condition was created"]
   "created_by_id" INTEGER [not null, ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who created the condition"]
   "due_date" DATE [note: "Deadline for satisfying the condition"]
-  "cleared_date" TIMESTAMP [note: "When the condition was satisfied or waived"]
+  "cleared_date" TIMESTAMPTZ [note: "When the condition was satisfied or waived"]
   "cleared_by_id" INTEGER [null, ref: > enterprise.associates.enterprise_associate_id, note: "References the staff member who cleared the condition"]
 
   note: "Tracks underwriting conditions that must be cleared for loan approval"
@@ -1447,7 +2234,7 @@ Table "mortgage_services"."appraisals" {
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application this appraisal is for"]
   "mortgage_services_property_id" INTEGER [not null, ref: > mortgage_services.properties.mortgage_services_property_id, note: "References the property being appraised"]
   "appraisal_type" mortgage_services.appraisal_type [not null, note: "Type of appraisal being performed"]
-  "ordered_date" TIMESTAMP [not null, note: "When the appraisal was ordered"]
+  "ordered_date" TIMESTAMPTZ [not null, note: "When the appraisal was ordered"]
   "appraiser_name" VARCHAR(100) [note: "Name of the assigned appraiser"]
   "appraisal_company" VARCHAR(100) [note: "Company performing the appraisal"]
   "inspection_date" DATE [note: "When the property was inspected"]
@@ -1487,7 +2274,7 @@ Table "mortgage_services"."credit_reports" {
   "mortgage_services_credit_report_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each credit report"]
   "mortgage_services_application_id" INTEGER [not null, ref: > mortgage_services.applications.mortgage_services_application_id, note: "Reference to applications"]
   "mortgage_services_borrower_id" INTEGER [not null, ref: > mortgage_services.borrowers.mortgage_services_borrower_id, note: "Reference to borrower this credit report is for"]
-  "report_date" TIMESTAMP [not null, note: "When credit report was pulled"]
+  "report_date" TIMESTAMPTZ [not null, note: "When credit report was pulled"]
   "expiration_date" DATE [not null, note: "When credit report expires"]
   "credit_score" INTEGER [note: "Credit score from the report"]
   "report_type" mortgage_services.credit_report_type [not null, note: "Type of credit report pulled"]
@@ -1526,9 +2313,9 @@ Table "mortgage_services"."closing_disclosures" {
   "mortgage_services_disclosure_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each disclosure"]
   "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "Reference to the loan this disclosure is for"]
   "disclosure_type" mortgage_services.disclosure_type [not null, note: "Type of disclosure document"]
-  "created_date" TIMESTAMP [not null, note: "When the disclosure was created"]
-  "sent_date" TIMESTAMP [note: "When the disclosure was sent to borrowers"]
-  "received_date" TIMESTAMP [note: "When signed disclosure was received back"]
+  "created_date" TIMESTAMPTZ [not null, note: "When the disclosure was created"]
+  "sent_date" TIMESTAMPTZ [note: "When the disclosure was sent to borrowers"]
+  "received_date" TIMESTAMPTZ [note: "When signed disclosure was received back"]
   "delivery_method" mortgage_services.delivery_method [not null, note: "How disclosure was delivered"]
   "document_path" VARCHAR(500) [note: "Storage location of the disclosure document"]
   "loan_amount" NUMERIC(18,2) [not null, note: "Loan amount shown on disclosure"]
@@ -1568,14 +2355,14 @@ Enum "mortgage_services"."closing_type" {
 Table "mortgage_services"."closing_appointments" {
   "mortgage_services_appointment_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each appointment"]
   "mortgage_services_loan_id" INTEGER [not null, ref: > mortgage_services.loans.mortgage_services_loan_id, note: "Reference to the loan this closing is for"]
-  "scheduled_date" TIMESTAMP [not null, note: "When the closing is scheduled"]
+  "scheduled_date" TIMESTAMPTZ [not null, note: "When the closing is scheduled"]
   "location_address_id" INTEGER [ref: > enterprise.addresses.enterprise_address_id, note: "References the address where closing will occur"]
   "status" mortgage_services.appointment_status [not null, note: "Current status of the closing appointment"]
   "closing_type" mortgage_services.closing_type [not null, note: "Type of closing process being used"]
   "closing_agent" VARCHAR(100) [note: "Name of the closing agent"]
   "closing_company" VARCHAR(100) [note: "Company handling the closing"]
   "closing_fee" NUMERIC(10,2) [note: "Fee charged for closing services"]
-  "actual_closing_date" TIMESTAMP [note: "When the closing actually occurred"]
+  "actual_closing_date" TIMESTAMPTZ [note: "When the closing actually occurred"]
   "notes" TEXT [note: "Additional information about the closing"]
 
   note: "Schedules and tracks mortgage closing appointments"
@@ -1661,7 +2448,7 @@ Enum "mortgage_services"."payment_type" {
 Table "mortgage_services"."payments" {
   "mortgage_services_payment_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each payment"]
   "mortgage_services_servicing_account_id" INTEGER [not null, ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account receiving the payment"]
-  "payment_date" TIMESTAMP [not null, note: "When the payment was made"]
+  "payment_date" TIMESTAMPTZ [not null, note: "When the payment was made"]
   "payment_type" mortgage_services.payment_type [not null, note: "Type of payment (e.g., Regular, Extra Principal, Escrow Only)"]
   "payment_method" VARCHAR(30) [not null, note: "Method used to make payment (e.g., ACH, Check, Online)"]
   "payment_amount" NUMERIC(18,2) [not null, note: "Total amount of the payment"]
@@ -1934,7 +2721,7 @@ Table "mortgage_services"."customer_communications" {
   "mortgage_services_communication_id" SERIAL [pk, increment, note: "Unique identifier for each communication record"]
   "mortgage_services_servicing_account_id" INTEGER [ref: > mortgage_services.servicing_accounts.mortgage_services_servicing_account_id, note: "References the servicing account if communication is about servicing"]
   "mortgage_services_application_id" INTEGER [ref: > mortgage_services.applications.mortgage_services_application_id, note: "References the application if communication is about application"]
-  "communication_date" TIMESTAMP [not null, note: "When the communication occurred"]
+  "communication_date" TIMESTAMPTZ [not null, note: "When the communication occurred"]
   "communication_type" mortgage_services.communication_type [not null, note: "Method of communication"]
   "direction" mortgage_services.communication_direction [not null, note: "Whether communication was incoming or outgoing"]
   "subject" VARCHAR(255) [note: "Subject or topic of communication"]
@@ -2168,7 +2955,7 @@ Table "mortgage_services"."hmda_records" {
   "business_or_commercial_purpose" mortgage_services.hmda_business_or_commercial_purpose [note: "Whether loan is for business purpose"]
   "submission_status" mortgage_services.hmda_submission_status [not null, default: 'PENDING', note: "Status of HMDA submission for this record"]
   "last_submission_date" DATE [note: "When record was last submitted to regulators"]
-  "last_modified_date" TIMESTAMP [not null, note: "When record was last modified"]
+  "last_modified_date" TIMESTAMPTZ [not null, note: "When record was last modified"]
   "edit_status" mortgage_services.hmda_record_edit_status [not null, default: 'NOT_STARTED', note: "Status of edit checks for this record"]
 
   note: "Stores data required for Home Mortgage Disclosure Act (HMDA) regulatory reporting"
@@ -2312,8 +3099,8 @@ Table "mortgage_services"."hmda_applicant_demographics" {
 
   // Additional HMDA collection details
   "applicant_present" mortgage_services.hmda_applicant_present [note: "Whether applicant was present during application"]
-  "created_date" TIMESTAMP [not null, default: `CURRENT_TIMESTAMP`, note: "When the demographic record was created"]
-  "modified_date" TIMESTAMP [note: "When the demographic record was last modified"]
+  "created_date" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: "When the demographic record was created"]
+  "modified_date" TIMESTAMPTZ [note: "When the demographic record was last modified"]
 
   note: "Stores demographic information about applicants for HMDA reporting"
 }
@@ -2340,8 +3127,8 @@ Table "mortgage_services"."hmda_edits" {
   "edit_type" mortgage_services.hmda_edit_type [not null, note: "Category of edit (SYNTACTICAL, VALIDITY, QUALITY, MACRO)"]
   "edit_description" TEXT [not null, note: "Description of the edit issue"]
   "status" mortgage_services.hmda_edit_status [not null, note: "Current status of the edit (OPEN, VERIFIED, CORRECTED)"]
-  "created_date" TIMESTAMP [not null, note: "When the edit was first identified"]
-  "resolved_date" TIMESTAMP [note: "When the edit was resolved if applicable"]
+  "created_date" TIMESTAMPTZ [not null, note: "When the edit was first identified"]
+  "resolved_date" TIMESTAMPTZ [note: "When the edit was resolved if applicable"]
   "resolved_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who resolved the edit"]
   "resolution_notes" TEXT [note: "Notes explaining how the edit was resolved"]
 
@@ -2380,7 +3167,7 @@ Table "mortgage_services"."hmda_submissions" {
   "reporting_year" INTEGER [not null, note: "Calendar year for this submission"]
   "reporting_period" mortgage_services.reporting_period [not null, note: "Reporting period (ANNUAL, QUARTERLY_Q1, etc.)"]
   "institution_lei" VARCHAR(20) [not null, note: "Legal Entity Identifier of the reporting institution"]
-  "submission_date" TIMESTAMP [not null, note: "When the submission was made"]
+  "submission_date" TIMESTAMPTZ [not null, note: "When the submission was made"]
   "submission_status" mortgage_services.submission_status [not null, note: "Current status of the submission process"]
   "file_name" VARCHAR(255) [note: "Name of the submitted file"]
   "file_size" INTEGER [note: "Size of the submitted file in bytes"]
@@ -2390,7 +3177,7 @@ Table "mortgage_services"."hmda_submissions" {
   "submitted_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who made the submission"]
   "submission_notes" TEXT [note: "Additional notes about the submission"]
   "confirmation_number" VARCHAR(50) [note: "Confirmation number provided by the regulatory agency"]
-  "completion_date" TIMESTAMP [note: "When the submission was accepted as complete"]
+  "completion_date" TIMESTAMPTZ [note: "When the submission was accepted as complete"]
 
   Indexes {
     (reporting_year, reporting_period, institution_lei) [unique, note: "Ensures only one submission per period per institution"]
@@ -2467,16 +3254,16 @@ Table consumer_lending.loan_applications {
   "customer_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "Reference to enterprise.accounts"]
   "application_type" VARCHAR(50) [not null, note: "Personal, Auto, Student, Home Improvement, etc."]
   "status" VARCHAR(20) [not null, note: "Draft, Submitted, In Review, Approved, Denied, Cancelled"]
-  "creation_date_time" TIMESTAMP [not null, note: "When application was initially created"]
-  "submission_date_time" TIMESTAMP [note: "When application was submitted by customer"]
-  "last_updated_date_time" TIMESTAMP [not null, note: "Last modification timestamp"]
+  "creation_date_time" TIMESTAMPTZ [not null, note: "When application was initially created"]
+  "submission_date_time" TIMESTAMPTZ [note: "When application was submitted by customer"]
+  "last_updated_date_time" TIMESTAMPTZ [not null, note: "Last modification timestamp"]
   "requested_amount" NUMERIC(18,2) [not null, note: "Amount requested by applicant"]
   "requested_term_months" INTEGER [not null, note: "Loan term in months requested by applicant"]
   "loan_purpose" VARCHAR(100) [not null, note: "Purpose for the loan"]
   "estimated_credit_score" INTEGER [note: "Estimated or self-reported credit score"]
   "application_channel" VARCHAR(50) [note: "Online, Mobile, Branch, Phone"]
   "referral_source" VARCHAR(100) [note: "Marketing channel or referral source"]
-  "decision_date_time" TIMESTAMP [note: "When final decision was made"]
+  "decision_date_time" TIMESTAMPTZ [note: "When final decision was made"]
   "decision_reason" VARCHAR(100) [note: "Primary reason for approval/denial"]
   "officer_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "Loan officer assigned to application"]
   "branch_id" INTEGER [ref: > enterprise.buildings.enterprise_building_id, note: "Branch where application was processed"]
@@ -2807,7 +3594,7 @@ Table "consumer_lending"."credit_reports" {
   "consumer_lending_credit_report_id" SERIAL [pk, increment, note: "Unique identifier for credit report"]
   "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
-  "report_date" TIMESTAMP [not null, note: "When report was pulled"]
+  "report_date" TIMESTAMPTZ [not null, note: "When report was pulled"]
   "expiration_date" DATE [not null, note: "When report expires"]
   "credit_score" INTEGER [note: "Primary credit score from report"]
   "report_type" consumer_lending.credit_report_type [not null, note: "Type of credit report"]
@@ -3003,7 +3790,7 @@ Table "consumer_lending"."application_decisions" {
   "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "decision_type" consumer_lending.decision_type [not null, note: "Type of decision"]
   "decision_result" consumer_lending.decision_result [not null, note: "Result of the decision"]
-  "decision_date_time" TIMESTAMP [not null, note: "When decision was made"]
+  "decision_date_time" TIMESTAMPTZ [not null, note: "When decision was made"]
   "decision_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User that made decision"]
   "consumer_lending_model_id" INTEGER [ref: > consumer_lending.decision_models.consumer_lending_model_id, note: "Reference to decision model used"]
   "decision_score" NUMERIC(10,2) [note: "Numeric score from decision model"]
@@ -3076,8 +3863,8 @@ Enum "consumer_lending"."adverse_action_notice_status" {
 Table "consumer_lending"."adverse_action_notices" {
   "consumer_lending_notice_id" SERIAL [pk, increment, note: "Unique identifier for notice"]
   "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
-  "generated_date" TIMESTAMP [not null, note: "When notice was generated"]
-  "sent_date" TIMESTAMP [note: "When notice was sent to applicant"]
+  "generated_date" TIMESTAMPTZ [not null, note: "When notice was generated"]
+  "sent_date" TIMESTAMPTZ [note: "When notice was sent to applicant"]
   "delivery_method" consumer_lending.delivery_method [not null, note: "Method of delivering the notice"]
   "notice_path" VARCHAR(500) [note: "Path to stored notice document"]
   "status" consumer_lending.adverse_action_notice_status [not null, note: "Current status of the notice"]
@@ -3263,7 +4050,7 @@ Enum "consumer_lending"."loan_payment_status" {
 Table "consumer_lending"."loan_payments" {
   "consumer_lending_payment_id" SERIAL [pk, increment, note: "Unique identifier for payment"]
   "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
-  "payment_date" TIMESTAMP [not null, note: "Date/time payment was received"]
+  "payment_date" TIMESTAMPTZ [not null, note: "Date/time payment was received"]
   "payment_effective_date" DATE [not null, note: "Date payment is effective"]
   "payment_type" consumer_lending.payment_type [not null, note: "Type of payment"]
   "payment_method" consumer_lending.payment_method [not null, note: "Method used to make payment"]
@@ -3454,9 +4241,9 @@ Table "consumer_lending"."loan_documents" {
   "document_type" consumer_lending.document_type [not null, note: "Type of document"]
   "document_name" VARCHAR(255) [not null, note: "File name or title"]
   "document_path" VARCHAR(500) [not null, note: "Path to stored document"]
-  "upload_date" TIMESTAMP [not null, note: "When document was created/uploaded"]
+  "upload_date" TIMESTAMPTZ [not null, note: "When document was created/uploaded"]
   "status" consumer_lending.document_status [not null, note: "Current status of the document"]
-  "review_date" TIMESTAMP [note: "When document was reviewed"]
+  "review_date" TIMESTAMPTZ [note: "When document was reviewed"]
   "reviewer_id" INTEGER [note: "User who reviewed document"]
   "expiration_date" DATE [note: "Document expiration date if applicable"]
   "notes" TEXT [note: "Additional document notes"]
@@ -3513,7 +4300,7 @@ Table "consumer_lending"."loan_communications" {
   "consumer_lending_communication_id" SERIAL [pk, increment, note: "Unique identifier for communication"]
   "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
-  "communication_date" TIMESTAMP [not null, note: "Date/time of communication"]
+  "communication_date" TIMESTAMPTZ [not null, note: "Date/time of communication"]
   "communication_type" consumer_lending.communication_type [not null, note: "Method of communication"]
   "direction" consumer_lending.communication_direction [not null, note: "Direction of communication"]
   "subject" VARCHAR(255) [note: "Communication subject"]
@@ -3655,7 +4442,7 @@ Enum "consumer_lending"."next_collection_action_type" {
 Table "consumer_lending"."collection_actions" {
   "consumer_lending_action_id" SERIAL [pk, increment, note: "Unique identifier for collection action"]
   "consumer_lending_collection_id" INTEGER [not null, ref: > consumer_lending.collection_accounts.consumer_lending_collection_id, note: "Reference to collection account"]
-  "action_date" TIMESTAMP [not null, note: "Date/time action was taken"]
+  "action_date" TIMESTAMPTZ [not null, note: "Date/time action was taken"]
   "action_type" consumer_lending.collection_action_type [not null, note: "Type of collection action"]
   "action_result" consumer_lending.collection_action_result [note: "Result of the collection action"]
   "action_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, not null, note: "User who performed action"]
@@ -3785,8 +4572,8 @@ Table "consumer_lending"."reg_z_disclosures" {
   "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if originated"]
   "disclosure_type" consumer_lending.disclosure_type [not null, note: "Type of Regulation Z disclosure"]
-  "disclosure_date" TIMESTAMP [not null, note: "Date disclosure was generated"]
-  "sent_date" TIMESTAMP [note: "Date disclosure was sent to applicant"]
+  "disclosure_date" TIMESTAMPTZ [not null, note: "Date disclosure was generated"]
+  "sent_date" TIMESTAMPTZ [note: "Date disclosure was sent to applicant"]
   "delivery_method" consumer_lending.disclosure_delivery_method [not null, note: "Method of delivering the disclosure"]
   "annual_percentage_rate" NUMERIC(6,3) [not null, note: "APR disclosed"]
   "finance_charge" NUMERIC(18,2) [not null, note: "Total finance charge disclosed"]
@@ -3798,7 +4585,7 @@ Table "consumer_lending"."reg_z_disclosures" {
   "prepayment_penalty" TEXT [note: "Description of prepayment penalty if any"]
   "document_path" VARCHAR(500) [note: "Path to stored disclosure document"]
   "received_by_customer" BOOLEAN [note: "Whether receipt confirmed"]
-  "receipt_date" TIMESTAMP [note: "Date receipt was confirmed"]
+  "receipt_date" TIMESTAMPTZ [note: "Date receipt was confirmed"]
   "user_id" INTEGER [note: "User who generated disclosure"]
   "version" INTEGER [not null, note: "Version number if multiple disclosures of same type"]
 
@@ -3867,7 +4654,7 @@ Table "consumer_lending"."adverse_action_details" {
   "credit_score_range_max" INTEGER [note: "Maximum score in range"]
   "credit_score_factors" TEXT [note: "Key factors affecting score"]
   "credit_bureau_name" consumer_lending.credit_bureau [note: "Credit bureau providing the report"]
-  "generated_date" TIMESTAMP [not null, note: "Date details were generated"]
+  "generated_date" TIMESTAMPTZ [not null, note: "Date details were generated"]
   "user_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who generated adverse action"]
   "sequence" INTEGER [not null, note: "Order of importance for reason"]
 
@@ -3987,8 +4774,8 @@ Table "consumer_lending"."reg_b_notices" {
   "consumer_lending_notice_id" SERIAL [pk, increment, note: "Unique identifier for Reg B notice"]
   "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "notice_type" consumer_lending.reg_b_notice_type [not null, note: "Type of Regulation B notice"]
-  "generated_date" TIMESTAMP [not null, note: "Date notice was generated"]
-  "sent_date" TIMESTAMP [not null, note: "Date notice was sent"]
+  "generated_date" TIMESTAMPTZ [not null, note: "Date notice was generated"]
+  "sent_date" TIMESTAMPTZ [not null, note: "Date notice was sent"]
   "delivery_method" consumer_lending.delivery_method [not null, note: "Method of delivering the notice"]
   "incomplete_items" TEXT [note: "Items needed if incompleteness notice"]
   "deadline_date" DATE [note: "Deadline for response if applicable"]
@@ -4005,8 +4792,8 @@ Table "consumer_lending"."appraisal_disclosures" {
   "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "property_address_id" INTEGER [not null, ref: > enterprise.addresses.enterprise_address_id, note: "Reference to enterprise.addresses"]
   "disclosure_type" VARCHAR(50) [not null, note: "Initial Disclosure, Final Disclosure"]
-  "disclosure_date" TIMESTAMP [not null, note: "Date disclosure was generated"]
-  "sent_date" TIMESTAMP [not null, note: "Date disclosure was sent"]
+  "disclosure_date" TIMESTAMPTZ [not null, note: "Date disclosure was generated"]
+  "sent_date" TIMESTAMPTZ [not null, note: "Date disclosure was sent"]
   "delivery_method" VARCHAR(30) [not null, note: "Email, Mail, Electronic"]
   "appraisal_type" VARCHAR(50) [note: "Full Appraisal, AVM, BPO, etc."]
   "appraisal_ordered_date" DATE [note: "Date appraisal was ordered"]
@@ -4025,7 +4812,7 @@ Table "consumer_lending"."military_lending_checks" {
   "consumer_lending_check_id" SERIAL [pk, increment, note: "Unique identifier for MLA check"]
   "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "consumer_lending_applicant_id" INTEGER [not null, ref: > consumer_lending.applicants.consumer_lending_applicant_id, note: "Reference to applicant"]
-  "check_date" TIMESTAMP [not null, note: "Date MLA status was checked"]
+  "check_date" TIMESTAMPTZ [not null, note: "Date MLA status was checked"]
   "covered_borrower" BOOLEAN [not null, note: "Whether applicant is a covered borrower"]
   "verification_method" VARCHAR(50) [not null, note: "MLA Database, Credit Report Flag"]
   "military_status" VARCHAR(30) [note: "Active Duty, Dependent, Not Military"]
@@ -4063,7 +4850,7 @@ Table "consumer_lending"."compliance_exceptions" {
   "consumer_lending_exception_id" SERIAL [pk, increment, note: "Unique identifier for exception"]
   "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
   "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
-  "exception_date" TIMESTAMP [not null, note: "Date exception was identified"]
+  "exception_date" TIMESTAMPTZ [not null, note: "Date exception was identified"]
   "exception_type" VARCHAR(50) [not null, note: "Documentation, Disclosure, Timing, etc."]
   "regulation" VARCHAR(50) [not null, note: "Reg Z, Reg B, FCRA, etc."]
   "severity" VARCHAR(20) [not null, note: "High, Medium, Low"]
@@ -4078,24 +4865,6 @@ Table "consumer_lending"."compliance_exceptions" {
   "notes" TEXT [note: "Additional exception notes"]
 
   note: "Tracks compliance exceptions and issues encountered during the lending process, including remediation efforts."
-}
-
-Table "consumer_banking"."customer_interactions" {
-  "consumer_banking_interaction_id" SERIAL [pk, increment, note: 'A unique identifier for each interaction.']
-  "customer_id" INT [ref: > enterprise.parties.enterprise_party_id, note: 'The ID of the customer involved in the interaction.']
-  "account_id" INT [null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: 'The ID of the specific account related to the interaction. This can be NULL if the interaction isn\'t tied to a specific account (e.g., a general inquiry).']
-  "enterprise_associate_id" INT [null, ref: > enterprise.associates.enterprise_associate_id, note: 'The ID of the bank employee who handled the interaction. This can be NULL if it was an automated interaction.']
-  "interaction_type" VARCHAR(50) [note: 'The type of interaction (e.g., "phone call," "email," "chat," "in-person," "online form," "ATM interaction").']
-  "interaction_date_time" TIMESTAMP [note: 'The date and time of the interaction.']
-  "channel" VARCHAR(50) [note: 'The channel through which the interaction occurred (e.g., "phone," "email," "web," "branch," "mobile app").']
-  "subject" VARCHAR(255) [null, note: 'A brief subject or title of the interaction.']
-  "description" TEXT [null, note: 'A detailed description of the interaction.']
-  "resolution" TEXT [null, note: 'Description of how the interaction was resolved.']
-  "status" VARCHAR(20) [note: 'The status of the interaction (e.g., "open," "resolved," "pending").']
-  "priority" VARCHAR(20) [null, note: 'The priority of the interaction (e.g., "high," "medium," "low").']
-  "related_transaction_id" INT [null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: 'If the interaction relates to a specific transaction, this can hold that transaction ID.']
-  "created_at" TIMESTAMP [default: `now()`, note: 'When the interaction record was created.']
-  "updated_at" TIMESTAMP [default: `now()`, note: 'When the interaction record was last updated.']
 }
 
 TableGroup "Loan Applications" {
@@ -4211,7 +4980,7 @@ Table "credit_cards"."fraud_cases" {
   "credit_cards_case_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each fraud case"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
   "credit_cards_card_id" INTEGER [ref: > credit_cards.cards.credit_cards_card_id, note: "Reference to specific card if applicable"]
-  "report_date" TIMESTAMP [not null, note: "Date and time fraud was reported"]
+  "report_date" TIMESTAMPTZ [not null, note: "Date and time fraud was reported"]
   "case_type" VARCHAR(30) [not null, note: "Type of fraud (Card Fraud, Account Takeover, Application Fraud)"]
   "status" VARCHAR(20) [not null, note: "Status of case (Open, Investigation, Closed)"]
   "reported_by" VARCHAR(20) [not null, note: "Who reported fraud (Customer, Bank, Merchant)"]
@@ -4241,14 +5010,14 @@ Table "credit_cards"."security_blocks" {
   "credit_cards_card_id" INTEGER [not null, ref: > credit_cards.cards.credit_cards_card_id, note: "Reference to specific card"]
   "block_type" VARCHAR(30) [not null, note: "Type of block (Temporary, Permanent, Geographic)"]
   "reason" VARCHAR(100) [not null, note: "Reason for security block"]
-  "start_date" TIMESTAMP [not null, note: "When block began"]
-  "end_date" TIMESTAMP [note: "When block ends if temporary"]
+  "start_date" TIMESTAMPTZ [not null, note: "When block began"]
+  "end_date" TIMESTAMPTZ [note: "When block ends if temporary"]
   "geographic_restriction" VARCHAR(100) [note: "Geographic area blocked if applicable"]
   "transaction_type_restricted" VARCHAR(30) [note: "Transaction types blocked if specific"]
   "requested_by" VARCHAR(20) [not null, note: "Who requested the block (Customer, Bank, Fraud System)"]
   "status" VARCHAR(20) [not null, note: "Status of block (Active, Removed)"]
   "removed_by_id" INTEGER [ref: > enterprise.associates.enterprise_associate_id, note: "User who removed the block"]
-  "removed_date" TIMESTAMP [note: "When block was removed"]
+  "removed_date" TIMESTAMPTZ [note: "When block was removed"]
 
   note: "Tracks security blocks placed on cards"
 }
@@ -4278,7 +5047,7 @@ Table "credit_cards"."reg_z_credit_card_disclosures" {
   "credit_cards_application_id" INTEGER [ref: > credit_cards.applications.credit_cards_application_id, note: "Reference to applications if pre-account opening"]
   "credit_cards_card_account_id" INTEGER [ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts if post-account opening"]
   "disclosure_type" VARCHAR(50) [not null, note: "Type of Reg Z disclosure (Solicitation, Application, Account-Opening, Periodic Statement)"]
-  "disclosure_date" TIMESTAMP [not null, note: "Date disclosure was generated"]
+  "disclosure_date" TIMESTAMPTZ [not null, note: "Date disclosure was generated"]
   "delivery_method" VARCHAR(30) [not null, note: "How disclosure was delivered (Mail, Electronic)"]
   "annual_percentage_rate" NUMERIC(6,3) [note: "APR disclosed"]
   "variable_rate_indicator" BOOLEAN [note: "Whether rate is variable"]
@@ -4316,7 +5085,7 @@ Table "credit_cards"."ability_to_pay_assessments" {
 Table "credit_cards"."consumer_complaints" {
   "credit_cards_complaint_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each complaint"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
-  "receipt_date" TIMESTAMP [not null, note: "Date complaint was received"]
+  "receipt_date" TIMESTAMPTZ [not null, note: "Date complaint was received"]
   "source" VARCHAR(30) [not null, note: "Source of complaint (Direct, CFPB, BBB, Social Media)"]
   "complaint_type" VARCHAR(50) [not null, note: "Type of complaint (Billing, Fees, Interest, Customer Service)"]
   "issue" VARCHAR(100) [not null, note: "Specific issue raised"]
@@ -4365,13 +5134,13 @@ Table "credit_cards"."applications" {
   "credit_cards_application_id" INTEGER [pk, note: "Unique identifier for card application"]
   "customer_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "Reference to enterprise.accounts"]
   "credit_cards_product_id" INTEGER [not null, ref: > credit_cards.card_products.credit_cards_product_id, note: "Reference to card_products"]
-  "application_date" TIMESTAMP [not null, note: "When application was submitted"]
+  "application_date" TIMESTAMPTZ [not null, note: "When application was submitted"]
   "application_channel" VARCHAR(30) [not null, note: "Channel used for application (Online, Branch, Mail, Phone)"]
   "status" VARCHAR(20) [not null, note: "Current status (Pending, Approved, Denied, Canceled)"]
   "requested_credit_limit" NUMERIC(10,2) [note: "Credit limit requested by applicant"]
   "approved_credit_limit" NUMERIC(10,2) [note: "Credit limit approved by issuer"]
   "approved_interest_rate" NUMERIC(6,3) [note: "Interest rate approved for account"]
-  "decision_date" TIMESTAMP [note: "When decision was made"]
+  "decision_date" TIMESTAMPTZ [note: "When decision was made"]
   "decision_method" VARCHAR(20) [note: "Automated or Manual decision"]
   "decision_reason" VARCHAR(100) [note: "Primary reason for decision"]
   "offer_code" VARCHAR(30) [note: "Promotional offer code if applicable"]
@@ -4470,7 +5239,7 @@ Table "credit_cards"."transactions" {
   "credit_cards_transaction_id" SERIAL [pk, increment, note: "Unique identifier for transaction"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
   "credit_cards_card_id" INTEGER [not null, ref: > credit_cards.cards.credit_cards_card_id, note: "Reference to specific card used"]
-  "transaction_date" TIMESTAMP [not null, note: "Date and time of transaction"]
+  "transaction_date" TIMESTAMPTZ [not null, note: "Date and time of transaction"]
   "post_date" DATE [not null, note: "Date transaction posted to account"]
   "transaction_type" VARCHAR(20) [not null, note: "Purchase, Cash Advance, Balance Transfer, Payment, Fee, Adjustment"]
   "amount" NUMERIC(10,2) [not null, note: "Transaction amount"]
@@ -4478,7 +5247,7 @@ Table "credit_cards"."transactions" {
   "category" VARCHAR(50) [note: "Spending category (e.g., Dining, Travel, Merchandise)"]
   "mcc_code" VARCHAR(20) [note: "Merchant Category Code"]
   "is_international" BOOLEAN [not null, default: false, note: "Whether transaction is international"]
-  "original_currency" VARCHAR(3) [note: "Original currency if international"]
+  "original_currency" enterprise.currency_code [note: "Original currency if international"]
   "original_amount" NUMERIC(10,2) [note: "Amount in original currency if international"]
   "exchange_rate" NUMERIC(10,6) [note: "Exchange rate used if international"]
   "is_recurring" BOOLEAN [note: "Whether transaction appears to be recurring"]
@@ -4566,7 +5335,7 @@ Table "credit_cards"."rewards" {
 Table "credit_cards"."reward_redemptions" {
   "credit_cards_redemption_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each redemption"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
-  "redemption_date" TIMESTAMP [not null, note: "Date and time of redemption"]
+  "redemption_date" TIMESTAMPTZ [not null, note: "Date and time of redemption"]
   "redemption_type" VARCHAR(30) [not null, note: "Type of redemption (Cashback, Travel, Gift Card, Merchandise, Statement Credit)"]
   "points_redeemed" INTEGER [not null, note: "Number of points redeemed"]
   "cash_value" NUMERIC(10,2) [not null, note: "Cash value of redemption"]
@@ -4684,7 +5453,7 @@ Table "credit_cards"."disputed_transactions" {
   "credit_cards_dispute_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each dispute"]
   "credit_cards_transaction_id" INTEGER [not null, ref: > credit_cards.transactions.credit_cards_transaction_id, note: "Reference to transactions"]
   "credit_cards_card_account_id" INTEGER [not null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference to card_accounts"]
-  "dispute_date" TIMESTAMP [not null, note: "Date and time dispute was filed"]
+  "dispute_date" TIMESTAMPTZ [not null, note: "Date and time dispute was filed"]
   "dispute_reason" VARCHAR(50) [not null, note: "Reason for dispute (Fraud, Product Issue, Duplicate Charge, etc.)"]
   "disputed_amount" NUMERIC(10,2) [not null, note: "Amount being disputed"]
   "description" TEXT [note: "Customer description of dispute"]
@@ -4812,7 +5581,7 @@ Table "small_business_banking"."accounts" {
   "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
   "balance" DECIMAL(18,2) [not null, default: 0.00, note: "Current balance of the account"]
   "available_balance" DECIMAL(18,2) [not null, default: 0.00, note: "Available balance after holds and pending transactions"]
-  "currency" CHAR(3) [not null, default: "USD", note: "ISO currency code for the account"]
+  "currency" enterprise.currency_code [not null, default: "USD", note: "ISO currency code for the account"]
   "overdraft_limit" DECIMAL(18,2) [not null, default: 0.00, note: "Maximum allowed overdraft amount"]
   "interest_rate" DECIMAL(6,4) [note: "Current interest rate applied to the account (if applicable)"]
   "statement_frequency" VARCHAR(20) [not null, default: "monthly", note: "Frequency of account statements (daily, weekly, monthly)"]
@@ -5038,7 +5807,7 @@ Table "small_business_banking"."transactions" {
   "transaction_type" VARCHAR(50) [not null, note: "Type of transaction (deposit, withdrawal, payment, fee, etc.)"]
   "amount" DECIMAL(18,2) [not null, note: "Transaction amount"]
   "running_balance" DECIMAL(18,2) [note: "Account balance after this transaction"]
-  "currency" CHAR(3) [not null, default: "USD", note: "Currency of the transaction"]
+  "currency" enterprise.currency_code [not null, default: "USD", note: "Currency of the transaction"]
   "description" VARCHAR(255) [note: "Transaction description"]
   "reference_number" VARCHAR(100) [note: "External reference for the transaction"]
   "status" VARCHAR(20) [not null, default: "completed", note: "Status of the transaction (pending, completed, failed, reversed)"]
@@ -5107,12 +5876,12 @@ Table "small_business_banking"."regulatory_reports" {
 Table "small_business_banking"."report_submissions" {
   "small_business_banking_submission_id" SERIAL [pk, increment, note: "Unique identifier for each report submission"]
   "small_business_banking_report_id" INTEGER [not null, ref: > "small_business_banking"."regulatory_reports"."small_business_banking_report_id", note: "Reference to the regulatory report"]
-  "submission_date" TIMESTAMP [not null, note: "Date and time of submission"]
+  "submission_date" TIMESTAMPTZ [not null, note: "Date and time of submission"]
   "submission_method" VARCHAR(50) [not null, note: "Method of submission (portal, API, mail, etc.)"]
   "confirmation_number" VARCHAR(100) [note: "Confirmation number received upon submission"]
   "submitted_by_id" INTEGER [not null, ref: > "enterprise"."associates"."enterprise_associate_id", note: "Person who submitted the report"]
   "submission_file_path" VARCHAR(500) [note: "Path to the submitted file"]
-  "response_date" TIMESTAMP [note: "Date and time of regulator response"]
+  "response_date" TIMESTAMPTZ [note: "Date and time of regulator response"]
   "response_status" VARCHAR(20) [note: "Status of the regulator's response (accepted, rejected, need more info)"]
   "response_details" TEXT [note: "Details of the regulator's response"]
 
@@ -5235,7 +6004,7 @@ Table "small_business_banking"."credit_decisions" {
   "small_business_banking_business_id" INTEGER [not null, ref: > "small_business_banking"."businesses"."small_business_banking_business_id", note: "Reference to the business"]
   "product_type" VARCHAR(50) [not null, note: "Type of credit product (loan, line of credit, card)"]
   "application_id" VARCHAR(50) [not null, note: "Application identifier"]
-  "decision_date" TIMESTAMP [not null, note: "Date and time of the decision"]
+  "decision_date" TIMESTAMPTZ [not null, note: "Date and time of the decision"]
   "decision_type" VARCHAR(20) [not null, note: "Type of decision (automated, manual, hybrid)"]
   "decision_outcome" VARCHAR(20) [not null, note: "Outcome of the decision (approved, declined, counter-offer)"]
   "decision_factors" TEXT [note: "Factors that influenced the decision"]
@@ -5441,8 +6210,8 @@ Table "security"."identity_roles" {
   "security_identity_role_id" UUID [not null, pk, note: "Reference to the identity role assignment"]
   "security_identity_id" UUID [not null, ref: > "security"."identities"."security_identity_id", note: "Reference to the identity"]
   "security_role_id" UUID [not null, ref: > "security"."roles"."security_role_id", note: "Reference to the role"]
-  "start_date" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the role became effective"]
-  "end_date" TIMESTAMP [note: "When the role was no longer effective"]
+  "start_date" TIMESTAMPTZ [default: `CURRENT_TIMESTAMP`, note: "When the role became effective"]
+  "end_date" TIMESTAMPTZ [note: "When the role was no longer effective"]
   "assigned_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who assigned the role"]
   "active" BOOLEAN [not null, default: true, note: "Whether this assignment is currently active"]
 
@@ -5469,7 +6238,7 @@ Table "security"."roles" {
   "status" security.role_status [not null, default: "ACTIVE", note: "Current status of the role"]
   "managing_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: "Application that manages this role"]
   "owner_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who owns/manages this role"]
-  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the role was created"]
+  "created_at" TIMESTAMPTZ [default: `CURRENT_TIMESTAMP`, note: "When the role was created"]
   "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who created the role"]
 
   Indexes {
@@ -5485,11 +6254,11 @@ Table "security"."role_entitlements" {
   "security_role_entitlement_id" UUID [not null, pk, note: "Reference to the role entitlement pair"]
   "security_role_id" UUID [not null, ref: > "security"."roles"."security_role_id", note: "Reference to the role"]
   "security_entitlement_id" UUID [not null, ref: > "security"."enhanced_entitlements"."security_entitlement_id", note: "Reference to the entitlement"]
-  "created_at" TIMESTAMP [not null, note: "When the entitlement was added to the role"]
+  "created_at" TIMESTAMPTZ [not null, note: "When the entitlement was added to the role"]
   "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who added the entitlement to the role"]
   "updated_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who added the entitlement to the role"]
-  "started_at" TIMESTAMP [not null, note: "When the entitlement became effective"]
-  "ended_at" TIMESTAMP [note: "When the entitlement was no longer effective"]
+  "started_at" TIMESTAMPTZ [not null, note: "When the entitlement became effective"]
+  "ended_at" TIMESTAMPTZ [note: "When the entitlement was no longer effective"]
   "active" BOOL [note: "Incicates that the entitlement is effective at this moment"]
 
   Indexes {
@@ -5513,7 +6282,7 @@ Table "security"."enhanced_entitlements" {
   "description" TEXT [note: "Description of what the entitlement grants access to"]
   "status" "security"."entitlement_status" [not null, default: "ACTIVE", note: "Current status of the entitlement"]
   "managing_application_id" UUID [ref: > "app_mgmt"."applications"."app_mgmt_application_id", note: "Application that manages this entitlement"]
-  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the entitlement was created"]
+  "created_at" TIMESTAMPTZ [default: `CURRENT_TIMESTAMP`, note: "When the entitlement was created"]
   "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who created the entitlement"]
 
   Indexes {
@@ -5532,7 +6301,7 @@ Table "security"."entitlement_resources" {
   "permission_type" "security"."permission_type" [not null, note: "Type of permission granted on the resource"]
   "context_conditions" VARCHAR(1000) [note: "Context conditions that restrict when this entitlement is applicable"]
   "resource_details" VARCHAR(1000) [note: "Resource-specific details like column filters, row filters, access parameters"]
-  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: "When the relationship was created"]
+  "created_at" TIMESTAMPTZ [default: `CURRENT_TIMESTAMP`, note: "When the relationship was created"]
   "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: "Who created the relationship"]
 
   Indexes {
@@ -5578,7 +6347,7 @@ Table "security"."resource_definitions" {
   "host_id" UUID [null, ref: > "security"."hosts"."security_host_id", note: 'Host where the resource is located (for HOST types)']
   "network_device_id" INET [null, ref: > "security"."devices"."security_device_id", note: 'Network device where the resource is located (for NETWORK_DEVICE types)']
   "description" TEXT [note: 'Description of the resource']
-  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: 'When the resource definition was created']
+  "created_at" TIMESTAMPTZ [default: `CURRENT_TIMESTAMP`, note: 'When the resource definition was created']
   "created_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Who created the resource definition']
 
   Indexes {
@@ -5747,8 +6516,8 @@ Table "security"."identity_profiles" {
   "password_expiry_days" INTEGER [note: 'Number of days before password expiration for this profile type.']
   "default_session_timeout_minutes" INTEGER [note: 'Default session timeout in minutes for identities with this profile.']
   "risk_level" security.risk_level [not null, default: "MEDIUM", note: 'Risk classification level for this profile type.']
-  "created_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: 'When the profile was created.']
-  "updated_at" TIMESTAMP [default: `CURRENT_TIMESTAMP`, note: 'When the profile was last updated.']
+  "created_at" TIMESTAMPTZ [default: `CURRENT_TIMESTAMP`, note: 'When the profile was created.']
+  "updated_at" TIMESTAMPTZ [default: `CURRENT_TIMESTAMP`, note: 'When the profile was last updated.']
 
   Note: 'Table storing information about identity profiles, defining sets of attributes and rules for identities.'
 }
@@ -6017,7 +6786,7 @@ Table "app_mgmt"."architectures" {
   "app_mgmt_architecture_id" UUID [pk, note: 'Unique identifier for an approved architectural design.']
   "architecture_name" VARCHAR(255) [note: 'Name given to the architectural design.']
   "description" TEXT [note: 'Detailed explanation of the architectural design.']
-  "approval_date" TIMESTAMP [note: 'Date when the architectural design was officially approved.']
+  "approval_date" TIMESTAMPTZ [note: 'Date when the architectural design was officially approved.']
   "approved_by_id" INTEGER [note: 'Identifier of the employee who approved the design.', ref: > "enterprise"."associates"."enterprise_associate_id"]
   "documentation_url" VARCHAR(2048) [note: 'Link to the full documentation for the architectural design.']
   "status" VARCHAR(50) [note: 'Current state of the architecture (e.g., approved, deprecated, proposed).']
@@ -6087,8 +6856,8 @@ Table "app_mgmt"."applications" {
   "created_by_team_id" UUID [ref: > "app_mgmt"."teams"."app_mgmt_team_id", note: 'Identifier for the team that initially created the application.']
   "application_owner_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", note: 'Identifier for the individual responsible for communication with stakeholders, funding, budget, and strategy for the application.']
   "lifecycle_status" app_mgmt.application_lifecycle_status [note: 'Current stage in the application\'s lifecycle (e.g., development, production).']
-  "date_deployed" TIMESTAMP [note: 'Date the application was deployed to its environment.']
-  "date_retired" TIMESTAMP [note: 'Date the application was retired or decommissioned.']
+  "date_deployed" TIMESTAMPTZ [note: 'Date the application was deployed to its environment.']
+  "date_retired" TIMESTAMPTZ [note: 'Date the application was retired or decommissioned.']
   "architecture_id" UUID [ref: > "app_mgmt"."architectures"."app_mgmt_architecture_id", note: 'Identifier for the approved architecture the application adheres to.']
   "sdlc_process_id" UUID [ref: > "app_mgmt"."sdlc_processes"."app_mgmt_sdlc_process_id", note: 'Identifier for the SDLC process used to develop or manage the application.']
   "source_code_repository" VARCHAR(2048) [note: 'Link to the repository where the application\'s source code is stored.']

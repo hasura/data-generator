@@ -1,11 +1,10 @@
-import logging
-import random
-from datetime import datetime, timedelta
+from data_generator import DataGenerator
+from datetime import datetime, timedelta, timezone
+from faker import Faker
 from typing import Any, Dict
 
-from faker import Faker
-
-from data_generator import DataGenerator
+import logging
+import random
 
 fake = Faker()
 logger = logging.getLogger(__name__)
@@ -71,7 +70,7 @@ def generate_random_process_execution(id_fields: Dict[str, Any], dg: DataGenerat
     parent_process_id = determine_parent_process_id(process_name, is_windows, security_host_id)
 
     # Generate timestamps
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     # Start time based on host uptime if available
     if 'last_seen' in host_info:
@@ -475,7 +474,7 @@ def get_host_owner(host_id, dg):
 
 def get_random_associate(dg):
     """
-    Get a random username from enterprise.associates
+    Get a random username from "enterprise.associates"
     """
     try:
         # Query for a random associate

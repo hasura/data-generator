@@ -1,13 +1,13 @@
-import ipaddress
-import random
+from data_generator import DataGenerator
 from typing import Any, Dict
 
-from data_generator import DataGenerator
+import ipaddress
+import random
 
 
 def generate_random_device(id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:
     """
-    Generate a random security.devices record with reasonable values.
+    Generate a random "security.devices" record with reasonable values.
 
     Args:
         id_fields: Dictionary containing the required ID fields

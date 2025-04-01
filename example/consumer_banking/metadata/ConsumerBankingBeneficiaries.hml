@@ -7,8 +7,8 @@ definition:
     that can receive payments
   fields:
     - name: beneficiaryType
-      type: Varchar!
-      description: Type of beneficiary (e.g., individual, organization)
+      type: ConsumerBankingBeneficiaryType!
+      description: Type of beneficiary (individual, organization, etc.)
     - name: consumerBankingAccountId
       type: Int4!
       description: References the account this balance belongs to
@@ -69,7 +69,7 @@ definition:
       type: ConsumerBankingBeneficiaries
       comparableFields:
         - fieldName: beneficiaryType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingBeneficiaryTypeBoolExp
         - fieldName: consumerBankingAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingBeneficiaryId
@@ -99,7 +99,7 @@ definition:
       aggregatedType: ConsumerBankingBeneficiaries
       aggregatableFields:
         - fieldName: beneficiaryType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingBeneficiaryTypeAggExp
         - fieldName: consumerBankingAccountId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingBeneficiaryId
@@ -123,7 +123,7 @@ definition:
       orderedType: ConsumerBankingBeneficiaries
       orderableFields:
         - fieldName: beneficiaryType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingBeneficiaryTypeOrderByExp
         - fieldName: consumerBankingAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingBeneficiaryId

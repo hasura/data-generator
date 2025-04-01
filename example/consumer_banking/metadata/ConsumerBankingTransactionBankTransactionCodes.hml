@@ -3,20 +3,18 @@ kind: ObjectType
 version: v1
 definition:
   name: ConsumerBankingTransactionBankTransactionCodes
-  description: Stores standardized bank transaction codes that categorize transactions
+  description: Stores standardized bank transaction codes that categorize
+    transactions with detailed hierarchical classification
   fields:
     - name: code
-      type: Varchar!
-      description: Bank-specific transaction classification code
+      type: ConsumerBankingTransactionBankCode!
+      description: Detailed bank-specific transaction classification code
     - name: consumerBankingTransactionBankTransactionCodeId
       type: Int4!
       description: Auto-incrementing identifier for each transaction code record
     - name: consumerBankingTransactionId
       type: Int4!
       description: References the transaction this code belongs to
-    - name: subCode
-      type: Varchar!
-      description: Sub-classification code for more detailed categorization
   graphql:
     typeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodes
     inputTypeName: ConsumerBanking_ConsumerBankingTransactionBankTransactionCodesInput
@@ -33,9 +31,6 @@ definition:
         consumerBankingTransactionId:
           column:
             name: consumer_banking_transaction_id
-        subCode:
-          column:
-            name: sub_code
 
 ---
 kind: TypePermissions
@@ -49,7 +44,6 @@ definition:
           - code
           - consumerBankingTransactionBankTransactionCodeId
           - consumerBankingTransactionId
-          - subCode
 
 ---
 kind: BooleanExpressionType
@@ -61,13 +55,11 @@ definition:
       type: ConsumerBankingTransactionBankTransactionCodes
       comparableFields:
         - fieldName: code
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingTransactionBankCodeBoolExp
         - fieldName: consumerBankingTransactionBankTransactionCodeId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingTransactionId
           booleanExpressionType: Int4BoolExp
-        - fieldName: subCode
-          booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingTransaction
   logicalOperators:
@@ -87,13 +79,11 @@ definition:
       aggregatedType: ConsumerBankingTransactionBankTransactionCodes
       aggregatableFields:
         - fieldName: code
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingTransactionBankCodeAggExp
         - fieldName: consumerBankingTransactionBankTransactionCodeId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingTransactionId
           aggregateExpression: Int4AggExp
-        - fieldName: subCode
-          aggregateExpression: VarcharAggExp
   count:
     enable: true
   graphql:
@@ -109,13 +99,11 @@ definition:
       orderedType: ConsumerBankingTransactionBankTransactionCodes
       orderableFields:
         - fieldName: code
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingTransactionBankCodeOrderByExp
         - fieldName: consumerBankingTransactionBankTransactionCodeId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingTransactionId
           orderByExpression: Int4OrderByExp
-        - fieldName: subCode
-          orderByExpression: VarcharOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingTransaction
   graphql:
@@ -149,7 +137,8 @@ definition:
       queryRootField: consumerBankingTransactionBankTransactionCodesAggregate
       subscription:
         rootField: consumerBankingTransactionBankTransactionCodesAggregate
-  description: Stores standardized bank transaction codes that categorize transactions
+  description: Stores standardized bank transaction codes that categorize
+    transactions with detailed hierarchical classification
 
 ---
 kind: ModelPermissions

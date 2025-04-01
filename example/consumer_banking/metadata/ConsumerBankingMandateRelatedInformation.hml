@@ -7,10 +7,10 @@ definition:
     payment schedules
   fields:
     - name: category
-      type: Varchar
+      type: ConsumerBankingDirectDebitCategory
       description: Purpose code for categorizing the payment type
     - name: classification
-      type: Varchar
+      type: ConsumerBankingDirectDebitClassification
       description: Classification of the mandate (e.g., personal, business)
     - name: consumerBankingDirectDebitId
       type: Int4!
@@ -19,10 +19,10 @@ definition:
       type: Int4!
       description: Auto-incrementing identifier for mandate information
     - name: finalPaymentDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the final payment is scheduled (if applicable)
     - name: firstPaymentDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the first payment is scheduled
     - name: frequencyCountPerPeriod
       type: Int4
@@ -31,7 +31,7 @@ definition:
       type: Varchar
       description: Specific day or time point for payments
     - name: frequencyType
-      type: Varchar!
+      type: EnterpriseFrequency!
       description: How often payments occur (e.g., monthly, weekly)
     - name: mandateId
       type: Int4!
@@ -40,7 +40,7 @@ definition:
       type: Varchar
       description: Reason or purpose for the mandate
     - name: recurringPaymentDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When recurring payments are scheduled
   graphql:
     typeName: ConsumerBanking_ConsumerBankingMandateRelatedInformation
@@ -118,29 +118,29 @@ definition:
       type: ConsumerBankingMandateRelatedInformation
       comparableFields:
         - fieldName: category
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingDirectDebitCategoryBoolExp
         - fieldName: classification
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingDirectDebitClassificationBoolExp
         - fieldName: consumerBankingDirectDebitId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingMandateRelatedInformationId
           booleanExpressionType: Int4BoolExp
         - fieldName: finalPaymentDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: firstPaymentDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: frequencyCountPerPeriod
           booleanExpressionType: Int4BoolExp
         - fieldName: frequencyPointInTime
           booleanExpressionType: VarcharBoolExp
         - fieldName: frequencyType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseFrequencyBoolExp
         - fieldName: mandateId
           booleanExpressionType: Int4BoolExp
         - fieldName: reason
           booleanExpressionType: VarcharBoolExp
         - fieldName: recurringPaymentDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingDirectDebit
   logicalOperators:
@@ -160,29 +160,29 @@ definition:
       aggregatedType: ConsumerBankingMandateRelatedInformation
       aggregatableFields:
         - fieldName: category
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingDirectDebitCategoryAggExp
         - fieldName: classification
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingDirectDebitClassificationAggExp
         - fieldName: consumerBankingDirectDebitId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingMandateRelatedInformationId
           aggregateExpression: Int4AggExp
         - fieldName: finalPaymentDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: firstPaymentDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: frequencyCountPerPeriod
           aggregateExpression: Int4AggExp
         - fieldName: frequencyPointInTime
           aggregateExpression: VarcharAggExp
         - fieldName: frequencyType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseFrequencyAggExp
         - fieldName: mandateId
           aggregateExpression: Int4AggExp
         - fieldName: reason
           aggregateExpression: VarcharAggExp
         - fieldName: recurringPaymentDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
@@ -198,29 +198,29 @@ definition:
       orderedType: ConsumerBankingMandateRelatedInformation
       orderableFields:
         - fieldName: category
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingDirectDebitCategoryOrderByExp
         - fieldName: classification
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingDirectDebitClassificationOrderByExp
         - fieldName: consumerBankingDirectDebitId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingMandateRelatedInformationId
           orderByExpression: Int4OrderByExp
         - fieldName: finalPaymentDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: firstPaymentDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: frequencyCountPerPeriod
           orderByExpression: Int4OrderByExp
         - fieldName: frequencyPointInTime
           orderByExpression: VarcharOrderByExp
         - fieldName: frequencyType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseFrequencyOrderByExp
         - fieldName: mandateId
           orderByExpression: Int4OrderByExp
         - fieldName: reason
           orderByExpression: VarcharOrderByExp
         - fieldName: recurringPaymentDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingDirectDebit
   graphql:

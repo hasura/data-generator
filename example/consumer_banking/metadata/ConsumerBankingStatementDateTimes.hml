@@ -12,10 +12,10 @@ definition:
       type: Int4!
       description: References the statement this date belongs to
     - name: dateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: Date and time value
     - name: type
-      type: Varchar!
+      type: ConsumerBankingStatementDateType!
       description: Type of date (e.g., payment due, minimum payment, cycle end)
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStatementDateTimes
@@ -65,9 +65,9 @@ definition:
         - fieldName: consumerBankingStatementId
           booleanExpressionType: Int4BoolExp
         - fieldName: dateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: type
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingStatementDateTypeBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingStatement
   logicalOperators:
@@ -91,9 +91,9 @@ definition:
         - fieldName: consumerBankingStatementId
           aggregateExpression: Int4AggExp
         - fieldName: dateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: type
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingStatementDateTypeAggExp
   count:
     enable: true
   graphql:
@@ -113,9 +113,9 @@ definition:
         - fieldName: consumerBankingStatementId
           orderByExpression: Int4OrderByExp
         - fieldName: dateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: type
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingStatementDateTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingStatement
   graphql:

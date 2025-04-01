@@ -1,11 +1,10 @@
-import datetime
-import logging
-import random
+from .enums import ApplicationStatus, ConditionStatus, ConditionType
 from typing import Any, Dict, Optional
 
+import datetime
+import logging
 import psycopg2
-
-from .enums import ApplicationStatus, ConditionStatus, ConditionType
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -138,7 +137,7 @@ def generate_random_condition(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:
     }
 
     # Generate created date (typically within the last 90 days)
-    today = datetime.datetime.now()
+    today = datetime.datetime.now(datetime.timezone.utc)
     days_ago = random.randint(10, 90)
     created_date = today - datetime.timedelta(days=days_ago)
 

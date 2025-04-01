@@ -1,6 +1,7 @@
 # First, create a new file called building_type.py
-import random
 from enum import Enum
+
+import random
 
 
 class BuildingType(Enum):

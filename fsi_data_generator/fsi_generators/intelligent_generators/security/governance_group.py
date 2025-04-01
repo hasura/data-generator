@@ -1,13 +1,12 @@
-import logging
-import random
+from data_generator import DataGenerator, SkipRowGenerationError
+from faker import Faker
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
+    generate_unique_json_array
 from typing import Any, Dict
 
 import anthropic
-from faker import Faker
-
-from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+import logging
+import random
 
 # Track previously generated governance group names for uniqueness
 prev_governance_group_names = set()

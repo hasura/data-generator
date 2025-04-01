@@ -1,5 +1,6 @@
-import random
 from itertools import product
+
+import random
 
 
 def generate_combinations_random(list1, list2):

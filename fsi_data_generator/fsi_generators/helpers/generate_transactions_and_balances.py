@@ -1,6 +1,5 @@
-import random
-
 import numpy as np
+import random
 
 
 def generate_fake_balance(product_type):

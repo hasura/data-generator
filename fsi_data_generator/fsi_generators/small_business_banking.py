@@ -1,5 +1,4 @@
 from faker import Faker
-
 from fsi_data_generator.fsi_generators.helpers.generate_account_number import \
     fake_account_numbers
 from fsi_data_generator.fsi_generators.helpers.generate_ein import fake_eins

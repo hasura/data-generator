@@ -1,12 +1,10 @@
-import datetime
-import random
+from ...helpers.parse_address import parse_address
+from data_generator import DataGenerator
+from faker import Faker
 from typing import Any, Dict
 
-from faker import Faker
-
-from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.helpers.parse_address import \
-    parse_address
+import datetime
+import random
 
 
 def generate_random_associate(_id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:

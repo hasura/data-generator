@@ -1,10 +1,10 @@
-import logging
-import random
-from typing import Any, Dict
-
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from typing import Any, Dict
+
+import logging
+import random
 
 # Global set to track used role names across instances
 used_role_names = set()
@@ -60,7 +60,7 @@ def generate_random_security_role(_id_fields: Dict[str, Any], dg: DataGenerator)
 
     while role_name is None or role_name in used_role_names:
         if attempts >= max_attempts:
-            # If we've tried too many times, add a uniquifier
+            # If we've tried too many times, add random number to the end
             base_name = random.choice(role_name_templates)
             role_name = f"{base_name}_{random.randint(1000, 9999)}"
         else:

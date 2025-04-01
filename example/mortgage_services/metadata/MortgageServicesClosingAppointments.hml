@@ -6,7 +6,7 @@ definition:
   description: Schedules and tracks mortgage closing appointments
   fields:
     - name: actualClosingDate
-      type: Timestamp
+      type: Timestamptz
       description: When the closing actually occurred
     - name: closingAgent
       type: Varchar
@@ -33,7 +33,7 @@ definition:
       type: Text
       description: Additional information about the closing
     - name: scheduledDate
-      type: Timestamp!
+      type: Timestamptz!
       description: When the closing is scheduled
     - name: status
       type: MortgageServicesAppointmentStatus!
@@ -110,7 +110,7 @@ definition:
       type: MortgageServicesClosingAppointments
       comparableFields:
         - fieldName: actualClosingDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: closingAgent
           booleanExpressionType: VarcharBoolExp
         - fieldName: closingCompany
@@ -128,7 +128,7 @@ definition:
         - fieldName: notes
           booleanExpressionType: TextBoolExp
         - fieldName: scheduledDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: status
           booleanExpressionType: MortgageServicesAppointmentStatusBoolExp
       comparableRelationships:
@@ -150,7 +150,7 @@ definition:
       aggregatedType: MortgageServicesClosingAppointments
       aggregatableFields:
         - fieldName: actualClosingDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: closingAgent
           aggregateExpression: VarcharAggExp
         - fieldName: closingCompany
@@ -168,7 +168,7 @@ definition:
         - fieldName: notes
           aggregateExpression: TextAggExp
         - fieldName: scheduledDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: status
           aggregateExpression: MortgageServicesAppointmentStatusAggExp
   count:
@@ -186,7 +186,7 @@ definition:
       orderedType: MortgageServicesClosingAppointments
       orderableFields:
         - fieldName: actualClosingDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: closingAgent
           orderByExpression: VarcharOrderByExp
         - fieldName: closingCompany
@@ -204,7 +204,7 @@ definition:
         - fieldName: notes
           orderByExpression: TextOrderByExp
         - fieldName: scheduledDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: status
           orderByExpression: MortgageServicesAppointmentStatusOrderByExp
       orderableRelationships:

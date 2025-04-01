@@ -1,14 +1,13 @@
-import logging
-import random
-import sys
-from typing import Any, Dict
-
-import anthropic
-import psycopg2
-
 from data_generator import DataGenerator, SkipRowGenerationError
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from typing import Any, Dict
+
+import anthropic
+import logging
+import psycopg2
+import random
+import sys
 
 # Track previously generated rule names for uniqueness
 prev_policy_rules = set()
@@ -106,7 +105,7 @@ def generate_random_policy_rule(id_fields: Dict[str, Any], dg: DataGenerator) ->
                 if keyword in policy_description:
                     category_score[category] += 2
 
-        # Select category with highest score, or random if tied
+        # Select category with the highest score, or random if tied
         top_categories = [k for k, v in category_score.items()
                           if v == max(category_score.values())]
         selected_category = random.choice(top_categories if top_categories else list(rule_categories.keys()))

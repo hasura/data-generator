@@ -14,6 +14,39 @@ CREATE SCHEMA "credit_cards";
 
 CREATE SCHEMA "small_business_banking";
 
+CREATE TYPE "enterprise"."currency_code" AS ENUM (
+  'USD',
+  'EUR',
+  'GBP',
+  'JPY',
+  'AUD',
+  'CAD',
+  'CHF',
+  'CNY',
+  'HKD',
+  'NZD',
+  'SEK',
+  'NOK',
+  'DKK',
+  'SGD',
+  'MXN',
+  'BRL',
+  'INR',
+  'RUB',
+  'ZAR',
+  'TRY',
+  'KRW',
+  'PLN',
+  'ILS',
+  'AED',
+  'SAR',
+  'THB',
+  'MYR',
+  'IDR',
+  'PHP',
+  'ARS'
+);
+
 CREATE TYPE "enterprise"."identifier_scheme" AS ENUM (
   'IBAN',
   'BIC',
@@ -94,6 +127,21 @@ CREATE TYPE "enterprise"."party_status" AS ENUM (
   'SUSPENDED',
   'DECEASED',
   'DISSOLVED'
+);
+
+CREATE TYPE "enterprise"."frequency" AS ENUM (
+  'DAILY',
+  'WEEKLY',
+  'BI_WEEKLY',
+  'SEMI_MONTHLY',
+  'MONTHLY',
+  'QUARTERLY',
+  'SEMI_ANNUALLY',
+  'ANNUALLY',
+  'CUSTOM',
+  'IRREGULAR',
+  'ONE_TIME',
+  'OTHER'
 );
 
 CREATE TYPE "enterprise"."party_relationship_type" AS ENUM (
@@ -181,6 +229,11 @@ CREATE TYPE "enterprise"."building_type" AS ENUM (
   'OTHER'
 );
 
+CREATE TYPE "enterprise"."credit_debit_indicator" AS ENUM (
+  'CREDIT',
+  'DEBIT'
+);
+
 CREATE TYPE "consumer_banking"."account_status" AS ENUM (
   'ACTIVE',
   'PENDING',
@@ -203,6 +256,578 @@ CREATE TYPE "consumer_banking"."consent_status" AS ENUM (
   'SUPERSEDED',
   'REJECTED',
   'ERROR'
+);
+
+CREATE TYPE "consumer_banking"."balance_type" AS ENUM (
+  'AVAILABLE',
+  'CURRENT',
+  'CLOSING',
+  'PENDING',
+  'BLOCKED',
+  'RESERVED',
+  'OVERDRAFT',
+  'HOLD',
+  'INTEREST_BEARING',
+  'MINIMUM_REQUIRED',
+  'PROJECTED',
+  'LEDGER',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."balance_sub_type" AS ENUM (
+  'INTRA_DAY',
+  'OPENING',
+  'INTERIM',
+  'FORWARD',
+  'EXPECTED',
+  'AUTHORISED',
+  'PREVIOUS_DAY',
+  'THRESHOLD',
+  'SWEEP',
+  'LIMIT',
+  'CREDIT_LINE',
+  'CUSHION',
+  'VALUE_DATED',
+  'NET',
+  'NONE'
+);
+
+CREATE TYPE "consumer_banking"."beneficiary_type" AS ENUM (
+  'INDIVIDUAL',
+  'ORGANIZATION',
+  'GOVERNMENT',
+  'TRUST',
+  'ESTATE',
+  'CHARITY',
+  'FINANCIAL_INSTITUTION',
+  'MERCHANT',
+  'UTILITY',
+  'EDUCATIONAL',
+  'HEALTHCARE',
+  'SELF',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."direct_debit_status_code" AS ENUM (
+  'ACTIVE',
+  'PENDING',
+  'CANCELED',
+  'SUSPENDED',
+  'REJECTED',
+  'EXPIRED',
+  'COMPLETED',
+  'FAILED',
+  'ON_HOLD',
+  'AMENDED',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."direct_debit_classification" AS ENUM (
+  'PERSONAL',
+  'BUSINESS',
+  'CHARITY',
+  'HOUSEHOLD',
+  'SUBSCRIPTION',
+  'UTILITY',
+  'INSURANCE',
+  'MORTGAGE',
+  'LOAN',
+  'TAX',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."direct_debit_category" AS ENUM (
+  'ELECTRICITY',
+  'GAS',
+  'WATER',
+  'INTERNET',
+  'PHONE',
+  'TV',
+  'RENT',
+  'MORTGAGE',
+  'INSURANCE_HOME',
+  'INSURANCE_HEALTH',
+  'INSURANCE_LIFE',
+  'INSURANCE_AUTO',
+  'SUBSCRIPTION_MEDIA',
+  'SUBSCRIPTION_SOFTWARE',
+  'SUBSCRIPTION_MEMBERSHIP',
+  'LOAN_PAYMENT',
+  'CREDIT_CARD',
+  'CHARITY',
+  'TAX_PAYMENT',
+  'PENSION',
+  'INVESTMENT',
+  'EDUCATION',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."offer_type" AS ENUM (
+  'LOAN',
+  'BALANCE_TRANSFER',
+  'CREDIT_LIMIT_INCREASE',
+  'INTEREST_RATE_REDUCTION',
+  'OVERDRAFT',
+  'INVESTMENT',
+  'SAVINGS',
+  'INSURANCE',
+  'CASHBACK',
+  'REWARDS',
+  'PREMIUM_ACCOUNT',
+  'FEE_WAIVER',
+  'BUNDLE',
+  'PREAPPROVAL',
+  'PROMOTIONAL',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."product_type" AS ENUM (
+  'CHECKING',
+  'SAVINGS',
+  'MONEY_MARKET',
+  'CERTIFICATE_OF_DEPOSIT',
+  'IRA',
+  'HSA',
+  'STUDENT',
+  'YOUTH',
+  'SENIOR',
+  'BUSINESS_CHECKING',
+  'BUSINESS_SAVINGS',
+  'PREMIUM',
+  'FOREIGN_CURRENCY',
+  'SPECIALIZED'
+);
+
+CREATE TYPE "consumer_banking"."interest_calculation_method" AS ENUM (
+  'DAILY_BALANCE',
+  'AVERAGE_DAILY_BALANCE',
+  'MINIMUM_BALANCE',
+  'TIERED_RATE',
+  'BLENDED_RATE',
+  'STEPPED_RATE'
+);
+
+CREATE TYPE "consumer_banking"."account_fee_schedule" AS ENUM (
+  'STANDARD',
+  'REDUCED',
+  'WAIVED_WITH_MINIMUM_BALANCE',
+  'WAIVED_WITH_DIRECT_DEPOSIT',
+  'WAIVED_WITH_RELATIONSHIP',
+  'NO_FEE',
+  'ACTIVITY_BASED',
+  'TIERED'
+);
+
+CREATE TYPE "consumer_banking"."product_status" AS ENUM (
+  'ACTIVE',
+  'GRANDFATHERED',
+  'PROMOTIONAL',
+  'DISCONTINUED',
+  'ARCHIVED',
+  'PILOT',
+  'SEASONAL'
+);
+
+CREATE TYPE "consumer_banking"."scheduled_payment_type" AS ENUM (
+  'SINGLE',
+  'RECURRING',
+  'INSTALLMENT',
+  'CONDITIONAL',
+  'VARIABLE'
+);
+
+CREATE TYPE "consumer_banking"."scheduled_payment_status" AS ENUM (
+  'PENDING',
+  'PROCESSING',
+  'COMPLETED',
+  'FAILED',
+  'CANCELED',
+  'EXPIRED',
+  'RECURRENCE_ENDED',
+  'ON_HOLD'
+);
+
+CREATE TYPE "consumer_banking"."payment_method" AS ENUM (
+  'ACH',
+  'WIRE',
+  'INTERNAL',
+  'CHECK',
+  'CARD',
+  'DIGITAL_WALLET',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."standing_order_status_code" AS ENUM (
+  'ACTIVE',
+  'PENDING',
+  'CANCELLED',
+  'SUSPENDED',
+  'COMPLETED',
+  'FAILED',
+  'ON_HOLD',
+  'EXPIRED',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."standing_order_type" AS ENUM (
+  'FIXED_AMOUNT',
+  'VARIABLE_AMOUNT',
+  'BALANCE_SWEEP',
+  'FULL_BALANCE',
+  'PERCENTAGE',
+  'INTEREST_ONLY',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."standing_order_category" AS ENUM (
+  'BILL_PAYMENT',
+  'SAVINGS',
+  'INVESTMENT',
+  'LOAN_PAYMENT',
+  'SUBSCRIPTION',
+  'CHARITY',
+  'FAMILY_SUPPORT',
+  'RENT',
+  'BUSINESS_EXPENSE',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."statement_type" AS ENUM (
+  'REGULAR',
+  'INTERIM',
+  'FINAL',
+  'ANNUAL',
+  'SUPPLEMENTARY',
+  'TAX',
+  'CORRECTED',
+  'RECONCILIATION',
+  'CONSOLIDATED',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."benefit_type" AS ENUM (
+  'CASHBACK',
+  'POINTS',
+  'MILES',
+  'INTEREST',
+  'DISCOUNT',
+  'INSURANCE',
+  'FEE_WAIVER',
+  'PROMOTIONAL',
+  'LOYALTY',
+  'REFERRAL',
+  'ANNIVERSARY',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."fee_type" AS ENUM (
+  'SERVICE',
+  'TRANSACTION',
+  'OVERDRAFT',
+  'ATM',
+  'WIRE_TRANSFER',
+  'FOREIGN_TRANSACTION',
+  'PAPER_STATEMENT',
+  'STOP_PAYMENT',
+  'REPLACEMENT_CARD',
+  'EARLY_WITHDRAWAL',
+  'INSUFFICIENT_FUNDS',
+  'DORMANT_ACCOUNT',
+  'RESEARCH',
+  'SPECIAL_STATEMENT',
+  'LATE_PAYMENT',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."fee_frequency" AS ENUM (
+  'ONE_TIME',
+  'MONTHLY',
+  'QUARTERLY',
+  'ANNUALLY',
+  'PER_TRANSACTION',
+  'CONDITIONAL',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."rate_type" AS ENUM (
+  'FIXED',
+  'VARIABLE',
+  'TIERED',
+  'PROMOTIONAL',
+  'PENALTY',
+  'STANDARD',
+  'DISCOUNTED',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."interest_type" AS ENUM (
+  'DEPOSIT',
+  'SAVINGS',
+  'CERTIFICATE',
+  'MONEY_MARKET',
+  'CHECKING',
+  'BONUS',
+  'PROMOTIONAL',
+  'PENALTY',
+  'LOAN',
+  'CREDIT_CARD',
+  'OVERDRAFT',
+  'LINE_OF_CREDIT',
+  'ADJUSTMENT',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."amount_type" AS ENUM (
+  'OPENING_BALANCE',
+  'CLOSING_BALANCE',
+  'PAYMENTS',
+  'DEPOSITS',
+  'WITHDRAWALS',
+  'INTEREST_EARNED',
+  'INTEREST_CHARGED',
+  'FEES',
+  'CREDITS',
+  'DEBITS',
+  'TRANSFERS_IN',
+  'TRANSFERS_OUT',
+  'MINIMUM_PAYMENT_DUE',
+  'AVAILABLE_CREDIT',
+  'AVAILABLE_BALANCE',
+  'CURRENT_BALANCE',
+  'PENDING_BALANCE',
+  'OVERDRAFT_LIMIT',
+  'OVERDRAFT_USED',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."amount_sub_type" AS ENUM (
+  'PRINCIPAL',
+  'INTEREST',
+  'FEES',
+  'PENALTIES',
+  'REWARDS',
+  'PROMOTIONAL',
+  'TEMPORARY',
+  'ESTIMATED',
+  'ADJUSTED',
+  'CORRECTED',
+  'NONE'
+);
+
+CREATE TYPE "consumer_banking"."statement_date_type" AS ENUM (
+  'STATEMENT_DATE',
+  'DUE_DATE',
+  'PAYMENT_CUTOFF_DATE',
+  'CLOSE_DATE',
+  'NEXT_STATEMENT_DATE',
+  'MINIMUM_PAYMENT_DATE',
+  'GRACE_PERIOD_END',
+  'LATE_FEE_DATE',
+  'CYCLE_START_DATE',
+  'LAST_PAYMENT_DATE',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."statement_rate_type" AS ENUM (
+  'APR',
+  'CASH_ADVANCE_APR',
+  'BALANCE_TRANSFER_APR',
+  'PENALTY_APR',
+  'PROMOTIONAL_APR',
+  'SAVINGS_RATE',
+  'CD_RATE',
+  'EXCHANGE_RATE',
+  'INTRODUCTORY_RATE',
+  'VARIABLE_RATE_INDEX',
+  'MARGIN',
+  'DEFAULT_RATE',
+  'REWARD_RATE',
+  'EFFECTIVE_RATE',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."statement_value_type" AS ENUM (
+  'LOYALTY_POINTS',
+  'REWARD_BALANCE',
+  'CASH_BACK_EARNED',
+  'POINTS_EARNED',
+  'POINTS_REDEEMED',
+  'TIER_LEVEL',
+  'CREDIT_SCORE',
+  'CARBON_FOOTPRINT',
+  'SPENDING_CATEGORY',
+  'MILES_EARNED',
+  'MILES_BALANCE',
+  'MERCHANT_CATEGORY',
+  'NEXT_TIER_PROGRESS',
+  'ANNUAL_REWARDS_SUMMARY',
+  'ANNUAL_SPENDING_SUMMARY',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."transaction_status" AS ENUM (
+  'PENDING',
+  'BOOKED',
+  'CANCELLED',
+  'REJECTED',
+  'REVERSED',
+  'HELD',
+  'EXPIRED',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."transaction_mutability" AS ENUM (
+  'MUTABLE',
+  'IMMUTABLE',
+  'CONDITIONAL'
+);
+
+CREATE TYPE "consumer_banking"."transaction_category" AS ENUM (
+  'PAYMENT',
+  'DEPOSIT',
+  'WITHDRAWAL',
+  'FEE',
+  'INTEREST',
+  'TRANSFER',
+  'ATM',
+  'POINT_OF_SALE',
+  'CARD_PAYMENT',
+  'DIRECT_DEBIT',
+  'STANDING_ORDER',
+  'CREDIT',
+  'DEBIT',
+  'REVERSAL',
+  'ADJUSTMENT',
+  'CHECK',
+  'LOAN_DISBURSEMENT',
+  'LOAN_PAYMENT',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."transaction_type" AS ENUM (
+  'PURCHASE',
+  'CASH_WITHDRAWAL',
+  'REFUND',
+  'BILL_PAYMENT',
+  'SALARY',
+  'SUBSCRIPTION',
+  'DIVIDEND',
+  'TAX_PAYMENT',
+  'TAX_REFUND',
+  'INTERNAL_TRANSFER',
+  'EXTERNAL_TRANSFER',
+  'MERCHANT_PAYMENT',
+  'UTILITY_PAYMENT',
+  'RENT_PAYMENT',
+  'MORTGAGE_PAYMENT',
+  'INVESTMENT',
+  'INSURANCE_PREMIUM',
+  'DONATION',
+  'TRANSPORTATION',
+  'FOOD_DINING',
+  'HEALTHCARE',
+  'EDUCATION',
+  'ENTERTAINMENT',
+  'TRAVEL',
+  'RETAIL',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."transaction_bank_code" AS ENUM (
+  'RETAIL__CLOTHING_STORE',
+  'RETAIL__ELECTRONICS',
+  'RETAIL__DEPARTMENT_STORE',
+  'RETAIL__ONLINE_SHOPPING',
+  'RETAIL__GROCERY',
+  'RETAIL__CONVENIENCE_STORE',
+  'RETAIL__OTHER',
+  'SERVICES__RESTAURANT',
+  'SERVICES__ENTERTAINMENT',
+  'SERVICES__TRAVEL',
+  'SERVICES__CAR_RENTAL',
+  'SERVICES__HOTEL',
+  'SERVICES__PROFESSIONAL',
+  'SERVICES__UTILITIES',
+  'SERVICES__TELECOMMUNICATIONS',
+  'SERVICES__OTHER',
+  'FINANCIAL__ATM_WITHDRAWAL',
+  'FINANCIAL__BANK_TRANSFER',
+  'FINANCIAL__LOAN_PAYMENT',
+  'FINANCIAL__CREDIT_CARD_PAYMENT',
+  'FINANCIAL__INVESTMENT',
+  'FINANCIAL__INSURANCE_PAYMENT',
+  'FINANCIAL__WIRE_TRANSFER',
+  'FINANCIAL__OTHER',
+  'REGULATORY__BSA_REPORTING',
+  'REGULATORY__AML_THRESHOLD',
+  'REGULATORY__OFAC_SCREENING',
+  'REGULATORY__CTR_REPORT',
+  'REGULATORY__SUSPICIOUS_ACTIVITY',
+  'REGULATORY__KYC_VERIFICATION',
+  'REGULATORY__PEP_TRANSACTION',
+  'REGULATORY__SANCTIONS_CHECK',
+  'REGULATORY__TAX_REPORTING',
+  'REGULATORY__FATCA_REPORTING',
+  'REGULATORY__OTHER',
+  'RISK__HIGH_RISK_GEO',
+  'RISK__UNUSUAL_PATTERN',
+  'RISK__VELOCITY_CHECK',
+  'RISK__LARGE_CASH_DEPOSIT',
+  'RISK__CROSS_BORDER',
+  'RISK__FIRST_TIME_MERCHANT',
+  'RISK__DEVICE_ANOMALY',
+  'RISK__REPEATED_DECLINED',
+  'RISK__OTHER'
+);
+
+CREATE TYPE "consumer_banking"."card_scheme_name" AS ENUM (
+  'VISA',
+  'MASTERCARD',
+  'AMEX',
+  'DISCOVER',
+  'DINERS',
+  'JCB',
+  'UNIONPAY',
+  'MAESTRO',
+  'INTERAC',
+  'ELO',
+  'MIR',
+  'RUPAY',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."authorization_type" AS ENUM (
+  'PIN',
+  'SIGNATURE',
+  'PIN_AND_SIGNATURE',
+  'ONLINE',
+  'CONTACTLESS',
+  'CHIP',
+  'MAGNETIC_STRIPE',
+  'TOKENIZED',
+  'BIOMETRIC',
+  'RECURRING',
+  'MANUAL_ENTRY',
+  'OTHER'
+);
+
+CREATE TYPE "consumer_banking"."statement_format" AS ENUM (
+  'PDF',
+  'HTML',
+  'TEXT',
+  'CSV',
+  'XML',
+  'JSON'
+);
+
+CREATE TYPE "consumer_banking"."communication_method" AS ENUM (
+  'EMAIL',
+  'MAIL',
+  'PORTAL',
+  'MOBILE_APP',
+  'SMS_NOTIFICATION',
+  'BRANCH_PICKUP',
+  'MULTIPLE'
 );
 
 CREATE TYPE "mortgage_services"."borrower_type" AS ENUM (
@@ -2276,10 +2901,10 @@ CREATE TABLE "consumer_banking"."accounts" (
 CREATE TABLE "consumer_banking"."account_access_consents" (
   "consumer_banking_consent_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "creation_date_time" TIMESTAMP NOT NULL,
+  "creation_date_time" TIMESTAMPTZ NOT NULL,
   "status" consumer_banking.consent_status NOT NULL,
-  "status_update_date_time" TIMESTAMP NOT NULL,
-  "expiration_date_time" TIMESTAMP
+  "status_update_date_time" TIMESTAMPTZ NOT NULL,
+  "expiration_date_time" TIMESTAMPTZ
 );
 
 CREATE TABLE "consumer_banking"."account_access_consents_permissions" (
@@ -2290,18 +2915,18 @@ CREATE TABLE "consumer_banking"."account_access_consents_permissions" (
 CREATE TABLE "consumer_banking"."balances" (
   "consumer_banking_balance_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "type" VARCHAR(10) NOT NULL,
-  "date_time" TIMESTAMP NOT NULL,
+  "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
+  "type" consumer_banking.balance_type NOT NULL,
+  "date_time" TIMESTAMPTZ NOT NULL,
   "amount" NUMERIC(18,5) NOT NULL,
-  "currency" VARCHAR(3) NOT NULL,
-  "sub_type" VARCHAR(5)
+  "currency" enterprise.currency_code NOT NULL,
+  "sub_type" consumer_banking.balance_sub_type
 );
 
 CREATE TABLE "consumer_banking"."beneficiaries" (
   "consumer_banking_beneficiary_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "beneficiary_type" VARCHAR(20) NOT NULL,
+  "beneficiary_type" consumer_banking.beneficiary_type NOT NULL,
   "reference" VARCHAR(35),
   "supplementary_data" TEXT
 );
@@ -2309,7 +2934,7 @@ CREATE TABLE "consumer_banking"."beneficiaries" (
 CREATE TABLE "consumer_banking"."beneficiary_creditor_agents" (
   "consumer_banking_beneficiary_creditor_agent_id" SERIAL PRIMARY KEY,
   "consumer_banking_beneficiary_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(35) NOT NULL,
   "name" VARCHAR(140),
   "lei" VARCHAR(20)
@@ -2318,7 +2943,7 @@ CREATE TABLE "consumer_banking"."beneficiary_creditor_agents" (
 CREATE TABLE "consumer_banking"."beneficiary_creditor_accounts" (
   "consumer_banking_beneficiary_creditor_account_id" SERIAL PRIMARY KEY,
   "consumer_banking_beneficiary_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(256) NOT NULL,
   "name" VARCHAR(350),
   "secondary_identification" VARCHAR(34)
@@ -2327,9 +2952,9 @@ CREATE TABLE "consumer_banking"."beneficiary_creditor_accounts" (
 CREATE TABLE "consumer_banking"."direct_debits" (
   "consumer_banking_direct_debit_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "direct_debit_status_code" VARCHAR(20) NOT NULL,
+  "direct_debit_status_code" consumer_banking.direct_debit_status_code NOT NULL,
   "name" VARCHAR(70) NOT NULL,
-  "previous_payment_date_time" TIMESTAMP,
+  "previous_payment_date_time" TIMESTAMPTZ,
   "previous_payment_amount" NUMERIC(18,5),
   "previous_payment_currency" VARCHAR(3)
 );
@@ -2338,12 +2963,12 @@ CREATE TABLE "consumer_banking"."mandate_related_information" (
   "consumer_banking_mandate_related_information_id" SERIAL PRIMARY KEY,
   "consumer_banking_direct_debit_id" INTEGER NOT NULL,
   "mandate_id" INTEGER NOT NULL,
-  "classification" VARCHAR(20),
-  "category" VARCHAR(20),
-  "first_payment_date_time" TIMESTAMP,
-  "recurring_payment_date_time" TIMESTAMP,
-  "final_payment_date_time" TIMESTAMP,
-  "frequency_type" VARCHAR(20) NOT NULL,
+  "classification" consumer_banking.direct_debit_classification,
+  "category" consumer_banking.direct_debit_category,
+  "first_payment_date_time" TIMESTAMPTZ,
+  "recurring_payment_date_time" TIMESTAMPTZ,
+  "final_payment_date_time" TIMESTAMPTZ,
+  "frequency_type" enterprise.frequency NOT NULL,
   "frequency_count_per_period" INT,
   "frequency_point_in_time" VARCHAR(2),
   "reason" VARCHAR(256)
@@ -2352,26 +2977,39 @@ CREATE TABLE "consumer_banking"."mandate_related_information" (
 CREATE TABLE "consumer_banking"."offers" (
   "consumer_banking_offer_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "offer_type" VARCHAR(20) NOT NULL,
+  "offer_type" consumer_banking.offer_type NOT NULL,
   "description" VARCHAR(500),
-  "start_date_time" TIMESTAMP,
-  "end_date_time" TIMESTAMP,
+  "start_date_time" TIMESTAMPTZ,
+  "end_date_time" TIMESTAMPTZ,
   "rate" NUMERIC(10,4),
   "value" INT,
   "term" VARCHAR(500),
   "url" VARCHAR(256),
   "amount" NUMERIC(18,5),
-  "amount_currency" VARCHAR(3),
+  "amount_currency" enterprise.currency_code,
   "fee" NUMERIC(18,5),
-  "fee_currency" VARCHAR(3)
+  "fee_currency" enterprise.currency_code
 );
 
 CREATE TABLE "consumer_banking"."products" (
   "consumer_banking_product_id" SERIAL PRIMARY KEY,
-  "product_name" VARCHAR(350) NOT NULL,
-  "secondary_product_id" VARCHAR(70),
-  "product_type" VARCHAR(30) NOT NULL,
-  "marketing_state_id" VARCHAR(35)
+  "product_code" VARCHAR(20) NOT NULL,
+  "product_name" VARCHAR(100) NOT NULL,
+  "product_type" consumer_banking.product_type NOT NULL,
+  "description" TEXT,
+  "min_opening_deposit" DECIMAL(18,2),
+  "monthly_fee" DECIMAL(10,2),
+  "fee_schedule" consumer_banking.account_fee_schedule NOT NULL DEFAULT 'STANDARD',
+  "transaction_limit" INTEGER,
+  "transaction_fee" DECIMAL(10,2),
+  "min_balance" DECIMAL(18,2),
+  "is_interest_bearing" BOOLEAN NOT NULL DEFAULT false,
+  "base_interest_rate" DECIMAL(6,4),
+  "interest_calculation_method" consumer_banking.interest_calculation_method,
+  "term_length" INTEGER,
+  "status" consumer_banking.product_status NOT NULL DEFAULT 'ACTIVE',
+  "launch_date" DATE,
+  "discontinue_date" DATE
 );
 
 CREATE TABLE "consumer_banking"."other_product_types" (
@@ -2384,19 +3022,25 @@ CREATE TABLE "consumer_banking"."other_product_types" (
 CREATE TABLE "consumer_banking"."scheduled_payments" (
   "consumer_banking_scheduled_payment_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "scheduled_payment_date_time" TIMESTAMP NOT NULL,
-  "scheduled_type" VARCHAR(10) NOT NULL,
+  "scheduled_payment_date_time" TIMESTAMPTZ NOT NULL,
+  "scheduled_type" consumer_banking.scheduled_payment_type NOT NULL,
+  "payment_method" consumer_banking.payment_method NOT NULL,
+  "payment_status" consumer_banking.scheduled_payment_status NOT NULL DEFAULT 'PENDING',
+  "frequency" enterprise.frequency,
   "reference" VARCHAR(35),
   "debtor_reference" VARCHAR(35),
   "instructed_amount" NUMERIC(18,5) NOT NULL,
-  "instructed_amount_currency" VARCHAR(3) NOT NULL
+  "instructed_amount_currency" enterprise.currency_code NOT NULL,
+  "end_date" DATE,
+  "execution_count" INTEGER,
+  "max_executions" INTEGER
 );
 
 CREATE TABLE "consumer_banking"."scheduled_payment_creditor_agents" (
   "consumer_banking_scheduled_payment_creditor_agent_id" SERIAL PRIMARY KEY,
   "consumer_banking_scheduled_payment_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
-  "identification" VARCHAR(35) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
+  "identification" VARCHAR(256) NOT NULL,
   "name" VARCHAR(140),
   "lei" VARCHAR(20)
 );
@@ -2404,7 +3048,7 @@ CREATE TABLE "consumer_banking"."scheduled_payment_creditor_agents" (
 CREATE TABLE "consumer_banking"."scheduled_payment_creditor_accounts" (
   "consumer_banking_scheduled_payment_creditor_account_id" SERIAL PRIMARY KEY,
   "consumer_banking_scheduled_payment_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(256) NOT NULL,
   "name" VARCHAR(350),
   "secondary_identification" VARCHAR(34)
@@ -2413,24 +3057,36 @@ CREATE TABLE "consumer_banking"."scheduled_payment_creditor_accounts" (
 CREATE TABLE "consumer_banking"."standing_orders" (
   "consumer_banking_standing_order_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "next_payment_date_time" TIMESTAMP,
-  "last_payment_date_time" TIMESTAMP,
-  "standing_order_status_code" VARCHAR(5),
+  "next_payment_date_time" TIMESTAMPTZ,
+  "last_payment_date_time" TIMESTAMPTZ,
+  "standing_order_status_code" consumer_banking.standing_order_status_code NOT NULL DEFAULT 'ACTIVE',
   "first_payment_amount" NUMERIC(18,5),
-  "first_payment_currency" VARCHAR(3),
+  "first_payment_currency" enterprise.currency_code,
   "next_payment_amount" NUMERIC(18,5),
-  "next_payment_currency" VARCHAR(3),
+  "next_payment_currency" enterprise.currency_code,
   "last_payment_amount" NUMERIC(18,5),
-  "last_payment_currency" VARCHAR(3),
+  "last_payment_currency" enterprise.currency_code,
   "final_payment_amount" NUMERIC(18,5),
-  "final_payment_currency" VARCHAR(3),
+  "final_payment_currency" enterprise.currency_code,
+  "frequency" enterprise.frequency NOT NULL,
+  "start_date" DATE NOT NULL,
+  "end_date" DATE,
+  "day_of_month" INTEGER,
+  "day_of_week" INTEGER,
+  "payment_type" consumer_banking.standing_order_type NOT NULL DEFAULT 'FIXED_AMOUNT',
+  "category" consumer_banking.standing_order_category,
+  "reference" VARCHAR(100),
+  "description" VARCHAR(255),
+  "created_date" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "created_by" VARCHAR(50),
+  "modified_date" TIMESTAMPTZ,
   "supplementary_data" TEXT
 );
 
 CREATE TABLE "consumer_banking"."standing_order_creditor_agents" (
   "consumer_banking_standing_order_creditor_agent_id" SERIAL PRIMARY KEY,
   "consumer_banking_standing_order_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(35) NOT NULL,
   "name" VARCHAR(140),
   "lei" VARCHAR(20)
@@ -2439,7 +3095,7 @@ CREATE TABLE "consumer_banking"."standing_order_creditor_agents" (
 CREATE TABLE "consumer_banking"."standing_order_creditor_accounts" (
   "consumer_banking_standing_order_creditor_account_id" SERIAL PRIMARY KEY,
   "consumer_banking_standing_order_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(256) NOT NULL,
   "name" VARCHAR(350),
   "secondary_identification" VARCHAR(34)
@@ -2449,10 +3105,10 @@ CREATE TABLE "consumer_banking"."statements" (
   "consumer_banking_statement_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
   "statement_reference" VARCHAR(35),
-  "type" VARCHAR(20) NOT NULL,
-  "start_date_time" TIMESTAMP NOT NULL,
-  "end_date_time" TIMESTAMP NOT NULL,
-  "creation_date_time" TIMESTAMP NOT NULL
+  "type" consumer_banking.statement_type NOT NULL,
+  "start_date_time" TIMESTAMPTZ NOT NULL,
+  "end_date_time" TIMESTAMPTZ NOT NULL,
+  "creation_date_time" TIMESTAMPTZ NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."statement_descriptions" (
@@ -2464,7 +3120,7 @@ CREATE TABLE "consumer_banking"."statement_descriptions" (
 CREATE TABLE "consumer_banking"."statement_benefits" (
   "consumer_banking_statement_benefit_id" SERIAL PRIMARY KEY,
   "consumer_banking_statement_id" INTEGER NOT NULL,
-  "type" VARCHAR(50) NOT NULL,
+  "type" consumer_banking.benefit_type NOT NULL,
   "amount" NUMERIC(18,5) NOT NULL,
   "currency" VARCHAR(3) NOT NULL
 );
@@ -2473,102 +3129,119 @@ CREATE TABLE "consumer_banking"."statement_fees" (
   "consumer_banking_statement_fee_id" SERIAL PRIMARY KEY,
   "consumer_banking_statement_id" INTEGER NOT NULL,
   "description" VARCHAR(128),
-  "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "type" VARCHAR(50) NOT NULL,
+  "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
+  "type" consumer_banking.fee_type NOT NULL,
   "rate" NUMERIC(10,4),
-  "rate_type" VARCHAR(50),
-  "frequency" VARCHAR(50),
+  "rate_type" consumer_banking.rate_type,
+  "frequency" consumer_banking.fee_frequency,
   "amount" NUMERIC(18,5) NOT NULL,
-  "currency" VARCHAR(3) NOT NULL
+  "currency" enterprise.currency_code NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."statement_interests" (
   "consumer_banking_statement_interest_id" SERIAL PRIMARY KEY,
   "consumer_banking_statement_id" INTEGER NOT NULL,
   "description" VARCHAR(128),
-  "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "type" VARCHAR(50) NOT NULL,
+  "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
+  "type" consumer_banking.interest_type NOT NULL,
   "rate" NUMERIC(10,4),
-  "rate_type" VARCHAR(50),
-  "frequency" VARCHAR(50),
+  "rate_type" consumer_banking.rate_type,
+  "frequency" enterprise.frequency,
   "amount" NUMERIC(18,5) NOT NULL,
-  "currency" VARCHAR(3) NOT NULL
+  "currency" enterprise.currency_code NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."statement_amounts" (
   "consumer_banking_statement_amount_id" SERIAL PRIMARY KEY,
   "consumer_banking_statement_id" INTEGER NOT NULL,
-  "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "type" VARCHAR(50) NOT NULL,
+  "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
+  "type" consumer_banking.amount_type NOT NULL,
   "amount" NUMERIC(18,5) NOT NULL,
-  "currency" VARCHAR(3) NOT NULL,
-  "sub_type" VARCHAR(15)
+  "currency" enterprise.currency_code NOT NULL,
+  "sub_type" consumer_banking.amount_sub_type
 );
 
 CREATE TABLE "consumer_banking"."statement_date_times" (
   "consumer_banking_statement_date_time_id" SERIAL PRIMARY KEY,
   "consumer_banking_statement_id" INTEGER NOT NULL,
-  "date_time" TIMESTAMP NOT NULL,
-  "type" VARCHAR(50) NOT NULL
+  "date_time" TIMESTAMPTZ NOT NULL,
+  "type" consumer_banking.statement_date_type NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."statement_rates" (
   "consumer_banking_statement_rate_id" SERIAL PRIMARY KEY,
   "consumer_banking_statement_id" INTEGER NOT NULL,
   "rate" NUMERIC(10,4) NOT NULL,
-  "type" VARCHAR(50) NOT NULL
+  "type" consumer_banking.statement_rate_type NOT NULL,
+  "description" VARCHAR(255),
+  "effective_date" DATE,
+  "expiration_date" DATE,
+  "is_variable" BOOLEAN NOT NULL DEFAULT false,
+  "index_rate" NUMERIC(10,4),
+  "margin" NUMERIC(10,4),
+  "balance_subject_to_rate" NUMERIC(18,2),
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "consumer_banking"."statement_values" (
   "consumer_banking_statement_value_id" SERIAL PRIMARY KEY,
   "consumer_banking_statement_id" INTEGER NOT NULL,
-  "value" VARCHAR(40) NOT NULL,
-  "type" VARCHAR(50) NOT NULL
+  "value" VARCHAR(255) NOT NULL,
+  "type" consumer_banking.statement_value_type NOT NULL,
+  "description" VARCHAR(255),
+  "previous_value" VARCHAR(255),
+  "change_percentage" NUMERIC(10,2),
+  "is_estimated" BOOLEAN NOT NULL DEFAULT false,
+  "reference_period_start" DATE,
+  "reference_period_end" DATE,
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "consumer_banking"."transactions" (
   "consumer_banking_transaction_id" SERIAL PRIMARY KEY,
   "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_balance_id" INTEGER,
   "transaction_reference" VARCHAR(210),
-  "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "status" VARCHAR(10) NOT NULL,
-  "transaction_mutability" VARCHAR(10),
-  "transaction_date" TIMESTAMP NOT NULL,
-  "category" VARCHAR(20),
-  "transaction_type" VARCHAR(20),
-  "value_date" TIMESTAMP,
+  "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
+  "status" consumer_banking.transaction_status NOT NULL,
+  "transaction_mutability" consumer_banking.transaction_mutability,
+  "transaction_date" TIMESTAMPTZ NOT NULL,
+  "category" consumer_banking.transaction_category,
+  "transaction_type" consumer_banking.transaction_type,
+  "value_date" TIMESTAMPTZ,
   "description" VARCHAR(500),
   "merchant_address" VARCHAR(70),
   "amount" NUMERIC(18,5) NOT NULL,
-  "currency" VARCHAR(3) NOT NULL,
+  "currency" enterprise.currency_code NOT NULL,
   "charge_amount" NUMERIC(18,5),
-  "charge_currency" VARCHAR(3)
+  "charge_currency" enterprise.currency_code
 );
 
 CREATE TABLE "consumer_banking"."transaction_statement_references" (
   "consumer_banking_transaction_statement_reference_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "statement_reference" VARCHAR(35) NOT NULL
+  "statement_reference" VARCHAR(35)
 );
 
 CREATE TABLE "consumer_banking"."transaction_currency_exchanges" (
   "consumer_banking_transaction_currency_exchange_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "source_currency" VARCHAR(3) NOT NULL,
-  "target_currency" VARCHAR(3),
-  "unit_currency" VARCHAR(3),
+  "source_currency" enterprise.currency_code NOT NULL,
+  "target_currency" enterprise.currency_code,
+  "unit_currency" enterprise.currency_code,
   "exchange_rate" NUMERIC(10,4) NOT NULL,
   "contract_identification" VARCHAR(39),
-  "quotation_date" TIMESTAMP,
+  "quotation_date" TIMESTAMPTZ,
   "instructed_amount" NUMERIC(18,5),
-  "instructed_amount_currency" VARCHAR(3)
+  "instructed_amount_currency" enterprise.currency_code
 );
 
 CREATE TABLE "consumer_banking"."transaction_bank_transaction_codes" (
   "consumer_banking_transaction_bank_transaction_code_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "code" VARCHAR(255) NOT NULL,
-  "sub_code" VARCHAR(255) NOT NULL
+  "code" consumer_banking.transaction_bank_code NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."proprietary_transaction_codes" (
@@ -2581,10 +3254,10 @@ CREATE TABLE "consumer_banking"."proprietary_transaction_codes" (
 CREATE TABLE "consumer_banking"."transaction_balances" (
   "consumer_banking_transaction_balance_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "credit_debit_indicator" VARCHAR(6) NOT NULL,
-  "type" VARCHAR(20) NOT NULL,
+  "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
+  "type" consumer_banking.balance_type NOT NULL,
   "amount" NUMERIC(18,5) NOT NULL,
-  "currency" VARCHAR(3) NOT NULL
+  "currency" enterprise.currency_code NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."transaction_merchant_details" (
@@ -2597,7 +3270,7 @@ CREATE TABLE "consumer_banking"."transaction_merchant_details" (
 CREATE TABLE "consumer_banking"."transaction_creditor_agents" (
   "consumer_banking_transaction_creditor_agent_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(35) NOT NULL,
   "name" VARCHAR(140),
   "lei" VARCHAR(20)
@@ -2606,7 +3279,7 @@ CREATE TABLE "consumer_banking"."transaction_creditor_agents" (
 CREATE TABLE "consumer_banking"."transaction_creditor_accounts" (
   "consumer_banking_transaction_creditor_account_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(256) NOT NULL,
   "name" VARCHAR(350),
   "secondary_identification" VARCHAR(34)
@@ -2615,7 +3288,7 @@ CREATE TABLE "consumer_banking"."transaction_creditor_accounts" (
 CREATE TABLE "consumer_banking"."transaction_debtor_agents" (
   "consumer_banking_transaction_debtor_agent_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(35) NOT NULL,
   "name" VARCHAR(140),
   "lei" VARCHAR(20)
@@ -2624,7 +3297,7 @@ CREATE TABLE "consumer_banking"."transaction_debtor_agents" (
 CREATE TABLE "consumer_banking"."transaction_debtor_accounts" (
   "consumer_banking_transaction_debtor_account_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "scheme_name" VARCHAR(50) NOT NULL,
+  "scheme_name" enterprise.identifier_scheme NOT NULL,
   "identification" VARCHAR(256) NOT NULL,
   "name" VARCHAR(350),
   "secondary_identification" VARCHAR(34)
@@ -2633,8 +3306,8 @@ CREATE TABLE "consumer_banking"."transaction_debtor_accounts" (
 CREATE TABLE "consumer_banking"."transaction_card_instruments" (
   "consumer_banking_transaction_card_instrument_id" SERIAL PRIMARY KEY,
   "consumer_banking_transaction_id" INTEGER NOT NULL,
-  "card_scheme_name" VARCHAR(50) NOT NULL,
-  "authorisation_type" VARCHAR(20),
+  "card_scheme_name" consumer_banking.card_scheme_name NOT NULL,
+  "authorisation_type" consumer_banking.authorization_type,
   "name" VARCHAR(70),
   "identification" VARCHAR(34)
 );
@@ -2645,7 +3318,7 @@ CREATE TABLE "consumer_banking"."transaction_ultimate_creditors" (
   "name" VARCHAR(140) NOT NULL,
   "identification" VARCHAR(256),
   "lei" VARCHAR(20),
-  "scheme_name" VARCHAR(50)
+  "scheme_name" VARCHAR(100)
 );
 
 CREATE TABLE "consumer_banking"."transaction_ultimate_debtors" (
@@ -2654,14 +3327,15 @@ CREATE TABLE "consumer_banking"."transaction_ultimate_debtors" (
   "name" VARCHAR(140) NOT NULL,
   "identification" VARCHAR(256),
   "lei" VARCHAR(20),
-  "scheme_name" VARCHAR(50)
+  "scheme_name" VARCHAR(100)
 );
 
 CREATE TABLE "consumer_banking"."account_statement_preferences" (
   "consumer_banking_account_id" INTEGER NOT NULL,
-  "frequency" VARCHAR(50) NOT NULL,
-  "format" VARCHAR(50) NOT NULL,
-  "communication_method" VARCHAR(50) NOT NULL DEFAULT 'EMAIL',
+  "consumer_banking_statement_id" INTEGER,
+  "frequency" enterprise.frequency NOT NULL,
+  "format" consumer_banking.statement_format NOT NULL,
+  "communication_method" consumer_banking.communication_method NOT NULL DEFAULT 'EMAIL',
   "next_statement_date" DATE,
   "last_statement_date" DATE,
   "enterprise_address_id" INTEGER
@@ -2673,7 +3347,7 @@ CREATE TABLE "consumer_banking"."customer_interactions" (
   "account_id" INT,
   "enterprise_associate_id" INT,
   "interaction_type" VARCHAR(50),
-  "interaction_date_time" TIMESTAMP,
+  "interaction_date_time" TIMESTAMPTZ,
   "channel" VARCHAR(50),
   "subject" VARCHAR(255),
   "description" TEXT,
@@ -2681,8 +3355,8 @@ CREATE TABLE "consumer_banking"."customer_interactions" (
   "status" VARCHAR(20),
   "priority" VARCHAR(20),
   "related_transaction_id" INT,
-  "created_at" TIMESTAMP DEFAULT (now()),
-  "updated_at" TIMESTAMP DEFAULT (now())
+  "created_at" TIMESTAMPTZ DEFAULT (now()),
+  "updated_at" TIMESTAMPTZ DEFAULT (now())
 );
 
 CREATE TABLE "mortgage_services"."application_borrowers" (
@@ -2783,9 +3457,9 @@ CREATE TABLE "mortgage_services"."applications" (
   "status" mortgage_services.application_status NOT NULL,
   "loan_purpose" mortgage_services.loan_purpose,
   "submission_channel" mortgage_services.submission_channel,
-  "creation_date_time" TIMESTAMP NOT NULL,
-  "submission_date_time" TIMESTAMP,
-  "last_updated_date_time" TIMESTAMP NOT NULL,
+  "creation_date_time" TIMESTAMPTZ NOT NULL,
+  "submission_date_time" TIMESTAMPTZ,
+  "last_updated_date_time" TIMESTAMPTZ NOT NULL,
   "requested_loan_amount" NUMERIC(18,2) NOT NULL,
   "requested_loan_term_months" INTEGER NOT NULL,
   "estimated_property_value" NUMERIC(18,2),
@@ -2837,13 +3511,13 @@ CREATE TABLE "mortgage_services"."loan_products" (
 CREATE TABLE "mortgage_services"."loan_rate_locks" (
   "mortgage_services_rate_lock_id" SERIAL PRIMARY KEY,
   "mortgage_services_loan_id" INTEGER NOT NULL,
-  "lock_date" TIMESTAMP NOT NULL,
-  "expiration_date" TIMESTAMP NOT NULL,
+  "lock_date" TIMESTAMPTZ NOT NULL,
+  "expiration_date" TIMESTAMPTZ NOT NULL,
   "locked_interest_rate" NUMERIC(6,3) NOT NULL,
   "lock_period_days" INTEGER NOT NULL,
   "status" mortgage_services.loan_rate_lock_status NOT NULL,
   "lock_fee" NUMERIC(10,2),
-  "extension_date" TIMESTAMP,
+  "extension_date" TIMESTAMPTZ,
   "extension_fee" NUMERIC(10,2)
 );
 
@@ -2853,9 +3527,9 @@ CREATE TABLE "mortgage_services"."documents" (
   "document_type" mortgage_services.document_type NOT NULL,
   "document_name" VARCHAR(255) NOT NULL,
   "document_path" VARCHAR(500) NOT NULL,
-  "upload_date" TIMESTAMP NOT NULL,
+  "upload_date" TIMESTAMPTZ NOT NULL,
   "status" mortgage_services.document_status NOT NULL,
-  "review_date" TIMESTAMP,
+  "review_date" TIMESTAMPTZ,
   "reviewer_id" INTEGER,
   "expiration_date" DATE,
   "notes" TEXT
@@ -2867,10 +3541,10 @@ CREATE TABLE "mortgage_services"."conditions" (
   "condition_type" mortgage_services.condition_type NOT NULL,
   "description" TEXT NOT NULL,
   "status" mortgage_services.condition_status NOT NULL,
-  "created_date" TIMESTAMP NOT NULL,
+  "created_date" TIMESTAMPTZ NOT NULL,
   "created_by_id" INTEGER NOT NULL,
   "due_date" DATE,
-  "cleared_date" TIMESTAMP,
+  "cleared_date" TIMESTAMPTZ,
   "cleared_by_id" INTEGER
 );
 
@@ -2879,7 +3553,7 @@ CREATE TABLE "mortgage_services"."appraisals" (
   "mortgage_services_application_id" INTEGER NOT NULL,
   "mortgage_services_property_id" INTEGER NOT NULL,
   "appraisal_type" mortgage_services.appraisal_type NOT NULL,
-  "ordered_date" TIMESTAMP NOT NULL,
+  "ordered_date" TIMESTAMPTZ NOT NULL,
   "appraiser_name" VARCHAR(100),
   "appraisal_company" VARCHAR(100),
   "inspection_date" DATE,
@@ -2894,7 +3568,7 @@ CREATE TABLE "mortgage_services"."credit_reports" (
   "mortgage_services_credit_report_id" SERIAL PRIMARY KEY,
   "mortgage_services_application_id" INTEGER NOT NULL,
   "mortgage_services_borrower_id" INTEGER NOT NULL,
-  "report_date" TIMESTAMP NOT NULL,
+  "report_date" TIMESTAMPTZ NOT NULL,
   "expiration_date" DATE NOT NULL,
   "credit_score" INTEGER,
   "report_type" mortgage_services.credit_report_type NOT NULL,
@@ -2907,9 +3581,9 @@ CREATE TABLE "mortgage_services"."closing_disclosures" (
   "mortgage_services_disclosure_id" SERIAL PRIMARY KEY,
   "mortgage_services_loan_id" INTEGER NOT NULL,
   "disclosure_type" mortgage_services.disclosure_type NOT NULL,
-  "created_date" TIMESTAMP NOT NULL,
-  "sent_date" TIMESTAMP,
-  "received_date" TIMESTAMP,
+  "created_date" TIMESTAMPTZ NOT NULL,
+  "sent_date" TIMESTAMPTZ,
+  "received_date" TIMESTAMPTZ,
   "delivery_method" mortgage_services.delivery_method NOT NULL,
   "document_path" VARCHAR(500),
   "loan_amount" NUMERIC(18,2) NOT NULL,
@@ -2922,14 +3596,14 @@ CREATE TABLE "mortgage_services"."closing_disclosures" (
 CREATE TABLE "mortgage_services"."closing_appointments" (
   "mortgage_services_appointment_id" SERIAL PRIMARY KEY,
   "mortgage_services_loan_id" INTEGER NOT NULL,
-  "scheduled_date" TIMESTAMP NOT NULL,
+  "scheduled_date" TIMESTAMPTZ NOT NULL,
   "location_address_id" INTEGER,
   "status" mortgage_services.appointment_status NOT NULL,
   "closing_type" mortgage_services.closing_type NOT NULL,
   "closing_agent" VARCHAR(100),
   "closing_company" VARCHAR(100),
   "closing_fee" NUMERIC(10,2),
-  "actual_closing_date" TIMESTAMP,
+  "actual_closing_date" TIMESTAMPTZ,
   "notes" TEXT
 );
 
@@ -2973,7 +3647,7 @@ CREATE TABLE "mortgage_services"."servicing_accounts" (
 CREATE TABLE "mortgage_services"."payments" (
   "mortgage_services_payment_id" SERIAL PRIMARY KEY,
   "mortgage_services_servicing_account_id" INTEGER NOT NULL,
-  "payment_date" TIMESTAMP NOT NULL,
+  "payment_date" TIMESTAMPTZ NOT NULL,
   "payment_type" mortgage_services.payment_type NOT NULL,
   "payment_method" VARCHAR(30) NOT NULL,
   "payment_amount" NUMERIC(18,2) NOT NULL,
@@ -3057,7 +3731,7 @@ CREATE TABLE "mortgage_services"."customer_communications" (
   "mortgage_services_communication_id" SERIAL PRIMARY KEY,
   "mortgage_services_servicing_account_id" INTEGER,
   "mortgage_services_application_id" INTEGER,
-  "communication_date" TIMESTAMP NOT NULL,
+  "communication_date" TIMESTAMPTZ NOT NULL,
   "communication_type" mortgage_services.communication_type NOT NULL,
   "direction" mortgage_services.communication_direction NOT NULL,
   "subject" VARCHAR(255),
@@ -3125,7 +3799,7 @@ CREATE TABLE "mortgage_services"."hmda_records" (
   "business_or_commercial_purpose" mortgage_services.hmda_business_or_commercial_purpose,
   "submission_status" mortgage_services.hmda_submission_status NOT NULL DEFAULT 'PENDING',
   "last_submission_date" DATE,
-  "last_modified_date" TIMESTAMP NOT NULL,
+  "last_modified_date" TIMESTAMPTZ NOT NULL,
   "edit_status" mortgage_services.hmda_record_edit_status NOT NULL DEFAULT 'NOT_STARTED'
 );
 
@@ -3159,8 +3833,8 @@ CREATE TABLE "mortgage_services"."hmda_applicant_demographics" (
   "income" NUMERIC(18,2),
   "debt_to_income_ratio" NUMERIC(6,3),
   "applicant_present" mortgage_services.hmda_applicant_present,
-  "created_date" TIMESTAMP NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  "modified_date" TIMESTAMP
+  "created_date" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "modified_date" TIMESTAMPTZ
 );
 
 CREATE TABLE "mortgage_services"."hmda_edits" (
@@ -3170,8 +3844,8 @@ CREATE TABLE "mortgage_services"."hmda_edits" (
   "edit_type" mortgage_services.hmda_edit_type NOT NULL,
   "edit_description" TEXT NOT NULL,
   "status" mortgage_services.hmda_edit_status NOT NULL,
-  "created_date" TIMESTAMP NOT NULL,
-  "resolved_date" TIMESTAMP,
+  "created_date" TIMESTAMPTZ NOT NULL,
+  "resolved_date" TIMESTAMPTZ,
   "resolved_by_id" INTEGER,
   "resolution_notes" TEXT
 );
@@ -3181,7 +3855,7 @@ CREATE TABLE "mortgage_services"."hmda_submissions" (
   "reporting_year" INTEGER NOT NULL,
   "reporting_period" mortgage_services.reporting_period NOT NULL,
   "institution_lei" VARCHAR(20) NOT NULL,
-  "submission_date" TIMESTAMP NOT NULL,
+  "submission_date" TIMESTAMPTZ NOT NULL,
   "submission_status" mortgage_services.submission_status NOT NULL,
   "file_name" VARCHAR(255),
   "file_size" INTEGER,
@@ -3191,7 +3865,7 @@ CREATE TABLE "mortgage_services"."hmda_submissions" (
   "submitted_by_id" INTEGER,
   "submission_notes" TEXT,
   "confirmation_number" VARCHAR(50),
-  "completion_date" TIMESTAMP
+  "completion_date" TIMESTAMPTZ
 );
 
 CREATE TABLE "consumer_lending"."loan_applications" (
@@ -3199,16 +3873,16 @@ CREATE TABLE "consumer_lending"."loan_applications" (
   "customer_id" INTEGER NOT NULL,
   "application_type" VARCHAR(50) NOT NULL,
   "status" VARCHAR(20) NOT NULL,
-  "creation_date_time" TIMESTAMP NOT NULL,
-  "submission_date_time" TIMESTAMP,
-  "last_updated_date_time" TIMESTAMP NOT NULL,
+  "creation_date_time" TIMESTAMPTZ NOT NULL,
+  "submission_date_time" TIMESTAMPTZ,
+  "last_updated_date_time" TIMESTAMPTZ NOT NULL,
   "requested_amount" NUMERIC(18,2) NOT NULL,
   "requested_term_months" INTEGER NOT NULL,
   "loan_purpose" VARCHAR(100) NOT NULL,
   "estimated_credit_score" INTEGER,
   "application_channel" VARCHAR(50),
   "referral_source" VARCHAR(100),
-  "decision_date_time" TIMESTAMP,
+  "decision_date_time" TIMESTAMPTZ,
   "decision_reason" VARCHAR(100),
   "officer_id" INTEGER,
   "branch_id" INTEGER
@@ -3347,7 +4021,7 @@ CREATE TABLE "consumer_lending"."credit_reports" (
   "consumer_lending_credit_report_id" SERIAL PRIMARY KEY,
   "consumer_lending_application_id" INTEGER NOT NULL,
   "consumer_lending_applicant_id" INTEGER NOT NULL,
-  "report_date" TIMESTAMP NOT NULL,
+  "report_date" TIMESTAMPTZ NOT NULL,
   "expiration_date" DATE NOT NULL,
   "credit_score" INTEGER,
   "report_type" consumer_lending.credit_report_type NOT NULL,
@@ -3408,7 +4082,7 @@ CREATE TABLE "consumer_lending"."application_decisions" (
   "consumer_lending_application_id" INTEGER NOT NULL,
   "decision_type" consumer_lending.decision_type NOT NULL,
   "decision_result" consumer_lending.decision_result NOT NULL,
-  "decision_date_time" TIMESTAMP NOT NULL,
+  "decision_date_time" TIMESTAMPTZ NOT NULL,
   "decision_by_id" INTEGER,
   "consumer_lending_model_id" INTEGER,
   "decision_score" NUMERIC(10,2),
@@ -3433,8 +4107,8 @@ CREATE TABLE "consumer_lending"."decision_reasons" (
 CREATE TABLE "consumer_lending"."adverse_action_notices" (
   "consumer_lending_notice_id" SERIAL PRIMARY KEY,
   "consumer_lending_application_id" INTEGER NOT NULL,
-  "generated_date" TIMESTAMP NOT NULL,
-  "sent_date" TIMESTAMP,
+  "generated_date" TIMESTAMPTZ NOT NULL,
+  "sent_date" TIMESTAMPTZ,
   "delivery_method" consumer_lending.delivery_method NOT NULL,
   "notice_path" VARCHAR(500),
   "status" consumer_lending.adverse_action_notice_status NOT NULL
@@ -3532,7 +4206,7 @@ CREATE TABLE "consumer_lending"."disbursements" (
 CREATE TABLE "consumer_lending"."loan_payments" (
   "consumer_lending_payment_id" SERIAL PRIMARY KEY,
   "consumer_lending_loan_account_id" INTEGER NOT NULL,
-  "payment_date" TIMESTAMP NOT NULL,
+  "payment_date" TIMESTAMPTZ NOT NULL,
   "payment_effective_date" DATE NOT NULL,
   "payment_type" consumer_lending.payment_type NOT NULL,
   "payment_method" consumer_lending.payment_method NOT NULL,
@@ -3602,9 +4276,9 @@ CREATE TABLE "consumer_lending"."loan_documents" (
   "document_type" consumer_lending.document_type NOT NULL,
   "document_name" VARCHAR(255) NOT NULL,
   "document_path" VARCHAR(500) NOT NULL,
-  "upload_date" TIMESTAMP NOT NULL,
+  "upload_date" TIMESTAMPTZ NOT NULL,
   "status" consumer_lending.document_status NOT NULL,
-  "review_date" TIMESTAMP,
+  "review_date" TIMESTAMPTZ,
   "reviewer_id" INTEGER,
   "expiration_date" DATE,
   "notes" TEXT
@@ -3614,7 +4288,7 @@ CREATE TABLE "consumer_lending"."loan_communications" (
   "consumer_lending_communication_id" SERIAL PRIMARY KEY,
   "consumer_lending_application_id" INTEGER,
   "loan_account_id" INTEGER,
-  "communication_date" TIMESTAMP NOT NULL,
+  "communication_date" TIMESTAMPTZ NOT NULL,
   "communication_type" consumer_lending.communication_type NOT NULL,
   "direction" consumer_lending.communication_direction NOT NULL,
   "subject" VARCHAR(255),
@@ -3667,7 +4341,7 @@ CREATE TABLE "consumer_lending"."collection_accounts" (
 CREATE TABLE "consumer_lending"."collection_actions" (
   "consumer_lending_action_id" SERIAL PRIMARY KEY,
   "consumer_lending_collection_id" INTEGER NOT NULL,
-  "action_date" TIMESTAMP NOT NULL,
+  "action_date" TIMESTAMPTZ NOT NULL,
   "action_type" consumer_lending.collection_action_type NOT NULL,
   "action_result" consumer_lending.collection_action_result,
   "action_by_id" INTEGER NOT NULL,
@@ -3717,8 +4391,8 @@ CREATE TABLE "consumer_lending"."reg_z_disclosures" (
   "consumer_lending_application_id" INTEGER NOT NULL,
   "loan_account_id" INTEGER,
   "disclosure_type" consumer_lending.disclosure_type NOT NULL,
-  "disclosure_date" TIMESTAMP NOT NULL,
-  "sent_date" TIMESTAMP,
+  "disclosure_date" TIMESTAMPTZ NOT NULL,
+  "sent_date" TIMESTAMPTZ,
   "delivery_method" consumer_lending.disclosure_delivery_method NOT NULL,
   "annual_percentage_rate" NUMERIC(6,3) NOT NULL,
   "finance_charge" NUMERIC(18,2) NOT NULL,
@@ -3730,7 +4404,7 @@ CREATE TABLE "consumer_lending"."reg_z_disclosures" (
   "prepayment_penalty" TEXT,
   "document_path" VARCHAR(500),
   "received_by_customer" BOOLEAN,
-  "receipt_date" TIMESTAMP,
+  "receipt_date" TIMESTAMPTZ,
   "user_id" INTEGER,
   "version" INTEGER NOT NULL
 );
@@ -3746,7 +4420,7 @@ CREATE TABLE "consumer_lending"."adverse_action_details" (
   "credit_score_range_max" INTEGER,
   "credit_score_factors" TEXT,
   "credit_bureau_name" consumer_lending.credit_bureau,
-  "generated_date" TIMESTAMP NOT NULL,
+  "generated_date" TIMESTAMPTZ NOT NULL,
   "user_id" INTEGER,
   "sequence" INTEGER NOT NULL
 );
@@ -3797,8 +4471,8 @@ CREATE TABLE "consumer_lending"."reg_b_notices" (
   "consumer_lending_notice_id" SERIAL PRIMARY KEY,
   "consumer_lending_application_id" INTEGER NOT NULL,
   "notice_type" consumer_lending.reg_b_notice_type NOT NULL,
-  "generated_date" TIMESTAMP NOT NULL,
-  "sent_date" TIMESTAMP NOT NULL,
+  "generated_date" TIMESTAMPTZ NOT NULL,
+  "sent_date" TIMESTAMPTZ NOT NULL,
   "delivery_method" consumer_lending.delivery_method NOT NULL,
   "incomplete_items" TEXT,
   "deadline_date" DATE,
@@ -3813,8 +4487,8 @@ CREATE TABLE "consumer_lending"."appraisal_disclosures" (
   "consumer_lending_application_id" INTEGER NOT NULL,
   "property_address_id" INTEGER NOT NULL,
   "disclosure_type" VARCHAR(50) NOT NULL,
-  "disclosure_date" TIMESTAMP NOT NULL,
-  "sent_date" TIMESTAMP NOT NULL,
+  "disclosure_date" TIMESTAMPTZ NOT NULL,
+  "sent_date" TIMESTAMPTZ NOT NULL,
   "delivery_method" VARCHAR(30) NOT NULL,
   "appraisal_type" VARCHAR(50),
   "appraisal_ordered_date" DATE,
@@ -3831,7 +4505,7 @@ CREATE TABLE "consumer_lending"."military_lending_checks" (
   "consumer_lending_check_id" SERIAL PRIMARY KEY,
   "consumer_lending_application_id" INTEGER NOT NULL,
   "consumer_lending_applicant_id" INTEGER NOT NULL,
-  "check_date" TIMESTAMP NOT NULL,
+  "check_date" TIMESTAMPTZ NOT NULL,
   "covered_borrower" BOOLEAN NOT NULL,
   "verification_method" VARCHAR(50) NOT NULL,
   "military_status" VARCHAR(30),
@@ -3865,7 +4539,7 @@ CREATE TABLE "consumer_lending"."compliance_exceptions" (
   "consumer_lending_exception_id" SERIAL PRIMARY KEY,
   "consumer_lending_application_id" INTEGER,
   "loan_account_id" INTEGER,
-  "exception_date" TIMESTAMP NOT NULL,
+  "exception_date" TIMESTAMPTZ NOT NULL,
   "exception_type" VARCHAR(50) NOT NULL,
   "regulation" VARCHAR(50) NOT NULL,
   "severity" VARCHAR(20) NOT NULL,
@@ -3884,8 +4558,8 @@ CREATE TABLE "security"."identity_roles" (
   "security_identity_role_id" UUID PRIMARY KEY NOT NULL,
   "security_identity_id" UUID NOT NULL,
   "security_role_id" UUID NOT NULL,
-  "start_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-  "end_date" TIMESTAMP,
+  "start_date" TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP),
+  "end_date" TIMESTAMPTZ,
   "assigned_by_id" INTEGER,
   "active" BOOLEAN NOT NULL DEFAULT true
 );
@@ -3898,7 +4572,7 @@ CREATE TABLE "security"."roles" (
   "status" security.role_status NOT NULL DEFAULT 'ACTIVE',
   "managing_application_id" UUID,
   "owner_id" INTEGER,
-  "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP),
   "created_by_id" INTEGER
 );
 
@@ -3906,11 +4580,11 @@ CREATE TABLE "security"."role_entitlements" (
   "security_role_entitlement_id" UUID PRIMARY KEY NOT NULL,
   "security_role_id" UUID NOT NULL,
   "security_entitlement_id" UUID NOT NULL,
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMPTZ NOT NULL,
   "created_by_id" INTEGER,
   "updated_by_id" INTEGER,
-  "started_at" TIMESTAMP NOT NULL,
-  "ended_at" TIMESTAMP,
+  "started_at" TIMESTAMPTZ NOT NULL,
+  "ended_at" TIMESTAMPTZ,
   "active" BOOL
 );
 
@@ -3921,7 +4595,7 @@ CREATE TABLE "security"."enhanced_entitlements" (
   "description" TEXT,
   "status" security.entitlement_status NOT NULL DEFAULT 'ACTIVE',
   "managing_application_id" UUID,
-  "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP),
   "created_by_id" INTEGER
 );
 
@@ -3932,7 +4606,7 @@ CREATE TABLE "security"."entitlement_resources" (
   "permission_type" security.permission_type NOT NULL,
   "context_conditions" VARCHAR(1000),
   "resource_details" VARCHAR(1000),
-  "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP),
   "created_by_id" INTEGER
 );
 
@@ -3945,7 +4619,7 @@ CREATE TABLE "security"."resource_definitions" (
   "host_id" UUID,
   "network_device_id" INET,
   "description" TEXT,
-  "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP),
   "created_by_id" INTEGER
 );
 
@@ -4061,8 +4735,8 @@ CREATE TABLE "security"."identity_profiles" (
   "password_expiry_days" INTEGER,
   "default_session_timeout_minutes" INTEGER,
   "risk_level" security.risk_level NOT NULL DEFAULT 'MEDIUM',
-  "created_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-  "updated_at" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
+  "created_at" TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "security"."file_accesses" (
@@ -4242,7 +4916,7 @@ CREATE TABLE "app_mgmt"."architectures" (
   "app_mgmt_architecture_id" UUID PRIMARY KEY,
   "architecture_name" VARCHAR(255),
   "description" TEXT,
-  "approval_date" TIMESTAMP,
+  "approval_date" TIMESTAMPTZ,
   "approved_by_id" INTEGER,
   "documentation_url" VARCHAR(2048),
   "status" VARCHAR(50),
@@ -4274,8 +4948,8 @@ CREATE TABLE "app_mgmt"."applications" (
   "created_by_team_id" UUID,
   "application_owner_id" INTEGER,
   "lifecycle_status" app_mgmt.application_lifecycle_status,
-  "date_deployed" TIMESTAMP,
-  "date_retired" TIMESTAMP,
+  "date_deployed" TIMESTAMPTZ,
+  "date_retired" TIMESTAMPTZ,
   "architecture_id" UUID,
   "sdlc_process_id" UUID,
   "source_code_repository" VARCHAR(2048),
@@ -4393,7 +5067,7 @@ CREATE TABLE "credit_cards"."fraud_cases" (
   "credit_cards_case_id" SERIAL PRIMARY KEY,
   "credit_cards_card_account_id" INTEGER NOT NULL,
   "credit_cards_card_id" INTEGER,
-  "report_date" TIMESTAMP NOT NULL,
+  "report_date" TIMESTAMPTZ NOT NULL,
   "case_type" VARCHAR(30) NOT NULL,
   "status" VARCHAR(20) NOT NULL,
   "reported_by" VARCHAR(20) NOT NULL,
@@ -4419,14 +5093,14 @@ CREATE TABLE "credit_cards"."security_blocks" (
   "credit_cards_card_id" INTEGER NOT NULL,
   "block_type" VARCHAR(30) NOT NULL,
   "reason" VARCHAR(100) NOT NULL,
-  "start_date" TIMESTAMP NOT NULL,
-  "end_date" TIMESTAMP,
+  "start_date" TIMESTAMPTZ NOT NULL,
+  "end_date" TIMESTAMPTZ,
   "geographic_restriction" VARCHAR(100),
   "transaction_type_restricted" VARCHAR(30),
   "requested_by" VARCHAR(20) NOT NULL,
   "status" VARCHAR(20) NOT NULL,
   "removed_by_id" INTEGER,
-  "removed_date" TIMESTAMP
+  "removed_date" TIMESTAMPTZ
 );
 
 CREATE TABLE "credit_cards"."credit_card_applications_hmda" (
@@ -4452,7 +5126,7 @@ CREATE TABLE "credit_cards"."reg_z_credit_card_disclosures" (
   "credit_cards_application_id" INTEGER,
   "credit_cards_card_account_id" INTEGER,
   "disclosure_type" VARCHAR(50) NOT NULL,
-  "disclosure_date" TIMESTAMP NOT NULL,
+  "disclosure_date" TIMESTAMPTZ NOT NULL,
   "delivery_method" VARCHAR(30) NOT NULL,
   "annual_percentage_rate" NUMERIC(6,3),
   "variable_rate_indicator" BOOLEAN,
@@ -4486,7 +5160,7 @@ CREATE TABLE "credit_cards"."ability_to_pay_assessments" (
 CREATE TABLE "credit_cards"."consumer_complaints" (
   "credit_cards_complaint_id" SERIAL PRIMARY KEY,
   "credit_cards_card_account_id" INTEGER NOT NULL,
-  "receipt_date" TIMESTAMP NOT NULL,
+  "receipt_date" TIMESTAMPTZ NOT NULL,
   "source" VARCHAR(30) NOT NULL,
   "complaint_type" VARCHAR(50) NOT NULL,
   "issue" VARCHAR(100) NOT NULL,
@@ -4529,13 +5203,13 @@ CREATE TABLE "credit_cards"."applications" (
   "credit_cards_application_id" INTEGER PRIMARY KEY,
   "customer_id" INTEGER NOT NULL,
   "credit_cards_product_id" INTEGER NOT NULL,
-  "application_date" TIMESTAMP NOT NULL,
+  "application_date" TIMESTAMPTZ NOT NULL,
   "application_channel" VARCHAR(30) NOT NULL,
   "status" VARCHAR(20) NOT NULL,
   "requested_credit_limit" NUMERIC(10,2),
   "approved_credit_limit" NUMERIC(10,2),
   "approved_interest_rate" NUMERIC(6,3),
-  "decision_date" TIMESTAMP,
+  "decision_date" TIMESTAMPTZ,
   "decision_method" VARCHAR(20),
   "decision_reason" VARCHAR(100),
   "offer_code" VARCHAR(30),
@@ -4622,7 +5296,7 @@ CREATE TABLE "credit_cards"."transactions" (
   "credit_cards_transaction_id" SERIAL PRIMARY KEY,
   "credit_cards_card_account_id" INTEGER NOT NULL,
   "credit_cards_card_id" INTEGER NOT NULL,
-  "transaction_date" TIMESTAMP NOT NULL,
+  "transaction_date" TIMESTAMPTZ NOT NULL,
   "post_date" DATE NOT NULL,
   "transaction_type" VARCHAR(20) NOT NULL,
   "amount" NUMERIC(10,2) NOT NULL,
@@ -4630,7 +5304,7 @@ CREATE TABLE "credit_cards"."transactions" (
   "category" VARCHAR(50),
   "mcc_code" VARCHAR(20),
   "is_international" BOOLEAN NOT NULL DEFAULT false,
-  "original_currency" VARCHAR(3),
+  "original_currency" enterprise.currency_code,
   "original_amount" NUMERIC(10,2),
   "exchange_rate" NUMERIC(10,6),
   "is_recurring" BOOLEAN,
@@ -4708,7 +5382,7 @@ CREATE TABLE "credit_cards"."rewards" (
 CREATE TABLE "credit_cards"."reward_redemptions" (
   "credit_cards_redemption_id" SERIAL PRIMARY KEY,
   "credit_cards_card_account_id" INTEGER NOT NULL,
-  "redemption_date" TIMESTAMP NOT NULL,
+  "redemption_date" TIMESTAMPTZ NOT NULL,
   "redemption_type" VARCHAR(30) NOT NULL,
   "points_redeemed" INTEGER NOT NULL,
   "cash_value" NUMERIC(10,2) NOT NULL,
@@ -4812,7 +5486,7 @@ CREATE TABLE "credit_cards"."disputed_transactions" (
   "credit_cards_dispute_id" SERIAL PRIMARY KEY,
   "credit_cards_transaction_id" INTEGER NOT NULL,
   "credit_cards_card_account_id" INTEGER NOT NULL,
-  "dispute_date" TIMESTAMP NOT NULL,
+  "dispute_date" TIMESTAMPTZ NOT NULL,
   "dispute_reason" VARCHAR(50) NOT NULL,
   "disputed_amount" NUMERIC(10,2) NOT NULL,
   "description" TEXT,
@@ -4859,7 +5533,7 @@ CREATE TABLE "small_business_banking"."accounts" (
   "status_update_date_time" TIMESTAMPTZ NOT NULL,
   "balance" DECIMAL(18,2) NOT NULL DEFAULT 0,
   "available_balance" DECIMAL(18,2) NOT NULL DEFAULT 0,
-  "currency" CHAR(3) NOT NULL DEFAULT 'USD',
+  "currency" enterprise.currency_code NOT NULL DEFAULT 'USD',
   "overdraft_limit" DECIMAL(18,2) NOT NULL DEFAULT 0,
   "interest_rate" DECIMAL(6,4),
   "statement_frequency" VARCHAR(20) NOT NULL DEFAULT 'monthly',
@@ -5027,7 +5701,7 @@ CREATE TABLE "small_business_banking"."transactions" (
   "transaction_type" VARCHAR(50) NOT NULL,
   "amount" DECIMAL(18,2) NOT NULL,
   "running_balance" DECIMAL(18,2),
-  "currency" CHAR(3) NOT NULL DEFAULT 'USD',
+  "currency" enterprise.currency_code NOT NULL DEFAULT 'USD',
   "description" VARCHAR(255),
   "reference_number" VARCHAR(100),
   "status" VARCHAR(20) NOT NULL DEFAULT 'completed',
@@ -5088,12 +5762,12 @@ CREATE TABLE "small_business_banking"."regulatory_reports" (
 CREATE TABLE "small_business_banking"."report_submissions" (
   "small_business_banking_submission_id" SERIAL PRIMARY KEY,
   "small_business_banking_report_id" INTEGER NOT NULL,
-  "submission_date" TIMESTAMP NOT NULL,
+  "submission_date" TIMESTAMPTZ NOT NULL,
   "submission_method" VARCHAR(50) NOT NULL,
   "confirmation_number" VARCHAR(100),
   "submitted_by_id" INTEGER NOT NULL,
   "submission_file_path" VARCHAR(500),
-  "response_date" TIMESTAMP,
+  "response_date" TIMESTAMPTZ,
   "response_status" VARCHAR(20),
   "response_details" TEXT
 );
@@ -5204,7 +5878,7 @@ CREATE TABLE "small_business_banking"."credit_decisions" (
   "small_business_banking_business_id" INTEGER NOT NULL,
   "product_type" VARCHAR(50) NOT NULL,
   "application_id" VARCHAR(50) NOT NULL,
-  "decision_date" TIMESTAMP NOT NULL,
+  "decision_date" TIMESTAMPTZ NOT NULL,
   "decision_type" VARCHAR(20) NOT NULL,
   "decision_outcome" VARCHAR(20) NOT NULL,
   "decision_factors" TEXT,
@@ -5335,6 +6009,10 @@ CREATE TABLE "small_business_banking"."suspicious_activity_reports" (
 );
 
 CREATE INDEX ON "consumer_banking"."account_access_consents_permissions" ("consumer_banking_consent_id", "enterprise_permission_id");
+
+CREATE UNIQUE INDEX ON "consumer_banking"."products" ("product_code");
+
+CREATE UNIQUE INDEX ON "consumer_banking"."transaction_bank_transaction_codes" ("consumer_banking_transaction_id", "code");
 
 CREATE UNIQUE INDEX ON "mortgage_services"."hmda_submissions" ("reporting_year", "reporting_period", "institution_lei");
 
@@ -5648,7 +6326,7 @@ COMMENT ON COLUMN "consumer_banking"."beneficiaries"."consumer_banking_beneficia
 
 COMMENT ON COLUMN "consumer_banking"."beneficiaries"."consumer_banking_account_id" IS 'References the account this balance belongs to';
 
-COMMENT ON COLUMN "consumer_banking"."beneficiaries"."beneficiary_type" IS 'Type of beneficiary (e.g., individual, organization)';
+COMMENT ON COLUMN "consumer_banking"."beneficiaries"."beneficiary_type" IS 'Type of beneficiary (individual, organization, etc.)';
 
 COMMENT ON COLUMN "consumer_banking"."beneficiaries"."reference" IS 'Optional reference identifier for the beneficiary';
 
@@ -5686,7 +6364,7 @@ COMMENT ON TABLE "consumer_banking"."direct_debits" IS 'Stores information about
 
 COMMENT ON COLUMN "consumer_banking"."direct_debits"."consumer_banking_direct_debit_id" IS 'Unique identifier for each direct debit mandate';
 
-COMMENT ON COLUMN "consumer_banking"."direct_debits"."consumer_banking_account_id" IS 'References the account this balance belongs to';
+COMMENT ON COLUMN "consumer_banking"."direct_debits"."consumer_banking_account_id" IS 'References the account this direct debit belongs to';
 
 COMMENT ON COLUMN "consumer_banking"."direct_debits"."direct_debit_status_code" IS 'Status code of the direct debit (e.g., active, canceled)';
 
@@ -5728,7 +6406,7 @@ COMMENT ON TABLE "consumer_banking"."offers" IS 'Stores promotional offers made 
 
 COMMENT ON COLUMN "consumer_banking"."offers"."consumer_banking_offer_id" IS 'Unique identifier for each offer';
 
-COMMENT ON COLUMN "consumer_banking"."offers"."consumer_banking_account_id" IS 'References the account this balance belongs to';
+COMMENT ON COLUMN "consumer_banking"."offers"."consumer_banking_account_id" IS 'References the account this offer belongs to';
 
 COMMENT ON COLUMN "consumer_banking"."offers"."offer_type" IS 'Type of offer (e.g., loan, investment, balance transfer)';
 
@@ -5754,17 +6432,43 @@ COMMENT ON COLUMN "consumer_banking"."offers"."fee" IS 'Any fee associated with 
 
 COMMENT ON COLUMN "consumer_banking"."offers"."fee_currency" IS 'Currency of the fee';
 
-COMMENT ON TABLE "consumer_banking"."products" IS 'Stores information about banking products associated with accounts';
+COMMENT ON TABLE "consumer_banking"."products" IS 'Defines the financial products offered to customers';
 
 COMMENT ON COLUMN "consumer_banking"."products"."consumer_banking_product_id" IS 'Unique identifier for each product';
 
-COMMENT ON COLUMN "consumer_banking"."products"."product_name" IS 'Name of the banking product';
+COMMENT ON COLUMN "consumer_banking"."products"."product_code" IS 'Internal code for the product';
 
-COMMENT ON COLUMN "consumer_banking"."products"."secondary_product_id" IS 'Alternative identifier for the product';
+COMMENT ON COLUMN "consumer_banking"."products"."product_name" IS 'Display name for the product';
 
-COMMENT ON COLUMN "consumer_banking"."products"."product_type" IS 'Type of product (e.g., savings, checking, loan)';
+COMMENT ON COLUMN "consumer_banking"."products"."product_type" IS 'Type of product (checking, savings, money market, etc.)';
 
-COMMENT ON COLUMN "consumer_banking"."products"."marketing_state_id" IS 'Identifier for marketing campaign or state';
+COMMENT ON COLUMN "consumer_banking"."products"."description" IS 'Detailed product description';
+
+COMMENT ON COLUMN "consumer_banking"."products"."min_opening_deposit" IS 'Minimum amount required to open an account of this product type';
+
+COMMENT ON COLUMN "consumer_banking"."products"."monthly_fee" IS 'Standard monthly maintenance fee';
+
+COMMENT ON COLUMN "consumer_banking"."products"."fee_schedule" IS 'Type of fee structure applicable to this product';
+
+COMMENT ON COLUMN "consumer_banking"."products"."transaction_limit" IS 'Number of free transactions per statement period';
+
+COMMENT ON COLUMN "consumer_banking"."products"."transaction_fee" IS 'Fee charged per transaction beyond the limit';
+
+COMMENT ON COLUMN "consumer_banking"."products"."min_balance" IS 'Minimum balance to avoid fees';
+
+COMMENT ON COLUMN "consumer_banking"."products"."is_interest_bearing" IS 'Indicates if the product earns interest';
+
+COMMENT ON COLUMN "consumer_banking"."products"."base_interest_rate" IS 'Standard interest rate for the product (if applicable)';
+
+COMMENT ON COLUMN "consumer_banking"."products"."interest_calculation_method" IS 'Method used to calculate interest on the account';
+
+COMMENT ON COLUMN "consumer_banking"."products"."term_length" IS 'Term in months (for term products)';
+
+COMMENT ON COLUMN "consumer_banking"."products"."status" IS 'Current availability status of the product';
+
+COMMENT ON COLUMN "consumer_banking"."products"."launch_date" IS 'Date when product was first offered';
+
+COMMENT ON COLUMN "consumer_banking"."products"."discontinue_date" IS 'Date when product was discontinued if applicable';
 
 COMMENT ON TABLE "consumer_banking"."other_product_types" IS 'Stores information about non-standard product types not covered in main categories';
 
@@ -5776,7 +6480,7 @@ COMMENT ON COLUMN "consumer_banking"."other_product_types"."name" IS 'Name of th
 
 COMMENT ON COLUMN "consumer_banking"."other_product_types"."description" IS 'Detailed description of the custom product type';
 
-COMMENT ON TABLE "consumer_banking"."scheduled_payments" IS 'Stores information about one-time future-dated payments';
+COMMENT ON TABLE "consumer_banking"."scheduled_payments" IS 'Stores information about one-time and recurring scheduled payments';
 
 COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."consumer_banking_scheduled_payment_id" IS 'Unique identifier for each scheduled payment';
 
@@ -5784,7 +6488,13 @@ COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."consumer_banking_acco
 
 COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."scheduled_payment_date_time" IS 'When the payment is scheduled to occur';
 
-COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."scheduled_type" IS 'Type of scheduled payment (e.g., single, recurring)';
+COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."scheduled_type" IS 'Type of scheduled payment';
+
+COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."payment_method" IS 'Method of payment execution';
+
+COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."payment_status" IS 'Current status of the scheduled payment';
+
+COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."frequency" IS 'Frequency of recurring payments if applicable';
 
 COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."reference" IS 'Reference identifier for the payment';
 
@@ -5793,6 +6503,12 @@ COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."debtor_reference" IS 
 COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."instructed_amount" IS 'Amount to be paid';
 
 COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."instructed_amount_currency" IS 'Currency of the payment amount';
+
+COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."end_date" IS 'End date for recurring payments';
+
+COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."execution_count" IS 'Number of times recurring payment has executed';
+
+COMMENT ON COLUMN "consumer_banking"."scheduled_payments"."max_executions" IS 'Maximum number of executions for recurring payment';
 
 COMMENT ON TABLE "consumer_banking"."scheduled_payment_creditor_agents" IS 'Stores information about financial institutions receiving scheduled payments';
 
@@ -5826,7 +6542,7 @@ COMMENT ON TABLE "consumer_banking"."standing_orders" IS 'Stores information abo
 
 COMMENT ON COLUMN "consumer_banking"."standing_orders"."consumer_banking_standing_order_id" IS 'Unique identifier for each standing order';
 
-COMMENT ON COLUMN "consumer_banking"."standing_orders"."consumer_banking_account_id" IS 'References the account this balance belongs to';
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."consumer_banking_account_id" IS 'References the account this standing order belongs to';
 
 COMMENT ON COLUMN "consumer_banking"."standing_orders"."next_payment_date_time" IS 'When the next payment is scheduled';
 
@@ -5850,7 +6566,31 @@ COMMENT ON COLUMN "consumer_banking"."standing_orders"."final_payment_amount" IS
 
 COMMENT ON COLUMN "consumer_banking"."standing_orders"."final_payment_currency" IS 'Currency of the final payment';
 
-COMMENT ON COLUMN "consumer_banking"."standing_orders"."supplementary_data" IS 'Additional information about the standing order';
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."frequency" IS 'Frequency of standing order payments';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."start_date" IS 'Date when the first payment should be made';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."end_date" IS 'Date when the standing order expires (if specified)';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."day_of_month" IS 'Day of month for payments (for monthly/quarterly frequencies)';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."day_of_week" IS 'Day of week for payments (for weekly frequencies)';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."payment_type" IS 'Type of payment (fixed, variable, etc.)';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."category" IS 'Category or purpose of the standing order';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."reference" IS 'Payment reference shown to the recipient';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."description" IS 'Description of the standing order purpose';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."created_date" IS 'When the standing order was created';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."created_by" IS 'Who or what created the standing order';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."modified_date" IS 'When the standing order was last modified';
+
+COMMENT ON COLUMN "consumer_banking"."standing_orders"."supplementary_data" IS 'Additional information about the standing order in JSON format';
 
 COMMENT ON TABLE "consumer_banking"."standing_order_creditor_agents" IS 'Stores information about financial institutions receiving standing order payments';
 
@@ -5952,7 +6692,7 @@ COMMENT ON COLUMN "consumer_banking"."statement_interests"."type" IS 'Type of in
 
 COMMENT ON COLUMN "consumer_banking"."statement_interests"."rate" IS 'Interest rate applied';
 
-COMMENT ON COLUMN "consumer_banking"."statement_interests"."rate_type" IS 'Type of rate (e.g., fixed, variable, introductory)';
+COMMENT ON COLUMN "consumer_banking"."statement_interests"."rate_type" IS 'Type of rate (e.g., fixed, variable, promotional)';
 
 COMMENT ON COLUMN "consumer_banking"."statement_interests"."frequency" IS 'How often interest is calculated (e.g., daily, monthly)';
 
@@ -5986,7 +6726,7 @@ COMMENT ON COLUMN "consumer_banking"."statement_date_times"."date_time" IS 'Date
 
 COMMENT ON COLUMN "consumer_banking"."statement_date_times"."type" IS 'Type of date (e.g., payment due, minimum payment, cycle end)';
 
-COMMENT ON TABLE "consumer_banking"."statement_rates" IS 'Stores various rate information associated with a statement';
+COMMENT ON TABLE "consumer_banking"."statement_rates" IS 'Stores various rate information associated with statements, including interest rates, promotional rates, and exchange rates';
 
 COMMENT ON COLUMN "consumer_banking"."statement_rates"."consumer_banking_statement_rate_id" IS 'Auto-incrementing identifier for each rate record';
 
@@ -5994,23 +6734,59 @@ COMMENT ON COLUMN "consumer_banking"."statement_rates"."consumer_banking_stateme
 
 COMMENT ON COLUMN "consumer_banking"."statement_rates"."rate" IS 'Rate value (e.g., interest rate, exchange rate)';
 
-COMMENT ON COLUMN "consumer_banking"."statement_rates"."type" IS 'Type of rate (e.g., APR, exchange, promotional)';
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."type" IS 'Type of rate (e.g., APR, promotional rate)';
 
-COMMENT ON TABLE "consumer_banking"."statement_values" IS 'Stores miscellaneous values associated with a statement that aren''t monetary amounts';
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."description" IS 'Additional description of the rate''s applicability';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."effective_date" IS 'Date when this rate became effective';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."expiration_date" IS 'Date when this rate expires (if applicable)';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."is_variable" IS 'Whether this is a variable rate';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."index_rate" IS 'Base index rate for variable rates';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."margin" IS 'Margin added to index for variable rates';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."balance_subject_to_rate" IS 'Balance amount subject to this rate';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."created_at" IS 'When this record was created';
+
+COMMENT ON COLUMN "consumer_banking"."statement_rates"."updated_at" IS 'When this record was last updated';
+
+COMMENT ON TABLE "consumer_banking"."statement_values" IS 'Stores miscellaneous values associated with a statement that aren''t monetary amounts, such as loyalty points, credit scores, or tier levels';
 
 COMMENT ON COLUMN "consumer_banking"."statement_values"."consumer_banking_statement_value_id" IS 'Auto-incrementing identifier for each value record';
 
 COMMENT ON COLUMN "consumer_banking"."statement_values"."consumer_banking_statement_id" IS 'References the statement this value belongs to';
 
-COMMENT ON COLUMN "consumer_banking"."statement_values"."value" IS 'Value content (could be string or numeric depending on type)';
+COMMENT ON COLUMN "consumer_banking"."statement_values"."value" IS 'Value content (e.g., loyalty points, tier level, credit score)';
 
-COMMENT ON COLUMN "consumer_banking"."statement_values"."type" IS 'Type of value (e.g., loyalty points, tier level, credit score)';
+COMMENT ON COLUMN "consumer_banking"."statement_values"."type" IS 'Type of value stored';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."description" IS 'Additional description or context for the value';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."previous_value" IS 'Previous statement''s value of the same type, for comparison';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."change_percentage" IS 'Percentage change from previous statement';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."is_estimated" IS 'Whether this value is estimated rather than confirmed';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."reference_period_start" IS 'Start of the period this value refers to, if different from statement period';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."reference_period_end" IS 'End of the period this value refers to, if different from statement period';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."created_at" IS 'When this record was created';
+
+COMMENT ON COLUMN "consumer_banking"."statement_values"."updated_at" IS 'When this record was last updated';
 
 COMMENT ON TABLE "consumer_banking"."transactions" IS 'Stores detailed information about account transactions';
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."consumer_banking_transaction_id" IS 'Unique identifier for each transaction';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."consumer_banking_account_id" IS 'References the account this balance belongs to';
+COMMENT ON COLUMN "consumer_banking"."transactions"."consumer_banking_account_id" IS 'References the account this transaction belongs to';
+
+COMMENT ON COLUMN "consumer_banking"."transactions"."consumer_banking_balance_id" IS 'No meaningful relationship, just guarantees that balances must exist before a transaction can be created.';
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_reference" IS 'Reference code for the transaction';
 
@@ -6022,9 +6798,9 @@ COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_mutability" IS 
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_date" IS 'When the transaction was recorded in the books';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."category" IS 'Code classifying the overall purpose of the transaction';
+COMMENT ON COLUMN "consumer_banking"."transactions"."category" IS 'High-level categorization of the transaction';
 
-COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_type" IS 'Code classifying the specific purpose of the payment';
+COMMENT ON COLUMN "consumer_banking"."transactions"."transaction_type" IS 'Specific type of transaction with more detail';
 
 COMMENT ON COLUMN "consumer_banking"."transactions"."value_date" IS 'When the transaction affects the account balance';
 
@@ -6046,7 +6822,7 @@ COMMENT ON COLUMN "consumer_banking"."transaction_statement_references"."consume
 
 COMMENT ON COLUMN "consumer_banking"."transaction_statement_references"."consumer_banking_transaction_id" IS 'References the transaction this reference belongs to';
 
-COMMENT ON COLUMN "consumer_banking"."transaction_statement_references"."statement_reference" IS 'Statement identifier that this transaction appears on';
+COMMENT ON COLUMN "consumer_banking"."transaction_statement_references"."statement_reference" IS 'Statement reference n';
 
 COMMENT ON TABLE "consumer_banking"."transaction_currency_exchanges" IS 'Stores currency exchange details for cross-currency transactions';
 
@@ -6070,15 +6846,13 @@ COMMENT ON COLUMN "consumer_banking"."transaction_currency_exchanges"."instructe
 
 COMMENT ON COLUMN "consumer_banking"."transaction_currency_exchanges"."instructed_amount_currency" IS 'Currency of the original instructed amount';
 
-COMMENT ON TABLE "consumer_banking"."transaction_bank_transaction_codes" IS 'Stores standardized bank transaction codes that categorize transactions';
+COMMENT ON TABLE "consumer_banking"."transaction_bank_transaction_codes" IS 'Stores standardized bank transaction codes that categorize transactions with detailed hierarchical classification';
 
 COMMENT ON COLUMN "consumer_banking"."transaction_bank_transaction_codes"."consumer_banking_transaction_bank_transaction_code_id" IS 'Auto-incrementing identifier for each transaction code record';
 
 COMMENT ON COLUMN "consumer_banking"."transaction_bank_transaction_codes"."consumer_banking_transaction_id" IS 'References the transaction this code belongs to';
 
-COMMENT ON COLUMN "consumer_banking"."transaction_bank_transaction_codes"."code" IS 'Bank-specific transaction classification code';
-
-COMMENT ON COLUMN "consumer_banking"."transaction_bank_transaction_codes"."sub_code" IS 'Sub-classification code for more detailed categorization';
+COMMENT ON COLUMN "consumer_banking"."transaction_bank_transaction_codes"."code" IS 'Detailed bank-specific transaction classification code';
 
 COMMENT ON TABLE "consumer_banking"."proprietary_transaction_codes" IS 'Stores non-standard proprietary codes for transaction categorization';
 
@@ -6213,6 +6987,8 @@ COMMENT ON COLUMN "consumer_banking"."transaction_ultimate_debtors"."lei" IS 'Le
 COMMENT ON COLUMN "consumer_banking"."transaction_ultimate_debtors"."scheme_name" IS 'Identification scheme for the debtor''s identifier';
 
 COMMENT ON TABLE "consumer_banking"."account_statement_preferences" IS 'Stores customer preferences for account statements';
+
+COMMENT ON COLUMN "consumer_banking"."account_statement_preferences"."consumer_banking_statement_id" IS 'Fake relationship, to influence data generator and make statements be created before this record.';
 
 COMMENT ON COLUMN "consumer_banking"."customer_interactions"."consumer_banking_interaction_id" IS 'A unique identifier for each interaction.';
 
@@ -10932,6 +11708,8 @@ ALTER TABLE "consumer_banking"."statement_values" ADD FOREIGN KEY ("consumer_ban
 
 ALTER TABLE "consumer_banking"."transactions" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
+ALTER TABLE "consumer_banking"."transactions" ADD FOREIGN KEY ("consumer_banking_balance_id") REFERENCES "consumer_banking"."balances" ("consumer_banking_balance_id");
+
 ALTER TABLE "consumer_banking"."transaction_statement_references" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "consumer_banking"."transaction_currency_exchanges" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
@@ -10960,7 +11738,17 @@ ALTER TABLE "consumer_banking"."transaction_ultimate_debtors" ADD FOREIGN KEY ("
 
 ALTER TABLE "consumer_banking"."account_statement_preferences" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
+ALTER TABLE "consumer_banking"."account_statement_preferences" ADD FOREIGN KEY ("consumer_banking_statement_id") REFERENCES "consumer_banking"."statements" ("consumer_banking_statement_id");
+
 ALTER TABLE "consumer_banking"."account_statement_preferences" ADD FOREIGN KEY ("enterprise_address_id") REFERENCES "enterprise"."addresses" ("enterprise_address_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("customer_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("enterprise_associate_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("related_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "mortgage_services"."application_borrowers" ADD FOREIGN KEY ("mortgage_services_application_id") REFERENCES "mortgage_services"."applications" ("mortgage_services_application_id");
 
@@ -11213,14 +12001,6 @@ ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("loan_ac
 ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("identified_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("remediated_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
-
-ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("customer_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
-
-ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
-
-ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("enterprise_associate_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
-
-ALTER TABLE "consumer_banking"."customer_interactions" ADD FOREIGN KEY ("related_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "credit_cards"."fraud_cases" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 

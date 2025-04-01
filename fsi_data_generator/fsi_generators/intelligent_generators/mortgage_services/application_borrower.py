@@ -1,10 +1,9 @@
-import random
-
+from .enums import BorrowerType, RelationshipType
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import \
     PartyRelationshipType
 
-from .enums import BorrowerType, RelationshipType
+import random
 
 
 def generate_random_application_borrower(ids_dict, dg: DataGenerator):

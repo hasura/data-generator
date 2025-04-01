@@ -18,7 +18,7 @@ definition:
       type: Varchar!
       description: Currency code for the benefit amount
     - name: type
-      type: Varchar!
+      type: ConsumerBankingBenefitType!
       description: Type of benefit (e.g., cashback, rewards, insurance)
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStatementBenefits
@@ -76,7 +76,7 @@ definition:
         - fieldName: currency
           booleanExpressionType: VarcharBoolExp
         - fieldName: type
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingBenefitTypeBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingStatement
   logicalOperators:
@@ -104,7 +104,7 @@ definition:
         - fieldName: currency
           aggregateExpression: VarcharAggExp
         - fieldName: type
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingBenefitTypeAggExp
   count:
     enable: true
   graphql:
@@ -128,7 +128,7 @@ definition:
         - fieldName: currency
           orderByExpression: VarcharOrderByExp
         - fieldName: type
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingBenefitTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingStatement
   graphql:

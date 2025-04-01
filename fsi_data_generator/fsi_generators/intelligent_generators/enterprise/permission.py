@@ -1,19 +1,17 @@
-import logging
-import random
+from ...helpers.generate_unique_json_array import generate_unique_json_array
+from data_generator import DataGenerator
 from typing import Any, Dict
 
+import logging
 import psycopg2
-
-from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+import random
 
 logger = logging.getLogger(__name__)
 
 
 def generate_random_permission(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
-    Generate a random enterprise.permissions record with reasonable values.
+    Generate a random "enterprise.permissions" record with reasonable values.
 
     Args:
         _id_fields: Dictionary containing the required ID fields (enterprise_permission_id)

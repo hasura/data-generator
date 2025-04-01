@@ -1,16 +1,14 @@
-import datetime
-import logging
-import random
-from typing import Any, Dict, Optional
-
-import anthropic
-import psycopg2
-
+from .enums import AppraisalStatus, AppraisalType
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from typing import Any, Dict, Optional
 
-from .enums import AppraisalStatus, AppraisalType
+import anthropic
+import datetime
+import logging
+import psycopg2
+import random
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,8 @@
-import logging
-import random
+from data_generator import DataGenerator
 from typing import Any, Dict
 
-from data_generator import DataGenerator
+import logging
+import random
 
 # Set up logging
 logger = logging.getLogger(__name__)

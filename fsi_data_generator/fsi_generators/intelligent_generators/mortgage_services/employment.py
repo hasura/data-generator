@@ -1,12 +1,12 @@
-import datetime
-import logging
-import random
+from .enums import EmploymentType, VerificationStatus
+from dateutil.relativedelta import relativedelta
+from faker import Faker
 from typing import Any, Dict, Optional
 
+import datetime
+import logging
 import psycopg2
-from faker import Faker
-
-from .enums import EmploymentType, VerificationStatus
+import random
 
 # Initialize Faker
 fake = Faker()
@@ -153,8 +153,7 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
     # Start date - typically 0-20 years ago
     years_ago = random.randint(0, 20)
     months_ago = random.randint(0, 11)
-    start_date = today.replace(year=today.year - years_ago)
-    start_date = start_date.replace(month=((today.month - months_ago - 1) % 12) + 1)
+    start_date = today - relativedelta(years=years_ago, months=months_ago)
 
     # End date - only for past employment
     end_date = None
@@ -167,21 +166,19 @@ def generate_random_borrower_employment(id_fields: Dict[str, Any], dg) -> Dict[s
 
         # Ensure we have a valid range
         if max_months < min_months:
-            # If this happens, it means the start date is too recent for past employment
-            # We should adjust the start date to be earlier
-            start_date = today.replace(month=((today.month - min_months - 1) % 12) + 1)
-            if (today.month - min_months) <= 0:
-                # If we need to go back to previous year
-                start_date = start_date.replace(year=today.year - 1)
-            max_months = min_months + 2  # Give a little buffer for randomization
+            # Calculate a valid start_date using relativedelta
+            start_date = today - relativedelta(months=min_months)
 
+            # Add a buffer of at least 2 months to max_months for randomization
+            max_months = min_months + 2
+            
+        # Randomly pick months to add
         months_after_start = random.randint(min_months, max_months)
-        end_year = start_date.year + (months_after_start // 12)
-        end_month = ((start_date.month + months_after_start - 1) % 12) + 1
-        end_date = datetime.date(end_year, end_month,
-                                 min(start_date.day, [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][end_month - 1]))
 
-    # Generate years in profession (may be longer than current job)
+        # Add months safely using relativedelta
+        end_date = start_date + relativedelta(months=months_after_start)
+
+    # Generate years in profession (maybe longer than current job)
     if employment_type == EmploymentType.SELF_EMPLOYED:
         # Self-employed people often have many years in profession
         years_in_profession = random.randint(years_ago, min(years_ago + 15, 40))

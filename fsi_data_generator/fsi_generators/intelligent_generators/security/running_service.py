@@ -1,19 +1,18 @@
-import logging
-import random
-import sys
-from datetime import datetime, timedelta
-from typing import Any, Dict
-
-import psycopg2
-from faker import Faker
-
 from data_generator import DataGenerator, SkipRowGenerationError
+from datetime import datetime, timedelta
+from faker import Faker
 from fsi_data_generator.fsi_generators.intelligent_generators.security.agent_status import \
     AgentStatus
 from fsi_data_generator.fsi_generators.intelligent_generators.security.service_status import \
     ServiceStatus
 from fsi_data_generator.fsi_generators.intelligent_generators.security.system_status import \
     SystemType
+from typing import Any, Dict
+
+import logging
+import psycopg2
+import random
+import sys
 
 fake = Faker()
 logger = logging.getLogger(__name__)

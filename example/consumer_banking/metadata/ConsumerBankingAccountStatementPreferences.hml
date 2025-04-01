@@ -6,15 +6,19 @@ definition:
   description: Stores customer preferences for account statements
   fields:
     - name: communicationMethod
-      type: Varchar!
+      type: ConsumerBankingCommunicationMethod!
     - name: consumerBankingAccountId
       type: Int4!
+    - name: consumerBankingStatementId
+      type: Int4
+      description: Fake relationship, to influence data generator and make statements
+        be created before this record.
     - name: enterpriseAddressId
       type: Int4
     - name: format
-      type: Varchar!
+      type: ConsumerBankingStatementFormat!
     - name: frequency
-      type: Varchar!
+      type: EnterpriseFrequency!
     - name: lastStatementDate
       type: Date
     - name: nextStatementDate
@@ -32,6 +36,9 @@ definition:
         consumerBankingAccountId:
           column:
             name: consumer_banking_account_id
+        consumerBankingStatementId:
+          column:
+            name: consumer_banking_statement_id
         enterpriseAddressId:
           column:
             name: enterprise_address_id
@@ -59,6 +66,7 @@ definition:
         allowedFields:
           - communicationMethod
           - consumerBankingAccountId
+          - consumerBankingStatementId
           - enterpriseAddressId
           - format
           - frequency
@@ -75,21 +83,24 @@ definition:
       type: ConsumerBankingAccountStatementPreferences
       comparableFields:
         - fieldName: communicationMethod
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingCommunicationMethodBoolExp
         - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingStatementId
           booleanExpressionType: Int4BoolExp
         - fieldName: enterpriseAddressId
           booleanExpressionType: Int4BoolExp
         - fieldName: format
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingStatementFormatBoolExp
         - fieldName: frequency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseFrequencyBoolExp
         - fieldName: lastStatementDate
           booleanExpressionType: DateBoolExp
         - fieldName: nextStatementDate
           booleanExpressionType: DateBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingAccount
+        - relationshipName: consumerBankingStatement
   logicalOperators:
     enable: true
   isNull:
@@ -107,15 +118,17 @@ definition:
       aggregatedType: ConsumerBankingAccountStatementPreferences
       aggregatableFields:
         - fieldName: communicationMethod
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingCommunicationMethodAggExp
         - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingStatementId
           aggregateExpression: Int4AggExp
         - fieldName: enterpriseAddressId
           aggregateExpression: Int4AggExp
         - fieldName: format
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingStatementFormatAggExp
         - fieldName: frequency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseFrequencyAggExp
         - fieldName: lastStatementDate
           aggregateExpression: DateAggExp
         - fieldName: nextStatementDate
@@ -135,21 +148,24 @@ definition:
       orderedType: ConsumerBankingAccountStatementPreferences
       orderableFields:
         - fieldName: communicationMethod
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingCommunicationMethodOrderByExp
         - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingStatementId
           orderByExpression: Int4OrderByExp
         - fieldName: enterpriseAddressId
           orderByExpression: Int4OrderByExp
         - fieldName: format
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingStatementFormatOrderByExp
         - fieldName: frequency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseFrequencyOrderByExp
         - fieldName: lastStatementDate
           orderByExpression: DateOrderByExp
         - fieldName: nextStatementDate
           orderByExpression: DateOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingAccount
+        - relationshipName: consumerBankingStatement
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingAccountStatementPreferencesOrderByExp
 
@@ -206,4 +222,22 @@ definition:
       target:
         modelField:
           - fieldName: consumerBankingAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingStatement
+  sourceType: ConsumerBankingAccountStatementPreferences
+  target:
+    model:
+      name: ConsumerBankingStatements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingStatementId
+      target:
+        modelField:
+          - fieldName: consumerBankingStatementId
 

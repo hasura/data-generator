@@ -4,20 +4,46 @@ version: v1
 definition:
   name: ConsumerBankingStatementValues
   description: Stores miscellaneous values associated with a statement that aren't
-    monetary amounts
+    monetary amounts, such as loyalty points, credit scores, or tier levels
   fields:
+    - name: changePercentage
+      type: Numeric
+      description: Percentage change from previous statement
     - name: consumerBankingStatementId
       type: Int4!
       description: References the statement this value belongs to
     - name: consumerBankingStatementValueId
       type: Int4!
       description: Auto-incrementing identifier for each value record
+    - name: createdAt
+      type: Timestamptz!
+      description: When this record was created
+    - name: description
+      type: Varchar
+      description: Additional description or context for the value
+    - name: isEstimated
+      type: Bool!
+      description: Whether this value is estimated rather than confirmed
+    - name: previousValue
+      type: Varchar
+      description: Previous statement's value of the same type, for comparison
+    - name: referencePeriodEnd
+      type: Date
+      description: End of the period this value refers to, if different from statement
+        period
+    - name: referencePeriodStart
+      type: Date
+      description: Start of the period this value refers to, if different from
+        statement period
     - name: type
-      type: Varchar!
-      description: Type of value (e.g., loyalty points, tier level, credit score)
+      type: ConsumerBankingStatementValueType!
+      description: Type of value stored
+    - name: updatedAt
+      type: Timestamptz!
+      description: When this record was last updated
     - name: value
       type: Varchar!
-      description: Value content (could be string or numeric depending on type)
+      description: Value content (e.g., loyalty points, tier level, credit score)
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStatementValues
     inputTypeName: ConsumerBanking_ConsumerBankingStatementValuesInput
@@ -25,15 +51,39 @@ definition:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_statement_values
       fieldMapping:
+        changePercentage:
+          column:
+            name: change_percentage
         consumerBankingStatementId:
           column:
             name: consumer_banking_statement_id
         consumerBankingStatementValueId:
           column:
             name: consumer_banking_statement_value_id
+        createdAt:
+          column:
+            name: created_at
+        description:
+          column:
+            name: description
+        isEstimated:
+          column:
+            name: is_estimated
+        previousValue:
+          column:
+            name: previous_value
+        referencePeriodEnd:
+          column:
+            name: reference_period_end
+        referencePeriodStart:
+          column:
+            name: reference_period_start
         type:
           column:
             name: type
+        updatedAt:
+          column:
+            name: updated_at
         value:
           column:
             name: value
@@ -47,9 +97,17 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - changePercentage
           - consumerBankingStatementId
           - consumerBankingStatementValueId
+          - createdAt
+          - description
+          - isEstimated
+          - previousValue
+          - referencePeriodEnd
+          - referencePeriodStart
           - type
+          - updatedAt
           - value
 
 ---
@@ -61,12 +119,28 @@ definition:
     object:
       type: ConsumerBankingStatementValues
       comparableFields:
+        - fieldName: changePercentage
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerBankingStatementId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingStatementValueId
           booleanExpressionType: Int4BoolExp
-        - fieldName: type
+        - fieldName: createdAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: description
           booleanExpressionType: VarcharBoolExp
+        - fieldName: isEstimated
+          booleanExpressionType: BoolBoolExp
+        - fieldName: previousValue
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: referencePeriodEnd
+          booleanExpressionType: DateBoolExp
+        - fieldName: referencePeriodStart
+          booleanExpressionType: DateBoolExp
+        - fieldName: type
+          booleanExpressionType: ConsumerBankingStatementValueTypeBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: value
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
@@ -87,12 +161,28 @@ definition:
     object:
       aggregatedType: ConsumerBankingStatementValues
       aggregatableFields:
+        - fieldName: changePercentage
+          aggregateExpression: NumericAggExp
         - fieldName: consumerBankingStatementId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingStatementValueId
           aggregateExpression: Int4AggExp
-        - fieldName: type
+        - fieldName: createdAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: description
           aggregateExpression: VarcharAggExp
+        - fieldName: isEstimated
+          aggregateExpression: BoolAggExp
+        - fieldName: previousValue
+          aggregateExpression: VarcharAggExp
+        - fieldName: referencePeriodEnd
+          aggregateExpression: DateAggExp
+        - fieldName: referencePeriodStart
+          aggregateExpression: DateAggExp
+        - fieldName: type
+          aggregateExpression: ConsumerBankingStatementValueTypeAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestamptzAggExp
         - fieldName: value
           aggregateExpression: VarcharAggExp
   count:
@@ -109,12 +199,28 @@ definition:
     object:
       orderedType: ConsumerBankingStatementValues
       orderableFields:
+        - fieldName: changePercentage
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerBankingStatementId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingStatementValueId
           orderByExpression: Int4OrderByExp
-        - fieldName: type
+        - fieldName: createdAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: description
           orderByExpression: VarcharOrderByExp
+        - fieldName: isEstimated
+          orderByExpression: BoolOrderByExp
+        - fieldName: previousValue
+          orderByExpression: VarcharOrderByExp
+        - fieldName: referencePeriodEnd
+          orderByExpression: DateOrderByExp
+        - fieldName: referencePeriodStart
+          orderByExpression: DateOrderByExp
+        - fieldName: type
+          orderByExpression: ConsumerBankingStatementValueTypeOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: value
           orderByExpression: VarcharOrderByExp
       orderableRelationships:
@@ -151,7 +257,7 @@ definition:
       subscription:
         rootField: consumerBankingStatementValuesAggregate
   description: Stores miscellaneous values associated with a statement that aren't
-    monetary amounts
+    monetary amounts, such as loyalty points, credit scores, or tier levels
 
 ---
 kind: ModelPermissions

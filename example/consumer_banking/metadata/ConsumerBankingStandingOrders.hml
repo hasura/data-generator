@@ -5,48 +5,84 @@ definition:
   name: ConsumerBankingStandingOrders
   description: Stores information about recurring payment instructions (standing orders)
   fields:
+    - name: category
+      type: ConsumerBankingStandingOrderCategory
+      description: Category or purpose of the standing order
     - name: consumerBankingAccountId
       type: Int4!
-      description: References the account this balance belongs to
+      description: References the account this standing order belongs to
     - name: consumerBankingStandingOrderId
       type: Int4!
       description: Unique identifier for each standing order
+    - name: createdBy
+      type: Varchar
+      description: Who or what created the standing order
+    - name: createdDate
+      type: Timestamptz!
+      description: When the standing order was created
+    - name: dayOfMonth
+      type: Int4
+      description: Day of month for payments (for monthly/quarterly frequencies)
+    - name: dayOfWeek
+      type: Int4
+      description: Day of week for payments (for weekly frequencies)
+    - name: description
+      type: Varchar
+      description: Description of the standing order purpose
+    - name: endDate
+      type: Date
+      description: Date when the standing order expires (if specified)
     - name: finalPaymentAmount
       type: Numeric
       description: Amount of the final payment (if different)
     - name: finalPaymentCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency of the final payment
     - name: firstPaymentAmount
       type: Numeric
       description: Amount of the first payment (if different)
     - name: firstPaymentCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency of the first payment
+    - name: frequency
+      type: EnterpriseFrequency!
+      description: Frequency of standing order payments
     - name: lastPaymentAmount
       type: Numeric
       description: Amount of the most recent payment
     - name: lastPaymentCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency of the most recent payment
     - name: lastPaymentDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the most recent payment was made
+    - name: modifiedDate
+      type: Timestamptz
+      description: When the standing order was last modified
     - name: nextPaymentAmount
       type: Numeric
       description: Amount of the next scheduled payment
     - name: nextPaymentCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency of the next payment
     - name: nextPaymentDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the next payment is scheduled
-    - name: standingOrderStatusCode
+    - name: paymentType
+      type: ConsumerBankingStandingOrderType!
+      description: Type of payment (fixed, variable, etc.)
+    - name: reference
       type: Varchar
+      description: Payment reference shown to the recipient
+    - name: standingOrderStatusCode
+      type: ConsumerBankingStandingOrderStatusCode!
       description: Status code of the standing order (e.g., active, canceled)
+    - name: startDate
+      type: Date!
+      description: Date when the first payment should be made
     - name: supplementaryData
       type: Text
-      description: Additional information about the standing order
+      description: Additional information about the standing order in JSON format
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStandingOrders
     inputTypeName: ConsumerBanking_ConsumerBankingStandingOrdersInput
@@ -54,12 +90,33 @@ definition:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_standing_orders
       fieldMapping:
+        category:
+          column:
+            name: category
         consumerBankingAccountId:
           column:
             name: consumer_banking_account_id
         consumerBankingStandingOrderId:
           column:
             name: consumer_banking_standing_order_id
+        createdBy:
+          column:
+            name: created_by
+        createdDate:
+          column:
+            name: created_date
+        dayOfMonth:
+          column:
+            name: day_of_month
+        dayOfWeek:
+          column:
+            name: day_of_week
+        description:
+          column:
+            name: description
+        endDate:
+          column:
+            name: end_date
         finalPaymentAmount:
           column:
             name: final_payment_amount
@@ -72,6 +129,9 @@ definition:
         firstPaymentCurrency:
           column:
             name: first_payment_currency
+        frequency:
+          column:
+            name: frequency
         lastPaymentAmount:
           column:
             name: last_payment_amount
@@ -81,6 +141,9 @@ definition:
         lastPaymentDateTime:
           column:
             name: last_payment_date_time
+        modifiedDate:
+          column:
+            name: modified_date
         nextPaymentAmount:
           column:
             name: next_payment_amount
@@ -90,9 +153,18 @@ definition:
         nextPaymentDateTime:
           column:
             name: next_payment_date_time
+        paymentType:
+          column:
+            name: payment_type
+        reference:
+          column:
+            name: reference
         standingOrderStatusCode:
           column:
             name: standing_order_status_code
+        startDate:
+          column:
+            name: start_date
         supplementaryData:
           column:
             name: supplementary_data
@@ -106,19 +178,31 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - category
           - consumerBankingAccountId
           - consumerBankingStandingOrderId
+          - createdBy
+          - createdDate
+          - dayOfMonth
+          - dayOfWeek
+          - description
+          - endDate
           - finalPaymentAmount
           - finalPaymentCurrency
           - firstPaymentAmount
           - firstPaymentCurrency
+          - frequency
           - lastPaymentAmount
           - lastPaymentCurrency
           - lastPaymentDateTime
+          - modifiedDate
           - nextPaymentAmount
           - nextPaymentCurrency
           - nextPaymentDateTime
+          - paymentType
+          - reference
           - standingOrderStatusCode
+          - startDate
           - supplementaryData
 
 ---
@@ -130,32 +214,56 @@ definition:
     object:
       type: ConsumerBankingStandingOrders
       comparableFields:
+        - fieldName: category
+          booleanExpressionType: ConsumerBankingStandingOrderCategoryBoolExp
         - fieldName: consumerBankingAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingStandingOrderId
           booleanExpressionType: Int4BoolExp
+        - fieldName: createdBy
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: dayOfMonth
+          booleanExpressionType: Int4BoolExp
+        - fieldName: dayOfWeek
+          booleanExpressionType: Int4BoolExp
+        - fieldName: description
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
         - fieldName: finalPaymentAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: finalPaymentCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: firstPaymentAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: firstPaymentCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
+        - fieldName: frequency
+          booleanExpressionType: EnterpriseFrequencyBoolExp
         - fieldName: lastPaymentAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: lastPaymentCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: lastPaymentDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: modifiedDate
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: nextPaymentAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: nextPaymentCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: nextPaymentDateTime
-          booleanExpressionType: TimestampBoolExp
-        - fieldName: standingOrderStatusCode
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: paymentType
+          booleanExpressionType: ConsumerBankingStandingOrderTypeBoolExp
+        - fieldName: reference
           booleanExpressionType: VarcharBoolExp
+        - fieldName: standingOrderStatusCode
+          booleanExpressionType: ConsumerBankingStandingOrderStatusCodeBoolExp
+        - fieldName: startDate
+          booleanExpressionType: DateBoolExp
         - fieldName: supplementaryData
           booleanExpressionType: TextBoolExp
       comparableRelationships:
@@ -178,32 +286,56 @@ definition:
     object:
       aggregatedType: ConsumerBankingStandingOrders
       aggregatableFields:
+        - fieldName: category
+          aggregateExpression: ConsumerBankingStandingOrderCategoryAggExp
         - fieldName: consumerBankingAccountId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingStandingOrderId
           aggregateExpression: Int4AggExp
+        - fieldName: createdBy
+          aggregateExpression: VarcharAggExp
+        - fieldName: createdDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: dayOfMonth
+          aggregateExpression: Int4AggExp
+        - fieldName: dayOfWeek
+          aggregateExpression: Int4AggExp
+        - fieldName: description
+          aggregateExpression: VarcharAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
         - fieldName: finalPaymentAmount
           aggregateExpression: NumericAggExp
         - fieldName: finalPaymentCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: firstPaymentAmount
           aggregateExpression: NumericAggExp
         - fieldName: firstPaymentCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
+        - fieldName: frequency
+          aggregateExpression: EnterpriseFrequencyAggExp
         - fieldName: lastPaymentAmount
           aggregateExpression: NumericAggExp
         - fieldName: lastPaymentCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: lastPaymentDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: modifiedDate
+          aggregateExpression: TimestamptzAggExp
         - fieldName: nextPaymentAmount
           aggregateExpression: NumericAggExp
         - fieldName: nextPaymentCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: nextPaymentDateTime
-          aggregateExpression: TimestampAggExp
-        - fieldName: standingOrderStatusCode
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: paymentType
+          aggregateExpression: ConsumerBankingStandingOrderTypeAggExp
+        - fieldName: reference
           aggregateExpression: VarcharAggExp
+        - fieldName: standingOrderStatusCode
+          aggregateExpression: ConsumerBankingStandingOrderStatusCodeAggExp
+        - fieldName: startDate
+          aggregateExpression: DateAggExp
         - fieldName: supplementaryData
           aggregateExpression: TextAggExp
   count:
@@ -220,32 +352,56 @@ definition:
     object:
       orderedType: ConsumerBankingStandingOrders
       orderableFields:
+        - fieldName: category
+          orderByExpression: ConsumerBankingStandingOrderCategoryOrderByExp
         - fieldName: consumerBankingAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingStandingOrderId
           orderByExpression: Int4OrderByExp
+        - fieldName: createdBy
+          orderByExpression: VarcharOrderByExp
+        - fieldName: createdDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: dayOfMonth
+          orderByExpression: Int4OrderByExp
+        - fieldName: dayOfWeek
+          orderByExpression: Int4OrderByExp
+        - fieldName: description
+          orderByExpression: VarcharOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
         - fieldName: finalPaymentAmount
           orderByExpression: NumericOrderByExp
         - fieldName: finalPaymentCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: firstPaymentAmount
           orderByExpression: NumericOrderByExp
         - fieldName: firstPaymentCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
+        - fieldName: frequency
+          orderByExpression: EnterpriseFrequencyOrderByExp
         - fieldName: lastPaymentAmount
           orderByExpression: NumericOrderByExp
         - fieldName: lastPaymentCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: lastPaymentDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: modifiedDate
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: nextPaymentAmount
           orderByExpression: NumericOrderByExp
         - fieldName: nextPaymentCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: nextPaymentDateTime
-          orderByExpression: TimestampOrderByExp
-        - fieldName: standingOrderStatusCode
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: paymentType
+          orderByExpression: ConsumerBankingStandingOrderTypeOrderByExp
+        - fieldName: reference
           orderByExpression: VarcharOrderByExp
+        - fieldName: standingOrderStatusCode
+          orderByExpression: ConsumerBankingStandingOrderStatusCodeOrderByExp
+        - fieldName: startDate
+          orderByExpression: DateOrderByExp
         - fieldName: supplementaryData
           orderByExpression: TextOrderByExp
       orderableRelationships:

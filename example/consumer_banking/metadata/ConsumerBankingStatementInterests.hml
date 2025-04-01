@@ -15,25 +15,25 @@ definition:
       type: Int4!
       description: Auto-incrementing identifier for each interest record
     - name: creditDebitIndicator
-      type: Varchar!
+      type: EnterpriseCreditDebitIndicator!
       description: Indicates if interest is earned (credit) or charged (debit)
     - name: currency
-      type: Varchar!
+      type: EnterpriseCurrencyCode!
       description: Currency code for the interest amount
     - name: description
       type: Varchar
       description: Description of the interest
     - name: frequency
-      type: Varchar
+      type: EnterpriseFrequency
       description: How often interest is calculated (e.g., daily, monthly)
     - name: rate
       type: Numeric
       description: Interest rate applied
     - name: rateType
-      type: Varchar
-      description: Type of rate (e.g., fixed, variable, introductory)
+      type: ConsumerBankingRateType
+      description: Type of rate (e.g., fixed, variable, promotional)
     - name: type
-      type: Varchar!
+      type: ConsumerBankingInterestType!
       description: Type of interest (e.g., deposit, loan, credit card)
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStatementInterests
@@ -109,19 +109,19 @@ definition:
         - fieldName: consumerBankingStatementInterestId
           booleanExpressionType: Int4BoolExp
         - fieldName: creditDebitIndicator
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCreditDebitIndicatorBoolExp
         - fieldName: currency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: description
           booleanExpressionType: VarcharBoolExp
         - fieldName: frequency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseFrequencyBoolExp
         - fieldName: rate
           booleanExpressionType: NumericBoolExp
         - fieldName: rateType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingRateTypeBoolExp
         - fieldName: type
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingInterestTypeBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingStatement
   logicalOperators:
@@ -147,19 +147,19 @@ definition:
         - fieldName: consumerBankingStatementInterestId
           aggregateExpression: Int4AggExp
         - fieldName: creditDebitIndicator
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCreditDebitIndicatorAggExp
         - fieldName: currency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: description
           aggregateExpression: VarcharAggExp
         - fieldName: frequency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseFrequencyAggExp
         - fieldName: rate
           aggregateExpression: NumericAggExp
         - fieldName: rateType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingRateTypeAggExp
         - fieldName: type
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingInterestTypeAggExp
   count:
     enable: true
   graphql:
@@ -181,19 +181,19 @@ definition:
         - fieldName: consumerBankingStatementInterestId
           orderByExpression: Int4OrderByExp
         - fieldName: creditDebitIndicator
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCreditDebitIndicatorOrderByExp
         - fieldName: currency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: description
           orderByExpression: VarcharOrderByExp
         - fieldName: frequency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseFrequencyOrderByExp
         - fieldName: rate
           orderByExpression: NumericOrderByExp
         - fieldName: rateType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingRateTypeOrderByExp
         - fieldName: type
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingInterestTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingStatement
   graphql:

@@ -1,15 +1,13 @@
-import logging
-import random
-from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
-
-from faker import Faker
-
+from .enums import AssetType, VerificationStatus
 from data_generator import DataGenerator
+from datetime import datetime, timedelta, timezone
+from faker import Faker
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from typing import Any, Dict, Optional
 
-from .enums import AssetType, VerificationStatus
+import logging
+import random
 
 fake = Faker()
 logger = logging.getLogger(__name__)
@@ -114,7 +112,8 @@ def generate_borrower_asset(ids_dict: Dict[str, Any], dg: DataGenerator) -> Dict
                 verification_date_str = verification_date.strftime("%Y-%m-%d")
             else:
                 # If we couldn't find application date, use a recent date
-                verification_date_str = (datetime.now() - timedelta(days=random.randint(10, 90))).strftime("%Y-%m-%d")
+                verification_date_str = (datetime.now(timezone.utc) - timedelta(days=random.randint(10, 90))).strftime(
+                    "%Y-%m-%d")
 
         # Determine if we need a property address ID
         property_address = None

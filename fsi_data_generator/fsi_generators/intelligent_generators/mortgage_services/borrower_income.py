@@ -1,10 +1,10 @@
-import datetime
-import random
-from typing import Any, Dict
-
 from .employment import _get_application_info_for_borrower
 from .enums import (ApplicationStatus, IncomeFrequency, IncomeType,
                     VerificationStatus)
+from typing import Any, Dict
+
+import datetime
+import random
 
 
 def generate_random_borrower_income(id_fields: Dict[str, Any], dg) -> Dict[str, Any]:

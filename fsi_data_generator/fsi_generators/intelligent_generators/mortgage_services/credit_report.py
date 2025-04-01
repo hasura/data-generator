@@ -1,12 +1,11 @@
-import datetime
-import logging
-import random
-import sys
+from .enums import CreditBureau, CreditReportType, VerificationStatus
 from typing import Any, Dict, Optional
 
+import datetime
+import logging
 import psycopg2
-
-from .enums import CreditBureau, CreditReportType, VerificationStatus
+import random
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ def generate_random_credit_report(id_fields: Dict[str, Any], dg) -> Dict[str, An
     borrower_info = get_borrower_info(id_fields.get("mortgage_services_borrower_id"), conn)
 
     # Generate report date (typically within the last 120 days)
-    today = datetime.datetime.now()
+    today = datetime.datetime.now(datetime.timezone.utc)
     days_ago = random.randint(7, 120)
     report_date = today - datetime.timedelta(days=days_ago)
 
@@ -81,7 +80,7 @@ def generate_random_credit_report(id_fields: Dict[str, Any], dg) -> Dict[str, An
         credit_score = random.randint(selected_range[0], selected_range[1])
 
     # Generate a report reference ID
-    bureau_prefix = bureau_name.name[:3] if bureau_name else "TRI"
+    bureau_prefix = bureau_name.value[:3] if bureau_name else "TRI"
     report_reference = f"{bureau_prefix}-{random.randint(10000, 99999)}-{report_date.strftime('%y%m%d')}"
 
     # Determine status based on report date and expiration

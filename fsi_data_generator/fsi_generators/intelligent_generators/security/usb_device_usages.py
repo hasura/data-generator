@@ -1,12 +1,11 @@
-import logging
-import random
-import sys
+from data_generator import DataGenerator
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
+import logging
 import psycopg2
-
-from data_generator import DataGenerator
+import random
+import sys
 
 logger = logging.getLogger(__name__)
 

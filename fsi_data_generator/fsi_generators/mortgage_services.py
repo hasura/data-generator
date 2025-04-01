@@ -1,65 +1,22 @@
-from faker import Faker
-
 from .helpers.apply_schema_to_regex import apply_schema_to_regex
 from .helpers.random_record import random_record
-from .intelligent_generators.mortgage_services.application import \
-    generate_random_application
-from .intelligent_generators.mortgage_services.application_borrower import \
-    generate_random_application_borrower
-from .intelligent_generators.mortgage_services.appraisal import \
-    generate_random_appraisal
-from .intelligent_generators.mortgage_services.asset import \
-    generate_borrower_asset
-from .intelligent_generators.mortgage_services.borrower import \
-    generate_random_borrower
-from .intelligent_generators.mortgage_services.borrower_income import \
-    generate_random_borrower_income
-from .intelligent_generators.mortgage_services.borrower_liability import \
-    generate_random_borrower_liability
-from .intelligent_generators.mortgage_services.closed_loan import \
-    generate_random_closed_loan
-from .intelligent_generators.mortgage_services.closing_appointment import \
-    generate_random_closing_appointment
-from .intelligent_generators.mortgage_services.closing_disclosure import \
-    generate_random_closing_disclosure
-from .intelligent_generators.mortgage_services.condition import \
-    generate_random_condition
-from .intelligent_generators.mortgage_services.credit_report import \
-    generate_random_credit_report
-from .intelligent_generators.mortgage_services.customer_communication import \
-    generate_random_customer_communication
-from .intelligent_generators.mortgage_services.document import \
-    generate_random_document
-from .intelligent_generators.mortgage_services.employment import \
-    generate_random_borrower_employment
-from .intelligent_generators.mortgage_services.escrow_analysis import \
-    generate_random_escrow_analysis
-from .intelligent_generators.mortgage_services.escrow_disbursement import \
-    generate_random_escrow_disbursement
-from .intelligent_generators.mortgage_services.hmda_applicant_demographics import \
-    generate_random_hmda_applicant_demographics
-from .intelligent_generators.mortgage_services.hmda_edit import \
-    generate_random_hmda_edit
-from .intelligent_generators.mortgage_services.hmda_record import \
-    generate_random_hmda_record
-from .intelligent_generators.mortgage_services.hmda_submission import \
-    generate_random_hmda_submission
-from .intelligent_generators.mortgage_services.insurance_policy import \
-    generate_random_insurance_policy
-from .intelligent_generators.mortgage_services.loan_modification import \
-    generate_random_loan_modification
-from .intelligent_generators.mortgage_services.loan_product import \
-    generate_random_loan_product
-from .intelligent_generators.mortgage_services.loan_rate_lock import \
-    generate_random_loan_rate_lock
-from .intelligent_generators.mortgage_services.mortgage import \
-    generate_random_mortgage
-from .intelligent_generators.mortgage_services.payment import \
-    generate_random_payment
-from .intelligent_generators.mortgage_services.property import \
-    generate_random_property
-from .intelligent_generators.mortgage_services.servicing_account import \
-    generate_random_servicing_account
+from .intelligent_generators.mortgage_services import (
+    generate_borrower_asset, generate_random_application,
+    generate_random_application_borrower, generate_random_appraisal,
+    generate_random_borrower, generate_random_borrower_employment,
+    generate_random_borrower_income, generate_random_borrower_liability,
+    generate_random_closed_loan, generate_random_closing_appointment,
+    generate_random_closing_disclosure, generate_random_condition,
+    generate_random_credit_report, generate_random_customer_communication,
+    generate_random_document, generate_random_escrow_analysis,
+    generate_random_escrow_disbursement,
+    generate_random_hmda_applicant_demographics, generate_random_hmda_edit,
+    generate_random_hmda_record, generate_random_hmda_submission,
+    generate_random_insurance_policy, generate_random_loan_modification,
+    generate_random_loan_product, generate_random_loan_rate_lock,
+    generate_random_mortgage, generate_random_payment,
+    generate_random_property, generate_random_servicing_account)
+from faker import Faker
 
 fake = Faker()
 

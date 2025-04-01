@@ -1,10 +1,9 @@
-import logging
-import random
+from .enums import PartyEntityAddressType
+from data_generator import DataGenerator
 from typing import Any, Dict
 
-from data_generator import DataGenerator
-
-from .enums import PartyEntityAddressType
+import logging
+import random
 
 logger = logging.getLogger(__name__)
 

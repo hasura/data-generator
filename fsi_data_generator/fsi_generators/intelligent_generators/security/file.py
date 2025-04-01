@@ -1,12 +1,11 @@
+from data_generator import DataGenerator, SkipRowGenerationError
+from datetime import datetime, timedelta, timezone
+from faker import Faker
+from typing import Any, Dict
+
 import hashlib
 import logging
 import random
-from datetime import datetime, timedelta
-from typing import Any, Dict
-
-from faker import Faker
-
-from data_generator import DataGenerator, SkipRowGenerationError
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -14,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def generate_random_file(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
-    Generate a random security.files record.
+    Generate a random "security.files" record.
 
     Args:
         id_fields: Dictionary containing predetermined ID fields
@@ -77,7 +76,7 @@ def generate_random_file(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[s
     file_hash = _generate_file_hash()
 
     # Generate a realistic last modified date (within the last year)
-    last_modified = datetime.now() - timedelta(
+    last_modified = datetime.now(timezone.utc) - timedelta(
         days=random.randint(0, 365),
         hours=random.randint(0, 23),
         minutes=random.randint(0, 59),
@@ -136,7 +135,7 @@ def _generate_file_path(os_type: str, fake: Faker) -> str:
     Generate a realistic file path based on OS type
 
     Args:
-        os_type: Operating system type (Windows, Linux, MacOS)
+        os_type: Operating system type (Windows, Linux, macOS)
         fake: Faker instance
 
     Returns:
@@ -334,7 +333,7 @@ def _generate_file_path(os_type: str, fake: Faker) -> str:
             "/Users/{username}/Library/Preferences/"
         ]
 
-        # Financial paths for MacOS
+        # Financial paths for macOS
         if chosen_category == financial_extensions:
             financial_dirs = [
                 "/Users/{username}/Documents/Finance/",

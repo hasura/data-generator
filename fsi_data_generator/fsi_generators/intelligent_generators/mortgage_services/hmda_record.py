@@ -1,14 +1,3 @@
-import datetime
-import logging
-import random
-import string
-from typing import Any, Dict, Optional, Tuple
-
-import psycopg2
-
-from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.helpers import parse_address
-
 from .enums import (ApplicationStatus, ApplicationType, HmdaActionTaken,
                     HmdaAus, HmdaBalloonPayment,
                     HmdaBusinessOrCommercialPurpose, HmdaConstructionMethod,
@@ -20,6 +9,16 @@ from .enums import (ApplicationStatus, ApplicationType, HmdaActionTaken,
                     HmdaOpenEndLineOfCredit, HmdaOtherNonAmortizing,
                     HmdaPreapproval, HmdaRecordEditStatus, HmdaReverseMortgage,
                     HmdaSubmissionMethod, HmdaSubmissionStatus, OccupancyType)
+from data_generator import DataGenerator, SkipRowGenerationError
+from datetime import timezone
+from fsi_data_generator.fsi_generators.helpers import parse_address
+from typing import Any, Dict, Optional, Tuple
+
+import datetime
+import logging
+import psycopg2
+import random
+import string
 
 logger = logging.getLogger(__name__)
 
@@ -270,7 +269,7 @@ def generate_random_hmda_record(id_fields: Dict, dg: DataGenerator) -> Dict[str,
         "business_or_commercial_purpose": business_or_commercial_purpose.value,
 
         # Timestamps and status
-        "last_modified_date": datetime.datetime.now(),
+        "last_modified_date": datetime.datetime.now(timezone.utc),
         "submission_status": HmdaSubmissionStatus.PENDING.value,
         "edit_status": HmdaRecordEditStatus.NOT_STARTED.value
     }

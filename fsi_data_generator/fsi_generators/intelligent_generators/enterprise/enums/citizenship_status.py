@@ -1,4 +1,4 @@
-from fsi_data_generator.fsi_generators.helpers import BaseEnum
+from ....helpers import BaseEnum
 
 
 # Create an Enum for Citizenship Statuses

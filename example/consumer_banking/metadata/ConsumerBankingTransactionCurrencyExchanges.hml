@@ -21,19 +21,19 @@ definition:
       type: Numeric
       description: Original amount before conversion
     - name: instructedAmountCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency of the original instructed amount
     - name: quotationDate
-      type: Timestamp
+      type: Timestamptz
       description: When the exchange rate was quoted
     - name: sourceCurrency
-      type: Varchar!
+      type: EnterpriseCurrencyCode!
       description: Original currency of the transaction
     - name: targetCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Destination currency after conversion
     - name: unitCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency used as the unit for the exchange rate
   graphql:
     typeName: ConsumerBanking_ConsumerBankingTransactionCurrencyExchanges
@@ -113,15 +113,15 @@ definition:
         - fieldName: instructedAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: instructedAmountCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: quotationDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: sourceCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: targetCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: unitCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingTransaction
   logicalOperators:
@@ -151,15 +151,15 @@ definition:
         - fieldName: instructedAmount
           aggregateExpression: NumericAggExp
         - fieldName: instructedAmountCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: quotationDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: sourceCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: targetCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: unitCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
   count:
     enable: true
   graphql:
@@ -185,15 +185,15 @@ definition:
         - fieldName: instructedAmount
           orderByExpression: NumericOrderByExp
         - fieldName: instructedAmountCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: quotationDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: sourceCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: targetCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: unitCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingTransaction
   graphql:

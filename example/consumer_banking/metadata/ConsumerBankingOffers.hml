@@ -9,11 +9,11 @@ definition:
       type: Numeric
       description: Monetary amount of the offer
     - name: amountCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency of the offer amount
     - name: consumerBankingAccountId
       type: Int4!
-      description: References the account this balance belongs to
+      description: References the account this offer belongs to
     - name: consumerBankingOfferId
       type: Int4!
       description: Unique identifier for each offer
@@ -21,22 +21,22 @@ definition:
       type: Varchar
       description: Detailed description of the offer
     - name: endDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the offer expires
     - name: fee
       type: Numeric
       description: Any fee associated with accepting the offer
     - name: feeCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency of the fee
     - name: offerType
-      type: Varchar!
+      type: ConsumerBankingOfferType!
       description: Type of offer (e.g., loan, investment, balance transfer)
     - name: rate
       type: Numeric
       description: Interest rate associated with the offer
     - name: startDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the offer becomes available
     - name: term
       type: Varchar
@@ -133,7 +133,7 @@ definition:
         - fieldName: amount
           booleanExpressionType: NumericBoolExp
         - fieldName: amountCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: consumerBankingAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingOfferId
@@ -141,17 +141,17 @@ definition:
         - fieldName: description
           booleanExpressionType: VarcharBoolExp
         - fieldName: endDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: fee
           booleanExpressionType: NumericBoolExp
         - fieldName: feeCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: offerType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingOfferTypeBoolExp
         - fieldName: rate
           booleanExpressionType: NumericBoolExp
         - fieldName: startDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: term
           booleanExpressionType: VarcharBoolExp
         - fieldName: url
@@ -179,7 +179,7 @@ definition:
         - fieldName: amount
           aggregateExpression: NumericAggExp
         - fieldName: amountCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: consumerBankingAccountId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingOfferId
@@ -187,17 +187,17 @@ definition:
         - fieldName: description
           aggregateExpression: VarcharAggExp
         - fieldName: endDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: fee
           aggregateExpression: NumericAggExp
         - fieldName: feeCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: offerType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingOfferTypeAggExp
         - fieldName: rate
           aggregateExpression: NumericAggExp
         - fieldName: startDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: term
           aggregateExpression: VarcharAggExp
         - fieldName: url
@@ -221,7 +221,7 @@ definition:
         - fieldName: amount
           orderByExpression: NumericOrderByExp
         - fieldName: amountCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: consumerBankingAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingOfferId
@@ -229,17 +229,17 @@ definition:
         - fieldName: description
           orderByExpression: VarcharOrderByExp
         - fieldName: endDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: fee
           orderByExpression: NumericOrderByExp
         - fieldName: feeCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: offerType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingOfferTypeOrderByExp
         - fieldName: rate
           orderByExpression: NumericOrderByExp
         - fieldName: startDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: term
           orderByExpression: VarcharOrderByExp
         - fieldName: url

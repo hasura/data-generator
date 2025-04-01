@@ -15,16 +15,16 @@ definition:
       type: Int4!
       description: References the statement this amount belongs to
     - name: creditDebitIndicator
-      type: Varchar!
+      type: EnterpriseCreditDebitIndicator!
       description: Indicates if amount is a credit or debit
     - name: currency
-      type: Varchar!
+      type: EnterpriseCurrencyCode!
       description: Currency code for the amount
     - name: subType
-      type: Varchar
+      type: ConsumerBankingAmountSubType
       description: Further classification of the amount type
     - name: type
-      type: Varchar!
+      type: ConsumerBankingAmountType!
       description: Type of amount (e.g., opening balance, closing balance, payments)
   graphql:
     typeName: ConsumerBanking_ConsumerBankingStatementAmounts
@@ -88,13 +88,13 @@ definition:
         - fieldName: consumerBankingStatementId
           booleanExpressionType: Int4BoolExp
         - fieldName: creditDebitIndicator
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCreditDebitIndicatorBoolExp
         - fieldName: currency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: subType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingAmountSubTypeBoolExp
         - fieldName: type
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingAmountTypeBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingStatement
   logicalOperators:
@@ -120,13 +120,13 @@ definition:
         - fieldName: consumerBankingStatementId
           aggregateExpression: Int4AggExp
         - fieldName: creditDebitIndicator
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCreditDebitIndicatorAggExp
         - fieldName: currency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: subType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingAmountSubTypeAggExp
         - fieldName: type
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingAmountTypeAggExp
   count:
     enable: true
   graphql:
@@ -148,13 +148,13 @@ definition:
         - fieldName: consumerBankingStatementId
           orderByExpression: Int4OrderByExp
         - fieldName: creditDebitIndicator
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCreditDebitIndicatorOrderByExp
         - fieldName: currency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: subType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingAmountSubTypeOrderByExp
         - fieldName: type
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingAmountTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingStatement
   graphql:

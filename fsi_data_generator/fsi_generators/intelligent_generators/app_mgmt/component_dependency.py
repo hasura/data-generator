@@ -1,7 +1,7 @@
-import random
+from data_generator import DataGenerator
 from typing import Any, Dict
 
-from data_generator import DataGenerator
+import random
 
 
 def generate_random_component_dependency(_id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:

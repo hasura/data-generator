@@ -1,7 +1,7 @@
-import random
+from .party_type import PartyType
 from enum import Enum
 
-from .party_type import PartyType
+import random
 
 
 class PartyStatus(Enum):

@@ -1,8 +1,7 @@
 # Global dictionary to store combinations keyed by (field_a, field_b)
-from typing import TYPE_CHECKING
-
 from fsi_data_generator.fsi_generators.helpers.generate_combinations_random import \
     generate_combinations_random
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from data_generator import SkipRowGenerationError

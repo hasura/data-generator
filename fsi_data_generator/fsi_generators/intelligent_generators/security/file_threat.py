@@ -1,11 +1,10 @@
+from data_generator import DataGenerator
+from faker import Faker
+from typing import Any, Dict
+
 import hashlib
 import logging
 import random
-from typing import Any, Dict
-
-from faker import Faker
-
-from data_generator import DataGenerator
 
 # Set up logger
 logger = logging.getLogger(__name__)

@@ -1,11 +1,10 @@
-import datetime
-import logging
-import random
+from .enums import AppointmentStatus, ClosingType
 from typing import Any, Dict, Optional
 
+import datetime
+import logging
 import psycopg2
-
-from .enums import AppointmentStatus, ClosingType
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -40,17 +39,17 @@ def generate_random_closing_appointment(id_fields: Dict[str, Any], dg) -> Dict[s
     # Determine loan state
     today = datetime.date.today()
     loan_is_closed = False
-    loan_is_funded = False
+    # loan_is_funded = False
 
     if loan_info:
         # Check if loan has a first payment date (implies funding)
         if 'first_payment_date' in loan_info and loan_info['first_payment_date']:
-            loan_is_funded = True
+            # loan_is_funded = True
             loan_is_closed = True
 
         # Check if loan has maturity date (implies funding)
         elif 'maturity_date' in loan_info and loan_info['maturity_date']:
-            loan_is_funded = True
+            # loan_is_funded = True
             loan_is_closed = True
 
         # Check if origination date exists and is in the past
@@ -58,8 +57,8 @@ def generate_random_closing_appointment(id_fields: Dict[str, Any], dg) -> Dict[s
             'origination_date'] < today:
             loan_is_closed = True
             # Assume funding happens within 3 business days of origination
-            funding_estimated_date = loan_info['origination_date'] + datetime.timedelta(days=3)
-            loan_is_funded = (funding_estimated_date <= today)
+            # funding_estimated_date = loan_info['origination_date'] + datetime.timedelta(days=3)
+            # loan_is_funded = (funding_estimated_date <= today)
 
     # Determine scheduled date based on loan state
     if loan_is_closed and 'origination_date' in loan_info and loan_info['origination_date']:

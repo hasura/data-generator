@@ -1,10 +1,9 @@
-import random
+from data_generator import DataGenerator
 from datetime import datetime, timedelta
+from faker import Faker
 from typing import Any, Dict
 
-from faker import Faker
-
-from data_generator import DataGenerator
+import random
 
 fake = Faker()
 

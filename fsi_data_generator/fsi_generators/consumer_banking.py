@@ -1,148 +1,75 @@
-# from data_generator import DataGenerator
-from faker import Faker
-
-from fsi_data_generator.fsi_generators.helpers import apply_schema_to_regex, random_record
-from fsi_data_generator.fsi_generators.helpers.consumer_banking_generate_transaction_fee import \
-    consumer_banking_generate_transaction_fee
-from fsi_data_generator.fsi_generators.helpers.generate_transactions_and_balances import (
-    generate_fake_balance, generate_fake_transaction)
-from fsi_data_generator.fsi_generators.helpers.text_list import text_list
-from fsi_data_generator.fsi_generators.helpers.unique_list import unique_list
-from fsi_data_generator.fsi_generators.intelligent_generators.consumer_banking.account import generate_random_account
-from fsi_data_generator.fsi_generators.intelligent_generators.consumer_banking.account_access_consent import \
-    generate_random_account_access_consent
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__beneficiaries__supplementary_data import \
-    consumer_banking__beneficiaries__supplementary_data
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__customer_interactions__description import \
-    consumer_banking__customer_interactions__description
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__customer_interactions__resolution import \
-    consumer_banking__customer_interactions__resolution
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__products__product_type import \
-    consumer_banking__products__product_type
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__standing_orders__supplementary_data import \
-    consumer_banking__standing_orders__supplementary_data
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__statement__descriptions import \
+from ..fsi_text.consumer_banking.consumer_banking__statement__descriptions import \
     consumer_banking__statement__descriptions
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__transactions__category_purpose_code import \
-    consumer_banking__transactions__category_purpose_code
-from fsi_data_generator.fsi_text.consumer_banking.consumer_banking__transactions__payment_purpose_code import \
-    consumer_banking__transactions__payment_purpose_code
+from .helpers import apply_schema_to_regex, random_record, text_list
+from .intelligent_generators.consumer_banking import (
+    generate_random_account, generate_random_account_access_consent,
+    generate_random_balance, generate_random_beneficiary,
+    generate_random_beneficiary_creditor_account,
+    generate_random_beneficiary_creditor_agent, generate_random_direct_debit,
+    generate_random_mandate_related_information, generate_random_offer,
+    generate_random_product, generate_random_scheduled_payment,
+    generate_random_scheduled_payment_creditor_account,
+    generate_random_scheduled_payment_creditor_agent,
+    generate_random_standing_order,
+    generate_random_standing_order_creditor_agent, generate_random_statement,
+    generate_random_statement_amount, generate_random_statement_benefit,
+    generate_random_statement_date_time, generate_random_statement_fee,
+    generate_random_statement_interest, generate_random_statement_rate,
+    generate_random_statement_value, generate_random_transaction, generate_random_standing_order_creditor_account,
+    generate_random_transaction_statement_reference, generate_random_transaction_currency_exchange,
+    generate_random_transaction_bank_transaction_code, generate_random_proprietary_transaction_code,
+    generate_random_transaction_balance, generate_random_transaction_merchant_detail,
+    generate_random_transaction_creditor_agent, generate_random_transaction_creditor_account,
+    generate_random_transaction_debtor_account, generate_random_transaction_debtor_agent,
+    generate_random_transaction_card_instrument, generate_random_transaction_ultimate_creditor,
+    generate_random_transaction_ultimate_debtor, generate_random_account_statement_preference,
+    generate_random_customer_interaction)
+from faker import Faker
 
 fake = Faker()
 
 
-def get_product_type_by_account_id(conn, account_id):
-    """
-    Fetches the product_type associated with a given consumer_banking_account_id.
-
-    :param conn: A psycopg2 database connection object.
-    :param account_id: The consumer_banking_account_id to look up.
-    :return: The product_type as a string.
-    :raises Exception: If the product_type is not found or an error occurs.
-    """
-    try:
-        # Create a new cursor
-        with conn.cursor() as cursor:
-            # SQL query to fetch the product_type
-            query = """
-                SELECT p.product_type
-                FROM consumer_banking.accounts a
-                JOIN consumer_banking.products p
-                ON a.consumer_banking_product_id = p.consumer_banking_product_id
-                WHERE a.consumer_banking_account_id = %s;
-            """
-
-            # Execute the query and fetch the result
-            cursor.execute(query, (account_id,))
-            result = cursor.fetchone()
-
-            # Check if a result was found
-            if result is None:
-                raise Exception(f"No product_type found for account_id {account_id}")
-
-            # Return the product_type
-            return result.get('product_type')
-
-    except Exception as e:
-        # Reraise any exceptions that occur
-        raise Exception(f"Error fetching product_type for account_id {account_id}: {str(e)}")
-
-
-def get_consumer_balance(dg):
-    def get_balance(a, _b, _c):
-        conn = dg.conn
-        account_id = a.get('consumer_banking_account_id')
-        product_type = "CHECKING"
-        if account_id:
-            try:
-                product_type = get_product_type_by_account_id(conn, account_id)
-            except:
-                pass
-        value = generate_fake_balance(product_type=product_type)
-        return value
-
-    return get_balance
-
-
-def get_consumer_transaction(dg):
-    def get_transaction(a, _b, _c):
-        conn = dg.conn
-        account_id = a.get('consumer_banking_account_id')
-        product_type = "CHECKING"
-        if account_id:
-            try:
-                product_type = get_product_type_by_account_id(conn, account_id)
-            except:
-                pass
-        value = generate_fake_transaction(product_type=product_type)
-        return value
-
-    return get_transaction
-
-
 def consumer_banking(dg):
     return apply_schema_to_regex('consumer_banking', [
+        ('customer_interactions', random_record(dg, generate_random_customer_interaction)),
+        ('account_statement_preferences', random_record(dg, generate_random_account_statement_preference)),
+        ('transaction_ultimate_debtors', random_record(dg, generate_random_transaction_ultimate_debtor)),
+        ('transaction_ultimate_creditors', random_record(dg, generate_random_transaction_ultimate_creditor)),
+        ('transaction_card_instruments', random_record(dg, generate_random_transaction_card_instrument)),
+        ('transaction_debtor_agents', random_record(dg, generate_random_transaction_debtor_agent)),
+        ('transaction_debtor_accounts', random_record(dg, generate_random_transaction_debtor_account)),
+        ('transaction_creditor_accounts', random_record(dg, generate_random_transaction_creditor_account)),
+        ('transaction_creditor_agents', random_record(dg, generate_random_transaction_creditor_agent)),
+        ('transaction_merchant_details', random_record(dg, generate_random_transaction_merchant_detail)),
+        ('transaction_balances', random_record(dg, generate_random_transaction_balance)),
+        ('proprietary_transaction_codes', random_record(dg, generate_random_proprietary_transaction_code)),
+        ('transactions', random_record(dg, generate_random_transaction)),
+        ('transaction_bank_transaction_codes', random_record(dg, generate_random_transaction_bank_transaction_code)),
+        ('transaction_currency_exchanges', random_record(dg, generate_random_transaction_currency_exchange)),
+        ('transaction_statement_references', random_record(dg, generate_random_transaction_statement_reference)),
+        ('statement_benefits', random_record(dg, generate_random_statement_benefit)),
+        ('statement_values', random_record(dg, generate_random_statement_value)),
+        ('statement_rates', random_record(dg, generate_random_statement_rate)),
+        ('statement_date_times', random_record(dg, generate_random_statement_date_time)),
+        ('statement_amounts', random_record(dg, generate_random_statement_amount)),
+        ('statement_interests', random_record(dg, generate_random_statement_interest)),
+        ('statement_fees', random_record(dg, generate_random_statement_fee)),
+        ('statements', random_record(dg, generate_random_statement)),
+        ('standing_order_creditor_agents', random_record(dg, generate_random_standing_order_creditor_agent)),
+        ('standing_order_creditor_accounts', random_record(dg, generate_random_standing_order_creditor_account)),
+        ('standing_orders', random_record(dg, generate_random_standing_order)),
+        ('scheduled_payment_creditor_accounts', random_record(dg, generate_random_scheduled_payment_creditor_account)),
+        ('scheduled_payment_creditor_agents', random_record(dg, generate_random_scheduled_payment_creditor_agent)),
+        ('scheduled_payments', random_record(dg, generate_random_scheduled_payment)),
+        ('products', random_record(dg, generate_random_product)),
+        ('offers', random_record(dg, generate_random_offer)),
+        ('mandate_related_information', random_record(dg, generate_random_mandate_related_information)),
+        ('direct_debits', random_record(dg, generate_random_direct_debit)),
+        ('beneficiary_creditor_accounts', random_record(dg, generate_random_beneficiary_creditor_account)),
+        ('beneficiary_creditor_agents', random_record(dg, generate_random_beneficiary_creditor_agent)),
+        ('beneficiaries', random_record(dg, generate_random_beneficiary)),
         ('account_access_consents', random_record(dg, generate_random_account_access_consent)),
         ('accounts', random_record(dg, generate_random_account)),
-        ('transactions', 'charge_amount', consumer_banking_generate_transaction_fee),
-        ('transactions', 'charge_currency', lambda a, b, c: 'USD'),
-        ('transactions', 'merchant_address', lambda a, b, c: fake.address()),
-        ('customer_interactions', 'resolution',
-         text_list(consumer_banking__customer_interactions__resolution)),
-        ('customer_interactions', 'description',
-         text_list(consumer_banking__customer_interactions__description)),
-        ('transactions', 'amount', get_consumer_transaction(dg)),
-        ('balances', 'amount', get_consumer_balance(dg)),
-        ('customer_interactions', 'priority', text_list(["high," "medium," "low"])),
-        ('customer_interactions', 'status',
-         text_list(["open," "resolved", "not resolved", "pending"])),
-        ('customer_interactions', 'interaction_type',
-         text_list(["phone call," "email," "chat," "in-person," "online form," "ATM interaction"])),
-        ('customer_interactions', 'channel',
-         text_list(["phone," "email," "web," "branch," "mobile app"])),
-        ('statement_descriptions', 'description',
-         text_list(consumer_banking__statement__descriptions)),
-        ('beneficiaries', 'supplementary_data',
-         text_list(consumer_banking__beneficiaries__supplementary_data)),
-        ('transactions', 'category',
-         text_list(consumer_banking__transactions__category_purpose_code)),
-        ('transactions', 'transaction_type',
-         text_list(consumer_banking__transactions__payment_purpose_code)),
-        ('transactions', 'status', text_list([
-            "pending",
-            "completed",
-            "rejected",
-            "cancelled",
-            "failed",
-            "authorized",
-            "reversed",
-            "refunded"
-        ])),
-        ('transactions', 'transaction_mutability', text_list([
-            "mutable",
-            "immutable"
-        ])),
-        ('standing_orders', 'supplementary_data',
-         text_list(consumer_banking__standing_orders__supplementary_data)),
-        ('products', 'product_type', unique_list(tuple(consumer_banking__products__product_type))),
+        ('balances', random_record(dg, generate_random_balance)),
+        ('statement_descriptions', 'description', text_list(consumer_banking__statement__descriptions)),
     ])

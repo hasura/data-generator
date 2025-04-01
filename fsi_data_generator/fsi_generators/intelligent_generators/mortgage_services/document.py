@@ -1,10 +1,9 @@
-import datetime
-import random
+from .enums import DocumentStatus, DocumentType
+from data_generator import DataGenerator
 from typing import Any, Dict
 
-from data_generator import DataGenerator
-
-from .enums import DocumentStatus, DocumentType
+import datetime
+import random
 
 
 def generate_random_document(id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:

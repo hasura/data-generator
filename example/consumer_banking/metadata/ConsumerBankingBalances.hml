@@ -16,19 +16,19 @@ definition:
       type: Int4!
       description: Auto-incrementing identifier for each balance record
     - name: creditDebitIndicator
-      type: Varchar!
+      type: EnterpriseCreditDebitIndicator!
       description: Indicates if balance is credit or debit
     - name: currency
-      type: Varchar!
+      type: EnterpriseCurrencyCode!
       description: Currency code (e.g., USD, EUR)
     - name: dateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: When this balance was recorded
     - name: subType
-      type: Varchar
+      type: ConsumerBankingBalanceSubType
       description: Optional further classification of balance type
     - name: type
-      type: Varchar!
+      type: ConsumerBankingBalanceType!
       description: Primary balance type (e.g., available, closing, etc.)
   graphql:
     typeName: ConsumerBanking_ConsumerBankingBalances
@@ -96,17 +96,18 @@ definition:
         - fieldName: consumerBankingBalanceId
           booleanExpressionType: Int4BoolExp
         - fieldName: creditDebitIndicator
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCreditDebitIndicatorBoolExp
         - fieldName: currency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: dateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: subType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingBalanceSubTypeBoolExp
         - fieldName: type
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingBalanceTypeBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingAccount
+        - relationshipName: consumerBankingTransactions
   logicalOperators:
     enable: true
   isNull:
@@ -130,15 +131,15 @@ definition:
         - fieldName: consumerBankingBalanceId
           aggregateExpression: Int4AggExp
         - fieldName: creditDebitIndicator
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCreditDebitIndicatorAggExp
         - fieldName: currency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: dateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: subType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingBalanceSubTypeAggExp
         - fieldName: type
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingBalanceTypeAggExp
   count:
     enable: true
   graphql:
@@ -160,15 +161,15 @@ definition:
         - fieldName: consumerBankingBalanceId
           orderByExpression: Int4OrderByExp
         - fieldName: creditDebitIndicator
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCreditDebitIndicatorOrderByExp
         - fieldName: currency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: dateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: subType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingBalanceSubTypeOrderByExp
         - fieldName: type
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingBalanceTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingAccount
   graphql:
@@ -233,4 +234,26 @@ definition:
       target:
         modelField:
           - fieldName: consumerBankingAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingTransactions
+  sourceType: ConsumerBankingBalances
+  target:
+    model:
+      name: ConsumerBankingTransactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingTransactionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingBalanceId
+      target:
+        modelField:
+          - fieldName: consumerBankingBalanceId
+  graphql:
+    aggregateFieldName: consumerBankingTransactionsAggregate
 

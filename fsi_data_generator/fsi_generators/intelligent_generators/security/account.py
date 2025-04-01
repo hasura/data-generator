@@ -1,11 +1,10 @@
-import logging
-import random
-from datetime import datetime, timedelta
+from data_generator import DataGenerator, SkipRowGenerationError
+from datetime import datetime, timedelta, timezone
+from faker import Faker
 from typing import Any, Dict
 
-from faker import Faker
-
-from data_generator import DataGenerator, SkipRowGenerationError
+import logging
+import random
 
 # Track previously generated account ID strings for uniqueness
 prev_account_id_strings = set()
@@ -75,7 +74,7 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     manually_correlated = random.choices([True, False], weights=[0.3, 0.7])[0]
 
     # Generate dates with realistic constraints
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     # Account creation between 1-5 years ago
     created = now - timedelta(days=random.randint(365, 365 * 5))

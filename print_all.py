@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-import os
+from dotenv import load_dotenv
 
+import os
 import pandas as pd
 import psycopg2
-from dotenv import load_dotenv
 
 pd.set_option('display.max_rows', None)
 

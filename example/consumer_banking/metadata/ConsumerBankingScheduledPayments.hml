@@ -3,7 +3,7 @@ kind: ObjectType
 version: v1
 definition:
   name: ConsumerBankingScheduledPayments
-  description: Stores information about one-time future-dated payments
+  description: Stores information about one-time and recurring scheduled payments
   fields:
     - name: consumerBankingAccountId
       type: Int4!
@@ -14,21 +14,39 @@ definition:
     - name: debtorReference
       type: Varchar
       description: Reference identifier for the payer
+    - name: endDate
+      type: Date
+      description: End date for recurring payments
+    - name: executionCount
+      type: Int4
+      description: Number of times recurring payment has executed
+    - name: frequency
+      type: EnterpriseFrequency
+      description: Frequency of recurring payments if applicable
     - name: instructedAmount
       type: Numeric!
       description: Amount to be paid
     - name: instructedAmountCurrency
-      type: Varchar!
+      type: EnterpriseCurrencyCode!
       description: Currency of the payment amount
+    - name: maxExecutions
+      type: Int4
+      description: Maximum number of executions for recurring payment
+    - name: paymentMethod
+      type: ConsumerBankingPaymentMethod!
+      description: Method of payment execution
+    - name: paymentStatus
+      type: ConsumerBankingScheduledPaymentStatus!
+      description: Current status of the scheduled payment
     - name: reference
       type: Varchar
       description: Reference identifier for the payment
     - name: scheduledPaymentDateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: When the payment is scheduled to occur
     - name: scheduledType
-      type: Varchar!
-      description: Type of scheduled payment (e.g., single, recurring)
+      type: ConsumerBankingScheduledPaymentType!
+      description: Type of scheduled payment
   graphql:
     typeName: ConsumerBanking_ConsumerBankingScheduledPayments
     inputTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentsInput
@@ -45,12 +63,30 @@ definition:
         debtorReference:
           column:
             name: debtor_reference
+        endDate:
+          column:
+            name: end_date
+        executionCount:
+          column:
+            name: execution_count
+        frequency:
+          column:
+            name: frequency
         instructedAmount:
           column:
             name: instructed_amount
         instructedAmountCurrency:
           column:
             name: instructed_amount_currency
+        maxExecutions:
+          column:
+            name: max_executions
+        paymentMethod:
+          column:
+            name: payment_method
+        paymentStatus:
+          column:
+            name: payment_status
         reference:
           column:
             name: reference
@@ -73,8 +109,14 @@ definition:
           - consumerBankingAccountId
           - consumerBankingScheduledPaymentId
           - debtorReference
+          - endDate
+          - executionCount
+          - frequency
           - instructedAmount
           - instructedAmountCurrency
+          - maxExecutions
+          - paymentMethod
+          - paymentStatus
           - reference
           - scheduledPaymentDateTime
           - scheduledType
@@ -94,16 +136,28 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: debtorReference
           booleanExpressionType: VarcharBoolExp
+        - fieldName: endDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: executionCount
+          booleanExpressionType: Int4BoolExp
+        - fieldName: frequency
+          booleanExpressionType: EnterpriseFrequencyBoolExp
         - fieldName: instructedAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: instructedAmountCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
+        - fieldName: maxExecutions
+          booleanExpressionType: Int4BoolExp
+        - fieldName: paymentMethod
+          booleanExpressionType: ConsumerBankingPaymentMethodBoolExp
+        - fieldName: paymentStatus
+          booleanExpressionType: ConsumerBankingScheduledPaymentStatusBoolExp
         - fieldName: reference
           booleanExpressionType: VarcharBoolExp
         - fieldName: scheduledPaymentDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: scheduledType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingScheduledPaymentTypeBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingScheduledPaymentCreditorAccounts
         - relationshipName: consumerBankingScheduledPaymentCreditorAgents
@@ -130,16 +184,28 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: debtorReference
           aggregateExpression: VarcharAggExp
+        - fieldName: endDate
+          aggregateExpression: DateAggExp
+        - fieldName: executionCount
+          aggregateExpression: Int4AggExp
+        - fieldName: frequency
+          aggregateExpression: EnterpriseFrequencyAggExp
         - fieldName: instructedAmount
           aggregateExpression: NumericAggExp
         - fieldName: instructedAmountCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
+        - fieldName: maxExecutions
+          aggregateExpression: Int4AggExp
+        - fieldName: paymentMethod
+          aggregateExpression: ConsumerBankingPaymentMethodAggExp
+        - fieldName: paymentStatus
+          aggregateExpression: ConsumerBankingScheduledPaymentStatusAggExp
         - fieldName: reference
           aggregateExpression: VarcharAggExp
         - fieldName: scheduledPaymentDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: scheduledType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingScheduledPaymentTypeAggExp
   count:
     enable: true
   graphql:
@@ -160,16 +226,28 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: debtorReference
           orderByExpression: VarcharOrderByExp
+        - fieldName: endDate
+          orderByExpression: DateOrderByExp
+        - fieldName: executionCount
+          orderByExpression: Int4OrderByExp
+        - fieldName: frequency
+          orderByExpression: EnterpriseFrequencyOrderByExp
         - fieldName: instructedAmount
           orderByExpression: NumericOrderByExp
         - fieldName: instructedAmountCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
+        - fieldName: maxExecutions
+          orderByExpression: Int4OrderByExp
+        - fieldName: paymentMethod
+          orderByExpression: ConsumerBankingPaymentMethodOrderByExp
+        - fieldName: paymentStatus
+          orderByExpression: ConsumerBankingScheduledPaymentStatusOrderByExp
         - fieldName: reference
           orderByExpression: VarcharOrderByExp
         - fieldName: scheduledPaymentDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: scheduledType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingScheduledPaymentTypeOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingAccount
   graphql:
@@ -203,7 +281,7 @@ definition:
       queryRootField: consumerBankingScheduledPaymentsAggregate
       subscription:
         rootField: consumerBankingScheduledPaymentsAggregate
-  description: Stores information about one-time future-dated payments
+  description: Stores information about one-time and recurring scheduled payments
 
 ---
 kind: ModelPermissions

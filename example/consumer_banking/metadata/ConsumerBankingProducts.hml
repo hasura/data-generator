@@ -3,23 +3,62 @@ kind: ObjectType
 version: v1
 definition:
   name: ConsumerBankingProducts
-  description: Stores information about banking products associated with accounts
+  description: Defines the financial products offered to customers
   fields:
+    - name: baseInterestRate
+      type: Numeric
+      description: Standard interest rate for the product (if applicable)
     - name: consumerBankingProductId
       type: Int4!
       description: Unique identifier for each product
-    - name: marketingStateId
-      type: Varchar
-      description: Identifier for marketing campaign or state
+    - name: description
+      type: Text
+      description: Detailed product description
+    - name: discontinueDate
+      type: Date
+      description: Date when product was discontinued if applicable
+    - name: feeSchedule
+      type: ConsumerBankingAccountFeeSchedule!
+      description: Type of fee structure applicable to this product
+    - name: interestCalculationMethod
+      type: ConsumerBankingInterestCalculationMethod
+      description: Method used to calculate interest on the account
+    - name: isInterestBearing
+      type: Bool!
+      description: Indicates if the product earns interest
+    - name: launchDate
+      type: Date
+      description: Date when product was first offered
+    - name: minBalance
+      type: Numeric
+      description: Minimum balance to avoid fees
+    - name: minOpeningDeposit
+      type: Numeric
+      description: Minimum amount required to open an account of this product type
+    - name: monthlyFee
+      type: Numeric
+      description: Standard monthly maintenance fee
+    - name: productCode
+      type: Varchar!
+      description: Internal code for the product
     - name: productName
       type: Varchar!
-      description: Name of the banking product
+      description: Display name for the product
     - name: productType
-      type: Varchar!
-      description: Type of product (e.g., savings, checking, loan)
-    - name: secondaryProductId
-      type: Varchar
-      description: Alternative identifier for the product
+      type: ConsumerBankingProductType!
+      description: Type of product (checking, savings, money market, etc.)
+    - name: status
+      type: ConsumerBankingProductStatus!
+      description: Current availability status of the product
+    - name: termLength
+      type: Int4
+      description: Term in months (for term products)
+    - name: transactionFee
+      type: Numeric
+      description: Fee charged per transaction beyond the limit
+    - name: transactionLimit
+      type: Int4
+      description: Number of free transactions per statement period
   graphql:
     typeName: ConsumerBanking_ConsumerBankingProducts
     inputTypeName: ConsumerBanking_ConsumerBankingProductsInput
@@ -27,21 +66,60 @@ definition:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_products
       fieldMapping:
+        baseInterestRate:
+          column:
+            name: base_interest_rate
         consumerBankingProductId:
           column:
             name: consumer_banking_product_id
-        marketingStateId:
+        description:
           column:
-            name: marketing_state_id
+            name: description
+        discontinueDate:
+          column:
+            name: discontinue_date
+        feeSchedule:
+          column:
+            name: fee_schedule
+        interestCalculationMethod:
+          column:
+            name: interest_calculation_method
+        isInterestBearing:
+          column:
+            name: is_interest_bearing
+        launchDate:
+          column:
+            name: launch_date
+        minBalance:
+          column:
+            name: min_balance
+        minOpeningDeposit:
+          column:
+            name: min_opening_deposit
+        monthlyFee:
+          column:
+            name: monthly_fee
+        productCode:
+          column:
+            name: product_code
         productName:
           column:
             name: product_name
         productType:
           column:
             name: product_type
-        secondaryProductId:
+        status:
           column:
-            name: secondary_product_id
+            name: status
+        termLength:
+          column:
+            name: term_length
+        transactionFee:
+          column:
+            name: transaction_fee
+        transactionLimit:
+          column:
+            name: transaction_limit
 
 ---
 kind: TypePermissions
@@ -52,11 +130,24 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - baseInterestRate
           - consumerBankingProductId
-          - marketingStateId
+          - description
+          - discontinueDate
+          - feeSchedule
+          - interestCalculationMethod
+          - isInterestBearing
+          - launchDate
+          - minBalance
+          - minOpeningDeposit
+          - monthlyFee
+          - productCode
           - productName
           - productType
-          - secondaryProductId
+          - status
+          - termLength
+          - transactionFee
+          - transactionLimit
 
 ---
 kind: BooleanExpressionType
@@ -67,16 +158,42 @@ definition:
     object:
       type: ConsumerBankingProducts
       comparableFields:
+        - fieldName: baseInterestRate
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerBankingProductId
           booleanExpressionType: Int4BoolExp
-        - fieldName: marketingStateId
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: discontinueDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: feeSchedule
+          booleanExpressionType: ConsumerBankingAccountFeeScheduleBoolExp
+        - fieldName: interestCalculationMethod
+          booleanExpressionType: ConsumerBankingInterestCalculationMethodBoolExp
+        - fieldName: isInterestBearing
+          booleanExpressionType: BoolBoolExp
+        - fieldName: launchDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: minBalance
+          booleanExpressionType: NumericBoolExp
+        - fieldName: minOpeningDeposit
+          booleanExpressionType: NumericBoolExp
+        - fieldName: monthlyFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: productCode
           booleanExpressionType: VarcharBoolExp
         - fieldName: productName
           booleanExpressionType: VarcharBoolExp
         - fieldName: productType
-          booleanExpressionType: VarcharBoolExp
-        - fieldName: secondaryProductId
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingProductTypeBoolExp
+        - fieldName: status
+          booleanExpressionType: ConsumerBankingProductStatusBoolExp
+        - fieldName: termLength
+          booleanExpressionType: Int4BoolExp
+        - fieldName: transactionFee
+          booleanExpressionType: NumericBoolExp
+        - fieldName: transactionLimit
+          booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: consumerBankingAccounts
         - relationshipName: consumerBankingOtherProductTypes
@@ -96,16 +213,42 @@ definition:
     object:
       aggregatedType: ConsumerBankingProducts
       aggregatableFields:
+        - fieldName: baseInterestRate
+          aggregateExpression: NumericAggExp
         - fieldName: consumerBankingProductId
           aggregateExpression: Int4AggExp
-        - fieldName: marketingStateId
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: discontinueDate
+          aggregateExpression: DateAggExp
+        - fieldName: feeSchedule
+          aggregateExpression: ConsumerBankingAccountFeeScheduleAggExp
+        - fieldName: interestCalculationMethod
+          aggregateExpression: ConsumerBankingInterestCalculationMethodAggExp
+        - fieldName: isInterestBearing
+          aggregateExpression: BoolAggExp
+        - fieldName: launchDate
+          aggregateExpression: DateAggExp
+        - fieldName: minBalance
+          aggregateExpression: NumericAggExp
+        - fieldName: minOpeningDeposit
+          aggregateExpression: NumericAggExp
+        - fieldName: monthlyFee
+          aggregateExpression: NumericAggExp
+        - fieldName: productCode
           aggregateExpression: VarcharAggExp
         - fieldName: productName
           aggregateExpression: VarcharAggExp
         - fieldName: productType
-          aggregateExpression: VarcharAggExp
-        - fieldName: secondaryProductId
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingProductTypeAggExp
+        - fieldName: status
+          aggregateExpression: ConsumerBankingProductStatusAggExp
+        - fieldName: termLength
+          aggregateExpression: Int4AggExp
+        - fieldName: transactionFee
+          aggregateExpression: NumericAggExp
+        - fieldName: transactionLimit
+          aggregateExpression: Int4AggExp
   count:
     enable: true
   graphql:
@@ -120,16 +263,42 @@ definition:
     object:
       orderedType: ConsumerBankingProducts
       orderableFields:
+        - fieldName: baseInterestRate
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerBankingProductId
           orderByExpression: Int4OrderByExp
-        - fieldName: marketingStateId
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: discontinueDate
+          orderByExpression: DateOrderByExp
+        - fieldName: feeSchedule
+          orderByExpression: ConsumerBankingAccountFeeScheduleOrderByExp
+        - fieldName: interestCalculationMethod
+          orderByExpression: ConsumerBankingInterestCalculationMethodOrderByExp
+        - fieldName: isInterestBearing
+          orderByExpression: BoolOrderByExp
+        - fieldName: launchDate
+          orderByExpression: DateOrderByExp
+        - fieldName: minBalance
+          orderByExpression: NumericOrderByExp
+        - fieldName: minOpeningDeposit
+          orderByExpression: NumericOrderByExp
+        - fieldName: monthlyFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: productCode
           orderByExpression: VarcharOrderByExp
         - fieldName: productName
           orderByExpression: VarcharOrderByExp
         - fieldName: productType
-          orderByExpression: VarcharOrderByExp
-        - fieldName: secondaryProductId
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingProductTypeOrderByExp
+        - fieldName: status
+          orderByExpression: ConsumerBankingProductStatusOrderByExp
+        - fieldName: termLength
+          orderByExpression: Int4OrderByExp
+        - fieldName: transactionFee
+          orderByExpression: NumericOrderByExp
+        - fieldName: transactionLimit
+          orderByExpression: Int4OrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingProductsOrderByExp
@@ -162,7 +331,7 @@ definition:
       queryRootField: consumerBankingProductsAggregate
       subscription:
         rootField: consumerBankingProductsAggregate
-  description: Stores information about banking products associated with accounts
+  description: Defines the financial products offered to customers
 
 ---
 kind: ModelPermissions

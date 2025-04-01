@@ -1,10 +1,9 @@
+from .enums import AccountStatus
+from data_generator import DataGenerator
+from typing import Any, Dict
+
 import datetime
 import random
-from typing import Dict, Any
-
-from data_generator import DataGenerator
-
-from .enums import AccountStatus
 
 
 def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

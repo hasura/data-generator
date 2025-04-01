@@ -1,16 +1,14 @@
-import datetime
-import logging
-import random
-from typing import Any, Dict
-
-import psycopg2
-
+from .enums import (HmdaReportingPeriod, HmdaSubmissionStatus,
+                    HmdaSubmissionStatusDetail)
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from typing import Any, Dict
 
-from .enums import (HmdaReportingPeriod, HmdaSubmissionStatus,
-                    HmdaSubmissionStatusDetail)
+import datetime
+import logging
+import psycopg2
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +52,7 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
     submission_status = HmdaSubmissionStatus.get_random()
 
     # Generate detailed submission status based on the main status using HmdaSubmissionStatusDetail enum
-    detailed_status = None
+    # detailed_status = None
     if submission_status == HmdaSubmissionStatus.PENDING:
         detailed_status = random.choice([
             HmdaSubmissionStatusDetail.NO_DATA_UPLOADED,
@@ -83,14 +81,14 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
         confirmation_number = f"HMDA-{reporting_year}-{random.randint(100000, 999999)}"
 
     # Generate submission file path
-    submission_file_path = None
-    if submission_status != HmdaSubmissionStatus.PENDING:
-        file_name = f"hmda_submission_{reporting_year}_{reporting_period.value}_{random.randint(1000, 9999)}.dat"
-        submission_file_path = f"/data/hmda_submissions/{reporting_year}/{file_name}"
+    # submission_file_path = None
+    # if submission_status != HmdaSubmissionStatus.PENDING:
+    #     file_name = f"hmda_submission_{reporting_year}_{reporting_period.value}_{random.randint(1000, 9999)}.dat"
+    #     submission_file_path = f"/data/hmda_submissions/{reporting_year}/{file_name}"
 
     # Generate response date and status for submissions
     response_date = None
-    response_status = None
+    # response_status = None
     response_details = None
 
     if submission_status in [HmdaSubmissionStatus.ACCEPTED, HmdaSubmissionStatus.REJECTED]:
@@ -99,7 +97,7 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
         response_date = submission_date + datetime.timedelta(days=response_days)
 
         if submission_status == HmdaSubmissionStatus.ACCEPTED:
-            response_status = "accepted"
+            # response_status = "accepted"
 
             # Start with hardcoded acceptance messages
             acceptance_messages = [
@@ -129,7 +127,7 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
             response_details = random.choice(acceptance_messages)
 
         elif submission_status == HmdaSubmissionStatus.REJECTED:
-            response_status = "rejected"
+            # response_status = "rejected"
 
             # Start with hardcoded rejection messages
             rejection_messages = [

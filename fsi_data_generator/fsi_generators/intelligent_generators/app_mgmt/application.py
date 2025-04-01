@@ -1,13 +1,12 @@
-import datetime
-import logging
-import random
-from typing import Any, Dict
-
-import psycopg2
-
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from typing import Any, Dict
+
+import datetime
+import logging
+import psycopg2
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +96,7 @@ def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -
 
         # Keep generating new combinations until we find a unique one
         while True:
-            timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
             application_name = f"{random.choice(base_names)} {random.choice(suffixes)} {timestamp[-4:]}"
 
             if application_name not in existing_application_names:

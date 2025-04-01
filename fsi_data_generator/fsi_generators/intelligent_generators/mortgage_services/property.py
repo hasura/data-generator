@@ -1,16 +1,14 @@
-import datetime
-import logging
-import random
-import sys
+from .enums import OccupancyType, PropertyType
+from data_generator import DataGenerator
 from datetime import timedelta
+from faker import Faker
 from typing import Any, Dict
 
+import datetime
+import logging
 import psycopg2
-from faker import Faker
-
-from data_generator import DataGenerator
-
-from .enums import OccupancyType, PropertyType
+import random
+import sys
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -59,7 +57,7 @@ def generate_random_property(id_fields: Dict[str, Any], dg: DataGenerator) -> Di
     # Extract relevant information from the application
     application_type = loan_application.get("application_type")
     loan_purpose = loan_application.get("loan_purpose")
-    estimated_property_value = float(loan_application.get("estimated_property_value"))
+    estimated_property_value = loan_application.get("estimated_property_value")
 
     # Get loan product information
     product_type = "conventional"  # default

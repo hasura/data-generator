@@ -1,15 +1,13 @@
-import datetime
-import logging
-import random
-from typing import Any, Dict, Optional
-
-import psycopg2
-
+from .enums import HmdaEditStatus, HmdaEditType
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
+from typing import Any, Dict, Optional
 
-from .enums import HmdaEditStatus, HmdaEditType
+import datetime
+import logging
+import psycopg2
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -49,18 +47,18 @@ def generate_random_hmda_edit(ids_dict, dg: DataGenerator) -> Dict[str, Any]:
     reporting_year = hmda_record_info.get('reporting_year')
     if not reporting_year:
         # Default to previous year if not found
-        reporting_year = datetime.datetime.now().year - 1
+        reporting_year = datetime.datetime.now(datetime.timezone.utc).year - 1
 
     # Convert to integer if it's a string
     if isinstance(reporting_year, str):
         try:
             reporting_year = int(reporting_year)
         except (ValueError, TypeError):
-            reporting_year = datetime.datetime.now().year - 1
+            reporting_year = datetime.datetime.now(datetime.timezone.utc).year - 1
 
     # HMDA submissions typically happen in early months of the following year
     # For records from the previous year, edits usually occur Jan-Mar of current year
-    current_year = datetime.datetime.now().year
+    current_year = datetime.datetime.now(datetime.timezone.utc).year
     if reporting_year == current_year - 1:
         # Generate date in Jan-Mar of current year for previous year's data
         month = random.randint(1, 3)  # Jan-Mar

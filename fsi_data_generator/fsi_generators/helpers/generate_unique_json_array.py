@@ -1,10 +1,10 @@
-import json
-import logging
-import os
+from dotenv import load_dotenv  # Import load_dotenv
 from json import JSONDecodeError
 
 import anthropic
-from dotenv import load_dotenv  # Import load_dotenv
+import json
+import logging
+import os
 
 load_dotenv()  # Load environment variables from .env file
 # Assuming you have your Anthropic API key set as an environment variable or otherwise accessible
@@ -114,7 +114,7 @@ def generate_unique_json_array(dbml_string, fully_qualified_column_name, count, 
 
         response_text = complete_response
 
-        # Clean up response if it's wrapped in markdown code blocks
+        # Clean up response if it's wrapped in Markdown code blocks
         response_text = response_text.strip()
         if response_text.startswith("```json"):
             response_text = response_text.replace("```json", "", 1)

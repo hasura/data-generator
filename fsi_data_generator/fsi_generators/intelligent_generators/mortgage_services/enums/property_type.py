@@ -1,5 +1,6 @@
-import random
 from enum import Enum
+
+import random
 
 
 class PropertyType(str, Enum):

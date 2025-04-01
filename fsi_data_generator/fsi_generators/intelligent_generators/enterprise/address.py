@@ -1,15 +1,12 @@
+from ...helpers.parse_address import parse_address
+from .enums import AddressType
+from data_generator import DataGenerator
+from faker import Faker
+from typing import Any, Dict
+
 import logging
 import random
 import re
-from typing import Any, Dict
-
-from faker import Faker
-
-from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.helpers.parse_address import \
-    parse_address
-
-from .enums import AddressType
 
 logger = logging.getLogger(__name__)
 fake = Faker()  # Initialize Faker

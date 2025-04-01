@@ -1,9 +1,9 @@
-import logging
-import random
+from data_generator import DataGenerator
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
-from data_generator import DataGenerator
+import logging
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ def generate_random_iam_login(id_fields: Dict[str, Any], dg: DataGenerator) -> D
             earliest_login_time = account_created
 
     if latest_possible_login < earliest_login_time:
-        # Edge case: if latest possible login is before earliest login time
+        # Edge case: if latest possible login is before the earliest login time
         # (e.g., account was disabled/locked very soon after creation)
         login_time = latest_possible_login - timedelta(
             hours=random.randint(0, 24),

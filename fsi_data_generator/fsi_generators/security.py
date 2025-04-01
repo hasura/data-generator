@@ -1,5 +1,3 @@
-from faker import Faker
-
 from .helpers import (apply_schema_to_regex, generate_unique_composite_key,
                       random_record)
 from .intelligent_generators.security import (
@@ -16,6 +14,7 @@ from .intelligent_generators.security import (
     generate_random_resource_definition, generate_random_role_entitlement,
     generate_random_running_service, generate_random_security_role,
     generate_random_system_stat, generate_random_usb_device_usage)
+from faker import Faker
 
 fake = Faker()
 

@@ -1,13 +1,11 @@
-import logging
-import random
+from ...helpers.generate_unique_json_array import generate_unique_json_array
+from data_generator import DataGenerator, SkipRowGenerationError
+from faker import Faker
 from typing import Any, Dict
 
+import logging
 import psycopg2
-from faker import Faker
-
-from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+import random
 
 logger = logging.getLogger(__name__)
 fake = Faker()  # Initialize Faker

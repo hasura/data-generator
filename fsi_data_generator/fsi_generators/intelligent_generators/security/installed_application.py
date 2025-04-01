@@ -1,9 +1,9 @@
-import logging
-import random
-from datetime import datetime, timedelta
+from data_generator import DataGenerator, SkipRowGenerationError
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict
 
-from data_generator import DataGenerator, SkipRowGenerationError
+import logging
+import random
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -41,10 +41,10 @@ def generate_random_installed_application(id_fields: Dict[str, Any], dg: DataGen
     )
 
     # Generate installation date (within the last 2 years, but not after the app's deployment date)
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     max_days_ago = 365 * 2  # 2 years
 
-    # If we have the application's deployment date, use that as the earliest possible install date
+    # If we have the application's deployment date, use that as the earliest possible installation date
     app_deploy_date = application_info.get('date_deployed')
     if app_deploy_date and isinstance(app_deploy_date, datetime):
         days_since_deploy = (now - app_deploy_date).days

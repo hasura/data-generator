@@ -1,13 +1,12 @@
-import logging
-import random
+from data_generator import DataGenerator, SkipRowGenerationError
 from datetime import datetime, timedelta
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
+    generate_unique_json_array
 from typing import Any, Dict, Set
 
 import anthropic
-
-from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+import logging
+import random
 
 # Track previously generated policy names to ensure uniqueness
 prev_policy_names: Set[str] = set()
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def generate_random_policy(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
-    Generate a random security.policies record.
+    Generate a random "security.policies" record.
 
     Args:
         _id_fields: Dictionary containing predetermined ID fields
@@ -93,7 +92,7 @@ def generate_random_policy(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     # Determine if the policy has an end date
     has_end_date = random.random() < 0.15  # 15% chance of having an end date
 
-    # ended_at: If has_end_date, between start date and now
+    # ended_at: If is has_end_date, between start date and now
     ended_at = None
     if has_end_date:
         # Must be at least 30 days after start

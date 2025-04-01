@@ -1,11 +1,10 @@
-import datetime
-import logging
-import random
+from .enums import EscrowAnalysisStatus
 from typing import Any, Dict, Optional
 
+import datetime
+import logging
 import psycopg2
-
-from .enums import EscrowAnalysisStatus
+import random
 
 logger = logging.getLogger(__name__)
 

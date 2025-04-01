@@ -1,11 +1,10 @@
-import datetime
-import logging
-import random
+from .enums import HardshipReason, LoanModificationStatus, LoanModificationType
 from typing import Any, Dict, Optional
 
+import datetime
+import logging
 import psycopg2
-
-from .enums import HardshipReason, LoanModificationStatus, LoanModificationType
+import random
 
 logger = logging.getLogger(__name__)
 

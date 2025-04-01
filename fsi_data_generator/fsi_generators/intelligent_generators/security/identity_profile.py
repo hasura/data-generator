@@ -1,13 +1,12 @@
-import random
+from data_generator import DataGenerator, SkipRowGenerationError
 from datetime import datetime, timedelta
+from faker import Faker
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
+    generate_unique_json_array
 from typing import Any, Dict
 
 import anthropic
-from faker import Faker
-
-from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+import random
 
 # Track previously generated profile names for uniqueness
 prev_profile_names = set()

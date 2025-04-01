@@ -1,10 +1,10 @@
-import random
 from enum import Enum
-
 from fsi_data_generator.fsi_generators.intelligent_generators.security.agent_status import \
     AgentStatus
 from fsi_data_generator.fsi_generators.intelligent_generators.security.patch_status import \
     PatchStatus
+
+import random
 
 
 class ComplianceStatus(str, Enum):

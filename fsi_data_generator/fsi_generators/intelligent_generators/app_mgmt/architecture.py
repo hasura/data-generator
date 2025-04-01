@@ -1,12 +1,10 @@
-import datetime
-import random
+from ...helpers.generate_unique_json_array import generate_unique_json_array
+from data_generator import DataGenerator
 from typing import Any, Dict
 
 import anthropic
-
-from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+import datetime
+import random
 
 architecture_names: [str] = []
 

@@ -102,8 +102,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'John Doe Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-03-01T10:00:00Z',
        '2023-03-01T10:00:00Z',
        'Online Transfer',
@@ -119,8 +119,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Jane Smith Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'CR',
-       'booked',
+       'CREDIT',
+       'BOOKED',
        '2023-03-01T10:15:00Z',
        '2023-03-01T10:15:00Z',
        'Online Transfer',
@@ -136,8 +136,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'John Doe Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-03-15T12:00:00Z',
        '2023-03-15T12:00:00Z',
        'ATM Withdrawal',
@@ -153,8 +153,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Jane Smith Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'CR',
-       'booked',
+       'CREDIT',
+       'BOOKED',
        '2023-03-15T14:00:00Z',
        '2023-03-15T14:00:00Z',
        'Deposit',
@@ -170,8 +170,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'John Doe Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-04-01T09:00:00Z',
        '2023-04-01T09:00:00Z',
        'Check #123',
@@ -187,8 +187,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Jane Smith Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'CR',
-       'booked',
+       'CREDIT',
+       'BOOKED',
        '2023-04-05T10:00:00Z',
        '2023-04-05T10:00:00Z',
        'Deposit',
@@ -294,8 +294,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Alice Johnson Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-03-05T14:30:00Z',
        '2023-03-05T14:30:00Z',
        'ATM Withdrawal',
@@ -311,8 +311,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Bob Williams Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'CR',
-       'booked',
+       'CREDIT',
+       'BOOKED',
        '2023-03-05T14:45:00Z',
        '2023-03-05T14:45:00Z',
        'Deposit',
@@ -328,8 +328,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Bob Williams Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-03-06T09:00:00Z',
        '2023-03-06T09:00:00Z',
        'Online Purchase',
@@ -345,8 +345,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Alice Johnson Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-03-20T10:00:00Z',
        '2023-03-20T10:00:00Z',
        'Transfer to External Account',
@@ -362,8 +362,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Bob Williams Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'CR',
-       'booked',
+       'CREDIT',
+       'BOOKED',
        '2023-03-20T10:30:00Z',
        '2023-03-20T10:30:00Z',
        'Incoming Wire',
@@ -379,8 +379,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Alice Johnson Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-04-10T16:00:00Z',
        '2023-04-10T16:00:00Z',
        'Bill Payment - Utility Company',
@@ -396,8 +396,8 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Bob Williams Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-04-11T08:00:00Z',
        '2023-04-11T08:00:00Z',
        'Withdrawal - Casino ATM',
@@ -554,15 +554,15 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Charlie Brown Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-02-10T11:00:00Z',
        '2023-02-10T11:00:00Z',
        'Online Transfer to Lucy',
        500.00,
        'USD',
-       'Cash',
-       'Other';
+       'TRANSFER',
+       'OTHER';
 
 INSERT INTO consumer_banking.transactions (consumer_banking_account_id, credit_debit_indicator, status,
                                            transaction_date, value_date, description, amount, currency, category,
@@ -574,15 +574,15 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Lucy Van Pelt Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'CR',
-       'booked',
+       'CREDIT',
+       'BOOKED',
        '2023-02-10T11:15:00Z',
        '2023-02-10T11:15:00Z',
        'Online Transfer',
        500.00,
        'USD',
-       'Cash',
-       'Other';
+       'TRANSFER',
+       'OTHER';
 
 INSERT INTO consumer_banking.transactions (consumer_banking_account_id, credit_debit_indicator, status,
                                            transaction_date, value_date, description, amount, currency, category,
@@ -594,15 +594,15 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Lucy Van Pelt Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-02-11T10:00:00Z',
        '2023-02-11T10:00:00Z',
        'Purchase - Department Store',
        450.00,
        'USD',
-       'Cash',
-       'Other';
+       'TRANSFER',
+       'OTHER';
 
 INSERT INTO consumer_banking.transactions (consumer_banking_account_id, credit_debit_indicator, status,
                                            transaction_date, value_date, description, amount, currency, category,
@@ -614,15 +614,15 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Charlie Brown Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-03-05T15:30:00Z',
        '2023-03-05T15:30:00Z',
        'Check #456 to Linus',
        1000.00,
        'USD',
-       'Cash',
-       'Other';
+       'TRANSFER',
+       'OTHER';
 
 INSERT INTO consumer_banking.transactions (consumer_banking_account_id, credit_debit_indicator, status,
                                            transaction_date, value_date, description, amount, currency, category,
@@ -634,15 +634,15 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Linus Van Pelt Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'CR',
-       'booked',
+       'CREDIT',
+       'BOOKED',
        '2023-03-08T09:00:00Z',
        '2023-03-08T09:00:00Z',
        'Deposit - Check',
        1000.00,
        'USD',
-       'Cash',
-       'Other';
+       'TRANSFER',
+       'OTHER';
 
 INSERT INTO consumer_banking.transactions (consumer_banking_account_id, credit_debit_indicator, status,
                                            transaction_date, value_date, description, amount, currency, category,
@@ -654,14 +654,14 @@ SELECT (SELECT consumer_banking_account_id
         WHERE enterprise.accounts.description = 'Linus Van Pelt Main Account'
         ORDER BY consumer_banking_account_id DESC
         LIMIT 1),
-       'DR',
-       'booked',
+       'DEBIT',
+       'BOOKED',
        '2023-03-10T14:00:00Z',
        '2023-03-10T14:00:00Z',
        'Online Transfer - Personal Account',
        900.00,
        'USD',
-       'Cash',
-       'Other';
+       'TRANSFER',
+       'OTHER';
 
 COMMIT; -- Complete the transaction

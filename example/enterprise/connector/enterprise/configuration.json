@@ -255,7 +255,7 @@
           "date_deployed": {
             "name": "date_deployed",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "Date the application was deployed to its environment."
@@ -263,7 +263,7 @@
           "date_retired": {
             "name": "date_retired",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "Date the application was retired or decommissioned."
@@ -453,7 +453,7 @@
           "approval_date": {
             "name": "approval_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "Date when the architectural design was officially approved."
@@ -991,6 +991,14 @@
         "schemaName": "consumer_banking",
         "tableName": "account_access_consents",
         "columns": {
+          "consumer_banking_account_id": {
+            "name": "consumer_banking_account_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "References the account that the consent is related to."
+          },
           "consumer_banking_consent_id": {
             "name": "consumer_banking_consent_id",
             "type": {
@@ -1003,7 +1011,7 @@
           "creation_date_time": {
             "name": "creation_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the consent was initially created"
@@ -1011,7 +1019,7 @@
           "expiration_date_time": {
             "name": "expiration_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the consent will expire (if applicable)"
@@ -1019,7 +1027,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_consent_status"
             },
             "nullable": "nonNullable",
             "description": "Current status of the consent (e.g., Active, Revoked)"
@@ -1027,7 +1035,7 @@
           "status_update_date_time": {
             "name": "status_update_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the status was last changed"
@@ -1038,7 +1046,15 @@
             "consumer_banking_consent_id"
           ]
         },
-        "foreignRelations": {},
+        "foreignRelations": {
+          "account_access_consents_consumer_banking_account_id_fkey": {
+            "foreignSchema": "consumer_banking",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "consumer_banking_account_id": "consumer_banking_account_id"
+            }
+          }
+        },
         "description": "Stores consent records for account access, tracking when and how third parties are permitted to access consumer banking account information"
       },
       "consumer_banking_account_access_consents_permissions": {
@@ -1088,7 +1104,7 @@
           "communication_method": {
             "name": "communication_method",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_communication_method"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -1102,6 +1118,14 @@
             "nullable": "nonNullable",
             "description": null
           },
+          "consumer_banking_statement_id": {
+            "name": "consumer_banking_statement_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Fake relationship, to influence data generator and make statements be created before this record."
+          },
           "enterprise_address_id": {
             "name": "enterprise_address_id",
             "type": {
@@ -1113,7 +1137,7 @@
           "format": {
             "name": "format",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_statement_format"
             },
             "nullable": "nonNullable",
             "description": null
@@ -1121,7 +1145,7 @@
           "frequency": {
             "name": "frequency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_frequency"
             },
             "nullable": "nonNullable",
             "description": null
@@ -1150,6 +1174,13 @@
             "foreignTable": "accounts",
             "columnMapping": {
               "consumer_banking_account_id": "consumer_banking_account_id"
+            }
+          },
+          "account_statement_preferences_consumer_banking_statement_i_fkey": {
+            "foreignSchema": "consumer_banking",
+            "foreignTable": "statements",
+            "columnMapping": {
+              "consumer_banking_statement_id": "consumer_banking_statement_id"
             }
           },
           "account_statement_preferences_enterprise_address_id_fkey": {
@@ -1202,7 +1233,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_account_status"
             },
             "nullable": "nonNullable",
             "description": "Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed"
@@ -1271,7 +1302,7 @@
           "credit_debit_indicator": {
             "name": "credit_debit_indicator",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_credit_debit_indicator"
             },
             "nullable": "nonNullable",
             "description": "Indicates if balance is credit or debit"
@@ -1279,7 +1310,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Currency code (e.g., USD, EUR)"
@@ -1287,7 +1318,7 @@
           "date_time": {
             "name": "date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When this balance was recorded"
@@ -1295,7 +1326,7 @@
           "sub_type": {
             "name": "sub_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_balance_sub_type"
             },
             "nullable": "nullable",
             "description": "Optional further classification of balance type"
@@ -1303,7 +1334,7 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_balance_type"
             },
             "nullable": "nonNullable",
             "description": "Primary balance type (e.g., available, closing, etc.)"
@@ -1332,10 +1363,10 @@
           "beneficiary_type": {
             "name": "beneficiary_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_beneficiary_type"
             },
             "nullable": "nonNullable",
-            "description": "Type of beneficiary (e.g., individual, organization)"
+            "description": "Type of beneficiary (individual, organization, etc.)"
           },
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
@@ -1427,7 +1458,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Account identifier scheme (e.g., IBAN, BBAN)"
@@ -1505,7 +1536,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Identifier scheme (e.g., BIC, SORT)"
@@ -1559,7 +1590,7 @@
           "created_at": {
             "name": "created_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -1592,7 +1623,7 @@
           "interaction_date_time": {
             "name": "interaction_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "The date and time of the interaction."
@@ -1648,7 +1679,7 @@
           "updated_at": {
             "name": "updated_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -1702,7 +1733,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the account this balance belongs to"
+            "description": "References the account this direct debit belongs to"
           },
           "consumer_banking_direct_debit_id": {
             "name": "consumer_banking_direct_debit_id",
@@ -1716,7 +1747,7 @@
           "direct_debit_status_code": {
             "name": "direct_debit_status_code",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_direct_debit_status_code"
             },
             "nullable": "nonNullable",
             "description": "Status code of the direct debit (e.g., active, canceled)"
@@ -1748,7 +1779,7 @@
           "previous_payment_date_time": {
             "name": "previous_payment_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the last payment was made"
@@ -1777,7 +1808,7 @@
           "category": {
             "name": "category",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_direct_debit_category"
             },
             "nullable": "nullable",
             "description": "Purpose code for categorizing the payment type"
@@ -1785,7 +1816,7 @@
           "classification": {
             "name": "classification",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_direct_debit_classification"
             },
             "nullable": "nullable",
             "description": "Classification of the mandate (e.g., personal, business)"
@@ -1810,7 +1841,7 @@
           "final_payment_date_time": {
             "name": "final_payment_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the final payment is scheduled (if applicable)"
@@ -1818,7 +1849,7 @@
           "first_payment_date_time": {
             "name": "first_payment_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the first payment is scheduled"
@@ -1842,7 +1873,7 @@
           "frequency_type": {
             "name": "frequency_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_frequency"
             },
             "nullable": "nonNullable",
             "description": "How often payments occur (e.g., monthly, weekly)"
@@ -1866,7 +1897,7 @@
           "recurring_payment_date_time": {
             "name": "recurring_payment_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When recurring payments are scheduled"
@@ -1903,7 +1934,7 @@
           "amount_currency": {
             "name": "amount_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency of the offer amount"
@@ -1914,7 +1945,7 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the account this balance belongs to"
+            "description": "References the account this offer belongs to"
           },
           "consumer_banking_offer_id": {
             "name": "consumer_banking_offer_id",
@@ -1936,7 +1967,7 @@
           "end_date_time": {
             "name": "end_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the offer expires"
@@ -1952,7 +1983,7 @@
           "fee_currency": {
             "name": "fee_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency of the fee"
@@ -1960,7 +1991,7 @@
           "offer_type": {
             "name": "offer_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_offer_type"
             },
             "nullable": "nonNullable",
             "description": "Type of offer (e.g., loan, investment, balance transfer)"
@@ -1976,7 +2007,7 @@
           "start_date_time": {
             "name": "start_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the offer becomes available"
@@ -2080,6 +2111,14 @@
         "schemaName": "consumer_banking",
         "tableName": "products",
         "columns": {
+          "base_interest_rate": {
+            "name": "base_interest_rate",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Standard interest rate for the product (if applicable)"
+          },
           "consumer_banking_product_id": {
             "name": "consumer_banking_product_id",
             "type": {
@@ -2089,13 +2128,87 @@
             "hasDefault": "hasDefault",
             "description": "Unique identifier for each product"
           },
-          "marketing_state_id": {
-            "name": "marketing_state_id",
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Detailed product description"
+          },
+          "discontinue_date": {
+            "name": "discontinue_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Date when product was discontinued if applicable"
+          },
+          "fee_schedule": {
+            "name": "fee_schedule",
+            "type": {
+              "scalarType": "consumer_banking_account_fee_schedule"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Type of fee structure applicable to this product"
+          },
+          "interest_calculation_method": {
+            "name": "interest_calculation_method",
+            "type": {
+              "scalarType": "consumer_banking_interest_calculation_method"
+            },
+            "nullable": "nullable",
+            "description": "Method used to calculate interest on the account"
+          },
+          "is_interest_bearing": {
+            "name": "is_interest_bearing",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Indicates if the product earns interest"
+          },
+          "launch_date": {
+            "name": "launch_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Date when product was first offered"
+          },
+          "min_balance": {
+            "name": "min_balance",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Minimum balance to avoid fees"
+          },
+          "min_opening_deposit": {
+            "name": "min_opening_deposit",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Minimum amount required to open an account of this product type"
+          },
+          "monthly_fee": {
+            "name": "monthly_fee",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Standard monthly maintenance fee"
+          },
+          "product_code": {
+            "name": "product_code",
             "type": {
               "scalarType": "varchar"
             },
-            "nullable": "nullable",
-            "description": "Identifier for marketing campaign or state"
+            "nullable": "nonNullable",
+            "description": "Internal code for the product"
           },
           "product_name": {
             "name": "product_name",
@@ -2103,23 +2216,48 @@
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": "Name of the banking product"
+            "description": "Display name for the product"
           },
           "product_type": {
             "name": "product_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_product_type"
             },
             "nullable": "nonNullable",
-            "description": "Type of product (e.g., savings, checking, loan)"
+            "description": "Type of product (checking, savings, money market, etc.)"
           },
-          "secondary_product_id": {
-            "name": "secondary_product_id",
+          "status": {
+            "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_product_status"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Current availability status of the product"
+          },
+          "term_length": {
+            "name": "term_length",
+            "type": {
+              "scalarType": "int4"
             },
             "nullable": "nullable",
-            "description": "Alternative identifier for the product"
+            "description": "Term in months (for term products)"
+          },
+          "transaction_fee": {
+            "name": "transaction_fee",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Fee charged per transaction beyond the limit"
+          },
+          "transaction_limit": {
+            "name": "transaction_limit",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Number of free transactions per statement period"
           }
         },
         "uniquenessConstraints": {
@@ -2128,7 +2266,7 @@
           ]
         },
         "foreignRelations": {},
-        "description": "Stores information about banking products associated with accounts"
+        "description": "Defines the financial products offered to customers"
       },
       "consumer_banking_proprietary_transaction_codes": {
         "schemaName": "consumer_banking",
@@ -2224,7 +2362,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Account identifier scheme (e.g., IBAN)"
@@ -2302,7 +2440,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Identifier scheme for the receiving institution (e.g., BIC)"
@@ -2353,6 +2491,30 @@
             "nullable": "nullable",
             "description": "Reference identifier for the payer"
           },
+          "end_date": {
+            "name": "end_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "End date for recurring payments"
+          },
+          "execution_count": {
+            "name": "execution_count",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Number of times recurring payment has executed"
+          },
+          "frequency": {
+            "name": "frequency",
+            "type": {
+              "scalarType": "enterprise_frequency"
+            },
+            "nullable": "nullable",
+            "description": "Frequency of recurring payments if applicable"
+          },
           "instructed_amount": {
             "name": "instructed_amount",
             "type": {
@@ -2364,10 +2526,35 @@
           "instructed_amount_currency": {
             "name": "instructed_amount_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Currency of the payment amount"
+          },
+          "max_executions": {
+            "name": "max_executions",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Maximum number of executions for recurring payment"
+          },
+          "payment_method": {
+            "name": "payment_method",
+            "type": {
+              "scalarType": "consumer_banking_payment_method"
+            },
+            "nullable": "nonNullable",
+            "description": "Method of payment execution"
+          },
+          "payment_status": {
+            "name": "payment_status",
+            "type": {
+              "scalarType": "consumer_banking_scheduled_payment_status"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Current status of the scheduled payment"
           },
           "reference": {
             "name": "reference",
@@ -2380,7 +2567,7 @@
           "scheduled_payment_date_time": {
             "name": "scheduled_payment_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the payment is scheduled to occur"
@@ -2388,10 +2575,10 @@
           "scheduled_type": {
             "name": "scheduled_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_scheduled_payment_type"
             },
             "nullable": "nonNullable",
-            "description": "Type of scheduled payment (e.g., single, recurring)"
+            "description": "Type of scheduled payment"
           }
         },
         "uniquenessConstraints": {
@@ -2408,7 +2595,7 @@
             }
           }
         },
-        "description": "Stores information about one-time future-dated payments"
+        "description": "Stores information about one-time and recurring scheduled payments"
       },
       "consumer_banking_standing_order_creditor_accounts": {
         "schemaName": "consumer_banking",
@@ -2450,7 +2637,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Account identifier scheme (e.g., IBAN)"
@@ -2528,7 +2715,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Identifier scheme for the receiving institution"
@@ -2554,13 +2741,21 @@
         "schemaName": "consumer_banking",
         "tableName": "standing_orders",
         "columns": {
+          "category": {
+            "name": "category",
+            "type": {
+              "scalarType": "consumer_banking_standing_order_category"
+            },
+            "nullable": "nullable",
+            "description": "Category or purpose of the standing order"
+          },
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the account this balance belongs to"
+            "description": "References the account this standing order belongs to"
           },
           "consumer_banking_standing_order_id": {
             "name": "consumer_banking_standing_order_id",
@@ -2570,6 +2765,55 @@
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
             "description": "Unique identifier for each standing order"
+          },
+          "created_by": {
+            "name": "created_by",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Who or what created the standing order"
+          },
+          "created_date": {
+            "name": "created_date",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "When the standing order was created"
+          },
+          "day_of_month": {
+            "name": "day_of_month",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Day of month for payments (for monthly/quarterly frequencies)"
+          },
+          "day_of_week": {
+            "name": "day_of_week",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Day of week for payments (for weekly frequencies)"
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Description of the standing order purpose"
+          },
+          "end_date": {
+            "name": "end_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Date when the standing order expires (if specified)"
           },
           "final_payment_amount": {
             "name": "final_payment_amount",
@@ -2582,7 +2826,7 @@
           "final_payment_currency": {
             "name": "final_payment_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency of the final payment"
@@ -2598,10 +2842,18 @@
           "first_payment_currency": {
             "name": "first_payment_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency of the first payment"
+          },
+          "frequency": {
+            "name": "frequency",
+            "type": {
+              "scalarType": "enterprise_frequency"
+            },
+            "nullable": "nonNullable",
+            "description": "Frequency of standing order payments"
           },
           "last_payment_amount": {
             "name": "last_payment_amount",
@@ -2614,7 +2866,7 @@
           "last_payment_currency": {
             "name": "last_payment_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency of the most recent payment"
@@ -2622,10 +2874,18 @@
           "last_payment_date_time": {
             "name": "last_payment_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the most recent payment was made"
+          },
+          "modified_date": {
+            "name": "modified_date",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": "When the standing order was last modified"
           },
           "next_payment_amount": {
             "name": "next_payment_amount",
@@ -2638,7 +2898,7 @@
           "next_payment_currency": {
             "name": "next_payment_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency of the next payment"
@@ -2646,18 +2906,44 @@
           "next_payment_date_time": {
             "name": "next_payment_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the next payment is scheduled"
           },
-          "standing_order_status_code": {
-            "name": "standing_order_status_code",
+          "payment_type": {
+            "name": "payment_type",
+            "type": {
+              "scalarType": "consumer_banking_standing_order_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Type of payment (fixed, variable, etc.)"
+          },
+          "reference": {
+            "name": "reference",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nullable",
+            "description": "Payment reference shown to the recipient"
+          },
+          "standing_order_status_code": {
+            "name": "standing_order_status_code",
+            "type": {
+              "scalarType": "consumer_banking_standing_order_status_code"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
             "description": "Status code of the standing order (e.g., active, canceled)"
+          },
+          "start_date": {
+            "name": "start_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": "Date when the first payment should be made"
           },
           "supplementary_data": {
             "name": "supplementary_data",
@@ -2665,7 +2951,7 @@
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": "Additional information about the standing order"
+            "description": "Additional information about the standing order in JSON format"
           }
         },
         "uniquenessConstraints": {
@@ -2716,7 +3002,7 @@
           "credit_debit_indicator": {
             "name": "credit_debit_indicator",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_credit_debit_indicator"
             },
             "nullable": "nonNullable",
             "description": "Indicates if amount is a credit or debit"
@@ -2724,7 +3010,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Currency code for the amount"
@@ -2732,7 +3018,7 @@
           "sub_type": {
             "name": "sub_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_amount_sub_type"
             },
             "nullable": "nullable",
             "description": "Further classification of the amount type"
@@ -2740,7 +3026,7 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_amount_type"
             },
             "nullable": "nonNullable",
             "description": "Type of amount (e.g., opening balance, closing balance, payments)"
@@ -2802,7 +3088,7 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_benefit_type"
             },
             "nullable": "nonNullable",
             "description": "Type of benefit (e.g., cashback, rewards, insurance)"
@@ -2848,7 +3134,7 @@
           "date_time": {
             "name": "date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date and time value"
@@ -2856,7 +3142,7 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_statement_date_type"
             },
             "nullable": "nonNullable",
             "description": "Type of date (e.g., payment due, minimum payment, cycle end)"
@@ -2956,7 +3242,7 @@
           "credit_debit_indicator": {
             "name": "credit_debit_indicator",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_credit_debit_indicator"
             },
             "nullable": "nonNullable",
             "description": "Indicates if fee is a credit or debit"
@@ -2964,7 +3250,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Currency code for the fee amount"
@@ -2980,7 +3266,7 @@
           "frequency": {
             "name": "frequency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_fee_frequency"
             },
             "nullable": "nullable",
             "description": "How often the fee is applied (e.g., monthly, per transaction)"
@@ -2996,7 +3282,7 @@
           "rate_type": {
             "name": "rate_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_rate_type"
             },
             "nullable": "nullable",
             "description": "Type of rate (e.g., fixed, variable)"
@@ -3004,7 +3290,7 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_fee_type"
             },
             "nullable": "nonNullable",
             "description": "Type of fee (e.g., service, transaction, late payment)"
@@ -3058,7 +3344,7 @@
           "credit_debit_indicator": {
             "name": "credit_debit_indicator",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_credit_debit_indicator"
             },
             "nullable": "nonNullable",
             "description": "Indicates if interest is earned (credit) or charged (debit)"
@@ -3066,7 +3352,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Currency code for the interest amount"
@@ -3082,7 +3368,7 @@
           "frequency": {
             "name": "frequency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_frequency"
             },
             "nullable": "nullable",
             "description": "How often interest is calculated (e.g., daily, monthly)"
@@ -3098,15 +3384,15 @@
           "rate_type": {
             "name": "rate_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_rate_type"
             },
             "nullable": "nullable",
-            "description": "Type of rate (e.g., fixed, variable, introductory)"
+            "description": "Type of rate (e.g., fixed, variable, promotional)"
           },
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_interest_type"
             },
             "nullable": "nonNullable",
             "description": "Type of interest (e.g., deposit, loan, credit card)"
@@ -3132,6 +3418,14 @@
         "schemaName": "consumer_banking",
         "tableName": "statement_rates",
         "columns": {
+          "balance_subject_to_rate": {
+            "name": "balance_subject_to_rate",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Balance amount subject to this rate"
+          },
           "consumer_banking_statement_id": {
             "name": "consumer_banking_statement_id",
             "type": {
@@ -3149,6 +3443,64 @@
             "hasDefault": "hasDefault",
             "description": "Auto-incrementing identifier for each rate record"
           },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "When this record was created"
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Additional description of the rate's applicability"
+          },
+          "effective_date": {
+            "name": "effective_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Date when this rate became effective"
+          },
+          "expiration_date": {
+            "name": "expiration_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Date when this rate expires (if applicable)"
+          },
+          "index_rate": {
+            "name": "index_rate",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Base index rate for variable rates"
+          },
+          "is_variable": {
+            "name": "is_variable",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Whether this is a variable rate"
+          },
+          "margin": {
+            "name": "margin",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Margin added to index for variable rates"
+          },
           "rate": {
             "name": "rate",
             "type": {
@@ -3160,10 +3512,19 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_statement_rate_type"
             },
             "nullable": "nonNullable",
-            "description": "Type of rate (e.g., APR, exchange, promotional)"
+            "description": "Type of rate (e.g., APR, promotional rate)"
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "When this record was last updated"
           }
         },
         "uniquenessConstraints": {
@@ -3180,12 +3541,20 @@
             }
           }
         },
-        "description": "Stores various rate information associated with a statement"
+        "description": "Stores various rate information associated with statements, including interest rates, promotional rates, and exchange rates"
       },
       "consumer_banking_statement_values": {
         "schemaName": "consumer_banking",
         "tableName": "statement_values",
         "columns": {
+          "change_percentage": {
+            "name": "change_percentage",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Percentage change from previous statement"
+          },
           "consumer_banking_statement_id": {
             "name": "consumer_banking_statement_id",
             "type": {
@@ -3203,13 +3572,72 @@
             "hasDefault": "hasDefault",
             "description": "Auto-incrementing identifier for each value record"
           },
-          "type": {
-            "name": "type",
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "When this record was created"
+          },
+          "description": {
+            "name": "description",
             "type": {
               "scalarType": "varchar"
             },
+            "nullable": "nullable",
+            "description": "Additional description or context for the value"
+          },
+          "is_estimated": {
+            "name": "is_estimated",
+            "type": {
+              "scalarType": "bool"
+            },
             "nullable": "nonNullable",
-            "description": "Type of value (e.g., loyalty points, tier level, credit score)"
+            "hasDefault": "hasDefault",
+            "description": "Whether this value is estimated rather than confirmed"
+          },
+          "previous_value": {
+            "name": "previous_value",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Previous statement's value of the same type, for comparison"
+          },
+          "reference_period_end": {
+            "name": "reference_period_end",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "End of the period this value refers to, if different from statement period"
+          },
+          "reference_period_start": {
+            "name": "reference_period_start",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": "Start of the period this value refers to, if different from statement period"
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "consumer_banking_statement_value_type"
+            },
+            "nullable": "nonNullable",
+            "description": "Type of value stored"
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "When this record was last updated"
           },
           "value": {
             "name": "value",
@@ -3217,7 +3645,7 @@
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": "Value content (could be string or numeric depending on type)"
+            "description": "Value content (e.g., loyalty points, tier level, credit score)"
           }
         },
         "uniquenessConstraints": {
@@ -3234,7 +3662,7 @@
             }
           }
         },
-        "description": "Stores miscellaneous values associated with a statement that aren't monetary amounts"
+        "description": "Stores miscellaneous values associated with a statement that aren't monetary amounts, such as loyalty points, credit scores, or tier levels"
       },
       "consumer_banking_statements": {
         "schemaName": "consumer_banking",
@@ -3260,7 +3688,7 @@
           "creation_date_time": {
             "name": "creation_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the statement was generated"
@@ -3268,7 +3696,7 @@
           "end_date_time": {
             "name": "end_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "End of the period covered by the statement"
@@ -3276,7 +3704,7 @@
           "start_date_time": {
             "name": "start_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Start of the period covered by the statement"
@@ -3292,7 +3720,7 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_statement_type"
             },
             "nullable": "nonNullable",
             "description": "Type of statement (e.g., regular, interim, final)"
@@ -3346,7 +3774,7 @@
           "credit_debit_indicator": {
             "name": "credit_debit_indicator",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_credit_debit_indicator"
             },
             "nullable": "nonNullable",
             "description": "Indicates if balance is credit or debit"
@@ -3354,7 +3782,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Currency code for the balance amount"
@@ -3362,7 +3790,7 @@
           "type": {
             "name": "type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_balance_type"
             },
             "nullable": "nonNullable",
             "description": "Type of balance (e.g., available, booked)"
@@ -3391,10 +3819,10 @@
           "code": {
             "name": "code",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_transaction_bank_code"
             },
             "nullable": "nonNullable",
-            "description": "Bank-specific transaction classification code"
+            "description": "Detailed bank-specific transaction classification code"
           },
           "consumer_banking_transaction_bank_transaction_code_id": {
             "name": "consumer_banking_transaction_bank_transaction_code_id",
@@ -3412,14 +3840,6 @@
             },
             "nullable": "nonNullable",
             "description": "References the transaction this code belongs to"
-          },
-          "sub_code": {
-            "name": "sub_code",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": "Sub-classification code for more detailed categorization"
           }
         },
         "uniquenessConstraints": {
@@ -3436,7 +3856,7 @@
             }
           }
         },
-        "description": "Stores standardized bank transaction codes that categorize transactions"
+        "description": "Stores standardized bank transaction codes that categorize transactions with detailed hierarchical classification"
       },
       "consumer_banking_transaction_card_instruments": {
         "schemaName": "consumer_banking",
@@ -3445,7 +3865,7 @@
           "authorisation_type": {
             "name": "authorisation_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_authorization_type"
             },
             "nullable": "nullable",
             "description": "Type of authorization (e.g., PIN, signature, contactless)"
@@ -3453,7 +3873,7 @@
           "card_scheme_name": {
             "name": "card_scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_card_scheme_name"
             },
             "nullable": "nonNullable",
             "description": "Card network (e.g., Visa, Mastercard, Amex)"
@@ -3548,7 +3968,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Account identifier scheme (e.g., IBAN, BBAN)"
@@ -3626,7 +4046,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Identifier scheme for the receiving institution (e.g., BIC)"
@@ -3696,7 +4116,7 @@
           "instructed_amount_currency": {
             "name": "instructed_amount_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency of the original instructed amount"
@@ -3704,7 +4124,7 @@
           "quotation_date": {
             "name": "quotation_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the exchange rate was quoted"
@@ -3712,7 +4132,7 @@
           "source_currency": {
             "name": "source_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Original currency of the transaction"
@@ -3720,7 +4140,7 @@
           "target_currency": {
             "name": "target_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Destination currency after conversion"
@@ -3728,7 +4148,7 @@
           "unit_currency": {
             "name": "unit_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency used as the unit for the exchange rate"
@@ -3790,7 +4210,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Account identifier scheme (e.g., IBAN, BBAN)"
@@ -3868,7 +4288,7 @@
           "scheme_name": {
             "name": "scheme_name",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_identifier_scheme"
             },
             "nullable": "nonNullable",
             "description": "Identifier scheme for the sending institution (e.g., BIC)"
@@ -3970,8 +4390,8 @@
             "type": {
               "scalarType": "varchar"
             },
-            "nullable": "nonNullable",
-            "description": "Statement identifier that this transaction appears on"
+            "nullable": "nullable",
+            "description": "Statement reference n"
           }
         },
         "uniquenessConstraints": {
@@ -4145,10 +4565,10 @@
           "category": {
             "name": "category",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_transaction_category"
             },
             "nullable": "nullable",
-            "description": "Code classifying the overall purpose of the transaction"
+            "description": "High-level categorization of the transaction"
           },
           "charge_amount": {
             "name": "charge_amount",
@@ -4161,7 +4581,7 @@
           "charge_currency": {
             "name": "charge_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Currency code for the transaction fee"
@@ -4172,7 +4592,15 @@
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "References the account this balance belongs to"
+            "description": "References the account this transaction belongs to"
+          },
+          "consumer_banking_balance_id": {
+            "name": "consumer_banking_balance_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "No meaningful relationship, just guarantees that balances must exist before a transaction can be created."
           },
           "consumer_banking_transaction_id": {
             "name": "consumer_banking_transaction_id",
@@ -4186,7 +4614,7 @@
           "credit_debit_indicator": {
             "name": "credit_debit_indicator",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_credit_debit_indicator"
             },
             "nullable": "nonNullable",
             "description": "Indicates if transaction is a credit or debit"
@@ -4194,7 +4622,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "description": "Currency code for the transaction amount"
@@ -4218,7 +4646,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_transaction_status"
             },
             "nullable": "nonNullable",
             "description": "Status of the transaction (e.g., pending, booked, rejected)"
@@ -4226,7 +4654,7 @@
           "transaction_date": {
             "name": "transaction_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the transaction was recorded in the books"
@@ -4234,7 +4662,7 @@
           "transaction_mutability": {
             "name": "transaction_mutability",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_transaction_mutability"
             },
             "nullable": "nullable",
             "description": "Whether the transaction can be changed (e.g., mutable, immutable)"
@@ -4250,15 +4678,15 @@
           "transaction_type": {
             "name": "transaction_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_transaction_type"
             },
             "nullable": "nullable",
-            "description": "Code classifying the specific purpose of the payment"
+            "description": "Specific type of transaction with more detail"
           },
           "value_date": {
             "name": "value_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the transaction affects the account balance"
@@ -4275,6 +4703,13 @@
             "foreignTable": "accounts",
             "columnMapping": {
               "consumer_banking_account_id": "consumer_banking_account_id"
+            }
+          },
+          "transactions_consumer_banking_balance_id_fkey": {
+            "foreignSchema": "consumer_banking",
+            "foreignTable": "balances",
+            "columnMapping": {
+              "consumer_banking_balance_id": "consumer_banking_balance_id"
             }
           }
         },
@@ -4360,7 +4795,7 @@
           "generated_date": {
             "name": "generated_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date details were generated"
@@ -4445,7 +4880,7 @@
           "generated_date": {
             "name": "generated_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When notice was generated"
@@ -4461,7 +4896,7 @@
           "sent_date": {
             "name": "sent_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When notice was sent to applicant"
@@ -5267,7 +5702,7 @@
           "decision_date_time": {
             "name": "decision_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When decision was made"
@@ -5431,7 +5866,7 @@
           "disclosure_date": {
             "name": "disclosure_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date disclosure was generated"
@@ -5463,7 +5898,7 @@
           "sent_date": {
             "name": "sent_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date disclosure was sent"
@@ -5664,7 +6099,7 @@
           "action_date": {
             "name": "action_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date/time action was taken"
@@ -5798,7 +6233,7 @@
           "exception_date": {
             "name": "exception_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date exception was identified"
@@ -6189,7 +6624,7 @@
           "report_date": {
             "name": "report_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When report was pulled"
@@ -7382,7 +7817,7 @@
           "creation_date_time": {
             "name": "creation_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When application was initially created"
@@ -7398,7 +7833,7 @@
           "decision_date_time": {
             "name": "decision_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When final decision was made"
@@ -7422,7 +7857,7 @@
           "last_updated_date_time": {
             "name": "last_updated_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Last modification timestamp"
@@ -7478,7 +7913,7 @@
           "submission_date_time": {
             "name": "submission_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When application was submitted by customer"
@@ -7676,7 +8111,7 @@
           "communication_date": {
             "name": "communication_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date/time of communication"
@@ -7882,7 +8317,7 @@
           "review_date": {
             "name": "review_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When document was reviewed"
@@ -7906,7 +8341,7 @@
           "upload_date": {
             "name": "upload_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When document was created/uploaded"
@@ -8423,7 +8858,7 @@
           "payment_date": {
             "name": "payment_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date/time payment was received"
@@ -8859,7 +9294,7 @@
           "check_date": {
             "name": "check_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date MLA status was checked"
@@ -9439,7 +9874,7 @@
           "generated_date": {
             "name": "generated_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date notice was generated"
@@ -9463,7 +9898,7 @@
           "sent_date": {
             "name": "sent_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date notice was sent"
@@ -9548,7 +9983,7 @@
           "disclosure_date": {
             "name": "disclosure_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date disclosure was generated"
@@ -9612,7 +10047,7 @@
           "receipt_date": {
             "name": "receipt_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "Date receipt was confirmed"
@@ -9636,7 +10071,7 @@
           "sent_date": {
             "name": "sent_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "Date disclosure was sent to applicant"
@@ -10129,7 +10564,7 @@
           "application_date": {
             "name": "application_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When application was submitted"
@@ -10202,7 +10637,7 @@
           "decision_date": {
             "name": "decision_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When decision was made"
@@ -11847,7 +12282,7 @@
           "receipt_date": {
             "name": "receipt_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date complaint was received"
@@ -12209,7 +12644,7 @@
           "dispute_date": {
             "name": "dispute_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date and time dispute was filed"
@@ -12502,7 +12937,7 @@
           "report_date": {
             "name": "report_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date and time fraud was reported"
@@ -13050,7 +13485,7 @@
           "disclosure_date": {
             "name": "disclosure_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date disclosure was generated"
@@ -13215,7 +13650,7 @@
           "redemption_date": {
             "name": "redemption_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date and time of redemption"
@@ -13409,7 +13844,7 @@
           "end_date": {
             "name": "end_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When block ends if temporary"
@@ -13441,7 +13876,7 @@
           "removed_date": {
             "name": "removed_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When block was removed"
@@ -13457,7 +13892,7 @@
           "start_date": {
             "name": "start_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When block began"
@@ -13831,7 +14266,7 @@
           "original_currency": {
             "name": "original_currency",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
             "description": "Original currency if international"
@@ -13871,7 +14306,7 @@
           "transaction_date": {
             "name": "transaction_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date and time of transaction"
@@ -14981,7 +15416,7 @@
           "creation_date_time": {
             "name": "creation_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the application was created"
@@ -15005,7 +15440,7 @@
           "last_updated_date_time": {
             "name": "last_updated_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the application was last modified"
@@ -15086,7 +15521,7 @@
           "submission_date_time": {
             "name": "submission_date_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the application was formally submitted"
@@ -15210,7 +15645,7 @@
           "ordered_date": {
             "name": "ordered_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the appraisal was ordered"
@@ -15928,7 +16363,7 @@
           "actual_closing_date": {
             "name": "actual_closing_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the closing actually occurred"
@@ -16001,7 +16436,7 @@
           "scheduled_date": {
             "name": "scheduled_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the closing is scheduled"
@@ -16053,7 +16488,7 @@
           "created_date": {
             "name": "created_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the disclosure was created"
@@ -16126,7 +16561,7 @@
           "received_date": {
             "name": "received_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When signed disclosure was received back"
@@ -16134,7 +16569,7 @@
           "sent_date": {
             "name": "sent_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the disclosure was sent to borrowers"
@@ -16179,7 +16614,7 @@
           "cleared_date": {
             "name": "cleared_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the condition was satisfied or waived"
@@ -16203,7 +16638,7 @@
           "created_date": {
             "name": "created_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the condition was created"
@@ -16336,7 +16771,7 @@
           "report_date": {
             "name": "report_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When credit report was pulled"
@@ -16396,7 +16831,7 @@
           "communication_date": {
             "name": "communication_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the communication occurred"
@@ -16594,7 +17029,7 @@
           "review_date": {
             "name": "review_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the document was reviewed"
@@ -16618,7 +17053,7 @@
           "upload_date": {
             "name": "upload_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the document was uploaded"
@@ -16922,7 +17357,7 @@
           "created_date": {
             "name": "created_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -17003,7 +17438,7 @@
           "modified_date": {
             "name": "modified_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the demographic record was last modified"
@@ -17161,7 +17596,7 @@
           "created_date": {
             "name": "created_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the edit was first identified"
@@ -17226,7 +17661,7 @@
           "resolved_date": {
             "name": "resolved_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the edit was resolved if applicable"
@@ -17471,7 +17906,7 @@
           "last_modified_date": {
             "name": "last_modified_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When record was last modified"
@@ -17756,7 +18191,7 @@
           "completion_date": {
             "name": "completion_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the submission was accepted as complete"
@@ -17837,7 +18272,7 @@
           "submission_date": {
             "name": "submission_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the submission was made"
@@ -18340,7 +18775,7 @@
           "expiration_date": {
             "name": "expiration_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the rate lock expires"
@@ -18348,7 +18783,7 @@
           "extension_date": {
             "name": "extension_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "Date the lock was extended, if applicable"
@@ -18364,7 +18799,7 @@
           "lock_date": {
             "name": "lock_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the interest rate was locked"
@@ -18664,7 +19099,7 @@
           "payment_date": {
             "name": "payment_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the payment was made"
@@ -19631,7 +20066,7 @@
           "created_at": {
             "name": "created_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -19733,7 +20168,7 @@
           "created_at": {
             "name": "created_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -20443,7 +20878,7 @@
           "created_at": {
             "name": "created_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -20518,7 +20953,7 @@
           "updated_at": {
             "name": "updated_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -20557,7 +20992,7 @@
           "end_date": {
             "name": "end_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the role was no longer effective"
@@ -20589,7 +21024,7 @@
           "start_date": {
             "name": "start_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -21335,7 +21770,7 @@
           "created_at": {
             "name": "created_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -21458,7 +21893,7 @@
           "created_at": {
             "name": "created_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the entitlement was added to the role"
@@ -21474,7 +21909,7 @@
           "ended_at": {
             "name": "ended_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "When the entitlement was no longer effective"
@@ -21506,7 +21941,7 @@
           "started_at": {
             "name": "started_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "When the entitlement became effective"
@@ -21564,7 +21999,7 @@
           "created_at": {
             "name": "created_at",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "hasDefault": "hasDefault",
@@ -22009,7 +22444,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "bpchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -24156,7 +24591,7 @@
           "decision_date": {
             "name": "decision_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date and time of the decision"
@@ -25725,7 +26160,7 @@
           "response_date": {
             "name": "response_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": "Date and time of regulator response"
@@ -25766,7 +26201,7 @@
           "submission_date": {
             "name": "submission_date",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": "Date and time of submission"
@@ -26117,7 +26552,7 @@
           "currency": {
             "name": "currency",
             "type": {
-              "scalarType": "bpchar"
+              "scalarType": "enterprise_currency_code"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -26800,123 +27235,2863 @@
           },
           "typeRepresentation": "boolean"
         },
-        "bpchar": {
-          "typeName": "bpchar",
-          "schemaName": "pg_catalog",
+        "consumer_banking_account_fee_schedule": {
+          "typeName": "account_fee_schedule",
+          "schemaName": "consumer_banking",
           "description": null,
           "aggregateFunctions": {
             "max": {
-              "returnType": "bpchar"
+              "returnType": "consumer_banking_account_fee_schedule"
             },
             "min": {
-              "returnType": "bpchar"
+              "returnType": "consumer_banking_account_fee_schedule"
             }
           },
           "comparisonOperators": {
             "_eq": {
               "operatorName": "=",
               "operatorKind": "equal",
-              "argumentType": "bpchar",
+              "argumentType": "consumer_banking_account_fee_schedule",
               "isInfix": true
             },
             "_gt": {
               "operatorName": ">",
               "operatorKind": "custom",
-              "argumentType": "bpchar",
+              "argumentType": "consumer_banking_account_fee_schedule",
               "isInfix": true
             },
             "_gte": {
               "operatorName": ">=",
               "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_ilike": {
-              "operatorName": "~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
+              "argumentType": "consumer_banking_account_fee_schedule",
               "isInfix": true
             },
             "_in": {
               "operatorName": "IN",
               "operatorKind": "in",
-              "argumentType": "bpchar",
-              "isInfix": true
-            },
-            "_iregex": {
-              "operatorName": "~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_like": {
-              "operatorName": "~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
+              "argumentType": "consumer_banking_account_fee_schedule",
               "isInfix": true
             },
             "_lt": {
               "operatorName": "<",
               "operatorKind": "custom",
-              "argumentType": "bpchar",
+              "argumentType": "consumer_banking_account_fee_schedule",
               "isInfix": true
             },
             "_lte": {
               "operatorName": "<=",
               "operatorKind": "custom",
-              "argumentType": "bpchar",
+              "argumentType": "consumer_banking_account_fee_schedule",
               "isInfix": true
             },
             "_neq": {
-              "operatorName": "<>",
+              "operatorName": "!=",
               "operatorKind": "custom",
-              "argumentType": "bpchar",
+              "argumentType": "consumer_banking_account_fee_schedule",
               "isInfix": true
-            },
-            "_nilike": {
-              "operatorName": "!~~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_niregex": {
-              "operatorName": "!~*",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nlike": {
-              "operatorName": "!~~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_nregex": {
-              "operatorName": "!~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "_regex": {
-              "operatorName": "~",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": true
-            },
-            "starts_with": {
-              "operatorName": "starts_with",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": false
-            },
-            "ts_match_tt": {
-              "operatorName": "ts_match_tt",
-              "operatorKind": "custom",
-              "argumentType": "bpchar",
-              "isInfix": false
             }
           },
-          "typeRepresentation": "string"
+          "typeRepresentation": {
+            "enum": [
+              "STANDARD",
+              "REDUCED",
+              "WAIVED_WITH_MINIMUM_BALANCE",
+              "WAIVED_WITH_DIRECT_DEPOSIT",
+              "WAIVED_WITH_RELATIONSHIP",
+              "NO_FEE",
+              "ACTIVITY_BASED",
+              "TIERED"
+            ]
+          }
+        },
+        "consumer_banking_account_status": {
+          "typeName": "account_status",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_account_status"
+            },
+            "min": {
+              "returnType": "consumer_banking_account_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_account_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_account_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_account_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_account_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_account_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_account_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_account_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "PENDING",
+              "INACTIVE",
+              "SUSPENDED",
+              "DORMANT",
+              "FROZEN",
+              "CLOSED",
+              "ARCHIVED"
+            ]
+          }
+        },
+        "consumer_banking_amount_sub_type": {
+          "typeName": "amount_sub_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_amount_sub_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_amount_sub_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_amount_sub_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_sub_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_sub_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_amount_sub_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_sub_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_sub_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_sub_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PRINCIPAL",
+              "INTEREST",
+              "FEES",
+              "PENALTIES",
+              "REWARDS",
+              "PROMOTIONAL",
+              "TEMPORARY",
+              "ESTIMATED",
+              "ADJUSTED",
+              "CORRECTED",
+              "NONE"
+            ]
+          }
+        },
+        "consumer_banking_amount_type": {
+          "typeName": "amount_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_amount_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_amount_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_amount_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_amount_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_amount_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "OPENING_BALANCE",
+              "CLOSING_BALANCE",
+              "PAYMENTS",
+              "DEPOSITS",
+              "WITHDRAWALS",
+              "INTEREST_EARNED",
+              "INTEREST_CHARGED",
+              "FEES",
+              "CREDITS",
+              "DEBITS",
+              "TRANSFERS_IN",
+              "TRANSFERS_OUT",
+              "MINIMUM_PAYMENT_DUE",
+              "AVAILABLE_CREDIT",
+              "AVAILABLE_BALANCE",
+              "CURRENT_BALANCE",
+              "PENDING_BALANCE",
+              "OVERDRAFT_LIMIT",
+              "OVERDRAFT_USED",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_authorization_type": {
+          "typeName": "authorization_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_authorization_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_authorization_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_authorization_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_authorization_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_authorization_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_authorization_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_authorization_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_authorization_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_authorization_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PIN",
+              "SIGNATURE",
+              "PIN_AND_SIGNATURE",
+              "ONLINE",
+              "CONTACTLESS",
+              "CHIP",
+              "MAGNETIC_STRIPE",
+              "TOKENIZED",
+              "BIOMETRIC",
+              "RECURRING",
+              "MANUAL_ENTRY",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_balance_sub_type": {
+          "typeName": "balance_sub_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_balance_sub_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_balance_sub_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_balance_sub_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_sub_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_sub_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_balance_sub_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_sub_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_sub_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_sub_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "INTRA_DAY",
+              "OPENING",
+              "INTERIM",
+              "FORWARD",
+              "EXPECTED",
+              "AUTHORISED",
+              "PREVIOUS_DAY",
+              "THRESHOLD",
+              "SWEEP",
+              "LIMIT",
+              "CREDIT_LINE",
+              "CUSHION",
+              "VALUE_DATED",
+              "NET",
+              "NONE"
+            ]
+          }
+        },
+        "consumer_banking_balance_type": {
+          "typeName": "balance_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_balance_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_balance_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_balance_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_balance_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_balance_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "AVAILABLE",
+              "CURRENT",
+              "CLOSING",
+              "PENDING",
+              "BLOCKED",
+              "RESERVED",
+              "OVERDRAFT",
+              "HOLD",
+              "INTEREST_BEARING",
+              "MINIMUM_REQUIRED",
+              "PROJECTED",
+              "LEDGER",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_beneficiary_type": {
+          "typeName": "beneficiary_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_beneficiary_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_beneficiary_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_beneficiary_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_beneficiary_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_beneficiary_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_beneficiary_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_beneficiary_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_beneficiary_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_beneficiary_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "INDIVIDUAL",
+              "ORGANIZATION",
+              "GOVERNMENT",
+              "TRUST",
+              "ESTATE",
+              "CHARITY",
+              "FINANCIAL_INSTITUTION",
+              "MERCHANT",
+              "UTILITY",
+              "EDUCATIONAL",
+              "HEALTHCARE",
+              "SELF",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_benefit_type": {
+          "typeName": "benefit_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_benefit_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_benefit_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_benefit_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_benefit_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_benefit_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_benefit_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_benefit_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_benefit_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_benefit_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "CASHBACK",
+              "POINTS",
+              "MILES",
+              "INTEREST",
+              "DISCOUNT",
+              "INSURANCE",
+              "FEE_WAIVER",
+              "PROMOTIONAL",
+              "LOYALTY",
+              "REFERRAL",
+              "ANNIVERSARY",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_card_scheme_name": {
+          "typeName": "card_scheme_name",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_card_scheme_name"
+            },
+            "min": {
+              "returnType": "consumer_banking_card_scheme_name"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_card_scheme_name",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_card_scheme_name",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_card_scheme_name",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_card_scheme_name",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_card_scheme_name",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_card_scheme_name",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_card_scheme_name",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "VISA",
+              "MASTERCARD",
+              "AMEX",
+              "DISCOVER",
+              "DINERS",
+              "JCB",
+              "UNIONPAY",
+              "MAESTRO",
+              "INTERAC",
+              "ELO",
+              "MIR",
+              "RUPAY",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_communication_method": {
+          "typeName": "communication_method",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_communication_method"
+            },
+            "min": {
+              "returnType": "consumer_banking_communication_method"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_communication_method",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_communication_method",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_communication_method",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_communication_method",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_communication_method",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_communication_method",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_communication_method",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "EMAIL",
+              "MAIL",
+              "PORTAL",
+              "MOBILE_APP",
+              "SMS_NOTIFICATION",
+              "BRANCH_PICKUP",
+              "MULTIPLE"
+            ]
+          }
+        },
+        "consumer_banking_consent_status": {
+          "typeName": "consent_status",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_consent_status"
+            },
+            "min": {
+              "returnType": "consumer_banking_consent_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_consent_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_consent_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_consent_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_consent_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_consent_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_consent_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_consent_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PENDING",
+              "AUTHORIZED",
+              "ACTIVE",
+              "SUSPENDED",
+              "EXPIRED",
+              "REVOKED",
+              "TERMINATED",
+              "SUPERSEDED",
+              "REJECTED",
+              "ERROR"
+            ]
+          }
+        },
+        "consumer_banking_direct_debit_category": {
+          "typeName": "direct_debit_category",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_direct_debit_category"
+            },
+            "min": {
+              "returnType": "consumer_banking_direct_debit_category"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_direct_debit_category",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_category",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_category",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_direct_debit_category",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_category",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_category",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_category",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ELECTRICITY",
+              "GAS",
+              "WATER",
+              "INTERNET",
+              "PHONE",
+              "TV",
+              "RENT",
+              "MORTGAGE",
+              "INSURANCE_HOME",
+              "INSURANCE_HEALTH",
+              "INSURANCE_LIFE",
+              "INSURANCE_AUTO",
+              "SUBSCRIPTION_MEDIA",
+              "SUBSCRIPTION_SOFTWARE",
+              "SUBSCRIPTION_MEMBERSHIP",
+              "LOAN_PAYMENT",
+              "CREDIT_CARD",
+              "CHARITY",
+              "TAX_PAYMENT",
+              "PENSION",
+              "INVESTMENT",
+              "EDUCATION",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_direct_debit_classification": {
+          "typeName": "direct_debit_classification",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_direct_debit_classification"
+            },
+            "min": {
+              "returnType": "consumer_banking_direct_debit_classification"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_direct_debit_classification",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_classification",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_classification",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_direct_debit_classification",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_classification",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_classification",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_classification",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PERSONAL",
+              "BUSINESS",
+              "CHARITY",
+              "HOUSEHOLD",
+              "SUBSCRIPTION",
+              "UTILITY",
+              "INSURANCE",
+              "MORTGAGE",
+              "LOAN",
+              "TAX",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_direct_debit_status_code": {
+          "typeName": "direct_debit_status_code",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_direct_debit_status_code"
+            },
+            "min": {
+              "returnType": "consumer_banking_direct_debit_status_code"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_direct_debit_status_code",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_status_code",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_status_code",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_direct_debit_status_code",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_status_code",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_status_code",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_direct_debit_status_code",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "PENDING",
+              "CANCELED",
+              "SUSPENDED",
+              "REJECTED",
+              "EXPIRED",
+              "COMPLETED",
+              "FAILED",
+              "ON_HOLD",
+              "AMENDED",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_fee_frequency": {
+          "typeName": "fee_frequency",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_fee_frequency"
+            },
+            "min": {
+              "returnType": "consumer_banking_fee_frequency"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_fee_frequency",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_frequency",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_frequency",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_fee_frequency",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_frequency",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_frequency",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_frequency",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ONE_TIME",
+              "MONTHLY",
+              "QUARTERLY",
+              "ANNUALLY",
+              "PER_TRANSACTION",
+              "CONDITIONAL",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_fee_type": {
+          "typeName": "fee_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_fee_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_fee_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_fee_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_fee_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_fee_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SERVICE",
+              "TRANSACTION",
+              "OVERDRAFT",
+              "ATM",
+              "WIRE_TRANSFER",
+              "FOREIGN_TRANSACTION",
+              "PAPER_STATEMENT",
+              "STOP_PAYMENT",
+              "REPLACEMENT_CARD",
+              "EARLY_WITHDRAWAL",
+              "INSUFFICIENT_FUNDS",
+              "DORMANT_ACCOUNT",
+              "RESEARCH",
+              "SPECIAL_STATEMENT",
+              "LATE_PAYMENT",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_interest_calculation_method": {
+          "typeName": "interest_calculation_method",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_interest_calculation_method"
+            },
+            "min": {
+              "returnType": "consumer_banking_interest_calculation_method"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_interest_calculation_method",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_calculation_method",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_calculation_method",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_interest_calculation_method",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_calculation_method",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_calculation_method",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_calculation_method",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "DAILY_BALANCE",
+              "AVERAGE_DAILY_BALANCE",
+              "MINIMUM_BALANCE",
+              "TIERED_RATE",
+              "BLENDED_RATE",
+              "STEPPED_RATE"
+            ]
+          }
+        },
+        "consumer_banking_interest_type": {
+          "typeName": "interest_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_interest_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_interest_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_interest_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_interest_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interest_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "DEPOSIT",
+              "SAVINGS",
+              "CERTIFICATE",
+              "MONEY_MARKET",
+              "CHECKING",
+              "BONUS",
+              "PROMOTIONAL",
+              "PENALTY",
+              "LOAN",
+              "CREDIT_CARD",
+              "OVERDRAFT",
+              "LINE_OF_CREDIT",
+              "ADJUSTMENT",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_offer_type": {
+          "typeName": "offer_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_offer_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_offer_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_offer_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_offer_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_offer_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_offer_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_offer_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_offer_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_offer_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "LOAN",
+              "BALANCE_TRANSFER",
+              "CREDIT_LIMIT_INCREASE",
+              "INTEREST_RATE_REDUCTION",
+              "OVERDRAFT",
+              "INVESTMENT",
+              "SAVINGS",
+              "INSURANCE",
+              "CASHBACK",
+              "REWARDS",
+              "PREMIUM_ACCOUNT",
+              "FEE_WAIVER",
+              "BUNDLE",
+              "PREAPPROVAL",
+              "PROMOTIONAL",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_payment_method": {
+          "typeName": "payment_method",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_payment_method"
+            },
+            "min": {
+              "returnType": "consumer_banking_payment_method"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_payment_method",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_payment_method",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_payment_method",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_payment_method",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_payment_method",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_payment_method",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_payment_method",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACH",
+              "WIRE",
+              "INTERNAL",
+              "CHECK",
+              "CARD",
+              "DIGITAL_WALLET",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_product_status": {
+          "typeName": "product_status",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_product_status"
+            },
+            "min": {
+              "returnType": "consumer_banking_product_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_product_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_product_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "GRANDFATHERED",
+              "PROMOTIONAL",
+              "DISCONTINUED",
+              "ARCHIVED",
+              "PILOT",
+              "SEASONAL"
+            ]
+          }
+        },
+        "consumer_banking_product_type": {
+          "typeName": "product_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_product_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_product_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_product_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_product_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_product_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "CHECKING",
+              "SAVINGS",
+              "MONEY_MARKET",
+              "CERTIFICATE_OF_DEPOSIT",
+              "IRA",
+              "HSA",
+              "STUDENT",
+              "YOUTH",
+              "SENIOR",
+              "BUSINESS_CHECKING",
+              "BUSINESS_SAVINGS",
+              "PREMIUM",
+              "FOREIGN_CURRENCY",
+              "SPECIALIZED"
+            ]
+          }
+        },
+        "consumer_banking_rate_type": {
+          "typeName": "rate_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_rate_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_rate_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_rate_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_rate_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_rate_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_rate_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_rate_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_rate_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_rate_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "FIXED",
+              "VARIABLE",
+              "TIERED",
+              "PROMOTIONAL",
+              "PENALTY",
+              "STANDARD",
+              "DISCOUNTED",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_scheduled_payment_status": {
+          "typeName": "scheduled_payment_status",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_scheduled_payment_status"
+            },
+            "min": {
+              "returnType": "consumer_banking_scheduled_payment_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_scheduled_payment_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_scheduled_payment_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "COMPLETED",
+              "FAILED",
+              "CANCELED",
+              "EXPIRED",
+              "RECURRENCE_ENDED",
+              "ON_HOLD"
+            ]
+          }
+        },
+        "consumer_banking_scheduled_payment_type": {
+          "typeName": "scheduled_payment_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_scheduled_payment_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_scheduled_payment_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_scheduled_payment_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_scheduled_payment_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_scheduled_payment_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SINGLE",
+              "RECURRING",
+              "INSTALLMENT",
+              "CONDITIONAL",
+              "VARIABLE"
+            ]
+          }
+        },
+        "consumer_banking_standing_order_category": {
+          "typeName": "standing_order_category",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_standing_order_category"
+            },
+            "min": {
+              "returnType": "consumer_banking_standing_order_category"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_standing_order_category",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_category",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_category",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_standing_order_category",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_category",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_category",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_category",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "BILL_PAYMENT",
+              "SAVINGS",
+              "INVESTMENT",
+              "LOAN_PAYMENT",
+              "SUBSCRIPTION",
+              "CHARITY",
+              "FAMILY_SUPPORT",
+              "RENT",
+              "BUSINESS_EXPENSE",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_standing_order_status_code": {
+          "typeName": "standing_order_status_code",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_standing_order_status_code"
+            },
+            "min": {
+              "returnType": "consumer_banking_standing_order_status_code"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_standing_order_status_code",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_status_code",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_status_code",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_standing_order_status_code",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_status_code",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_status_code",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_status_code",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "PENDING",
+              "CANCELLED",
+              "SUSPENDED",
+              "COMPLETED",
+              "FAILED",
+              "ON_HOLD",
+              "EXPIRED",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_standing_order_type": {
+          "typeName": "standing_order_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_standing_order_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_standing_order_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_standing_order_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_standing_order_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_standing_order_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "FIXED_AMOUNT",
+              "VARIABLE_AMOUNT",
+              "BALANCE_SWEEP",
+              "FULL_BALANCE",
+              "PERCENTAGE",
+              "INTEREST_ONLY",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_statement_date_type": {
+          "typeName": "statement_date_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_statement_date_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_statement_date_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_statement_date_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_date_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_date_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_statement_date_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_date_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_date_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_date_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "STATEMENT_DATE",
+              "DUE_DATE",
+              "PAYMENT_CUTOFF_DATE",
+              "CLOSE_DATE",
+              "NEXT_STATEMENT_DATE",
+              "MINIMUM_PAYMENT_DATE",
+              "GRACE_PERIOD_END",
+              "LATE_FEE_DATE",
+              "CYCLE_START_DATE",
+              "LAST_PAYMENT_DATE",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_statement_format": {
+          "typeName": "statement_format",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_statement_format"
+            },
+            "min": {
+              "returnType": "consumer_banking_statement_format"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_statement_format",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_format",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_format",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_statement_format",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_format",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_format",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_format",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PDF",
+              "HTML",
+              "TEXT",
+              "CSV",
+              "XML",
+              "JSON"
+            ]
+          }
+        },
+        "consumer_banking_statement_rate_type": {
+          "typeName": "statement_rate_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_statement_rate_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_statement_rate_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_statement_rate_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_rate_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_rate_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_statement_rate_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_rate_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_rate_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_rate_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "APR",
+              "CASH_ADVANCE_APR",
+              "BALANCE_TRANSFER_APR",
+              "PENALTY_APR",
+              "PROMOTIONAL_APR",
+              "SAVINGS_RATE",
+              "CD_RATE",
+              "EXCHANGE_RATE",
+              "INTRODUCTORY_RATE",
+              "VARIABLE_RATE_INDEX",
+              "MARGIN",
+              "DEFAULT_RATE",
+              "REWARD_RATE",
+              "EFFECTIVE_RATE",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_statement_type": {
+          "typeName": "statement_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_statement_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_statement_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_statement_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_statement_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "REGULAR",
+              "INTERIM",
+              "FINAL",
+              "ANNUAL",
+              "SUPPLEMENTARY",
+              "TAX",
+              "CORRECTED",
+              "RECONCILIATION",
+              "CONSOLIDATED",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_statement_value_type": {
+          "typeName": "statement_value_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_statement_value_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_statement_value_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_statement_value_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_value_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_value_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_statement_value_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_value_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_value_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_statement_value_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "LOYALTY_POINTS",
+              "REWARD_BALANCE",
+              "CASH_BACK_EARNED",
+              "POINTS_EARNED",
+              "POINTS_REDEEMED",
+              "TIER_LEVEL",
+              "CREDIT_SCORE",
+              "CARBON_FOOTPRINT",
+              "SPENDING_CATEGORY",
+              "MILES_EARNED",
+              "MILES_BALANCE",
+              "MERCHANT_CATEGORY",
+              "NEXT_TIER_PROGRESS",
+              "ANNUAL_REWARDS_SUMMARY",
+              "ANNUAL_SPENDING_SUMMARY",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_transaction_bank_code": {
+          "typeName": "transaction_bank_code",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_transaction_bank_code"
+            },
+            "min": {
+              "returnType": "consumer_banking_transaction_bank_code"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_transaction_bank_code",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_bank_code",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_bank_code",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_transaction_bank_code",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_bank_code",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_bank_code",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_bank_code",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "RETAIL__CLOTHING_STORE",
+              "RETAIL__ELECTRONICS",
+              "RETAIL__DEPARTMENT_STORE",
+              "RETAIL__ONLINE_SHOPPING",
+              "RETAIL__GROCERY",
+              "RETAIL__CONVENIENCE_STORE",
+              "RETAIL__OTHER",
+              "SERVICES__RESTAURANT",
+              "SERVICES__ENTERTAINMENT",
+              "SERVICES__TRAVEL",
+              "SERVICES__CAR_RENTAL",
+              "SERVICES__HOTEL",
+              "SERVICES__PROFESSIONAL",
+              "SERVICES__UTILITIES",
+              "SERVICES__TELECOMMUNICATIONS",
+              "SERVICES__OTHER",
+              "FINANCIAL__ATM_WITHDRAWAL",
+              "FINANCIAL__BANK_TRANSFER",
+              "FINANCIAL__LOAN_PAYMENT",
+              "FINANCIAL__CREDIT_CARD_PAYMENT",
+              "FINANCIAL__INVESTMENT",
+              "FINANCIAL__INSURANCE_PAYMENT",
+              "FINANCIAL__WIRE_TRANSFER",
+              "FINANCIAL__OTHER",
+              "REGULATORY__BSA_REPORTING",
+              "REGULATORY__AML_THRESHOLD",
+              "REGULATORY__OFAC_SCREENING",
+              "REGULATORY__CTR_REPORT",
+              "REGULATORY__SUSPICIOUS_ACTIVITY",
+              "REGULATORY__KYC_VERIFICATION",
+              "REGULATORY__PEP_TRANSACTION",
+              "REGULATORY__SANCTIONS_CHECK",
+              "REGULATORY__TAX_REPORTING",
+              "REGULATORY__FATCA_REPORTING",
+              "REGULATORY__OTHER",
+              "RISK__HIGH_RISK_GEO",
+              "RISK__UNUSUAL_PATTERN",
+              "RISK__VELOCITY_CHECK",
+              "RISK__LARGE_CASH_DEPOSIT",
+              "RISK__CROSS_BORDER",
+              "RISK__FIRST_TIME_MERCHANT",
+              "RISK__DEVICE_ANOMALY",
+              "RISK__REPEATED_DECLINED",
+              "RISK__OTHER"
+            ]
+          }
+        },
+        "consumer_banking_transaction_category": {
+          "typeName": "transaction_category",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_transaction_category"
+            },
+            "min": {
+              "returnType": "consumer_banking_transaction_category"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_transaction_category",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_category",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_category",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_transaction_category",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_category",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_category",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_category",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PAYMENT",
+              "DEPOSIT",
+              "WITHDRAWAL",
+              "FEE",
+              "INTEREST",
+              "TRANSFER",
+              "ATM",
+              "POINT_OF_SALE",
+              "CARD_PAYMENT",
+              "DIRECT_DEBIT",
+              "STANDING_ORDER",
+              "CREDIT",
+              "DEBIT",
+              "REVERSAL",
+              "ADJUSTMENT",
+              "CHECK",
+              "LOAN_DISBURSEMENT",
+              "LOAN_PAYMENT",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_transaction_mutability": {
+          "typeName": "transaction_mutability",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_transaction_mutability"
+            },
+            "min": {
+              "returnType": "consumer_banking_transaction_mutability"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_transaction_mutability",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_mutability",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_mutability",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_transaction_mutability",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_mutability",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_mutability",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_mutability",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "MUTABLE",
+              "IMMUTABLE",
+              "CONDITIONAL"
+            ]
+          }
+        },
+        "consumer_banking_transaction_status": {
+          "typeName": "transaction_status",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_transaction_status"
+            },
+            "min": {
+              "returnType": "consumer_banking_transaction_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_transaction_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_transaction_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PENDING",
+              "BOOKED",
+              "CANCELLED",
+              "REJECTED",
+              "REVERSED",
+              "HELD",
+              "EXPIRED",
+              "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_transaction_type": {
+          "typeName": "transaction_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_transaction_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_transaction_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_transaction_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_transaction_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_transaction_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PURCHASE",
+              "CASH_WITHDRAWAL",
+              "REFUND",
+              "BILL_PAYMENT",
+              "SALARY",
+              "SUBSCRIPTION",
+              "DIVIDEND",
+              "TAX_PAYMENT",
+              "TAX_REFUND",
+              "INTERNAL_TRANSFER",
+              "EXTERNAL_TRANSFER",
+              "MERCHANT_PAYMENT",
+              "UTILITY_PAYMENT",
+              "RENT_PAYMENT",
+              "MORTGAGE_PAYMENT",
+              "INVESTMENT",
+              "INSURANCE_PREMIUM",
+              "DONATION",
+              "TRANSPORTATION",
+              "FOOD_DINING",
+              "HEALTHCARE",
+              "EDUCATION",
+              "ENTERTAINMENT",
+              "TRAVEL",
+              "RETAIL",
+              "OTHER"
+            ]
+          }
         },
         "consumer_lending_account_type": {
           "typeName": "account_type",
@@ -32000,6 +35175,233 @@
               "DACA_RECIPIENT",
               "UNDOCUMENTED",
               "NOT_SPECIFIED"
+            ]
+          }
+        },
+        "enterprise_credit_debit_indicator": {
+          "typeName": "credit_debit_indicator",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_credit_debit_indicator"
+            },
+            "min": {
+              "returnType": "enterprise_credit_debit_indicator"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_credit_debit_indicator",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_debit_indicator",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_debit_indicator",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_credit_debit_indicator",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_debit_indicator",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_debit_indicator",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_debit_indicator",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "CREDIT",
+              "DEBIT"
+            ]
+          }
+        },
+        "enterprise_currency_code": {
+          "typeName": "currency_code",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_currency_code"
+            },
+            "min": {
+              "returnType": "enterprise_currency_code"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_currency_code",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_currency_code",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_currency_code",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_currency_code",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_currency_code",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_currency_code",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_currency_code",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP",
+              "JPY",
+              "AUD",
+              "CAD",
+              "CHF",
+              "CNY",
+              "HKD",
+              "NZD",
+              "SEK",
+              "NOK",
+              "DKK",
+              "SGD",
+              "MXN",
+              "BRL",
+              "INR",
+              "RUB",
+              "ZAR",
+              "TRY",
+              "KRW",
+              "PLN",
+              "ILS",
+              "AED",
+              "SAR",
+              "THB",
+              "MYR",
+              "IDR",
+              "PHP",
+              "ARS"
+            ]
+          }
+        },
+        "enterprise_frequency": {
+          "typeName": "frequency",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_frequency"
+            },
+            "min": {
+              "returnType": "enterprise_frequency"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_frequency",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_frequency",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_frequency",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_frequency",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_frequency",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_frequency",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_frequency",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "BI_WEEKLY",
+              "SEMI_MONTHLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "SEMI_ANNUALLY",
+              "ANNUALLY",
+              "CUSTOM",
+              "IRREGULAR",
+              "ONE_TIME",
+              "OTHER"
             ]
           }
         },

@@ -1,11 +1,7 @@
-import logging
-import random
-
-from faker import Faker
-
-from fsi_data_generator.fsi_generators.helpers.text_list import text_list
-from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__adverse_action_details__credit_bureau_name import \
+from ..fsi_text.consumer_lending.consumer_lending__adverse_action_details__credit_bureau_name import \
     consumer_lending__adverse_action_details__credit_bureau_name
+from .helpers.text_list import text_list
+from faker import Faker
 from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__adverse_action_details__credit_score_factors import \
     consumer_lending__adverse_action_details__credit_score_factors
 from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__adverse_action_notices__delivery_method import \
@@ -210,6 +206,9 @@ from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__risk_based_p
     consumer_lending__risk_based_pricing_tiers__tier_name
 from fsi_data_generator.fsi_text.consumer_lending.consumer_lending__vehicles__vehicle_type import \
     consumer_lending__vehicles__vehicle_type
+
+import logging
+import random
 
 logger = logging.getLogger(__name__)
 fake = Faker()

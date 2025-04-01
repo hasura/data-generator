@@ -1,17 +1,16 @@
-import glob
-import logging
-import os
-import sys
 from decimal import Decimal
-
-import psycopg2
 from dotenv import load_dotenv
+from fsi_data_generator.banking_generators import custom_generators
 from psycopg2._psycopg import register_type
 from psycopg2.extensions import register_adapter
 from psycopg2.extras import RealDictCursor
 
 import cve_manager
-from fsi_data_generator.banking_generators import custom_generators
+import glob
+import logging
+import os
+import psycopg2
+import sys
 
 logger = logging.getLogger(__name__)
 

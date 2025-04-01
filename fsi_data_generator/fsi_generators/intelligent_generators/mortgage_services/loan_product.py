@@ -1,10 +1,9 @@
-import random
-import string
+from .enums import InterestRateType, LoanType
+from data_generator import DataGenerator
 from datetime import datetime, timedelta
 
-from data_generator import DataGenerator
-
-from .enums import InterestRateType, LoanType
+import random
+import string
 
 
 def generate_random_loan_product(ids_dict, dg: DataGenerator):
@@ -109,7 +108,7 @@ def generate_random_loan_product(ids_dict, dg: DataGenerator):
                         gap_days = random.randint(1, 30)
                         launch_date = estimated_discontinue + timedelta(days=gap_days)
 
-                        # If this would be in the future, adjust to recent past
+                        # If this is in the future, adjust to recent past
                         if launch_date > now:
                             launch_date = now - timedelta(days=random.randint(1, 30))
                     except ValueError:

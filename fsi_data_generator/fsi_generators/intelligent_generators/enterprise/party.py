@@ -1,16 +1,14 @@
-import datetime
-import logging
-import random
-import string
-from typing import Any, Dict
-
-import psycopg2
-from faker import Faker
-
-from data_generator import DataGenerator
-
 from .enums import (CitizenshipStatus, LegalStructure, MaritalStatus,
                     PartyStatus, PartyType)
+from data_generator import DataGenerator
+from faker import Faker
+from typing import Any, Dict
+
+import datetime
+import logging
+import psycopg2
+import random
+import string
 
 logger = logging.getLogger(__name__)
 fake = Faker()  # Initialize Faker
@@ -53,7 +51,7 @@ def generate_random_party(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict
 
             # If still not unique, add a timestamp
             if name in existing_party_names:
-                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
                 name = f"{name} {timestamp[-4:]}"
 
             full_business_legal_name = name + (", LLC" if random.random() < 0.5 else ", Inc.")

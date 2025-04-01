@@ -1,20 +1,16 @@
-from faker import Faker
-
-from fsi_data_generator.fsi_generators.helpers.apply_schema_to_regex import \
-    apply_schema_to_regex
-from fsi_data_generator.fsi_generators.helpers.generate_composite_key import \
-    generate_unique_composite_key
-from fsi_data_generator.fsi_generators.helpers.random_record import \
-    random_record
-from fsi_data_generator.fsi_generators.intelligent_generators.app_mgmt import (
+from .helpers.apply_schema_to_regex import apply_schema_to_regex
+from .helpers.generate_composite_key import generate_unique_composite_key
+from .helpers.random_record import random_record
+from .intelligent_generators.app_mgmt import (
     generate_random_application, generate_random_application_component,
     generate_random_architecture, generate_random_component,
     generate_random_component_dependency, generate_random_sdlc_process,
     generate_random_team, get_license_data)
-from fsi_data_generator.fsi_generators.intelligent_generators.app_mgmt.application_relationship import \
+from .intelligent_generators.app_mgmt.application_relationship import \
     generate_random_application_relationship
-from fsi_data_generator.fsi_generators.intelligent_generators.app_mgmt.team_member import \
+from .intelligent_generators.app_mgmt.team_member import \
     generate_random_team_member
+from faker import Faker
 
 fake = Faker()
 

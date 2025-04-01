@@ -1,7 +1,7 @@
-import random
+from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict, List, Optional
 
-from data_generator import DataGenerator, SkipRowGenerationError
+import random
 
 prev_entitlement_resources = set()
 

@@ -20,7 +20,7 @@ definition:
       type: Timestamptz
       description: When the account was opened
     - name: status
-      type: Varchar!
+      type: ConsumerBankingAccountStatus!
       description: Operational status of the account (e.g., Active, Inactive, Frozen,
         Closed). Can be closed independently of enterprise account, but must be
         closed if enterprise account is closed
@@ -88,10 +88,11 @@ definition:
         - fieldName: openedDate
           booleanExpressionType: TimestamptzBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingAccountStatusBoolExp
         - fieldName: statusUpdateDateTime
           booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
+        - relationshipName: consumerBankingAccountAccessConsents
         - relationshipName: consumerBankingAccountStatementPreferences
         - relationshipName: consumerBankingProduct
         - relationshipName: consumerBankingBalances
@@ -128,7 +129,7 @@ definition:
         - fieldName: openedDate
           aggregateExpression: TimestamptzAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingAccountStatusAggExp
         - fieldName: statusUpdateDateTime
           aggregateExpression: TimestamptzAggExp
   count:
@@ -154,7 +155,7 @@ definition:
         - fieldName: openedDate
           orderByExpression: TimestamptzOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingAccountStatusOrderByExp
         - fieldName: statusUpdateDateTime
           orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
@@ -204,6 +205,28 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccountAccessConsents
+  sourceType: ConsumerBankingAccounts
+  target:
+    model:
+      name: ConsumerBankingAccountAccessConsents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ConsumerBankingAccountAccessConsentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
+  graphql:
+    aggregateFieldName: consumerBankingAccountAccessConsentsAggregate
 
 ---
 kind: Relationship

@@ -54,125 +54,105 @@ definition:
 kind: ScalarType
 version: v1
 definition:
-  name: Timestamp
+  name: Timestamptz
   graphql:
-    typeName: ConsumerBanking_Timestamp
+    typeName: ConsumerBanking_Timestamptz
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: TimestampBoolExp
+  name: TimestamptzBoolExp
   operand:
     scalar:
-      type: Timestamp
+      type: Timestamptz
       comparisonOperators:
         - name: _eq
-          argumentType: Timestamp!
+          argumentType: Timestamptz!
         - name: _gt
-          argumentType: Timestamp!
+          argumentType: Timestamptz!
         - name: _gte
-          argumentType: Timestamp!
+          argumentType: Timestamptz!
         - name: _in
-          argumentType: "[Timestamp!]!"
+          argumentType: "[Timestamptz!]!"
         - name: _lt
-          argumentType: Timestamp!
+          argumentType: Timestamptz!
         - name: _lte
-          argumentType: Timestamp!
+          argumentType: Timestamptz!
         - name: _neq
-          argumentType: Timestamp!
+          argumentType: Timestamptz!
       dataConnectorOperatorMapping:
         - dataConnectorName: consumer_banking
-          dataConnectorScalarType: timestamp
+          dataConnectorScalarType: timestamptz
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerBanking_TimestampBoolExp
+    typeName: ConsumerBanking_TimestamptzBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: consumer_banking
-  dataConnectorScalarType: timestamp
-  representation: Timestamp
+  dataConnectorScalarType: timestamptz
+  representation: Timestamptz
   graphql:
-    comparisonExpressionTypeName: ConsumerBanking_TimestampComparisonExp
+    comparisonExpressionTypeName: ConsumerBanking_TimestamptzComparisonExp
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: Varchar
+  name: ConsumerBankingConsentStatus
   graphql:
-    typeName: ConsumerBanking_Varchar
+    typeName: ConsumerBanking_ConsumerBankingConsentStatus
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: VarcharBoolExp
+  name: ConsumerBankingConsentStatusBoolExp
   operand:
     scalar:
-      type: Varchar
+      type: ConsumerBankingConsentStatus
       comparisonOperators:
         - name: _eq
-          argumentType: Varchar!
+          argumentType: ConsumerBankingConsentStatus!
         - name: _gt
-          argumentType: Varchar!
+          argumentType: ConsumerBankingConsentStatus!
         - name: _gte
-          argumentType: Varchar!
-        - name: _ilike
-          argumentType: Varchar!
+          argumentType: ConsumerBankingConsentStatus!
         - name: _in
-          argumentType: "[Varchar!]!"
-        - name: _iregex
-          argumentType: Varchar!
-        - name: _like
-          argumentType: Varchar!
+          argumentType: "[ConsumerBankingConsentStatus!]!"
         - name: _lt
-          argumentType: Varchar!
+          argumentType: ConsumerBankingConsentStatus!
         - name: _lte
-          argumentType: Varchar!
+          argumentType: ConsumerBankingConsentStatus!
         - name: _neq
-          argumentType: Varchar!
-        - name: _nilike
-          argumentType: Varchar!
-        - name: _niregex
-          argumentType: Varchar!
-        - name: _nlike
-          argumentType: Varchar!
-        - name: _nregex
-          argumentType: Varchar!
-        - name: _regex
-          argumentType: Varchar!
-        - name: starts_with
-          argumentType: Varchar!
-        - name: ts_match_tt
-          argumentType: Varchar!
+          argumentType: ConsumerBankingConsentStatus!
       dataConnectorOperatorMapping:
         - dataConnectorName: consumer_banking
-          dataConnectorScalarType: varchar
+          dataConnectorScalarType: consumer_banking_consent_status
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerBanking_VarcharBoolExp
+    typeName: ConsumerBanking_ConsumerBankingConsentStatusBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: consumer_banking
-  dataConnectorScalarType: varchar
-  representation: Varchar
+  dataConnectorScalarType: consumer_banking_consent_status
+  representation: ConsumerBankingConsentStatus
   graphql:
-    comparisonExpressionTypeName: ConsumerBanking_VarcharComparisonExp
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingConsentStatusComparisonExp
 
 ---
 kind: ScalarType
@@ -354,18 +334,18 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: TimestampAggExp
+  name: TimestamptzAggExp
   operand:
     scalar:
-      aggregatedType: Timestamp
+      aggregatedType: Timestamptz
       aggregationFunctions:
         - name: max
-          returnType: Timestamp
+          returnType: Timestamptz
         - name: min
-          returnType: Timestamp
+          returnType: Timestamptz
       dataConnectorAggregationFunctionMapping:
         - dataConnectorName: consumer_banking
-          dataConnectorScalarType: timestamp
+          dataConnectorScalarType: timestamptz
           functionMapping:
             max:
               name: max
@@ -376,7 +356,1108 @@ definition:
   countDistinct:
     enable: true
   graphql:
-    selectTypeName: ConsumerBanking_TimestampAggExp
+    selectTypeName: ConsumerBanking_TimestamptzAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingConsentStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingConsentStatus
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingConsentStatus
+        - name: min
+          returnType: ConsumerBankingConsentStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_consent_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingConsentStatusAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: Int4OrderByExp
+  operand:
+    scalar:
+      orderedType: Int4
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_Int4OrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: TimestamptzOrderByExp
+  operand:
+    scalar:
+      orderedType: Timestamptz
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_TimestamptzOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingConsentStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingConsentStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingConsentStatusOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingCommunicationMethod
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingCommunicationMethod
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingCommunicationMethodBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingCommunicationMethod
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingCommunicationMethod!
+        - name: _gt
+          argumentType: ConsumerBankingCommunicationMethod!
+        - name: _gte
+          argumentType: ConsumerBankingCommunicationMethod!
+        - name: _in
+          argumentType: "[ConsumerBankingCommunicationMethod!]!"
+        - name: _lt
+          argumentType: ConsumerBankingCommunicationMethod!
+        - name: _lte
+          argumentType: ConsumerBankingCommunicationMethod!
+        - name: _neq
+          argumentType: ConsumerBankingCommunicationMethod!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_communication_method
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingCommunicationMethodBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_communication_method
+  representation: ConsumerBankingCommunicationMethod
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingCommunicationMethodComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStatementFormat
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementFormat
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementFormatBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStatementFormat
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStatementFormat!
+        - name: _gt
+          argumentType: ConsumerBankingStatementFormat!
+        - name: _gte
+          argumentType: ConsumerBankingStatementFormat!
+        - name: _in
+          argumentType: "[ConsumerBankingStatementFormat!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStatementFormat!
+        - name: _lte
+          argumentType: ConsumerBankingStatementFormat!
+        - name: _neq
+          argumentType: ConsumerBankingStatementFormat!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_format
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementFormatBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_statement_format
+  representation: ConsumerBankingStatementFormat
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStatementFormatComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: EnterpriseFrequency
+  graphql:
+    typeName: ConsumerBanking_EnterpriseFrequency
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseFrequencyBoolExp
+  operand:
+    scalar:
+      type: EnterpriseFrequency
+      comparisonOperators:
+        - name: _eq
+          argumentType: EnterpriseFrequency!
+        - name: _gt
+          argumentType: EnterpriseFrequency!
+        - name: _gte
+          argumentType: EnterpriseFrequency!
+        - name: _in
+          argumentType: "[EnterpriseFrequency!]!"
+        - name: _lt
+          argumentType: EnterpriseFrequency!
+        - name: _lte
+          argumentType: EnterpriseFrequency!
+        - name: _neq
+          argumentType: EnterpriseFrequency!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_frequency
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_EnterpriseFrequencyBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: enterprise_frequency
+  representation: EnterpriseFrequency
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_EnterpriseFrequencyComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Date
+  graphql:
+    typeName: ConsumerBanking_Date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DateBoolExp
+  operand:
+    scalar:
+      type: Date
+      comparisonOperators:
+        - name: _eq
+          argumentType: Date!
+        - name: _gt
+          argumentType: Date!
+        - name: _gte
+          argumentType: Date!
+        - name: _in
+          argumentType: "[Date!]!"
+        - name: _lt
+          argumentType: Date!
+        - name: _lte
+          argumentType: Date!
+        - name: _neq
+          argumentType: Date!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: date
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_DateBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: date
+  representation: Date
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_DateComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingCommunicationMethodAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingCommunicationMethod
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingCommunicationMethod
+        - name: min
+          returnType: ConsumerBankingCommunicationMethod
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_communication_method
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingCommunicationMethodAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementFormatAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStatementFormat
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStatementFormat
+        - name: min
+          returnType: ConsumerBankingStatementFormat
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_format
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementFormatAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseFrequencyAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseFrequency
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseFrequency
+        - name: min
+          returnType: EnterpriseFrequency
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_frequency
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_EnterpriseFrequencyAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DateAggExp
+  operand:
+    scalar:
+      aggregatedType: Date
+      aggregationFunctions:
+        - name: max
+          returnType: Date
+        - name: min
+          returnType: Date
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: date
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_DateAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingCommunicationMethodOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingCommunicationMethod
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingCommunicationMethodOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementFormatOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStatementFormat
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementFormatOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseFrequencyOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseFrequency
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_EnterpriseFrequencyOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DateOrderByExp
+  operand:
+    scalar:
+      orderedType: Date
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_DateOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingAccountStatus
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAccountStatusBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingAccountStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _gt
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _gte
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _in
+          argumentType: "[ConsumerBankingAccountStatus!]!"
+        - name: _lt
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _lte
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _neq
+          argumentType: ConsumerBankingAccountStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_account_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_account_status
+  representation: ConsumerBankingAccountStatus
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingAccountStatusComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingAccountStatus
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingAccountStatus
+        - name: min
+          returnType: ConsumerBankingAccountStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_account_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAccountStatusAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingAccountStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAccountStatusOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: EnterpriseCreditDebitIndicator
+  graphql:
+    typeName: ConsumerBanking_EnterpriseCreditDebitIndicator
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseCreditDebitIndicatorBoolExp
+  operand:
+    scalar:
+      type: EnterpriseCreditDebitIndicator
+      comparisonOperators:
+        - name: _eq
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _gt
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _gte
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _in
+          argumentType: "[EnterpriseCreditDebitIndicator!]!"
+        - name: _lt
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _lte
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _neq
+          argumentType: EnterpriseCreditDebitIndicator!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_credit_debit_indicator
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_EnterpriseCreditDebitIndicatorBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: enterprise_credit_debit_indicator
+  representation: EnterpriseCreditDebitIndicator
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_EnterpriseCreditDebitIndicatorComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: EnterpriseCurrencyCode
+  graphql:
+    typeName: ConsumerBanking_EnterpriseCurrencyCode
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseCurrencyCodeBoolExp
+  operand:
+    scalar:
+      type: EnterpriseCurrencyCode
+      comparisonOperators:
+        - name: _eq
+          argumentType: EnterpriseCurrencyCode!
+        - name: _gt
+          argumentType: EnterpriseCurrencyCode!
+        - name: _gte
+          argumentType: EnterpriseCurrencyCode!
+        - name: _in
+          argumentType: "[EnterpriseCurrencyCode!]!"
+        - name: _lt
+          argumentType: EnterpriseCurrencyCode!
+        - name: _lte
+          argumentType: EnterpriseCurrencyCode!
+        - name: _neq
+          argumentType: EnterpriseCurrencyCode!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_currency_code
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_EnterpriseCurrencyCodeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: enterprise_currency_code
+  representation: EnterpriseCurrencyCode
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_EnterpriseCurrencyCodeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingBalanceSubType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBalanceSubType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingBalanceSubTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingBalanceSubType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingBalanceSubType!
+        - name: _gt
+          argumentType: ConsumerBankingBalanceSubType!
+        - name: _gte
+          argumentType: ConsumerBankingBalanceSubType!
+        - name: _in
+          argumentType: "[ConsumerBankingBalanceSubType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingBalanceSubType!
+        - name: _lte
+          argumentType: ConsumerBankingBalanceSubType!
+        - name: _neq
+          argumentType: ConsumerBankingBalanceSubType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_balance_sub_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBalanceSubTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_balance_sub_type
+  representation: ConsumerBankingBalanceSubType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingBalanceSubTypeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingBalanceType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBalanceType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingBalanceTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingBalanceType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingBalanceType!
+        - name: _gt
+          argumentType: ConsumerBankingBalanceType!
+        - name: _gte
+          argumentType: ConsumerBankingBalanceType!
+        - name: _in
+          argumentType: "[ConsumerBankingBalanceType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingBalanceType!
+        - name: _lte
+          argumentType: ConsumerBankingBalanceType!
+        - name: _neq
+          argumentType: ConsumerBankingBalanceType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_balance_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBalanceTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_balance_type
+  representation: ConsumerBankingBalanceType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingBalanceTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: NumericAggExp
+  operand:
+    scalar:
+      aggregatedType: Numeric
+      aggregationFunctions:
+        - name: avg
+          returnType: Numeric
+        - name: max
+          returnType: Numeric
+        - name: min
+          returnType: Numeric
+        - name: stddev
+          returnType: Numeric
+        - name: stddev_pop
+          returnType: Numeric
+        - name: stddev_samp
+          returnType: Numeric
+        - name: sum
+          returnType: Numeric
+        - name: var_pop
+          returnType: Numeric
+        - name: var_samp
+          returnType: Numeric
+        - name: variance
+          returnType: Numeric
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: numeric
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_NumericAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseCreditDebitIndicatorAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseCreditDebitIndicator
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseCreditDebitIndicator
+        - name: min
+          returnType: EnterpriseCreditDebitIndicator
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_credit_debit_indicator
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_EnterpriseCreditDebitIndicatorAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseCurrencyCodeAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseCurrencyCode
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseCurrencyCode
+        - name: min
+          returnType: EnterpriseCurrencyCode
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_currency_code
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_EnterpriseCurrencyCodeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingBalanceSubTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingBalanceSubType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingBalanceSubType
+        - name: min
+          returnType: ConsumerBankingBalanceSubType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_balance_sub_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingBalanceSubTypeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingBalanceTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingBalanceType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingBalanceType
+        - name: min
+          returnType: ConsumerBankingBalanceType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_balance_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingBalanceTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: NumericOrderByExp
+  operand:
+    scalar:
+      orderedType: Numeric
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_NumericOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseCreditDebitIndicatorOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseCreditDebitIndicator
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_EnterpriseCreditDebitIndicatorOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseCurrencyCodeOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseCurrencyCode
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_EnterpriseCurrencyCodeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingBalanceSubTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingBalanceSubType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingBalanceSubTypeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingBalanceTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingBalanceType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingBalanceTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingBeneficiaryType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBeneficiaryType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingBeneficiaryTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingBeneficiaryType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingBeneficiaryType!
+        - name: _gt
+          argumentType: ConsumerBankingBeneficiaryType!
+        - name: _gte
+          argumentType: ConsumerBankingBeneficiaryType!
+        - name: _in
+          argumentType: "[ConsumerBankingBeneficiaryType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingBeneficiaryType!
+        - name: _lte
+          argumentType: ConsumerBankingBeneficiaryType!
+        - name: _neq
+          argumentType: ConsumerBankingBeneficiaryType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_beneficiary_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBeneficiaryTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_beneficiary_type
+  representation: ConsumerBankingBeneficiaryType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingBeneficiaryTypeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Varchar
+  graphql:
+    typeName: ConsumerBanking_Varchar
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: VarcharBoolExp
+  operand:
+    scalar:
+      type: Varchar
+      comparisonOperators:
+        - name: _eq
+          argumentType: Varchar!
+        - name: _gt
+          argumentType: Varchar!
+        - name: _gte
+          argumentType: Varchar!
+        - name: _ilike
+          argumentType: Varchar!
+        - name: _in
+          argumentType: "[Varchar!]!"
+        - name: _iregex
+          argumentType: Varchar!
+        - name: _like
+          argumentType: Varchar!
+        - name: _lt
+          argumentType: Varchar!
+        - name: _lte
+          argumentType: Varchar!
+        - name: _neq
+          argumentType: Varchar!
+        - name: _nilike
+          argumentType: Varchar!
+        - name: _niregex
+          argumentType: Varchar!
+        - name: _nlike
+          argumentType: Varchar!
+        - name: _nregex
+          argumentType: Varchar!
+        - name: _regex
+          argumentType: Varchar!
+        - name: starts_with
+          argumentType: Varchar!
+        - name: ts_match_tt
+          argumentType: Varchar!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: varchar
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_VarcharBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: varchar
+  representation: Varchar
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_VarcharComparisonExp
 
 ---
 kind: ScalarType
@@ -454,6 +1535,34 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
+  name: ConsumerBankingBeneficiaryTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingBeneficiaryType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingBeneficiaryType
+        - name: min
+          returnType: ConsumerBankingBeneficiaryType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_beneficiary_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingBeneficiaryTypeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
   name: VarcharAggExp
   operand:
     scalar:
@@ -477,304 +1586,6 @@ definition:
     enable: true
   graphql:
     selectTypeName: ConsumerBanking_VarcharAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: Int4OrderByExp
-  operand:
-    scalar:
-      orderedType: Int4
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_Int4OrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: TimestampOrderByExp
-  operand:
-    scalar:
-      orderedType: Timestamp
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_TimestampOrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: VarcharOrderByExp
-  operand:
-    scalar:
-      orderedType: Varchar
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_VarcharOrderByExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Date
-  graphql:
-    typeName: ConsumerBanking_Date
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: DateBoolExp
-  operand:
-    scalar:
-      type: Date
-      comparisonOperators:
-        - name: _eq
-          argumentType: Date!
-        - name: _gt
-          argumentType: Date!
-        - name: _gte
-          argumentType: Date!
-        - name: _in
-          argumentType: "[Date!]!"
-        - name: _lt
-          argumentType: Date!
-        - name: _lte
-          argumentType: Date!
-        - name: _neq
-          argumentType: Date!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: date
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: ConsumerBanking_DateBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: consumer_banking
-  dataConnectorScalarType: date
-  representation: Date
-  graphql:
-    comparisonExpressionTypeName: ConsumerBanking_DateComparisonExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: DateAggExp
-  operand:
-    scalar:
-      aggregatedType: Date
-      aggregationFunctions:
-        - name: max
-          returnType: Date
-        - name: min
-          returnType: Date
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: date
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: ConsumerBanking_DateAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: DateOrderByExp
-  operand:
-    scalar:
-      orderedType: Date
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_DateOrderByExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Timestamptz
-  graphql:
-    typeName: ConsumerBanking_Timestamptz
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: TimestamptzBoolExp
-  operand:
-    scalar:
-      type: Timestamptz
-      comparisonOperators:
-        - name: _eq
-          argumentType: Timestamptz!
-        - name: _gt
-          argumentType: Timestamptz!
-        - name: _gte
-          argumentType: Timestamptz!
-        - name: _in
-          argumentType: "[Timestamptz!]!"
-        - name: _lt
-          argumentType: Timestamptz!
-        - name: _lte
-          argumentType: Timestamptz!
-        - name: _neq
-          argumentType: Timestamptz!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: timestamptz
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: ConsumerBanking_TimestamptzBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: consumer_banking
-  dataConnectorScalarType: timestamptz
-  representation: Timestamptz
-  graphql:
-    comparisonExpressionTypeName: ConsumerBanking_TimestamptzComparisonExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: TimestamptzAggExp
-  operand:
-    scalar:
-      aggregatedType: Timestamptz
-      aggregationFunctions:
-        - name: max
-          returnType: Timestamptz
-        - name: min
-          returnType: Timestamptz
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: timestamptz
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: ConsumerBanking_TimestamptzAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: TimestamptzOrderByExp
-  operand:
-    scalar:
-      orderedType: Timestamptz
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_TimestamptzOrderByExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: NumericAggExp
-  operand:
-    scalar:
-      aggregatedType: Numeric
-      aggregationFunctions:
-        - name: avg
-          returnType: Numeric
-        - name: max
-          returnType: Numeric
-        - name: min
-          returnType: Numeric
-        - name: stddev
-          returnType: Numeric
-        - name: stddev_pop
-          returnType: Numeric
-        - name: stddev_samp
-          returnType: Numeric
-        - name: sum
-          returnType: Numeric
-        - name: var_pop
-          returnType: Numeric
-        - name: var_samp
-          returnType: Numeric
-        - name: variance
-          returnType: Numeric
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: numeric
-          functionMapping:
-            avg:
-              name: avg
-            max:
-              name: max
-            min:
-              name: min
-            stddev:
-              name: stddev
-            stddev_pop:
-              name: stddev_pop
-            stddev_samp:
-              name: stddev_samp
-            sum:
-              name: sum
-            var_pop:
-              name: var_pop
-            var_samp:
-              name: var_samp
-            variance:
-              name: variance
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: ConsumerBanking_NumericAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: NumericOrderByExp
-  operand:
-    scalar:
-      orderedType: Numeric
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_NumericOrderByExp
 
 ---
 kind: AggregateExpression
@@ -808,6 +1619,32 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
+  name: ConsumerBankingBeneficiaryTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingBeneficiaryType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingBeneficiaryTypeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: VarcharOrderByExp
+  operand:
+    scalar:
+      orderedType: Varchar
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_VarcharOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
   name: TextOrderByExp
   operand:
     scalar:
@@ -816,4 +1653,3170 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: ConsumerBanking_TextOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: EnterpriseIdentifierScheme
+  graphql:
+    typeName: ConsumerBanking_EnterpriseIdentifierScheme
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseIdentifierSchemeBoolExp
+  operand:
+    scalar:
+      type: EnterpriseIdentifierScheme
+      comparisonOperators:
+        - name: _eq
+          argumentType: EnterpriseIdentifierScheme!
+        - name: _gt
+          argumentType: EnterpriseIdentifierScheme!
+        - name: _gte
+          argumentType: EnterpriseIdentifierScheme!
+        - name: _in
+          argumentType: "[EnterpriseIdentifierScheme!]!"
+        - name: _lt
+          argumentType: EnterpriseIdentifierScheme!
+        - name: _lte
+          argumentType: EnterpriseIdentifierScheme!
+        - name: _neq
+          argumentType: EnterpriseIdentifierScheme!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_identifier_scheme
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_EnterpriseIdentifierSchemeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: enterprise_identifier_scheme
+  representation: EnterpriseIdentifierScheme
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_EnterpriseIdentifierSchemeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseIdentifierSchemeAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseIdentifierScheme
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseIdentifierScheme
+        - name: min
+          returnType: EnterpriseIdentifierScheme
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_identifier_scheme
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_EnterpriseIdentifierSchemeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseIdentifierSchemeOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseIdentifierScheme
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_EnterpriseIdentifierSchemeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitStatusCode
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebitStatusCode
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitStatusCodeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingDirectDebitStatusCode
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingDirectDebitStatusCode!
+        - name: _gt
+          argumentType: ConsumerBankingDirectDebitStatusCode!
+        - name: _gte
+          argumentType: ConsumerBankingDirectDebitStatusCode!
+        - name: _in
+          argumentType: "[ConsumerBankingDirectDebitStatusCode!]!"
+        - name: _lt
+          argumentType: ConsumerBankingDirectDebitStatusCode!
+        - name: _lte
+          argumentType: ConsumerBankingDirectDebitStatusCode!
+        - name: _neq
+          argumentType: ConsumerBankingDirectDebitStatusCode!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_direct_debit_status_code
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebitStatusCodeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_direct_debit_status_code
+  representation: ConsumerBankingDirectDebitStatusCode
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingDirectDebitStatusCodeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitStatusCodeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingDirectDebitStatusCode
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingDirectDebitStatusCode
+        - name: min
+          returnType: ConsumerBankingDirectDebitStatusCode
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_direct_debit_status_code
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingDirectDebitStatusCodeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitStatusCodeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingDirectDebitStatusCode
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingDirectDebitStatusCodeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitCategory
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebitCategory
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitCategoryBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingDirectDebitCategory
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingDirectDebitCategory!
+        - name: _gt
+          argumentType: ConsumerBankingDirectDebitCategory!
+        - name: _gte
+          argumentType: ConsumerBankingDirectDebitCategory!
+        - name: _in
+          argumentType: "[ConsumerBankingDirectDebitCategory!]!"
+        - name: _lt
+          argumentType: ConsumerBankingDirectDebitCategory!
+        - name: _lte
+          argumentType: ConsumerBankingDirectDebitCategory!
+        - name: _neq
+          argumentType: ConsumerBankingDirectDebitCategory!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_direct_debit_category
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebitCategoryBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_direct_debit_category
+  representation: ConsumerBankingDirectDebitCategory
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingDirectDebitCategoryComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitClassification
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebitClassification
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitClassificationBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingDirectDebitClassification
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingDirectDebitClassification!
+        - name: _gt
+          argumentType: ConsumerBankingDirectDebitClassification!
+        - name: _gte
+          argumentType: ConsumerBankingDirectDebitClassification!
+        - name: _in
+          argumentType: "[ConsumerBankingDirectDebitClassification!]!"
+        - name: _lt
+          argumentType: ConsumerBankingDirectDebitClassification!
+        - name: _lte
+          argumentType: ConsumerBankingDirectDebitClassification!
+        - name: _neq
+          argumentType: ConsumerBankingDirectDebitClassification!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_direct_debit_classification
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingDirectDebitClassificationBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_direct_debit_classification
+  representation: ConsumerBankingDirectDebitClassification
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingDirectDebitClassificationComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitCategoryAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingDirectDebitCategory
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingDirectDebitCategory
+        - name: min
+          returnType: ConsumerBankingDirectDebitCategory
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_direct_debit_category
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingDirectDebitCategoryAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitClassificationAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingDirectDebitClassification
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingDirectDebitClassification
+        - name: min
+          returnType: ConsumerBankingDirectDebitClassification
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_direct_debit_classification
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingDirectDebitClassificationAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitCategoryOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingDirectDebitCategory
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingDirectDebitCategoryOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingDirectDebitClassificationOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingDirectDebitClassification
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingDirectDebitClassificationOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingOfferType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingOfferType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingOfferTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingOfferType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingOfferType!
+        - name: _gt
+          argumentType: ConsumerBankingOfferType!
+        - name: _gte
+          argumentType: ConsumerBankingOfferType!
+        - name: _in
+          argumentType: "[ConsumerBankingOfferType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingOfferType!
+        - name: _lte
+          argumentType: ConsumerBankingOfferType!
+        - name: _neq
+          argumentType: ConsumerBankingOfferType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_offer_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingOfferTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_offer_type
+  representation: ConsumerBankingOfferType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingOfferTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingOfferTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingOfferType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingOfferType
+        - name: min
+          returnType: ConsumerBankingOfferType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_offer_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingOfferTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingOfferTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingOfferType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingOfferTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingAccountFeeSchedule
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountFeeSchedule
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAccountFeeScheduleBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingAccountFeeSchedule
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingAccountFeeSchedule!
+        - name: _gt
+          argumentType: ConsumerBankingAccountFeeSchedule!
+        - name: _gte
+          argumentType: ConsumerBankingAccountFeeSchedule!
+        - name: _in
+          argumentType: "[ConsumerBankingAccountFeeSchedule!]!"
+        - name: _lt
+          argumentType: ConsumerBankingAccountFeeSchedule!
+        - name: _lte
+          argumentType: ConsumerBankingAccountFeeSchedule!
+        - name: _neq
+          argumentType: ConsumerBankingAccountFeeSchedule!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_account_fee_schedule
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountFeeScheduleBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_account_fee_schedule
+  representation: ConsumerBankingAccountFeeSchedule
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingAccountFeeScheduleComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingInterestCalculationMethod
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingInterestCalculationMethod
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingInterestCalculationMethodBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingInterestCalculationMethod
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingInterestCalculationMethod!
+        - name: _gt
+          argumentType: ConsumerBankingInterestCalculationMethod!
+        - name: _gte
+          argumentType: ConsumerBankingInterestCalculationMethod!
+        - name: _in
+          argumentType: "[ConsumerBankingInterestCalculationMethod!]!"
+        - name: _lt
+          argumentType: ConsumerBankingInterestCalculationMethod!
+        - name: _lte
+          argumentType: ConsumerBankingInterestCalculationMethod!
+        - name: _neq
+          argumentType: ConsumerBankingInterestCalculationMethod!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_interest_calculation_method
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingInterestCalculationMethodBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_interest_calculation_method
+  representation: ConsumerBankingInterestCalculationMethod
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingInterestCalculationMethodComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Bool
+  graphql:
+    typeName: ConsumerBanking_Bool
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BoolBoolExp
+  operand:
+    scalar:
+      type: Bool
+      comparisonOperators:
+        - name: _eq
+          argumentType: Bool!
+        - name: _gt
+          argumentType: Bool!
+        - name: _gte
+          argumentType: Bool!
+        - name: _in
+          argumentType: "[Bool!]!"
+        - name: _lt
+          argumentType: Bool!
+        - name: _lte
+          argumentType: Bool!
+        - name: _neq
+          argumentType: Bool!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: bool
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_BoolBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: bool
+  representation: Bool
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_BoolComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingProductType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingProductType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingProductTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingProductType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingProductType!
+        - name: _gt
+          argumentType: ConsumerBankingProductType!
+        - name: _gte
+          argumentType: ConsumerBankingProductType!
+        - name: _in
+          argumentType: "[ConsumerBankingProductType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingProductType!
+        - name: _lte
+          argumentType: ConsumerBankingProductType!
+        - name: _neq
+          argumentType: ConsumerBankingProductType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_product_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingProductTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_product_type
+  representation: ConsumerBankingProductType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingProductTypeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingProductStatus
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingProductStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingProductStatusBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingProductStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingProductStatus!
+        - name: _gt
+          argumentType: ConsumerBankingProductStatus!
+        - name: _gte
+          argumentType: ConsumerBankingProductStatus!
+        - name: _in
+          argumentType: "[ConsumerBankingProductStatus!]!"
+        - name: _lt
+          argumentType: ConsumerBankingProductStatus!
+        - name: _lte
+          argumentType: ConsumerBankingProductStatus!
+        - name: _neq
+          argumentType: ConsumerBankingProductStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_product_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingProductStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_product_status
+  representation: ConsumerBankingProductStatus
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingProductStatusComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountFeeScheduleAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingAccountFeeSchedule
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingAccountFeeSchedule
+        - name: min
+          returnType: ConsumerBankingAccountFeeSchedule
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_account_fee_schedule
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAccountFeeScheduleAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingInterestCalculationMethodAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingInterestCalculationMethod
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingInterestCalculationMethod
+        - name: min
+          returnType: ConsumerBankingInterestCalculationMethod
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_interest_calculation_method
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingInterestCalculationMethodAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: BoolAggExp
+  operand:
+    scalar:
+      aggregatedType: Bool
+      aggregationFunctions:
+        - name: bool_and
+          returnType: Bool
+        - name: bool_or
+          returnType: Bool
+        - name: every
+          returnType: Bool
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: bool
+          functionMapping:
+            bool_and:
+              name: bool_and
+            bool_or:
+              name: bool_or
+            every:
+              name: every
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_BoolAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingProductTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingProductType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingProductType
+        - name: min
+          returnType: ConsumerBankingProductType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_product_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingProductTypeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingProductStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingProductStatus
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingProductStatus
+        - name: min
+          returnType: ConsumerBankingProductStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_product_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingProductStatusAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountFeeScheduleOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingAccountFeeSchedule
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAccountFeeScheduleOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingInterestCalculationMethodOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingInterestCalculationMethod
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingInterestCalculationMethodOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: BoolOrderByExp
+  operand:
+    scalar:
+      orderedType: Bool
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_BoolOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingProductTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingProductType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingProductTypeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingProductStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingProductStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingProductStatusOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingPaymentMethod
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingPaymentMethod
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingPaymentMethodBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingPaymentMethod
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingPaymentMethod!
+        - name: _gt
+          argumentType: ConsumerBankingPaymentMethod!
+        - name: _gte
+          argumentType: ConsumerBankingPaymentMethod!
+        - name: _in
+          argumentType: "[ConsumerBankingPaymentMethod!]!"
+        - name: _lt
+          argumentType: ConsumerBankingPaymentMethod!
+        - name: _lte
+          argumentType: ConsumerBankingPaymentMethod!
+        - name: _neq
+          argumentType: ConsumerBankingPaymentMethod!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_payment_method
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingPaymentMethodBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_payment_method
+  representation: ConsumerBankingPaymentMethod
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingPaymentMethodComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentStatus
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPaymentStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentStatusBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingScheduledPaymentStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingScheduledPaymentStatus!
+        - name: _gt
+          argumentType: ConsumerBankingScheduledPaymentStatus!
+        - name: _gte
+          argumentType: ConsumerBankingScheduledPaymentStatus!
+        - name: _in
+          argumentType: "[ConsumerBankingScheduledPaymentStatus!]!"
+        - name: _lt
+          argumentType: ConsumerBankingScheduledPaymentStatus!
+        - name: _lte
+          argumentType: ConsumerBankingScheduledPaymentStatus!
+        - name: _neq
+          argumentType: ConsumerBankingScheduledPaymentStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_scheduled_payment_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPaymentStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_scheduled_payment_status
+  representation: ConsumerBankingScheduledPaymentStatus
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentStatusComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPaymentType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingScheduledPaymentType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingScheduledPaymentType!
+        - name: _gt
+          argumentType: ConsumerBankingScheduledPaymentType!
+        - name: _gte
+          argumentType: ConsumerBankingScheduledPaymentType!
+        - name: _in
+          argumentType: "[ConsumerBankingScheduledPaymentType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingScheduledPaymentType!
+        - name: _lte
+          argumentType: ConsumerBankingScheduledPaymentType!
+        - name: _neq
+          argumentType: ConsumerBankingScheduledPaymentType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_scheduled_payment_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingScheduledPaymentTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_scheduled_payment_type
+  representation: ConsumerBankingScheduledPaymentType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingPaymentMethodAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingPaymentMethod
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingPaymentMethod
+        - name: min
+          returnType: ConsumerBankingPaymentMethod
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_payment_method
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingPaymentMethodAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingScheduledPaymentStatus
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingScheduledPaymentStatus
+        - name: min
+          returnType: ConsumerBankingScheduledPaymentStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_scheduled_payment_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentStatusAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingScheduledPaymentType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingScheduledPaymentType
+        - name: min
+          returnType: ConsumerBankingScheduledPaymentType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_scheduled_payment_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingPaymentMethodOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingPaymentMethod
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingPaymentMethodOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingScheduledPaymentStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentStatusOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingScheduledPaymentTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingScheduledPaymentType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingScheduledPaymentTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCategory
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderCategory
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCategoryBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStandingOrderCategory
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStandingOrderCategory!
+        - name: _gt
+          argumentType: ConsumerBankingStandingOrderCategory!
+        - name: _gte
+          argumentType: ConsumerBankingStandingOrderCategory!
+        - name: _in
+          argumentType: "[ConsumerBankingStandingOrderCategory!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStandingOrderCategory!
+        - name: _lte
+          argumentType: ConsumerBankingStandingOrderCategory!
+        - name: _neq
+          argumentType: ConsumerBankingStandingOrderCategory!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_standing_order_category
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderCategoryBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_standing_order_category
+  representation: ConsumerBankingStandingOrderCategory
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStandingOrderCategoryComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStandingOrderType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStandingOrderType!
+        - name: _gt
+          argumentType: ConsumerBankingStandingOrderType!
+        - name: _gte
+          argumentType: ConsumerBankingStandingOrderType!
+        - name: _in
+          argumentType: "[ConsumerBankingStandingOrderType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStandingOrderType!
+        - name: _lte
+          argumentType: ConsumerBankingStandingOrderType!
+        - name: _neq
+          argumentType: ConsumerBankingStandingOrderType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_standing_order_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_standing_order_type
+  representation: ConsumerBankingStandingOrderType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStandingOrderTypeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderStatusCode
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderStatusCode
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderStatusCodeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStandingOrderStatusCode
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStandingOrderStatusCode!
+        - name: _gt
+          argumentType: ConsumerBankingStandingOrderStatusCode!
+        - name: _gte
+          argumentType: ConsumerBankingStandingOrderStatusCode!
+        - name: _in
+          argumentType: "[ConsumerBankingStandingOrderStatusCode!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStandingOrderStatusCode!
+        - name: _lte
+          argumentType: ConsumerBankingStandingOrderStatusCode!
+        - name: _neq
+          argumentType: ConsumerBankingStandingOrderStatusCode!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_standing_order_status_code
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStandingOrderStatusCodeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_standing_order_status_code
+  representation: ConsumerBankingStandingOrderStatusCode
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStandingOrderStatusCodeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCategoryAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStandingOrderCategory
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStandingOrderCategory
+        - name: min
+          returnType: ConsumerBankingStandingOrderCategory
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_standing_order_category
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStandingOrderCategoryAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStandingOrderType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStandingOrderType
+        - name: min
+          returnType: ConsumerBankingStandingOrderType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_standing_order_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStandingOrderTypeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderStatusCodeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStandingOrderStatusCode
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStandingOrderStatusCode
+        - name: min
+          returnType: ConsumerBankingStandingOrderStatusCode
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_standing_order_status_code
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStandingOrderStatusCodeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderCategoryOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStandingOrderCategory
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStandingOrderCategoryOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStandingOrderType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStandingOrderTypeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStandingOrderStatusCodeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStandingOrderStatusCode
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStandingOrderStatusCodeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingAmountSubType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAmountSubType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAmountSubTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingAmountSubType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingAmountSubType!
+        - name: _gt
+          argumentType: ConsumerBankingAmountSubType!
+        - name: _gte
+          argumentType: ConsumerBankingAmountSubType!
+        - name: _in
+          argumentType: "[ConsumerBankingAmountSubType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingAmountSubType!
+        - name: _lte
+          argumentType: ConsumerBankingAmountSubType!
+        - name: _neq
+          argumentType: ConsumerBankingAmountSubType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_amount_sub_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAmountSubTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_amount_sub_type
+  representation: ConsumerBankingAmountSubType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingAmountSubTypeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingAmountType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAmountType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAmountTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingAmountType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingAmountType!
+        - name: _gt
+          argumentType: ConsumerBankingAmountType!
+        - name: _gte
+          argumentType: ConsumerBankingAmountType!
+        - name: _in
+          argumentType: "[ConsumerBankingAmountType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingAmountType!
+        - name: _lte
+          argumentType: ConsumerBankingAmountType!
+        - name: _neq
+          argumentType: ConsumerBankingAmountType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_amount_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAmountTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_amount_type
+  representation: ConsumerBankingAmountType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingAmountTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAmountSubTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingAmountSubType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingAmountSubType
+        - name: min
+          returnType: ConsumerBankingAmountSubType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_amount_sub_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAmountSubTypeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAmountTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingAmountType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingAmountType
+        - name: min
+          returnType: ConsumerBankingAmountType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_amount_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAmountTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAmountSubTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingAmountSubType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAmountSubTypeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAmountTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingAmountType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAmountTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingBenefitType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBenefitType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingBenefitTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingBenefitType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingBenefitType!
+        - name: _gt
+          argumentType: ConsumerBankingBenefitType!
+        - name: _gte
+          argumentType: ConsumerBankingBenefitType!
+        - name: _in
+          argumentType: "[ConsumerBankingBenefitType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingBenefitType!
+        - name: _lte
+          argumentType: ConsumerBankingBenefitType!
+        - name: _neq
+          argumentType: ConsumerBankingBenefitType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_benefit_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingBenefitTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_benefit_type
+  representation: ConsumerBankingBenefitType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingBenefitTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingBenefitTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingBenefitType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingBenefitType
+        - name: min
+          returnType: ConsumerBankingBenefitType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_benefit_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingBenefitTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingBenefitTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingBenefitType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingBenefitTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStatementDateType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementDateType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementDateTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStatementDateType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStatementDateType!
+        - name: _gt
+          argumentType: ConsumerBankingStatementDateType!
+        - name: _gte
+          argumentType: ConsumerBankingStatementDateType!
+        - name: _in
+          argumentType: "[ConsumerBankingStatementDateType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStatementDateType!
+        - name: _lte
+          argumentType: ConsumerBankingStatementDateType!
+        - name: _neq
+          argumentType: ConsumerBankingStatementDateType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_date_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementDateTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_statement_date_type
+  representation: ConsumerBankingStatementDateType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStatementDateTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementDateTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStatementDateType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStatementDateType
+        - name: min
+          returnType: ConsumerBankingStatementDateType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_date_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementDateTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementDateTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStatementDateType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementDateTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingFeeFrequency
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingFeeFrequency
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingFeeFrequencyBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingFeeFrequency
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingFeeFrequency!
+        - name: _gt
+          argumentType: ConsumerBankingFeeFrequency!
+        - name: _gte
+          argumentType: ConsumerBankingFeeFrequency!
+        - name: _in
+          argumentType: "[ConsumerBankingFeeFrequency!]!"
+        - name: _lt
+          argumentType: ConsumerBankingFeeFrequency!
+        - name: _lte
+          argumentType: ConsumerBankingFeeFrequency!
+        - name: _neq
+          argumentType: ConsumerBankingFeeFrequency!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_fee_frequency
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingFeeFrequencyBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_fee_frequency
+  representation: ConsumerBankingFeeFrequency
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingFeeFrequencyComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingRateType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingRateType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingRateTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingRateType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingRateType!
+        - name: _gt
+          argumentType: ConsumerBankingRateType!
+        - name: _gte
+          argumentType: ConsumerBankingRateType!
+        - name: _in
+          argumentType: "[ConsumerBankingRateType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingRateType!
+        - name: _lte
+          argumentType: ConsumerBankingRateType!
+        - name: _neq
+          argumentType: ConsumerBankingRateType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_rate_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingRateTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_rate_type
+  representation: ConsumerBankingRateType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingRateTypeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingFeeType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingFeeType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingFeeTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingFeeType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingFeeType!
+        - name: _gt
+          argumentType: ConsumerBankingFeeType!
+        - name: _gte
+          argumentType: ConsumerBankingFeeType!
+        - name: _in
+          argumentType: "[ConsumerBankingFeeType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingFeeType!
+        - name: _lte
+          argumentType: ConsumerBankingFeeType!
+        - name: _neq
+          argumentType: ConsumerBankingFeeType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_fee_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingFeeTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_fee_type
+  representation: ConsumerBankingFeeType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingFeeTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingFeeFrequencyAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingFeeFrequency
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingFeeFrequency
+        - name: min
+          returnType: ConsumerBankingFeeFrequency
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_fee_frequency
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingFeeFrequencyAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingRateTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingRateType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingRateType
+        - name: min
+          returnType: ConsumerBankingRateType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_rate_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingRateTypeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingFeeTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingFeeType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingFeeType
+        - name: min
+          returnType: ConsumerBankingFeeType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_fee_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingFeeTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingFeeFrequencyOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingFeeFrequency
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingFeeFrequencyOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingRateTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingRateType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingRateTypeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingFeeTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingFeeType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingFeeTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingInterestType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingInterestType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingInterestTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingInterestType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingInterestType!
+        - name: _gt
+          argumentType: ConsumerBankingInterestType!
+        - name: _gte
+          argumentType: ConsumerBankingInterestType!
+        - name: _in
+          argumentType: "[ConsumerBankingInterestType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingInterestType!
+        - name: _lte
+          argumentType: ConsumerBankingInterestType!
+        - name: _neq
+          argumentType: ConsumerBankingInterestType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_interest_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingInterestTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_interest_type
+  representation: ConsumerBankingInterestType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingInterestTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingInterestTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingInterestType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingInterestType
+        - name: min
+          returnType: ConsumerBankingInterestType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_interest_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingInterestTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingInterestTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingInterestType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingInterestTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStatementRateType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementRateType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementRateTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStatementRateType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStatementRateType!
+        - name: _gt
+          argumentType: ConsumerBankingStatementRateType!
+        - name: _gte
+          argumentType: ConsumerBankingStatementRateType!
+        - name: _in
+          argumentType: "[ConsumerBankingStatementRateType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStatementRateType!
+        - name: _lte
+          argumentType: ConsumerBankingStatementRateType!
+        - name: _neq
+          argumentType: ConsumerBankingStatementRateType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_rate_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementRateTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_statement_rate_type
+  representation: ConsumerBankingStatementRateType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStatementRateTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementRateTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStatementRateType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStatementRateType
+        - name: min
+          returnType: ConsumerBankingStatementRateType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_rate_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementRateTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementRateTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStatementRateType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementRateTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStatementValueType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementValueType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementValueTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStatementValueType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStatementValueType!
+        - name: _gt
+          argumentType: ConsumerBankingStatementValueType!
+        - name: _gte
+          argumentType: ConsumerBankingStatementValueType!
+        - name: _in
+          argumentType: "[ConsumerBankingStatementValueType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStatementValueType!
+        - name: _lte
+          argumentType: ConsumerBankingStatementValueType!
+        - name: _neq
+          argumentType: ConsumerBankingStatementValueType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_value_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementValueTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_statement_value_type
+  representation: ConsumerBankingStatementValueType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStatementValueTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementValueTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStatementValueType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStatementValueType
+        - name: min
+          returnType: ConsumerBankingStatementValueType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_value_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementValueTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementValueTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStatementValueType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementValueTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingStatementType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingStatementTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingStatementType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingStatementType!
+        - name: _gt
+          argumentType: ConsumerBankingStatementType!
+        - name: _gte
+          argumentType: ConsumerBankingStatementType!
+        - name: _in
+          argumentType: "[ConsumerBankingStatementType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingStatementType!
+        - name: _lte
+          argumentType: ConsumerBankingStatementType!
+        - name: _neq
+          argumentType: ConsumerBankingStatementType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingStatementTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_statement_type
+  representation: ConsumerBankingStatementType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingStatementTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingStatementType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingStatementType
+        - name: min
+          returnType: ConsumerBankingStatementType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_statement_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingStatementTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingStatementTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingStatementType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingStatementTypeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankCode
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionBankCode
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankCodeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingTransactionBankCode
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingTransactionBankCode!
+        - name: _gt
+          argumentType: ConsumerBankingTransactionBankCode!
+        - name: _gte
+          argumentType: ConsumerBankingTransactionBankCode!
+        - name: _in
+          argumentType: "[ConsumerBankingTransactionBankCode!]!"
+        - name: _lt
+          argumentType: ConsumerBankingTransactionBankCode!
+        - name: _lte
+          argumentType: ConsumerBankingTransactionBankCode!
+        - name: _neq
+          argumentType: ConsumerBankingTransactionBankCode!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_bank_code
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionBankCodeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_transaction_bank_code
+  representation: ConsumerBankingTransactionBankCode
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingTransactionBankCodeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankCodeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingTransactionBankCode
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingTransactionBankCode
+        - name: min
+          returnType: ConsumerBankingTransactionBankCode
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_bank_code
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionBankCodeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionBankCodeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingTransactionBankCode
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionBankCodeOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingAuthorizationType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAuthorizationType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAuthorizationTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingAuthorizationType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingAuthorizationType!
+        - name: _gt
+          argumentType: ConsumerBankingAuthorizationType!
+        - name: _gte
+          argumentType: ConsumerBankingAuthorizationType!
+        - name: _in
+          argumentType: "[ConsumerBankingAuthorizationType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingAuthorizationType!
+        - name: _lte
+          argumentType: ConsumerBankingAuthorizationType!
+        - name: _neq
+          argumentType: ConsumerBankingAuthorizationType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_authorization_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAuthorizationTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_authorization_type
+  representation: ConsumerBankingAuthorizationType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingAuthorizationTypeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingCardSchemeName
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingCardSchemeName
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingCardSchemeNameBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingCardSchemeName
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingCardSchemeName!
+        - name: _gt
+          argumentType: ConsumerBankingCardSchemeName!
+        - name: _gte
+          argumentType: ConsumerBankingCardSchemeName!
+        - name: _in
+          argumentType: "[ConsumerBankingCardSchemeName!]!"
+        - name: _lt
+          argumentType: ConsumerBankingCardSchemeName!
+        - name: _lte
+          argumentType: ConsumerBankingCardSchemeName!
+        - name: _neq
+          argumentType: ConsumerBankingCardSchemeName!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_card_scheme_name
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingCardSchemeNameBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_card_scheme_name
+  representation: ConsumerBankingCardSchemeName
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingCardSchemeNameComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAuthorizationTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingAuthorizationType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingAuthorizationType
+        - name: min
+          returnType: ConsumerBankingAuthorizationType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_authorization_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAuthorizationTypeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingCardSchemeNameAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingCardSchemeName
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingCardSchemeName
+        - name: min
+          returnType: ConsumerBankingCardSchemeName
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_card_scheme_name
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingCardSchemeNameAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAuthorizationTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingAuthorizationType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAuthorizationTypeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingCardSchemeNameOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingCardSchemeName
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingCardSchemeNameOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingTransactionCategory
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionCategory
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionCategoryBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingTransactionCategory
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingTransactionCategory!
+        - name: _gt
+          argumentType: ConsumerBankingTransactionCategory!
+        - name: _gte
+          argumentType: ConsumerBankingTransactionCategory!
+        - name: _in
+          argumentType: "[ConsumerBankingTransactionCategory!]!"
+        - name: _lt
+          argumentType: ConsumerBankingTransactionCategory!
+        - name: _lte
+          argumentType: ConsumerBankingTransactionCategory!
+        - name: _neq
+          argumentType: ConsumerBankingTransactionCategory!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_category
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionCategoryBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_transaction_category
+  representation: ConsumerBankingTransactionCategory
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingTransactionCategoryComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingTransactionStatus
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionStatusBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingTransactionStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingTransactionStatus!
+        - name: _gt
+          argumentType: ConsumerBankingTransactionStatus!
+        - name: _gte
+          argumentType: ConsumerBankingTransactionStatus!
+        - name: _in
+          argumentType: "[ConsumerBankingTransactionStatus!]!"
+        - name: _lt
+          argumentType: ConsumerBankingTransactionStatus!
+        - name: _lte
+          argumentType: ConsumerBankingTransactionStatus!
+        - name: _neq
+          argumentType: ConsumerBankingTransactionStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_transaction_status
+  representation: ConsumerBankingTransactionStatus
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingTransactionStatusComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingTransactionMutability
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionMutability
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionMutabilityBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingTransactionMutability
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingTransactionMutability!
+        - name: _gt
+          argumentType: ConsumerBankingTransactionMutability!
+        - name: _gte
+          argumentType: ConsumerBankingTransactionMutability!
+        - name: _in
+          argumentType: "[ConsumerBankingTransactionMutability!]!"
+        - name: _lt
+          argumentType: ConsumerBankingTransactionMutability!
+        - name: _lte
+          argumentType: ConsumerBankingTransactionMutability!
+        - name: _neq
+          argumentType: ConsumerBankingTransactionMutability!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_mutability
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionMutabilityBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_transaction_mutability
+  representation: ConsumerBankingTransactionMutability
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingTransactionMutabilityComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingTransactionType
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionType
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingTransactionTypeBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingTransactionType
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingTransactionType!
+        - name: _gt
+          argumentType: ConsumerBankingTransactionType!
+        - name: _gte
+          argumentType: ConsumerBankingTransactionType!
+        - name: _in
+          argumentType: "[ConsumerBankingTransactionType!]!"
+        - name: _lt
+          argumentType: ConsumerBankingTransactionType!
+        - name: _lte
+          argumentType: ConsumerBankingTransactionType!
+        - name: _neq
+          argumentType: ConsumerBankingTransactionType!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingTransactionTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_transaction_type
+  representation: ConsumerBankingTransactionType
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingTransactionTypeComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionCategoryAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingTransactionCategory
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingTransactionCategory
+        - name: min
+          returnType: ConsumerBankingTransactionCategory
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_category
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionCategoryAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingTransactionStatus
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingTransactionStatus
+        - name: min
+          returnType: ConsumerBankingTransactionStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionStatusAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionMutabilityAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingTransactionMutability
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingTransactionMutability
+        - name: min
+          returnType: ConsumerBankingTransactionMutability
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_mutability
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionMutabilityAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingTransactionType
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingTransactionType
+        - name: min
+          returnType: ConsumerBankingTransactionType
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_transaction_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingTransactionTypeAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionCategoryOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingTransactionCategory
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionCategoryOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingTransactionStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionStatusOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionMutabilityOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingTransactionMutability
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionMutabilityOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingTransactionTypeOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingTransactionType
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingTransactionTypeOrderByExp
 

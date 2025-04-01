@@ -1,24 +1,24 @@
-import inspect
-import logging
-import os
-import random
-import re
-import traceback
-from typing import Dict, List
-
-import faker
-import networkx as nx
-import psycopg2
 from anthropic import AnthropicError
 from dotenv import load_dotenv
 from faker.exceptions import UniquenessException
-from psycopg2 import Error, extensions
-from sentence_transformers import SentenceTransformer, util
-
 from fsi_data_generator.fsi_generators.helpers.generate_random_interval import \
     generate_random_interval_with_optional_weights
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import (
     generate_unique_json_array, previous_responses)
+from psycopg2 import Error, extensions
+from sentence_transformers import SentenceTransformer, util
+from typing import Dict, List
+
+import faker
+import inspect
+import logging
+import networkx as nx
+import os
+import psycopg2
+import random
+import re
+import sys
+import traceback
 
 load_dotenv()
 
@@ -40,9 +40,11 @@ logging.getLogger('torch').setLevel(logging.WARNING)
 logging.getLogger('tensorflow').setLevel(logging.WARNING)
 
 logger.info(f"Logging configured with level: {log_level_str}")
+strict = os.environ.get('STRICT', 'true').lower() in ('true', 'yes', 't', 'y')
+
+from functools import wraps
 
 import time
-from functools import wraps
 
 
 def timer_decorator(func):
@@ -414,6 +416,8 @@ class DataGenerator:
                                 stack_trace = traceback.format_exc()
                                 logger.error(e)
                                 logger.error(stack_trace)
+                                if strict:
+                                    sys.exit(-1)
                                 if is_nullable == 'YES':
                                     row_values[column] = None
                                     column_names.append(column)
@@ -426,7 +430,10 @@ class DataGenerator:
                             except SkipRowGenerationError as _e:
                                 raise
                             except Exception as e:
-                                logger.debug(f"Error in custom generator for {table_key}.{column}: {e}")
+                                stack_trace = traceback.format_exc()
+                                logger.debug(f"Error in custom generator for {table_key}.{column}: {e} {stack_trace}")
+                                if strict:
+                                    sys.exit(-1)
                                 # Set to NULL if nullable, otherwise try a generic value
                                 if is_nullable == 'YES':
                                     row_values[column] = None
@@ -1269,7 +1276,7 @@ class DataGenerator:
                 num_precision, num_scale, values, fully_qualified_column_name=f"{table_key}.{column}"
             )
         except Exception as e:
-            logger.debug(f"Error generating value for column '{column}' with type '{data_type}': {e}")
+            # logger.debug(f"Error generating value for column '{column}' with type '{data_type}': {e}")
             self._handle_generation_error(is_nullable, character_maximum_length, values)
 
     def _get_table_description(self, schema, table_name):
@@ -1477,7 +1484,7 @@ class DataGenerator:
             pk_cursor.close()
 
             if not pk_columns:
-                logger.debug(f"No primary key found for table {table_key}")
+                # logger.debug(f"No primary key found for table {table_key}")
                 return
 
             # Get the column names from the INSERT query

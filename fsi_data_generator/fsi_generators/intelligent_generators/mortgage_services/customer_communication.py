@@ -1,16 +1,14 @@
-import datetime
-import logging
-import random
+from .enums import (CommunicationDirection, CommunicationPurpose,
+                    CommunicationStatus, CommunicationType)
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
+    generate_unique_json_array
 from typing import Any, Dict, Optional
 
 import anthropic
+import datetime
+import logging
 import psycopg2
-
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
-
-from .enums import (CommunicationDirection, CommunicationPurpose,
-                    CommunicationStatus, CommunicationType)
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -265,7 +263,7 @@ def generate_random_customer_communication(id_fields: Dict[str, Any], dg) -> Dic
     if communication_type in [CommunicationType.EMAIL,
                               CommunicationType.LETTER] and direction == CommunicationDirection.OUTBOUND:
         date_str = communication_date.strftime("%Y%m%d")
-        comm_type_str = communication_type.name.lower()
+        comm_type_str = communication_type.value.lower()
         if "mortgage_services_servicing_account_id" in id_fields:
             doc_id = id_fields["mortgage_services_servicing_account_id"]
             document_path = f"/documents/communications/servicing/{doc_id}/{date_str}_{comm_type_str}.pdf"

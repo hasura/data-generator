@@ -1,11 +1,12 @@
-import datetime
-import random
-from typing import Any, Dict
-
-from data_generator import DataGenerator
-
 from .enums import (ApplicationStatus, ApplicationType, LoanPurpose,
                     SubmissionChannel)
+from data_generator import DataGenerator
+from dateutil.relativedelta import relativedelta
+from typing import Any, Dict
+
+import calendar
+import datetime
+import random
 
 
 def generate_random_application(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
@@ -37,21 +38,29 @@ def generate_random_application(id_fields: Dict[str, Any], dg: DataGenerator) ->
 
     # Start date - typically 0-20 years ago
     years_ago = random.randint(0, 20)
-    months_ago = random.randint(0, 11)
-    creation_date = today.replace(year=today.year - years_ago)
-    creation_date = creation_date.replace(month=((today.month - months_ago - 1) % 12) + 1)
+
+    # Use relativedelta for safe date arithmetic
+    creation_date = today - relativedelta(years=years_ago)
+
+    # Randomly adjust months within the same year (safer than the previous approach)
+    if years_ago > 0:  # Only adjust months if we're going back at least a year
+        months_ago = random.randint(0, 11)
+        creation_date = creation_date - relativedelta(months=months_ago)
+
+    # Make sure we don't have invalid day (e.g., Feb 30)
+    # Get last day of the target month
+    _, last_day = calendar.monthrange(creation_date.year, creation_date.month)
+    creation_date = creation_date.replace(day=min(creation_date.day, last_day))
 
     # Submission date is after or on creation date
-    submission_days = random.randint(0, min(60, years_ago * 365))
+    max_submission_days = min(60, (today - creation_date).days)
+    submission_days = random.randint(0, max_submission_days)
     submission_date = creation_date + datetime.timedelta(days=submission_days)
 
     # Last updated date is between submission and now
-    days_since_submission = (today - submission_date).days
-    if days_since_submission > 0:
-        update_days = random.randint(0, days_since_submission)
-        last_updated_date = submission_date + datetime.timedelta(days=update_days)
-    else:
-        last_updated_date = submission_date
+    max_update_days = (today - submission_date).days
+    update_days = random.randint(0, max_update_days)
+    last_updated_date = submission_date + datetime.timedelta(days=update_days)
 
     # Generate application type
     application_type = ApplicationType.get_random()

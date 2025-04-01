@@ -1,7 +1,7 @@
-import random
+from data_generator import DataGenerator
 from typing import Any, Dict, List
 
-from data_generator import DataGenerator
+import random
 
 
 def generate_random_resource_definition(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

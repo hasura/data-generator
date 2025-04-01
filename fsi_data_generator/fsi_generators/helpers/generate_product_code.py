@@ -1,6 +1,7 @@
+from typing import cast
+
 import random
 import string
-from typing import cast
 
 
 def generate_product_code(length=20):

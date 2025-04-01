@@ -1,10 +1,11 @@
+from .enums import ConsentStatus
+from .get_account import get_account
+from .today import today
+from data_generator import DataGenerator, SkipRowGenerationError
+from typing import Any, Dict
+
 import datetime
 import random
-from typing import Dict, Any
-
-from data_generator import DataGenerator
-
-from .enums import ConsentStatus
 
 
 def generate_random_account_access_consent(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
@@ -28,24 +29,14 @@ def generate_random_account_access_consent(id_fields: Dict[str, Any], dg: DataGe
     # Fetch the consumer banking account to get its opened date
     cursor = conn.cursor()
     try:
-        cursor.execute("""
-            SELECT opened_date 
-            FROM consumer_banking.accounts 
-            WHERE consumer_banking_account_id = %s
-        """, (id_fields['consumer_banking_account_id'],))
-
-        consumer_account = cursor.fetchone()
-
-        if not consumer_account:
-            raise ValueError(f"No consumer banking account found with ID {id_fields['consumer_banking_account_id']}")
+        consumer_account = get_account(conn, id_fields['consumer_banking_account_id'])
 
         account_opened_date = consumer_account.get('opened_date')
 
-        # Generate today's date
-        today = datetime.datetime.now(datetime.timezone.utc)
-
         # Calculate days since account opened
         days_since_account_opened = (today - account_opened_date).days
+        if days_since_account_opened <= 0:
+            raise SkipRowGenerationError
 
         # Randomly choose a creation date between account opened date and now
         additional_days = random.randint(0, days_since_account_opened)

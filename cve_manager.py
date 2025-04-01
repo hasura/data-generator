@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 
+from os import listdir
+from os.path import isfile, join
+from psycopg2 import connect
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
 import argparse
 import csv
 import getpass
 import io
 import json
 import os
+import psycopg2
 import re
+import requests
 import sys
 import zipfile
-from os import listdir
-from os.path import isfile, join
-
-import psycopg2
-import requests
-from psycopg2 import connect
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 ##This is the Postgresql Database Schema##
 query = '''

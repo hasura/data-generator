@@ -6,7 +6,7 @@ definition:
   description: Tracks validation issues with HMDA data and their resolution
   fields:
     - name: createdDate
-      type: Timestamp!
+      type: Timestamptz!
       description: When the edit was first identified
     - name: editCode
       type: Varchar!
@@ -30,7 +30,7 @@ definition:
       type: Int4
       description: User who resolved the edit
     - name: resolvedDate
-      type: Timestamp
+      type: Timestamptz
       description: When the edit was resolved if applicable
     - name: status
       type: MortgageServicesHmdaEditStatus!
@@ -103,7 +103,7 @@ definition:
       type: MortgageServicesHmdaEdits
       comparableFields:
         - fieldName: createdDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: editCode
           booleanExpressionType: VarcharBoolExp
         - fieldName: editDescription
@@ -119,7 +119,7 @@ definition:
         - fieldName: resolvedById
           booleanExpressionType: Int4BoolExp
         - fieldName: resolvedDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: status
           booleanExpressionType: MortgageServicesHmdaEditStatusBoolExp
       comparableRelationships:
@@ -141,7 +141,7 @@ definition:
       aggregatedType: MortgageServicesHmdaEdits
       aggregatableFields:
         - fieldName: createdDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: editCode
           aggregateExpression: VarcharAggExp
         - fieldName: editDescription
@@ -157,7 +157,7 @@ definition:
         - fieldName: resolvedById
           aggregateExpression: Int4AggExp
         - fieldName: resolvedDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: status
           aggregateExpression: MortgageServicesHmdaEditStatusAggExp
   count:
@@ -175,7 +175,7 @@ definition:
       orderedType: MortgageServicesHmdaEdits
       orderableFields:
         - fieldName: createdDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: editCode
           orderByExpression: VarcharOrderByExp
         - fieldName: editDescription
@@ -191,7 +191,7 @@ definition:
         - fieldName: resolvedById
           orderByExpression: Int4OrderByExp
         - fieldName: resolvedDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: status
           orderByExpression: MortgageServicesHmdaEditStatusOrderByExp
       orderableRelationships:

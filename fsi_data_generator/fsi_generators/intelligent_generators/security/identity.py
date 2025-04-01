@@ -1,11 +1,10 @@
-import logging
-import random
-from datetime import datetime, timedelta
+from data_generator import DataGenerator, SkipRowGenerationError
+from datetime import datetime, timedelta, timezone
+from faker import Faker
 from typing import Any, Dict
 
-from faker import Faker
-
-from data_generator import DataGenerator, SkipRowGenerationError
+import logging
+import random
 
 # Track previously generated identity names for uniqueness
 prev_identity_names = set()
@@ -14,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def generate_random_identity(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
-    Generate a random security.identities record.
+    Generate a random "security.identities" record.
 
     Args:
         id_fields: Dictionary containing predetermined ID fields
@@ -85,7 +84,7 @@ def generate_random_identity(id_fields: Dict[str, Any], dg: DataGenerator) -> Di
         prev_identity_names.add(internal_name)
 
     # Generate timestamps with realistic constraints
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     # Creation date between 1-5 years ago
     created = now - timedelta(days=random.randint(365, 365 * 5))

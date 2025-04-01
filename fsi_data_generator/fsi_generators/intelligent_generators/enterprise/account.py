@@ -1,37 +1,36 @@
-import logging
-import random
-from datetime import datetime, timedelta
+from ...helpers.generate_unique_json_array import generate_unique_json_array
+from .enums import AccountStatus
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Set
 
 import anthropic
-
-from data_generator import DataGenerator
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
-
-from .enums import AccountStatus
+import logging
+import random
 
 # Track previously generated account descriptions for uniqueness if needed
 prev_account_descriptions: Set[str] = set()
 logger = logging.getLogger(__name__)
 
 
-def generate_random_account(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
+def generate_random_account(_id_fields: Dict[str, Any], _dg = None) -> Dict[str, Any]:
     """
     Generate a random "enterprise.accounts" record.
 
     Args:
         _id_fields: Dictionary containing predetermined ID fields
                   (enterprise_account_id)
-        dg: DataGenerator instance
+        _dg: DataGenerator instance
 
     Returns:
         Dict containing a random account record
         (without ID fields)
     """
 
+    from data_generator import DataGenerator
+    dg: DataGenerator = _dg
+
     # Generate opened_date (between 10 years ago and yesterday)
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     max_age_days = 365 * 10  # 10 years
     opened_date = now - timedelta(days=random.randint(1, max_age_days))
 

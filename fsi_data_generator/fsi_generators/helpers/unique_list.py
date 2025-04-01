@@ -1,6 +1,5 @@
-from typing import Union
-
 from faker import Faker
+from typing import Union
 
 fake = Faker()
 

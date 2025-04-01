@@ -1,8 +1,8 @@
-import random
 from enum import Enum
-
 from fsi_data_generator.fsi_generators.intelligent_generators.security.agent_status import \
     AgentStatus
+
+import random
 
 
 class ServiceStatus(str, Enum):

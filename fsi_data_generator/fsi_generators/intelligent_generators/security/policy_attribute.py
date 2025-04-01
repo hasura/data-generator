@@ -1,15 +1,14 @@
-import logging
-import random
-import sys
+from data_generator import DataGenerator, SkipRowGenerationError
+from faker import Faker
+from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
+    generate_unique_json_array
 from typing import Any, Dict
 
 import anthropic
+import logging
 import psycopg2
-from faker import Faker
-
-from data_generator import DataGenerator, SkipRowGenerationError
-from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
-    generate_unique_json_array
+import random
+import sys
 
 prev_policy_attributes = set()
 logger = logging.getLogger(__name__)
@@ -113,7 +112,7 @@ def generate_random_policy_attribute(id_fields: Dict[str, Any], dg: DataGenerato
                 if keyword in policy_description:
                     category_score[category] += 2
 
-        # Select category with highest score, or random if tied
+        # Select category with the highest score, or random if tied
         top_categories = [k for k, v in category_score.items()
                           if v == max(category_score.values())]
         selected_category = random.choice(top_categories if top_categories else list(attribute_categories.keys()))

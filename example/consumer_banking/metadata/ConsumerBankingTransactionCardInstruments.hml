@@ -6,10 +6,10 @@ definition:
   description: Stores information about payment cards used in transactions
   fields:
     - name: authorisationType
-      type: Varchar
+      type: ConsumerBankingAuthorizationType
       description: Type of authorization (e.g., PIN, signature, contactless)
     - name: cardSchemeName
-      type: Varchar!
+      type: ConsumerBankingCardSchemeName!
       description: Card network (e.g., Visa, Mastercard, Amex)
     - name: consumerBankingTransactionCardInstrumentId
       type: Int4!
@@ -75,9 +75,9 @@ definition:
       type: ConsumerBankingTransactionCardInstruments
       comparableFields:
         - fieldName: authorisationType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingAuthorizationTypeBoolExp
         - fieldName: cardSchemeName
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingCardSchemeNameBoolExp
         - fieldName: consumerBankingTransactionCardInstrumentId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingTransactionId
@@ -105,9 +105,9 @@ definition:
       aggregatedType: ConsumerBankingTransactionCardInstruments
       aggregatableFields:
         - fieldName: authorisationType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingAuthorizationTypeAggExp
         - fieldName: cardSchemeName
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingCardSchemeNameAggExp
         - fieldName: consumerBankingTransactionCardInstrumentId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingTransactionId
@@ -131,9 +131,9 @@ definition:
       orderedType: ConsumerBankingTransactionCardInstruments
       orderableFields:
         - fieldName: authorisationType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingAuthorizationTypeOrderByExp
         - fieldName: cardSchemeName
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingCardSchemeNameOrderByExp
         - fieldName: consumerBankingTransactionCardInstrumentId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingTransactionId

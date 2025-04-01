@@ -6,20 +6,23 @@ definition:
   description: Stores consent records for account access, tracking when and how
     third parties are permitted to access consumer banking account information
   fields:
+    - name: consumerBankingAccountId
+      type: Int4!
+      description: References the account that the consent is related to.
     - name: consumerBankingConsentId
       type: Int4!
       description: Unique identifier for each consent record
     - name: creationDateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: When the consent was initially created
     - name: expirationDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the consent will expire (if applicable)
     - name: status
-      type: Varchar!
+      type: ConsumerBankingConsentStatus!
       description: Current status of the consent (e.g., Active, Revoked)
     - name: statusUpdateDateTime
-      type: Timestamp!
+      type: Timestamptz!
       description: When the status was last changed
   graphql:
     typeName: ConsumerBanking_ConsumerBankingAccountAccessConsents
@@ -28,6 +31,9 @@ definition:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_account_access_consents
       fieldMapping:
+        consumerBankingAccountId:
+          column:
+            name: consumer_banking_account_id
         consumerBankingConsentId:
           column:
             name: consumer_banking_consent_id
@@ -53,6 +59,7 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - consumerBankingAccountId
           - consumerBankingConsentId
           - creationDateTime
           - expirationDateTime
@@ -68,17 +75,20 @@ definition:
     object:
       type: ConsumerBankingAccountAccessConsents
       comparableFields:
+        - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingConsentId
           booleanExpressionType: Int4BoolExp
         - fieldName: creationDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: expirationDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingConsentStatusBoolExp
         - fieldName: statusUpdateDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
+        - relationshipName: consumerBankingAccount
         - relationshipName: consumerBankingAccountAccessConsentsPermissions
   logicalOperators:
     enable: true
@@ -96,16 +106,18 @@ definition:
     object:
       aggregatedType: ConsumerBankingAccountAccessConsents
       aggregatableFields:
+        - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
         - fieldName: consumerBankingConsentId
           aggregateExpression: Int4AggExp
         - fieldName: creationDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: expirationDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingConsentStatusAggExp
         - fieldName: statusUpdateDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
@@ -120,17 +132,20 @@ definition:
     object:
       orderedType: ConsumerBankingAccountAccessConsents
       orderableFields:
+        - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingConsentId
           orderByExpression: Int4OrderByExp
         - fieldName: creationDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: expirationDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingConsentStatusOrderByExp
         - fieldName: statusUpdateDateTime
-          orderByExpression: TimestampOrderByExp
-      orderableRelationships: []
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships:
+        - relationshipName: consumerBankingAccount
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingAccountAccessConsentsOrderByExp
 
@@ -175,6 +190,24 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingAccount
+  sourceType: ConsumerBankingAccountAccessConsents
+  target:
+    model:
+      name: ConsumerBankingAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingAccountId
+      target:
+        modelField:
+          - fieldName: consumerBankingAccountId
 
 ---
 kind: Relationship

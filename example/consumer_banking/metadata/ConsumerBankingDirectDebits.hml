@@ -7,12 +7,12 @@ definition:
   fields:
     - name: consumerBankingAccountId
       type: Int4!
-      description: References the account this balance belongs to
+      description: References the account this direct debit belongs to
     - name: consumerBankingDirectDebitId
       type: Int4!
       description: Unique identifier for each direct debit mandate
     - name: directDebitStatusCode
-      type: Varchar!
+      type: ConsumerBankingDirectDebitStatusCode!
       description: Status code of the direct debit (e.g., active, canceled)
     - name: name
       type: Varchar!
@@ -24,7 +24,7 @@ definition:
       type: Varchar
       description: Currency of the last payment
     - name: previousPaymentDateTime
-      type: Timestamp
+      type: Timestamptz
       description: When the last payment was made
   graphql:
     typeName: ConsumerBanking_ConsumerBankingDirectDebits
@@ -86,7 +86,7 @@ definition:
         - fieldName: consumerBankingDirectDebitId
           booleanExpressionType: Int4BoolExp
         - fieldName: directDebitStatusCode
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingDirectDebitStatusCodeBoolExp
         - fieldName: name
           booleanExpressionType: VarcharBoolExp
         - fieldName: previousPaymentAmount
@@ -94,7 +94,7 @@ definition:
         - fieldName: previousPaymentCurrency
           booleanExpressionType: VarcharBoolExp
         - fieldName: previousPaymentDateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingAccount
         - relationshipName: consumerBankingMandateRelatedInformations
@@ -119,7 +119,7 @@ definition:
         - fieldName: consumerBankingDirectDebitId
           aggregateExpression: Int4AggExp
         - fieldName: directDebitStatusCode
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingDirectDebitStatusCodeAggExp
         - fieldName: name
           aggregateExpression: VarcharAggExp
         - fieldName: previousPaymentAmount
@@ -127,7 +127,7 @@ definition:
         - fieldName: previousPaymentCurrency
           aggregateExpression: VarcharAggExp
         - fieldName: previousPaymentDateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
@@ -147,7 +147,7 @@ definition:
         - fieldName: consumerBankingDirectDebitId
           orderByExpression: Int4OrderByExp
         - fieldName: directDebitStatusCode
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingDirectDebitStatusCodeOrderByExp
         - fieldName: name
           orderByExpression: VarcharOrderByExp
         - fieldName: previousPaymentAmount
@@ -155,7 +155,7 @@ definition:
         - fieldName: previousPaymentCurrency
           orderByExpression: VarcharOrderByExp
         - fieldName: previousPaymentDateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingAccount
   graphql:

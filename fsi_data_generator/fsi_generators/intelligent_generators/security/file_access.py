@@ -1,11 +1,10 @@
-import logging
-import random
+from data_generator import DataGenerator
 from datetime import datetime, timedelta
+from faker import Faker
 from typing import Any, Dict
 
-from faker import Faker
-
-from data_generator import DataGenerator
+import logging
+import random
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -159,7 +158,7 @@ def generate_random_file_access(id_fields: Dict[str, Any], dg: DataGenerator) ->
         file_access["process_user"] = process_info.get('user_name')
         file_access["command_line"] = process_info.get('command_line')
 
-        # If process has associate info (via user name), get the associate details
+        # If process has associate info (via username), get the associate details
         if process_info.get('user_name'):
             associate_info = _fetch_associate_by_username(process_info.get('user_name'), dg)
             if associate_info:

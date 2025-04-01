@@ -9,25 +9,29 @@ definition:
       type: Numeric!
       description: Monetary amount of the transaction
     - name: category
-      type: Varchar
-      description: Code classifying the overall purpose of the transaction
+      type: ConsumerBankingTransactionCategory
+      description: High-level categorization of the transaction
     - name: chargeAmount
       type: Numeric
       description: Any fees associated with the transaction
     - name: chargeCurrency
-      type: Varchar
+      type: EnterpriseCurrencyCode
       description: Currency code for the transaction fee
     - name: consumerBankingAccountId
       type: Int4!
-      description: References the account this balance belongs to
+      description: References the account this transaction belongs to
+    - name: consumerBankingBalanceId
+      type: Int4
+      description: No meaningful relationship, just guarantees that balances must
+        exist before a transaction can be created.
     - name: consumerBankingTransactionId
       type: Int4!
       description: Unique identifier for each transaction
     - name: creditDebitIndicator
-      type: Varchar!
+      type: EnterpriseCreditDebitIndicator!
       description: Indicates if transaction is a credit or debit
     - name: currency
-      type: Varchar!
+      type: EnterpriseCurrencyCode!
       description: Currency code for the transaction amount
     - name: description
       type: Varchar
@@ -36,22 +40,22 @@ definition:
       type: Varchar
       description: Address associated with the transaction, if applicable
     - name: status
-      type: Varchar!
+      type: ConsumerBankingTransactionStatus!
       description: Status of the transaction (e.g., pending, booked, rejected)
     - name: transactionDate
-      type: Timestamp!
+      type: Timestamptz!
       description: When the transaction was recorded in the books
     - name: transactionMutability
-      type: Varchar
+      type: ConsumerBankingTransactionMutability
       description: Whether the transaction can be changed (e.g., mutable, immutable)
     - name: transactionReference
       type: Varchar
       description: Reference code for the transaction
     - name: transactionType
-      type: Varchar
-      description: Code classifying the specific purpose of the payment
+      type: ConsumerBankingTransactionType
+      description: Specific type of transaction with more detail
     - name: valueDate
-      type: Timestamp
+      type: Timestamptz
       description: When the transaction affects the account balance
   graphql:
     typeName: ConsumerBanking_ConsumerBankingTransactions
@@ -75,6 +79,9 @@ definition:
         consumerBankingAccountId:
           column:
             name: consumer_banking_account_id
+        consumerBankingBalanceId:
+          column:
+            name: consumer_banking_balance_id
         consumerBankingTransactionId:
           column:
             name: consumer_banking_transaction_id
@@ -123,6 +130,7 @@ definition:
           - chargeAmount
           - chargeCurrency
           - consumerBankingAccountId
+          - consumerBankingBalanceId
           - consumerBankingTransactionId
           - creditDebitIndicator
           - currency
@@ -147,35 +155,37 @@ definition:
         - fieldName: amount
           booleanExpressionType: NumericBoolExp
         - fieldName: category
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingTransactionCategoryBoolExp
         - fieldName: chargeAmount
           booleanExpressionType: NumericBoolExp
         - fieldName: chargeCurrency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: consumerBankingAccountId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: consumerBankingBalanceId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingTransactionId
           booleanExpressionType: Int4BoolExp
         - fieldName: creditDebitIndicator
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCreditDebitIndicatorBoolExp
         - fieldName: currency
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: description
           booleanExpressionType: VarcharBoolExp
         - fieldName: merchantAddress
           booleanExpressionType: VarcharBoolExp
         - fieldName: status
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingTransactionStatusBoolExp
         - fieldName: transactionDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: transactionMutability
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingTransactionMutabilityBoolExp
         - fieldName: transactionReference
           booleanExpressionType: VarcharBoolExp
         - fieldName: transactionType
-          booleanExpressionType: VarcharBoolExp
+          booleanExpressionType: ConsumerBankingTransactionTypeBoolExp
         - fieldName: valueDate
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingCustomerInteractions
         - relationshipName: consumerBankingProprietaryTransactionCodes
@@ -192,6 +202,7 @@ definition:
         - relationshipName: consumerBankingTransactionUltimateCreditors
         - relationshipName: consumerBankingTransactionUltimateDebtors
         - relationshipName: consumerBankingAccount
+        - relationshipName: consumerBankingBalance
   logicalOperators:
     enable: true
   isNull:
@@ -211,35 +222,37 @@ definition:
         - fieldName: amount
           aggregateExpression: NumericAggExp
         - fieldName: category
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingTransactionCategoryAggExp
         - fieldName: chargeAmount
           aggregateExpression: NumericAggExp
         - fieldName: chargeCurrency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: consumerBankingAccountId
+          aggregateExpression: Int4AggExp
+        - fieldName: consumerBankingBalanceId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingTransactionId
           aggregateExpression: Int4AggExp
         - fieldName: creditDebitIndicator
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCreditDebitIndicatorAggExp
         - fieldName: currency
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: description
           aggregateExpression: VarcharAggExp
         - fieldName: merchantAddress
           aggregateExpression: VarcharAggExp
         - fieldName: status
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingTransactionStatusAggExp
         - fieldName: transactionDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: transactionMutability
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingTransactionMutabilityAggExp
         - fieldName: transactionReference
           aggregateExpression: VarcharAggExp
         - fieldName: transactionType
-          aggregateExpression: VarcharAggExp
+          aggregateExpression: ConsumerBankingTransactionTypeAggExp
         - fieldName: valueDate
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
   graphql:
@@ -257,37 +270,40 @@ definition:
         - fieldName: amount
           orderByExpression: NumericOrderByExp
         - fieldName: category
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingTransactionCategoryOrderByExp
         - fieldName: chargeAmount
           orderByExpression: NumericOrderByExp
         - fieldName: chargeCurrency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: consumerBankingAccountId
+          orderByExpression: Int4OrderByExp
+        - fieldName: consumerBankingBalanceId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingTransactionId
           orderByExpression: Int4OrderByExp
         - fieldName: creditDebitIndicator
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCreditDebitIndicatorOrderByExp
         - fieldName: currency
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: description
           orderByExpression: VarcharOrderByExp
         - fieldName: merchantAddress
           orderByExpression: VarcharOrderByExp
         - fieldName: status
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingTransactionStatusOrderByExp
         - fieldName: transactionDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: transactionMutability
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingTransactionMutabilityOrderByExp
         - fieldName: transactionReference
           orderByExpression: VarcharOrderByExp
         - fieldName: transactionType
-          orderByExpression: VarcharOrderByExp
+          orderByExpression: ConsumerBankingTransactionTypeOrderByExp
         - fieldName: valueDate
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingAccount
+        - relationshipName: consumerBankingBalance
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingTransactionsOrderByExp
 
@@ -657,4 +673,22 @@ definition:
       target:
         modelField:
           - fieldName: consumerBankingAccountId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumerBankingBalance
+  sourceType: ConsumerBankingTransactions
+  target:
+    model:
+      name: ConsumerBankingBalances
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumerBankingBalanceId
+      target:
+        modelField:
+          - fieldName: consumerBankingBalanceId
 

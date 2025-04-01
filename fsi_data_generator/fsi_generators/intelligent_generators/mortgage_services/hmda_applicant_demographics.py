@@ -1,14 +1,13 @@
-import logging
-import random
-from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
-
-import psycopg2
-
 from .enums import (HmdaAgeGroup, HmdaApplicantPresent, HmdaApplicantType,
                     HmdaCollectionMethod, HmdaEthnicity, HmdaEthnicityDetail,
                     HmdaRace, HmdaRaceAsianDetail,
                     HmdaRacePacificIslanderDetail, HmdaSex)
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, Optional
+
+import logging
+import psycopg2
+import random
 
 logger = logging.getLogger(__name__)
 from data_generator import DataGenerator, SkipRowGenerationError
@@ -62,7 +61,7 @@ def generate_random_hmda_applicant_demographics(_id_fields: Dict[str, Any], dg: 
     # Generate income (in thousands of dollars)
     # Income data can come from application if available
     if hmda_record_info and 'annual_income' in hmda_record_info and hmda_record_info['annual_income']:
-        # Convert to thousands and round to nearest thousand
+        # Convert to thousands and round to nearest thousandths
         income = round(float(hmda_record_info['annual_income']) / 1000)
     else:
         # Generate realistic income distribution
@@ -97,7 +96,7 @@ def generate_random_hmda_applicant_demographics(_id_fields: Dict[str, Any], dg: 
 
     # Generate plausible created and modified dates
     # If HMDA record has a date, use that as reference, otherwise use a recent date
-    current_date = datetime.now()
+    current_date = datetime.now(timezone.utc)
 
     if hmda_record_info and 'action_taken_date' in hmda_record_info and hmda_record_info['action_taken_date']:
         # Use action_taken_date as reference and add 1-15 days for created_date
