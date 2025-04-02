@@ -1245,6 +1245,99 @@ definition:
 kind: ScalarType
 version: v1
 definition:
+  name: EnterpriseOperatingUnit
+  graphql:
+    typeName: Enterprise_EnterpriseOperatingUnit
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseOperatingUnitBoolExp
+  operand:
+    scalar:
+      type: EnterpriseOperatingUnit
+      comparisonOperators:
+        - name: _eq
+          argumentType: EnterpriseOperatingUnit!
+        - name: _gt
+          argumentType: EnterpriseOperatingUnit!
+        - name: _gte
+          argumentType: EnterpriseOperatingUnit!
+        - name: _in
+          argumentType: "[EnterpriseOperatingUnit!]!"
+        - name: _lt
+          argumentType: EnterpriseOperatingUnit!
+        - name: _lte
+          argumentType: EnterpriseOperatingUnit!
+        - name: _neq
+          argumentType: EnterpriseOperatingUnit!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: enterprise
+          dataConnectorScalarType: enterprise_operating_unit
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_EnterpriseOperatingUnitBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: enterprise
+  dataConnectorScalarType: enterprise_operating_unit
+  representation: EnterpriseOperatingUnit
+  graphql:
+    comparisonExpressionTypeName: Enterprise_EnterpriseOperatingUnitComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseOperatingUnitAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseOperatingUnit
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseOperatingUnit
+        - name: min
+          returnType: EnterpriseOperatingUnit
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: enterprise
+          dataConnectorScalarType: enterprise_operating_unit
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_EnterpriseOperatingUnitAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseOperatingUnitOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseOperatingUnit
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: Enterprise_EnterpriseOperatingUnitOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
   name: Bool
   graphql:
     typeName: Enterprise_Bool

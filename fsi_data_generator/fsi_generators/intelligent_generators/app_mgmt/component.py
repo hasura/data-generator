@@ -1,5 +1,6 @@
 from ...helpers.generate_unique_json_array import generate_unique_json_array
 from data_generator import DataGenerator
+from .enums import ComponentType
 from typing import Any, Dict
 
 import anthropic
@@ -17,21 +18,6 @@ def generate_random_component(_id_fields: Dict[str, Any], dg: DataGenerator) -> 
     Returns:
         Dictionary containing randomly generated component data (without ID fields or FK fields)
     """
-    # Define common component types
-    component_types = [
-        "java-library",
-        "npm-package",
-        "nuget-package",
-        "python-module",
-        "ruby-gem",
-        "framework",
-        "api",
-        "dotnet-assembly",
-        "docker-image",
-        "gradle-plugin",
-        "maven-plugin"
-    ]
-
     # Use generate_unique_json_array for component names and vendors
     component_names = [
         "Spring Boot", "React", "Angular", "jQuery", "Bootstrap", "Hibernate",
@@ -74,9 +60,9 @@ def generate_random_component(_id_fields: Dict[str, Any], dg: DataGenerator) -> 
     except anthropic.APIStatusError:
         pass
 
-    # Select component name and type
+    # Select component name and get a random component type using the enum
     component_name = random.choice(component_names)
-    component_type = random.choice(component_types)
+    component_type = ComponentType.get_random()
     vendor = random.choice(vendors)
 
     # Generate version with semantic versioning (semver) format
@@ -90,30 +76,36 @@ def generate_random_component(_id_fields: Dict[str, Any], dg: DataGenerator) -> 
         qualifiers = ["-alpha", "-beta", "-RC1", "-RC2", "-M1", "-SNAPSHOT", "-RELEASE"]
         component_version += random.choice(qualifiers)
 
+    # Convert component type name for display purposes (e.g., JAVA_LIBRARY to "java library")
+    component_type_display = component_type.name.lower().replace('_', ' ')
+
     # Generate a description based on the component name and type
     descriptions = [
-        f"A {component_type.replace('-', ' ')} for {component_name} that provides essential functionality for financial applications.",
-        f"Official {vendor} {component_type.replace('-', ' ')} for implementing {component_name} features securely and efficiently.",
-        f"Enterprise-grade {component_name} {component_type.replace('-', ' ')} with comprehensive security features.",
+        f"A {component_type_display} for {component_name} that provides essential functionality for financial applications.",
+        f"Official {vendor} {component_type_display} for implementing {component_name} features securely and efficiently.",
+        f"Enterprise-grade {component_name} {component_type_display} with comprehensive security features.",
         f"High-performance {component_name} implementation optimized for banking applications.",
-        f"{component_name} {component_type.replace('-', ' ')} that ensures compliance with financial regulations and standards.",
+        f"{component_name} {component_type_display} that ensures compliance with financial regulations and standards.",
         f"Security-focused {component_name} that assists with GDPR, PCI-DSS, and other regulatory compliance requirements.",
         f"Scalable {component_name} implementation for handling high-volume transaction processing.",
         f"Certified {component_name} module with built-in audit logging capabilities for financial operations."
     ]
     description = random.choice(descriptions)
 
+    # Convert component type name to hyphenated lowercase for package info generation
+    component_type_key = component_type.name.lower().replace('_', '-')
+
     # Generate package_info based on component type
-    if component_type == "java-library":
+    if component_type == ComponentType.JAVA_LIBRARY:
         group_id = vendor.lower().replace(" ", "").replace("-", "")
         artifact_id = component_name.lower().replace(" ", "-")
         package_info = f"{group_id}:{artifact_id}:{component_version}"
-    elif component_type == "npm-package":
+    elif component_type == ComponentType.NPM_PACKAGE:
         package_name = component_name.lower().replace(" ", "-")
         package_info = f"{package_name}@{component_version}"
-    elif component_type == "nuget-package":
+    elif component_type == ComponentType.NUGET_PACKAGE:
         package_info = f"{component_name.replace(' ', '.')}.{component_version}"
-    elif component_type == "python-module":
+    elif component_type == ComponentType.PYTHON_MODULE:
         package_info = component_name.lower().replace(" ", "_")
     else:
         package_info = f"{component_name}-{component_version}"
@@ -123,11 +115,11 @@ def generate_random_component(_id_fields: Dict[str, Any], dg: DataGenerator) -> 
     org_name = vendor.lower().replace(" ", "-")
     repo_name = component_name.lower().replace(" ", "-")
 
-    if component_type == "java-library":
+    if component_type == ComponentType.JAVA_LIBRARY:
         repository_url = f"https://mvnrepository.com/artifact/{org_name}/{repo_name}"
-    elif component_type == "npm-package":
+    elif component_type == ComponentType.NPM_PACKAGE:
         repository_url = f"https://www.npmjs.com/package/{repo_name}"
-    elif component_type == "nuget-package":
+    elif component_type == ComponentType.NUGET_PACKAGE:
         repository_url = f"https://www.nuget.org/packages/{component_name.replace(' ', '.')}"
     else:
         repository_url = f"https://{domain}/{org_name}/{repo_name}"
@@ -135,13 +127,13 @@ def generate_random_component(_id_fields: Dict[str, Any], dg: DataGenerator) -> 
     # Generate namespace or module
     namespace_prefixes = ["com", "org", "io", "net", "gov"]
 
-    if component_type == "java-library":
+    if component_type == ComponentType.JAVA_LIBRARY:
         namespace_or_module = f"{random.choice(namespace_prefixes)}.{org_name}.{repo_name}"
-    elif component_type == "python-module":
+    elif component_type == ComponentType.PYTHON_MODULE:
         namespace_or_module = repo_name
-    elif component_type == "npm-package":
+    elif component_type == ComponentType.NPM_PACKAGE:
         namespace_or_module = f"@{org_name}/{repo_name}"
-    elif component_type in ["nuget-package", "dotnet-assembly"]:
+    elif component_type in [ComponentType.NUGET_PACKAGE, ComponentType.DOTNET_ASSEMBLY]:
         namespace_or_module = f"{vendor.replace(' ', '')}.{component_name.replace(' ', '')}"
     else:
         namespace_or_module = None
@@ -150,7 +142,7 @@ def generate_random_component(_id_fields: Dict[str, Any], dg: DataGenerator) -> 
     component = {
         "component_name": component_name,
         "component_version": component_version,
-        "component_type": component_type,
+        "component_type": component_type.name,
         "vendor": vendor,
         "description": description,
         "package_info": package_info,

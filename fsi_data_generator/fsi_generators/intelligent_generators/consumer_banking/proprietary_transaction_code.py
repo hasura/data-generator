@@ -1,8 +1,10 @@
+from ..enterprise.enums import CreditDebitIndicator
+from .enums.transaction import (TransactionCategory, TransactionStatus,
+                                TransactionType)
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
+
 import random
-from ..enterprise.enums import CreditDebitIndicator
-from .enums.transaction import (TransactionStatus, TransactionCategory, TransactionType)
 
 
 def generate_random_proprietary_transaction_code(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

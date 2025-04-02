@@ -137,20 +137,20 @@ def generate_random_identity(id_fields: Dict[str, Any], dg: DataGenerator) -> Di
 
     # Generate status
     statuses = [
-        ("active", 0.7),
-        ("pending", 0.1),
-        ("provisioning", 0.05),
-        ("deprovisioning", 0.05),
-        ("suspended", 0.05),
-        ("error", 0.05),
+        ("ACTIVE", 0.7),
+        ("PENDING", 0.1),
+        ("PROVISIONING", 0.05),
+        ("DEPROVISIONING", 0.05),
+        ("SUSPENDED", 0.05),
+        ("ERROR", 0.05),
     ]
 
     if inactive:
         # Override: inactive identities have more restricted status options
         statuses = [
-            ("inactive", 0.8),
-            ("suspended", 0.1),
-            ("deprovisioned", 0.1),
+            ("INACTIVE", 0.8),
+            ("SUSPENDED", 0.1),
+            ("DEPROVISIONED", 0.1),
         ]
 
     status = random.choices(

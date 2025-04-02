@@ -55,12 +55,12 @@ def generate_random_associate(_id_fields: Dict[str, Any], _dg: DataGenerator) ->
 
     # Updated: Use the enum values for associate status
     associate_statuses = [
-        "Active", "Inactive", "PendingStart", "OnLeave", "Terminated"
+        "ACTIVE", "INACTIVE", "PENDING_START", "ON_LEAVE", "TERMINATED"
     ]
 
     # Updated: Use the enum values for relationship types
     relationship_types = [
-        "Employee", "Contractor", "Consultant", "Intern", "Temporary"
+        "EMPLOYEE", "CONTRACTOR", "CONSULTANT", "INTERN", "TEMPORARY"
     ]
 
     # Generate hire dates
@@ -76,7 +76,7 @@ def generate_random_associate(_id_fields: Dict[str, Any], _dg: DataGenerator) ->
 
     # Only generate release date for Inactive or Terminated
     release_date = None
-    if status in ["Inactive", "Terminated"]:
+    if status in ["INACTIVE", "TERMINATED"]:
         release_date = today - datetime.timedelta(days=random.randint(1, 365))
 
     # Generate names using Faker

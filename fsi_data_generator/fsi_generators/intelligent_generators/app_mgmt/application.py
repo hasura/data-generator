@@ -1,3 +1,5 @@
+from .enums import (ApplicationLifecycleStatus, ApplicationType,
+                    DeploymentEnvironment)
 from data_generator import DataGenerator
 from fsi_data_generator.fsi_generators.helpers.generate_unique_json_array import \
     generate_unique_json_array
@@ -105,46 +107,13 @@ def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -
         # Choose a random available name
         application_name = random.choice(available_names)
 
-    # Get application types, deployment environments, and lifecycle statuses from enums in DBML
-    application_types = [
-        'Web',
-        'Mobile',
-        'Desktop',
-        'API',
-        'Batch',
-        'Microservice',
-        'Legacy',
-        'SaaS',
-        'Database',
-        'Middleware',
-        'Embedded',
-    ]
+    # Get random values from enums using weighted selection
+    application_type = ApplicationType.get_random()
+    deployment_environment = DeploymentEnvironment.get_random()
+    lifecycle_status = ApplicationLifecycleStatus.get_random()
 
-    deployment_environments = [
-        'OnPremises',
-        'CloudPublic',
-        'CloudPrivate',
-        'CloudHybrid',
-        'Containerized',
-        'Serverless',
-        'Edge',
-    ]
-
-    lifecycle_statuses = [
-        'Development',
-        'Pilot',
-        'Production',
-        'Deprecated',
-        'DataMaintenance',
-        'Decommissioned',
-        'Archived',
-    ]
-
-    # Select vendor, type, etc.
+    # Select vendor
     vendor = random.choice(vendors) if random.random() < 0.7 else None  # 30% chance of in-house app
-    application_type = random.choice(application_types)
-    deployment_environment = random.choice(deployment_environments)
-    lifecycle_status = random.choice(lifecycle_statuses)
 
     # Generate version with appropriate format
     if vendor and vendor != "In-House Development":
@@ -161,7 +130,7 @@ def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -
 
     # Generate description based on application name and type
     descriptions = [
-        f"A {application_type} application for {application_name.lower()} that provides essential functionality for financial operations.",
+        f"A {application_type.name.lower()} application for {application_name.lower()} that provides essential functionality for financial operations.",
         f"Enterprise {application_name} system that enables secure and compliant banking operations.",
         f"Comprehensive {application_name.lower()} platform for processing financial transactions and managing customer data.",
         f"High-performance {application_name} solution designed for scale and reliability in banking environments.",
@@ -174,31 +143,31 @@ def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -
     # Generate deployment date based on lifecycle status
     today = datetime.date.today()
 
-    if lifecycle_status == "Development":
+    if lifecycle_status == ApplicationLifecycleStatus.DEVELOPMENT:
         # Not deployed yet
         date_deployed = None
         date_retired = None
-    elif lifecycle_status == "Pilot":
+    elif lifecycle_status == ApplicationLifecycleStatus.PILOT:
         # Recently deployed
         days_ago = random.randint(1, 90)
         date_deployed = today - datetime.timedelta(days=days_ago)
         date_retired = None
-    elif lifecycle_status == "Production":
+    elif lifecycle_status == ApplicationLifecycleStatus.PRODUCTION:
         # Deployed some time ago
         days_ago = random.randint(90, 1825)  # 3 months to 5 years
         date_deployed = today - datetime.timedelta(days=days_ago)
         date_retired = None
-    elif lifecycle_status == "Deprecated":
+    elif lifecycle_status == ApplicationLifecycleStatus.DEPRECATED:
         # Older application
         days_ago = random.randint(730, 2555)  # 2-7 years
         date_deployed = today - datetime.timedelta(days=days_ago)
         date_retired = None
-    elif lifecycle_status == "DataMaintenance":
+    elif lifecycle_status == ApplicationLifecycleStatus.DATA_MAINTENANCE:
         # Very old application
         days_ago = random.randint(1095, 3650)  # 3-10 years
         date_deployed = today - datetime.timedelta(days=days_ago)
         date_retired = None
-    elif lifecycle_status in ["Decommissioned", "Archived"]:
+    elif lifecycle_status in [ApplicationLifecycleStatus.DECOMMISSIONED, ApplicationLifecycleStatus.ARCHIVED]:
         # Deployed and retired
         retired_days_ago = random.randint(30, 730)  # Retired between 1 month and 2 years ago
         deployment_duration = random.randint(365, 2555)  # Was in use for 1-7 years
@@ -223,17 +192,17 @@ def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -
     documentation_url = f"https://{doc_domain}/applications/{repo_name}"
 
     # Generate RTO (Recovery Time Objective) and RPO (Recovery Point Objective)
-    rto, rpo = determine_rto_rpo(application_name, lifecycle_status)
+    rto, rpo = determine_rto_rpo(application_name, lifecycle_status.name)
 
     # Create the application record
     application = {
         "application_name": application_name,
         "description": description,
-        "application_type": application_type,
+        "application_type": application_type.name,  # Use the name attribute of the enum
         "vendor": vendor,
         "version": version,
-        "deployment_environment": deployment_environment,
-        "lifecycle_status": lifecycle_status,
+        "deployment_environment": deployment_environment.name,  # Use the name attribute of the enum
+        "lifecycle_status": lifecycle_status.name,  # Use the name attribute of the enum
         "date_deployed": date_deployed,
         "date_retired": date_retired,
         "source_code_repository": source_code_repository,
@@ -335,7 +304,7 @@ def determine_rto_rpo(application_name: str, lifecycle_status: str) -> tuple:
     is_critical = is_critical_application(application_name)
 
     # Check if application is in a production-like state
-    is_production = lifecycle_status in ["production", "pilot"]
+    is_production = lifecycle_status.lower() in ["production", "pilot"]
 
     # Determine RTO and RPO based on both criticality and lifecycle status
     if is_critical and is_production:

@@ -200,19 +200,32 @@ CREATE TYPE "enterprise"."account_status" AS ENUM (
 );
 
 CREATE TYPE "enterprise"."associate_status" AS ENUM (
-  'Active',
-  'Inactive',
-  'PendingStart',
-  'OnLeave',
-  'Terminated'
+  'ACTIVE',
+  'INACTIVE',
+  'PENDING_START',
+  'ON_LEAVE',
+  'TERMINATED'
 );
 
 CREATE TYPE "enterprise"."relationship_status" AS ENUM (
-  'Employee',
-  'Contractor',
-  'Consultant',
-  'Intern',
-  'Temporary'
+  'EMPLOYEE',
+  'CONTRACTOR',
+  'CONSULTANT',
+  'INTERN',
+  'TEMPORARY'
+);
+
+CREATE TYPE "enterprise"."operating_unit" AS ENUM (
+  'HR',
+  'IT',
+  'OPS',
+  'RISK',
+  'LEGAL',
+  'CONSUMER_BANKING',
+  'CONSUMER_LENDING',
+  'SMALL_BUSINESS_BANKING',
+  'CREDIT_CARDS',
+  'MORTGAGE_SERVICES'
 );
 
 CREATE TYPE "enterprise"."building_type" AS ENUM (
@@ -828,6 +841,55 @@ CREATE TYPE "consumer_banking"."communication_method" AS ENUM (
   'SMS_NOTIFICATION',
   'BRANCH_PICKUP',
   'MULTIPLE'
+);
+
+CREATE TYPE "consumer_banking"."interaction_type" AS ENUM (
+  'PHONE_CALL',
+  'EMAIL',
+  'CHAT',
+  'IN_PERSON',
+  'VIDEO_CALL',
+  'ONLINE_FORM',
+  'SOCIAL_MEDIA',
+  'ATM_INTERACTION',
+  'MOBILE_APP',
+  'MAIL',
+  'SMS',
+  'FAX'
+);
+
+CREATE TYPE "consumer_banking"."interaction_channel" AS ENUM (
+  'PHONE',
+  'EMAIL',
+  'WEB',
+  'BRANCH',
+  'MOBILE_APP',
+  'ATM',
+  'MAIL',
+  'SOCIAL_MEDIA',
+  'VIDEO',
+  'SMS',
+  'THIRD_PARTY'
+);
+
+CREATE TYPE "consumer_banking"."interaction_status" AS ENUM (
+  'OPEN',
+  'PENDING',
+  'IN_PROGRESS',
+  'RESOLVED',
+  'ESCALATED',
+  'TRANSFERRED',
+  'CLOSED',
+  'FOLLOW_UP',
+  'REOPENED'
+);
+
+CREATE TYPE "consumer_banking"."interaction_priority" AS ENUM (
+  'CRITICAL',
+  'HIGH',
+  'MEDIUM',
+  'LOW',
+  'ROUTINE'
 );
 
 CREATE TYPE "mortgage_services"."borrower_type" AS ENUM (
@@ -2657,59 +2719,73 @@ CREATE TYPE "security"."compliance_status" AS ENUM (
 );
 
 CREATE TYPE "app_mgmt"."application_lifecycle_status" AS ENUM (
-  'Development',
-  'Pilot',
-  'Production',
-  'Deprecated',
-  'DataMaintenance',
-  'Decommissioned',
-  'Archived'
+  'DEVELOPMENT',
+  'PILOT',
+  'PRODUCTION',
+  'DEPRECATED',
+  'DATA_MAINTENANCE',
+  'DECOMMISSIONED',
+  'ARCHIVED'
 );
 
 CREATE TYPE "app_mgmt"."deployment_environments" AS ENUM (
-  'OnPremises',
-  'CloudPublic',
-  'CloudPrivate',
-  'CloudHybrid',
-  'Containerized',
-  'Serverless',
-  'Edge'
+  'ON_PREMISES',
+  'CLOUD_PUBLIC',
+  'CLOUD_PRIVATE',
+  'CLOUD_HYBRID',
+  'CONTAINERIZED',
+  'SERVERLESS',
+  'EDGE'
 );
 
 CREATE TYPE "app_mgmt"."application_types" AS ENUM (
-  'Web',
-  'Mobile',
-  'Desktop',
+  'WEB',
+  'MOBILE',
+  'DESKTOP',
   'API',
-  'Batch',
-  'Microservice',
-  'Legacy',
-  'SaaS',
-  'Database',
-  'Middleware',
-  'Embedded'
+  'BATCH',
+  'MICROSERVICE',
+  'LEGACY',
+  'SAAS',
+  'DATABASE',
+  'MIDDLEWARE',
+  'EMBEDDED'
+);
+
+CREATE TYPE "app_mgmt"."component_types" AS ENUM (
+  'JAVA_LIBRARY',
+  'NPM_PACKAGE',
+  'NUGET_PACKAGE',
+  'PYTHON_MODULE',
+  'RUBY_GEM',
+  'FRAMEWORK',
+  'API',
+  'DOTNET_ASSEMBLY',
+  'DOCKER_IMAGE',
+  'GRADLE_PLUGIN',
+  'MAVEN_PLUGIN'
 );
 
 CREATE TYPE "app_mgmt"."dependency_types" AS ENUM (
-  'runtime',
-  'build',
-  'test',
-  'development',
-  'optional',
-  'provided',
-  'system',
-  'import',
-  'compile',
-  'annotationProcessor'
+  'RUNTIME',
+  'BUILD',
+  'TEST',
+  'DEVELOPMENT',
+  'OPTIONAL',
+  'PROVIDED',
+  'SYSTEM',
+  'IMPORT',
+  'COMPILE',
+  'ANNOTATION_PROCESSOR'
 );
 
 CREATE TYPE "app_mgmt"."criticality_levels" AS ENUM (
-  'no_impact',
-  'minimal_impact',
-  'minor_impact',
-  'moderate_impact',
-  'significant_impact',
-  'critical_impact'
+  'NONE',
+  'MINIMAL',
+  'MINOR',
+  'MODERATE',
+  'SIGNIFICANT',
+  'CRITICAL'
 );
 
 CREATE TYPE "app_mgmt"."relationship_types" AS ENUM (
@@ -2876,7 +2952,8 @@ CREATE TABLE "enterprise"."associates" (
 CREATE TABLE "enterprise"."departments" (
   "enterprise_department_id" SERIAL PRIMARY KEY,
   "department_name" VARCHAR(255) UNIQUE,
-  "location" VARCHAR(255)
+  "location" VARCHAR(255),
+  "operating_unit" enterprise.operating_unit
 );
 
 CREATE TABLE "enterprise"."buildings" (
@@ -3346,14 +3423,14 @@ CREATE TABLE "consumer_banking"."customer_interactions" (
   "customer_id" INT,
   "account_id" INT,
   "enterprise_associate_id" INT,
-  "interaction_type" VARCHAR(50),
+  "interaction_type" consumer_banking.interaction_type,
   "interaction_date_time" TIMESTAMPTZ,
-  "channel" VARCHAR(50),
+  "channel" consumer_banking.interaction_channel,
   "subject" VARCHAR(255),
   "description" TEXT,
   "resolution" TEXT,
-  "status" VARCHAR(20),
-  "priority" VARCHAR(20),
+  "status" consumer_banking.interaction_status,
+  "priority" consumer_banking.interaction_priority,
   "related_transaction_id" INT,
   "created_at" TIMESTAMPTZ DEFAULT (now()),
   "updated_at" TIMESTAMPTZ DEFAULT (now())
@@ -4937,6 +5014,7 @@ CREATE TABLE "app_mgmt"."sdlc_processes" (
 
 CREATE TABLE "app_mgmt"."applications" (
   "app_mgmt_application_id" UUID PRIMARY KEY,
+  "enterprise_department_id" INTEGER,
   "application_name" VARCHAR(255),
   "description" TEXT,
   "application_type" app_mgmt.application_types,
@@ -4964,7 +5042,7 @@ CREATE TABLE "app_mgmt"."components" (
   "app_mgmt_component_id" UUID PRIMARY KEY,
   "component_name" VARCHAR(255),
   "component_version" VARCHAR(50),
-  "component_type" VARCHAR(100),
+  "component_type" app_mgmt.component_types,
   "vendor" VARCHAR(255),
   "app_mgmt_license_id" UUID,
   "description" TEXT,
@@ -6253,6 +6331,8 @@ COMMENT ON COLUMN "enterprise"."departments"."enterprise_department_id" IS 'Uniq
 COMMENT ON COLUMN "enterprise"."departments"."department_name" IS 'Name of the department.';
 
 COMMENT ON COLUMN "enterprise"."departments"."location" IS 'Physical location of the department.';
+
+COMMENT ON COLUMN "enterprise"."departments"."operating_unit" IS 'This department is managed under this operating unit.';
 
 COMMENT ON TABLE "enterprise"."buildings" IS 'Stores information about the physical buildings used by the enterprise, including branches and other facilities.';
 
@@ -9750,6 +9830,8 @@ COMMENT ON TABLE "app_mgmt"."applications" IS 'Table to store comprehensive info
 
 COMMENT ON COLUMN "app_mgmt"."applications"."app_mgmt_application_id" IS 'Unique identifier for an application.';
 
+COMMENT ON COLUMN "app_mgmt"."applications"."enterprise_department_id" IS 'Has financial responsibility for resource. This is the department that pays for maintenance, upgrades and operation of the application.';
+
 COMMENT ON COLUMN "app_mgmt"."applications"."application_name" IS 'Name of the application.';
 
 COMMENT ON COLUMN "app_mgmt"."applications"."description" IS 'General description of the application''s purpose.';
@@ -12341,6 +12423,8 @@ ALTER TABLE "app_mgmt"."architectures" ADD FOREIGN KEY ("modified_by_user_id") R
 ALTER TABLE "app_mgmt"."sdlc_processes" ADD FOREIGN KEY ("process_owner") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "app_mgmt"."sdlc_processes" ADD FOREIGN KEY ("app_mgmt_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
+
+ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("enterprise_department_id") REFERENCES "enterprise"."departments" ("enterprise_department_id");
 
 ALTER TABLE "app_mgmt"."applications" ADD FOREIGN KEY ("operated_by_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
 

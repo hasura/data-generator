@@ -14,6 +14,9 @@ definition:
     - name: location
       type: Varchar
       description: Physical location of the department.
+    - name: operatingUnit
+      type: EnterpriseOperatingUnit
+      description: This department is managed under this operating unit.
   graphql:
     typeName: Enterprise_EnterpriseDepartments
     inputTypeName: Enterprise_EnterpriseDepartmentsInput
@@ -30,6 +33,9 @@ definition:
         location:
           column:
             name: location
+        operatingUnit:
+          column:
+            name: operating_unit
 
 ---
 kind: TypePermissions
@@ -43,6 +49,7 @@ definition:
           - departmentName
           - enterpriseDepartmentId
           - location
+          - operatingUnit
 
 ---
 kind: BooleanExpressionType
@@ -59,6 +66,8 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: location
           booleanExpressionType: VarcharBoolExp
+        - fieldName: operatingUnit
+          booleanExpressionType: EnterpriseOperatingUnitBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAssociates
   logicalOperators:
@@ -83,6 +92,8 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: location
           aggregateExpression: VarcharAggExp
+        - fieldName: operatingUnit
+          aggregateExpression: EnterpriseOperatingUnitAggExp
   count:
     enable: true
   graphql:
@@ -103,6 +114,8 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: location
           orderByExpression: VarcharOrderByExp
+        - fieldName: operatingUnit
+          orderByExpression: EnterpriseOperatingUnitOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: Enterprise_EnterpriseDepartmentsOrderByExp

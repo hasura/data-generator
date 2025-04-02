@@ -1306,6 +1306,99 @@ definition:
 kind: ScalarType
 version: v1
 definition:
+  name: AppMgmtComponentTypes
+  graphql:
+    typeName: App_Mgmt_AppMgmtComponentTypes
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtComponentTypesBoolExp
+  operand:
+    scalar:
+      type: AppMgmtComponentTypes
+      comparisonOperators:
+        - name: _eq
+          argumentType: AppMgmtComponentTypes!
+        - name: _gt
+          argumentType: AppMgmtComponentTypes!
+        - name: _gte
+          argumentType: AppMgmtComponentTypes!
+        - name: _in
+          argumentType: "[AppMgmtComponentTypes!]!"
+        - name: _lt
+          argumentType: AppMgmtComponentTypes!
+        - name: _lte
+          argumentType: AppMgmtComponentTypes!
+        - name: _neq
+          argumentType: AppMgmtComponentTypes!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: app_mgmt_component_types
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtComponentTypesBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: app_mgmt
+  dataConnectorScalarType: app_mgmt_component_types
+  representation: AppMgmtComponentTypes
+  graphql:
+    comparisonExpressionTypeName: App_Mgmt_AppMgmtComponentTypesComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtComponentTypesAggExp
+  operand:
+    scalar:
+      aggregatedType: AppMgmtComponentTypes
+      aggregationFunctions:
+        - name: max
+          returnType: AppMgmtComponentTypes
+        - name: min
+          returnType: AppMgmtComponentTypes
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: app_mgmt
+          dataConnectorScalarType: app_mgmt_component_types
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtComponentTypesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtComponentTypesOrderByExp
+  operand:
+    scalar:
+      orderedType: AppMgmtComponentTypes
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtComponentTypesOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
   name: AppMgmtLicenseTypes
   graphql:
     typeName: App_Mgmt_AppMgmtLicenseTypes

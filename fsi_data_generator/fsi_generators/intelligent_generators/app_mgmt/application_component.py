@@ -1,7 +1,6 @@
+from .enums import DependencyType
 from data_generator import DataGenerator
 from typing import Any, Dict
-
-import random
 
 
 def generate_random_application_component(_id_fields: Dict[str, Any], _dg: DataGenerator) -> Dict[str, Any]:
@@ -20,27 +19,13 @@ def generate_random_application_component(_id_fields: Dict[str, Any], _dg: DataG
         Dictionary containing randomly generated application-component relationship data
         (without ID fields or FK fields)
     """
-    # Define dependency types
-    dependency_types = [
-        "runtime",
-        "build",
-        "test",
-        "development",
-        "optional",
-        "provided",
-        "system",
-        "import",
-        "compile",
-        "annotationProcessor"
-    ]
-
-    # Choose a random dependency type
-    dependency_type = random.choice(dependency_types)
+    # Get a random dependency type using the weighted selection
+    dependency_type = DependencyType.get_random()
 
     # Create the application component record (content fields only)
     # Note: This is a junction table so it only has the dependency_type as content
     application_component = {
-        "dependency_type": dependency_type
+        "dependency_type": dependency_type.name
     }
 
     return application_component

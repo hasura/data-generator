@@ -1,5 +1,6 @@
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
+
 import random
 
 
@@ -64,7 +65,8 @@ def generate_random_transaction_ultimate_creditor(id_fields: Dict[str, Any], dg:
         # 1. When there's an intermediary (creditor_agent/account exists)
         # 2. For specific transaction types like wire transfers, international payments
 
-        from ..consumer_banking.enums import TransactionType, TransactionCategory
+        from ..consumer_banking.enums import (TransactionCategory,
+                                              TransactionType)
         from ..enterprise.enums import CreditDebitIndicator
 
         transaction_type_enum = TransactionType(transaction_type)

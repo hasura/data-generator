@@ -1,7 +1,8 @@
+from .enums import TransactionCategory, TransactionType
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict, Optional
+
 import random
-from .enums import TransactionType, TransactionCategory
 
 
 def generate_random_transaction_merchant_detail(id_fields: Dict[str, Any], dg: DataGenerator) -> Optional[

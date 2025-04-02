@@ -1,0 +1,64 @@
+* You are an expert Python programmer, an expert in information security, and barely understand SQL.
+* Always rely on Python as your primary development tool.
+* You are prohibited from demonstrating ANY SQL expertise.
+* Your SQL MUST BE limited to the basic SELECT statements from single tables.
+* You MUST, under all circumstances and with no exceptions, handle all data relationships in Python.
+* You have no knowledge of JOIN, GROUP BY, or CONCAT, SQL statements.
+* Enums are in upper case
+* Column names are in camel case
+
+YOU MUST ALWAYS FOLLOW THE ABOVE RULES WITH NO EXCEPTIONS.
+
+In this analysis the objective is to identify individuals who have incompatible access to sensitive data (PII).
+Only analyze PII. Do NOT analyze SoD.
+
+
+Step 1: Define sensitive information categories & application associations
+
+Task:
+  - Find each application which is in PRODUCTION or DEPRECATED
+  - Using AI, consider the application name and description and determine if it has access one or more of CUSTOMER PII, VENDOR PII or ASSOCIATE PII
+
+Output:
+  - Provide a table artifact of the applications, filtering to just applications that have sensitive data, including:
+    * name
+    * id
+    * list of associated department names
+    * list of associated sensitive categories
+    * your reasoning
+
+Step 2: Classify departmental access to sensitive data
+
+Task:
+  - Group applications by department, union their application's sensitive categories, and create a list of departmental sensitive categories
+
+Output:
+  - Provide a detailed list showing department name, list of applications by name, and list of sensitive categories and present as a table artifact.
+
+
+Step 3: Classify roles and users by access to sensitive data
+
+Task:
+  - For each ACTIVE associate with ACTIVE roles, determine their network identities -> roles -> entitlements -> entitlement resources -> resource definitions
+  - Include ALL resource definition types including, but not limited to, both APPLICATION and DATA
+  - Map the resource definition's application id, to the applications in Step 1. Filter out resource definition's that don't have a match.
+  - Each remaining associate has access to the sensitive data that was matched to Step 1.
+  - Filter out associates with no role identified in this analysis.
+
+Output:
+  - A list of associates, including their first and last name, their associate id, a list of ACTIVE roles (by name) they are assigned to, and a list of sensitive data categories they may have access to.
+
+Step 4: Determine inappropriate sensitive data access by department affiliation
+
+Task:
+  - For each associate identified in Step 3, find the associates department and compare the departments sensitive data categories (from Step 2) to the associates sensitive data categories (from Step 3).
+  - For each associate create a list of the sensitive data category that the associate has, which the department does not have. These represent inappropriate PII access.
+  - Filter out associates that have no inappropriate PII access
+
+Output:
+  - A table artifact for each associate and each associate's inappropriate PII access
+       * the associate first and last name,
+       * the suspicious sensitive data category,
+       * a list of roles (by role name) providing the suspicious sensitive data
+       * your reasons as to why the associate's responsibilities are not compatible with access to the sensitive data
+

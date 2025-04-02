@@ -289,19 +289,19 @@ Table "enterprise"."account_ownership" {
 }
 
 enum "enterprise"."associate_status" {
-  Active [note: 'Associate is currently employed and working.']
-  Inactive [note: 'Associate\'s employment relationship exists but they are not currently working (e.g., extended leave).']
-  PendingStart [note: 'Associate has accepted an offer but has not yet started working.']
-  OnLeave [note: 'Associate is on an approved leave of absence (e.g., medical, parental, sabbatical).']
-  Terminated [note: 'Associate\'s employment has been ended.']
+  ACTIVE [note: 'Associate is currently employed and working.']
+  INACTIVE [note: 'Associate\'s employment relationship exists but they are not currently working (e.g., extended leave).']
+  PENDING_START [note: 'Associate has accepted an offer but has not yet started working.']
+  ON_LEAVE [note: 'Associate is on an approved leave of absence (e.g., medical, parental, sabbatical).']
+  TERMINATED [note: 'Associate\'s employment has been ended.']
 }
 
 enum "enterprise"."relationship_status" {
-  Employee [note: 'Full-time or part-time worker directly employed by the enterprise.']
-  Contractor [note: 'Independent worker engaged for a specific project or time period.']
-  Consultant [note: 'External advisor providing specialized expertise.']
-  Intern [note: 'Temporary position for students or trainees to gain experience.']
-  Temporary [note: 'Short-term worker hired through an agency or directly for seasonal or limited duration work.']
+  EMPLOYEE [note: 'Full-time or part-time worker directly employed by the enterprise.']
+  CONTRACTOR [note: 'Independent worker engaged for a specific project or time period.']
+  CONSULTANT [note: 'External advisor providing specialized expertise.']
+  INTERN [note: 'Temporary position for students or trainees to gain experience.']
+  TEMPORARY [note: 'Short-term worker hired through an agency or directly for seasonal or limited duration work.']
 }
 
 Table "enterprise"."associates" {
@@ -329,10 +329,24 @@ Table "enterprise"."associates" {
   note: 'Stores information about employees, contractors, or other individuals associated with the enterprise.'
 }
 
+Enum "enterprise"."operating_unit" {
+  HR
+  IT
+  OPS
+  RISK
+  LEGAL
+  CONSUMER_BANKING
+  CONSUMER_LENDING
+  SMALL_BUSINESS_BANKING
+  CREDIT_CARDS
+  MORTGAGE_SERVICES
+}
+
 Table "enterprise"."departments" {
   "enterprise_department_id" SERIAL [pk, increment, note: 'Unique identifier for each department.']
   "department_name" VARCHAR(255) [unique, note: 'Name of the department.']
   "location" VARCHAR(255) [note: 'Physical location of the department.']
+  "operating_unit" enterprise.operating_unit [note: 'This department is managed under this operating unit.']
   note: 'Stores information about the various departments within the enterprise.'
 }
 
@@ -6845,6 +6859,7 @@ Enum app_mgmt.application_types {
 
 Table "app_mgmt"."applications" {
   "app_mgmt_application_id" UUID [pk, note: 'Unique identifier for an application.']
+  "enterprise_department_id" INTEGER [ref: > "enterprise"."departments"."enterprise_department_id", note: 'Has financial responsibility for resource. This is the department that pays for maintenance, upgrades and operation of the application.']
   "application_name" VARCHAR(255) [note: 'Name of the application.']
   "description" TEXT [note: 'General description of the application\'s purpose.']
   "application_type" app_mgmt.application_types [note: 'Type of application (e.g., web, mobile, desktop).']

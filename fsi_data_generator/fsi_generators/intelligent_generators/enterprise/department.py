@@ -1,4 +1,4 @@
-from ...helpers.generate_unique_json_array import generate_unique_json_array
+from .enums.operating_unit import OperatingUnit
 from data_generator import DataGenerator, SkipRowGenerationError
 from faker import Faker
 from typing import Any, Dict
@@ -30,55 +30,16 @@ def generate_random_department(_id_fields: Dict[str, Any], dg: DataGenerator) ->
     # First, get existing department names to avoid duplicates (as department_name is unique)
     existing_department_names = get_existing_department_names(conn)
 
-    # Default fallback values for department names
-    department_prefixes = [
-        "Retail", "Commercial", "Corporate", "Investment", "Private", "Consumer",
-        "Small Business", "Enterprise", "Digital", "Online", "Mobile", "Treasury",
-        "Risk", "Compliance", "Legal", "Finance", "Accounting", "Operations",
-        "Technology", "IT", "Information Security", "Cyber Security", "Data",
-        "Analytics", "Marketing", "Sales", "Customer Service", "Human Resources",
-        "Talent", "Learning", "Development", "Facilities", "Administration"
-    ]
+    # Choose a random operating unit
+    operating_unit = OperatingUnit.get_random()
 
-    department_suffixes = [
-        "Banking", "Services", "Solutions", "Management", "Operations", "Department",
-        "Division", "Group", "Team", "Support", "Analytics", "Strategy", "Systems"
-    ]
-
-    # Try to use generate_unique_json_array for department names
-    try:
-        generated_department_names = generate_unique_json_array(
-            dbml_string=dg.dbml,
-            fully_qualified_column_name="enterprise.departments.department_name - Banking department names including Retail Banking, Commercial Lending, Risk Management, Compliance, Treasury, IT, and Operations",
-            count=50,
-            cache_key='department_names'
-        )
-        if generated_department_names:
-            department_names = generated_department_names
-        else:
-            # Generate department names by combining prefixes and suffixes
-            department_names = [f"{prefix} {suffix}" for prefix in department_prefixes for suffix in
-                                department_suffixes]
-    except Exception as e:
-        logger.error(f"Error generating department names: {e}")
-        # Continue with fallback values
-        department_names = [f"{prefix} {suffix}" for prefix in department_prefixes for suffix in department_suffixes]
-
-    # Choose a department name and ensure it's unique
-    available_names = [name for name in department_names if name not in existing_department_names]
-
-    if not available_names:
-        # If we've run out of available names, create a new unique name by combining random prefixes and suffixes
-        while True:
-            department_name = f"{random.choice(department_prefixes)} {random.choice(department_suffixes)}"
-            if department_name not in existing_department_names:
-                break
-    else:
-        department_name = random.choice(available_names)
+    # Create department names based on operating unit
+    department_name = generate_department_name_for_operating_unit(operating_unit, existing_department_names)
 
     # Create the department record
     department = {
-        "department_name": department_name
+        "department_name": department_name,
+        "operating_unit": operating_unit.name
         # No need to generate enterprise_building_id as it will be provided
         # in _id_fields or managed by the system/data insertion process
     }
@@ -89,6 +50,107 @@ def generate_random_department(_id_fields: Dict[str, Any], dg: DataGenerator) ->
     prev_department.add(department_name)
 
     return department
+
+
+def generate_department_name_for_operating_unit(operating_unit, existing_names):
+    """
+    Generate a department name appropriate for the given operating unit.
+
+    Args:
+        operating_unit: The OperatingUnit enum value
+        existing_names: List of existing department names to avoid duplicates
+
+    Returns:
+        A department name that aligns with the operating unit
+    """
+    # Define department names by operating unit
+    department_options = {
+        OperatingUnit.HR: [
+            "Talent Acquisition", "Employee Relations", "Benefits Administration",
+            "Compensation", "Workforce Planning", "HR Operations",
+            "Training & Development", "HR Analytics", "Organizational Development",
+            "Payroll Services", "Executive Recruitment", "Employee Engagement"
+        ],
+        OperatingUnit.IT: [
+            "Application Development", "Infrastructure Services", "Network Administration",
+            "Cybersecurity", "Data Center Operations", "IT Support",
+            "Architecture & Design", "Database Administration", "Quality Assurance",
+            "Digital Transformation", "Cloud Services", "IT Governance",
+            "Software Engineering", "IT Project Management", "Enterprise Systems"
+        ],
+        OperatingUnit.OPS: [
+            "Transaction Processing", "Operations Support", "Back Office Operations",
+            "Process Improvement", "Vendor Management", "Operational Risk",
+            "Facilities Management", "Business Continuity", "Document Services",
+            "Procurement", "Administrative Services", "Operational Excellence",
+            "Branch Operations", "ATM Operations", "Cash Management Operations"
+        ],
+        OperatingUnit.RISK: [
+            "Credit Risk", "Market Risk", "Operational Risk Management",
+            "Enterprise Risk", "Fraud Prevention", "Risk Analytics",
+            "Model Risk Management", "Regulatory Risk", "Financial Risk",
+            "Risk Governance", "Risk Reporting", "Stress Testing",
+            "Risk Technology", "Risk Advisory", "Compliance Risk"
+        ],
+        OperatingUnit.LEGAL: [
+            "Corporate Legal", "Regulatory Compliance", "Litigation",
+            "Contract Management", "Intellectual Property", "Legal Operations",
+            "Corporate Governance", "Ethics & Compliance", "Privacy",
+            "Employment Law", "Securities Law", "Banking Law"
+        ],
+        OperatingUnit.CONSUMER_BANKING: [
+            "Retail Banking", "Branch Services", "Digital Banking",
+            "Account Services", "Customer Experience", "ATM Banking",
+            "Personal Banking", "Deposit Operations", "Customer Acquisition",
+            "Transaction Banking", "Savings Programs", "Banking Products",
+            "Banking Services", "Daily Banking", "Customer Onboarding"
+        ],
+        OperatingUnit.CONSUMER_LENDING: [
+            "Personal Loans", "Auto Lending", "Student Loans",
+            "Credit Underwriting", "Loan Origination", "Collections",
+            "Loan Servicing", "Consumer Credit", "Debt Recovery",
+            "Loan Processing", "Credit Authorization", "Loan Documentation",
+            "Personal Lines of Credit", "Debt Consolidation", "Home Improvement Loans"
+        ],
+        OperatingUnit.SMALL_BUSINESS_BANKING: [
+            "Business Banking", "Small Business Lending", "Merchant Services",
+            "Business Accounts", "Business Development", "Treasury Services",
+            "Business Credit Cards", "Business Client Services", "Business Loans",
+            "Startup Banking", "Nonprofit Banking", "Business Cash Management",
+            "Business Advisory", "Franchise Banking", "Professional Services Banking"
+        ],
+        OperatingUnit.CREDIT_CARDS: [
+            "Card Products", "Card Operations", "Card Services",
+            "Card Marketing", "Card Partnerships", "Card Risk Management",
+            "Card Fraud", "Card Benefits", "Card Technology",
+            "Card Issuance", "Card Processing", "Rewards Programs",
+            "Card Analytics", "Card Portfolio Management", "Card Acquisition"
+        ],
+        OperatingUnit.MORTGAGE_SERVICES: [
+            "Mortgage Lending", "Mortgage Origination", "Mortgage Servicing",
+            "Mortgage Underwriting", "Appraisal Services", "Mortgage Processing",
+            "Home Equity", "Mortgage Compliance", "Mortgage Operations",
+            "Residential Mortgages", "Mortgage Documentation", "Closing Services",
+            "Refinancing", "Mortgage Product Development", "Construction Lending"
+        ]
+    }
+
+    options = department_options[operating_unit]
+
+    # Filter out existing names
+    available_options = [name for name in options if name not in existing_names]
+
+    if available_options:
+        return random.choice(available_options)
+    else:
+        # If all specific names are taken, create a more generic but still relevant name
+        prefixes = ["Primary", "Central", "Core", "Strategic", "Global", "Regional", "Advanced", "Integrated"]
+        while True:
+            base_name = random.choice(options)
+            prefix = random.choice(prefixes)
+            new_name = f"{prefix} {base_name}"
+            if new_name not in existing_names:
+                return new_name
 
 
 def get_existing_department_names(conn) -> list:

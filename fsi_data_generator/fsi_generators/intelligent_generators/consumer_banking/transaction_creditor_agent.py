@@ -1,11 +1,11 @@
-import random
-
+from ..consumer_banking.enums import TransactionCategory, TransactionType
 from ..enterprise import (generate_financial_institution_identifier,
                           generate_financial_institution_name)
 from ..enterprise.enums import CreditDebitIndicator
-from ..consumer_banking.enums import TransactionType, TransactionCategory
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
+
+import random
 
 
 def generate_random_transaction_creditor_agent(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

@@ -1,8 +1,6 @@
+from .enums import TransactionBankCode
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
-
-from .enums import TransactionBankCode
-
 
 prev_codes = set()
 def generate_random_transaction_bank_transaction_code(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

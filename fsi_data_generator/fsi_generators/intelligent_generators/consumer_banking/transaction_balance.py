@@ -1,8 +1,8 @@
+from ..enterprise.enums import CreditDebitIndicator, CurrencyCode
+from .enums import BalanceType
 from data_generator import DataGenerator
 from typing import Any, Dict
 
-from .enums import BalanceType
-from ..enterprise.enums import CreditDebitIndicator, CurrencyCode
 import random
 
 

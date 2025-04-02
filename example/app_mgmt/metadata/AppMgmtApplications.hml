@@ -43,6 +43,10 @@ definition:
     - name: documentationUrl
       type: Varchar
       description: Link to the application's documentation.
+    - name: enterpriseDepartmentId
+      type: Int4
+      description: Has financial responsibility for resource. This is the department
+        that pays for maintenance, upgrades and operation of the application.
     - name: lifecycleStatus
       type: AppMgmtApplicationLifecycleStatus
       description: Current stage in the application's lifecycle (e.g., development,
@@ -122,6 +126,9 @@ definition:
         documentationUrl:
           column:
             name: documentation_url
+        enterpriseDepartmentId:
+          column:
+            name: enterprise_department_id
         lifecycleStatus:
           column:
             name: lifecycle_status
@@ -174,6 +181,7 @@ definition:
           - deploymentEnvironment
           - description
           - documentationUrl
+          - enterpriseDepartmentId
           - lifecycleStatus
           - maintainedByTeamId
           - modifiedByUserId
@@ -218,6 +226,8 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: documentationUrl
           booleanExpressionType: VarcharBoolExp
+        - fieldName: enterpriseDepartmentId
+          booleanExpressionType: Int4BoolExp
         - fieldName: lifecycleStatus
           booleanExpressionType: AppMgmtApplicationLifecycleStatusBoolExp
         - fieldName: maintainedByTeamId
@@ -288,6 +298,8 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: documentationUrl
           aggregateExpression: VarcharAggExp
+        - fieldName: enterpriseDepartmentId
+          aggregateExpression: Int4AggExp
         - fieldName: lifecycleStatus
           aggregateExpression: AppMgmtApplicationLifecycleStatusAggExp
         - fieldName: maintainedByTeamId
@@ -346,6 +358,8 @@ definition:
           orderByExpression: TextOrderByExp
         - fieldName: documentationUrl
           orderByExpression: VarcharOrderByExp
+        - fieldName: enterpriseDepartmentId
+          orderByExpression: Int4OrderByExp
         - fieldName: lifecycleStatus
           orderByExpression: AppMgmtApplicationLifecycleStatusOrderByExp
         - fieldName: maintainedByTeamId

@@ -1,11 +1,12 @@
 from ..enterprise.enums import Frequency
-from .enums import InteractionType, InteractionChannel, InteractionStatus, InteractionPriority
+from .enums import (InteractionChannel, InteractionPriority, InteractionStatus,
+                    InteractionType)
 from data_generator import DataGenerator
 from typing import Any, Dict
 
-import random
 import datetime
 import pytz
+import random
 
 
 def generate_random_customer_interaction(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

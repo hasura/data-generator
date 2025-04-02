@@ -355,7 +355,7 @@ def generate_banking_data():
             "security.identity_entitlements": 1000,  # Links between identities and entitlements
             "security.identity_profiles": 20,  # Profiles defining identity attributes
             "security.identity_roles": 500,  # Links between identities and roles
-            "security.roles": 50,  # Security roles
+            "security.roles": 100,  # Security roles
             "security.sources": 10,  # Source systems for identities and accounts
             "security.file_accesses": 2000,  # File access events
             "security.file_threats": 20,  # Known file threats

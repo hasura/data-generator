@@ -1,8 +1,9 @@
+from ..consumer_banking.enums import TransactionCategory, TransactionType
 from ..enterprise import (generate_financial_institution_identifier,
                           generate_financial_institution_name)
-from ..consumer_banking.enums import TransactionType, TransactionCategory
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
+
 import random
 
 

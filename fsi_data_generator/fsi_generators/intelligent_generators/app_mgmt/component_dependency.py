@@ -1,4 +1,5 @@
 from data_generator import DataGenerator
+from .enums import DependencyType
 from typing import Any, Dict
 
 import random
@@ -20,22 +21,8 @@ def generate_random_component_dependency(_id_fields: Dict[str, Any], _dg: DataGe
         Dictionary containing randomly generated component dependency data
         (without ID fields or FK fields)
     """
-    # Define dependency types
-    dependency_types = [
-        "runtime",
-        "build",
-        "test",
-        "development",
-        "optional",
-        "provided",
-        "system",
-        "import",
-        "compile",
-        "annotationProcessor"
-    ]
-
-    # Choose a random dependency type
-    dependency_type = random.choice(dependency_types)
+    # Get a random dependency type using the weighted selection
+    dependency_type = DependencyType.get_random()
 
     # Generate a reasonable quantity - typically this would be 1
     # but occasionally components might be used multiple times
@@ -45,7 +32,7 @@ def generate_random_component_dependency(_id_fields: Dict[str, Any], _dg: DataGe
     # Create the component dependency record (content fields only)
     component_dependency = {
         "quantity": quantity,
-        "dependency_type": dependency_type
+        "dependency_type": dependency_type.name
     }
 
     return component_dependency

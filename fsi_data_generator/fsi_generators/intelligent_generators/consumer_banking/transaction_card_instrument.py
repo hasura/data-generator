@@ -1,7 +1,9 @@
 from ..enterprise.enums import CurrencyCode, PartyType
-from .enums import TransactionType, TransactionCategory, CardSchemeName, AuthorizationType
+from .enums import (AuthorizationType, CardSchemeName, TransactionCategory,
+                    TransactionType)
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict, Optional
+
 import random
 
 

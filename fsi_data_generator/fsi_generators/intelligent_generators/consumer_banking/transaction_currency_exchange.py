@@ -1,10 +1,10 @@
-import datetime
-import random
+from ..enterprise.enums import CurrencyCode
+from .enums import ExchangeRateProvider, ExchangeRateType
+from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
 
-from data_generator import DataGenerator, SkipRowGenerationError
-from .enums import ExchangeRateProvider, ExchangeRateType
-from ..enterprise.enums import CurrencyCode
+import datetime
+import random
 
 
 def generate_random_transaction_currency_exchange(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

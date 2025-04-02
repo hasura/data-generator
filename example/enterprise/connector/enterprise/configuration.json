@@ -292,6 +292,14 @@
             "nullable": "nullable",
             "description": "Link to the application's documentation."
           },
+          "enterprise_department_id": {
+            "name": "enterprise_department_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Has financial responsibility for resource. This is the department that pays for maintenance, upgrades and operation of the application."
+          },
           "lifecycle_status": {
             "name": "lifecycle_status",
             "type": {
@@ -405,6 +413,13 @@
             "foreignTable": "associates",
             "columnMapping": {
               "created_by_user_id": "enterprise_associate_id"
+            }
+          },
+          "applications_enterprise_department_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "departments",
+            "columnMapping": {
+              "enterprise_department_id": "enterprise_department_id"
             }
           },
           "applications_maintained_by_team_id_fkey": {
@@ -652,7 +667,7 @@
           "component_type": {
             "name": "component_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "app_mgmt_component_types"
             },
             "nullable": "nullable",
             "description": "Type of component (e.g., library, framework, API, module). Also used for language-specific categorization (e.g., java-library, npm-package)."
@@ -1573,7 +1588,7 @@
           "channel": {
             "name": "channel",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_interaction_channel"
             },
             "nullable": "nullable",
             "description": "The channel through which the interaction occurred (e.g., \"phone,\" \"email,\" \"web,\" \"branch,\" \"mobile app\")."
@@ -1631,7 +1646,7 @@
           "interaction_type": {
             "name": "interaction_type",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_interaction_type"
             },
             "nullable": "nullable",
             "description": "The type of interaction (e.g., \"phone call,\" \"email,\" \"chat,\" \"in-person,\" \"online form,\" \"ATM interaction\")."
@@ -1639,7 +1654,7 @@
           "priority": {
             "name": "priority",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_interaction_priority"
             },
             "nullable": "nullable",
             "description": "The priority of the interaction (e.g., \"high,\" \"medium,\" \"low\")."
@@ -1663,7 +1678,7 @@
           "status": {
             "name": "status",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "consumer_banking_interaction_status"
             },
             "nullable": "nullable",
             "description": "The status of the interaction (e.g., \"open,\" \"resolved,\" \"pending\")."
@@ -14999,6 +15014,14 @@
             },
             "nullable": "nullable",
             "description": "Physical location of the department."
+          },
+          "operating_unit": {
+            "name": "operating_unit",
+            "type": {
+              "scalarType": "enterprise_operating_unit"
+            },
+            "nullable": "nullable",
+            "description": "This department is managed under this operating unit."
           }
         },
         "uniquenessConstraints": {
@@ -26717,13 +26740,13 @@
           },
           "typeRepresentation": {
             "enum": [
-              "Development",
-              "Pilot",
-              "Production",
-              "Deprecated",
-              "DataMaintenance",
-              "Decommissioned",
-              "Archived"
+              "DEVELOPMENT",
+              "PILOT",
+              "PRODUCTION",
+              "DEPRECATED",
+              "DATA_MAINTENANCE",
+              "DECOMMISSIONED",
+              "ARCHIVED"
             ]
           }
         },
@@ -26785,17 +26808,89 @@
           },
           "typeRepresentation": {
             "enum": [
-              "Web",
-              "Mobile",
-              "Desktop",
+              "WEB",
+              "MOBILE",
+              "DESKTOP",
               "API",
-              "Batch",
-              "Microservice",
-              "Legacy",
-              "SaaS",
-              "Database",
-              "Middleware",
-              "Embedded"
+              "BATCH",
+              "MICROSERVICE",
+              "LEGACY",
+              "SAAS",
+              "DATABASE",
+              "MIDDLEWARE",
+              "EMBEDDED"
+            ]
+          }
+        },
+        "app_mgmt_component_types": {
+          "typeName": "component_types",
+          "schemaName": "app_mgmt",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "app_mgmt_component_types"
+            },
+            "min": {
+              "returnType": "app_mgmt_component_types"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "app_mgmt_component_types",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_component_types",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_component_types",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "app_mgmt_component_types",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_component_types",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_component_types",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "app_mgmt_component_types",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "JAVA_LIBRARY",
+              "NPM_PACKAGE",
+              "NUGET_PACKAGE",
+              "PYTHON_MODULE",
+              "RUBY_GEM",
+              "FRAMEWORK",
+              "API",
+              "DOTNET_ASSEMBLY",
+              "DOCKER_IMAGE",
+              "GRADLE_PLUGIN",
+              "MAVEN_PLUGIN"
             ]
           }
         },
@@ -26857,12 +26952,12 @@
           },
           "typeRepresentation": {
             "enum": [
-              "no_impact",
-              "minimal_impact",
-              "minor_impact",
-              "moderate_impact",
-              "significant_impact",
-              "critical_impact"
+              "NONE",
+              "MINIMAL",
+              "MINOR",
+              "MODERATE",
+              "SIGNIFICANT",
+              "CRITICAL"
             ]
           }
         },
@@ -26924,16 +27019,16 @@
           },
           "typeRepresentation": {
             "enum": [
-              "runtime",
-              "build",
-              "test",
-              "development",
-              "optional",
-              "provided",
-              "system",
-              "import",
-              "compile",
-              "annotationProcessor"
+              "RUNTIME",
+              "BUILD",
+              "TEST",
+              "DEVELOPMENT",
+              "OPTIONAL",
+              "PROVIDED",
+              "SYSTEM",
+              "IMPORT",
+              "COMPILE",
+              "ANNOTATION_PROCESSOR"
             ]
           }
         },
@@ -26995,13 +27090,13 @@
           },
           "typeRepresentation": {
             "enum": [
-              "OnPremises",
-              "CloudPublic",
-              "CloudPrivate",
-              "CloudHybrid",
-              "Containerized",
-              "Serverless",
-              "Edge"
+              "ON_PREMISES",
+              "CLOUD_PUBLIC",
+              "CLOUD_PRIVATE",
+              "CLOUD_HYBRID",
+              "CONTAINERIZED",
+              "SERVERLESS",
+              "EDGE"
             ]
           }
         },
@@ -28479,6 +28574,287 @@
               "SPECIAL_STATEMENT",
               "LATE_PAYMENT",
               "OTHER"
+            ]
+          }
+        },
+        "consumer_banking_interaction_channel": {
+          "typeName": "interaction_channel",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_interaction_channel"
+            },
+            "min": {
+              "returnType": "consumer_banking_interaction_channel"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_interaction_channel",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_channel",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_channel",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_interaction_channel",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_channel",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_channel",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_channel",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PHONE",
+              "EMAIL",
+              "WEB",
+              "BRANCH",
+              "MOBILE_APP",
+              "ATM",
+              "MAIL",
+              "SOCIAL_MEDIA",
+              "VIDEO",
+              "SMS",
+              "THIRD_PARTY"
+            ]
+          }
+        },
+        "consumer_banking_interaction_priority": {
+          "typeName": "interaction_priority",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_interaction_priority"
+            },
+            "min": {
+              "returnType": "consumer_banking_interaction_priority"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_interaction_priority",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_priority",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_priority",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_interaction_priority",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_priority",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_priority",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_priority",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "CRITICAL",
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "ROUTINE"
+            ]
+          }
+        },
+        "consumer_banking_interaction_status": {
+          "typeName": "interaction_status",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_interaction_status"
+            },
+            "min": {
+              "returnType": "consumer_banking_interaction_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_interaction_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_interaction_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "OPEN",
+              "PENDING",
+              "IN_PROGRESS",
+              "RESOLVED",
+              "ESCALATED",
+              "TRANSFERRED",
+              "CLOSED",
+              "FOLLOW_UP",
+              "REOPENED"
+            ]
+          }
+        },
+        "consumer_banking_interaction_type": {
+          "typeName": "interaction_type",
+          "schemaName": "consumer_banking",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "consumer_banking_interaction_type"
+            },
+            "min": {
+              "returnType": "consumer_banking_interaction_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "consumer_banking_interaction_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "consumer_banking_interaction_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "consumer_banking_interaction_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PHONE_CALL",
+              "EMAIL",
+              "CHAT",
+              "IN_PERSON",
+              "VIDEO_CALL",
+              "ONLINE_FORM",
+              "SOCIAL_MEDIA",
+              "ATM_INTERACTION",
+              "MOBILE_APP",
+              "MAIL",
+              "SMS",
+              "FAX"
             ]
           }
         },
@@ -35026,11 +35402,11 @@
           },
           "typeRepresentation": {
             "enum": [
-              "Active",
-              "Inactive",
-              "PendingStart",
-              "OnLeave",
-              "Terminated"
+              "ACTIVE",
+              "INACTIVE",
+              "PENDING_START",
+              "ON_LEAVE",
+              "TERMINATED"
             ]
           }
         },
@@ -35633,6 +36009,77 @@
             ]
           }
         },
+        "enterprise_operating_unit": {
+          "typeName": "operating_unit",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_operating_unit"
+            },
+            "min": {
+              "returnType": "enterprise_operating_unit"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_operating_unit",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_operating_unit",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_operating_unit",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_operating_unit",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_operating_unit",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_operating_unit",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_operating_unit",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "HR",
+              "IT",
+              "OPS",
+              "RISK",
+              "LEGAL",
+              "CONSUMER_BANKING",
+              "CONSUMER_LENDING",
+              "SMALL_BUSINESS_BANKING",
+              "CREDIT_CARDS",
+              "MORTGAGE_SERVICES"
+            ]
+          }
+        },
         "enterprise_party_relationship_type": {
           "typeName": "party_relationship_type",
           "schemaName": "enterprise",
@@ -35901,11 +36348,11 @@
           },
           "typeRepresentation": {
             "enum": [
-              "Employee",
-              "Contractor",
-              "Consultant",
-              "Intern",
-              "Temporary"
+              "EMPLOYEE",
+              "CONTRACTOR",
+              "CONSULTANT",
+              "INTERN",
+              "TEMPORARY"
             ]
           }
         },

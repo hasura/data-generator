@@ -1,12 +1,12 @@
-from .today import today
 from ..enterprise.enums import Frequency
-from .enums import StatementFormat, CommunicationMethod, AccountStatus
+from .enums import AccountStatus, CommunicationMethod, StatementFormat
+from .today import today
 from data_generator import DataGenerator
+from dateutil.relativedelta import relativedelta
 from typing import Any, Dict
 
-import random
 import datetime
-from dateutil.relativedelta import relativedelta
+import random
 
 
 def generate_random_account_statement_preference(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:

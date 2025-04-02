@@ -1,11 +1,11 @@
 """Automatically generated __init__.py"""
-__all__ = ['AccountIdentifierScheme', 'AccountStatus', 'AddressType', 'BuildingType', 'CitizenshipStatus', 'CreditDebitIndicator', 'CurrencyCode', 'Frequency', 'LegalStructure', 'MaritalStatus', 'PartyEntityAddressType', 'PartyRelationshipType', 'PartyStatus', 'PartyType', 'account_identifier_scheme', 'account_status', 'address_type', 'building_type', 'citizenship_status', 'credit_debit_indicator', 'currency_code', 'frequency', 'legal_structure', 'marital_status', 'party_entity_address_type', 'party_relationship_type', 'party_status', 'party_type']
+__all__ = ['AccountIdentifierScheme', 'AccountStatus', 'AddressType', 'BuildingType', 'CitizenshipStatus', 'CreditDebitIndicator', 'CurrencyCode', 'Frequency', 'LegalStructure', 'MaritalStatus', 'OperatingUnit', 'PartyEntityAddressType', 'PartyRelationshipType', 'PartyStatus', 'PartyType', 'account_identifier_scheme', 'account_status', 'address_type', 'building_type', 'citizenship_status', 'credit_debit_indicator', 'currency_code', 'frequency', 'legal_structure', 'marital_status', 'operating_unit', 'party_entity_address_type', 'party_relationship_type', 'party_status', 'party_type']
 
 from . import (account_identifier_scheme, account_status, address_type,
                building_type, citizenship_status, credit_debit_indicator,
                currency_code, frequency, legal_structure, marital_status,
-               party_entity_address_type, party_relationship_type,
-               party_status, party_type)
+               operating_unit, party_entity_address_type,
+               party_relationship_type, party_status, party_type)
 from .account_identifier_scheme import AccountIdentifierScheme
 from .account_status import AccountStatus
 from .address_type import AddressType
@@ -16,6 +16,7 @@ from .currency_code import CurrencyCode
 from .frequency import Frequency
 from .legal_structure import LegalStructure
 from .marital_status import MaritalStatus
+from .operating_unit import OperatingUnit
 from .party_entity_address_type import PartyEntityAddressType
 from .party_relationship_type import PartyRelationshipType
 from .party_status import PartyStatus
