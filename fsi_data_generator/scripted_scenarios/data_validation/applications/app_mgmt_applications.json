@@ -1,0 +1,1223 @@
+{
+  "jsonSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "JSON Schema for App Mgmt / Enterprise Query (Data Quality Rules)",
+    "description": "Describes the expected JSON structure for the AppMgmtWithEnterpriseDetails query and includes data quality rules for application ownership and management. The following rules apply: (1) Applications in PRODUCTION or DEPRECATED status must have an owner; (2) Application owners must have ACTIVE status; (3) Owner's department must match the application's department; (4) Application owners must be employees, not contractors.",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "appManagementInfo": {
+            "description": "Information about App Management applications, including nested Enterprise owner and department details.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "appMgmtApplicationId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Unique ID (UUID) for the application."
+                },
+                "applicationName": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Name of the application."
+                },
+                "applicationType": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Type of application (e.g., web, mobile)."
+                },
+                "lifecycleStatus": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current lifecycle stage."
+                },
+                "version": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current version."
+                },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Application description."
+                },
+                "applicationOwner": {
+                  "type": "object",
+                  "description": "Details about an enterprise associate (linked from App Mgmt).",
+                  "properties": {
+                    "enterpriseAssociateId": {
+                      "type": [
+                        "integer",
+                        "string"
+                      ],
+                      "description": "Unique ID for the associate."
+                    },
+                    "firstName": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "lastName": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "email": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "email"
+                    },
+                    "jobTitle": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "enterpriseDepartmentId": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+                      "const": {
+                        "$data": "2/department/enterpriseDepartmentId"
+                      }
+                    },
+                    "status": {
+                      "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "ACTIVE"
+                      ]
+                    },
+                    "relationshipType": {
+                      "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "EMPLOYEE"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "enterpriseAssociateId",
+                    "status",
+                    "enterpriseDepartmentId",
+                    "relationshipType"
+                  ]
+                },
+                "department": {
+                  "type": "object",
+                  "description": "Details about an enterprise department (linked from App Mgmt).",
+                  "properties": {
+                    "enterpriseDepartmentId": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "description": "Unique ID for the department."
+                    },
+                    "departmentName": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "operatingUnit": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "enterpriseDepartmentId"
+                  ]
+                }
+              },
+              "required": [
+                "appMgmtApplicationId",
+                "applicationName",
+                "department"
+              ],
+              "allOf": [
+                {
+                  "description": "Rule 1: Every application that is in PRODUCTION or DEPRECATED must have an owner. Applications without an assigned owner are considered non-compliant.",
+                  "if": {
+                    "properties": {
+                      "lifecycleStatus": {
+                        "enum": [
+                          "PRODUCTION",
+                          "DEPRECATED"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "applicationOwner"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "appManagementInfo"
+        ]
+      }
+    },
+    "required": [
+      "data"
+    ]
+  },
+  "$data": true,
+  "verbose": true,
+  "allErrors": true,
+  "strict": false,
+  "user": "admin",
+  "role": "admin",
+  "query": "# Sample GraphQL query demonstrating cross-schema data retrieval\n# Fetches App Management application details and nests related\n# owner and department information from the Enterprise domain.\n\nquery app_mgmt_applications {\n\n  appManagementInfo: appMgmtApplications { # Removed limit\n    # App_Mgmt fields\n    appMgmtApplicationId\n    applicationName\n    applicationType\n    lifecycleStatus\n    version\n    description\n\n    # Nested Enterprise_EnterpriseAssociates data\n    applicationOwner {\n      enterpriseAssociateId\n      firstName\n      lastName\n      email\n      jobTitle\n      enterpriseDepartmentId # Added field\n      status               # Added field\n      relationshipType\n    }\n\n    # Nested Enterprise_EnterpriseDepartments data\n    department {\n      enterpriseDepartmentId\n      departmentName\n      operatingUnit\n    }\n  }\n}",
+  "operationName": "app_mgmt_applications",
+  "variables": "null",
+  "errors": [
+    {
+      "instancePath": "/data/appManagementInfo/0/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/1/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "INACTIVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/1/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/2/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/2/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/3/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "ON_LEAVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/4/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/4/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "TERMINATED"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/4/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/5/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/6/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/7/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/8/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/8/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "PENDING_START"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/8/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/9/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/9/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/10/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/11/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 2
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 1
+    },
+    {
+      "instancePath": "/data/appManagementInfo/11/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "INTERN"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/12/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/12/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "INACTIVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/12/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/13/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/13/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/14/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/14/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "TEMPORARY"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/15/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "INACTIVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/17/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/17/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "INACTIVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/17/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/18/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 1
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 2
+    },
+    {
+      "instancePath": "/data/appManagementInfo/18/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "INACTIVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/18/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "TEMPORARY"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/24/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "INACTIVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/25/applicationOwner/relationshipType",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/relationshipType/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "EMPLOYEE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "EMPLOYEE"
+      ],
+      "parentSchema": {
+        "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "EMPLOYEE"
+        ]
+      },
+      "data": "CONTRACTOR"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/27/applicationOwner/status",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/status/enum",
+      "keyword": "enum",
+      "params": {
+        "allowedValues": [
+          "ACTIVE"
+        ]
+      },
+      "message": "must be equal to one of the allowed values",
+      "schema": [
+        "ACTIVE"
+      ],
+      "parentSchema": {
+        "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ACTIVE"
+        ]
+      },
+      "data": "INACTIVE"
+    },
+    {
+      "instancePath": "/data/appManagementInfo/30/applicationOwner/enterpriseDepartmentId",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/properties/enterpriseDepartmentId/const",
+      "keyword": "const",
+      "params": {
+        "allowedValue": 3
+      },
+      "message": "must be equal to constant",
+      "schema": {
+        "$data": "2/department/enterpriseDepartmentId"
+      },
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+        "const": {
+          "$data": "2/department/enterpriseDepartmentId"
+        }
+      },
+      "data": 4
+    },
+    {
+      "instancePath": "/data/appManagementInfo/31/applicationOwner",
+      "schemaPath": "#/properties/data/properties/appManagementInfo/items/properties/applicationOwner/type",
+      "keyword": "type",
+      "params": {
+        "type": "object"
+      },
+      "message": "must be object",
+      "schema": "object",
+      "parentSchema": {
+        "type": "object",
+        "description": "Details about an enterprise associate (linked from App Mgmt).",
+        "properties": {
+          "enterpriseAssociateId": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "Unique ID for the associate."
+          },
+          "firstName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "lastName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email"
+          },
+          "jobTitle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "enterpriseDepartmentId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Rule 3: The owner's department must match the application's department. Cross-departmental ownership is not permitted to ensure proper accountability and alignment.",
+            "const": {
+              "$data": "2/department/enterpriseDepartmentId"
+            }
+          },
+          "status": {
+            "description": "Rule 2: Every application owner must have an ACTIVE status. Inactive or terminated employees cannot be assigned as application owners.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "ACTIVE"
+            ]
+          },
+          "relationshipType": {
+            "description": "Rule 4: Every application that is in PRODUCTION or DEPRECATED must have an owner with relationship type EMPLOYEE. Contractors or other non-employee associates cannot be assigned as application owners.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "EMPLOYEE"
+            ]
+          }
+        },
+        "required": [
+          "enterpriseAssociateId",
+          "status",
+          "enterpriseDepartmentId",
+          "relationshipType"
+        ]
+      },
+      "data": null
+    }
+  ]
+}

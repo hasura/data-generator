@@ -122,7 +122,7 @@ def generate_random_transaction_currency_exchange(id_fields: Dict[str, Any], dg:
         else:
             # 5% chance it's a third currency
             unit_currencies = [c.value for c in CurrencyCode
-                               if c.value != source_currency.value and c.value != target_currency]
+                               if c.value != source_currency.value and c.value != target_currency and not c.name.startswith('_')]
             unit_currency = random.choice(unit_currencies)
 
         # Calculate instructed amount based on exchange rate

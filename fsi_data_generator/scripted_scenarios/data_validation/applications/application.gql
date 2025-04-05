@@ -1,0 +1,35 @@
+# Sample GraphQL query demonstrating cross-schema data retrieval
+# Fetches App Management application details and nests related
+# owner and department information from the Enterprise domain.
+
+query application_ownership_analysis {
+
+  appMgmtApplications { # Removed limit
+    # App_Mgmt fields
+    appMgmtApplicationId
+    applicationName
+    applicationType
+    lifecycleStatus
+    version
+    description
+
+    # Nested Enterprise_EnterpriseAssociates data
+    applicationOwner {
+      enterpriseAssociateId
+      firstName
+      lastName
+      email
+      jobTitle
+      enterpriseDepartmentId # Added field
+      status               # Added field
+      relationshipType
+    }
+
+    # Nested Enterprise_EnterpriseDepartments data
+    department {
+      enterpriseDepartmentId
+      departmentName
+      operatingUnit
+    }
+  }
+}

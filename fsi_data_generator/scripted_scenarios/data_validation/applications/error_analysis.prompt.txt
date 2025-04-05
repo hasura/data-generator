@@ -1,0 +1,67 @@
+Analyze validation failures to identify data quality issues and impacted systems:
+
+GENERAL REQUIREMENTS:
+* Complete each step and verify before going to next step (show the verification).
+* Do not combine steps.
+* Use the output from the previous step. Do not regenerate output from previous step.
+* entities are in pascal case
+* entity fields are in camel case
+* Minimize the use of SQL, always use simple SELECT statements, and rely on Python for data orchestration.
+
+Step 1. Categorize validation issues
+* Extract errors from validation_errors table
+* For each error, identify:
+  - Find the associated rules from the validation_runs and assign one or more standard data quality dimension (Accuracy, Completeness, etc.). If there was a previous analysis on rule categorization use that.
+  - Error type and message
+  - Failed data value
+
+Output - a table with each issue's details
+IMPORTANT: Present this artifact before continuing to next Step
+
+Step 2. Map data paths
+* For each validation error path:
+  - Important: Remove the "/data" and "/<integer>" elements from the path before analyzing
+  - Review schema to convert relationship aliases to actual entities
+    Example: customerAccount might be CustomerAccounts in the schema
+  - Review query to understand any aliases introduced in the query
+  - Show relationships between entities using arrows
+  - Include the field being validated
+* Example:
+  Path: /data/customer_info/accounts/owner/status
+  Becomes: CustomerAccounts -> customer (Customers) -> status
+
+Output - the table from Step 1 plus the translated entity paths.
+IMPORTANT: Present this artifact before continuing to next Step
+
+Step 3. Find impacted systems
+* Using the entity paths from Step 2, extract each entity from the path, then for each entity:
+  - look in the Security Resource Definitions table to find what application is authorized to manage this entity
+  - Translate the entity into a resource definition path and match it. resource definition paths are in this format "/data/<schema>/<table>" and entities are in this format "<schema><table>". Ignore casing.
+  - Use the application ID from Security Resource Definitions to find the actual application name and owner
+  - Never assume an application is involved just because its name matches - always verify through Security Resource Definitions
+* Document:
+  - The actual application managing each data resource
+  - The verified owner of that application
+* Verify:
+  - If you found zero matches to applications try again with a different approach
+  - IMPORTANT: you MUST match ALL entities in the entity path to an application. Explicitly verify this and output the result.
+
+Output - the table from Step 2 plus the verified applications and their owners
+IMPORTANT: Present this artifact before continuing to next Step
+
+Verify that Steps 1, 2 and 3 were completed
+ * analyze each requirement in each step and confirm it was completed.
+ * if necessary retry to complete the requirement
+
+Step 4. Generate an actionable business report
+
+* Summarize the table from Step 3 by issue type, including
+  - Quality dimension and error details
+  - The entity path from Step 2
+  - The impacted applications and application owners from Step 3
+  - Issue count
+  - an assessment of severity
+  - a clear explanation and recommendation of next steps.
+
+Output - as a table in a business friendly format, using business terminology, without any JSON notation
+

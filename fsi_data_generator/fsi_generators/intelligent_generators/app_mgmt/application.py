@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
     """
     Generate a random app_mgmt application record with reasonable values.
+    Ensures application owners are active employees for non-archived applications,
+    and sets the department ID to match the owner's department.
 
     Args:
         _id_fields: Dictionary containing the required ID fields (app_mgmt_application_id)
@@ -194,6 +196,11 @@ def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -
     # Generate RTO (Recovery Time Objective) and RPO (Recovery Point Objective)
     rto, rpo = determine_rto_rpo(application_name, lifecycle_status.name)
 
+    # Find suitable application owner and get their department
+    application_owner_id, enterprise_department_id = _get_suitable_application_owner(conn, lifecycle_status)
+
+    candidate_created_by, candidate_modified_by = _get_created_and_modified_user_ids(conn, date_deployed, date_retired)
+
     # Create the application record
     application = {
         "application_name": application_name,
@@ -208,7 +215,11 @@ def generate_random_application(_id_fields: Dict[str, Any], dg: DataGenerator) -
         "source_code_repository": source_code_repository,
         "documentation_url": documentation_url,
         "rto": rto,
-        "rpo": rpo
+        "rpo": rpo,
+        "application_owner_id": application_owner_id,
+        "enterprise_department_id": enterprise_department_id,
+        "created_by_user_id": candidate_created_by if candidate_created_by else _id_fields.get('created_by_user_id'),
+        "modified_by_user_id": candidate_modified_by if candidate_modified_by else _id_fields.get('modified_by_user_id')
     }
 
     return application
@@ -333,3 +344,131 @@ def determine_rto_rpo(application_name: str, lifecycle_status: str) -> tuple:
         rpo = f"{rpo_days} days"
 
     return rto, rpo
+
+
+def _get_suitable_application_owner(conn, lifecycle_status) -> tuple:
+    """
+    Find a suitable application owner based on application lifecycle status.
+    For non-archived applications, owners must be active employees.
+
+    Args:
+        conn: Database connection for executing queries
+        lifecycle_status: Current lifecycle status of the application
+
+    Returns:
+        Tuple containing (application_owner_id, enterprise_department_id)
+    """
+    try:
+        cursor = conn.cursor()
+
+        if lifecycle_status not in [ApplicationLifecycleStatus.DECOMMISSIONED, ApplicationLifecycleStatus.ARCHIVED]:
+            # Find active employees only for non-archived applications
+            cursor.execute("""
+                SELECT a.enterprise_associate_id, a.enterprise_department_id 
+                FROM enterprise.associates a
+                WHERE a.status = 'ACTIVE' AND a.relationship_type = 'EMPLOYEE'
+                ORDER BY RANDOM()
+                LIMIT 1
+            """)
+        else:
+            # For archived or decommissioned applications, any associate is fine
+            cursor.execute("""
+                SELECT enterprise_associate_id, enterprise_department_id 
+                FROM enterprise.associates
+                ORDER BY RANDOM()
+                LIMIT 1
+            """)
+
+        owner_data = cursor.fetchone()
+        cursor.close()
+
+        if owner_data:
+            application_owner_id = owner_data.get('enterprise_associate_id')
+            enterprise_department_id = owner_data.get('enterprise_department_id')
+            return application_owner_id, enterprise_department_id
+        else:
+            # Fallback to random department if no suitable owner found
+            application_owner_id = None
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT enterprise_department_id FROM enterprise.departments
+                ORDER BY RANDOM() LIMIT 1
+            """)
+            dept_data = cursor.fetchone()
+            cursor.close()
+            enterprise_department_id = dept_data.get('enterprise_department_id') if dept_data else None
+            return application_owner_id, enterprise_department_id
+
+    except Exception as e:
+        logger.error(f"Error finding application owner: {e}")
+        return None, None
+
+
+def _get_created_and_modified_user_ids(conn, date_deployed, date_retired) -> tuple:
+    """
+    Find appropriate user IDs for application creation and modification based on dates.
+    - created_by_user_id must be an associate who was employed during date_deployed
+    - If DECOMMISSIONED, modified_by_user_id must be an associate who was employed on date_retired
+
+    Args:
+        conn: Database connection for executing queries
+        date_deployed: Date when the application was deployed
+        date_retired: Date when the application was retired (if applicable)
+
+    Returns:
+        Tuple containing (created_by_user_id, modified_by_user_id)
+    """
+    created_by_user_id = None
+    modified_by_user_id = None
+
+    try:
+        cursor = conn.cursor()
+
+        # Find an associate who was employed during date_deployed
+        if date_deployed:
+            cursor.execute("""
+                SELECT enterprise_associate_id 
+                FROM enterprise.associates
+                WHERE hire_date <= %s 
+                AND (release_date IS NULL OR release_date >= %s)
+                ORDER BY RANDOM()
+                LIMIT 1
+            """, (date_deployed, date_deployed))
+
+            result = cursor.fetchone()
+            if result:
+                created_by_user_id = result.get('enterprise_associate_id')
+        else:
+            # If no deployment date, just get a random associate
+            cursor.execute("""
+                SELECT enterprise_associate_id 
+                FROM enterprise.associates
+                ORDER BY RANDOM()
+                LIMIT 1
+            """)
+            result = cursor.fetchone()
+            if result:
+                created_by_user_id = result.get('enterprise_associate_id')
+
+        # For retired applications, find an associate who was employed on the retirement date
+        if date_retired:
+            cursor.execute("""
+                SELECT enterprise_associate_id 
+                FROM enterprise.associates
+                WHERE hire_date <= %s 
+                AND (release_date IS NULL OR release_date >= %s)
+                ORDER BY RANDOM()
+                LIMIT 1
+            """, (date_retired, date_retired))
+
+            result = cursor.fetchone()
+            if result:
+                modified_by_user_id = result.get('enterprise_associate_id')
+
+        cursor.close()
+
+    except Exception as e:
+        logger.error(f"Error finding application user IDs: {e}")
+        # Default to None if there's an error
+
+    return created_by_user_id, modified_by_user_id

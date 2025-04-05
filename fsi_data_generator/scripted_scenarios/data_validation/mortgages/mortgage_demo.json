@@ -1,0 +1,415 @@
+{
+  "jsonSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "GraphQL Mortgage Demo Response Schema (Using formatMinimum)",
+    "description": "Describes the expected JSON structure for the MortgageDemoDataNestedConfirmed query. Validates numeric fields as strings, enforces exactly one property per application, requires at least 5 loan records, includes a rule linking loan term to property age, and uses formatMinimum to ensure originationDate >= submissionDateTime. Note: Requires AJV with $data option and ajv-formats with keywords:true.",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "mortgageLoanInfo": {
+            "description": "Information about sample mortgage loans (at least 5 required), including nested application and property details.",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/MortgageLoan"
+            },
+            "minItems": 5
+          }
+        },
+        "required": [
+          "mortgageLoanInfo"
+        ]
+      }
+    },
+    "required": [
+      "data"
+    ],
+    "definitions": {
+      "MortgageLoan": {
+        "type": "object",
+        "properties": {
+          "mortgageServicesLoanId": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "Unique ID for the mortgage loan."
+          },
+          "loanAmount": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The principal amount of the loan (validated as string)."
+          },
+          "interestRate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The interest rate for the loan (validated as string)."
+          },
+          "loanTermMonths": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "The duration of the loan in months."
+          },
+          "originationDate": {
+            "description": "The date the loan originated. Must be on or after the application submission date.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "formatMinimum": {
+              "$data": "1/mortgageServicesApplication/submissionDateTime"
+            }
+          },
+          "maturityDate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "The date the loan matures."
+          },
+          "mortgageServicesApplication": {
+            "$ref": "#/definitions/MortgageApplication"
+          }
+        },
+        "required": [
+          "mortgageServicesLoanId",
+          "mortgageServicesApplication",
+          "originationDate"
+        ],
+        "allOf": [
+          {
+            "description": "Validation Rule: If loan term is > 20 years (240 months), property must be built 1950 or later.",
+            "if": {
+              "properties": {
+                "loanTermMonths": {
+                  "type": "integer",
+                  "minimum": 241
+                }
+              },
+              "required": [
+                "loanTermMonths"
+              ]
+            },
+            "then": {
+              "properties": {
+                "mortgageServicesApplication": {
+                  "properties": {
+                    "mortgageServicesProperties": {
+                      "items": {
+                        "properties": {
+                          "yearBuilt": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "minimum": 1950
+                          }
+                        },
+                        "required": [
+                          "yearBuilt"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "mortgageServicesApplication"
+              ]
+            }
+          }
+        ]
+      },
+      "MortgageApplication": {
+        "type": "object",
+        "description": "Represents the mortgage application details. Validation Rule (requires custom implementation): The associated property's 'yearBuilt' must be less than the year of this application's 'submissionDateTime'.",
+        "properties": {
+          "mortgageServicesApplicationId": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "Unique ID for the mortgage application."
+          },
+          "applicationType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Type of mortgage application (e.g., Purchase, Refinance)."
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Current status of the application."
+          },
+          "submissionDateTime": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the application was submitted."
+          },
+          "mortgageServicesProperties": {
+            "description": "Details of the property associated with the application (exactly one required).",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/MortgageProperty"
+            },
+            "minItems": 1,
+            "maxItems": 1
+          }
+        },
+        "required": [
+          "mortgageServicesApplicationId",
+          "mortgageServicesProperties",
+          "submissionDateTime"
+        ]
+      },
+      "MortgageProperty": {
+        "type": "object",
+        "properties": {
+          "mortgageServicesPropertyId": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "Unique ID for the property."
+          },
+          "propertyType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Type of property (e.g., Single Family, Condo)."
+          },
+          "occupancyType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "How the property is occupied (e.g., Primary Residence, Investment)."
+          },
+          "yearBuilt": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "The year the property was built."
+          },
+          "squareFeet": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "The square footage of the property."
+          },
+          "bedrooms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Number of bedrooms."
+          },
+          "bathrooms": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Number of bathrooms (validated as string)."
+          },
+          "address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The full address of the property."
+          }
+        },
+        "required": [
+          "mortgageServicesPropertyId",
+          "yearBuilt",
+          "squareFeet",
+          "bathrooms"
+        ]
+      }
+    }
+  },
+  "$data": true,
+  "verbose": true,
+  "allErrors": true,
+  "strict": false,
+  "user": "admin",
+  "role": "admin",
+  "query": "query mortgage_demo {\n\n  # --- Mortgage Loan Example ---\n  mortgageLoanInfo: mortgageServicesLoans {\n    # Loan Details\n    mortgageServicesLoanId\n    loanAmount\n    interestRate\n    loanTermMonths\n    originationDate\n    maturityDate\n\n    # Nested Application Details\n    mortgageServicesApplication {\n      mortgageServicesApplicationId\n      applicationType # Should not be REFINANCE due to filter\n      status\n      submissionDateTime\n\n      # Nested Property Details\n      mortgageServicesProperties {\n        mortgageServicesPropertyId\n        propertyType\n        occupancyType\n        yearBuilt\n        squareFeet\n        bedrooms\n        bathrooms\n        address\n      }\n    }\n  }\n}",
+  "operationName": "mortgage_demo",
+  "variables": "null",
+  "errors": [
+    {
+      "instancePath": "/data/mortgageLoanInfo/0/mortgageServicesApplication/mortgageServicesProperties",
+      "schemaPath": "#/properties/mortgageServicesProperties/minItems",
+      "keyword": "minItems",
+      "params": {
+        "limit": 1
+      },
+      "message": "must NOT have fewer than 1 items",
+      "schema": 1,
+      "parentSchema": {
+        "description": "Details of the property associated with the application (exactly one required).",
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MortgageProperty"
+        },
+        "minItems": 1,
+        "maxItems": 1
+      },
+      "data": []
+    },
+    {
+      "instancePath": "/data/mortgageLoanInfo/1/originationDate",
+      "schemaPath": "#/properties/originationDate/formatMinimum",
+      "keyword": "formatMinimum",
+      "params": {
+        "comparison": ">=",
+        "limit": "2010-07-14T00:00:00+00:00"
+      },
+      "message": "should be >= 2010-07-14T00:00:00+00:00",
+      "schema": {
+        "$data": "1/mortgageServicesApplication/submissionDateTime"
+      },
+      "parentSchema": {
+        "description": "The date the loan originated. Must be on or after the application submission date.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date",
+        "formatMinimum": {
+          "$data": "1/mortgageServicesApplication/submissionDateTime"
+        }
+      },
+      "data": "2005-06-05"
+    },
+    {
+      "instancePath": "/data/mortgageLoanInfo/1/mortgageServicesApplication/mortgageServicesProperties",
+      "schemaPath": "#/properties/mortgageServicesProperties/minItems",
+      "keyword": "minItems",
+      "params": {
+        "limit": 1
+      },
+      "message": "must NOT have fewer than 1 items",
+      "schema": 1,
+      "parentSchema": {
+        "description": "Details of the property associated with the application (exactly one required).",
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MortgageProperty"
+        },
+        "minItems": 1,
+        "maxItems": 1
+      },
+      "data": []
+    },
+    {
+      "instancePath": "/data/mortgageLoanInfo/3/originationDate",
+      "schemaPath": "#/properties/originationDate/formatMinimum",
+      "keyword": "formatMinimum",
+      "params": {
+        "comparison": ">=",
+        "limit": "2012-12-19T00:00:00+00:00"
+      },
+      "message": "should be >= 2012-12-19T00:00:00+00:00",
+      "schema": {
+        "$data": "1/mortgageServicesApplication/submissionDateTime"
+      },
+      "parentSchema": {
+        "description": "The date the loan originated. Must be on or after the application submission date.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date",
+        "formatMinimum": {
+          "$data": "1/mortgageServicesApplication/submissionDateTime"
+        }
+      },
+      "data": "2008-01-21"
+    },
+    {
+      "instancePath": "/data/mortgageLoanInfo/10/originationDate",
+      "schemaPath": "#/properties/originationDate/formatMinimum",
+      "keyword": "formatMinimum",
+      "params": {
+        "comparison": ">=",
+        "limit": "2024-03-20T13:10:00+00:00"
+      },
+      "message": "should be >= 2024-03-20T13:10:00+00:00",
+      "schema": {
+        "$data": "1/mortgageServicesApplication/submissionDateTime"
+      },
+      "parentSchema": {
+        "description": "The date the loan originated. Must be on or after the application submission date.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date",
+        "formatMinimum": {
+          "$data": "1/mortgageServicesApplication/submissionDateTime"
+        }
+      },
+      "data": "2024-02-15"
+    },
+    {
+      "instancePath": "/data/mortgageLoanInfo/10/mortgageServicesApplication/mortgageServicesProperties",
+      "schemaPath": "#/properties/mortgageServicesProperties/minItems",
+      "keyword": "minItems",
+      "params": {
+        "limit": 1
+      },
+      "message": "must NOT have fewer than 1 items",
+      "schema": 1,
+      "parentSchema": {
+        "description": "Details of the property associated with the application (exactly one required).",
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MortgageProperty"
+        },
+        "minItems": 1,
+        "maxItems": 1
+      },
+      "data": []
+    },
+    {
+      "instancePath": "/data/mortgageLoanInfo/11/mortgageServicesApplication/mortgageServicesProperties/0/yearBuilt",
+      "schemaPath": "#/allOf/0/then/properties/mortgageServicesApplication/properties/mortgageServicesProperties/items/properties/yearBuilt/minimum",
+      "keyword": "minimum",
+      "params": {
+        "comparison": ">=",
+        "limit": 1950
+      },
+      "message": "must be >= 1950",
+      "schema": 1950,
+      "parentSchema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 1950
+      },
+      "data": 1940
+    }
+  ]
+}

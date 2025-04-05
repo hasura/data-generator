@@ -1,5 +1,5 @@
 from .enums import OccupancyType, PropertyType
-from data_generator import DataGenerator
+from data_generator import DataGenerator, SkipRowGenerationError
 from datetime import timedelta
 from faker import Faker
 from typing import Any, Dict
@@ -12,6 +12,33 @@ import sys
 
 # Set up logging
 logger = logging.getLogger(__name__)
+
+# Global set to track application IDs that have already been processed
+# This will persist across multiple calls to generate_random_property
+PROCESSED_APPLICATION_IDS = set()
+
+
+def validate_property_association(application_id):
+    """
+    Validates if a property is already associated with the given mortgage application
+    using the global set of processed application IDs.
+
+    Args:
+        application_id: ID of the mortgage application to check
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if application ID not already processed, False otherwise
+            - error_message (str): Error message if validation fails, empty string otherwise
+    """
+    if not application_id:
+        return False, "Mortgage application ID is required for validation"
+
+    # Check if this application ID has already been processed
+    if application_id in PROCESSED_APPLICATION_IDS:
+        return False, f"Property already exists for application ID: {application_id}"
+
+    return True, ""
 
 
 def generate_random_property(id_fields: Dict[str, Any], dg: DataGenerator) -> Dict[str, Any]:
@@ -31,6 +58,12 @@ def generate_random_property(id_fields: Dict[str, Any], dg: DataGenerator) -> Di
     # Get the loan application from the application ID
     conn = dg.conn
     application_id = id_fields.get("mortgage_services_application_id")
+
+    # Validate that no property has been generated for this application
+    is_valid, error_message = validate_property_association(application_id)
+    if not is_valid:
+        raise SkipRowGenerationError
+
     lot_options = None
     lot_weights = None
 
@@ -262,6 +295,8 @@ def generate_random_property(id_fields: Dict[str, Any], dg: DataGenerator) -> Di
         hoa_dues = (hoa_base // 10) * 10  # Round to nearest $10
     else:
         hoa_dues = 0
+
+    PROCESSED_APPLICATION_IDS.add(application_id)
 
     # Create the property dictionary with enum values - NO IDs included
     property_record = {
