@@ -14,3 +14,6 @@ drop schema if exists security cascade;
 
 drop schema if exists app_mgmt cascade;
 
+drop schema if exists data_quality cascade;
+
+
