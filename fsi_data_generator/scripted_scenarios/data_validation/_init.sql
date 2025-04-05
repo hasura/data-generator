@@ -1,0 +1,107 @@
+create schema if not exists data_quality;
+
+drop table if exists data_quality.validation_error;
+drop table if exists data_quality.validation_run;
+
+create table data_quality.validation_run
+(
+    validation_run_id            serial
+        constraint "PK_2a1e12ee6cf299ac99d9dca9b5b"
+            primary key,
+    run_timestamp                timestamp with time zone default now() not null,
+    source_identifier            varchar(255),
+    run_user                     varchar(100),
+    run_role                     varchar(100),
+    operation_name               varchar(255),
+    variables                    text,
+    validation_config_data       boolean,
+    validation_config_verbose    boolean,
+    validation_config_all_errors boolean,
+    validation_config_strict     boolean,
+    query                        text                                   not null,
+    validation_schema            text                                   not null,
+    total_errors                 integer
+);
+
+comment on table data_quality.validation_run is 'Represents a single execution instance of a data quality validation run, including metadata and links to errors found.';
+
+comment on column data_quality.validation_run.validation_run_id is 'Unique identifier for the validation run.';
+
+comment on column data_quality.validation_run.run_timestamp is 'Timestamp indicating when the validation run was executed or recorded.';
+
+comment on column data_quality.validation_run.source_identifier is 'Optional identifier for the source system, file, or event that triggered this validation run.';
+
+comment on column data_quality.validation_run.run_user is 'Identifier of the user who initiated or is associated with this validation run.';
+
+comment on column data_quality.validation_run.run_role is 'Role associated with the user who initiated this validation run.';
+
+comment on column data_quality.validation_run.operation_name is 'Name of the specific operation being validated, if applicable.';
+
+comment on column data_quality.validation_run.variables is 'Variables passed to the query, stored as a JSON string.';
+
+comment on column data_quality.validation_run.validation_config_data is 'Validation configuration flag: Indicates if the ''$data'' option (ajv) was enabled.';
+
+comment on column data_quality.validation_run.validation_config_verbose is 'Validation configuration flag: Indicates if the ''verbose'' option (ajv) was enabled.';
+
+comment on column data_quality.validation_run.validation_config_all_errors is 'Validation configuration flag: Indicates if the ''allErrors'' option (ajv) was enabled.';
+
+comment on column data_quality.validation_run.validation_config_strict is 'Validation configuration flag: Indicates if the ''strict'' option (ajv) was enabled.';
+
+comment on column data_quality.validation_run.query is 'The query string that was executed and validated.';
+
+comment on column data_quality.validation_run.validation_schema is 'The JSON schema used to validate the query results, stored as a JSON string.';
+
+comment on column data_quality.validation_run.total_errors is 'A summary count of the total number of validation errors found during this run.';
+
+alter table data_quality.validation_run
+    owner to postgres;
+
+create table if not exists data_quality.validation_error
+(
+    validation_error_id        serial
+        constraint "PK_5415dd3267a2f610c7e0920f10e"
+            primary key,
+    validation_run_id          integer      not null
+        constraint "FK_bc051ff644730731677602d5a5d"
+            references data_quality.validation_run
+            on delete cascade,
+    instance_path              text         not null,
+    schema_path                text         not null,
+    error_keyword              varchar(100) not null,
+    error_message              text         not null,
+    failed_data                text,
+    error_params               text,
+    error_schema_detail        text,
+    error_parent_schema_detail text
+);
+
+comment on table data_quality.validation_error is 'Stores details for a single data quality validation error identified during a validation run.';
+
+comment on column data_quality.validation_error.validation_error_id is 'Unique identifier for the validation error record.';
+
+comment on column data_quality.validation_error.validation_run_id is 'Foreign key linking to the specific validation run (validation_run table) where this error occurred.';
+
+comment on column data_quality.validation_error.instance_path is 'JSON path within the validated data pointing to the element that failed validation.';
+
+comment on column data_quality.validation_error.schema_path is 'JSON path within the validation schema pointing to the rule/keyword that failed.';
+
+comment on column data_quality.validation_error.error_keyword is 'The specific JSON schema keyword (e.g., type, required, pattern) that triggered the validation failure.';
+
+comment on column data_quality.validation_error.error_message is 'The human-readable error message generated by the validator.';
+
+comment on column data_quality.validation_error.failed_data is 'String representation of the actual data value that failed the validation rule.';
+
+comment on column data_quality.validation_error.error_params is 'Parameters associated with the failed validation keyword (e.g., allowed values for enum), stored as a JSON string.';
+
+comment on column data_quality.validation_error.error_schema_detail is 'The specific part of the JSON schema definition that failed, stored as a JSON string.';
+
+comment on column data_quality.validation_error.error_parent_schema_detail is 'The parent schema object containing the failed rule, stored as a JSON string.';
+
+alter table data_quality.validation_error
+    owner to postgres;
+
+create index if not exists "IDX_bc051ff644730731677602d5a5"
+    on data_quality.validation_error (validation_run_id);
+
+
+
