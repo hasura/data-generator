@@ -1,7 +1,7 @@
 from ..consumer_banking.enums import TransactionCategory, TransactionType
 from ..enterprise import (generate_financial_institution_identifier,
                           generate_financial_institution_name)
-from ..enterprise.enums import AccountIdentifierScheme
+from ..enterprise.enums import IdentifierScheme
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
 
@@ -99,7 +99,7 @@ def generate_random_transaction_debtor_account(id_fields: Dict[str, Any], dg: Da
         # Transaction type influences the type of account identifiers used
         if transaction_type_enum == TransactionType.INTERNAL_TRANSFER:
             # For internal transfers, use account number format
-            scheme_name = AccountIdentifierScheme.ACCOUNT_NUMBER
+            scheme_name = IdentifierScheme.ACCOUNT_NUMBER
             identification = ''.join(random.choices('0123456789', k=random.randint(8, 12)))
 
         elif transaction_type_enum == TransactionType.EXTERNAL_TRANSFER:

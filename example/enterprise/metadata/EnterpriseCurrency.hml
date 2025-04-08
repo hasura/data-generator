@@ -1,0 +1,125 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: EnterpriseCurrency
+  fields:
+    - name: code
+      type: EnterpriseCurrencyCode!
+    - name: name
+      type: Varchar
+  graphql:
+    typeName: Enterprise_EnterpriseCurrency
+    inputTypeName: Enterprise_EnterpriseCurrencyInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_currency
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: EnterpriseCurrency
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - code
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseCurrencyBoolExp
+  operand:
+    object:
+      type: EnterpriseCurrency
+      comparableFields:
+        - fieldName: code
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
+        - fieldName: name
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_EnterpriseCurrencyBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseCurrencyAggExp
+  operand:
+    object:
+      aggregatedType: EnterpriseCurrency
+      aggregatableFields:
+        - fieldName: code
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
+        - fieldName: name
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_EnterpriseCurrencyAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseCurrencyOrderByExp
+  operand:
+    object:
+      orderedType: EnterpriseCurrency
+      orderableFields:
+        - fieldName: code
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
+        - fieldName: name
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Enterprise_EnterpriseCurrencyOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: EnterpriseCurrency
+  objectType: EnterpriseCurrency
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_currency
+  filterExpressionType: EnterpriseCurrencyBoolExp
+  aggregateExpression: EnterpriseCurrencyAggExp
+  orderByExpression: EnterpriseCurrencyOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: enterpriseCurrency
+      subscription:
+        rootField: enterpriseCurrency
+    selectUniques:
+      - queryRootField: enterpriseCurrencyByCode
+        uniqueIdentifier:
+          - code
+        subscription:
+          rootField: enterpriseCurrencyByCode
+    filterInputTypeName: Enterprise_EnterpriseCurrencyFilterInput
+    aggregate:
+      queryRootField: enterpriseCurrencyAggregate
+      subscription:
+        rootField: enterpriseCurrencyAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: EnterpriseCurrency
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

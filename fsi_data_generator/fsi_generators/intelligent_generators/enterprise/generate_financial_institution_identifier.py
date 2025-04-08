@@ -1,5 +1,4 @@
-from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import \
-    AccountIdentifierScheme
+from fsi_data_generator.fsi_generators.intelligent_generators.enterprise.enums import IdentifierScheme
 
 
 def generate_financial_institution_identifier(region=None):
@@ -28,46 +27,46 @@ def generate_financial_institution_identifier(region=None):
     if region == "EU":
         # EU primarily uses BIC
         scheme_options = [
-            AccountIdentifierScheme.BIC,
-            AccountIdentifierScheme.LEI,
-            AccountIdentifierScheme.OTHER
+            IdentifierScheme.BIC,
+            IdentifierScheme.LEI,
+            IdentifierScheme.OTHER
         ]
         weights = [80, 15, 5]
     elif region == "UK":
         # UK uses BIC or Sort Code
         scheme_options = [
-            AccountIdentifierScheme.BIC,
-            AccountIdentifierScheme.SORT_CODE,
-            AccountIdentifierScheme.OTHER
+            IdentifierScheme.BIC,
+            IdentifierScheme.SORT_CODE,
+            IdentifierScheme.OTHER
         ]
         weights = [50, 45, 5]
     elif region == "US":
         # US primarily uses Routing Number
         scheme_options = [
-            AccountIdentifierScheme.ROUTING_NUMBER,
-            AccountIdentifierScheme.BIC,
-            AccountIdentifierScheme.OTHER
+            IdentifierScheme.ROUTING_NUMBER,
+            IdentifierScheme.BIC,
+            IdentifierScheme.OTHER
         ]
         weights = [70, 25, 5]
     elif region == "ASIA":
         # Asia uses various identifier schemes
         scheme_options = [
-            AccountIdentifierScheme.BIC,
-            AccountIdentifierScheme.OTHER
+            IdentifierScheme.BIC,
+            IdentifierScheme.OTHER
         ]
         weights = [85, 15]
     else:
         # Other regions
         scheme_options = [
-            AccountIdentifierScheme.BIC,
-            AccountIdentifierScheme.OTHER
+            IdentifierScheme.BIC,
+            IdentifierScheme.OTHER
         ]
         weights = [90, 10]
 
     scheme_name = random.choices(scheme_options, weights=weights, k=1)[0]
 
     # Generate plausible identification based on the scheme
-    if scheme_name == AccountIdentifierScheme.BIC:
+    if scheme_name == IdentifierScheme.BIC:
         # BIC format: 8 or 11 characters - bank code (4), country code (2), location code (2), branch code (3, optional)
         bank_code = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=4))
         country_code = random.choice(['US', 'GB', 'DE', 'FR', 'JP', 'CN', 'CA', 'AU', 'CH', 'IT'])
@@ -80,15 +79,15 @@ def generate_financial_institution_identifier(region=None):
         else:
             identification = f"{bank_code}{country_code}{location_code}"
 
-    elif scheme_name == AccountIdentifierScheme.SORT_CODE:
+    elif scheme_name == IdentifierScheme.SORT_CODE:
         # UK Sort Code format: 6 digits, often shown as 3 pairs (e.g., 12-34-56)
         identification = ''.join(random.choices('0123456789', k=6))
 
-    elif scheme_name == AccountIdentifierScheme.ROUTING_NUMBER:
+    elif scheme_name == IdentifierScheme.ROUTING_NUMBER:
         # US ABA Routing Number: 9 digits
         identification = ''.join(random.choices('0123456789', k=9))
 
-    elif scheme_name == AccountIdentifierScheme.LEI:
+    elif scheme_name == IdentifierScheme.LEI:
         # LEI format: 20 characters - prefix (4), zeros (2), entity-specific (12), check digits (2)
         prefix = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=4))
         entity_part = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=12))
@@ -100,7 +99,7 @@ def generate_financial_institution_identifier(region=None):
 
     # Generate LEI (optional - 40% chance if not already using LEI as main identifier)
     lei = None
-    if scheme_name != AccountIdentifierScheme.LEI and random.random() < 0.4:
+    if scheme_name != IdentifierScheme.LEI and random.random() < 0.4:
         prefix = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=4))
         entity_part = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=12))
         check_digits = ''.join(random.choices('0123456789', k=2))
@@ -164,24 +163,24 @@ def generate_financial_institution_identifier_for_type(entity_type):
     Returns:
         tuple: (scheme_name, identification, lei) as in the standard function
     """
-    from ..enterprise.enums import AccountIdentifierScheme
+    from ..enterprise.enums import IdentifierScheme
 
     import random
 
     if entity_type == "FINANCIAL_INSTITUTION":
         # Financial institutions typically use BIC, LEI, or other specialized codes
         scheme_options = [
-            AccountIdentifierScheme.BIC,
-            AccountIdentifierScheme.LEI,
-            AccountIdentifierScheme.SORT_CODE,
-            AccountIdentifierScheme.ROUTING_NUMBER
+            IdentifierScheme.BIC,
+            IdentifierScheme.LEI,
+            IdentifierScheme.SORT_CODE,
+            IdentifierScheme.ROUTING_NUMBER
         ]
         weights = [50, 20, 15, 15]  # BIC is most common for financial institutions
 
         scheme_name = random.choices(scheme_options, weights=weights, k=1)[0]
 
         # Rest of identifier generation handled by main function
-        if scheme_name == AccountIdentifierScheme.BIC:
+        if scheme_name == IdentifierScheme.BIC:
             # BIC format: 8 or 11 characters
             bank_code = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=4))
             country_code = random.choice(['US', 'GB', 'DE', 'FR', 'JP', 'CN', 'CA', 'AU', 'CH', 'IT'])
@@ -194,7 +193,7 @@ def generate_financial_institution_identifier_for_type(entity_type):
             else:
                 identification = f"{bank_code}{country_code}{location_code}"
 
-        elif scheme_name == AccountIdentifierScheme.LEI:
+        elif scheme_name == IdentifierScheme.LEI:
             # LEI format: 20 characters - prefix (4), zeros (2), entity-specific (12), check digits (2)
             prefix = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=4))
             entity_part = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=12))

@@ -1212,6 +1212,23 @@
         "schemaName": "consumer_banking",
         "tableName": "accounts",
         "columns": {
+          "account_category": {
+            "name": "account_category",
+            "type": {
+              "scalarType": "enterprise_account_category"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "account_number": {
+            "name": "account_number",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Customer facing account number"
+          },
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
@@ -1219,7 +1236,7 @@
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": "Unique identifier for each consumer banking account"
+            "description": "Unique ID for the consumer banking account"
           },
           "consumer_banking_product_id": {
             "name": "consumer_banking_product_id",
@@ -1229,21 +1246,53 @@
             "nullable": "nullable",
             "description": "References the enterprise account this consumer account belongs to. Required for all consumer accounts"
           },
+          "currency_code": {
+            "name": "currency_code",
+            "type": {
+              "scalarType": "enterprise_currency_code"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "enterprise_account_id": {
             "name": "enterprise_account_id",
             "type": {
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Link to the enterprise-level account bucket"
+          },
+          "maturity_date": {
+            "name": "maturity_date",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": "Used for products such as certificates of deposits that have a maturity date"
+          },
+          "nickname": {
+            "name": "nickname",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "A short name added by customer."
           },
           "opened_date": {
             "name": "opened_date",
             "type": {
               "scalarType": "timestamptz"
             },
-            "nullable": "nullable",
-            "description": "When the account was opened"
+            "nullable": "nonNullable",
+            "description": "Date the account was opened"
+          },
+          "servicer_identifier_id": {
+            "name": "servicer_identifier_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Required reference to this institutions BIC scheme"
           },
           "status": {
             "name": "status",
@@ -1251,7 +1300,7 @@
               "scalarType": "consumer_banking_account_status"
             },
             "nullable": "nonNullable",
-            "description": "Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed"
+            "description": "Operational status of the account"
           },
           "status_update_date_time": {
             "name": "status_update_date_time",
@@ -1259,7 +1308,16 @@
               "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
-            "description": "When the status was last updated. Updates to closed status do not automatically close the enterprise account."
+            "description": "Last time the status was updated"
+          },
+          "switch_status": {
+            "name": "switch_status",
+            "type": {
+              "scalarType": "enterprise_switch_status"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "Specific to the UK account account switching service."
           }
         },
         "uniquenessConstraints": {
@@ -1275,15 +1333,29 @@
               "consumer_banking_product_id": "consumer_banking_product_id"
             }
           },
+          "accounts_currency_code_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency_code": "code"
+            }
+          },
           "accounts_enterprise_account_id_fkey": {
             "foreignSchema": "enterprise",
             "foreignTable": "accounts",
             "columnMapping": {
               "enterprise_account_id": "enterprise_account_id"
             }
+          },
+          "accounts_servicer_identifier_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "identifiers",
+            "columnMapping": {
+              "servicer_identifier_id": "enterprise_identifier_id"
+            }
           }
         },
-        "description": "Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be 'active' if parent enterprise account is closed."
+        "description": "Deposit account linked to enterprise account; always serviced by a this institution"
       },
       "consumer_banking_balances": {
         "schemaName": "consumer_banking",
@@ -1366,6 +1438,13 @@
             "foreignTable": "accounts",
             "columnMapping": {
               "consumer_banking_account_id": "consumer_banking_account_id"
+            }
+          },
+          "balances_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
             }
           }
         },
@@ -2058,11 +2137,25 @@
           ]
         },
         "foreignRelations": {
+          "offers_amount_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "amount_currency": "code"
+            }
+          },
           "offers_consumer_banking_account_id_fkey": {
             "foreignSchema": "consumer_banking",
             "foreignTable": "accounts",
             "columnMapping": {
               "consumer_banking_account_id": "consumer_banking_account_id"
+            }
+          },
+          "offers_fee_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "fee_currency": "code"
             }
           }
         },
@@ -2608,6 +2701,13 @@
             "columnMapping": {
               "consumer_banking_account_id": "consumer_banking_account_id"
             }
+          },
+          "scheduled_payments_instructed_amount_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "instructed_amount_currency": "code"
+            }
           }
         },
         "description": "Stores information about one-time and recurring scheduled payments"
@@ -2981,6 +3081,34 @@
             "columnMapping": {
               "consumer_banking_account_id": "consumer_banking_account_id"
             }
+          },
+          "standing_orders_final_payment_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "final_payment_currency": "code"
+            }
+          },
+          "standing_orders_first_payment_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "first_payment_currency": "code"
+            }
+          },
+          "standing_orders_last_payment_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "last_payment_currency": "code"
+            }
+          },
+          "standing_orders_next_payment_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "next_payment_currency": "code"
+            }
           }
         },
         "description": "Stores information about recurring payment instructions (standing orders)"
@@ -3058,6 +3186,13 @@
             "foreignTable": "statements",
             "columnMapping": {
               "consumer_banking_statement_id": "consumer_banking_statement_id"
+            }
+          },
+          "statement_amounts_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
             }
           }
         },
@@ -3323,6 +3458,13 @@
             "columnMapping": {
               "consumer_banking_statement_id": "consumer_banking_statement_id"
             }
+          },
+          "statement_fees_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
+            }
           }
         },
         "description": "Stores information about fees charged during a statement period"
@@ -3424,6 +3566,13 @@
             "foreignTable": "statements",
             "columnMapping": {
               "consumer_banking_statement_id": "consumer_banking_statement_id"
+            }
+          },
+          "statement_interests_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
             }
           }
         },
@@ -3823,6 +3972,13 @@
             "columnMapping": {
               "consumer_banking_transaction_id": "consumer_banking_transaction_id"
             }
+          },
+          "transaction_balances_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
+            }
           }
         },
         "description": "Stores account balance information at the time of each transaction"
@@ -4180,6 +4336,34 @@
             "foreignTable": "transactions",
             "columnMapping": {
               "consumer_banking_transaction_id": "consumer_banking_transaction_id"
+            }
+          },
+          "transaction_currency_exchanges_instructed_amount_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "instructed_amount_currency": "code"
+            }
+          },
+          "transaction_currency_exchanges_source_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "source_currency": "code"
+            }
+          },
+          "transaction_currency_exchanges_target_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "target_currency": "code"
+            }
+          },
+          "transaction_currency_exchanges_unit_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "unit_currency": "code"
             }
           }
         },
@@ -4713,6 +4897,13 @@
           ]
         },
         "foreignRelations": {
+          "transactions_charge_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "charge_currency": "code"
+            }
+          },
           "transactions_consumer_banking_account_id_fkey": {
             "foreignSchema": "consumer_banking",
             "foreignTable": "accounts",
@@ -4725,6 +4916,13 @@
             "foreignTable": "balances",
             "columnMapping": {
               "consumer_banking_balance_id": "consumer_banking_balance_id"
+            }
+          },
+          "transactions_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
             }
           }
         },
@@ -6093,7 +6291,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -6374,7 +6572,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           },
           "compliance_exceptions_remediated_by_id_fkey": {
@@ -6960,7 +7158,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "consumer_lending_loan_account_id": "loan_account_id"
+              "consumer_lending_loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -7521,6 +7719,15 @@
             "nullable": "nonNullable",
             "description": "Reference to loan application"
           },
+          "consumer_lending_loan_account_id": {
+            "name": "consumer_lending_loan_account_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Unique identifier for loan account"
+          },
           "consumer_lending_loan_product_id": {
             "name": "consumer_lending_loan_product_id",
             "type": {
@@ -7614,15 +7821,6 @@
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
             "description": "Count of 90+ day late payments"
-          },
-          "loan_account_id": {
-            "name": "loan_account_id",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": "Unique identifier for loan account"
           },
           "maturity_date": {
             "name": "maturity_date",
@@ -7771,7 +7969,7 @@
             "account_number"
           ],
           "loan_accounts_pkey": [
-            "loan_account_id"
+            "consumer_lending_loan_account_id"
           ]
         },
         "foreignRelations": {
@@ -8099,7 +8297,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           },
           "loan_collateral_property_address_id_fkey": {
@@ -8254,7 +8452,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -8379,7 +8577,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -8489,7 +8687,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "consumer_lending_loan_account_id": "loan_account_id"
+              "consumer_lending_loan_account_id": "consumer_lending_loan_account_id"
             }
           },
           "loan_fees_consumer_lending_payment_id_fkey": {
@@ -8636,7 +8834,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "consumer_lending_loan_account_id": "loan_account_id"
+              "consumer_lending_loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -8801,7 +8999,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -8953,7 +9151,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "consumer_lending_loan_account_id": "loan_account_id"
+              "consumer_lending_loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -9288,7 +9486,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -9662,7 +9860,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "consumer_lending_loan_account_id": "loan_account_id"
+              "consumer_lending_loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -10133,7 +10331,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -14354,87 +14552,245 @@
             "columnMapping": {
               "credit_cards_card_id": "credit_cards_card_id"
             }
+          },
+          "transactions_original_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "original_currency": "code"
+            }
           }
         },
         "description": "Stores all transaction activity on card accounts"
       },
-      "enterprise_account_identifiers": {
-        "schemaName": "enterprise",
-        "tableName": "account_identifiers",
+      "data_quality_validation_error": {
+        "schemaName": "data_quality",
+        "tableName": "validation_error",
         "columns": {
-          "enterprise_account_id": {
-            "name": "enterprise_account_id",
+          "error_keyword": {
+            "name": "error_keyword",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": "References the main account"
+            "description": "The specific JSON schema keyword (e.g., type, required, pattern) that triggered the validation failure."
           },
-          "enterprise_account_identifier_id": {
-            "name": "enterprise_account_identifier_id",
+          "error_message": {
+            "name": "error_message",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "The human-readable error message generated by the validator."
+          },
+          "error_params": {
+            "name": "error_params",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Parameters associated with the failed validation keyword (e.g., allowed values for enum), stored as a JSON string."
+          },
+          "error_parent_schema_detail": {
+            "name": "error_parent_schema_detail",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "The parent schema object containing the failed rule, stored as a JSON string."
+          },
+          "error_schema_detail": {
+            "name": "error_schema_detail",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "The specific part of the JSON schema definition that failed, stored as a JSON string."
+          },
+          "failed_data": {
+            "name": "failed_data",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "String representation of the actual data value that failed the validation rule."
+          },
+          "instance_path": {
+            "name": "instance_path",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "JSON path within the validated data pointing to the element that failed validation."
+          },
+          "schema_path": {
+            "name": "schema_path",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "JSON path within the validation schema pointing to the rule/keyword that failed."
+          },
+          "validation_error_id": {
+            "name": "validation_error_id",
             "type": {
               "scalarType": "int4"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": "Auto-incrementing identifier for each account identifier entry"
+            "description": "Unique identifier for the validation error record."
           },
-          "identification": {
-            "name": "identification",
+          "validation_run_id": {
+            "name": "validation_run_id",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "int4"
             },
             "nullable": "nonNullable",
-            "description": "The actual identifier value"
-          },
-          "lei": {
-            "name": "lei",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Legal Entity Identifier (if applicable)"
-          },
-          "name": {
-            "name": "name",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Optional display name for this identifier"
-          },
-          "scheme_name": {
-            "name": "scheme_name",
-            "type": {
-              "scalarType": "enterprise_identifier_scheme"
-            },
-            "nullable": "nonNullable",
-            "description": "Naming scheme for the identifier"
-          },
-          "secondary_identification": {
-            "name": "secondary_identification",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nullable",
-            "description": "Additional identification value (if applicable)"
+            "description": "Foreign key linking to the specific validation run (validation_run table) where this error occurred."
           }
         },
         "uniquenessConstraints": {
-          "account_identifiers_pkey": [
-            "enterprise_account_identifier_id"
+          "PK_5415dd3267a2f610c7e0920f10e": [
+            "validation_error_id"
           ]
         },
         "foreignRelations": {
-          "account_identifiers_enterprise_account_id_fkey": {
-            "foreignSchema": "enterprise",
-            "foreignTable": "accounts",
+          "FK_bc051ff644730731677602d5a5d": {
+            "foreignSchema": "data_quality",
+            "foreignTable": "validation_run",
             "columnMapping": {
-              "enterprise_account_id": "enterprise_account_id"
+              "validation_run_id": "validation_run_id"
             }
           }
         },
-        "description": "Stores various identifiers associated with accounts, supports multiple identification schemes"
+        "description": "Stores details for a single data quality validation error identified during a validation run."
+      },
+      "data_quality_validation_run": {
+        "schemaName": "data_quality",
+        "tableName": "validation_run",
+        "columns": {
+          "operation_name": {
+            "name": "operation_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Name of the specific operation being validated, if applicable."
+          },
+          "query": {
+            "name": "query",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "The query string that was executed and validated."
+          },
+          "run_role": {
+            "name": "run_role",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Role associated with the user who initiated this validation run."
+          },
+          "run_timestamp": {
+            "name": "run_timestamp",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Timestamp indicating when the validation run was executed or recorded."
+          },
+          "run_user": {
+            "name": "run_user",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Identifier of the user who initiated or is associated with this validation run."
+          },
+          "source_identifier": {
+            "name": "source_identifier",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Optional identifier for the source system, file, or event that triggered this validation run."
+          },
+          "total_errors": {
+            "name": "total_errors",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "A summary count of the total number of validation errors found during this run."
+          },
+          "validation_config_all_errors": {
+            "name": "validation_config_all_errors",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Validation configuration flag: Indicates if the 'allErrors' option (ajv) was enabled."
+          },
+          "validation_config_data": {
+            "name": "validation_config_data",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Validation configuration flag: Indicates if the '$data' option (ajv) was enabled."
+          },
+          "validation_config_strict": {
+            "name": "validation_config_strict",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Validation configuration flag: Indicates if the 'strict' option (ajv) was enabled."
+          },
+          "validation_config_verbose": {
+            "name": "validation_config_verbose",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": "Validation configuration flag: Indicates if the 'verbose' option (ajv) was enabled."
+          },
+          "validation_run_id": {
+            "name": "validation_run_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Unique identifier for the validation run."
+          },
+          "validation_schema": {
+            "name": "validation_schema",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "The JSON schema used to validate the query results, stored as a JSON string."
+          },
+          "variables": {
+            "name": "variables",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Variables passed to the query, stored as a JSON string."
+          }
+        },
+        "uniquenessConstraints": {
+          "PK_2a1e12ee6cf299ac99d9dca9b5b": [
+            "validation_run_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Represents a single execution instance of a data quality validation run, including metadata and links to errors found."
       },
       "enterprise_account_ownership": {
         "schemaName": "enterprise",
@@ -14986,6 +15342,35 @@
         },
         "description": "Stores information about the physical buildings used by the enterprise, including branches and other facilities."
       },
+      "enterprise_currency": {
+        "schemaName": "enterprise",
+        "tableName": "currency",
+        "columns": {
+          "code": {
+            "name": "code",
+            "type": {
+              "scalarType": "enterprise_currency_code"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "currency_pkey": [
+            "code"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
       "enterprise_departments": {
         "schemaName": "enterprise",
         "tableName": "departments",
@@ -15034,6 +15419,76 @@
         },
         "foreignRelations": {},
         "description": "Stores information about the various departments within the enterprise."
+      },
+      "enterprise_identifiers": {
+        "schemaName": "enterprise",
+        "tableName": "identifiers",
+        "columns": {
+          "enterprise_identifier_id": {
+            "name": "enterprise_identifier_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Unique identifier for each identifier entry in the registry"
+          },
+          "identification": {
+            "name": "identification",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Actual identifier value such as a BIC code or national ID"
+          },
+          "lei": {
+            "name": "lei",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Optional Legal Entity Identifier if known"
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Optional display name for this identifier (e.g., institution name)"
+          },
+          "note": {
+            "name": "note",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Free-form notes or metadata about this identifier"
+          },
+          "scheme_name": {
+            "name": "scheme_name",
+            "type": {
+              "scalarType": "enterprise_identifier_scheme"
+            },
+            "nullable": "nonNullable",
+            "description": "Type of identifier (e.g., BIC, IBAN, SSN, LEI, etc.)"
+          },
+          "secondary_identification": {
+            "name": "secondary_identification",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Additional identifier component if applicable (e.g., sub-ID)"
+          }
+        },
+        "uniquenessConstraints": {
+          "identifiers_pkey": [
+            "enterprise_identifier_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": "Registry of identifiers applicable to accounts, individuals, or institutions — referenced by business-line accounts"
       },
       "enterprise_parties": {
         "schemaName": "enterprise",
@@ -18634,7 +19089,7 @@
             "foreignSchema": "consumer_lending",
             "foreignTable": "loan_accounts",
             "columnMapping": {
-              "loan_account_id": "loan_account_id"
+              "loan_account_id": "consumer_lending_loan_account_id"
             }
           }
         },
@@ -22580,6 +23035,13 @@
           ]
         },
         "foreignRelations": {
+          "accounts_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
+            }
+          },
           "accounts_enterprise_account_id_fkey": {
             "foreignSchema": "enterprise",
             "foreignTable": "accounts",
@@ -26667,6 +27129,13 @@
             "foreignTable": "associates",
             "columnMapping": {
               "created_by_id": "enterprise_associate_id"
+            }
+          },
+          "transactions_currency_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "currency",
+            "columnMapping": {
+              "currency": "code"
             }
           },
           "transactions_small_business_banking_account_id_fkey": {
@@ -35137,6 +35606,69 @@
           },
           "typeRepresentation": "date"
         },
+        "enterprise_account_category": {
+          "typeName": "account_category",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_account_category"
+            },
+            "min": {
+              "returnType": "enterprise_account_category"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_account_category",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_account_category",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_account_category",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_account_category",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_account_category",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_account_category",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_account_category",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PERSONAL",
+              "BUSINESS"
+            ]
+          }
+        },
         "enterprise_account_status": {
           "typeName": "account_status",
           "schemaName": "enterprise",
@@ -36353,6 +36885,69 @@
               "CONSULTANT",
               "INTERN",
               "TEMPORARY"
+            ]
+          }
+        },
+        "enterprise_switch_status": {
+          "typeName": "switch_status",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_switch_status"
+            },
+            "min": {
+              "returnType": "enterprise_switch_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_switch_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_switch_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_switch_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_switch_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_switch_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_switch_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_switch_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "NOT_SWITCHED",
+              "SWITCH_COMPLETED"
             ]
           }
         },

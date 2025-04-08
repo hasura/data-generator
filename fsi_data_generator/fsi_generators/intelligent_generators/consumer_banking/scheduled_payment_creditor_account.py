@@ -1,6 +1,6 @@
 from ..enterprise import (generate_financial_institution_identifier,
                           generate_financial_institution_name)
-from ..enterprise.enums import AccountIdentifierScheme
+from ..enterprise.enums import IdentifierScheme
 from data_generator import DataGenerator
 from typing import Any, Dict
 
@@ -72,7 +72,7 @@ def generate_random_scheduled_payment_creditor_account(id_fields: Dict[str, Any]
 
         elif payment_method == 'INTERNAL':
             # For internal transfers, use account number format
-            scheme_name = AccountIdentifierScheme.ACCOUNT_NUMBER
+            scheme_name = IdentifierScheme.ACCOUNT_NUMBER
             identification = ''.join(random.choices('0123456789', k=random.randint(8, 12)))
             lei = None
 

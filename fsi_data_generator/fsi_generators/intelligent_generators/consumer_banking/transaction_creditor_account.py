@@ -1,7 +1,7 @@
 from ..consumer_banking.enums import TransactionCategory, TransactionType
 from ..enterprise import (generate_financial_institution_identifier,
                           generate_financial_institution_name)
-from ..enterprise.enums import AccountIdentifierScheme
+from ..enterprise.enums import IdentifierScheme
 from data_generator import DataGenerator, SkipRowGenerationError
 from typing import Any, Dict
 
@@ -96,17 +96,17 @@ def generate_random_transaction_creditor_account(id_fields: Dict[str, Any], dg: 
         if transaction_type == TransactionType.BILL_PAYMENT.value:
             # Bill payments may use specialized references
             if random.random() < 0.6:
-                scheme_name = AccountIdentifierScheme.ACCOUNT_NUMBER
+                scheme_name = IdentifierScheme.ACCOUNT_NUMBER
                 identification = ''.join(random.choices('0123456789', k=random.randint(8, 12)))
             else:
                 # Some bill payments use proprietary formats
-                scheme_name = AccountIdentifierScheme.PROPRIETARY
+                scheme_name = IdentifierScheme.PROPRIETARY
                 identification = ''.join(
                     random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=random.randint(10, 16)))
 
         elif transaction_type == TransactionType.INTERNAL_TRANSFER.value:
             # For internal transfers, use account number format
-            scheme_name = AccountIdentifierScheme.ACCOUNT_NUMBER
+            scheme_name = IdentifierScheme.ACCOUNT_NUMBER
             identification = ''.join(random.choices('0123456789', k=random.randint(8, 12)))
 
         elif transaction_type == TransactionType.EXTERNAL_TRANSFER.value:
@@ -129,16 +129,16 @@ def generate_random_transaction_creditor_account(id_fields: Dict[str, Any], dg: 
             if region == "US":
                 # US typically uses ACH routing and account numbers
                 scheme_name = random.choice([
-                    AccountIdentifierScheme.ACCOUNT_NUMBER,
-                    AccountIdentifierScheme.ROUTING_NUMBER
+                    IdentifierScheme.ACCOUNT_NUMBER,
+                    IdentifierScheme.ROUTING_NUMBER
                 ])
-                if scheme_name == AccountIdentifierScheme.ACCOUNT_NUMBER:
+                if scheme_name == IdentifierScheme.ACCOUNT_NUMBER:
                     identification = ''.join(random.choices('0123456789', k=random.randint(8, 12)))
                 else:
                     identification = ''.join(random.choices('0123456789', k=9))  # Routing numbers are 9 digits
             elif region == "EU":
                 # EU primarily uses IBAN
-                scheme_name = AccountIdentifierScheme.IBAN
+                scheme_name = IdentifierScheme.IBAN
                 country_code = random.choice(['DE', 'FR', 'IT', 'ES', 'NL'])
                 check_digits = ''.join(random.choices('0123456789', k=2))
                 bank_code = ''.join(random.choices('0123456789', k=8))
@@ -146,25 +146,25 @@ def generate_random_transaction_creditor_account(id_fields: Dict[str, Any], dg: 
                 identification = f"{country_code}{check_digits}{bank_code}{account_number}"
             elif region == "UK":
                 # UK uses sort codes and account numbers
-                scheme_name = AccountIdentifierScheme.SORT_CODE
+                scheme_name = IdentifierScheme.SORT_CODE
                 sort_code = '-'.join([''.join(random.choices('0123456789', k=2)) for _ in range(3)])
                 account_number = ''.join(random.choices('0123456789', k=8))
                 identification = f"{sort_code} {account_number}"
             else:
                 # Generate appropriate financial identifiers based on other regions
                 scheme_name, identification, _ = generate_financial_institution_identifier(region)
-                scheme_name = AccountIdentifierScheme(scheme_name.value)
+                scheme_name = IdentifierScheme(scheme_name.value)
 
         elif transaction_type == TransactionType.MERCHANT_PAYMENT.value:
             # Merchant payments typically use straightforward account numbers
-            scheme_name = AccountIdentifierScheme.ACCOUNT_NUMBER
+            scheme_name = IdentifierScheme.ACCOUNT_NUMBER
             identification = ''.join(random.choices('0123456789', k=random.randint(8, 12)))
 
         else:
             # For other transaction types, use region-based generation similar to external transfers
             region = random.choice(["US", "EU", "UK", "ASIA", "OTHER"])
             scheme_name, identification, _ = generate_financial_institution_identifier(region)
-            scheme_name = AccountIdentifierScheme(scheme_name.value)
+            scheme_name = IdentifierScheme(scheme_name.value)
 
         # Generate account name
         if agent_name:

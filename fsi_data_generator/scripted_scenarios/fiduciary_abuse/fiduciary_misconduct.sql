@@ -67,7 +67,7 @@ SELECT (SELECT enterprise_party_id
        'GUARDIAN';
 
 -- Consumer Banking Account (John Doe)
-INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status,
+INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status, servicer_identifier_id,
                                        status_update_date_time)
 SELECT (SELECT enterprise_account_id
         FROM enterprise.accounts
@@ -77,10 +77,11 @@ SELECT (SELECT enterprise_account_id
        (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
        NOW() - INTERVAL '1 year',
        'ACTIVE',
+       1,
        NOW();
 
 -- Consumer Banking Account (Jane Smith)
-INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status,
+INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status, servicer_identifier_id,
                                        status_update_date_time)
 SELECT (SELECT enterprise_account_id
         FROM enterprise.accounts
@@ -90,6 +91,7 @@ SELECT (SELECT enterprise_account_id
        (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
        NOW() - INTERVAL '6 months',
        'ACTIVE',
+       1,
        NOW();
 
 -- Transactions (Varied amounts and times)
@@ -259,7 +261,7 @@ SELECT (SELECT enterprise_party_id
        'GUARDIAN';
 
 -- Consumer Banking Account (Alice Johnson)
-INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status,
+INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status, servicer_identifier_id,
                                        status_update_date_time)
 SELECT (SELECT enterprise_account_id
         FROM enterprise.accounts
@@ -269,10 +271,11 @@ SELECT (SELECT enterprise_account_id
        (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
        NOW() - INTERVAL '8 months',
        'ACTIVE',
+       1,
        NOW();
 
 -- Consumer Banking Account (Bob Williams)
-INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status,
+INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status, servicer_identifier_id,
                                        status_update_date_time)
 SELECT (SELECT enterprise_account_id
         FROM enterprise.accounts
@@ -282,6 +285,7 @@ SELECT (SELECT enterprise_account_id
        (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
        NOW() - INTERVAL '3 months',
        'ACTIVE',
+       1,
        NOW();
 
 -- Transactions (Varied amounts, times, and transaction types)
@@ -505,7 +509,7 @@ SELECT (SELECT enterprise_party_id
        'GUARDIAN';
 
 -- Consumer Banking Account (Charlie Brown)
-INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status,
+INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status, servicer_identifier_id,
                                        status_update_date_time)
 SELECT (SELECT enterprise_account_id
         FROM enterprise.accounts
@@ -515,10 +519,11 @@ SELECT (SELECT enterprise_account_id
        (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
        NOW() - INTERVAL '10 months',
        'ACTIVE',
+       1,
        NOW();
 
 -- Consumer Banking Account (Lucy Van Pelt)
-INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status,
+INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status, servicer_identifier_id,
                                        status_update_date_time)
 SELECT (SELECT enterprise_account_id
         FROM enterprise.accounts
@@ -528,10 +533,11 @@ SELECT (SELECT enterprise_account_id
        (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
        NOW() - INTERVAL '7 months',
        'ACTIVE',
+       1,
        NOW();
 
 -- Consumer Banking Account (Linus Van Pelt)
-INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status,
+INSERT INTO consumer_banking.accounts (enterprise_account_id, consumer_banking_product_id, opened_date, status, servicer_identifier_id,
                                        status_update_date_time)
 SELECT (SELECT enterprise_account_id
         FROM enterprise.accounts
@@ -541,6 +547,7 @@ SELECT (SELECT enterprise_account_id
        (SELECT consumer_banking_product_id FROM consumer_banking.products WHERE product_type = 'CHECKING' LIMIT 1),
        NOW() - INTERVAL '5 months',
        'ACTIVE',
+       1,
        NOW();
 
 -- Transactions (Varied GUARDIANs, amounts, and times)

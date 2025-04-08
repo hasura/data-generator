@@ -30,8 +30,8 @@ class ProductType(BaseEnum):
         5.0,  # STUDENT
         3.0,  # YOUTH
         5.0,  # SENIOR
-        7.0,  # BUSINESS_CHECKING
-        5.0,  # BUSINESS_SAVINGS
+        0.0,  # BUSINESS_CHECKING // this would be serviced through small business banking
+        0.0,  # BUSINESS_SAVINGS // this would be serviced through small business banking
         5.0,  # PREMIUM
         2.0,  # FOREIGN_CURRENCY
         5.0  # SPECIALIZED

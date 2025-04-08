@@ -18,6 +18,9 @@ definition:
     - name: consumerLendingApplicationId
       type: Int4!
       description: Reference to loan application
+    - name: consumerLendingLoanAccountId
+      type: Int4!
+      description: Unique identifier for loan account
     - name: consumerLendingLoanProductId
       type: Int4!
       description: Reference to loan product
@@ -51,9 +54,6 @@ definition:
     - name: lateCount90
       type: Int4!
       description: Count of 90+ day late payments
-    - name: loanAccountId
-      type: Int4!
-      description: Unique identifier for loan account
     - name: maturityDate
       type: Date!
       description: Scheduled loan payoff date
@@ -124,6 +124,9 @@ definition:
         consumerLendingApplicationId:
           column:
             name: consumer_lending_application_id
+        consumerLendingLoanAccountId:
+          column:
+            name: consumer_lending_loan_account_id
         consumerLendingLoanProductId:
           column:
             name: consumer_lending_loan_product_id
@@ -157,9 +160,6 @@ definition:
         lateCount90:
           column:
             name: late_count_90
-        loanAccountId:
-          column:
-            name: loan_account_id
         maturityDate:
           column:
             name: maturity_date
@@ -225,6 +225,7 @@ definition:
           - accruedInterest
           - autoPayEnabled
           - consumerLendingApplicationId
+          - consumerLendingLoanAccountId
           - consumerLendingLoanProductId
           - currentInterestRate
           - currentPrincipalBalance
@@ -236,7 +237,6 @@ definition:
           - lateCount30
           - lateCount60
           - lateCount90
-          - loanAccountId
           - maturityDate
           - nextPaymentAmount
           - nextPaymentDate
@@ -272,6 +272,8 @@ definition:
           booleanExpressionType: BoolBoolExp
         - fieldName: consumerLendingApplicationId
           booleanExpressionType: Int4BoolExp
+        - fieldName: consumerLendingLoanAccountId
+          booleanExpressionType: Int4BoolExp
         - fieldName: consumerLendingLoanProductId
           booleanExpressionType: Int4BoolExp
         - fieldName: currentInterestRate
@@ -293,8 +295,6 @@ definition:
         - fieldName: lateCount60
           booleanExpressionType: Int4BoolExp
         - fieldName: lateCount90
-          booleanExpressionType: Int4BoolExp
-        - fieldName: loanAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: maturityDate
           booleanExpressionType: DateBoolExp
@@ -370,6 +370,8 @@ definition:
           aggregateExpression: BoolAggExp
         - fieldName: consumerLendingApplicationId
           aggregateExpression: Int4AggExp
+        - fieldName: consumerLendingLoanAccountId
+          aggregateExpression: Int4AggExp
         - fieldName: consumerLendingLoanProductId
           aggregateExpression: Int4AggExp
         - fieldName: currentInterestRate
@@ -391,8 +393,6 @@ definition:
         - fieldName: lateCount60
           aggregateExpression: Int4AggExp
         - fieldName: lateCount90
-          aggregateExpression: Int4AggExp
-        - fieldName: loanAccountId
           aggregateExpression: Int4AggExp
         - fieldName: maturityDate
           aggregateExpression: DateAggExp
@@ -450,6 +450,8 @@ definition:
           orderByExpression: BoolOrderByExp
         - fieldName: consumerLendingApplicationId
           orderByExpression: Int4OrderByExp
+        - fieldName: consumerLendingLoanAccountId
+          orderByExpression: Int4OrderByExp
         - fieldName: consumerLendingLoanProductId
           orderByExpression: Int4OrderByExp
         - fieldName: currentInterestRate
@@ -471,8 +473,6 @@ definition:
         - fieldName: lateCount60
           orderByExpression: Int4OrderByExp
         - fieldName: lateCount90
-          orderByExpression: Int4OrderByExp
-        - fieldName: loanAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: maturityDate
           orderByExpression: DateOrderByExp
@@ -537,11 +537,11 @@ definition:
           - accountNumber
         subscription:
           rootField: consumerLendingLoanAccountsByAccountNumber
-      - queryRootField: consumerLendingLoanAccountsByLoanAccountId
+      - queryRootField: consumerLendingLoanAccountsByConsumerLendingLoanAccountId
         uniqueIdentifier:
-          - loanAccountId
+          - consumerLendingLoanAccountId
         subscription:
-          rootField: consumerLendingLoanAccountsByLoanAccountId
+          rootField: consumerLendingLoanAccountsByConsumerLendingLoanAccountId
     filterInputTypeName: ConsumerLending_ConsumerLendingLoanAccountsFilterInput
     aggregate:
       queryRootField: consumerLendingLoanAccountsAggregate
@@ -576,7 +576,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId
@@ -598,7 +598,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId
@@ -620,7 +620,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: consumerLendingLoanAccountId
@@ -678,7 +678,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId
@@ -700,7 +700,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId
@@ -722,7 +722,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId
@@ -744,7 +744,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: consumerLendingLoanAccountId
@@ -766,7 +766,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: consumerLendingLoanAccountId
@@ -788,7 +788,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId
@@ -810,7 +810,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: consumerLendingLoanAccountId
@@ -832,7 +832,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId
@@ -854,7 +854,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: consumerLendingLoanAccountId
@@ -876,7 +876,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: loanAccountId
+          - fieldName: consumerLendingLoanAccountId
       target:
         modelField:
           - fieldName: loanAccountId

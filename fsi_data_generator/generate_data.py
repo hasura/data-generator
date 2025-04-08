@@ -100,6 +100,12 @@ def generate_banking_data():
         logger.error(f"Error: SQL file not found at {drop_sql_file_path}")
         return
 
+    # Get the SQL file path from the environment variable
+    constants_sql_file_path = os.environ.get("CONSTANTS_FILE")
+    if not constants_sql_file_path or not os.path.isfile(constants_sql_file_path):
+        logger.error(f"Error: SQL file not found at {constants_sql_file_path}")
+        return
+
     try:
         print("\nStarting DataGenerator test...")
 
@@ -120,6 +126,13 @@ def generate_banking_data():
                     conn.commit()
                     logger.debug(f"SQL execution completed successfully: {sql_file_path}")
 
+                logger.debug(f"Executing SQL file: {constants_sql_file_path}")
+                with open(constants_sql_file_path, "r") as file:
+                    sql = file.read()
+                    cursor.execute(sql)
+                    conn.commit()
+                    logger.debug(f"SQL execution completed successfully: {constants_sql_file_path}")
+
         # Step 2: Initialize the DataGenerator
         dbml_file_path = os.environ.get("DBML_FILE")
         with open(dbml_file_path, 'r') as file:
@@ -127,8 +140,13 @@ def generate_banking_data():
         generator = DataGenerator(
             conn_params=conn_params,
             exclude_schemas=exclude_schemas,
-            exclusions=[('security\\.cvss', '.*'), ('security\\.cpe', '.*'), ('security\\.cwe', '.*'),
-                        ('security\\.cve_problem', '.*')],
+            exclusions=[
+                ('enterprise\\.currency', '.*'),
+                ('security\\.cvss', '.*'),
+                ('security\\.cpe', '.*'),
+                ('security\\.cwe', '.*'),
+                ('security\\.cve_problem', '.*')
+            ],
             dbml=dbml
         )
         generator.custom_generators = custom_generators(generator)

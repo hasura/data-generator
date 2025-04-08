@@ -94,7 +94,6 @@ definition:
         - fieldName: statusUpdateDateTime
           booleanExpressionType: TimestamptzBoolExp
       comparableRelationships:
-        - relationshipName: enterpriseAccountIdentifiers
         - relationshipName: enterpriseAccountOwnerships
   logicalOperators:
     enable: true
@@ -197,28 +196,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: enterpriseAccountIdentifiers
-  sourceType: EnterpriseAccounts
-  target:
-    model:
-      name: EnterpriseAccountIdentifiers
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: EnterpriseAccountIdentifiersAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: enterpriseAccountId
-      target:
-        modelField:
-          - fieldName: enterpriseAccountId
-  graphql:
-    aggregateFieldName: enterpriseAccountIdentifiersAggregate
 
 ---
 kind: Relationship

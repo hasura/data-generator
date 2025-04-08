@@ -64,17 +64,20 @@ Enum "enterprise"."identifier_scheme" {
   OTHER [note: 'Other identification scheme not covered by standard categories']
 }
 
-Table "enterprise"."account_identifiers" {
-  "enterprise_account_identifier_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each account identifier entry"]
-  "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id, note: "References the main account"]
-  "identification" VARCHAR(256) [not null, note: "The actual identifier value"]
-  "scheme_name" enterprise.identifier_scheme [not null, note: "Naming scheme for the identifier"]
-  "name" VARCHAR(350) [note: "Optional display name for this identifier"]
-  "lei" VARCHAR(20) [note: "Legal Entity Identifier (if applicable)"]
-  "secondary_identification" VARCHAR(34) [note: "Additional identification value (if applicable)"]
+Table "enterprise"."identifiers" {
+  enterprise_identifier_id SERIAL [pk, increment, note: "Unique identifier for each identifier entry in the registry"]
 
-  note: "Stores various identifiers associated with accounts, supports multiple identification schemes"
+  scheme_name enterprise.identifier_scheme [not null, note: "Type of identifier (e.g., BIC, IBAN, SSN, LEI, etc.)"]
+  identification VARCHAR(256) [not null, note: "Actual identifier value such as a BIC code or national ID"]
+  name VARCHAR(100) [null, note: "Optional display name for this identifier (e.g., institution name)"]
+  secondary_identification VARCHAR(50) [null, note: "Additional identifier component if applicable (e.g., sub-ID)"]
+  lei VARCHAR(20) [null, note: "Optional Legal Entity Identifier if known"]
+  note TEXT [null, note: "Free-form notes or metadata about this identifier"]
+
+  note: "Registry of identifiers applicable to accounts, individuals, or institutions — referenced by business-line accounts"
 }
+
+
 
 Enum "enterprise"."citizenship_status" {
   US_CITIZEN [note: 'United States citizen']
@@ -386,7 +389,7 @@ TableGroup "Parties & Addresses" [color: #1E69FD] {
 TableGroup "Enterprise Accounts" [color: #1E69FD] {
   "enterprise"."permissions"
   "enterprise"."accounts"
-  "enterprise"."account_identifiers"
+  "enterprise"."identifiers"
   "enterprise"."account_ownership"
 
   note: "Tables related to core enterprise account management"
@@ -421,15 +424,17 @@ Enum "consumer_banking"."account_status" {
 }
 
 Table "consumer_banking"."accounts" {
-  "consumer_banking_account_id" SERIAL [pk, increment, note: "Unique identifier for each consumer banking account"]
-  "enterprise_account_id" INTEGER [not null, ref: > enterprise.accounts.enterprise_account_id]
+  "consumer_banking_account_id" SERIAL [pk, increment, note: "Unique ID for the consumer banking account"]
+  "enterprise_account_id" INT [not null, ref: > enterprise.accounts.enterprise_account_id, note: "Link to the enterprise-level account bucket"]
   "consumer_banking_product_id" INTEGER [ref: > consumer_banking.products.consumer_banking_product_id, note: "References the enterprise account this consumer account belongs to. Required for all consumer accounts"]
-  "opened_date" TIMESTAMPTZ [note: "When the account was opened"]
-  "status" consumer_banking.account_status [not null, note: "Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed"]
-  "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated. Updates to closed status do not automatically close the enterprise account."]
+  "opened_date" TIMESTAMPTZ [note: "Date the account was opened"]
+  "status" consumer_banking.account_status [not null, note: "Operational status of the account"]
+  "status_update_date_time" TIMESTAMPTZ [not null, note: "Last time the status was updated"]
+  "servicer_identifier_id" INT [not null, ref: > enterprise.identifiers.enterprise_identifier_id, note: "Required reference to this institutions BIC scheme"]
 
-  note: "Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be 'active' if parent enterprise account is closed."
+  note: "Deposit account linked to enterprise account; always serviced by a this institution"
 }
+
 
 Enum "consumer_banking"."consent_status" {
   PENDING [note: 'Consent has been requested but not yet approved by the customer']
@@ -2657,7 +2662,7 @@ Enum "mortgage_services"."hardship_reason" {
 
 Table "mortgage_services"."loan_modifications" {
   "mortgage_services_modification_id" SERIAL [pk, increment, note: "Unique identifier for loan modification"]
-  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "modification_type" mortgage_services.loan_modification_type [not null, note: "Type of loan modification"]
   "request_date" DATE [not null, note: "Date modification was requested"]
   "approval_date" DATE [note: "Date modification was approved"]
@@ -3933,7 +3938,7 @@ Table "consumer_lending"."vehicles" {
 }
 
 Table "consumer_lending"."loan_accounts" {
-  "loan_account_id" SERIAL [pk, increment, note: "Unique identifier for loan account"]
+  "consumer_lending_loan_account_id" SERIAL [pk, increment, note: "Unique identifier for loan account"]
   "consumer_lending_application_id" INTEGER [not null, ref:> consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
   "consumer_lending_loan_product_id" INTEGER [not null, ref: > consumer_lending.loan_products.consumer_lending_loan_product_id, note: "Reference to loan product"]
   "account_number" VARCHAR(30) [not null, unique, note: "Customer-facing account number"]
@@ -3985,7 +3990,7 @@ Enum "consumer_lending"."payment_schedule_status" {
 
 Table "consumer_lending"."payment_schedules" {
   "payment_schedule_id" SERIAL [pk, increment, note: "Unique identifier for schedule entry"]
-  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "payment_number" INTEGER [not null, note: "Sequential payment number"]
   "scheduled_date" DATE [not null, note: "Date payment is scheduled"]
   "payment_amount" NUMERIC(18,2) [not null, note: "Total payment amount due"]
@@ -4006,7 +4011,7 @@ Table "consumer_lending"."payment_schedules" {
 
 Table "consumer_lending"."disbursements" {
   "disbursement_id" SERIAL [pk, increment, note: "Unique identifier for disbursement"]
-  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "disbursement_date" DATE [not null, note: "Date funds were disbursed"]
   "disbursement_amount" NUMERIC(18,2) [not null, note: "Amount disbursed"]
   "disbursement_method" VARCHAR(50) [not null, note: "ACH, Check, Wire"]
@@ -4063,7 +4068,7 @@ Enum "consumer_lending"."loan_payment_status" {
 
 Table "consumer_lending"."loan_payments" {
   "consumer_lending_payment_id" SERIAL [pk, increment, note: "Unique identifier for payment"]
-  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "payment_date" TIMESTAMPTZ [not null, note: "Date/time payment was received"]
   "payment_effective_date" DATE [not null, note: "Date payment is effective"]
   "payment_type" consumer_lending.payment_type [not null, note: "Type of payment"]
@@ -4113,7 +4118,7 @@ Enum "consumer_lending"."loan_fee_status" {
 
 Table "consumer_lending"."loan_fees" {
   "consumer_lending_fee_id" SERIAL [pk, increment, note: "Unique identifier for fee"]
-  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "fee_type" consumer_lending.loan_fee_type [not null, note: "Type of fee charged"]
   "fee_date" DATE [not null, note: "Date fee was assessed"]
   "fee_amount" NUMERIC(10,2) [not null, note: "Fee amount"]
@@ -4146,7 +4151,7 @@ Enum "consumer_lending"."collateral_type" {
 
 Table "consumer_lending"."loan_collateral" {
   "consumer_lending_collateral_id" SERIAL [pk, increment, note: "Unique identifier for collateral"]
-  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "collateral_type" consumer_lending.collateral_type [not null, note: "Type of collateral"]
   "description" VARCHAR(255) [not null, note: "Description of collateral"]
   "value" NUMERIC(18,2) [not null, note: "Estimated value of collateral"]
@@ -4201,7 +4206,7 @@ Enum "consumer_lending"."insurance_status" {
 
 Table "consumer_lending"."loan_insurance" {
   "consumer_lending_insurance_id" SERIAL [pk, increment, note: "Unique identifier for insurance record"]
-  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "consumer_lending_loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "consumer_lending_collateral_id" INTEGER [ref: > consumer_lending.loan_collateral.consumer_lending_collateral_id, note: "Reference to loan_collateral if associated with specific collateral"]
   "insurance_type" consumer_lending.insurance_type [not null, note: "Type of insurance"]
   "carrier_name" VARCHAR(100) [not null, note: "Name of insurance company"]
@@ -4251,7 +4256,7 @@ Enum "consumer_lending"."document_status" {
 Table "consumer_lending"."loan_documents" {
   "consumer_lending_document_id" SERIAL [pk, increment, note: "Unique identifier for document"]
   "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
-  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
+  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account if applicable"]
   "document_type" consumer_lending.document_type [not null, note: "Type of document"]
   "document_name" VARCHAR(255) [not null, note: "File name or title"]
   "document_path" VARCHAR(500) [not null, note: "Path to stored document"]
@@ -4313,7 +4318,7 @@ Enum "consumer_lending"."communication_context" {
 Table "consumer_lending"."loan_communications" {
   "consumer_lending_communication_id" SERIAL [pk, increment, note: "Unique identifier for communication"]
   "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
-  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
+  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account if applicable"]
   "communication_date" TIMESTAMPTZ [not null, note: "Date/time of communication"]
   "communication_type" consumer_lending.communication_type [not null, note: "Method of communication"]
   "direction" consumer_lending.communication_direction [not null, note: "Direction of communication"]
@@ -4342,7 +4347,7 @@ Enum "consumer_lending"."statement_delivery_method" {
 
 Table "consumer_lending"."loan_statements" {
   "consumer_lending_statement_id" SERIAL [pk, increment, note: "Unique identifier for statement"]
-  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "statement_date" DATE [not null, note: "Date statement was generated"]
   "statement_period_start" DATE [not null, note: "Start date of statement period"]
   "statement_period_end" DATE [not null, note: "End date of statement period"]
@@ -4397,7 +4402,7 @@ Enum "consumer_lending"."collection_resolution_type" {
 
 Table "consumer_lending"."collection_accounts" {
   "consumer_lending_collection_id" SERIAL [pk, increment, note: "Unique identifier for collection record"]
-  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "assigned_date" DATE [not null, note: "Date account was placed in collections"]
   "status" consumer_lending.collection_status [not null, note: "Current status of collection account"]
   "delinquency_reason" VARCHAR(100) [note: "Customer-provided reason for delinquency"]
@@ -4535,7 +4540,7 @@ Enum "consumer_lending"."loan_modification_status" {
 
 Table "consumer_lending"."loan_modifications" {
   "consumer_lending_modification_id" SERIAL [pk, increment, note: "Unique identifier for loan modification"]
-  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account"]
+  "loan_account_id" INTEGER [not null, ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account"]
   "modification_type" consumer_lending.loan_modification_type [not null, note: "Type of loan modification"]
   "request_date" DATE [not null, note: "Date modification was requested"]
   "approval_date" DATE [note: "Date modification was approved"]
@@ -4584,7 +4589,7 @@ Enum "consumer_lending"."disclosure_delivery_method" {
 Table "consumer_lending"."reg_z_disclosures" {
   "consumer_lending_disclosure_id" SERIAL [pk, increment, note: "Unique identifier for disclosure"]
   "consumer_lending_application_id" INTEGER [not null, ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application"]
-  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if originated"]
+  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account if originated"]
   "disclosure_type" consumer_lending.disclosure_type [not null, note: "Type of Regulation Z disclosure"]
   "disclosure_date" TIMESTAMPTZ [not null, note: "Date disclosure was generated"]
   "sent_date" TIMESTAMPTZ [note: "Date disclosure was sent to applicant"]
@@ -4863,7 +4868,7 @@ Table "consumer_lending"."high_cost_mortgage_tests" {
 Table "consumer_lending"."compliance_exceptions" {
   "consumer_lending_exception_id" SERIAL [pk, increment, note: "Unique identifier for exception"]
   "consumer_lending_application_id" INTEGER [ref: > consumer_lending.loan_applications.consumer_lending_application_id, note: "Reference to loan application if applicable"]
-  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.loan_account_id, note: "Reference to loan account if applicable"]
+  "loan_account_id" INTEGER [ref: > consumer_lending.loan_accounts.consumer_lending_loan_account_id, note: "Reference to loan account if applicable"]
   "exception_date" TIMESTAMPTZ [not null, note: "Date exception was identified"]
   "exception_type" VARCHAR(50) [not null, note: "Documentation, Disclosure, Timing, etc."]
   "regulation" VARCHAR(50) [not null, note: "Reg Z, Reg B, FCRA, etc."]
@@ -6822,38 +6827,38 @@ Table "app_mgmt"."sdlc_processes" {
 }
 
 Enum app_mgmt.application_lifecycle_status {
-  Development [note: 'Application is being actively developed, but not yet in production.']
-  Pilot [note: 'Application is being used by a small group of users for testing and feedback.']
-  Production [note: 'Application is in production and operating, but not accepting new features or major changes. Only bug fixes and minor updates are applied.']
-  Deprecated [note: 'Application is still operational but no longer actively developed or enhanced. It may receive critical security patches.']
-  DataMaintenance [note: 'Application is primarily used for data access and maintenance. Functionality is limited, and new features are not added.']
-  Decommissioned [note: 'Application is retired and no longer operational. Data is not archived.']
-  Archived [note: 'Application is retired and data is archived']
+  DEVELOPMENT [note: 'Application is being actively developed, but not yet in production.']
+  PILOT [note: 'Application is being used by a small group of users for testing and feedback.']
+  PRODUCTION [note: 'Application is in production and operating, but not accepting new features or major changes. Only bug fixes and minor updates are applied.']
+  DEPRECATED [note: 'Application is still operational but no longer actively developed or enhanced. It may receive critical security patches.']
+  DATA_MAINTENANCE [note: 'Application is primarily used for data access and maintenance. Functionality is limited, and new features are not added.']
+  DECOMMISSIONED [note: 'Application is retired and no longer operational. Data is not archived.']
+  ARCHIVED [note: 'Application is retired and data is archived']
 }
 
 Enum app_mgmt.deployment_environments {
-  OnPremises [note: 'Application is deployed on physical servers or virtual machines within the organization\'s own data center.']
-  CloudPublic [note: 'Application is deployed on a public cloud platform (e.g., AWS, Azure, GCP).']
-  CloudPrivate [note: 'Application is deployed on a private cloud infrastructure.']
-  CloudHybrid [note: 'Application is deployed across a combination of on-premises and cloud environments.']
-  Containerized [note: 'Application is deployed within containers (e.g., Docker, Kubernetes).']
-  Serverless [note: 'Application is deployed using a serverless computing model (e.g., AWS Lambda, Azure Functions).']
-  Edge [note: 'Application is deployed on edge computing devices or servers closer to the end-users.']
+  ON_PREMISES [note: 'Application is deployed on physical servers or virtual machines within the organization\'s own data center.']
+  CLOUD_PUBLIC [note: 'Application is deployed on a public cloud platform (e.g., AWS, Azure, GCP).']
+  CLOUD_PRIVATE [note: 'Application is deployed on a private cloud infrastructure.']
+  CLOUD_HYBRID [note: 'Application is deployed across a combination of on-premises and cloud environments.']
+  CONTAINERIZED [note: 'Application is deployed within containers (e.g., Docker, Kubernetes).']
+  SERVERLESS [note: 'Application is deployed using a serverless computing model (e.g., AWS Lambda, Azure Functions).']
+  EDGE [note: 'Application is deployed on edge computing devices or servers closer to the end-users.']
   // Add other environments as needed (e.g., Development, Staging, Testing)
 }
 
 Enum app_mgmt.application_types {
-  Web [note: 'Web-based application accessible through a web browser.']
-  Mobile [note: 'Application designed for mobile devices (e.g., iOS, Android).']
-  Desktop [note: 'Application installed and run on a desktop computer.']
+  WEB [note: 'Web-based application accessible through a web browser.']
+  MOBILE [note: 'Application designed for mobile devices (e.g., iOS, Android).']
+  DESKTOP [note: 'Application installed and run on a desktop computer.']
   API [note: 'Application Programming Interface, used for communication between software components.']
-  Batch [note: 'Application that performs batch processing tasks.']
-  Microservice [note: 'Small, independent service that communicates with other microservices.']
-  Legacy [note: 'Older application that may be difficult to maintain or modernize.']
-  SaaS [note: 'Software as a Service application, typically accessed via the web.']
-  Database [note: 'Database system or application.']
-  Middleware [note: 'Software that connects different applications or components.']
-  Embedded [note: 'Software embedded in hardware devices.']
+  BATCH [note: 'Application that performs batch processing tasks.']
+  MICROSERVICE [note: 'Small, independent service that communicates with other microservices.']
+  LEGACY [note: 'Older application that may be difficult to maintain or modernize.']
+  SAAS [note: 'Software as a Service application, typically accessed via the web.']
+  DATABASE [note: 'Database system or application.']
+  MIDDLEWARE [note: 'Software that connects different applications or components.']
+  EMBEDDED [note: 'Software embedded in hardware devices.']
   // Add other types as needed (e.g., IoT, AI/ML, etc.)
 }
 
@@ -6884,11 +6889,25 @@ Table "app_mgmt"."applications" {
   note: 'Table to store comprehensive information about software applications within the organization.'
 }
 
+Enum "app_mgmt"."component_types" {
+  JAVA_LIBRARY [note: 'A reusable Java code library or JAR file.']
+  NPM_PACKAGE [note: 'A JavaScript package managed through NPM (Node Package Manager).']
+  NUGET_PACKAGE [note: 'A software package for .NET managed through NuGet.']
+  PYTHON_MODULE [note: 'A Python library or module, typically installed via pip.']
+  RUBY_GEM [note: 'A package of Ruby code distributed through RubyGems.']
+  FRAMEWORK [note: 'A comprehensive set of libraries and tools that provide a foundation for application development.']
+  API [note: 'An Application Programming Interface that defines interactions between software components.']
+  DOTNET_ASSEMBLY [note: 'A compiled code library for the .NET framework.']
+  DOCKER_IMAGE [note: 'A lightweight, standalone package that includes everything needed to run a piece of software.']
+  GRADLE_PLUGIN [note: 'A plugin for the Gradle build automation system.']
+  MAVEN_PLUGIN [note: 'A plugin for the Maven build automation and dependency management tool.']
+}
+
 Table "app_mgmt"."components" {
   "app_mgmt_component_id" UUID [pk, note: 'Unique identifier for a software component (e.g., library, module).']
   "component_name" VARCHAR(255) [note: 'Name of the software component.']
   "component_version" VARCHAR(50) [note: 'Version identifier for the software component.']
-  "component_type" VARCHAR(100) [note: 'Type of component (e.g., library, framework, API, module). Also used for language-specific categorization (e.g., java-library, npm-package).']
+  "component_type" app_mgmt.component_types [note: 'Type of component (e.g., library, framework, API, module). Also used for language-specific categorization (e.g., java-library, npm-package).']
   "vendor" VARCHAR(255) [note: 'Vendor or provider of the software component.']
   "app_mgmt_license_id" UUID [ref: > "app_mgmt"."licenses"."app_mgmt_license_id", note: 'Identifier for the license associated with the component.']
   "description" TEXT [note: 'Description of the component\'s functionality.']
@@ -6901,16 +6920,16 @@ Table "app_mgmt"."components" {
 }
 
 Enum app_mgmt.dependency_types {
-  runtime
-  build
-  test
-  development
-  optional
-  provided
-  system
-  import
-  compile
-  annotationProcessor
+  RUNTIME
+  BUILD
+  TEST
+  DEVELOPMENT
+  OPTIONAL
+  PROVIDED
+  SYSTEM
+  IMPORT
+  COMPILE
+  ANNOTATION_PROCESSOR
   // Add any other specific dependency types as needed
 }
 
@@ -6930,12 +6949,12 @@ Table "app_mgmt"."application_components" {
 }
 
 Enum app_mgmt.criticality_levels {
-  no_impact [note: 'No impact: The relationship is not critical and its failure has no noticeable effect. Resolution timeframe: Not applicable.']
-  minimal_impact [note: 'Minimal impact: The relationship is rarely critical, and its failure has a negligible effect on operations. Resolution timeframe: Within a week, if necessary.']
-  minor_impact [note: 'Minor impact: The relationship is occasionally important, and its failure causes slight inconvenience or delays. Resolution timeframe: Within 1-2 business days.']
-  moderate_impact [note: 'Moderate impact: The relationship is regularly important, and its failure disrupts some operations but workarounds are possible. Resolution timeframe: Within 4-8 hours.']
-  significant_impact [note: 'Significant impact: The relationship is highly important, and its failure severely disrupts operations, requiring immediate attention. Resolution timeframe: Within 1-2 hours.']
-  critical_impact [note: 'Critical impact: The relationship is essential, and its failure leads to catastrophic disruption or complete stoppage of operations. Requires urgent and immediate resolution. Resolution timeframe: Immediately (within 15-30 minutes).']
+  NONE [note: 'No impact: The relationship is not critical and its failure has no noticeable effect. Resolution timeframe: Not applicable.']
+  MINIMAL [note: 'Minimal impact: The relationship is rarely critical, and its failure has a negligible effect on operations. Resolution timeframe: Within a week, if necessary.']
+  MINOR [note: 'Minor impact: The relationship is occasionally important, and its failure causes slight inconvenience or delays. Resolution timeframe: Within 1-2 business days.']
+  MODERATE [note: 'Moderate impact: The relationship is regularly important, and its failure disrupts some operations but workarounds are possible. Resolution timeframe: Within 4-8 hours.']
+  SIGNIFICANT [note: 'Significant impact: The relationship is highly important, and its failure severely disrupts operations, requiring immediate attention. Resolution timeframe: Within 1-2 hours.']
+  CRITICAL [note: 'Critical impact: The relationship is essential, and its failure leads to catastrophic disruption or complete stoppage of operations. Requires urgent and immediate resolution. Resolution timeframe: Immediately (within 15-30 minutes).']
 }
 
 Enum app_mgmt.relationship_types {

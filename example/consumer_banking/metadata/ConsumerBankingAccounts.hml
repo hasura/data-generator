@@ -3,31 +3,48 @@ kind: ObjectType
 version: v1
 definition:
   name: ConsumerBankingAccounts
-  description: Line of business specific account information. Must link to an
-    enterprise account owned by one or more parties. Account status cannot be
-    'active' if parent enterprise account is closed.
+  description: Deposit account linked to enterprise account; always serviced by a
+    this institution
   fields:
+    - name: accountCategory
+      type: EnterpriseAccountCategory
+    - name: accountNumber
+      type: Varchar
+      description: Customer facing account number
     - name: consumerBankingAccountId
       type: Int4!
-      description: Unique identifier for each consumer banking account
+      description: Unique ID for the consumer banking account
     - name: consumerBankingProductId
       type: Int4
       description: References the enterprise account this consumer account belongs to.
         Required for all consumer accounts
+    - name: currencyCode
+      type: EnterpriseCurrencyCode
     - name: enterpriseAccountId
       type: Int4!
-    - name: openedDate
+      description: Link to the enterprise-level account bucket
+    - name: maturityDate
       type: Timestamptz
-      description: When the account was opened
+      description: Used for products such as certificates of deposits that have a
+        maturity date
+    - name: nickname
+      type: Varchar
+      description: A short name added by customer.
+    - name: openedDate
+      type: Timestamptz!
+      description: Date the account was opened
+    - name: servicerIdentifierId
+      type: Int4!
+      description: Required reference to this institutions BIC scheme
     - name: status
       type: ConsumerBankingAccountStatus!
-      description: Operational status of the account (e.g., Active, Inactive, Frozen,
-        Closed). Can be closed independently of enterprise account, but must be
-        closed if enterprise account is closed
+      description: Operational status of the account
     - name: statusUpdateDateTime
       type: Timestamptz!
-      description: When the status was last updated. Updates to closed status do not
-        automatically close the enterprise account.
+      description: Last time the status was updated
+    - name: switchStatus
+      type: EnterpriseSwitchStatus
+      description: Specific to the UK account account switching service.
   graphql:
     typeName: ConsumerBanking_ConsumerBankingAccounts
     inputTypeName: ConsumerBanking_ConsumerBankingAccountsInput
@@ -35,24 +52,45 @@ definition:
     - dataConnectorName: consumer_banking
       dataConnectorObjectType: consumer_banking_accounts
       fieldMapping:
+        accountCategory:
+          column:
+            name: account_category
+        accountNumber:
+          column:
+            name: account_number
         consumerBankingAccountId:
           column:
             name: consumer_banking_account_id
         consumerBankingProductId:
           column:
             name: consumer_banking_product_id
+        currencyCode:
+          column:
+            name: currency_code
         enterpriseAccountId:
           column:
             name: enterprise_account_id
+        maturityDate:
+          column:
+            name: maturity_date
+        nickname:
+          column:
+            name: nickname
         openedDate:
           column:
             name: opened_date
+        servicerIdentifierId:
+          column:
+            name: servicer_identifier_id
         status:
           column:
             name: status
         statusUpdateDateTime:
           column:
             name: status_update_date_time
+        switchStatus:
+          column:
+            name: switch_status
 
 ---
 kind: TypePermissions
@@ -63,12 +101,19 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - accountCategory
+          - accountNumber
           - consumerBankingAccountId
           - consumerBankingProductId
+          - currencyCode
           - enterpriseAccountId
+          - maturityDate
+          - nickname
           - openedDate
+          - servicerIdentifierId
           - status
           - statusUpdateDateTime
+          - switchStatus
 
 ---
 kind: BooleanExpressionType
@@ -79,18 +124,32 @@ definition:
     object:
       type: ConsumerBankingAccounts
       comparableFields:
+        - fieldName: accountCategory
+          booleanExpressionType: EnterpriseAccountCategoryBoolExp
+        - fieldName: accountNumber
+          booleanExpressionType: VarcharBoolExp
         - fieldName: consumerBankingAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingProductId
           booleanExpressionType: Int4BoolExp
+        - fieldName: currencyCode
+          booleanExpressionType: EnterpriseCurrencyCodeBoolExp
         - fieldName: enterpriseAccountId
           booleanExpressionType: Int4BoolExp
+        - fieldName: maturityDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: nickname
+          booleanExpressionType: VarcharBoolExp
         - fieldName: openedDate
           booleanExpressionType: TimestamptzBoolExp
+        - fieldName: servicerIdentifierId
+          booleanExpressionType: Int4BoolExp
         - fieldName: status
           booleanExpressionType: ConsumerBankingAccountStatusBoolExp
         - fieldName: statusUpdateDateTime
           booleanExpressionType: TimestamptzBoolExp
+        - fieldName: switchStatus
+          booleanExpressionType: EnterpriseSwitchStatusBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingAccountAccessConsents
         - relationshipName: consumerBankingAccountStatementPreferences
@@ -120,18 +179,32 @@ definition:
     object:
       aggregatedType: ConsumerBankingAccounts
       aggregatableFields:
+        - fieldName: accountCategory
+          aggregateExpression: EnterpriseAccountCategoryAggExp
+        - fieldName: accountNumber
+          aggregateExpression: VarcharAggExp
         - fieldName: consumerBankingAccountId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingProductId
           aggregateExpression: Int4AggExp
+        - fieldName: currencyCode
+          aggregateExpression: EnterpriseCurrencyCodeAggExp
         - fieldName: enterpriseAccountId
           aggregateExpression: Int4AggExp
+        - fieldName: maturityDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: nickname
+          aggregateExpression: VarcharAggExp
         - fieldName: openedDate
           aggregateExpression: TimestamptzAggExp
+        - fieldName: servicerIdentifierId
+          aggregateExpression: Int4AggExp
         - fieldName: status
           aggregateExpression: ConsumerBankingAccountStatusAggExp
         - fieldName: statusUpdateDateTime
           aggregateExpression: TimestamptzAggExp
+        - fieldName: switchStatus
+          aggregateExpression: EnterpriseSwitchStatusAggExp
   count:
     enable: true
   graphql:
@@ -146,18 +219,32 @@ definition:
     object:
       orderedType: ConsumerBankingAccounts
       orderableFields:
+        - fieldName: accountCategory
+          orderByExpression: EnterpriseAccountCategoryOrderByExp
+        - fieldName: accountNumber
+          orderByExpression: VarcharOrderByExp
         - fieldName: consumerBankingAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingProductId
           orderByExpression: Int4OrderByExp
+        - fieldName: currencyCode
+          orderByExpression: EnterpriseCurrencyCodeOrderByExp
         - fieldName: enterpriseAccountId
           orderByExpression: Int4OrderByExp
+        - fieldName: maturityDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: nickname
+          orderByExpression: VarcharOrderByExp
         - fieldName: openedDate
           orderByExpression: TimestamptzOrderByExp
+        - fieldName: servicerIdentifierId
+          orderByExpression: Int4OrderByExp
         - fieldName: status
           orderByExpression: ConsumerBankingAccountStatusOrderByExp
         - fieldName: statusUpdateDateTime
           orderByExpression: TimestamptzOrderByExp
+        - fieldName: switchStatus
+          orderByExpression: EnterpriseSwitchStatusOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingProduct
   graphql:
@@ -191,9 +278,8 @@ definition:
       queryRootField: consumerBankingAccountsAggregate
       subscription:
         rootField: consumerBankingAccountsAggregate
-  description: Line of business specific account information. Must link to an
-    enterprise account owned by one or more parties. Account status cannot be
-    'active' if parent enterprise account is closed.
+  description: Deposit account linked to enterprise account; always serviced by a
+    this institution
 
 ---
 kind: ModelPermissions

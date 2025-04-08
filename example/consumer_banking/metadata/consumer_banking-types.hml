@@ -801,146 +801,125 @@ definition:
 kind: ScalarType
 version: v1
 definition:
-  name: ConsumerBankingAccountStatus
+  name: EnterpriseAccountCategory
   graphql:
-    typeName: ConsumerBanking_ConsumerBankingAccountStatus
+    typeName: ConsumerBanking_EnterpriseAccountCategory
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: ConsumerBankingAccountStatusBoolExp
+  name: EnterpriseAccountCategoryBoolExp
   operand:
     scalar:
-      type: ConsumerBankingAccountStatus
+      type: EnterpriseAccountCategory
       comparisonOperators:
         - name: _eq
-          argumentType: ConsumerBankingAccountStatus!
+          argumentType: EnterpriseAccountCategory!
         - name: _gt
-          argumentType: ConsumerBankingAccountStatus!
+          argumentType: EnterpriseAccountCategory!
         - name: _gte
-          argumentType: ConsumerBankingAccountStatus!
+          argumentType: EnterpriseAccountCategory!
         - name: _in
-          argumentType: "[ConsumerBankingAccountStatus!]!"
+          argumentType: "[EnterpriseAccountCategory!]!"
         - name: _lt
-          argumentType: ConsumerBankingAccountStatus!
+          argumentType: EnterpriseAccountCategory!
         - name: _lte
-          argumentType: ConsumerBankingAccountStatus!
+          argumentType: EnterpriseAccountCategory!
         - name: _neq
-          argumentType: ConsumerBankingAccountStatus!
+          argumentType: EnterpriseAccountCategory!
       dataConnectorOperatorMapping:
         - dataConnectorName: consumer_banking
-          dataConnectorScalarType: consumer_banking_account_status
+          dataConnectorScalarType: enterprise_account_category
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerBanking_ConsumerBankingAccountStatusBoolExp
+    typeName: ConsumerBanking_EnterpriseAccountCategoryBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: consumer_banking
-  dataConnectorScalarType: consumer_banking_account_status
-  representation: ConsumerBankingAccountStatus
+  dataConnectorScalarType: enterprise_account_category
+  representation: EnterpriseAccountCategory
   graphql:
-    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingAccountStatusComparisonExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: ConsumerBankingAccountStatusAggExp
-  operand:
-    scalar:
-      aggregatedType: ConsumerBankingAccountStatus
-      aggregationFunctions:
-        - name: max
-          returnType: ConsumerBankingAccountStatus
-        - name: min
-          returnType: ConsumerBankingAccountStatus
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: consumer_banking_account_status
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: ConsumerBanking_ConsumerBankingAccountStatusAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: ConsumerBankingAccountStatusOrderByExp
-  operand:
-    scalar:
-      orderedType: ConsumerBankingAccountStatus
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_ConsumerBankingAccountStatusOrderByExp
+    comparisonExpressionTypeName: ConsumerBanking_EnterpriseAccountCategoryComparisonExp
 
 ---
 kind: ScalarType
 version: v1
 definition:
-  name: EnterpriseCreditDebitIndicator
+  name: Varchar
   graphql:
-    typeName: ConsumerBanking_EnterpriseCreditDebitIndicator
+    typeName: ConsumerBanking_Varchar
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: EnterpriseCreditDebitIndicatorBoolExp
+  name: VarcharBoolExp
   operand:
     scalar:
-      type: EnterpriseCreditDebitIndicator
+      type: Varchar
       comparisonOperators:
         - name: _eq
-          argumentType: EnterpriseCreditDebitIndicator!
+          argumentType: Varchar!
         - name: _gt
-          argumentType: EnterpriseCreditDebitIndicator!
+          argumentType: Varchar!
         - name: _gte
-          argumentType: EnterpriseCreditDebitIndicator!
+          argumentType: Varchar!
+        - name: _ilike
+          argumentType: Varchar!
         - name: _in
-          argumentType: "[EnterpriseCreditDebitIndicator!]!"
+          argumentType: "[Varchar!]!"
+        - name: _iregex
+          argumentType: Varchar!
+        - name: _like
+          argumentType: Varchar!
         - name: _lt
-          argumentType: EnterpriseCreditDebitIndicator!
+          argumentType: Varchar!
         - name: _lte
-          argumentType: EnterpriseCreditDebitIndicator!
+          argumentType: Varchar!
         - name: _neq
-          argumentType: EnterpriseCreditDebitIndicator!
+          argumentType: Varchar!
+        - name: _nilike
+          argumentType: Varchar!
+        - name: _niregex
+          argumentType: Varchar!
+        - name: _nlike
+          argumentType: Varchar!
+        - name: _nregex
+          argumentType: Varchar!
+        - name: _regex
+          argumentType: Varchar!
+        - name: starts_with
+          argumentType: Varchar!
+        - name: ts_match_tt
+          argumentType: Varchar!
       dataConnectorOperatorMapping:
         - dataConnectorName: consumer_banking
-          dataConnectorScalarType: enterprise_credit_debit_indicator
+          dataConnectorScalarType: varchar
           operatorMapping: {}
   logicalOperators:
     enable: true
   isNull:
     enable: true
   graphql:
-    typeName: ConsumerBanking_EnterpriseCreditDebitIndicatorBoolExp
+    typeName: ConsumerBanking_VarcharBoolExp
 
 ---
 kind: DataConnectorScalarRepresentation
 version: v1
 definition:
   dataConnectorName: consumer_banking
-  dataConnectorScalarType: enterprise_credit_debit_indicator
-  representation: EnterpriseCreditDebitIndicator
+  dataConnectorScalarType: varchar
+  representation: Varchar
   graphql:
-    comparisonExpressionTypeName: ConsumerBanking_EnterpriseCreditDebitIndicatorComparisonExp
+    comparisonExpressionTypeName: ConsumerBanking_VarcharComparisonExp
 
 ---
 kind: ScalarType
@@ -993,6 +972,439 @@ definition:
   representation: EnterpriseCurrencyCode
   graphql:
     comparisonExpressionTypeName: ConsumerBanking_EnterpriseCurrencyCodeComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: ConsumerBankingAccountStatus
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ConsumerBankingAccountStatusBoolExp
+  operand:
+    scalar:
+      type: ConsumerBankingAccountStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _gt
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _gte
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _in
+          argumentType: "[ConsumerBankingAccountStatus!]!"
+        - name: _lt
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _lte
+          argumentType: ConsumerBankingAccountStatus!
+        - name: _neq
+          argumentType: ConsumerBankingAccountStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_account_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_ConsumerBankingAccountStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: consumer_banking_account_status
+  representation: ConsumerBankingAccountStatus
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingAccountStatusComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: EnterpriseSwitchStatus
+  graphql:
+    typeName: ConsumerBanking_EnterpriseSwitchStatus
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseSwitchStatusBoolExp
+  operand:
+    scalar:
+      type: EnterpriseSwitchStatus
+      comparisonOperators:
+        - name: _eq
+          argumentType: EnterpriseSwitchStatus!
+        - name: _gt
+          argumentType: EnterpriseSwitchStatus!
+        - name: _gte
+          argumentType: EnterpriseSwitchStatus!
+        - name: _in
+          argumentType: "[EnterpriseSwitchStatus!]!"
+        - name: _lt
+          argumentType: EnterpriseSwitchStatus!
+        - name: _lte
+          argumentType: EnterpriseSwitchStatus!
+        - name: _neq
+          argumentType: EnterpriseSwitchStatus!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_switch_status
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_EnterpriseSwitchStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: enterprise_switch_status
+  representation: EnterpriseSwitchStatus
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_EnterpriseSwitchStatusComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseAccountCategoryAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseAccountCategory
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseAccountCategory
+        - name: min
+          returnType: EnterpriseAccountCategory
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_account_category
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_EnterpriseAccountCategoryAggExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Text
+  graphql:
+    typeName: ConsumerBanking_Text
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: TextBoolExp
+  operand:
+    scalar:
+      type: Text
+      comparisonOperators:
+        - name: _eq
+          argumentType: Text!
+        - name: _gt
+          argumentType: Text!
+        - name: _gte
+          argumentType: Text!
+        - name: _ilike
+          argumentType: Text!
+        - name: _in
+          argumentType: "[Text!]!"
+        - name: _iregex
+          argumentType: Text!
+        - name: _like
+          argumentType: Text!
+        - name: _lt
+          argumentType: Text!
+        - name: _lte
+          argumentType: Text!
+        - name: _neq
+          argumentType: Text!
+        - name: _nilike
+          argumentType: Text!
+        - name: _niregex
+          argumentType: Text!
+        - name: _nlike
+          argumentType: Text!
+        - name: _nregex
+          argumentType: Text!
+        - name: _regex
+          argumentType: Text!
+        - name: starts_with
+          argumentType: Text!
+        - name: ts_match_tt
+          argumentType: Text!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: text
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_TextBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: text
+  representation: Text
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_TextComparisonExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: VarcharAggExp
+  operand:
+    scalar:
+      aggregatedType: Varchar
+      aggregationFunctions:
+        - name: max
+          returnType: Text
+        - name: min
+          returnType: Text
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: varchar
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_VarcharAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseCurrencyCodeAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseCurrencyCode
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseCurrencyCode
+        - name: min
+          returnType: EnterpriseCurrencyCode
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_currency_code
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_EnterpriseCurrencyCodeAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: ConsumerBankingAccountStatus
+      aggregationFunctions:
+        - name: max
+          returnType: ConsumerBankingAccountStatus
+        - name: min
+          returnType: ConsumerBankingAccountStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: consumer_banking_account_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_ConsumerBankingAccountStatusAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: EnterpriseSwitchStatusAggExp
+  operand:
+    scalar:
+      aggregatedType: EnterpriseSwitchStatus
+      aggregationFunctions:
+        - name: max
+          returnType: EnterpriseSwitchStatus
+        - name: min
+          returnType: EnterpriseSwitchStatus
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_switch_status
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_EnterpriseSwitchStatusAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseAccountCategoryOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseAccountCategory
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_EnterpriseAccountCategoryOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: VarcharOrderByExp
+  operand:
+    scalar:
+      orderedType: Varchar
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_VarcharOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseCurrencyCodeOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseCurrencyCode
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_EnterpriseCurrencyCodeOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ConsumerBankingAccountStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: ConsumerBankingAccountStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_ConsumerBankingAccountStatusOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: EnterpriseSwitchStatusOrderByExp
+  operand:
+    scalar:
+      orderedType: EnterpriseSwitchStatus
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_EnterpriseSwitchStatusOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: EnterpriseCreditDebitIndicator
+  graphql:
+    typeName: ConsumerBanking_EnterpriseCreditDebitIndicator
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: EnterpriseCreditDebitIndicatorBoolExp
+  operand:
+    scalar:
+      type: EnterpriseCreditDebitIndicator
+      comparisonOperators:
+        - name: _eq
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _gt
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _gte
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _in
+          argumentType: "[EnterpriseCreditDebitIndicator!]!"
+        - name: _lt
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _lte
+          argumentType: EnterpriseCreditDebitIndicator!
+        - name: _neq
+          argumentType: EnterpriseCreditDebitIndicator!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: enterprise_credit_debit_indicator
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_EnterpriseCreditDebitIndicatorBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: enterprise_credit_debit_indicator
+  representation: EnterpriseCreditDebitIndicator
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_EnterpriseCreditDebitIndicatorComparisonExp
 
 ---
 kind: ScalarType
@@ -1190,34 +1602,6 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: EnterpriseCurrencyCodeAggExp
-  operand:
-    scalar:
-      aggregatedType: EnterpriseCurrencyCode
-      aggregationFunctions:
-        - name: max
-          returnType: EnterpriseCurrencyCode
-        - name: min
-          returnType: EnterpriseCurrencyCode
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: enterprise_currency_code
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: ConsumerBanking_EnterpriseCurrencyCodeAggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
   name: ConsumerBankingBalanceSubTypeAggExp
   operand:
     scalar:
@@ -1300,19 +1684,6 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: EnterpriseCurrencyCodeOrderByExp
-  operand:
-    scalar:
-      orderedType: EnterpriseCurrencyCode
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_EnterpriseCurrencyCodeOrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
   name: ConsumerBankingBalanceSubTypeOrderByExp
   operand:
     scalar:
@@ -1388,150 +1759,6 @@ definition:
     comparisonExpressionTypeName: ConsumerBanking_ConsumerBankingBeneficiaryTypeComparisonExp
 
 ---
-kind: ScalarType
-version: v1
-definition:
-  name: Varchar
-  graphql:
-    typeName: ConsumerBanking_Varchar
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: VarcharBoolExp
-  operand:
-    scalar:
-      type: Varchar
-      comparisonOperators:
-        - name: _eq
-          argumentType: Varchar!
-        - name: _gt
-          argumentType: Varchar!
-        - name: _gte
-          argumentType: Varchar!
-        - name: _ilike
-          argumentType: Varchar!
-        - name: _in
-          argumentType: "[Varchar!]!"
-        - name: _iregex
-          argumentType: Varchar!
-        - name: _like
-          argumentType: Varchar!
-        - name: _lt
-          argumentType: Varchar!
-        - name: _lte
-          argumentType: Varchar!
-        - name: _neq
-          argumentType: Varchar!
-        - name: _nilike
-          argumentType: Varchar!
-        - name: _niregex
-          argumentType: Varchar!
-        - name: _nlike
-          argumentType: Varchar!
-        - name: _nregex
-          argumentType: Varchar!
-        - name: _regex
-          argumentType: Varchar!
-        - name: starts_with
-          argumentType: Varchar!
-        - name: ts_match_tt
-          argumentType: Varchar!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: varchar
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: ConsumerBanking_VarcharBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: consumer_banking
-  dataConnectorScalarType: varchar
-  representation: Varchar
-  graphql:
-    comparisonExpressionTypeName: ConsumerBanking_VarcharComparisonExp
-
----
-kind: ScalarType
-version: v1
-definition:
-  name: Text
-  graphql:
-    typeName: ConsumerBanking_Text
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: TextBoolExp
-  operand:
-    scalar:
-      type: Text
-      comparisonOperators:
-        - name: _eq
-          argumentType: Text!
-        - name: _gt
-          argumentType: Text!
-        - name: _gte
-          argumentType: Text!
-        - name: _ilike
-          argumentType: Text!
-        - name: _in
-          argumentType: "[Text!]!"
-        - name: _iregex
-          argumentType: Text!
-        - name: _like
-          argumentType: Text!
-        - name: _lt
-          argumentType: Text!
-        - name: _lte
-          argumentType: Text!
-        - name: _neq
-          argumentType: Text!
-        - name: _nilike
-          argumentType: Text!
-        - name: _niregex
-          argumentType: Text!
-        - name: _nlike
-          argumentType: Text!
-        - name: _nregex
-          argumentType: Text!
-        - name: _regex
-          argumentType: Text!
-        - name: starts_with
-          argumentType: Text!
-        - name: ts_match_tt
-          argumentType: Text!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: text
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: ConsumerBanking_TextBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: consumer_banking
-  dataConnectorScalarType: text
-  representation: Text
-  graphql:
-    comparisonExpressionTypeName: ConsumerBanking_TextComparisonExp
-
----
 kind: AggregateExpression
 version: v1
 definition:
@@ -1558,34 +1785,6 @@ definition:
     enable: true
   graphql:
     selectTypeName: ConsumerBanking_ConsumerBankingBeneficiaryTypeAggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: VarcharAggExp
-  operand:
-    scalar:
-      aggregatedType: Varchar
-      aggregationFunctions:
-        - name: max
-          returnType: Text
-        - name: min
-          returnType: Text
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: varchar
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: ConsumerBanking_VarcharAggExp
 
 ---
 kind: AggregateExpression
@@ -1627,19 +1826,6 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: ConsumerBanking_ConsumerBankingBeneficiaryTypeOrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: VarcharOrderByExp
-  operand:
-    scalar:
-      orderedType: Varchar
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_VarcharOrderByExp
 
 ---
 kind: OrderByExpression

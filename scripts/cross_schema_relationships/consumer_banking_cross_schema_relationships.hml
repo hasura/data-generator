@@ -2,6 +2,42 @@
 kind: Relationship
 version: v1
 definition:
+  name: currency
+  sourceType: ConsumerBankingAccounts
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseCurrency
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: currencyCode
+      target:
+        modelField:
+          - fieldName: code
+---
+kind: Relationship
+version: v1
+definition:
+  name: servicer
+  sourceType: ConsumerBankingAccounts
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseIdentifiers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: servicerIdentifierId
+      target:
+        modelField:
+          - fieldName: enterpriseIdentifierId
+---
+kind: Relationship
+version: v1
+definition:
   name: associate
   sourceType: ConsumerBankingCustomerInteractions
   target:

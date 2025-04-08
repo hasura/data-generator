@@ -242,6 +242,16 @@ CREATE TYPE "enterprise"."building_type" AS ENUM (
   'OTHER'
 );
 
+CREATE TYPE "enterprise"."switch_status" AS ENUM (
+  'NOT_SWITCHED',
+  'SWITCH_COMPLETED'
+);
+
+CREATE TYPE "enterprise"."account_category" AS ENUM (
+  'PERSONAL',
+  'BUSINESS'
+);
+
 CREATE TYPE "enterprise"."credit_debit_indicator" AS ENUM (
   'CREDIT',
   'DEBIT'
@@ -2846,14 +2856,19 @@ CREATE TABLE "enterprise"."permissions" (
   "permission_name" VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE "enterprise"."account_identifiers" (
-  "enterprise_account_identifier_id" SERIAL PRIMARY KEY,
-  "enterprise_account_id" INTEGER NOT NULL,
-  "identification" VARCHAR(256) NOT NULL,
+CREATE TABLE "enterprise"."currency" (
+  "code" enterprise.currency_code PRIMARY KEY,
+  "name" varchar(100)
+);
+
+CREATE TABLE "enterprise"."identifiers" (
+  "enterprise_identifier_id" SERIAL PRIMARY KEY,
   "scheme_name" enterprise.identifier_scheme NOT NULL,
-  "name" VARCHAR(350),
+  "identification" VARCHAR(256) NOT NULL,
+  "name" VARCHAR(100),
+  "secondary_identification" VARCHAR(50),
   "lei" VARCHAR(20),
-  "secondary_identification" VARCHAR(34)
+  "note" TEXT
 );
 
 CREATE TABLE "enterprise"."parties" (
@@ -2968,11 +2983,18 @@ CREATE TABLE "enterprise"."buildings" (
 
 CREATE TABLE "consumer_banking"."accounts" (
   "consumer_banking_account_id" SERIAL PRIMARY KEY,
-  "enterprise_account_id" INTEGER NOT NULL,
+  "enterprise_account_id" INT NOT NULL,
+  "account_number" VARCHAR(20),
   "consumer_banking_product_id" INTEGER,
-  "opened_date" TIMESTAMPTZ,
+  "opened_date" TIMESTAMPTZ NOT NULL,
+  "maturity_date" TIMESTAMPTZ,
+  "nickname" VARCHAR(255),
+  "account_category" enterprise.account_category DEFAULT 'PERSONAL',
+  "currency_code" enterprise.currency_code,
   "status" consumer_banking.account_status NOT NULL,
-  "status_update_date_time" TIMESTAMPTZ NOT NULL
+  "switch_status" enterprise.switch_status DEFAULT 'NOT_SWITCHED',
+  "status_update_date_time" TIMESTAMPTZ NOT NULL,
+  "servicer_identifier_id" INT NOT NULL
 );
 
 CREATE TABLE "consumer_banking"."account_access_consents" (
@@ -4214,7 +4236,7 @@ CREATE TABLE "consumer_lending"."vehicles" (
 );
 
 CREATE TABLE "consumer_lending"."loan_accounts" (
-  "loan_account_id" SERIAL PRIMARY KEY,
+  "consumer_lending_loan_account_id" SERIAL PRIMARY KEY,
   "consumer_lending_application_id" INTEGER NOT NULL,
   "consumer_lending_loan_product_id" INTEGER NOT NULL,
   "account_number" VARCHAR(30) UNIQUE NOT NULL,
@@ -6150,21 +6172,21 @@ COMMENT ON COLUMN "enterprise"."permissions"."enterprise_permission_id" IS 'Auto
 
 COMMENT ON COLUMN "enterprise"."permissions"."permission_name" IS 'Unique name describing the permission (e.g., read_balances)';
 
-COMMENT ON TABLE "enterprise"."account_identifiers" IS 'Stores various identifiers associated with accounts, supports multiple identification schemes';
+COMMENT ON TABLE "enterprise"."identifiers" IS 'Registry of identifiers applicable to accounts, individuals, or institutions — referenced by business-line accounts';
 
-COMMENT ON COLUMN "enterprise"."account_identifiers"."enterprise_account_identifier_id" IS 'Auto-incrementing identifier for each account identifier entry';
+COMMENT ON COLUMN "enterprise"."identifiers"."enterprise_identifier_id" IS 'Unique identifier for each identifier entry in the registry';
 
-COMMENT ON COLUMN "enterprise"."account_identifiers"."enterprise_account_id" IS 'References the main account';
+COMMENT ON COLUMN "enterprise"."identifiers"."scheme_name" IS 'Type of identifier (e.g., BIC, IBAN, SSN, LEI, etc.)';
 
-COMMENT ON COLUMN "enterprise"."account_identifiers"."identification" IS 'The actual identifier value';
+COMMENT ON COLUMN "enterprise"."identifiers"."identification" IS 'Actual identifier value such as a BIC code or national ID';
 
-COMMENT ON COLUMN "enterprise"."account_identifiers"."scheme_name" IS 'Naming scheme for the identifier';
+COMMENT ON COLUMN "enterprise"."identifiers"."name" IS 'Optional display name for this identifier (e.g., institution name)';
 
-COMMENT ON COLUMN "enterprise"."account_identifiers"."name" IS 'Optional display name for this identifier';
+COMMENT ON COLUMN "enterprise"."identifiers"."secondary_identification" IS 'Additional identifier component if applicable (e.g., sub-ID)';
 
-COMMENT ON COLUMN "enterprise"."account_identifiers"."lei" IS 'Legal Entity Identifier (if applicable)';
+COMMENT ON COLUMN "enterprise"."identifiers"."lei" IS 'Optional Legal Entity Identifier if known';
 
-COMMENT ON COLUMN "enterprise"."account_identifiers"."secondary_identification" IS 'Additional identification value (if applicable)';
+COMMENT ON COLUMN "enterprise"."identifiers"."note" IS 'Free-form notes or metadata about this identifier';
 
 COMMENT ON TABLE "enterprise"."parties" IS 'Stores information about individuals and organizations that interact with accounts, now with additional common personal attributes for individuals';
 
@@ -6350,17 +6372,29 @@ COMMENT ON COLUMN "enterprise"."buildings"."open_date" IS 'Date the building was
 
 COMMENT ON COLUMN "enterprise"."buildings"."close_date" IS 'Date the building was closed, if applicable.';
 
-COMMENT ON TABLE "consumer_banking"."accounts" IS 'Line of business specific account information. Must link to an enterprise account owned by one or more parties. Account status cannot be ''active'' if parent enterprise account is closed.';
+COMMENT ON TABLE "consumer_banking"."accounts" IS 'Deposit account linked to enterprise account; always serviced by a this institution';
 
-COMMENT ON COLUMN "consumer_banking"."accounts"."consumer_banking_account_id" IS 'Unique identifier for each consumer banking account';
+COMMENT ON COLUMN "consumer_banking"."accounts"."consumer_banking_account_id" IS 'Unique ID for the consumer banking account';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."enterprise_account_id" IS 'Link to the enterprise-level account bucket';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."account_number" IS 'Customer facing account number';
 
 COMMENT ON COLUMN "consumer_banking"."accounts"."consumer_banking_product_id" IS 'References the enterprise account this consumer account belongs to. Required for all consumer accounts';
 
-COMMENT ON COLUMN "consumer_banking"."accounts"."opened_date" IS 'When the account was opened';
+COMMENT ON COLUMN "consumer_banking"."accounts"."opened_date" IS 'Date the account was opened';
 
-COMMENT ON COLUMN "consumer_banking"."accounts"."status" IS 'Operational status of the account (e.g., Active, Inactive, Frozen, Closed). Can be closed independently of enterprise account, but must be closed if enterprise account is closed';
+COMMENT ON COLUMN "consumer_banking"."accounts"."maturity_date" IS 'Used for products such as certificates of deposits that have a maturity date';
 
-COMMENT ON COLUMN "consumer_banking"."accounts"."status_update_date_time" IS 'When the status was last updated. Updates to closed status do not automatically close the enterprise account.';
+COMMENT ON COLUMN "consumer_banking"."accounts"."nickname" IS 'A short name added by customer.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."status" IS 'Operational status of the account';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."switch_status" IS 'Specific to the UK account account switching service.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."status_update_date_time" IS 'Last time the status was updated';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."servicer_identifier_id" IS 'Required reference to this institutions BIC scheme';
 
 COMMENT ON TABLE "consumer_banking"."account_access_consents" IS 'Stores consent records for account access, tracking when and how third parties are permitted to access consumer banking account information';
 
@@ -8462,7 +8496,7 @@ COMMENT ON COLUMN "consumer_lending"."vehicles"."valuation_date" IS 'Date of val
 
 COMMENT ON TABLE "consumer_lending"."loan_accounts" IS 'Stores information about active loan accounts, including loan details, payment history, and current status.';
 
-COMMENT ON COLUMN "consumer_lending"."loan_accounts"."loan_account_id" IS 'Unique identifier for loan account';
+COMMENT ON COLUMN "consumer_lending"."loan_accounts"."consumer_lending_loan_account_id" IS 'Unique identifier for loan account';
 
 COMMENT ON COLUMN "consumer_lending"."loan_accounts"."consumer_lending_application_id" IS 'Reference to loan application';
 
@@ -11710,8 +11744,6 @@ COMMENT ON COLUMN "small_business_banking"."suspicious_activity_reports"."sar_fi
 
 COMMENT ON COLUMN "small_business_banking"."suspicious_activity_reports"."supporting_documentation" IS 'List of supporting documentation';
 
-ALTER TABLE "enterprise"."account_identifiers" ADD FOREIGN KEY ("enterprise_account_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
-
 ALTER TABLE "enterprise"."party_relationships" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
 
 ALTER TABLE "enterprise"."party_relationships" ADD FOREIGN KEY ("related_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
@@ -11736,6 +11768,10 @@ ALTER TABLE "consumer_banking"."accounts" ADD FOREIGN KEY ("enterprise_account_i
 
 ALTER TABLE "consumer_banking"."accounts" ADD FOREIGN KEY ("consumer_banking_product_id") REFERENCES "consumer_banking"."products" ("consumer_banking_product_id");
 
+ALTER TABLE "consumer_banking"."accounts" ADD FOREIGN KEY ("currency_code") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."accounts" ADD FOREIGN KEY ("servicer_identifier_id") REFERENCES "enterprise"."identifiers" ("enterprise_identifier_id");
+
 ALTER TABLE "consumer_banking"."account_access_consents" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
 ALTER TABLE "consumer_banking"."account_access_consents_permissions" ADD FOREIGN KEY ("consumer_banking_consent_id") REFERENCES "consumer_banking"."account_access_consents" ("consumer_banking_consent_id");
@@ -11743,6 +11779,8 @@ ALTER TABLE "consumer_banking"."account_access_consents_permissions" ADD FOREIGN
 ALTER TABLE "consumer_banking"."account_access_consents_permissions" ADD FOREIGN KEY ("enterprise_permission_id") REFERENCES "enterprise"."permissions" ("enterprise_permission_id");
 
 ALTER TABLE "consumer_banking"."balances" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
+
+ALTER TABLE "consumer_banking"."balances" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
 
 ALTER TABLE "consumer_banking"."beneficiaries" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
@@ -11756,15 +11794,29 @@ ALTER TABLE "consumer_banking"."mandate_related_information" ADD FOREIGN KEY ("c
 
 ALTER TABLE "consumer_banking"."offers" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
 
+ALTER TABLE "consumer_banking"."offers" ADD FOREIGN KEY ("amount_currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."offers" ADD FOREIGN KEY ("fee_currency") REFERENCES "enterprise"."currency" ("code");
+
 ALTER TABLE "consumer_banking"."other_product_types" ADD FOREIGN KEY ("consumer_banking_product_id") REFERENCES "consumer_banking"."products" ("consumer_banking_product_id");
 
 ALTER TABLE "consumer_banking"."scheduled_payments" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
+
+ALTER TABLE "consumer_banking"."scheduled_payments" ADD FOREIGN KEY ("instructed_amount_currency") REFERENCES "enterprise"."currency" ("code");
 
 ALTER TABLE "consumer_banking"."scheduled_payment_creditor_agents" ADD FOREIGN KEY ("consumer_banking_scheduled_payment_id") REFERENCES "consumer_banking"."scheduled_payments" ("consumer_banking_scheduled_payment_id");
 
 ALTER TABLE "consumer_banking"."scheduled_payment_creditor_accounts" ADD FOREIGN KEY ("consumer_banking_scheduled_payment_id") REFERENCES "consumer_banking"."scheduled_payments" ("consumer_banking_scheduled_payment_id");
 
 ALTER TABLE "consumer_banking"."standing_orders" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
+
+ALTER TABLE "consumer_banking"."standing_orders" ADD FOREIGN KEY ("first_payment_currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."standing_orders" ADD FOREIGN KEY ("next_payment_currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."standing_orders" ADD FOREIGN KEY ("last_payment_currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."standing_orders" ADD FOREIGN KEY ("final_payment_currency") REFERENCES "enterprise"."currency" ("code");
 
 ALTER TABLE "consumer_banking"."standing_order_creditor_agents" ADD FOREIGN KEY ("consumer_banking_standing_order_id") REFERENCES "consumer_banking"."standing_orders" ("consumer_banking_standing_order_id");
 
@@ -11778,9 +11830,15 @@ ALTER TABLE "consumer_banking"."statement_benefits" ADD FOREIGN KEY ("consumer_b
 
 ALTER TABLE "consumer_banking"."statement_fees" ADD FOREIGN KEY ("consumer_banking_statement_id") REFERENCES "consumer_banking"."statements" ("consumer_banking_statement_id");
 
+ALTER TABLE "consumer_banking"."statement_fees" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
+
 ALTER TABLE "consumer_banking"."statement_interests" ADD FOREIGN KEY ("consumer_banking_statement_id") REFERENCES "consumer_banking"."statements" ("consumer_banking_statement_id");
 
+ALTER TABLE "consumer_banking"."statement_interests" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
+
 ALTER TABLE "consumer_banking"."statement_amounts" ADD FOREIGN KEY ("consumer_banking_statement_id") REFERENCES "consumer_banking"."statements" ("consumer_banking_statement_id");
+
+ALTER TABLE "consumer_banking"."statement_amounts" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
 
 ALTER TABLE "consumer_banking"."statement_date_times" ADD FOREIGN KEY ("consumer_banking_statement_id") REFERENCES "consumer_banking"."statements" ("consumer_banking_statement_id");
 
@@ -11792,15 +11850,29 @@ ALTER TABLE "consumer_banking"."transactions" ADD FOREIGN KEY ("consumer_banking
 
 ALTER TABLE "consumer_banking"."transactions" ADD FOREIGN KEY ("consumer_banking_balance_id") REFERENCES "consumer_banking"."balances" ("consumer_banking_balance_id");
 
+ALTER TABLE "consumer_banking"."transactions" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."transactions" ADD FOREIGN KEY ("charge_currency") REFERENCES "enterprise"."currency" ("code");
+
 ALTER TABLE "consumer_banking"."transaction_statement_references" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "consumer_banking"."transaction_currency_exchanges" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
+
+ALTER TABLE "consumer_banking"."transaction_currency_exchanges" ADD FOREIGN KEY ("source_currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."transaction_currency_exchanges" ADD FOREIGN KEY ("target_currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."transaction_currency_exchanges" ADD FOREIGN KEY ("unit_currency") REFERENCES "enterprise"."currency" ("code");
+
+ALTER TABLE "consumer_banking"."transaction_currency_exchanges" ADD FOREIGN KEY ("instructed_amount_currency") REFERENCES "enterprise"."currency" ("code");
 
 ALTER TABLE "consumer_banking"."transaction_bank_transaction_codes" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "consumer_banking"."proprietary_transaction_codes" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
 ALTER TABLE "consumer_banking"."transaction_balances" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
+
+ALTER TABLE "consumer_banking"."transaction_balances" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
 
 ALTER TABLE "consumer_banking"."transaction_merchant_details" ADD FOREIGN KEY ("consumer_banking_transaction_id") REFERENCES "consumer_banking"."transactions" ("consumer_banking_transaction_id");
 
@@ -11902,7 +11974,7 @@ ALTER TABLE "mortgage_services"."escrow_analyses" ADD FOREIGN KEY ("mortgage_ser
 
 ALTER TABLE "mortgage_services"."insurance_policies" ADD FOREIGN KEY ("mortgage_services_servicing_account_id") REFERENCES "mortgage_services"."servicing_accounts" ("mortgage_services_servicing_account_id");
 
-ALTER TABLE "mortgage_services"."loan_modifications" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "mortgage_services"."loan_modifications" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "mortgage_services"."loan_modifications" ADD FOREIGN KEY ("approved_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -11986,21 +12058,21 @@ ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lendin
 
 ALTER TABLE "consumer_lending"."loan_accounts" ADD FOREIGN KEY ("consumer_lending_loan_product_id") REFERENCES "consumer_lending"."loan_products" ("consumer_lending_loan_product_id");
 
-ALTER TABLE "consumer_lending"."payment_schedules" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."payment_schedules" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."payment_schedules" ADD FOREIGN KEY ("actual_payment_id") REFERENCES "consumer_lending"."loan_payments" ("consumer_lending_payment_id");
 
-ALTER TABLE "consumer_lending"."disbursements" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."disbursements" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
-ALTER TABLE "consumer_lending"."loan_payments" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_payments" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
-ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("waived_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "consumer_lending"."loan_fees" ADD FOREIGN KEY ("consumer_lending_payment_id") REFERENCES "consumer_lending"."loan_payments" ("consumer_lending_payment_id");
 
-ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("vehicle_id") REFERENCES "consumer_lending"."vehicles" ("vehicle_id");
 
@@ -12008,21 +12080,21 @@ ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("property_addr
 
 ALTER TABLE "consumer_lending"."loan_collateral" ADD FOREIGN KEY ("deposit_account_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
 
-ALTER TABLE "consumer_lending"."loan_insurance" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_insurance" ADD FOREIGN KEY ("consumer_lending_loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."loan_insurance" ADD FOREIGN KEY ("consumer_lending_collateral_id") REFERENCES "consumer_lending"."loan_collateral" ("consumer_lending_collateral_id");
 
 ALTER TABLE "consumer_lending"."loan_documents" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
-ALTER TABLE "consumer_lending"."loan_documents" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_documents" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."loan_communications" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
-ALTER TABLE "consumer_lending"."loan_communications" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_communications" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
-ALTER TABLE "consumer_lending"."loan_statements" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_statements" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
-ALTER TABLE "consumer_lending"."collection_accounts" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."collection_accounts" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."collection_actions" ADD FOREIGN KEY ("consumer_lending_collection_id") REFERENCES "consumer_lending"."collection_accounts" ("consumer_lending_collection_id");
 
@@ -12032,13 +12104,13 @@ ALTER TABLE "consumer_lending"."payment_arrangements" ADD FOREIGN KEY ("consumer
 
 ALTER TABLE "consumer_lending"."payment_arrangements" ADD FOREIGN KEY ("approved_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
-ALTER TABLE "consumer_lending"."loan_modifications" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."loan_modifications" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."loan_modifications" ADD FOREIGN KEY ("approved_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "consumer_lending"."reg_z_disclosures" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
-ALTER TABLE "consumer_lending"."reg_z_disclosures" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."reg_z_disclosures" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."adverse_action_details" ADD FOREIGN KEY ("consumer_lending_notice_id") REFERENCES "consumer_lending"."adverse_action_notices" ("consumer_lending_notice_id");
 
@@ -12078,7 +12150,7 @@ ALTER TABLE "consumer_lending"."high_cost_mortgage_tests" ADD FOREIGN KEY ("user
 
 ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("consumer_lending_application_id") REFERENCES "consumer_lending"."loan_applications" ("consumer_lending_application_id");
 
-ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("loan_account_id");
+ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("loan_account_id") REFERENCES "consumer_lending"."loan_accounts" ("consumer_lending_loan_account_id");
 
 ALTER TABLE "consumer_lending"."compliance_exceptions" ADD FOREIGN KEY ("identified_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
@@ -12138,6 +12210,8 @@ ALTER TABLE "credit_cards"."transactions" ADD FOREIGN KEY ("credit_cards_card_ac
 
 ALTER TABLE "credit_cards"."transactions" ADD FOREIGN KEY ("credit_cards_card_id") REFERENCES "credit_cards"."cards" ("credit_cards_card_id");
 
+ALTER TABLE "credit_cards"."transactions" ADD FOREIGN KEY ("original_currency") REFERENCES "enterprise"."currency" ("code");
+
 ALTER TABLE "credit_cards"."statements" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
 ALTER TABLE "credit_cards"."fees" ADD FOREIGN KEY ("credit_cards_card_account_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
@@ -12196,6 +12270,8 @@ ALTER TABLE "small_business_banking"."accounts" ADD FOREIGN KEY ("small_business
 
 ALTER TABLE "small_business_banking"."accounts" ADD FOREIGN KEY ("small_business_banking_product_id") REFERENCES "small_business_banking"."products" ("small_business_banking_product_id");
 
+ALTER TABLE "small_business_banking"."accounts" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
+
 ALTER TABLE "small_business_banking"."account_signatories" ADD FOREIGN KEY ("small_business_banking_account_id") REFERENCES "small_business_banking"."accounts" ("small_business_banking_account_id");
 
 ALTER TABLE "small_business_banking"."account_signatories" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
@@ -12245,6 +12321,8 @@ ALTER TABLE "small_business_banking"."business_transaction_categories" ADD FOREI
 ALTER TABLE "small_business_banking"."business_transaction_categories" ADD FOREIGN KEY ("created_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "small_business_banking"."transactions" ADD FOREIGN KEY ("small_business_banking_account_id") REFERENCES "small_business_banking"."accounts" ("small_business_banking_account_id");
+
+ALTER TABLE "small_business_banking"."transactions" ADD FOREIGN KEY ("currency") REFERENCES "enterprise"."currency" ("code");
 
 ALTER TABLE "small_business_banking"."transactions" ADD FOREIGN KEY ("created_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
