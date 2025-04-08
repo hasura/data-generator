@@ -20,6 +20,9 @@ definition:
         Required for all consumer accounts
     - name: currencyCode
       type: EnterpriseCurrencyCode
+    - name: displayName
+      type: Varchar
+      description: A friendly account description provided by the institution.
     - name: enterpriseAccountId
       type: Int4!
       description: Link to the enterprise-level account bucket
@@ -67,6 +70,9 @@ definition:
         currencyCode:
           column:
             name: currency_code
+        displayName:
+          column:
+            name: displayName
         enterpriseAccountId:
           column:
             name: enterprise_account_id
@@ -106,6 +112,7 @@ definition:
           - consumerBankingAccountId
           - consumerBankingProductId
           - currencyCode
+          - displayName
           - enterpriseAccountId
           - maturityDate
           - nickname
@@ -134,6 +141,8 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: currencyCode
           booleanExpressionType: EnterpriseCurrencyCodeBoolExp
+        - fieldName: displayName
+          booleanExpressionType: VarcharBoolExp
         - fieldName: enterpriseAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: maturityDate
@@ -189,6 +198,8 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: currencyCode
           aggregateExpression: EnterpriseCurrencyCodeAggExp
+        - fieldName: displayName
+          aggregateExpression: VarcharAggExp
         - fieldName: enterpriseAccountId
           aggregateExpression: Int4AggExp
         - fieldName: maturityDate
@@ -229,6 +240,8 @@ definition:
           orderByExpression: Int4OrderByExp
         - fieldName: currencyCode
           orderByExpression: EnterpriseCurrencyCodeOrderByExp
+        - fieldName: displayName
+          orderByExpression: VarcharOrderByExp
         - fieldName: enterpriseAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: maturityDate

@@ -84,7 +84,7 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     servicer_identifier_id = result["enterprise_identifier_id"]
 
     cursor.execute("""
-        SELECT product_type
+        SELECT product_type, product_name
         FROM consumer_banking.products
         WHERE consumer_banking_product_id = %s
     """, (consumer_banking_product_id,))
@@ -92,7 +92,7 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     if not result:
         raise ValueError(f"Product ID {consumer_banking_product_id} not found")
 
-    product_type = result["product_type"]
+    product_type, product_name = result["product_type"], result["product_name"]
 
     nickname = random.choice(_nicknames_by_product_type.get(product_type, ["Account"]))
 
@@ -102,6 +102,9 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     status = AccountStatus.get_random()
     delta_days = random.randint(5, 400)
     status_update_date_time = opened_date + datetime.timedelta(days=delta_days)
+
+    # Generate displayName
+    display_name = f"{product_name} ({account_number[-4:]})"
 
     return {
         "enterprise_account_id": enterprise_account_id,
@@ -115,4 +118,5 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
         "currency_code": CurrencyCode.get_random().value,
         "account_number": account_number,
         "nickname": nickname,
+        "displayName": display_name,
     }

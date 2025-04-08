@@ -92,7 +92,7 @@ cp ../scripts/cross_schema_relationships/mortgage_services* mortgage_services/me
 cp ../scripts/cross_schema_relationships/security* security/metadata
 cp ../scripts/cross_schema_relationships/app_mgmt* app_mgmt/metadata
 cp ../scripts/promptql_config.yaml.sample promptql_config.yaml
-ddn codemod enable-promptql
+printf '\n' | ddn codemod enable-promptql -f
 ddn supergraph build local
 ddn run docker-start
 

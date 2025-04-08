@@ -2989,6 +2989,7 @@ CREATE TABLE "consumer_banking"."accounts" (
   "opened_date" TIMESTAMPTZ NOT NULL,
   "maturity_date" TIMESTAMPTZ,
   "nickname" VARCHAR(255),
+  "displayName" VARCHAR(255),
   "account_category" enterprise.account_category DEFAULT 'PERSONAL',
   "currency_code" enterprise.currency_code,
   "status" consumer_banking.account_status NOT NULL,
@@ -6387,6 +6388,8 @@ COMMENT ON COLUMN "consumer_banking"."accounts"."opened_date" IS 'Date the accou
 COMMENT ON COLUMN "consumer_banking"."accounts"."maturity_date" IS 'Used for products such as certificates of deposits that have a maturity date';
 
 COMMENT ON COLUMN "consumer_banking"."accounts"."nickname" IS 'A short name added by customer.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."displayName" IS 'A friendly account description provided by the institution.';
 
 COMMENT ON COLUMN "consumer_banking"."accounts"."status" IS 'Operational status of the account';
 

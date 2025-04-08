@@ -42,6 +42,11 @@ Enum "enterprise"."currency_code" {
   ARS [note: 'Argentine Peso']
 }
 
+Table "enterprise"."currency" {
+  code enterprise.currency_code [pk]
+  name varchar(100)
+}
+
 Enum "enterprise"."identifier_scheme" {
   IBAN [note: 'International Bank Account Number - standard international account identifier used in cross-border transactions']
   BIC [note: 'Bank Identifier Code (also known as SWIFT code) - identifies banks in international transactions']
@@ -423,12 +428,29 @@ Enum "consumer_banking"."account_status" {
   ARCHIVED [note: 'Closed account retained for record-keeping']
 }
 
+Enum "enterprise"."switch_status" {
+  NOT_SWITCHED
+  SWITCH_COMPLETED
+}
+
+Enum "enterprise"."account_category" {
+  PERSONAL
+  BUSINESS
+}
+
 Table "consumer_banking"."accounts" {
   "consumer_banking_account_id" SERIAL [pk, increment, note: "Unique ID for the consumer banking account"]
   "enterprise_account_id" INT [not null, ref: > enterprise.accounts.enterprise_account_id, note: "Link to the enterprise-level account bucket"]
+  "account_number" VARCHAR(20) [note: "Customer facing account number"]
   "consumer_banking_product_id" INTEGER [ref: > consumer_banking.products.consumer_banking_product_id, note: "References the enterprise account this consumer account belongs to. Required for all consumer accounts"]
-  "opened_date" TIMESTAMPTZ [note: "Date the account was opened"]
+  "opened_date" TIMESTAMPTZ [not null, note: "Date the account was opened"]
+  "maturity_date" TIMESTAMPTZ [note: "Used for products such as certificates of deposits that have a maturity date"]
+  "nickname" VARCHAR(255) [note: "A short name added by customer."]
+  "displayName" VARCHAR(255) [note: "A friendly account description provided by the institution."]
+  "account_category" enterprise.account_category [default: "PERSONAL"]
+  "currency_code" enterprise.currency_code [ref: > enterprise.currency.code]
   "status" consumer_banking.account_status [not null, note: "Operational status of the account"]
+  "switch_status" enterprise.switch_status [note: "Specific to the UK account account switching service.", default: "NOT_SWITCHED" ]
   "status_update_date_time" TIMESTAMPTZ [not null, note: "Last time the status was updated"]
   "servicer_identifier_id" INT [not null, ref: > enterprise.identifiers.enterprise_identifier_id, note: "Required reference to this institutions BIC scheme"]
 
@@ -517,7 +539,7 @@ Table "consumer_banking"."balances" {
   "type" consumer_banking.balance_type [not null, note: "Primary balance type (e.g., available, closing, etc.)"]
   "date_time" TIMESTAMPTZ [not null, note: "When this balance was recorded"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount with precision to 5 decimal places"]
-  "currency" enterprise.currency_code [not null, note: "Currency code (e.g., USD, EUR)"]
+  "currency" enterprise.currency_code [not null, note: "Currency code (e.g., USD, EUR)", ref: > enterprise.currency.code]
   "sub_type" consumer_banking.balance_sub_type [note: "Optional further classification of balance type"]
 
   note: "Tracks account balance information with history, stores different types of balances"
@@ -687,9 +709,9 @@ Table "consumer_banking"."offers" {
   "term" VARCHAR(500) [note: "Terms and conditions of the offer"]
   "url" VARCHAR(256) [note: "Web link for more information about the offer"]
   "amount" NUMERIC(18,5) [note: "Monetary amount of the offer"]
-  "amount_currency" enterprise.currency_code [note: "Currency of the offer amount"]
+  "amount_currency" enterprise.currency_code [note: "Currency of the offer amount", ref: > enterprise.currency.code]
   "fee" NUMERIC(18,5) [note: "Any fee associated with accepting the offer"]
-  "fee_currency" enterprise.currency_code [note: "Currency of the fee"]
+  "fee_currency" enterprise.currency_code [note: "Currency of the fee", ref: > enterprise.currency.code]
 
   note: "Stores promotional offers made to account holders"
 }
@@ -817,7 +839,7 @@ Table "consumer_banking"."scheduled_payments" {
   "reference" VARCHAR(35) [note: "Reference identifier for the payment"]
   "debtor_reference" VARCHAR(35) [note: "Reference identifier for the payer"]
   "instructed_amount" NUMERIC(18,5) [not null, note: "Amount to be paid"]
-  "instructed_amount_currency" enterprise.currency_code [not null, note: "Currency of the payment amount"]
+  "instructed_amount_currency" enterprise.currency_code [not null, note: "Currency of the payment amount", ref: > enterprise.currency.code]
   "end_date" DATE [note: "End date for recurring payments"]
   "execution_count" INTEGER [note: "Number of times recurring payment has executed"]
   "max_executions" INTEGER [note: "Maximum number of executions for recurring payment"]
@@ -889,13 +911,13 @@ Table "consumer_banking"."standing_orders" {
   "last_payment_date_time" TIMESTAMPTZ [note: "When the most recent payment was made"]
   "standing_order_status_code" consumer_banking.standing_order_status_code [not null, default: "ACTIVE", note: "Status code of the standing order (e.g., active, canceled)"]
   "first_payment_amount" NUMERIC(18,5) [note: "Amount of the first payment (if different)"]
-  "first_payment_currency" enterprise.currency_code [note: "Currency of the first payment"]
+  "first_payment_currency" enterprise.currency_code [note: "Currency of the first payment", ref: > enterprise.currency.code]
   "next_payment_amount" NUMERIC(18,5) [note: "Amount of the next scheduled payment"]
-  "next_payment_currency" enterprise.currency_code [note: "Currency of the next payment"]
+  "next_payment_currency" enterprise.currency_code [note: "Currency of the next payment", ref: > enterprise.currency.code]
   "last_payment_amount" NUMERIC(18,5) [note: "Amount of the most recent payment"]
-  "last_payment_currency" enterprise.currency_code [note: "Currency of the most recent payment"]
+  "last_payment_currency" enterprise.currency_code [note: "Currency of the most recent payment", ref: > enterprise.currency.code]
   "final_payment_amount" NUMERIC(18,5) [note: "Amount of the final payment (if different)"]
-  "final_payment_currency" enterprise.currency_code [note: "Currency of the final payment"]
+  "final_payment_currency" enterprise.currency_code [note: "Currency of the final payment", ref: > enterprise.currency.code]
   "frequency" enterprise.frequency [not null, note: "Frequency of standing order payments"]
   "start_date" DATE [not null, note: "Date when the first payment should be made"]
   "end_date" DATE [note: "Date when the standing order expires (if specified)"]
@@ -1043,7 +1065,7 @@ Table "consumer_banking"."statement_fees" {
   "rate_type" consumer_banking.rate_type [note: "Type of rate (e.g., fixed, variable)"]
   "frequency" consumer_banking.fee_frequency [note: "How often the fee is applied (e.g., monthly, per transaction)"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount of the fee"]
-  "currency" enterprise.currency_code [not null, note: "Currency code for the fee amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the fee amount", ref: > enterprise.currency.code]
 
   note: "Stores information about fees charged during a statement period"
 }
@@ -1075,7 +1097,7 @@ Table "consumer_banking"."statement_interests" {
   "rate_type" consumer_banking.rate_type [note: "Type of rate (e.g., fixed, variable, promotional)"]
   "frequency" enterprise.frequency [note: "How often interest is calculated (e.g., daily, monthly)"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount of interest earned or charged"]
-  "currency" enterprise.currency_code [not null, note: "Currency code for the interest amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the interest amount", ref: > enterprise.currency.code]
 
   note: "Stores information about interest earned or charged during a statement period"
 }
@@ -1123,7 +1145,7 @@ Table "consumer_banking"."statement_amounts" {
   "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if amount is a credit or debit"]
   "type" consumer_banking.amount_type [not null, note: "Type of amount (e.g., opening balance, closing balance, payments)"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary value"]
-  "currency" enterprise.currency_code [not null, note: "Currency code for the amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the amount", ref: > enterprise.currency.code]
   "sub_type" consumer_banking.amount_sub_type [note: "Further classification of the amount type"]
 
   note: "Stores various monetary amount totals associated with a statement"
@@ -1307,9 +1329,9 @@ Table "consumer_banking"."transactions" {
   "description" VARCHAR(500) [note: "Additional information about the transaction"]
   "merchant_address" VARCHAR(70) [note: "Address associated with the transaction, if applicable"]
   "amount" NUMERIC(18,5) [not null, note: "Monetary amount of the transaction"]
-  "currency" enterprise.currency_code [not null, note: "Currency code for the transaction amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the transaction amount", ref: > enterprise.currency.code]
   "charge_amount" NUMERIC(18,5) [note: "Any fees associated with the transaction"]
-  "charge_currency" enterprise.currency_code [note: "Currency code for the transaction fee"]
+  "charge_currency" enterprise.currency_code [note: "Currency code for the transaction fee", ref: > enterprise.currency.code]
 
   note: "Stores detailed information about account transactions"
 }
@@ -1324,14 +1346,14 @@ Table "consumer_banking"."transaction_statement_references" {
 Table "consumer_banking"."transaction_currency_exchanges" {
   "consumer_banking_transaction_currency_exchange_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each currency exchange record"]
   "consumer_banking_transaction_id" INTEGER [not null, ref: > consumer_banking.transactions.consumer_banking_transaction_id, note: "References the transaction this currency exchange belongs to"]
-  "source_currency" enterprise.currency_code [not null, note: "Original currency of the transaction"]
-  "target_currency" enterprise.currency_code [note: "Destination currency after conversion"]
-  "unit_currency" enterprise.currency_code [note: "Currency used as the unit for the exchange rate"]
+  "source_currency" enterprise.currency_code [not null, note: "Original currency of the transaction", ref: > enterprise.currency.code]
+  "target_currency" enterprise.currency_code [note: "Destination currency after conversion", ref: > enterprise.currency.code]
+  "unit_currency" enterprise.currency_code [note: "Currency used as the unit for the exchange rate", ref: > enterprise.currency.code]
   "exchange_rate" NUMERIC(10,4) [not null, note: "Rate used for the currency conversion"]
   "contract_identification" VARCHAR(39) [note: "Identifier for any forex contract used"]
   "quotation_date" TIMESTAMPTZ [note: "When the exchange rate was quoted"]
   "instructed_amount" NUMERIC(18,5) [note: "Original amount before conversion"]
-  "instructed_amount_currency" enterprise.currency_code [note: "Currency of the original instructed amount"]
+  "instructed_amount_currency" enterprise.currency_code [note: "Currency of the original instructed amount", ref: > enterprise.currency.code]
 
   note: "Stores currency exchange details for cross-currency transactions"
 }
@@ -1419,7 +1441,7 @@ Table "consumer_banking"."transaction_balances" {
   "credit_debit_indicator" enterprise.credit_debit_indicator [not null, note: "Indicates if balance is credit or debit"]
   "type" consumer_banking.balance_type [not null, note: "Type of balance (e.g., available, booked)"]
   "amount" NUMERIC(18,5) [not null, note: "Balance amount after the transaction"]
-  "currency" enterprise.currency_code [not null, note: "Currency code for the balance amount"]
+  "currency" enterprise.currency_code [not null, note: "Currency code for the balance amount", ref: > enterprise.currency.code]
 
   note: "Stores account balance information at the time of each transaction"
 }
@@ -5266,7 +5288,7 @@ Table "credit_cards"."transactions" {
   "category" VARCHAR(50) [note: "Spending category (e.g., Dining, Travel, Merchandise)"]
   "mcc_code" VARCHAR(20) [note: "Merchant Category Code"]
   "is_international" BOOLEAN [not null, default: false, note: "Whether transaction is international"]
-  "original_currency" enterprise.currency_code [note: "Original currency if international"]
+  "original_currency" enterprise.currency_code [note: "Original currency if international", ref: > enterprise.currency.code]
   "original_amount" NUMERIC(10,2) [note: "Amount in original currency if international"]
   "exchange_rate" NUMERIC(10,6) [note: "Exchange rate used if international"]
   "is_recurring" BOOLEAN [note: "Whether transaction appears to be recurring"]
@@ -5600,7 +5622,7 @@ Table "small_business_banking"."accounts" {
   "status_update_date_time" TIMESTAMPTZ [not null, note: "When the status was last updated"]
   "balance" DECIMAL(18,2) [not null, default: 0.00, note: "Current balance of the account"]
   "available_balance" DECIMAL(18,2) [not null, default: 0.00, note: "Available balance after holds and pending transactions"]
-  "currency" enterprise.currency_code [not null, default: "USD", note: "ISO currency code for the account"]
+  "currency" enterprise.currency_code [not null, default: "USD", note: "ISO currency code for the account", ref: > enterprise.currency.code]
   "overdraft_limit" DECIMAL(18,2) [not null, default: 0.00, note: "Maximum allowed overdraft amount"]
   "interest_rate" DECIMAL(6,4) [note: "Current interest rate applied to the account (if applicable)"]
   "statement_frequency" VARCHAR(20) [not null, default: "monthly", note: "Frequency of account statements (daily, weekly, monthly)"]
@@ -5826,7 +5848,7 @@ Table "small_business_banking"."transactions" {
   "transaction_type" VARCHAR(50) [not null, note: "Type of transaction (deposit, withdrawal, payment, fee, etc.)"]
   "amount" DECIMAL(18,2) [not null, note: "Transaction amount"]
   "running_balance" DECIMAL(18,2) [note: "Account balance after this transaction"]
-  "currency" enterprise.currency_code [not null, default: "USD", note: "Currency of the transaction"]
+  "currency" enterprise.currency_code [not null, default: "USD", note: "Currency of the transaction", ref: > enterprise.currency.code]
   "description" VARCHAR(255) [note: "Transaction description"]
   "reference_number" VARCHAR(100) [note: "External reference for the transaction"]
   "status" VARCHAR(20) [not null, default: "completed", note: "Status of the transaction (pending, completed, failed, reversed)"]
