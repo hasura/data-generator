@@ -1,0 +1,359 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AppMgmtComponents
+  description: Table to store detailed information about software components (BOM).
+  fields:
+    - name: appMgmtComponentId
+      type: Uuid!
+      description: Unique identifier for a software component (e.g., library, module).
+    - name: appMgmtLicenseId
+      type: Uuid
+      description: Identifier for the license associated with the component.
+    - name: componentName
+      type: Varchar
+      description: Name of the software component.
+    - name: componentType
+      type: AppMgmtComponentTypes
+      description: Type of component (e.g., library, framework, API, module). Also
+        used for language-specific categorization (e.g., java-library,
+        npm-package).
+    - name: componentVersion
+      type: Varchar
+      description: Version identifier for the software component.
+    - name: createdByUserId
+      type: Int4
+      description: Identifier of the employee who initially created the component record.
+    - name: description
+      type: Text
+      description: Description of the component's functionality.
+    - name: modifiedByUserId
+      type: Int4
+      description: Identifier of the employee who last modified the component record.
+    - name: namespaceOrModule
+      type: Varchar
+      description: Namespace or module name within the component (if applicable).
+    - name: packageInfo
+      type: Text
+      description: Language-specific package information (e.g., Maven coordinates, npm
+        package name, NuGet package ID).
+    - name: repositoryUrl
+      type: Varchar
+      description: Link to the component's repository (e.g., Maven repository, npm
+        registry, NuGet feed).
+    - name: vendor
+      type: Varchar
+      description: Vendor or provider of the software component.
+  graphql:
+    typeName: App_Mgmt_AppMgmtComponents
+    inputTypeName: App_Mgmt_AppMgmtComponentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_components
+      fieldMapping:
+        appMgmtComponentId:
+          column:
+            name: app_mgmt_component_id
+        appMgmtLicenseId:
+          column:
+            name: app_mgmt_license_id
+        componentName:
+          column:
+            name: component_name
+        componentType:
+          column:
+            name: component_type
+        componentVersion:
+          column:
+            name: component_version
+        createdByUserId:
+          column:
+            name: created_by_user_id
+        description:
+          column:
+            name: description
+        modifiedByUserId:
+          column:
+            name: modified_by_user_id
+        namespaceOrModule:
+          column:
+            name: namespace_or_module
+        packageInfo:
+          column:
+            name: package_info
+        repositoryUrl:
+          column:
+            name: repository_url
+        vendor:
+          column:
+            name: vendor
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AppMgmtComponents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appMgmtComponentId
+          - appMgmtLicenseId
+          - componentName
+          - componentType
+          - componentVersion
+          - createdByUserId
+          - description
+          - modifiedByUserId
+          - namespaceOrModule
+          - packageInfo
+          - repositoryUrl
+          - vendor
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtComponentsBoolExp
+  operand:
+    object:
+      type: AppMgmtComponents
+      comparableFields:
+        - fieldName: appMgmtComponentId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: appMgmtLicenseId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: componentName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: componentType
+          booleanExpressionType: AppMgmtComponentTypesBoolExp
+        - fieldName: componentVersion
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdByUserId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: modifiedByUserId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: namespaceOrModule
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: packageInfo
+          booleanExpressionType: TextBoolExp
+        - fieldName: repositoryUrl
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: vendor
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: appMgmtApplicationComponents
+        - relationshipName: appMgmtComponentDependencies
+        - relationshipName: appMgmtComponentDependenciesByParentComponentId
+        - relationshipName: appMgmtLicense
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtComponentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtComponentsAggExp
+  operand:
+    object:
+      aggregatedType: AppMgmtComponents
+      aggregatableFields:
+        - fieldName: appMgmtComponentId
+          aggregateExpression: UuidAggExp
+        - fieldName: appMgmtLicenseId
+          aggregateExpression: UuidAggExp
+        - fieldName: componentName
+          aggregateExpression: VarcharAggExp
+        - fieldName: componentType
+          aggregateExpression: AppMgmtComponentTypesAggExp
+        - fieldName: componentVersion
+          aggregateExpression: VarcharAggExp
+        - fieldName: createdByUserId
+          aggregateExpression: Int4AggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: modifiedByUserId
+          aggregateExpression: Int4AggExp
+        - fieldName: namespaceOrModule
+          aggregateExpression: VarcharAggExp
+        - fieldName: packageInfo
+          aggregateExpression: TextAggExp
+        - fieldName: repositoryUrl
+          aggregateExpression: VarcharAggExp
+        - fieldName: vendor
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtComponentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtComponentsOrderByExp
+  operand:
+    object:
+      orderedType: AppMgmtComponents
+      orderableFields:
+        - fieldName: appMgmtComponentId
+          orderByExpression: UuidOrderByExp
+        - fieldName: appMgmtLicenseId
+          orderByExpression: UuidOrderByExp
+        - fieldName: componentName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: componentType
+          orderByExpression: AppMgmtComponentTypesOrderByExp
+        - fieldName: componentVersion
+          orderByExpression: VarcharOrderByExp
+        - fieldName: createdByUserId
+          orderByExpression: Int4OrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: modifiedByUserId
+          orderByExpression: Int4OrderByExp
+        - fieldName: namespaceOrModule
+          orderByExpression: VarcharOrderByExp
+        - fieldName: packageInfo
+          orderByExpression: TextOrderByExp
+        - fieldName: repositoryUrl
+          orderByExpression: VarcharOrderByExp
+        - fieldName: vendor
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: appMgmtLicense
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtComponentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AppMgmtComponents
+  objectType: AppMgmtComponents
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_components
+  filterExpressionType: AppMgmtComponentsBoolExp
+  aggregateExpression: AppMgmtComponentsAggExp
+  orderByExpression: AppMgmtComponentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: appMgmtComponents
+      subscription:
+        rootField: appMgmtComponents
+    selectUniques:
+      - queryRootField: appMgmtComponentsByAppMgmtComponentId
+        uniqueIdentifier:
+          - appMgmtComponentId
+        subscription:
+          rootField: appMgmtComponentsByAppMgmtComponentId
+    filterInputTypeName: App_Mgmt_AppMgmtComponentsFilterInput
+    aggregate:
+      queryRootField: appMgmtComponentsAggregate
+      subscription:
+        rootField: appMgmtComponentsAggregate
+  description: Table to store detailed information about software components (BOM).
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AppMgmtComponents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplicationComponents
+  sourceType: AppMgmtComponents
+  target:
+    model:
+      name: AppMgmtApplicationComponents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationComponentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtComponentId
+      target:
+        modelField:
+          - fieldName: appMgmtComponentId
+  graphql:
+    aggregateFieldName: appMgmtApplicationComponentsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtComponentDependencies
+  sourceType: AppMgmtComponents
+  target:
+    model:
+      name: AppMgmtComponentDependencies
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtComponentDependenciesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtComponentId
+      target:
+        modelField:
+          - fieldName: childComponentId
+  graphql:
+    aggregateFieldName: appMgmtComponentDependenciesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtComponentDependenciesByParentComponentId
+  sourceType: AppMgmtComponents
+  target:
+    model:
+      name: AppMgmtComponentDependencies
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtComponentDependenciesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtComponentId
+      target:
+        modelField:
+          - fieldName: parentComponentId
+  graphql:
+    aggregateFieldName: appMgmtComponentDependenciesByParentComponentIdAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtLicense
+  sourceType: AppMgmtComponents
+  target:
+    model:
+      name: AppMgmtLicenses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtLicenseId
+      target:
+        modelField:
+          - fieldName: appMgmtLicenseId
+

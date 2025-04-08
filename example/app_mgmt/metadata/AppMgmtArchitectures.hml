@@ -1,0 +1,284 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: AppMgmtArchitectures
+  description: Table to store approved architectural designs and their key details.
+  fields:
+    - name: appMgmtArchitectureId
+      type: Uuid!
+      description: Unique identifier for an approved architectural design.
+    - name: approvalDate
+      type: Timestamptz
+      description: Date when the architectural design was officially approved.
+    - name: approvedById
+      type: Int4
+      description: Identifier of the employee who approved the design.
+    - name: architectureName
+      type: Varchar
+      description: Name given to the architectural design.
+    - name: createdByUserId
+      type: Int4
+      description: Identifier of the employee who created the architectural design.
+    - name: description
+      type: Text
+      description: Detailed explanation of the architectural design.
+    - name: documentationUrl
+      type: Varchar
+      description: Link to the full documentation for the architectural design.
+    - name: modifiedByUserId
+      type: Int4
+      description: Identifier of the employee who last modified the architectural design.
+    - name: sdlcProcessId
+      type: Uuid
+      description: Identifier for the software development lifecycle process this
+        architecture aligns with.
+    - name: status
+      type: Varchar
+      description: Current state of the architecture (e.g., approved, deprecated, proposed).
+  graphql:
+    typeName: App_Mgmt_AppMgmtArchitectures
+    inputTypeName: App_Mgmt_AppMgmtArchitecturesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_architectures
+      fieldMapping:
+        appMgmtArchitectureId:
+          column:
+            name: app_mgmt_architecture_id
+        approvalDate:
+          column:
+            name: approval_date
+        approvedById:
+          column:
+            name: approved_by_id
+        architectureName:
+          column:
+            name: architecture_name
+        createdByUserId:
+          column:
+            name: created_by_user_id
+        description:
+          column:
+            name: description
+        documentationUrl:
+          column:
+            name: documentation_url
+        modifiedByUserId:
+          column:
+            name: modified_by_user_id
+        sdlcProcessId:
+          column:
+            name: sdlc_process_id
+        status:
+          column:
+            name: status
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: AppMgmtArchitectures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appMgmtArchitectureId
+          - approvalDate
+          - approvedById
+          - architectureName
+          - createdByUserId
+          - description
+          - documentationUrl
+          - modifiedByUserId
+          - sdlcProcessId
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: AppMgmtArchitecturesBoolExp
+  operand:
+    object:
+      type: AppMgmtArchitectures
+      comparableFields:
+        - fieldName: appMgmtArchitectureId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: approvalDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: approvedById
+          booleanExpressionType: Int4BoolExp
+        - fieldName: architectureName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: createdByUserId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: documentationUrl
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: modifiedByUserId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: sdlcProcessId
+          booleanExpressionType: UuidBoolExp
+        - fieldName: status
+          booleanExpressionType: VarcharBoolExp
+      comparableRelationships:
+        - relationshipName: appMgmtApplications
+        - relationshipName: appMgmtSdlcProcess
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_AppMgmtArchitecturesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: AppMgmtArchitecturesAggExp
+  operand:
+    object:
+      aggregatedType: AppMgmtArchitectures
+      aggregatableFields:
+        - fieldName: appMgmtArchitectureId
+          aggregateExpression: UuidAggExp
+        - fieldName: approvalDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: approvedById
+          aggregateExpression: Int4AggExp
+        - fieldName: architectureName
+          aggregateExpression: VarcharAggExp
+        - fieldName: createdByUserId
+          aggregateExpression: Int4AggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: documentationUrl
+          aggregateExpression: VarcharAggExp
+        - fieldName: modifiedByUserId
+          aggregateExpression: Int4AggExp
+        - fieldName: sdlcProcessId
+          aggregateExpression: UuidAggExp
+        - fieldName: status
+          aggregateExpression: VarcharAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_AppMgmtArchitecturesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: AppMgmtArchitecturesOrderByExp
+  operand:
+    object:
+      orderedType: AppMgmtArchitectures
+      orderableFields:
+        - fieldName: appMgmtArchitectureId
+          orderByExpression: UuidOrderByExp
+        - fieldName: approvalDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: approvedById
+          orderByExpression: Int4OrderByExp
+        - fieldName: architectureName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: createdByUserId
+          orderByExpression: Int4OrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: documentationUrl
+          orderByExpression: VarcharOrderByExp
+        - fieldName: modifiedByUserId
+          orderByExpression: Int4OrderByExp
+        - fieldName: sdlcProcessId
+          orderByExpression: UuidOrderByExp
+        - fieldName: status
+          orderByExpression: VarcharOrderByExp
+      orderableRelationships:
+        - relationshipName: appMgmtSdlcProcess
+  graphql:
+    expressionTypeName: App_Mgmt_AppMgmtArchitecturesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: AppMgmtArchitectures
+  objectType: AppMgmtArchitectures
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_architectures
+  filterExpressionType: AppMgmtArchitecturesBoolExp
+  aggregateExpression: AppMgmtArchitecturesAggExp
+  orderByExpression: AppMgmtArchitecturesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: appMgmtArchitectures
+      subscription:
+        rootField: appMgmtArchitectures
+    selectUniques:
+      - queryRootField: appMgmtArchitecturesByAppMgmtArchitectureId
+        uniqueIdentifier:
+          - appMgmtArchitectureId
+        subscription:
+          rootField: appMgmtArchitecturesByAppMgmtArchitectureId
+    filterInputTypeName: App_Mgmt_AppMgmtArchitecturesFilterInput
+    aggregate:
+      queryRootField: appMgmtArchitecturesAggregate
+      subscription:
+        rootField: appMgmtArchitecturesAggregate
+  description: Table to store approved architectural designs and their key details.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: AppMgmtArchitectures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtApplications
+  sourceType: AppMgmtArchitectures
+  target:
+    model:
+      name: AppMgmtApplications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: AppMgmtApplicationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: appMgmtArchitectureId
+      target:
+        modelField:
+          - fieldName: architectureId
+  graphql:
+    aggregateFieldName: appMgmtApplicationsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: appMgmtSdlcProcess
+  sourceType: AppMgmtArchitectures
+  target:
+    model:
+      name: AppMgmtSdlcProcesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: sdlcProcessId
+      target:
+        modelField:
+          - fieldName: appMgmtSdlcProcessId
+

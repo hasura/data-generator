@@ -1,0 +1,162 @@
+---
+kind: Relationship
+version: v1
+definition:
+  name: caseInvestigator
+  sourceType: CreditCardsFraudCases
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: investigatorId
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
+---
+kind: Relationship
+version: v1
+definition:
+  name: blockRemovedBy
+  sourceType: CreditCardsSecurityBlocks
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: removedById
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
+---
+kind: Relationship
+version: v1
+definition:
+  name: limitChangeApprovedBy
+  sourceType: CreditCardsCreditLimitChanges
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: approvedById
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
+---
+kind: Relationship
+version: v1
+definition:
+  name: assessmentPerformedBy
+  sourceType: CreditCardsAbilityToPayAssessments
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAssociates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: performedById
+      target:
+        modelField:
+          - fieldName: enterpriseAssociateId
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: enterpriseAccount
+  sourceType: CreditCardsCardAccounts
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterpriseAccountId
+      target:
+        modelField:
+          - fieldName: enterpriseAccountId
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: customer
+  sourceType: CreditCardsApplications
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: enterpriseAccountId
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: customer
+  sourceType: CreditCardsCardAccounts
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseAccounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customerId
+      target:
+        modelField:
+          - fieldName: enterpriseAccountId
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: user
+  sourceType: CreditCardsCards
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseParties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: userId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: enterpriseParty
+  sourceType: CreditCardsAuthorizedUsers
+  target:
+    model:
+      subgraph: enterprise
+      name: EnterpriseParties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
