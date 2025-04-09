@@ -71,20 +71,35 @@ def generate_random_application(id_fields: Dict[str, Any], dg: DataGenerator) ->
     # Generate submission channel
     submission_channel = SubmissionChannel.get_random()
 
-    # Generate application status
-    # Higher probability of active statuses for loan products that are active
+    application_age_days = (today - creation_date).days
+
+    terminal_statuses = [
+        ApplicationStatus.APPROVED,
+        ApplicationStatus.DENIED,
+        ApplicationStatus.WITHDRAWN,
+        ApplicationStatus.EXPIRED,
+        ApplicationStatus.SUSPENDED
+    ]
+
+    intermediate_statuses = [
+        ApplicationStatus.IN_REVIEW,
+        ApplicationStatus.ADDITIONAL_INFO_REQUIRED,
+        ApplicationStatus.CONDITIONAL_APPROVAL,
+    ]
+
     is_product_active = loan_product.get('is_active', True)
-    if is_product_active:
-        status = ApplicationStatus.get_random([0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.05, 0.03, 0.01, 0.01])
+
+    if application_age_days > 365:
+        status = random.choice(terminal_statuses)
     else:
-        status = ApplicationStatus.get_random([0.1, 0.1, 0.1, 0.1, 0.0, 0.1, 0.2, 0.2, 0.05, 0.05])
+        if is_product_active:
+            status = ApplicationStatus.get_random([0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.05, 0.03, 0.01, 0.01])
+        else:
+            status = random.choice(terminal_statuses + intermediate_statuses)
 
-    # First generate the property value
     estimated_property_value = round(random.uniform(100000, 1000000), 2)
-
-    # Then generate loan amount based on property value with a realistic LTV ratio
-    max_ltv = 0.95  # Maximum loan-to-value ratio (e.g., 95%)
-    min_ltv = 0.50  # Minimum loan-to-value ratio (e.g., 50%)
+    max_ltv = 0.95
+    min_ltv = 0.50
     ltv_ratio = random.uniform(min_ltv, max_ltv)
     requested_loan_amount = round(estimated_property_value * ltv_ratio, 2)
 

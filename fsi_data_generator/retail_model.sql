@@ -2995,7 +2995,11 @@ CREATE TABLE "consumer_banking"."accounts" (
   "status" consumer_banking.account_status NOT NULL,
   "switch_status" enterprise.switch_status DEFAULT 'NOT_SWITCHED',
   "status_update_date_time" TIMESTAMPTZ NOT NULL,
-  "servicer_identifier_id" INT NOT NULL
+  "servicer_identifier_id" INT NOT NULL,
+  "annualPercentageYield" NUMERIC(6,3),
+  "interestYtd" NUMERIC(18,5),
+  "term" NUMERIC(10,5),
+  "maturityDate" TIMESTAMPTZ
 );
 
 CREATE TABLE "consumer_banking"."account_access_consents" (
@@ -4676,6 +4680,25 @@ CREATE TABLE "security"."roles" (
   "created_by_id" INTEGER
 );
 
+CREATE TABLE "security"."security_account_roles" (
+  "security_account_role_id" UUID PRIMARY KEY,
+  "security_account_id" UUID NOT NULL,
+  "security_role_id" UUID NOT NULL,
+  "assigned_at" TIMESTAMPTZ,
+  "assigned_by_id" INTEGER,
+  "active" BOOLEAN DEFAULT true
+);
+
+CREATE TABLE "security"."security_account_enterprise_accounts" (
+  "security_account_enterprise_account_id" UUID PRIMARY KEY,
+  "security_account_id" UUID NOT NULL,
+  "enterprise_account_id" INTEGER NOT NULL,
+  "access_level" security.permission_type DEFAULT 'READ',
+  "assigned_at" TIMESTAMPTZ,
+  "assigned_by_id" INTEGER,
+  "active" BOOLEAN DEFAULT true
+);
+
 CREATE TABLE "security"."role_entitlements" (
   "security_role_entitlement_id" UUID PRIMARY KEY NOT NULL,
   "security_role_id" UUID NOT NULL,
@@ -6129,6 +6152,10 @@ CREATE INDEX ON "security"."roles" ("managing_application_id");
 
 CREATE INDEX ON "security"."roles" ("status");
 
+CREATE INDEX ON "security"."security_account_roles" ("security_account_id");
+
+CREATE INDEX ON "security"."security_account_roles" ("security_role_id");
+
 CREATE INDEX ON "security"."role_entitlements" ("security_entitlement_id");
 
 CREATE INDEX ON "security"."enhanced_entitlements" ("entitlement_name");
@@ -6398,6 +6425,14 @@ COMMENT ON COLUMN "consumer_banking"."accounts"."switch_status" IS 'Specific to 
 COMMENT ON COLUMN "consumer_banking"."accounts"."status_update_date_time" IS 'Last time the status was updated';
 
 COMMENT ON COLUMN "consumer_banking"."accounts"."servicer_identifier_id" IS 'Required reference to this institutions BIC scheme';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."annualPercentageYield" IS 'APR on interest earned in this account, null if it is not interest earning.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."interestYtd" IS 'Interest earned year to date in this account. null if it is not interest earning.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."term" IS 'The total number of periods a time bound account is active (like a CD). null if it is not a time bound product.';
+
+COMMENT ON COLUMN "consumer_banking"."accounts"."maturityDate" IS 'The endpoint date of a time bound product-based account, like a CD. null if it is not a time bound product.';
 
 COMMENT ON TABLE "consumer_banking"."account_access_consents" IS 'Stores consent records for account access, tracking when and how third parties are permitted to access consumer banking account information';
 
@@ -9276,6 +9311,12 @@ COMMENT ON COLUMN "security"."roles"."owner_id" IS 'Who owns/manages this role';
 COMMENT ON COLUMN "security"."roles"."created_at" IS 'When the role was created';
 
 COMMENT ON COLUMN "security"."roles"."created_by_id" IS 'Who created the role';
+
+COMMENT ON TABLE "security"."security_account_roles" IS 'Explicitly assigns roles to security accounts';
+
+COMMENT ON TABLE "security"."security_account_enterprise_accounts" IS 'Explicit, direct linkage primarily intended for customer access scenarios.  - Optimized for simplicity, performance, and clarity for common use-cases. - Clearly delineates straightforward customer access from more complex internal access controls managed via RBAC.';
+
+COMMENT ON COLUMN "security"."security_account_enterprise_accounts"."access_level" IS 'READ, WRITE, ADMIN, etc.';
 
 COMMENT ON TABLE "security"."role_entitlements" IS 'Maps roles to their constituent entitlements';
 
@@ -12412,6 +12453,18 @@ ALTER TABLE "security"."roles" ADD FOREIGN KEY ("managing_application_id") REFER
 ALTER TABLE "security"."roles" ADD FOREIGN KEY ("owner_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "security"."roles" ADD FOREIGN KEY ("created_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "security"."security_account_roles" ADD FOREIGN KEY ("security_account_id") REFERENCES "security"."accounts" ("security_account_id");
+
+ALTER TABLE "security"."security_account_roles" ADD FOREIGN KEY ("security_role_id") REFERENCES "security"."roles" ("security_role_id");
+
+ALTER TABLE "security"."security_account_roles" ADD FOREIGN KEY ("assigned_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "security"."security_account_enterprise_accounts" ADD FOREIGN KEY ("security_account_id") REFERENCES "security"."accounts" ("security_account_id");
+
+ALTER TABLE "security"."security_account_enterprise_accounts" ADD FOREIGN KEY ("enterprise_account_id") REFERENCES "enterprise"."accounts" ("enterprise_account_id");
+
+ALTER TABLE "security"."security_account_enterprise_accounts" ADD FOREIGN KEY ("assigned_by_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
 
 ALTER TABLE "security"."role_entitlements" ADD FOREIGN KEY ("security_role_id") REFERENCES "security"."roles" ("security_role_id");
 

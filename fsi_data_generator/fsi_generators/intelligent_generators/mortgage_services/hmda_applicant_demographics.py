@@ -542,7 +542,7 @@ def _generate_race_data() -> Dict[str, Any]:
             if random.random() < 0.7:  # 70% chance to specify
                 # Choose 1-3 specific Asian races without replacement
                 num_races = random.randint(1, 3)
-                asian_detail_options = list(HmdaRaceAsianDetail)
+                asian_detail_options = [race for race in HmdaRaceAsianDetail if isinstance(race.value, str)]
                 selected_races = random.sample(asian_detail_options, min(num_races, len(asian_detail_options)))
 
                 if len(selected_races) >= 1:

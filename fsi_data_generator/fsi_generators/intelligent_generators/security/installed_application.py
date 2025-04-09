@@ -32,6 +32,8 @@ def generate_random_installed_application(id_fields: Dict[str, Any], dg: DataGen
 
     # Fetch application information from app_mgmt
     application_info = _fetch_application_info(application_id, dg)
+    if not application_info:
+        raise SkipRowGenerationError("Missing application info")
 
     # Generate realistic version number, possibly using the version from app_mgmt
     base_version = application_info.get('version')

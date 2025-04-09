@@ -1,6 +1,5 @@
-import random
+from .enums import AccountStatus, ProductType
 
-from .enums import AccountStatus
 from data_generator import DataGenerator
 from typing import Any, Dict
 
@@ -84,7 +83,7 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     servicer_identifier_id = result["enterprise_identifier_id"]
 
     cursor.execute("""
-        SELECT product_type, product_name
+        SELECT product_type, product_name, base_interest_rate
         FROM consumer_banking.products
         WHERE consumer_banking_product_id = %s
     """, (consumer_banking_product_id,))
@@ -92,9 +91,10 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     if not result:
         raise ValueError(f"Product ID {consumer_banking_product_id} not found")
 
-    product_type, product_name = result["product_type"], result["product_name"]
+    product_type_str, product_name, base_interest_rate = result["product_type"], result["product_name"], result["base_interest_rate"]
+    product_type = ProductType[product_type_str]
 
-    nickname = random.choice(_nicknames_by_product_type.get(product_type, ["Account"]))
+    nickname = random.choice(_nicknames_by_product_type.get(product_type_str, ["Account"]))
 
     account_number = f"CBA-{str(enterprise_account_id).zfill(6)}-{str(consumer_banking_product_id).zfill(4)}-{str(_account_number_counter).zfill(4)}"
     _account_number_counter += 1
@@ -106,17 +106,37 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     # Generate displayName
     display_name = f"{product_name} ({account_number[-4:]})"
 
+    # Interest-earning logic
+    if product_type in [ProductType.SAVINGS, ProductType.CERTIFICATE_OF_DEPOSIT, ProductType.MONEY_MARKET]:
+        annual_percentage_yield = base_interest_rate or round(random.uniform(0.01, 0.05), 5)
+        interest_ytd = round(random.uniform(0, 500), 2)
+    else:
+        annual_percentage_yield = None
+        interest_ytd = None
+
+    # Time-bound product logic specifically for CDs
+    if product_type == ProductType.CERTIFICATE_OF_DEPOSIT:
+        term = random.choice([6, 12, 24, 36, 48, 60])
+        maturity_date = opened_date + datetime.timedelta(days=30 * term)
+    else:
+        term = None
+        maturity_date = None
+
     return {
         "enterprise_account_id": enterprise_account_id,
         "consumer_banking_product_id": consumer_banking_product_id,
         "opened_date": opened_date,
-        "status": status.value,
-        "status_update_date_time": status_update_date_time,
-        "servicer_identifier_id": servicer_identifier_id,
-        "switch_status": "NOT_SWITCHED",
-        "account_category": "PERSONAL",
-        "currency_code": CurrencyCode.get_random().value,
-        "account_number": account_number,
         "nickname": nickname,
         "displayName": display_name,
+        "account_number": account_number,
+        "account_category": "PERSONAL",
+        "currency_code": CurrencyCode.USD.value,
+        "status": status.value,
+        "switch_status": "NOT_SWITCHED",
+        "status_update_date_time": status_update_date_time,
+        "servicer_identifier_id": servicer_identifier_id,
+        "annualPercentageYield": round(annual_percentage_yield,3) if annual_percentage_yield is not None else None,
+        "interestYtd": round(interest_ytd,5) if interest_ytd is not None else None,
+        "term": term,
+        "maturityDate": maturity_date,
     }

@@ -16,11 +16,15 @@ from .intelligent_generators.security import (
     generate_random_system_stat, generate_random_usb_device_usage)
 from faker import Faker
 
+from .intelligent_generators.security.security_account_enterprise_account import \
+    generate_random_security_account_enterprise_account
+
 fake = Faker()
 
 
 def security(dg):
     return apply_schema_to_regex('security', [
+        ('security_account_enterprise_accounts', random_record(dg, generate_random_security_account_enterprise_account)),
         ('policies', random_record(dg, generate_random_policy)),
         ('usb_device_usage', random_record(dg, generate_random_usb_device_usage)),
         ('role_entitlements', random_record(dg, generate_random_role_entitlement)),
