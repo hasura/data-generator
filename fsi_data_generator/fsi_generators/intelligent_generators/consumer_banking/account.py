@@ -110,9 +110,19 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
     if product_type in [ProductType.SAVINGS, ProductType.CERTIFICATE_OF_DEPOSIT, ProductType.MONEY_MARKET]:
         annual_percentage_yield = base_interest_rate or round(random.uniform(0.01, 0.05), 5)
         interest_ytd = round(random.uniform(0, 500), 2)
+        available_balance = round(random.uniform(1000, 20000), 2)
+    elif product_type == ProductType.CHECKING:
+        annual_percentage_yield = None
+        interest_ytd = None
+        available_balance = round(random.uniform(500, 5000), 2)
     else:
         annual_percentage_yield = None
         interest_ytd = None
+        available_balance = round(random.uniform(100, 2000), 2)
+
+    opening_day_balance = round(random.uniform(available_balance * 0.9, available_balance), 2)
+    # Set current_balance slightly higher, simulating pending deposits
+    current_balance = available_balance + round(random.uniform(0, 100), 2)
 
     # Time-bound product logic specifically for CDs
     if product_type == ProductType.CERTIFICATE_OF_DEPOSIT:
@@ -135,8 +145,11 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
         "switch_status": "NOT_SWITCHED",
         "status_update_date_time": status_update_date_time,
         "servicer_identifier_id": servicer_identifier_id,
-        "annualPercentageYield": round(annual_percentage_yield,3) if annual_percentage_yield is not None else None,
-        "interestYtd": round(interest_ytd,5) if interest_ytd is not None else None,
+        "annualPercentageYield": round(annual_percentage_yield, 3) if annual_percentage_yield else None,
+        "interestYtd": round(interest_ytd, 5) if interest_ytd else None,
         "term": term,
         "maturityDate": maturity_date,
+        "available_balance": available_balance,
+        "current_balance": current_balance,
+        "opening_day_balance": opening_day_balance
     }

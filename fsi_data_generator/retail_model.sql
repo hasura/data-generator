@@ -2996,10 +2996,12 @@ CREATE TABLE "consumer_banking"."accounts" (
   "switch_status" enterprise.switch_status DEFAULT 'NOT_SWITCHED',
   "status_update_date_time" TIMESTAMPTZ NOT NULL,
   "servicer_identifier_id" INT NOT NULL,
-  "annualPercentageYield" NUMERIC(6,3),
+  "annualPercentageYield" NUMERIC(8,5),
   "interestYtd" NUMERIC(18,5),
   "term" NUMERIC(10,5),
-  "maturityDate" TIMESTAMPTZ
+  "available_balance" numeric(20,4) NOT NULL DEFAULT 0,
+  "current_balance" numeric(20,4) NOT NULL DEFAULT 0,
+  "opening_day_balance" numeric(20,4) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE "consumer_banking"."account_access_consents" (
@@ -6431,8 +6433,6 @@ COMMENT ON COLUMN "consumer_banking"."accounts"."annualPercentageYield" IS 'APR 
 COMMENT ON COLUMN "consumer_banking"."accounts"."interestYtd" IS 'Interest earned year to date in this account. null if it is not interest earning.';
 
 COMMENT ON COLUMN "consumer_banking"."accounts"."term" IS 'The total number of periods a time bound account is active (like a CD). null if it is not a time bound product.';
-
-COMMENT ON COLUMN "consumer_banking"."accounts"."maturityDate" IS 'The endpoint date of a time bound product-based account, like a CD. null if it is not a time bound product.';
 
 COMMENT ON TABLE "consumer_banking"."account_access_consents" IS 'Stores consent records for account access, tracking when and how third parties are permitted to access consumer banking account information';
 

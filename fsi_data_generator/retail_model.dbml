@@ -454,6 +454,10 @@ Table "consumer_banking"."accounts" {
   "status_update_date_time" TIMESTAMPTZ [not null, note: "Last time the status was updated"]
   "servicer_identifier_id" INT [not null, ref: > enterprise.identifiers.enterprise_identifier_id, note: "Required reference to this institutions BIC scheme"]
 
+  "annualPercentageYield" NUMERIC(8,5) [note: "APR on interest earned in this account, null if it is not interest earning."]
+  "interestYtd" NUMERIC(18,5) [note: "Interest earned year to date in this account. null if it is not interest earning."]
+  "term" NUMERIC(10,5) [note: "The total number of periods a time bound account is active (like a CD). null if it is not a time bound product."]
+
   note: "Deposit account linked to enterprise account; always serviced by a this institution"
 }
 
@@ -6289,6 +6293,35 @@ Table "security"."roles" {
   }
 
   Note: "Defines roles that can be assigned to identities"
+}
+
+Table "security"."security_account_roles" {
+  "security_account_role_id" UUID [pk]
+  "security_account_id" UUID [not null, ref: > "security"."accounts"."security_account_id"]
+  "security_role_id" UUID [not null, ref: > "security"."roles"."security_role_id"]
+  "assigned_at" TIMESTAMPTZ
+  "assigned_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id"]
+  "active" BOOLEAN [default: true]
+
+  Indexes {
+    (security_account_id)
+    (security_role_id)
+  }
+
+  note: "Explicitly assigns roles to security accounts"
+}
+
+
+Table "security"."security_account_enterprise_accounts" {
+  "security_account_enterprise_account_id" UUID [pk]
+  "security_account_id" UUID [not null, ref: > "security"."accounts"."security_account_id"]
+  "enterprise_account_id" INTEGER [not null, ref: > "enterprise"."accounts"."enterprise_account_id"]
+  "access_level" security.permission_type [default: "READ", note: "READ, WRITE, ADMIN, etc."]
+  "assigned_at" TIMESTAMPTZ
+  "assigned_by_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id"]
+  "active" BOOLEAN [default: true]
+
+  note: " Explicit, direct linkage primarily intended for customer access scenarios.  - Optimized for simplicity, performance, and clarity for common use-cases. - Clearly delineates straightforward customer access from more complex internal access controls managed via RBAC."
 }
 
 Table "security"."role_entitlements" {

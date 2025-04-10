@@ -116,6 +116,7 @@ definition:
       comparableRelationships:
         - relationshipName: securityIdentityRoles
         - relationshipName: securityRoleEntitlements
+        - relationshipName: securitySecurityAccountRoles
   logicalOperators:
     enable: true
   isNull:
@@ -270,4 +271,26 @@ definition:
           - fieldName: securityRoleId
   graphql:
     aggregateFieldName: securityRoleEntitlementsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: securitySecurityAccountRoles
+  sourceType: SecurityRoles
+  target:
+    model:
+      name: SecuritySecurityAccountRoles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: SecuritySecurityAccountRolesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: securityRoleId
+      target:
+        modelField:
+          - fieldName: securityRoleId
+  graphql:
+    aggregateFieldName: securitySecurityAccountRolesAggregate
 

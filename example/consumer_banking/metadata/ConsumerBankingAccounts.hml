@@ -11,6 +11,10 @@ definition:
     - name: accountNumber
       type: Varchar
       description: Customer facing account number
+    - name: annualPercentageYield
+      type: Numeric
+      description: APR on interest earned in this account, null if it is not interest
+        earning.
     - name: consumerBankingAccountId
       type: Int4!
       description: Unique ID for the consumer banking account
@@ -26,10 +30,18 @@ definition:
     - name: enterpriseAccountId
       type: Int4!
       description: Link to the enterprise-level account bucket
+    - name: interestYtd
+      type: Numeric
+      description: Interest earned year to date in this account. null if it is not
+        interest earning.
     - name: maturityDate
       type: Timestamptz
       description: Used for products such as certificates of deposits that have a
         maturity date
+    - name: maturityDate_1
+      type: Timestamptz
+      description: The endpoint date of a time bound product-based account, like a CD.
+        null if it is not a time bound product.
     - name: nickname
       type: Varchar
       description: A short name added by customer.
@@ -48,6 +60,10 @@ definition:
     - name: switchStatus
       type: EnterpriseSwitchStatus
       description: Specific to the UK account account switching service.
+    - name: term
+      type: Numeric
+      description: The total number of periods a time bound account is active (like a
+        CD). null if it is not a time bound product.
   graphql:
     typeName: ConsumerBanking_ConsumerBankingAccounts
     inputTypeName: ConsumerBanking_ConsumerBankingAccountsInput
@@ -61,6 +77,9 @@ definition:
         accountNumber:
           column:
             name: account_number
+        annualPercentageYield:
+          column:
+            name: annualPercentageYield
         consumerBankingAccountId:
           column:
             name: consumer_banking_account_id
@@ -76,9 +95,15 @@ definition:
         enterpriseAccountId:
           column:
             name: enterprise_account_id
+        interestYtd:
+          column:
+            name: interestYtd
         maturityDate:
           column:
             name: maturity_date
+        maturityDate_1:
+          column:
+            name: maturityDate
         nickname:
           column:
             name: nickname
@@ -97,6 +122,9 @@ definition:
         switchStatus:
           column:
             name: switch_status
+        term:
+          column:
+            name: term
 
 ---
 kind: TypePermissions
@@ -109,18 +137,22 @@ definition:
         allowedFields:
           - accountCategory
           - accountNumber
+          - annualPercentageYield
           - consumerBankingAccountId
           - consumerBankingProductId
           - currencyCode
           - displayName
           - enterpriseAccountId
+          - interestYtd
           - maturityDate
+          - maturityDate_1
           - nickname
           - openedDate
           - servicerIdentifierId
           - status
           - statusUpdateDateTime
           - switchStatus
+          - term
 
 ---
 kind: BooleanExpressionType
@@ -135,6 +167,8 @@ definition:
           booleanExpressionType: EnterpriseAccountCategoryBoolExp
         - fieldName: accountNumber
           booleanExpressionType: VarcharBoolExp
+        - fieldName: annualPercentageYield
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerBankingAccountId
           booleanExpressionType: Int4BoolExp
         - fieldName: consumerBankingProductId
@@ -145,7 +179,11 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: enterpriseAccountId
           booleanExpressionType: Int4BoolExp
+        - fieldName: interestYtd
+          booleanExpressionType: NumericBoolExp
         - fieldName: maturityDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: maturityDate_1
           booleanExpressionType: TimestamptzBoolExp
         - fieldName: nickname
           booleanExpressionType: VarcharBoolExp
@@ -159,6 +197,8 @@ definition:
           booleanExpressionType: TimestamptzBoolExp
         - fieldName: switchStatus
           booleanExpressionType: EnterpriseSwitchStatusBoolExp
+        - fieldName: term
+          booleanExpressionType: NumericBoolExp
       comparableRelationships:
         - relationshipName: consumerBankingAccountAccessConsents
         - relationshipName: consumerBankingAccountStatementPreferences
@@ -192,6 +232,8 @@ definition:
           aggregateExpression: EnterpriseAccountCategoryAggExp
         - fieldName: accountNumber
           aggregateExpression: VarcharAggExp
+        - fieldName: annualPercentageYield
+          aggregateExpression: NumericAggExp
         - fieldName: consumerBankingAccountId
           aggregateExpression: Int4AggExp
         - fieldName: consumerBankingProductId
@@ -202,7 +244,11 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: enterpriseAccountId
           aggregateExpression: Int4AggExp
+        - fieldName: interestYtd
+          aggregateExpression: NumericAggExp
         - fieldName: maturityDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: maturityDate_1
           aggregateExpression: TimestamptzAggExp
         - fieldName: nickname
           aggregateExpression: VarcharAggExp
@@ -216,6 +262,8 @@ definition:
           aggregateExpression: TimestamptzAggExp
         - fieldName: switchStatus
           aggregateExpression: EnterpriseSwitchStatusAggExp
+        - fieldName: term
+          aggregateExpression: NumericAggExp
   count:
     enable: true
   graphql:
@@ -234,6 +282,8 @@ definition:
           orderByExpression: EnterpriseAccountCategoryOrderByExp
         - fieldName: accountNumber
           orderByExpression: VarcharOrderByExp
+        - fieldName: annualPercentageYield
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerBankingAccountId
           orderByExpression: Int4OrderByExp
         - fieldName: consumerBankingProductId
@@ -244,7 +294,11 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: enterpriseAccountId
           orderByExpression: Int4OrderByExp
+        - fieldName: interestYtd
+          orderByExpression: NumericOrderByExp
         - fieldName: maturityDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: maturityDate_1
           orderByExpression: TimestamptzOrderByExp
         - fieldName: nickname
           orderByExpression: VarcharOrderByExp
@@ -258,6 +312,8 @@ definition:
           orderByExpression: TimestamptzOrderByExp
         - fieldName: switchStatus
           orderByExpression: EnterpriseSwitchStatusOrderByExp
+        - fieldName: term
+          orderByExpression: NumericOrderByExp
       orderableRelationships:
         - relationshipName: consumerBankingProduct
   graphql:

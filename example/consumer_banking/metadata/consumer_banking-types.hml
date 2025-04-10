@@ -1209,6 +1209,66 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
+  name: NumericAggExp
+  operand:
+    scalar:
+      aggregatedType: Numeric
+      aggregationFunctions:
+        - name: avg
+          returnType: Numeric
+        - name: max
+          returnType: Numeric
+        - name: min
+          returnType: Numeric
+        - name: stddev
+          returnType: Numeric
+        - name: stddev_pop
+          returnType: Numeric
+        - name: stddev_samp
+          returnType: Numeric
+        - name: sum
+          returnType: Numeric
+        - name: var_pop
+          returnType: Numeric
+        - name: var_samp
+          returnType: Numeric
+        - name: variance
+          returnType: Numeric
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: numeric
+          functionMapping:
+            avg:
+              name: avg
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
+    enable: true
+  countDistinct:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_NumericAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
   name: EnterpriseCurrencyCodeAggExp
   operand:
     scalar:
@@ -1314,6 +1374,19 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: ConsumerBanking_VarcharOrderByExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: NumericOrderByExp
+  operand:
+    scalar:
+      orderedType: Numeric
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_NumericOrderByExp
 
 ---
 kind: OrderByExpression
@@ -1514,66 +1587,6 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: NumericAggExp
-  operand:
-    scalar:
-      aggregatedType: Numeric
-      aggregationFunctions:
-        - name: avg
-          returnType: Numeric
-        - name: max
-          returnType: Numeric
-        - name: min
-          returnType: Numeric
-        - name: stddev
-          returnType: Numeric
-        - name: stddev_pop
-          returnType: Numeric
-        - name: stddev_samp
-          returnType: Numeric
-        - name: sum
-          returnType: Numeric
-        - name: var_pop
-          returnType: Numeric
-        - name: var_samp
-          returnType: Numeric
-        - name: variance
-          returnType: Numeric
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: consumer_banking
-          dataConnectorScalarType: numeric
-          functionMapping:
-            avg:
-              name: avg
-            max:
-              name: max
-            min:
-              name: min
-            stddev:
-              name: stddev
-            stddev_pop:
-              name: stddev_pop
-            stddev_samp:
-              name: stddev_samp
-            sum:
-              name: sum
-            var_pop:
-              name: var_pop
-            var_samp:
-              name: var_samp
-            variance:
-              name: variance
-  count:
-    enable: true
-  countDistinct:
-    enable: true
-  graphql:
-    selectTypeName: ConsumerBanking_NumericAggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
   name: EnterpriseCreditDebitIndicatorAggExp
   operand:
     scalar:
@@ -1653,19 +1666,6 @@ definition:
     enable: true
   graphql:
     selectTypeName: ConsumerBanking_ConsumerBankingBalanceTypeAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: NumericOrderByExp
-  operand:
-    scalar:
-      orderedType: Numeric
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: ConsumerBanking_NumericOrderByExp
 
 ---
 kind: OrderByExpression

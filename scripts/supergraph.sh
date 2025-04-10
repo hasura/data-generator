@@ -10,6 +10,7 @@ echo 'M_AUTH_KEY="secret"' >> .env
 echo 'VALIDATE_URL="http://local.hasura.dev:8787/validate"' >> .env
 echo 'FILE_OUTPUT_URL="http://local.hasura.dev:8787/file-out"' >> .env
 echo 'PROFILE_URL="http://local.hasura.dev:8787/profile"' >> .env
+echo 'FDX_URL="http://local.hasura.dev:3000"' >> .env
 
 
 ddn subgraph init consumer_banking

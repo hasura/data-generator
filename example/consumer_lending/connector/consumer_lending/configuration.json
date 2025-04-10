@@ -1229,6 +1229,14 @@
             "nullable": "nullable",
             "description": "Customer facing account number"
           },
+          "annualPercentageYield": {
+            "name": "annualPercentageYield",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "APR on interest earned in this account, null if it is not interest earning."
+          },
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
@@ -1269,6 +1277,22 @@
             },
             "nullable": "nonNullable",
             "description": "Link to the enterprise-level account bucket"
+          },
+          "interestYtd": {
+            "name": "interestYtd",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Interest earned year to date in this account. null if it is not interest earning."
+          },
+          "maturityDate": {
+            "name": "maturityDate",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": "The endpoint date of a time bound product-based account, like a CD. null if it is not a time bound product."
           },
           "maturity_date": {
             "name": "maturity_date",
@@ -1326,6 +1350,14 @@
             "nullable": "nullable",
             "hasDefault": "hasDefault",
             "description": "Specific to the UK account account switching service."
+          },
+          "term": {
+            "name": "term",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "The total number of periods a time bound account is active (like a CD). null if it is not a time bound product."
           }
         },
         "uniquenessConstraints": {
@@ -22640,6 +22672,183 @@
           }
         },
         "description": "Table storing information about running services on systems, tracking system services and their states."
+      },
+      "security_security_account_enterprise_accounts": {
+        "schemaName": "security",
+        "tableName": "security_account_enterprise_accounts",
+        "columns": {
+          "access_level": {
+            "name": "access_level",
+            "type": {
+              "scalarType": "security_permission_type"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": "READ, WRITE, ADMIN, etc."
+          },
+          "active": {
+            "name": "active",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "assigned_at": {
+            "name": "assigned_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "assigned_by_id": {
+            "name": "assigned_by_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "enterprise_account_id": {
+            "name": "enterprise_account_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "security_account_enterprise_account_id": {
+            "name": "security_account_enterprise_account_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "security_account_id": {
+            "name": "security_account_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "security_account_enterprise_accounts_pkey": [
+            "security_account_enterprise_account_id"
+          ]
+        },
+        "foreignRelations": {
+          "security_account_enterprise_accounts_assigned_by_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "assigned_by_id": "enterprise_associate_id"
+            }
+          },
+          "security_account_enterprise_accounts_enterprise_account_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "enterprise_account_id": "enterprise_account_id"
+            }
+          },
+          "security_account_enterprise_accounts_security_account_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "security_account_id": "security_account_id"
+            }
+          }
+        },
+        "description": "Explicit, direct linkage primarily intended for customer access scenarios.  - Optimized for simplicity, performance, and clarity for common use-cases. - Clearly delineates straightforward customer access from more complex internal access controls managed via RBAC."
+      },
+      "security_security_account_roles": {
+        "schemaName": "security",
+        "tableName": "security_account_roles",
+        "columns": {
+          "active": {
+            "name": "active",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "assigned_at": {
+            "name": "assigned_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "assigned_by_id": {
+            "name": "assigned_by_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "security_account_id": {
+            "name": "security_account_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "security_account_role_id": {
+            "name": "security_account_role_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "security_role_id": {
+            "name": "security_role_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "security_account_roles_pkey": [
+            "security_account_role_id"
+          ]
+        },
+        "foreignRelations": {
+          "security_account_roles_assigned_by_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "associates",
+            "columnMapping": {
+              "assigned_by_id": "enterprise_associate_id"
+            }
+          },
+          "security_account_roles_security_account_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "security_account_id": "security_account_id"
+            }
+          },
+          "security_account_roles_security_role_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "roles",
+            "columnMapping": {
+              "security_role_id": "security_role_id"
+            }
+          }
+        },
+        "description": "Explicitly assigns roles to security accounts"
       },
       "security_system_stats": {
         "schemaName": "security",
