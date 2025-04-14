@@ -56,4 +56,4 @@ These scenarios represent common security risks that organizations must address 
 
 ## Usage
 
-Execute the SQL script against a compatible PostgreSQL database to create the test data, then use the provided prompts with your analysis tools to identify the security risks described above.
+Use the provided prompts with your analysis tools to identify the security risks described above.
