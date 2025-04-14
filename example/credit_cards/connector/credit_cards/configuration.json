@@ -1009,7 +1009,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account that the consent is related to."
@@ -1128,7 +1128,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": null
@@ -1237,10 +1237,19 @@
             "nullable": "nullable",
             "description": "APR on interest earned in this account, null if it is not interest earning."
           },
+          "available_balance": {
+            "name": "available_balance",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -1260,6 +1269,15 @@
               "scalarType": "enterprise_currency_code"
             },
             "nullable": "nullable",
+            "description": null
+          },
+          "current_balance": {
+            "name": "current_balance",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
             "description": null
           },
           "displayName": {
@@ -1286,14 +1304,6 @@
             "nullable": "nullable",
             "description": "Interest earned year to date in this account. null if it is not interest earning."
           },
-          "maturityDate": {
-            "name": "maturityDate",
-            "type": {
-              "scalarType": "timestamptz"
-            },
-            "nullable": "nullable",
-            "description": "The endpoint date of a time bound product-based account, like a CD. null if it is not a time bound product."
-          },
           "maturity_date": {
             "name": "maturity_date",
             "type": {
@@ -1317,6 +1327,15 @@
             },
             "nullable": "nonNullable",
             "description": "Date the account was opened"
+          },
+          "opening_day_balance": {
+            "name": "opening_day_balance",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
           },
           "servicer_identifier_id": {
             "name": "servicer_identifier_id",
@@ -1412,7 +1431,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this balance belongs to"
@@ -1505,7 +1524,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this balance belongs to"
@@ -1699,7 +1718,7 @@
           "account_id": {
             "name": "account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nullable",
             "description": "The ID of the specific account related to the interaction. This can be NULL if the interaction isn't tied to a specific account (e.g., a general inquiry)."
@@ -1864,7 +1883,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this direct debit belongs to"
@@ -2076,7 +2095,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this offer belongs to"
@@ -2617,7 +2636,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this balance belongs to"
@@ -2907,7 +2926,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this standing order belongs to"
@@ -3875,7 +3894,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this balance belongs to"
@@ -4828,7 +4847,7 @@
           "consumer_banking_account_id": {
             "name": "consumer_banking_account_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "int8"
             },
             "nullable": "nonNullable",
             "description": "References the account this transaction belongs to"
@@ -15410,6 +15429,298 @@
         },
         "foreignRelations": {},
         "description": null
+      },
+      "enterprise_customer_demographics": {
+        "schemaName": "enterprise",
+        "tableName": "customer_demographics",
+        "columns": {
+          "channel_preference": {
+            "name": "channel_preference",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Preferred communication channel (mobile, online, branch, phone)"
+          },
+          "churn_risk_score": {
+            "name": "churn_risk_score",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Score indicating risk of account closure (1-100)"
+          },
+          "consumer_banking_account_id": {
+            "name": "consumer_banking_account_id",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": "Reference is here to make sure that customer demographics are only created afeter consumer_banking.accounts. Will always be NULL."
+          },
+          "credit_cards_card_accounts_id": {
+            "name": "credit_cards_card_accounts_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Reference is here to make sure that customer demographics are only created afeter credit_cards.card_accounts. Will always be NULL"
+          },
+          "credit_risk_tier": {
+            "name": "credit_risk_tier",
+            "type": {
+              "scalarType": "enterprise_credit_risk_tier"
+            },
+            "nullable": "nullable",
+            "description": "Credit risk category"
+          },
+          "cross_sell_propensity": {
+            "name": "cross_sell_propensity",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Score indicating likelihood to purchase additional products (1-100)"
+          },
+          "customer_lifetime_value": {
+            "name": "customer_lifetime_value",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Calculated lifetime value to the organization"
+          },
+          "data_consent_level": {
+            "name": "data_consent_level",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Level of consent provided for data usage"
+          },
+          "data_source": {
+            "name": "data_source",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Source of the demographic data (e.g., Experian, Acxiom, TransUnion)"
+          },
+          "data_usage_restriction": {
+            "name": "data_usage_restriction",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "Any specific restrictions on data usage"
+          },
+          "digital_engagement_score": {
+            "name": "digital_engagement_score",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Score indicating level of digital channel usage (1-100)"
+          },
+          "discretionary_spending_estimate": {
+            "name": "discretionary_spending_estimate",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Estimated monthly discretionary spending"
+          },
+          "education_level": {
+            "name": "education_level",
+            "type": {
+              "scalarType": "enterprise_education_level"
+            },
+            "nullable": "nullable",
+            "description": "Highest level of education completed"
+          },
+          "employer": {
+            "name": "employer",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Current employer name if available"
+          },
+          "employment_length_years": {
+            "name": "employment_length_years",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Years with current employer"
+          },
+          "enterprise_customer_demographics_id": {
+            "name": "enterprise_customer_demographics_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Auto-incrementing identifier for each demographic record"
+          },
+          "enterprise_party_id": {
+            "name": "enterprise_party_id",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": "Reference to the party this demographic data belongs to"
+          },
+          "estimated_home_value": {
+            "name": "estimated_home_value",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Estimated value of primary residence if owned"
+          },
+          "family_life_stage": {
+            "name": "family_life_stage",
+            "type": {
+              "scalarType": "enterprise_family_life_stage"
+            },
+            "nullable": "nullable",
+            "description": "Current family/life stage"
+          },
+          "homeownership_status": {
+            "name": "homeownership_status",
+            "type": {
+              "scalarType": "enterprise_homeownership_status"
+            },
+            "nullable": "nullable",
+            "description": "Housing status"
+          },
+          "household_size": {
+            "name": "household_size",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Number of individuals in household"
+          },
+          "income_bracket": {
+            "name": "income_bracket",
+            "type": {
+              "scalarType": "enterprise_income_bracket"
+            },
+            "nullable": "nullable",
+            "description": "Estimated annual income range"
+          },
+          "last_updated": {
+            "name": "last_updated",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": "Date when the demographic data was last updated"
+          },
+          "lifestyle_segment": {
+            "name": "lifestyle_segment",
+            "type": {
+              "scalarType": "enterprise_lifestyle_segment"
+            },
+            "nullable": "nullable",
+            "description": "Marketing lifestyle segmentation"
+          },
+          "net_worth_estimate": {
+            "name": "net_worth_estimate",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Estimated net worth"
+          },
+          "number_of_children": {
+            "name": "number_of_children",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Number of children"
+          },
+          "occupation_category": {
+            "name": "occupation_category",
+            "type": {
+              "scalarType": "enterprise_occupation_category"
+            },
+            "nullable": "nullable",
+            "description": "General occupational category"
+          },
+          "political_affiliation": {
+            "name": "political_affiliation",
+            "type": {
+              "scalarType": "enterprise_political_affiliation"
+            },
+            "nullable": "nullable",
+            "description": "Inferred political leaning"
+          },
+          "primary_investment_goals": {
+            "name": "primary_investment_goals",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Main investment objectives"
+          },
+          "risk_tolerance": {
+            "name": "risk_tolerance",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Investment risk tolerance level (conservative, moderate, aggressive)"
+          },
+          "total_household_income": {
+            "name": "total_household_income",
+            "type": {
+              "scalarType": "numeric"
+            },
+            "nullable": "nullable",
+            "description": "Estimated total household income"
+          },
+          "years_at_residence": {
+            "name": "years_at_residence",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Number of years at current residence"
+          }
+        },
+        "uniquenessConstraints": {
+          "customer_demographics_pkey": [
+            "enterprise_customer_demographics_id"
+          ]
+        },
+        "foreignRelations": {
+          "customer_demographics_consumer_banking_account_id_fkey": {
+            "foreignSchema": "consumer_banking",
+            "foreignTable": "accounts",
+            "columnMapping": {
+              "consumer_banking_account_id": "consumer_banking_account_id"
+            }
+          },
+          "customer_demographics_credit_cards_card_accounts_id_fkey": {
+            "foreignSchema": "credit_cards",
+            "foreignTable": "card_accounts",
+            "columnMapping": {
+              "credit_cards_card_accounts_id": "credit_cards_card_account_id"
+            }
+          },
+          "customer_demographics_enterprise_party_id_fkey": {
+            "foreignSchema": "enterprise",
+            "foreignTable": "parties",
+            "columnMapping": {
+              "enterprise_party_id": "enterprise_party_id"
+            }
+          }
+        },
+        "description": "Stores third-party demographic and marketing data about customers"
       },
       "enterprise_departments": {
         "schemaName": "enterprise",
@@ -36366,6 +36677,74 @@
             ]
           }
         },
+        "enterprise_credit_risk_tier": {
+          "typeName": "credit_risk_tier",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_credit_risk_tier"
+            },
+            "min": {
+              "returnType": "enterprise_credit_risk_tier"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_credit_risk_tier",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_risk_tier",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_risk_tier",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_credit_risk_tier",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_risk_tier",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_risk_tier",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_credit_risk_tier",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SUPER_PRIME",
+              "PRIME",
+              "NEAR_PRIME",
+              "SUBPRIME",
+              "DEEP_SUBPRIME",
+              "NO_SCORE",
+              "UNKNOWN"
+            ]
+          }
+        },
         "enterprise_currency_code": {
           "typeName": "currency_code",
           "schemaName": "enterprise",
@@ -36457,6 +36836,148 @@
             ]
           }
         },
+        "enterprise_education_level": {
+          "typeName": "education_level",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_education_level"
+            },
+            "min": {
+              "returnType": "enterprise_education_level"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_education_level",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_education_level",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_education_level",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_education_level",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_education_level",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_education_level",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_education_level",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "NO_FORMAL_EDUCATION",
+              "PRIMARY_EDUCATION",
+              "SECONDARY_EDUCATION",
+              "VOCATIONAL_TRAINING",
+              "ASSOCIATE_DEGREE",
+              "BACHELORS_DEGREE",
+              "MASTERS_DEGREE",
+              "DOCTORATE",
+              "PROFESSIONAL_DEGREE",
+              "OTHER",
+              "UNKNOWN"
+            ]
+          }
+        },
+        "enterprise_family_life_stage": {
+          "typeName": "family_life_stage",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_family_life_stage"
+            },
+            "min": {
+              "returnType": "enterprise_family_life_stage"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_family_life_stage",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_family_life_stage",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_family_life_stage",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_family_life_stage",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_family_life_stage",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_family_life_stage",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_family_life_stage",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "SINGLE_NO_CHILDREN",
+              "COUPLE_NO_CHILDREN",
+              "FAMILY_YOUNG_CHILDREN",
+              "FAMILY_SCHOOL_CHILDREN",
+              "FAMILY_ADULT_CHILDREN",
+              "EMPTY_NEST",
+              "RETIRED",
+              "OTHER",
+              "UNKNOWN"
+            ]
+          }
+        },
         "enterprise_frequency": {
           "typeName": "frequency",
           "schemaName": "enterprise",
@@ -36527,6 +37048,73 @@
               "IRREGULAR",
               "ONE_TIME",
               "OTHER"
+            ]
+          }
+        },
+        "enterprise_homeownership_status": {
+          "typeName": "homeownership_status",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_homeownership_status"
+            },
+            "min": {
+              "returnType": "enterprise_homeownership_status"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_homeownership_status",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_homeownership_status",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_homeownership_status",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_homeownership_status",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_homeownership_status",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_homeownership_status",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_homeownership_status",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "OWNER",
+              "MORTGAGED",
+              "RENTER",
+              "LIVING_WITH_FAMILY",
+              "OTHER",
+              "UNKNOWN"
             ]
           }
         },
@@ -36610,6 +37198,78 @@
             ]
           }
         },
+        "enterprise_income_bracket": {
+          "typeName": "income_bracket",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_income_bracket"
+            },
+            "min": {
+              "returnType": "enterprise_income_bracket"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_income_bracket",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_income_bracket",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_income_bracket",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_income_bracket",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_income_bracket",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_income_bracket",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_income_bracket",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "UNDER_15K",
+              "INCOME_15K_25K",
+              "INCOME_25K_35K",
+              "INCOME_35K_50K",
+              "INCOME_50K_75K",
+              "INCOME_75K_100K",
+              "INCOME_100K_150K",
+              "INCOME_150K_200K",
+              "INCOME_200K_250K",
+              "INCOME_250K_PLUS",
+              "UNKNOWN"
+            ]
+          }
+        },
         "enterprise_legal_structure": {
           "typeName": "legal_structure",
           "schemaName": "enterprise",
@@ -36690,6 +37350,85 @@
             ]
           }
         },
+        "enterprise_lifestyle_segment": {
+          "typeName": "lifestyle_segment",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_lifestyle_segment"
+            },
+            "min": {
+              "returnType": "enterprise_lifestyle_segment"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_lifestyle_segment",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_lifestyle_segment",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_lifestyle_segment",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_lifestyle_segment",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_lifestyle_segment",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_lifestyle_segment",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_lifestyle_segment",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "URBAN_PROFESSIONAL",
+              "SUBURBAN_FAMILY",
+              "RURAL_TRADITIONAL",
+              "BUDGET_CONSCIOUS",
+              "LUXURY_SEEKER",
+              "ECO_CONSCIOUS",
+              "TECH_SAVVY",
+              "EXPERIENTIAL",
+              "HEALTH_FOCUSED",
+              "CONVENIENCE_SEEKER",
+              "TRADITIONAL_BANKING",
+              "DIGITAL_FIRST",
+              "COMMUNITY_ORIENTED",
+              "CREDIT_REBUILDER",
+              "WEALTH_BUILDER",
+              "RETIREMENT_FOCUSED",
+              "OTHER",
+              "UNKNOWN"
+            ]
+          }
+        },
         "enterprise_marital_status": {
           "typeName": "marital_status",
           "schemaName": "enterprise",
@@ -36755,6 +37494,96 @@
               "DIVORCED",
               "WIDOWED",
               "NOT_SPECIFIED"
+            ]
+          }
+        },
+        "enterprise_occupation_category": {
+          "typeName": "occupation_category",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_occupation_category"
+            },
+            "min": {
+              "returnType": "enterprise_occupation_category"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_occupation_category",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_occupation_category",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_occupation_category",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_occupation_category",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_occupation_category",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_occupation_category",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_occupation_category",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "MANAGEMENT",
+              "BUSINESS_FINANCIAL",
+              "COMPUTER_MATHEMATICAL",
+              "ARCHITECTURE_ENGINEERING",
+              "SCIENCE",
+              "COMMUNITY_SOCIAL_SERVICE",
+              "LEGAL",
+              "EDUCATION",
+              "ARTS_ENTERTAINMENT",
+              "HEALTHCARE_PRACTITIONERS",
+              "HEALTHCARE_SUPPORT",
+              "PROTECTIVE_SERVICE",
+              "FOOD_SERVICE",
+              "BUILDING_MAINTENANCE",
+              "PERSONAL_CARE",
+              "SALES",
+              "OFFICE_ADMIN",
+              "FARMING_FISHING_FORESTRY",
+              "CONSTRUCTION",
+              "INSTALLATION_MAINTENANCE_REPAIR",
+              "PRODUCTION",
+              "TRANSPORTATION",
+              "MILITARY",
+              "RETIRED",
+              "STUDENT",
+              "HOMEMAKER",
+              "UNEMPLOYED",
+              "OTHER",
+              "UNKNOWN"
             ]
           }
         },
@@ -37036,6 +37865,75 @@
             "enum": [
               "INDIVIDUAL",
               "ORGANIZATION"
+            ]
+          }
+        },
+        "enterprise_political_affiliation": {
+          "typeName": "political_affiliation",
+          "schemaName": "enterprise",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "enterprise_political_affiliation"
+            },
+            "min": {
+              "returnType": "enterprise_political_affiliation"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "enterprise_political_affiliation",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_political_affiliation",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_political_affiliation",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "enterprise_political_affiliation",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_political_affiliation",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_political_affiliation",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "enterprise_political_affiliation",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "DEMOCRAT",
+              "REPUBLICAN",
+              "INDEPENDENT",
+              "LIBERTARIAN",
+              "GREEN",
+              "OTHER",
+              "NONE",
+              "UNKNOWN"
             ]
           }
         },

@@ -15,8 +15,10 @@ definition:
       type: Numeric
       description: APR on interest earned in this account, null if it is not interest
         earning.
+    - name: availableBalance
+      type: Numeric!
     - name: consumerBankingAccountId
-      type: Int4!
+      type: Int8!
       description: Unique ID for the consumer banking account
     - name: consumerBankingProductId
       type: Int4
@@ -24,6 +26,8 @@ definition:
         Required for all consumer accounts
     - name: currencyCode
       type: EnterpriseCurrencyCode
+    - name: currentBalance
+      type: Numeric!
     - name: displayName
       type: Varchar
       description: A friendly account description provided by the institution.
@@ -38,16 +42,14 @@ definition:
       type: Timestamptz
       description: Used for products such as certificates of deposits that have a
         maturity date
-    - name: maturityDate_1
-      type: Timestamptz
-      description: The endpoint date of a time bound product-based account, like a CD.
-        null if it is not a time bound product.
     - name: nickname
       type: Varchar
       description: A short name added by customer.
     - name: openedDate
       type: Timestamptz!
       description: Date the account was opened
+    - name: openingDayBalance
+      type: Numeric!
     - name: servicerIdentifierId
       type: Int4!
       description: Required reference to this institutions BIC scheme
@@ -80,6 +82,9 @@ definition:
         annualPercentageYield:
           column:
             name: annualPercentageYield
+        availableBalance:
+          column:
+            name: available_balance
         consumerBankingAccountId:
           column:
             name: consumer_banking_account_id
@@ -89,6 +94,9 @@ definition:
         currencyCode:
           column:
             name: currency_code
+        currentBalance:
+          column:
+            name: current_balance
         displayName:
           column:
             name: displayName
@@ -101,15 +109,15 @@ definition:
         maturityDate:
           column:
             name: maturity_date
-        maturityDate_1:
-          column:
-            name: maturityDate
         nickname:
           column:
             name: nickname
         openedDate:
           column:
             name: opened_date
+        openingDayBalance:
+          column:
+            name: opening_day_balance
         servicerIdentifierId:
           column:
             name: servicer_identifier_id
@@ -138,16 +146,18 @@ definition:
           - accountCategory
           - accountNumber
           - annualPercentageYield
+          - availableBalance
           - consumerBankingAccountId
           - consumerBankingProductId
           - currencyCode
+          - currentBalance
           - displayName
           - enterpriseAccountId
           - interestYtd
           - maturityDate
-          - maturityDate_1
           - nickname
           - openedDate
+          - openingDayBalance
           - servicerIdentifierId
           - status
           - statusUpdateDateTime
@@ -169,12 +179,16 @@ definition:
           booleanExpressionType: VarcharBoolExp
         - fieldName: annualPercentageYield
           booleanExpressionType: NumericBoolExp
+        - fieldName: availableBalance
+          booleanExpressionType: NumericBoolExp
         - fieldName: consumerBankingAccountId
-          booleanExpressionType: Int4BoolExp
+          booleanExpressionType: Int8BoolExp
         - fieldName: consumerBankingProductId
           booleanExpressionType: Int4BoolExp
         - fieldName: currencyCode
           booleanExpressionType: EnterpriseCurrencyCodeBoolExp
+        - fieldName: currentBalance
+          booleanExpressionType: NumericBoolExp
         - fieldName: displayName
           booleanExpressionType: VarcharBoolExp
         - fieldName: enterpriseAccountId
@@ -183,12 +197,12 @@ definition:
           booleanExpressionType: NumericBoolExp
         - fieldName: maturityDate
           booleanExpressionType: TimestamptzBoolExp
-        - fieldName: maturityDate_1
-          booleanExpressionType: TimestamptzBoolExp
         - fieldName: nickname
           booleanExpressionType: VarcharBoolExp
         - fieldName: openedDate
           booleanExpressionType: TimestamptzBoolExp
+        - fieldName: openingDayBalance
+          booleanExpressionType: NumericBoolExp
         - fieldName: servicerIdentifierId
           booleanExpressionType: Int4BoolExp
         - fieldName: status
@@ -234,12 +248,16 @@ definition:
           aggregateExpression: VarcharAggExp
         - fieldName: annualPercentageYield
           aggregateExpression: NumericAggExp
+        - fieldName: availableBalance
+          aggregateExpression: NumericAggExp
         - fieldName: consumerBankingAccountId
-          aggregateExpression: Int4AggExp
+          aggregateExpression: Int8AggExp
         - fieldName: consumerBankingProductId
           aggregateExpression: Int4AggExp
         - fieldName: currencyCode
           aggregateExpression: EnterpriseCurrencyCodeAggExp
+        - fieldName: currentBalance
+          aggregateExpression: NumericAggExp
         - fieldName: displayName
           aggregateExpression: VarcharAggExp
         - fieldName: enterpriseAccountId
@@ -248,12 +266,12 @@ definition:
           aggregateExpression: NumericAggExp
         - fieldName: maturityDate
           aggregateExpression: TimestamptzAggExp
-        - fieldName: maturityDate_1
-          aggregateExpression: TimestamptzAggExp
         - fieldName: nickname
           aggregateExpression: VarcharAggExp
         - fieldName: openedDate
           aggregateExpression: TimestamptzAggExp
+        - fieldName: openingDayBalance
+          aggregateExpression: NumericAggExp
         - fieldName: servicerIdentifierId
           aggregateExpression: Int4AggExp
         - fieldName: status
@@ -284,12 +302,16 @@ definition:
           orderByExpression: VarcharOrderByExp
         - fieldName: annualPercentageYield
           orderByExpression: NumericOrderByExp
+        - fieldName: availableBalance
+          orderByExpression: NumericOrderByExp
         - fieldName: consumerBankingAccountId
-          orderByExpression: Int4OrderByExp
+          orderByExpression: Int8OrderByExp
         - fieldName: consumerBankingProductId
           orderByExpression: Int4OrderByExp
         - fieldName: currencyCode
           orderByExpression: EnterpriseCurrencyCodeOrderByExp
+        - fieldName: currentBalance
+          orderByExpression: NumericOrderByExp
         - fieldName: displayName
           orderByExpression: VarcharOrderByExp
         - fieldName: enterpriseAccountId
@@ -298,12 +320,12 @@ definition:
           orderByExpression: NumericOrderByExp
         - fieldName: maturityDate
           orderByExpression: TimestamptzOrderByExp
-        - fieldName: maturityDate_1
-          orderByExpression: TimestamptzOrderByExp
         - fieldName: nickname
           orderByExpression: VarcharOrderByExp
         - fieldName: openedDate
           orderByExpression: TimestamptzOrderByExp
+        - fieldName: openingDayBalance
+          orderByExpression: NumericOrderByExp
         - fieldName: servicerIdentifierId
           orderByExpression: Int4OrderByExp
         - fieldName: status

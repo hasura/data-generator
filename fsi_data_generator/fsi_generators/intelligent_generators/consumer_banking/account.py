@@ -148,7 +148,7 @@ def generate_random_account(id_fields: Dict[str, Any], dg: DataGenerator) -> Dic
         "annualPercentageYield": round(annual_percentage_yield, 3) if annual_percentage_yield else None,
         "interestYtd": round(interest_ytd, 5) if interest_ytd else None,
         "term": term,
-        "maturityDate": maturity_date,
+        "maturity_date": maturity_date,
         "available_balance": available_balance,
         "current_balance": current_balance,
         "opening_day_balance": opening_day_balance

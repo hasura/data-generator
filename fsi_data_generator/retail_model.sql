@@ -166,6 +166,129 @@ CREATE TYPE "enterprise"."party_relationship_type" AS ENUM (
   'OTHER'
 );
 
+CREATE TYPE "enterprise"."education_level" AS ENUM (
+  'NO_FORMAL_EDUCATION',
+  'PRIMARY_EDUCATION',
+  'SECONDARY_EDUCATION',
+  'VOCATIONAL_TRAINING',
+  'ASSOCIATE_DEGREE',
+  'BACHELORS_DEGREE',
+  'MASTERS_DEGREE',
+  'DOCTORATE',
+  'PROFESSIONAL_DEGREE',
+  'OTHER',
+  'UNKNOWN'
+);
+
+CREATE TYPE "enterprise"."income_bracket" AS ENUM (
+  'UNDER_15K',
+  'INCOME_15K_25K',
+  'INCOME_25K_35K',
+  'INCOME_35K_50K',
+  'INCOME_50K_75K',
+  'INCOME_75K_100K',
+  'INCOME_100K_150K',
+  'INCOME_150K_200K',
+  'INCOME_200K_250K',
+  'INCOME_250K_PLUS',
+  'UNKNOWN'
+);
+
+CREATE TYPE "enterprise"."occupation_category" AS ENUM (
+  'MANAGEMENT',
+  'BUSINESS_FINANCIAL',
+  'COMPUTER_MATHEMATICAL',
+  'ARCHITECTURE_ENGINEERING',
+  'SCIENCE',
+  'COMMUNITY_SOCIAL_SERVICE',
+  'LEGAL',
+  'EDUCATION',
+  'ARTS_ENTERTAINMENT',
+  'HEALTHCARE_PRACTITIONERS',
+  'HEALTHCARE_SUPPORT',
+  'PROTECTIVE_SERVICE',
+  'FOOD_SERVICE',
+  'BUILDING_MAINTENANCE',
+  'PERSONAL_CARE',
+  'SALES',
+  'OFFICE_ADMIN',
+  'FARMING_FISHING_FORESTRY',
+  'CONSTRUCTION',
+  'INSTALLATION_MAINTENANCE_REPAIR',
+  'PRODUCTION',
+  'TRANSPORTATION',
+  'MILITARY',
+  'RETIRED',
+  'STUDENT',
+  'HOMEMAKER',
+  'UNEMPLOYED',
+  'OTHER',
+  'UNKNOWN'
+);
+
+CREATE TYPE "enterprise"."homeownership_status" AS ENUM (
+  'OWNER',
+  'MORTGAGED',
+  'RENTER',
+  'LIVING_WITH_FAMILY',
+  'OTHER',
+  'UNKNOWN'
+);
+
+CREATE TYPE "enterprise"."political_affiliation" AS ENUM (
+  'DEMOCRAT',
+  'REPUBLICAN',
+  'INDEPENDENT',
+  'LIBERTARIAN',
+  'GREEN',
+  'OTHER',
+  'NONE',
+  'UNKNOWN'
+);
+
+CREATE TYPE "enterprise"."family_life_stage" AS ENUM (
+  'SINGLE_NO_CHILDREN',
+  'COUPLE_NO_CHILDREN',
+  'FAMILY_YOUNG_CHILDREN',
+  'FAMILY_SCHOOL_CHILDREN',
+  'FAMILY_ADULT_CHILDREN',
+  'EMPTY_NEST',
+  'RETIRED',
+  'OTHER',
+  'UNKNOWN'
+);
+
+CREATE TYPE "enterprise"."lifestyle_segment" AS ENUM (
+  'URBAN_PROFESSIONAL',
+  'SUBURBAN_FAMILY',
+  'RURAL_TRADITIONAL',
+  'BUDGET_CONSCIOUS',
+  'LUXURY_SEEKER',
+  'ECO_CONSCIOUS',
+  'TECH_SAVVY',
+  'EXPERIENTIAL',
+  'HEALTH_FOCUSED',
+  'CONVENIENCE_SEEKER',
+  'TRADITIONAL_BANKING',
+  'DIGITAL_FIRST',
+  'COMMUNITY_ORIENTED',
+  'CREDIT_REBUILDER',
+  'WEALTH_BUILDER',
+  'RETIREMENT_FOCUSED',
+  'OTHER',
+  'UNKNOWN'
+);
+
+CREATE TYPE "enterprise"."credit_risk_tier" AS ENUM (
+  'SUPER_PRIME',
+  'PRIME',
+  'NEAR_PRIME',
+  'SUBPRIME',
+  'DEEP_SUBPRIME',
+  'NO_SCORE',
+  'UNKNOWN'
+);
+
 CREATE TYPE "enterprise"."address_relationship_type" AS ENUM (
   'RESIDENTIAL',
   'MAILING',
@@ -2898,6 +3021,41 @@ CREATE TABLE "enterprise"."party_relationships" (
   "priority" INT
 );
 
+CREATE TABLE "enterprise"."customer_demographics" (
+  "enterprise_customer_demographics_id" SERIAL PRIMARY KEY,
+  "enterprise_party_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT,
+  "credit_cards_card_accounts_id" INTEGER,
+  "data_source" VARCHAR(100) NOT NULL,
+  "last_updated" DATE NOT NULL,
+  "education_level" enterprise.education_level,
+  "income_bracket" enterprise.income_bracket,
+  "occupation_category" enterprise.occupation_category,
+  "employer" VARCHAR(255),
+  "employment_length_years" INTEGER,
+  "total_household_income" NUMERIC(15,2),
+  "household_size" INTEGER,
+  "homeownership_status" enterprise.homeownership_status,
+  "estimated_home_value" NUMERIC(15,2),
+  "years_at_residence" INTEGER,
+  "net_worth_estimate" NUMERIC(15,2),
+  "political_affiliation" enterprise.political_affiliation,
+  "number_of_children" INTEGER,
+  "family_life_stage" enterprise.family_life_stage,
+  "lifestyle_segment" enterprise.lifestyle_segment,
+  "credit_risk_tier" enterprise.credit_risk_tier,
+  "discretionary_spending_estimate" NUMERIC(15,2),
+  "primary_investment_goals" VARCHAR(255),
+  "risk_tolerance" VARCHAR(50),
+  "digital_engagement_score" INTEGER,
+  "customer_lifetime_value" NUMERIC(15,2),
+  "churn_risk_score" INTEGER,
+  "cross_sell_propensity" INTEGER,
+  "channel_preference" VARCHAR(50),
+  "data_consent_level" VARCHAR(50),
+  "data_usage_restriction" TEXT
+);
+
 CREATE TABLE "enterprise"."party_entity_addresses" (
   "enterprise_party_entity_address_id" SERIAL PRIMARY KEY,
   "enterprise_party_id" INTEGER NOT NULL,
@@ -2982,7 +3140,7 @@ CREATE TABLE "enterprise"."buildings" (
 );
 
 CREATE TABLE "consumer_banking"."accounts" (
-  "consumer_banking_account_id" SERIAL PRIMARY KEY,
+  "consumer_banking_account_id" BIGSERIAL PRIMARY KEY,
   "enterprise_account_id" INT NOT NULL,
   "account_number" VARCHAR(20),
   "consumer_banking_product_id" INTEGER,
@@ -3006,7 +3164,7 @@ CREATE TABLE "consumer_banking"."accounts" (
 
 CREATE TABLE "consumer_banking"."account_access_consents" (
   "consumer_banking_consent_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "creation_date_time" TIMESTAMPTZ NOT NULL,
   "status" consumer_banking.consent_status NOT NULL,
   "status_update_date_time" TIMESTAMPTZ NOT NULL,
@@ -3020,7 +3178,7 @@ CREATE TABLE "consumer_banking"."account_access_consents_permissions" (
 
 CREATE TABLE "consumer_banking"."balances" (
   "consumer_banking_balance_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
   "type" consumer_banking.balance_type NOT NULL,
   "date_time" TIMESTAMPTZ NOT NULL,
@@ -3031,7 +3189,7 @@ CREATE TABLE "consumer_banking"."balances" (
 
 CREATE TABLE "consumer_banking"."beneficiaries" (
   "consumer_banking_beneficiary_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "beneficiary_type" consumer_banking.beneficiary_type NOT NULL,
   "reference" VARCHAR(35),
   "supplementary_data" TEXT
@@ -3057,7 +3215,7 @@ CREATE TABLE "consumer_banking"."beneficiary_creditor_accounts" (
 
 CREATE TABLE "consumer_banking"."direct_debits" (
   "consumer_banking_direct_debit_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "direct_debit_status_code" consumer_banking.direct_debit_status_code NOT NULL,
   "name" VARCHAR(70) NOT NULL,
   "previous_payment_date_time" TIMESTAMPTZ,
@@ -3082,7 +3240,7 @@ CREATE TABLE "consumer_banking"."mandate_related_information" (
 
 CREATE TABLE "consumer_banking"."offers" (
   "consumer_banking_offer_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "offer_type" consumer_banking.offer_type NOT NULL,
   "description" VARCHAR(500),
   "start_date_time" TIMESTAMPTZ,
@@ -3127,7 +3285,7 @@ CREATE TABLE "consumer_banking"."other_product_types" (
 
 CREATE TABLE "consumer_banking"."scheduled_payments" (
   "consumer_banking_scheduled_payment_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "scheduled_payment_date_time" TIMESTAMPTZ NOT NULL,
   "scheduled_type" consumer_banking.scheduled_payment_type NOT NULL,
   "payment_method" consumer_banking.payment_method NOT NULL,
@@ -3162,7 +3320,7 @@ CREATE TABLE "consumer_banking"."scheduled_payment_creditor_accounts" (
 
 CREATE TABLE "consumer_banking"."standing_orders" (
   "consumer_banking_standing_order_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "next_payment_date_time" TIMESTAMPTZ,
   "last_payment_date_time" TIMESTAMPTZ,
   "standing_order_status_code" consumer_banking.standing_order_status_code NOT NULL DEFAULT 'ACTIVE',
@@ -3209,7 +3367,7 @@ CREATE TABLE "consumer_banking"."standing_order_creditor_accounts" (
 
 CREATE TABLE "consumer_banking"."statements" (
   "consumer_banking_statement_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "statement_reference" VARCHAR(35),
   "type" consumer_banking.statement_type NOT NULL,
   "start_date_time" TIMESTAMPTZ NOT NULL,
@@ -3307,7 +3465,7 @@ CREATE TABLE "consumer_banking"."statement_values" (
 
 CREATE TABLE "consumer_banking"."transactions" (
   "consumer_banking_transaction_id" SERIAL PRIMARY KEY,
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "consumer_banking_balance_id" INTEGER,
   "transaction_reference" VARCHAR(210),
   "credit_debit_indicator" enterprise.credit_debit_indicator NOT NULL,
@@ -3437,7 +3595,7 @@ CREATE TABLE "consumer_banking"."transaction_ultimate_debtors" (
 );
 
 CREATE TABLE "consumer_banking"."account_statement_preferences" (
-  "consumer_banking_account_id" INTEGER NOT NULL,
+  "consumer_banking_account_id" BIGINT NOT NULL,
   "consumer_banking_statement_id" INTEGER,
   "frequency" enterprise.frequency NOT NULL,
   "format" consumer_banking.statement_format NOT NULL,
@@ -3450,7 +3608,7 @@ CREATE TABLE "consumer_banking"."account_statement_preferences" (
 CREATE TABLE "consumer_banking"."customer_interactions" (
   "consumer_banking_interaction_id" SERIAL PRIMARY KEY,
   "customer_id" INT,
-  "account_id" INT,
+  "account_id" BIGINT,
   "enterprise_associate_id" INT,
   "interaction_type" consumer_banking.interaction_type,
   "interaction_date_time" TIMESTAMPTZ,
@@ -6263,6 +6421,72 @@ COMMENT ON COLUMN "enterprise"."party_relationships"."related_party_id" IS 'Refe
 COMMENT ON COLUMN "enterprise"."party_relationships"."relationship_type" IS 'Describes the role of the related party relative to the enterprise party';
 
 COMMENT ON COLUMN "enterprise"."party_relationships"."priority" IS 'Order of precedence for the relationship type (lower number = higher priority)';
+
+COMMENT ON TABLE "enterprise"."customer_demographics" IS 'Stores third-party demographic and marketing data about customers';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."enterprise_customer_demographics_id" IS 'Auto-incrementing identifier for each demographic record';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."enterprise_party_id" IS 'Reference to the party this demographic data belongs to';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."consumer_banking_account_id" IS 'Reference is here to make sure that customer demographics are only created afeter consumer_banking.accounts. Will always be NULL.';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."credit_cards_card_accounts_id" IS 'Reference is here to make sure that customer demographics are only created afeter credit_cards.card_accounts. Will always be NULL';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."data_source" IS 'Source of the demographic data (e.g., Experian, Acxiom, TransUnion)';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."last_updated" IS 'Date when the demographic data was last updated';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."education_level" IS 'Highest level of education completed';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."income_bracket" IS 'Estimated annual income range';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."occupation_category" IS 'General occupational category';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."employer" IS 'Current employer name if available';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."employment_length_years" IS 'Years with current employer';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."total_household_income" IS 'Estimated total household income';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."household_size" IS 'Number of individuals in household';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."homeownership_status" IS 'Housing status';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."estimated_home_value" IS 'Estimated value of primary residence if owned';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."years_at_residence" IS 'Number of years at current residence';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."net_worth_estimate" IS 'Estimated net worth';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."political_affiliation" IS 'Inferred political leaning';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."number_of_children" IS 'Number of children';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."family_life_stage" IS 'Current family/life stage';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."lifestyle_segment" IS 'Marketing lifestyle segmentation';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."credit_risk_tier" IS 'Credit risk category';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."discretionary_spending_estimate" IS 'Estimated monthly discretionary spending';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."primary_investment_goals" IS 'Main investment objectives';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."risk_tolerance" IS 'Investment risk tolerance level (conservative, moderate, aggressive)';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."digital_engagement_score" IS 'Score indicating level of digital channel usage (1-100)';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."customer_lifetime_value" IS 'Calculated lifetime value to the organization';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."churn_risk_score" IS 'Score indicating risk of account closure (1-100)';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."cross_sell_propensity" IS 'Score indicating likelihood to purchase additional products (1-100)';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."channel_preference" IS 'Preferred communication channel (mobile, online, branch, phone)';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."data_consent_level" IS 'Level of consent provided for data usage';
+
+COMMENT ON COLUMN "enterprise"."customer_demographics"."data_usage_restriction" IS 'Any specific restrictions on data usage';
 
 COMMENT ON TABLE "enterprise"."party_entity_addresses" IS 'Links parties to entity addresses with a defined relationship';
 
@@ -11791,6 +12015,12 @@ COMMENT ON COLUMN "small_business_banking"."suspicious_activity_reports"."suppor
 ALTER TABLE "enterprise"."party_relationships" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
 
 ALTER TABLE "enterprise"."party_relationships" ADD FOREIGN KEY ("related_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
+
+ALTER TABLE "enterprise"."customer_demographics" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
+
+ALTER TABLE "enterprise"."customer_demographics" ADD FOREIGN KEY ("consumer_banking_account_id") REFERENCES "consumer_banking"."accounts" ("consumer_banking_account_id");
+
+ALTER TABLE "enterprise"."customer_demographics" ADD FOREIGN KEY ("credit_cards_card_accounts_id") REFERENCES "credit_cards"."card_accounts" ("credit_cards_card_account_id");
 
 ALTER TABLE "enterprise"."party_entity_addresses" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
 

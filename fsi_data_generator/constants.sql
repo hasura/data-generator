@@ -29,3 +29,5 @@ INSERT INTO "enterprise"."currency" (code, name) VALUES
 ('IDR', 'Indonesian Rupiah'),
 ('PHP', 'Philippine Peso'),
 ('ARS', 'Argentine Peso');
+
+ALTER SEQUENCE consumer_banking.accounts_consumer_banking_account_id_seq RESTART WITH 100000000000;

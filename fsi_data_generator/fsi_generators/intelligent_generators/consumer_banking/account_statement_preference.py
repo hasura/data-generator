@@ -153,6 +153,7 @@ def generate_random_account_statement_preference(id_fields: Dict[str, Any], dg: 
 
                 # Ensure last statement date isn't before account opened
                 opened_date = datetime.datetime.combine(opened_date, datetime.datetime.min.time())
+                last_statement_date = datetime.datetime.combine(last_statement_date, datetime.datetime.min.time())
                 if last_statement_date < opened_date:
                     last_statement_date = opened_date + datetime.timedelta(days=30)
 

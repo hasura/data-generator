@@ -5,7 +5,7 @@ from .intelligent_generators.enterprise import (
     generate_random_address, generate_random_associate,
     generate_random_building, generate_random_department,
     generate_random_party, generate_random_party_entity_address,
-    generate_random_party_relationship, generate_random_permission)
+    generate_random_party_relationship, generate_random_permission, generate_random_customer_demographics)
 from faker import Faker
 
 fake = Faker()
@@ -13,6 +13,7 @@ fake = Faker()
 
 def enterprise(dg):
     return apply_schema_to_regex('enterprise', [
+        ('customer_demographics', random_record(dg, generate_random_customer_demographics)),
         ('identifiers', random_record(dg, generate_random_enterprise_identifier)),
         ('permissions', random_record(dg, generate_random_permission)),
         ('party_relationships', random_record(dg, generate_random_party_relationship)),

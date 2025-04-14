@@ -180,6 +180,7 @@ definition:
           booleanExpressionType: VarcharBoolExp
       comparableRelationships:
         - relationshipName: enterpriseAccountOwnerships
+        - relationshipName: enterpriseCustomerDemographics
         - relationshipName: enterprisePartyEntityAddresses
         - relationshipName: enterprisePartyRelationships
         - relationshipName: enterprisePartyRelationshipsByRelatedPartyId
@@ -345,6 +346,28 @@ definition:
           - fieldName: enterprisePartyId
   graphql:
     aggregateFieldName: enterpriseAccountOwnershipsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterpriseCustomerDemographics
+  sourceType: EnterpriseParties
+  target:
+    model:
+      name: EnterpriseCustomerDemographics
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: EnterpriseCustomerDemographicsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprisePartyId
+      target:
+        modelField:
+          - fieldName: enterprisePartyId
+  graphql:
+    aggregateFieldName: enterpriseCustomerDemographicsAggregate
 
 ---
 kind: Relationship

@@ -2,6 +2,58 @@
 kind: ScalarType
 version: v1
 definition:
+  name: Int8
+  graphql:
+    typeName: ConsumerBanking_Int8
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: Int8BoolExp
+  operand:
+    scalar:
+      type: Int8
+      comparisonOperators:
+        - name: _eq
+          argumentType: Int8!
+        - name: _gt
+          argumentType: Int8!
+        - name: _gte
+          argumentType: Int8!
+        - name: _in
+          argumentType: "[Int8!]!"
+        - name: _lt
+          argumentType: Int8!
+        - name: _lte
+          argumentType: Int8!
+        - name: _neq
+          argumentType: Int8!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: consumer_banking
+          dataConnectorScalarType: int8
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_Int8BoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: consumer_banking
+  dataConnectorScalarType: int8
+  representation: Int8
+  graphql:
+    comparisonExpressionTypeName: ConsumerBanking_Int8ComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
   name: Int4
   graphql:
     typeName: ConsumerBanking_Int4
@@ -207,56 +259,76 @@ definition:
     comparisonExpressionTypeName: ConsumerBanking_NumericComparisonExp
 
 ---
-kind: ScalarType
+kind: AggregateExpression
 version: v1
 definition:
-  name: Int8
-  graphql:
-    typeName: ConsumerBanking_Int8
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: Int8BoolExp
+  name: Int8AggExp
   operand:
     scalar:
-      type: Int8
-      comparisonOperators:
-        - name: _eq
-          argumentType: Int8!
-        - name: _gt
-          argumentType: Int8!
-        - name: _gte
-          argumentType: Int8!
-        - name: _in
-          argumentType: "[Int8!]!"
-        - name: _lt
-          argumentType: Int8!
-        - name: _lte
-          argumentType: Int8!
-        - name: _neq
-          argumentType: Int8!
-      dataConnectorOperatorMapping:
+      aggregatedType: Int8
+      aggregationFunctions:
+        - name: avg
+          returnType: Numeric
+        - name: bit_and
+          returnType: Int8
+        - name: bit_or
+          returnType: Int8
+        - name: bit_xor
+          returnType: Int8
+        - name: max
+          returnType: Int8
+        - name: min
+          returnType: Int8
+        - name: stddev
+          returnType: Numeric
+        - name: stddev_pop
+          returnType: Numeric
+        - name: stddev_samp
+          returnType: Numeric
+        - name: sum
+          returnType: Numeric
+        - name: var_pop
+          returnType: Numeric
+        - name: var_samp
+          returnType: Numeric
+        - name: variance
+          returnType: Numeric
+      dataConnectorAggregationFunctionMapping:
         - dataConnectorName: consumer_banking
           dataConnectorScalarType: int8
-          operatorMapping: {}
-  logicalOperators:
+          functionMapping:
+            avg:
+              name: avg
+            bit_and:
+              name: bit_and
+            bit_or:
+              name: bit_or
+            bit_xor:
+              name: bit_xor
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
     enable: true
-  isNull:
+  countDistinct:
     enable: true
   graphql:
-    typeName: ConsumerBanking_Int8BoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: consumer_banking
-  dataConnectorScalarType: int8
-  representation: Int8
-  graphql:
-    comparisonExpressionTypeName: ConsumerBanking_Int8ComparisonExp
+    selectTypeName: ConsumerBanking_Int8AggExp
 
 ---
 kind: AggregateExpression
@@ -385,6 +457,19 @@ definition:
     enable: true
   graphql:
     selectTypeName: ConsumerBanking_ConsumerBankingConsentStatusAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: Int8OrderByExp
+  operand:
+    scalar:
+      orderedType: Int8
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: ConsumerBanking_Int8OrderByExp
 
 ---
 kind: OrderByExpression
