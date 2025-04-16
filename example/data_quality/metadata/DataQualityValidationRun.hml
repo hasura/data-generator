@@ -1,0 +1,325 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DataQualityValidationRun
+  description: Represents a single execution instance of a data quality validation
+    run, including metadata and links to errors found.
+  fields:
+    - name: operationName
+      type: Varchar
+      description: Name of the specific operation being validated, if applicable.
+    - name: query
+      type: Text!
+      description: The query string that was executed and validated.
+    - name: runRole
+      type: Varchar
+      description: Role associated with the user who initiated this validation run.
+    - name: runTimestamp
+      type: Timestamptz!
+      description: Timestamp indicating when the validation run was executed or recorded.
+    - name: runUser
+      type: Varchar
+      description: Identifier of the user who initiated or is associated with this
+        validation run.
+    - name: sourceIdentifier
+      type: Varchar
+      description: Optional identifier for the source system, file, or event that
+        triggered this validation run.
+    - name: totalErrors
+      type: Int4
+      description: A summary count of the total number of validation errors found
+        during this run.
+    - name: validationConfigAllErrors
+      type: Bool
+      description: "Validation configuration flag: Indicates if the 'allErrors' option
+        (ajv) was enabled."
+    - name: validationConfigData
+      type: Bool
+      description: "Validation configuration flag: Indicates if the '$data' option
+        (ajv) was enabled."
+    - name: validationConfigStrict
+      type: Bool
+      description: "Validation configuration flag: Indicates if the 'strict' option
+        (ajv) was enabled."
+    - name: validationConfigVerbose
+      type: Bool
+      description: "Validation configuration flag: Indicates if the 'verbose' option
+        (ajv) was enabled."
+    - name: validationRunId
+      type: Int4!
+      description: Unique identifier for the validation run.
+    - name: validationSchema
+      type: Text!
+      description: The JSON schema used to validate the query results, stored as a
+        JSON string.
+    - name: variables
+      type: Text
+      description: Variables passed to the query, stored as a JSON string.
+  graphql:
+    typeName: DQ_DataQualityValidationRun
+    inputTypeName: DQ_DataQualityValidationRunInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: data_quality_validation_run
+      fieldMapping:
+        operationName:
+          column:
+            name: operation_name
+        query:
+          column:
+            name: query
+        runRole:
+          column:
+            name: run_role
+        runTimestamp:
+          column:
+            name: run_timestamp
+        runUser:
+          column:
+            name: run_user
+        sourceIdentifier:
+          column:
+            name: source_identifier
+        totalErrors:
+          column:
+            name: total_errors
+        validationConfigAllErrors:
+          column:
+            name: validation_config_all_errors
+        validationConfigData:
+          column:
+            name: validation_config_data
+        validationConfigStrict:
+          column:
+            name: validation_config_strict
+        validationConfigVerbose:
+          column:
+            name: validation_config_verbose
+        validationRunId:
+          column:
+            name: validation_run_id
+        validationSchema:
+          column:
+            name: validation_schema
+        variables:
+          column:
+            name: variables
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DataQualityValidationRun
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - operationName
+          - query
+          - runRole
+          - runTimestamp
+          - runUser
+          - sourceIdentifier
+          - totalErrors
+          - validationConfigAllErrors
+          - validationConfigData
+          - validationConfigStrict
+          - validationConfigVerbose
+          - validationRunId
+          - validationSchema
+          - variables
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DataQualityValidationRunBoolExp
+  operand:
+    object:
+      type: DataQualityValidationRun
+      comparableFields:
+        - fieldName: operationName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: query
+          booleanExpressionType: TextBoolExp
+        - fieldName: runRole
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: runTimestamp
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: runUser
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: sourceIdentifier
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: totalErrors
+          booleanExpressionType: Int4BoolExp
+        - fieldName: validationConfigAllErrors
+          booleanExpressionType: BoolBoolExp
+        - fieldName: validationConfigData
+          booleanExpressionType: BoolBoolExp
+        - fieldName: validationConfigStrict
+          booleanExpressionType: BoolBoolExp
+        - fieldName: validationConfigVerbose
+          booleanExpressionType: BoolBoolExp
+        - fieldName: validationRunId
+          booleanExpressionType: Int4BoolExp
+        - fieldName: validationSchema
+          booleanExpressionType: TextBoolExp
+        - fieldName: variables
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: dataQualityValidationErrors
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DQ_DataQualityValidationRunBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DataQualityValidationRunAggExp
+  operand:
+    object:
+      aggregatedType: DataQualityValidationRun
+      aggregatableFields:
+        - fieldName: operationName
+          aggregateExpression: VarcharAggExp
+        - fieldName: query
+          aggregateExpression: TextAggExp
+        - fieldName: runRole
+          aggregateExpression: VarcharAggExp
+        - fieldName: runTimestamp
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: runUser
+          aggregateExpression: VarcharAggExp
+        - fieldName: sourceIdentifier
+          aggregateExpression: VarcharAggExp
+        - fieldName: totalErrors
+          aggregateExpression: Int4AggExp
+        - fieldName: validationConfigAllErrors
+          aggregateExpression: BoolAggExp
+        - fieldName: validationConfigData
+          aggregateExpression: BoolAggExp
+        - fieldName: validationConfigStrict
+          aggregateExpression: BoolAggExp
+        - fieldName: validationConfigVerbose
+          aggregateExpression: BoolAggExp
+        - fieldName: validationRunId
+          aggregateExpression: Int4AggExp
+        - fieldName: validationSchema
+          aggregateExpression: TextAggExp
+        - fieldName: variables
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DQ_DataQualityValidationRunAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DataQualityValidationRunOrderByExp
+  operand:
+    object:
+      orderedType: DataQualityValidationRun
+      orderableFields:
+        - fieldName: operationName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: query
+          orderByExpression: TextOrderByExp
+        - fieldName: runRole
+          orderByExpression: VarcharOrderByExp
+        - fieldName: runTimestamp
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: runUser
+          orderByExpression: VarcharOrderByExp
+        - fieldName: sourceIdentifier
+          orderByExpression: VarcharOrderByExp
+        - fieldName: totalErrors
+          orderByExpression: Int4OrderByExp
+        - fieldName: validationConfigAllErrors
+          orderByExpression: BoolOrderByExp
+        - fieldName: validationConfigData
+          orderByExpression: BoolOrderByExp
+        - fieldName: validationConfigStrict
+          orderByExpression: BoolOrderByExp
+        - fieldName: validationConfigVerbose
+          orderByExpression: BoolOrderByExp
+        - fieldName: validationRunId
+          orderByExpression: Int4OrderByExp
+        - fieldName: validationSchema
+          orderByExpression: TextOrderByExp
+        - fieldName: variables
+          orderByExpression: TextOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: DQ_DataQualityValidationRunOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DataQualityValidationRun
+  objectType: DataQualityValidationRun
+  source:
+    dataConnectorName: data_quality
+    collection: data_quality_validation_run
+  filterExpressionType: DataQualityValidationRunBoolExp
+  aggregateExpression: DataQualityValidationRunAggExp
+  orderByExpression: DataQualityValidationRunOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: dataQualityValidationRun
+      subscription:
+        rootField: dataQualityValidationRun
+    selectUniques:
+      - queryRootField: dataQualityValidationRunByValidationRunId
+        uniqueIdentifier:
+          - validationRunId
+        subscription:
+          rootField: dataQualityValidationRunByValidationRunId
+    filterInputTypeName: DQ_DataQualityValidationRunFilterInput
+    aggregate:
+      queryRootField: dataQualityValidationRunAggregate
+      subscription:
+        rootField: dataQualityValidationRunAggregate
+  description: Represents a single execution instance of a data quality validation
+    run, including metadata and links to errors found.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DataQualityValidationRun
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: dataQualityValidationErrors
+  sourceType: DataQualityValidationRun
+  target:
+    model:
+      name: DataQualityValidationError
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: DataQualityValidationErrorAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: validationRunId
+      target:
+        modelField:
+          - fieldName: validationRunId
+  graphql:
+    aggregateFieldName: dataQualityValidationErrorsAggregate
+

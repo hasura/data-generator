@@ -85,6 +85,15 @@ ddn connector introspect app_mgmt
 ddn model add app_mgmt "app_mgmt*"
 ddn relationship add app_mgmt "*"
 
+ddn subgraph init data_quality
+ddn subgraph add --subgraph data_quality/subgraph.yaml --target-supergraph ./supergraph.yaml
+ddn context set subgraph data_quality/subgraph.yaml
+ddn codemod rename-graphql-prefixes --graphql-type-name 'DQ_'
+ddn connector init data_quality --hub-connector hasura/postgres --add-env CONNECTION_URI="postgres://postgres:password@local.hasura.dev:5432" --add-to-compose-file ./compose.yaml
+ddn connector introspect data_quality
+ddn model add data_quality "data_quality*"
+ddn relationship add data_quality "*"
+
 cp ../scripts/cross_schema_relationships/small_business_banking* small_business_banking/metadata
 cp ../scripts/cross_schema_relationships/consumer_banking* consumer_banking/metadata
 cp ../scripts/cross_schema_relationships/consumer_lending* consumer_lending/metadata

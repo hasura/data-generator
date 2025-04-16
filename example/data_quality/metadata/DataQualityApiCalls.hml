@@ -1,0 +1,184 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DataQualityApiCalls
+  fields:
+    - name: calledAt
+      type: Timestamptz!
+    - name: id
+      type: Uuid!
+    - name: method
+      type: Varchar!
+    - name: path
+      type: Varchar!
+    - name: queryParams
+      type: Jsonb
+    - name: requestHeaders
+      type: Jsonb
+  graphql:
+    typeName: DQ_DataQualityApiCalls
+    inputTypeName: DQ_DataQualityApiCallsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: data_quality_api_calls
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DataQualityApiCalls
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - calledAt
+          - id
+          - method
+          - path
+          - queryParams
+          - requestHeaders
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DataQualityApiCallsBoolExp
+  operand:
+    object:
+      type: DataQualityApiCalls
+      comparableFields:
+        - fieldName: calledAt
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: id
+          booleanExpressionType: UuidBoolExp
+        - fieldName: method
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: path
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: queryParams
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: requestHeaders
+          booleanExpressionType: JsonbBoolExp
+      comparableRelationships:
+        - relationshipName: dataQualityRecordTransformations
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DQ_DataQualityApiCallsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DataQualityApiCallsAggExp
+  operand:
+    object:
+      aggregatedType: DataQualityApiCalls
+      aggregatableFields:
+        - fieldName: calledAt
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: id
+          aggregateExpression: UuidAggExp
+        - fieldName: method
+          aggregateExpression: VarcharAggExp
+        - fieldName: path
+          aggregateExpression: VarcharAggExp
+        - fieldName: queryParams
+          aggregateExpression: JsonbAggExp
+        - fieldName: requestHeaders
+          aggregateExpression: JsonbAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DQ_DataQualityApiCallsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DataQualityApiCallsOrderByExp
+  operand:
+    object:
+      orderedType: DataQualityApiCalls
+      orderableFields:
+        - fieldName: calledAt
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: id
+          orderByExpression: UuidOrderByExp
+        - fieldName: method
+          orderByExpression: VarcharOrderByExp
+        - fieldName: path
+          orderByExpression: VarcharOrderByExp
+        - fieldName: queryParams
+          orderByExpression: JsonbOrderByExp
+        - fieldName: requestHeaders
+          orderByExpression: JsonbOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: DQ_DataQualityApiCallsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DataQualityApiCalls
+  objectType: DataQualityApiCalls
+  source:
+    dataConnectorName: data_quality
+    collection: data_quality_api_calls
+  filterExpressionType: DataQualityApiCallsBoolExp
+  aggregateExpression: DataQualityApiCallsAggExp
+  orderByExpression: DataQualityApiCallsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: dataQualityApiCalls
+      subscription:
+        rootField: dataQualityApiCalls
+    selectUniques:
+      - queryRootField: dataQualityApiCallsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: dataQualityApiCallsById
+    filterInputTypeName: DQ_DataQualityApiCallsFilterInput
+    aggregate:
+      queryRootField: dataQualityApiCallsAggregate
+      subscription:
+        rootField: dataQualityApiCallsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DataQualityApiCalls
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: dataQualityRecordTransformations
+  sourceType: DataQualityApiCalls
+  target:
+    model:
+      name: DataQualityRecordTransformations
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: DataQualityRecordTransformationsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: apiCallId
+  graphql:
+    aggregateFieldName: dataQualityRecordTransformationsAggregate
+

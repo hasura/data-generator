@@ -1,0 +1,190 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DataQualityFieldTransformationDetails
+  fields:
+    - name: id
+      type: Uuid!
+    - name: inputFieldName
+      type: Varchar!
+    - name: inputFieldValue
+      type: Text
+    - name: outputFieldName
+      type: Varchar!
+    - name: outputFieldValue
+      type: Text
+    - name: transformDescription
+      type: Varchar!
+    - name: transformationId
+      type: Uuid
+  graphql:
+    typeName: DQ_DataQualityFieldTransformationDetails
+    inputTypeName: DQ_DataQualityFieldTransformationDetailsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: data_quality_field_transformation_details
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DataQualityFieldTransformationDetails
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - inputFieldName
+          - inputFieldValue
+          - outputFieldName
+          - outputFieldValue
+          - transformDescription
+          - transformationId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DataQualityFieldTransformationDetailsBoolExp
+  operand:
+    object:
+      type: DataQualityFieldTransformationDetails
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: UuidBoolExp
+        - fieldName: inputFieldName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: inputFieldValue
+          booleanExpressionType: TextBoolExp
+        - fieldName: outputFieldName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: outputFieldValue
+          booleanExpressionType: TextBoolExp
+        - fieldName: transformDescription
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: transformationId
+          booleanExpressionType: UuidBoolExp
+      comparableRelationships:
+        - relationshipName: dataQualityRecordTransformation
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DQ_DataQualityFieldTransformationDetailsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DataQualityFieldTransformationDetailsAggExp
+  operand:
+    object:
+      aggregatedType: DataQualityFieldTransformationDetails
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: UuidAggExp
+        - fieldName: inputFieldName
+          aggregateExpression: VarcharAggExp
+        - fieldName: inputFieldValue
+          aggregateExpression: TextAggExp
+        - fieldName: outputFieldName
+          aggregateExpression: VarcharAggExp
+        - fieldName: outputFieldValue
+          aggregateExpression: TextAggExp
+        - fieldName: transformDescription
+          aggregateExpression: VarcharAggExp
+        - fieldName: transformationId
+          aggregateExpression: UuidAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DQ_DataQualityFieldTransformationDetailsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DataQualityFieldTransformationDetailsOrderByExp
+  operand:
+    object:
+      orderedType: DataQualityFieldTransformationDetails
+      orderableFields:
+        - fieldName: id
+          orderByExpression: UuidOrderByExp
+        - fieldName: inputFieldName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: inputFieldValue
+          orderByExpression: TextOrderByExp
+        - fieldName: outputFieldName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: outputFieldValue
+          orderByExpression: TextOrderByExp
+        - fieldName: transformDescription
+          orderByExpression: VarcharOrderByExp
+        - fieldName: transformationId
+          orderByExpression: UuidOrderByExp
+      orderableRelationships:
+        - relationshipName: dataQualityRecordTransformation
+  graphql:
+    expressionTypeName: DQ_DataQualityFieldTransformationDetailsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DataQualityFieldTransformationDetails
+  objectType: DataQualityFieldTransformationDetails
+  source:
+    dataConnectorName: data_quality
+    collection: data_quality_field_transformation_details
+  filterExpressionType: DataQualityFieldTransformationDetailsBoolExp
+  aggregateExpression: DataQualityFieldTransformationDetailsAggExp
+  orderByExpression: DataQualityFieldTransformationDetailsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: dataQualityFieldTransformationDetails
+      subscription:
+        rootField: dataQualityFieldTransformationDetails
+    selectUniques:
+      - queryRootField: dataQualityFieldTransformationDetailsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: dataQualityFieldTransformationDetailsById
+    filterInputTypeName: DQ_DataQualityFieldTransformationDetailsFilterInput
+    aggregate:
+      queryRootField: dataQualityFieldTransformationDetailsAggregate
+      subscription:
+        rootField: dataQualityFieldTransformationDetailsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DataQualityFieldTransformationDetails
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: dataQualityRecordTransformation
+  sourceType: DataQualityFieldTransformationDetails
+  target:
+    model:
+      name: DataQualityRecordTransformations
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: transformationId
+      target:
+        modelField:
+          - fieldName: id
+

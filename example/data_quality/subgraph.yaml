@@ -1,0 +1,20 @@
+kind: Subgraph
+version: v2
+definition:
+  name: data_quality
+  generator:
+    rootPath: .
+    graphqlTypeNamePrefix: DQ_
+    namingConvention: snake_case
+  includePaths:
+    - metadata
+  envMapping:
+    DATA_QUALITY_DATA_QUALITY_AUTHORIZATION_HEADER:
+      fromEnv: DATA_QUALITY_DATA_QUALITY_AUTHORIZATION_HEADER
+    DATA_QUALITY_DATA_QUALITY_READ_URL:
+      fromEnv: DATA_QUALITY_DATA_QUALITY_READ_URL
+    DATA_QUALITY_DATA_QUALITY_WRITE_URL:
+      fromEnv: DATA_QUALITY_DATA_QUALITY_WRITE_URL
+  connectors:
+    - path: connector/data_quality/connector.yaml
+      connectorLinkName: data_quality

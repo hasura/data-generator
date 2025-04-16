@@ -14,6 +14,8 @@ CREATE SCHEMA "credit_cards";
 
 CREATE SCHEMA "small_business_banking";
 
+CREATE SCHEMA "data_quality";
+
 CREATE TYPE "enterprise"."currency_code" AS ENUM (
   'USD',
   'EUR',
@@ -6292,6 +6294,95 @@ CREATE TABLE "small_business_banking"."suspicious_activity_reports" (
   "supporting_documentation" TEXT
 );
 
+CREATE TABLE "data_quality"."validation_run" (
+  "validation_run_id" SERIAL PRIMARY KEY,
+  "run_timestamp" TIMESTAMP NOT NULL DEFAULT 'now()',
+  "source_identifier" VARCHAR(255),
+  "run_user" VARCHAR(100),
+  "run_role" VARCHAR(100),
+  "operation_name" VARCHAR(255),
+  "variables" TEXT,
+  "validation_config_data" BOOLEAN,
+  "validation_config_verbose" BOOLEAN,
+  "validation_config_all_errors" BOOLEAN,
+  "validation_config_strict" BOOLEAN,
+  "query" TEXT NOT NULL,
+  "validation_schema" TEXT NOT NULL,
+  "total_errors" INTEGER
+);
+
+CREATE TABLE "data_quality"."validation_error" (
+  "validation_error_id" SERIAL PRIMARY KEY,
+  "validation_run_id" INTEGER NOT NULL,
+  "instance_path" TEXT NOT NULL,
+  "schema_path" TEXT NOT NULL,
+  "error_keyword" VARCHAR(100) NOT NULL,
+  "error_message" TEXT NOT NULL,
+  "failed_data" TEXT,
+  "error_params" TEXT,
+  "error_schema_detail" TEXT,
+  "error_parent_schema_detail" TEXT
+);
+
+CREATE TABLE "data_quality"."api_calls" (
+  "id" UUID PRIMARY KEY NOT NULL,
+  "method" VARCHAR NOT NULL,
+  "path" VARCHAR NOT NULL,
+  "queryParams" JSONB,
+  "requestHeaders" JSONB,
+  "calledAt" TIMESTAMP NOT NULL DEFAULT 'now()'
+);
+
+CREATE TABLE "data_quality"."record_transformations" (
+  "id" UUID PRIMARY KEY NOT NULL,
+  "inputType" VARCHAR NOT NULL,
+  "outputType" VARCHAR NOT NULL,
+  "description" VARCHAR NOT NULL,
+  "primaryKeyNames" VARCHAR NOT NULL,
+  "primaryKeyValues" VARCHAR NOT NULL,
+  "executedAt" TIMESTAMP NOT NULL DEFAULT 'now()',
+  "apiCallId" UUID
+);
+
+CREATE TABLE "data_quality"."field_transformation_details" (
+  "id" UUID PRIMARY KEY NOT NULL,
+  "transformDescription" VARCHAR NOT NULL,
+  "inputFieldName" VARCHAR NOT NULL,
+  "inputFieldValue" TEXT,
+  "outputFieldName" VARCHAR NOT NULL,
+  "outputFieldValue" TEXT,
+  "transformationId" UUID
+);
+
+CREATE TABLE "data_quality"."api_lineage" (
+  "apiLineageId" VARCHAR PRIMARY KEY NOT NULL,
+  "serverName" VARCHAR NOT NULL,
+  "apiCall" VARCHAR NOT NULL,
+  "description" TEXT,
+  "startDate" TIMESTAMP NOT NULL,
+  "endDate" TIMESTAMP,
+  "updatedAt" TIMESTAMP
+);
+
+CREATE TABLE "data_quality"."record_lineage" (
+  "recordLineageId" VARCHAR PRIMARY KEY NOT NULL,
+  "inputType" VARCHAR NOT NULL,
+  "outputType" VARCHAR NOT NULL,
+  "description" TEXT,
+  "inputDescription" TEXT,
+  "outputDescription" TEXT,
+  "pkNames" VARCHAR,
+  "apiLineageId" VARCHAR
+);
+
+CREATE TABLE "data_quality"."field_lineage" (
+  "fieldLineageId" VARCHAR PRIMARY KEY NOT NULL,
+  "fieldName" VARCHAR NOT NULL,
+  "description" TEXT,
+  "inputFields" VARCHAR,
+  "recordLineageId" VARCHAR
+);
+
 CREATE INDEX ON "consumer_banking"."account_access_consents_permissions" ("consumer_banking_consent_id", "enterprise_permission_id");
 
 CREATE UNIQUE INDEX ON "consumer_banking"."products" ("product_code");
@@ -12012,6 +12103,152 @@ COMMENT ON COLUMN "small_business_banking"."suspicious_activity_reports"."sar_fi
 
 COMMENT ON COLUMN "small_business_banking"."suspicious_activity_reports"."supporting_documentation" IS 'List of supporting documentation';
 
+COMMENT ON TABLE "data_quality"."validation_run" IS 'Represents a single execution instance of a data quality validation run, including metadata and links to errors found.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."validation_run_id" IS 'Unique identifier for the validation run.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."run_timestamp" IS 'Timestamp indicating when the validation run was executed or recorded.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."source_identifier" IS 'Optional identifier for the source system, file, or event that triggered this validation run.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."run_user" IS 'Identifier of the user who initiated or is associated with this validation run.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."run_role" IS 'Role associated with the user who initiated this validation run.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."operation_name" IS 'Name of the specific operation being validated, if applicable.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."variables" IS 'Variables passed to the query, stored as a JSON string.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."validation_config_data" IS 'Validation configuration flag: Indicates if the ''$data'' option (ajv) was enabled.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."validation_config_verbose" IS 'Validation configuration flag: Indicates if the ''verbose'' option (ajv) was enabled.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."validation_config_all_errors" IS 'Validation configuration flag: Indicates if the ''allErrors'' option (ajv) was enabled.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."validation_config_strict" IS 'Validation configuration flag: Indicates if the ''strict'' option (ajv) was enabled.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."query" IS 'The query string that was executed and validated.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."validation_schema" IS 'The JSON schema used to validate the query results, stored as a JSON string.';
+
+COMMENT ON COLUMN "data_quality"."validation_run"."total_errors" IS 'A summary count of the total number of validation errors found during this run.';
+
+COMMENT ON TABLE "data_quality"."validation_error" IS 'Stores details for a single data quality validation error identified during a validation run.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."validation_error_id" IS 'Unique identifier for the validation error record.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."validation_run_id" IS 'Foreign key linking to the specific validation run (validation_run table) where this error occurred.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."instance_path" IS 'JSON path within the validated data pointing to the element that failed validation.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."schema_path" IS 'JSON path within the validation schema pointing to the rule/keyword that failed.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."error_keyword" IS 'The specific JSON schema keyword (e.g., type, required, pattern) that triggered the validation failure.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."error_message" IS 'The human-readable error message generated by the validator.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."failed_data" IS 'String representation of the actual data value that failed the validation rule.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."error_params" IS 'Parameters associated with the failed validation keyword (e.g., allowed values for enum), stored as a JSON string.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."error_schema_detail" IS 'The specific part of the JSON schema definition that failed, stored as a JSON string.';
+
+COMMENT ON COLUMN "data_quality"."validation_error"."error_parent_schema_detail" IS 'The parent schema object containing the failed rule, stored as a JSON string.';
+
+COMMENT ON TABLE "data_quality"."api_calls" IS 'Records API calls made to the system for auditing and lineage tracking.';
+
+COMMENT ON COLUMN "data_quality"."api_calls"."id" IS 'Unique identifier for the API call.';
+
+COMMENT ON COLUMN "data_quality"."api_calls"."method" IS 'HTTP method used for the API call (GET, POST, etc.).';
+
+COMMENT ON COLUMN "data_quality"."api_calls"."path" IS 'API endpoint path that was called.';
+
+COMMENT ON COLUMN "data_quality"."api_calls"."queryParams" IS 'Query parameters sent with the API call, stored as JSONB.';
+
+COMMENT ON COLUMN "data_quality"."api_calls"."requestHeaders" IS 'HTTP headers sent with the API call, stored as JSONB.';
+
+COMMENT ON COLUMN "data_quality"."api_calls"."calledAt" IS 'Timestamp when the API call was made.';
+
+COMMENT ON TABLE "data_quality"."record_transformations" IS 'Tracks transformations applied to data records, linking input and output states.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."id" IS 'Unique identifier for the record transformation.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."inputType" IS 'The type/entity of the input record before transformation.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."outputType" IS 'The type/entity of the output record after transformation.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."description" IS 'Description of the transformation process or purpose.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."primaryKeyNames" IS 'Names of the primary key fields, comma-separated.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."primaryKeyValues" IS 'Values of the primary keys, comma-separated.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."executedAt" IS 'Timestamp when the transformation was executed.';
+
+COMMENT ON COLUMN "data_quality"."record_transformations"."apiCallId" IS 'Reference to the API call that triggered this transformation, if applicable.';
+
+COMMENT ON TABLE "data_quality"."field_transformation_details" IS 'Detailed tracking of field-level transformations within a record transformation.';
+
+COMMENT ON COLUMN "data_quality"."field_transformation_details"."id" IS 'Unique identifier for the field transformation detail.';
+
+COMMENT ON COLUMN "data_quality"."field_transformation_details"."transformDescription" IS 'Description of the specific transformation applied to this field.';
+
+COMMENT ON COLUMN "data_quality"."field_transformation_details"."inputFieldName" IS 'Name of the input field before transformation.';
+
+COMMENT ON COLUMN "data_quality"."field_transformation_details"."inputFieldValue" IS 'Value of the input field before transformation.';
+
+COMMENT ON COLUMN "data_quality"."field_transformation_details"."outputFieldName" IS 'Name of the output field after transformation.';
+
+COMMENT ON COLUMN "data_quality"."field_transformation_details"."outputFieldValue" IS 'Value of the output field after transformation.';
+
+COMMENT ON COLUMN "data_quality"."field_transformation_details"."transformationId" IS 'Reference to the parent record transformation.';
+
+COMMENT ON TABLE "data_quality"."api_lineage" IS 'Tracks the lineage of API calls for data governance and auditing purposes.';
+
+COMMENT ON COLUMN "data_quality"."api_lineage"."apiLineageId" IS 'Unique identifier for the API lineage record.';
+
+COMMENT ON COLUMN "data_quality"."api_lineage"."serverName" IS 'Name of the server handling the API call.';
+
+COMMENT ON COLUMN "data_quality"."api_lineage"."apiCall" IS 'The API endpoint and method called.';
+
+COMMENT ON COLUMN "data_quality"."api_lineage"."description" IS 'Description of the API call purpose or context.';
+
+COMMENT ON COLUMN "data_quality"."api_lineage"."startDate" IS 'Timestamp when this API lineage tracking began.';
+
+COMMENT ON COLUMN "data_quality"."api_lineage"."endDate" IS 'Timestamp when this API lineage tracking ended, if applicable.';
+
+COMMENT ON COLUMN "data_quality"."api_lineage"."updatedAt" IS 'Timestamp when this record was last updated.';
+
+COMMENT ON TABLE "data_quality"."record_lineage" IS 'Maps the lineage of data records through transformations for traceability.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."recordLineageId" IS 'Unique identifier for the record lineage.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."inputType" IS 'The type/entity of input data in this lineage.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."outputType" IS 'The type/entity of output data in this lineage.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."description" IS 'General description of this data lineage relationship.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."inputDescription" IS 'Description of the input data source or format.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."outputDescription" IS 'Description of the output data destination or format.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."pkNames" IS 'Names of primary key fields used to track the record through transformations.';
+
+COMMENT ON COLUMN "data_quality"."record_lineage"."apiLineageId" IS 'Reference to the API lineage this record is part of.';
+
+COMMENT ON TABLE "data_quality"."field_lineage" IS 'Tracks the lineage of individual fields through data transformations.';
+
+COMMENT ON COLUMN "data_quality"."field_lineage"."fieldLineageId" IS 'Unique identifier for the field lineage.';
+
+COMMENT ON COLUMN "data_quality"."field_lineage"."fieldName" IS 'Name of the field being tracked.';
+
+COMMENT ON COLUMN "data_quality"."field_lineage"."description" IS 'Description of this field lineage relationship.';
+
+COMMENT ON COLUMN "data_quality"."field_lineage"."inputFields" IS 'Source fields that contribute to this field, comma-separated.';
+
+COMMENT ON COLUMN "data_quality"."field_lineage"."recordLineageId" IS 'Reference to the parent record lineage.';
+
 ALTER TABLE "enterprise"."party_relationships" ADD FOREIGN KEY ("enterprise_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
 
 ALTER TABLE "enterprise"."party_relationships" ADD FOREIGN KEY ("related_party_id") REFERENCES "enterprise"."parties" ("enterprise_party_id");
@@ -12833,3 +13070,13 @@ ALTER TABLE "app_mgmt"."teams" ADD FOREIGN KEY ("team_lead_id") REFERENCES "ente
 ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("app_mgmt_team_id") REFERENCES "app_mgmt"."teams" ("app_mgmt_team_id");
 
 ALTER TABLE "app_mgmt"."team_members" ADD FOREIGN KEY ("enterprise_associate_id") REFERENCES "enterprise"."associates" ("enterprise_associate_id");
+
+ALTER TABLE "data_quality"."validation_error" ADD FOREIGN KEY ("validation_run_id") REFERENCES "data_quality"."validation_run" ("validation_run_id");
+
+ALTER TABLE "data_quality"."record_transformations" ADD FOREIGN KEY ("apiCallId") REFERENCES "data_quality"."api_calls" ("id");
+
+ALTER TABLE "data_quality"."field_transformation_details" ADD FOREIGN KEY ("transformationId") REFERENCES "data_quality"."record_transformations" ("id");
+
+ALTER TABLE "data_quality"."record_lineage" ADD FOREIGN KEY ("apiLineageId") REFERENCES "data_quality"."api_lineage" ("apiLineageId");
+
+ALTER TABLE "data_quality"."field_lineage" ADD FOREIGN KEY ("recordLineageId") REFERENCES "data_quality"."record_lineage" ("recordLineageId");

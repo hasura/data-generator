@@ -14622,6 +14622,446 @@
         },
         "description": "Stores all transaction activity on card accounts"
       },
+      "data_quality_api_calls": {
+        "schemaName": "data_quality",
+        "tableName": "api_calls",
+        "columns": {
+          "calledAt": {
+            "name": "calledAt",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "method": {
+            "name": "method",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "path": {
+            "name": "path",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "queryParams": {
+            "name": "queryParams",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "requestHeaders": {
+            "name": "requestHeaders",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "PK_c13bd40114bb06091a7dc59d74c": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "data_quality_api_lineage": {
+        "schemaName": "data_quality",
+        "tableName": "api_lineage",
+        "columns": {
+          "apiCall": {
+            "name": "apiCall",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "apiLineageId": {
+            "name": "apiLineageId",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "endDate": {
+            "name": "endDate",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "serverName": {
+            "name": "serverName",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "startDate": {
+            "name": "startDate",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "updatedAt": {
+            "name": "updatedAt",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "PK_36021aa6c14a4e971a96e5caba9": [
+            "apiLineageId"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "data_quality_field_lineage": {
+        "schemaName": "data_quality",
+        "tableName": "field_lineage",
+        "columns": {
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "fieldLineageId": {
+            "name": "fieldLineageId",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "fieldName": {
+            "name": "fieldName",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "inputFields": {
+            "name": "inputFields",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "recordLineageId": {
+            "name": "recordLineageId",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "PK_fcc2f37e5a4b33536d1673e4212": [
+            "fieldLineageId"
+          ]
+        },
+        "foreignRelations": {
+          "FK_4fe3f5d337ec743aa7576c755f9": {
+            "foreignSchema": "data_quality",
+            "foreignTable": "record_lineage",
+            "columnMapping": {
+              "recordLineageId": "recordLineageId"
+            }
+          }
+        },
+        "description": null
+      },
+      "data_quality_field_transformation_details": {
+        "schemaName": "data_quality",
+        "tableName": "field_transformation_details",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "inputFieldName": {
+            "name": "inputFieldName",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "inputFieldValue": {
+            "name": "inputFieldValue",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "outputFieldName": {
+            "name": "outputFieldName",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "outputFieldValue": {
+            "name": "outputFieldValue",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "transformDescription": {
+            "name": "transformDescription",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "transformationId": {
+            "name": "transformationId",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "PK_addab86dffb747e57dd721cef48": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "FK_598c06d5447018701668f594893": {
+            "foreignSchema": "data_quality",
+            "foreignTable": "record_transformations",
+            "columnMapping": {
+              "transformationId": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "data_quality_record_lineage": {
+        "schemaName": "data_quality",
+        "tableName": "record_lineage",
+        "columns": {
+          "apiLineageId": {
+            "name": "apiLineageId",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "inputDescription": {
+            "name": "inputDescription",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "inputType": {
+            "name": "inputType",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "outputDescription": {
+            "name": "outputDescription",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "outputType": {
+            "name": "outputType",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "pkNames": {
+            "name": "pkNames",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "recordLineageId": {
+            "name": "recordLineageId",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "PK_bb467416f33411fd00ab17ec4c9": [
+            "recordLineageId"
+          ]
+        },
+        "foreignRelations": {
+          "FK_e5b7a013671e436e10f1ac6e7ae": {
+            "foreignSchema": "data_quality",
+            "foreignTable": "api_lineage",
+            "columnMapping": {
+              "apiLineageId": "apiLineageId"
+            }
+          }
+        },
+        "description": null
+      },
+      "data_quality_record_transformations": {
+        "schemaName": "data_quality",
+        "tableName": "record_transformations",
+        "columns": {
+          "apiCallId": {
+            "name": "apiCallId",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "executedAt": {
+            "name": "executedAt",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "inputType": {
+            "name": "inputType",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "outputType": {
+            "name": "outputType",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "primaryKeyNames": {
+            "name": "primaryKeyNames",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "primaryKeyValues": {
+            "name": "primaryKeyValues",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "PK_23179e63ec1291f9e577939b2cd": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "FK_27720accfc505f36dc92391766d": {
+            "foreignSchema": "data_quality",
+            "foreignTable": "api_calls",
+            "columnMapping": {
+              "apiCallId": "id"
+            }
+          }
+        },
+        "description": null
+      },
       "data_quality_validation_error": {
         "schemaName": "data_quality",
         "tableName": "validation_error",

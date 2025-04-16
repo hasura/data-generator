@@ -1,0 +1,193 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DataQualityApiLineage
+  fields:
+    - name: apiCall
+      type: Varchar!
+    - name: apiLineageId
+      type: Varchar!
+    - name: description
+      type: Text
+    - name: endDate
+      type: Timestamptz
+    - name: serverName
+      type: Varchar!
+    - name: startDate
+      type: Timestamptz!
+    - name: updatedAt
+      type: Timestamptz
+  graphql:
+    typeName: DQ_DataQualityApiLineage
+    inputTypeName: DQ_DataQualityApiLineageInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: data_quality_api_lineage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DataQualityApiLineage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - apiCall
+          - apiLineageId
+          - description
+          - endDate
+          - serverName
+          - startDate
+          - updatedAt
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DataQualityApiLineageBoolExp
+  operand:
+    object:
+      type: DataQualityApiLineage
+      comparableFields:
+        - fieldName: apiCall
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: apiLineageId
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: endDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: serverName
+          booleanExpressionType: VarcharBoolExp
+        - fieldName: startDate
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: updatedAt
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships:
+        - relationshipName: dataQualityRecordLineages
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DQ_DataQualityApiLineageBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: DataQualityApiLineageAggExp
+  operand:
+    object:
+      aggregatedType: DataQualityApiLineage
+      aggregatableFields:
+        - fieldName: apiCall
+          aggregateExpression: VarcharAggExp
+        - fieldName: apiLineageId
+          aggregateExpression: VarcharAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: endDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: serverName
+          aggregateExpression: VarcharAggExp
+        - fieldName: startDate
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: updatedAt
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DQ_DataQualityApiLineageAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: DataQualityApiLineageOrderByExp
+  operand:
+    object:
+      orderedType: DataQualityApiLineage
+      orderableFields:
+        - fieldName: apiCall
+          orderByExpression: VarcharOrderByExp
+        - fieldName: apiLineageId
+          orderByExpression: VarcharOrderByExp
+        - fieldName: description
+          orderByExpression: TextOrderByExp
+        - fieldName: endDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: serverName
+          orderByExpression: VarcharOrderByExp
+        - fieldName: startDate
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: updatedAt
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: DQ_DataQualityApiLineageOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: DataQualityApiLineage
+  objectType: DataQualityApiLineage
+  source:
+    dataConnectorName: data_quality
+    collection: data_quality_api_lineage
+  filterExpressionType: DataQualityApiLineageBoolExp
+  aggregateExpression: DataQualityApiLineageAggExp
+  orderByExpression: DataQualityApiLineageOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: dataQualityApiLineage
+      subscription:
+        rootField: dataQualityApiLineage
+    selectUniques:
+      - queryRootField: dataQualityApiLineageByApiLineageId
+        uniqueIdentifier:
+          - apiLineageId
+        subscription:
+          rootField: dataQualityApiLineageByApiLineageId
+    filterInputTypeName: DQ_DataQualityApiLineageFilterInput
+    aggregate:
+      queryRootField: dataQualityApiLineageAggregate
+      subscription:
+        rootField: dataQualityApiLineageAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: DataQualityApiLineage
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: dataQualityRecordLineages
+  sourceType: DataQualityApiLineage
+  target:
+    model:
+      name: DataQualityRecordLineage
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: DataQualityRecordLineageAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: apiLineageId
+      target:
+        modelField:
+          - fieldName: apiLineageId
+  graphql:
+    aggregateFieldName: dataQualityRecordLineagesAggregate
+
