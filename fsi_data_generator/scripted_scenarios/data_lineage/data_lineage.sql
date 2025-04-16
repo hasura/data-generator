@@ -224,16 +224,6 @@ VALUES
 -- DATA ARCHITECT FOCUSED INSERTS
 -- =============================================
 
--- Additional API calls with different patterns and usage including version information
-INSERT INTO data_quality.api_calls (id, method, path, "queryParams", "requestHeaders", "calledAt")
-VALUES
-  -- Additional API calls (already part of the dataset)
-  ('66666666-6666-6666-6666-666666666666', 'GET', '/fdx/v4/accounts/A12345/balances', '{"version": "2.1"}', '{"Authorization": "Bearer tokenXYZ", "x-consumer-id": "fintech_startup_A", "x-api-version": "2.1"}', '2024-09-15 09:30:00'),
-  ('77777777-7777-7777-7777-777777777777', 'GET', '/fdx/v4/accounts/A67890/owner', '{"version": "2.0"}', '{"Authorization": "Bearer tokenUVW", "x-consumer-id": "neobank_B", "x-api-version": "2.0"}', '2024-12-15 10:45:00'),
-  ('88888888-8888-8888-8888-888888888888', 'GET', '/fdx/v4/accounts/A34567/transactions', '{"startTime": "2025-02-01T00:00:00Z", "endTime": "2025-03-01T00:00:00Z", "version": "3.0"}', '{"Authorization": "Bearer tokenRST", "x-consumer-id": "wealth_manager_C", "x-api-version": "3.0"}', '2025-01-20 13:15:00'),
-  ('99999999-9999-9999-9999-999999999999', 'GET', '/fdx/v4/accounts', '{"customer_id": "C24680", "account_type": "CHECKING,SAVINGS", "include": "balances", "version": "2.1"}', '{"Authorization": "Bearer tokenJKL", "x-consumer-id": "credit_union_D", "x-api-version": "2.1"}', '2025-03-15 11:30:00'),
-  ('aaaa1234-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'GET', '/fdx/v4/accounts', '{"customer_id": "C13579", "account_status": "ACTIVE", "include": "all", "version": "3.0"}', '{"Authorization": "Bearer tokenMNO", "x-consumer-id": "community_bank_E", "x-api-version": "3.0"}', '2025-02-25 14:45:00');
-
 -- Additional record transformations with varying complexity and performance
 INSERT INTO data_quality.record_transformations (id, "inputType", "outputType", description, "primaryKeyNames", "primaryKeyValues", "executedAt", "apiCallId")
 VALUES
@@ -293,61 +283,39 @@ VALUES
 -- CHIEF MARKETING OFFICER (CMO) FOCUSED INSERTS
 -- =============================================
 
--- API calls with various institution types and patterns including version information
-INSERT INTO data_quality.api_calls (id, method, path, "queryParams", "requestHeaders", "calledAt")
-VALUES
-  -- Additional API calls (already part of the dataset)
-  ('bbbb0000-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'GET', '/fdx/v4/accounts', '{"customer_id": "C54321", "include": "balances,transactions,owner", "version": "3.0"}', '{"Authorization": "Bearer tokenPQR", "x-consumer-id": "fintech_wealth_advisor", "x-api-version": "3.0"}', '2025-02-01 09:00:00'),
-  ('cccc0000-cccc-cccc-cccc-cccccccccccc', 'GET', '/fdx/v4/accounts', '{"customer_id": "C97531", "include": "balances,owner", "version": "2.1"}', '{"Authorization": "Bearer tokenSTU", "x-consumer-id": "digital_lending_platform", "x-api-version": "2.1"}', '2025-02-28 11:30:00'),
-  ('dddd0000-dddd-dddd-dddd-dddddddddddd', 'GET', '/fdx/v4/accounts', '{"customer_id": "C86420", "include": "balances,transactions", "version": "3.0"}', '{"Authorization": "Bearer tokenVWX", "x-consumer-id": "personal_finance_app", "x-api-version": "3.0"}', '2025-03-10 10:15:00'),
-  ('eeee0000-eeee-eeee-eeee-eeeeeeeeeeee', 'GET', '/fdx/v4/accounts/A54321/transactions', '{"startTime": "2025-01-01T00:00:00Z", "endTime": "2025-03-01T00:00:00Z", "type": "DEBIT,CREDIT", "version": "2.1"}', '{"Authorization": "Bearer tokenYZA", "x-consumer-id": "enterprise_accounting_system", "x-api-version": "2.1"}', '2025-03-20 13:45:00'),
-  ('ffff0000-ffff-ffff-ffff-ffffffffffff', 'GET', '/fdx/v4/accounts/A97531/owner', '{"version": "3.0"}', '{"Authorization": "Bearer tokenBCD", "x-consumer-id": "credit_building_app", "x-api-version": "3.0"}', '2025-03-25 09:30:00');
-
--- Record transformations showing customer usage patterns
+-- Customer usage pattern transformations
 INSERT INTO data_quality.record_transformations (id, "inputType", "outputType", description, "primaryKeyNames", "primaryKeyValues", "executedAt", "apiCallId")
 VALUES
-  ('a6a6a6a6-a6a6-a6a6-a6a6-a6a6a6a6a6a6', 'INTERNAL_PORTFOLIO', 'FDX_ACCOUNT', 'Transformation from portfolio management system to FDX format', 'account_id', 'A54321', '2025-03-05 09:00:10', 'bbbb0000-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
-  ('a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7', 'INTERNAL_LOAN_DATA', 'FDX_ACCOUNT', 'Transformation from loan system to FDX format', 'customer_id,account_id', 'C97531,A97531', '2025-03-05 11:30:20', 'cccc0000-cccc-cccc-cccc-cccccccccccc'),
-  ('a8a8a8a8-a8a8-a8a8-a8a8-a8a8a8a8a8a8', 'INTERNAL_BUDGETING', 'FDX_ACCOUNT', 'Transformation from budgeting system to FDX format', 'customer_id,account_id', 'C86420,A86420', '2025-03-06 10:15:30', 'dddd0000-dddd-dddd-dddd-dddddddddddd'),
-  ('a9a9a9a9-a9a9-a9a9-a9a9-a9a9a9a9a9a9', 'INTERNAL_ACCOUNTING', 'FDX_TRANSACTION', 'Transformation from accounting system to FDX format', 'transaction_ids', 'T54321,T54322,T54323', '2025-03-06 13:45:40', 'eeee0000-eeee-eeee-eeee-eeeeeeeeeeee'),
-  ('aaaa0000-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'INTERNAL_CREDIT', 'FDX_OWNER', 'Transformation from credit system to FDX format', 'customer_id', 'C97531', '2025-03-07 09:30:50', 'ffff0000-ffff-ffff-ffff-ffffffffffff');Id")
-VALUES
-  ('a6a6a6a6-a6a6-a6a6-a6a6-a6a6a6a6a6a6', 'INTERNAL_PORTFOLIO', 'FDX_ACCOUNT', 'Transformation from portfolio management system to FDX format', 'account_id', 'A54321', '2025-03-05 09:00:10', 'bbbb0000-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
-  ('a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7', 'INTERNAL_LOAN_DATA', 'FDX_ACCOUNT', 'Transformation from loan system to FDX format', 'customer_id,account_id', 'C97531,A97531', '2025-03-05 11:30:20', 'cccc0000-cccc-cccc-cccc-cccccccccccc'),
-  ('a8a8a8a8-a8a8-a8a8-a8a8-a8a8a8a8a8a8', 'INTERNAL_BUDGETING', 'FDX_ACCOUNT', 'Transformation from budgeting system to FDX format', 'customer_id,account_id', 'C86420,A86420', '2025-03-06 10:15:30', 'dddd0000-dddd-dddd-dddd-dddddddddddd'),
-  ('a9a9a9a9-a9a9-a9a9-a9a9-a9a9a9a9a9a9', 'INTERNAL_ACCOUNTING', 'FDX_TRANSACTION', 'Transformation from accounting system to FDX format', 'transaction_ids', 'T54321,T54322,T54323', '2025-03-06 13:45:40', 'eeee0000-eeee-eeee-eeee-eeeeeeeeeeee'),
-  ('aaaa0000-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'INTERNAL_CREDIT', 'FDX_OWNER', 'Transformation from credit system to FDX format', 'customer_id', 'C97531', '2025-03-07 09:30:50', 'ffff0000-ffff-ffff-ffff-ffffffffffff');Id")
-VALUES
-  ('a6a6a6a6-a6a6-a6a6-a6a6-a6a6a6a6a6a6', 'FDX_ACCOUNT', 'WEALTH_PORTFOLIO', 'Transformation for wealth management aggregation', 'account_id', 'A54321', '2025-03-05 09:00:10', 'bbbb0000-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
-  ('a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7', 'FDX_ACCOUNT', 'LOAN_APPLICATION', 'Transformation for lending qualification', 'customer_id,account_id', 'C97531,A97531', '2025-03-05 11:30:20', 'cccc0000-cccc-cccc-cccc-cccccccccccc'),
-  ('a8a8a8a8-a8a8-a8a8-a8a8-a8a8a8a8a8a8', 'FDX_ACCOUNT', 'BUDGET_TRACKER', 'Transformation for personal finance tracking', 'customer_id,account_id', 'C86420,A86420', '2025-03-06 10:15:30', 'dddd0000-dddd-dddd-dddd-dddddddddddd'),
-  ('a9a9a9a9-a9a9-a9a9-a9a9-a9a9a9a9a9a9', 'FDX_TRANSACTION', 'ACCOUNTING_ENTRY', 'Transformation for enterprise accounting system', 'transaction_ids', 'T54321,T54322,T54323', '2025-03-06 13:45:40', 'eeee0000-eeee-eeee-eeee-eeeeeeeeeeee'),
-  ('aaaa0000-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'FDX_OWNER', 'CREDIT_PROFILE', 'Transformation for credit assessment', 'customer_id', 'C97531', '2025-03-07 09:30:50', 'ffff0000-ffff-ffff-ffff-ffffffffffff');
+  ('b6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6', 'FDX_ACCOUNT', 'WEALTH_PORTFOLIO', 'Transformation for wealth management aggregation', 'account_id', 'A54321', '2025-03-05 09:00:10', 'bbbb0000-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
+  ('b7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7', 'FDX_ACCOUNT', 'LOAN_APPLICATION', 'Transformation for lending qualification', 'customer_id,account_id', 'C97531,A97531', '2025-03-05 11:30:20', 'cccc0000-cccc-cccc-cccc-cccccccccccc'),
+  ('b8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8', 'FDX_ACCOUNT', 'BUDGET_TRACKER', 'Transformation for personal finance tracking', 'customer_id,account_id', 'C86420,A86420', '2025-03-06 10:15:30', 'dddd0000-dddd-dddd-dddd-dddddddddddd'),
+  ('b9b9b9b9-b9b9-b9b9-b9b9-b9b9b9b9b9b9', 'FDX_TRANSACTION', 'ACCOUNTING_ENTRY', 'Transformation for enterprise accounting system', 'transaction_ids', 'T54321,T54322,T54323', '2025-03-06 13:45:40', 'eeee0000-eeee-eeee-eeee-eeeeeeeeeeee'),
+  ('cdcd0000-cdcd-cdcd-cdcd-cdcdcdcdcdcd', 'FDX_OWNER', 'CREDIT_PROFILE', 'Transformation for credit assessment', 'customer_id', 'C97531', '2025-03-07 09:30:50', 'ffff0000-ffff-ffff-ffff-ffffffffffff');
 
 -- Field transformations showing customer value-add processing
 INSERT INTO data_quality.field_transformation_details (id, "transformDescription", "inputFieldName", "inputFieldValue", "outputFieldName", "outputFieldValue", "transformationId")
 VALUES
   -- Wealth management transformations
-  ('50a50a50-50a1-50a1-50a1-50a50a50a50a', 'Asset classification', 'accountType,investmentData', 'INVESTMENT,{...}', 'asset_class', 'EQUITY', 'a6a6a6a6-a6a6-a6a6-a6a6-a6a6a6a6a6a6'),
-  ('51a51a51-51a1-51a1-51a1-51a51a51a51a', 'Risk profile calculation', 'investmentData,transactionHistory', '{...},{...}', 'risk_score', '65', 'a6a6a6a6-a6a6-a6a6-a6a6-a6a6a6a6a6a6'),
-  ('52a52a52-52a1-52a1-52a1-52a52a52a52a', 'Portfolio diversification analysis', 'investmentData,balances', '{...},{...}', 'diversification_index', '0.72', 'a6a6a6a6-a6a6-a6a6-a6a6-a6a6a6a6a6a6'),
+  ('50a50a50-50a1-50a1-50a1-50a50a50a50a', 'Asset classification', 'accountType,investmentData', 'INVESTMENT,{...}', 'asset_class', 'EQUITY', 'b6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6'),
+  ('51a51a51-51a1-51a1-51a1-51a51a51a51a', 'Risk profile calculation', 'investmentData,transactionHistory', '{...},{...}', 'risk_score', '65', 'b6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6'),
+  ('52a52a52-52a1-52a1-52a1-52a52a52a52a', 'Portfolio diversification analysis', 'investmentData,balances', '{...},{...}', 'diversification_index', '0.72', 'b6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6'),
 
   -- Lending qualification transformations
-  ('53a53a53-53a1-53a1-53a1-53a53a53a53a', 'Income estimation', 'transactionHistory,accountType', '{...},CHECKING', 'estimated_monthly_income', '5200.00', 'a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7'),
-  ('54a54a54-54a1-54a1-54a1-54a54a54a54a', 'Expense pattern analysis', 'transactionHistory', '{...}', 'expense_stability_score', '85', 'a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7'),
-  ('55a55a55-55a1-55a1-55a1-55a55a55a55a', 'Debt calculation', 'balances,accountType', '{...},CREDIT_CARD', 'current_debt_load', '12500.00', 'a7a7a7a7-a7a7-a7a7-a7a7-a7a7a7a7a7a7'),
+  ('53a53a53-53a1-53a1-53a1-53a53a53a53a', 'Income estimation', 'transactionHistory,accountType', '{...},CHECKING', 'estimated_monthly_income', '5200.00', 'b7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7'),
+  ('54a54a54-54a1-54a1-54a1-54a54a54a54a', 'Expense pattern analysis', 'transactionHistory', '{...}', 'expense_stability_score', '85', 'b7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7'),
+  ('55a55a55-55a1-55a1-55a1-55a55a55a55a', 'Debt calculation', 'balances,accountType', '{...},CREDIT_CARD', 'current_debt_load', '12500.00', 'b7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7'),
 
   -- Personal finance tracking transformations
-  ('56a56a56-56a1-56a1-56a1-56a56a56a56a', 'Transaction categorization', 'transactionHistory', '{...}', 'spending_categories', '{"dining":450.00,"transportation":200.00,"groceries":650.00,...}', 'a8a8a8a8-a8a8-a8a8-a8a8-a8a8a8a8a8a8'),
-  ('57a57a57-57a1-57a1-57a1-57a57a57a57a', 'Budget comparison', 'transactionHistory,userBudgets', '{...},{...}', 'budget_adherence', '{"dining":0.9,"transportation":1.1,"groceries":1.0,...}', 'a8a8a8a8-a8a8-a8a8-a8a8-a8a8a8a8a8a8'),
-  ('58a58a58-58a1-58a1-58a1-58a58a58a58a', 'Savings opportunity identification', 'transactionHistory,balances', '{...},{...}', 'savings_opportunities', '["Reduce dining out","Consolidate subscriptions"]', 'a8a8a8a8-a8a8-a8a8-a8a8-a8a8a8a8a8a8'),
+  ('56a56a56-56a1-56a1-56a1-56a56a56a56a', 'Transaction categorization', 'transactionHistory', '{...}', 'spending_categories', '{"dining":450.00,"transportation":200.00,"groceries":650.00,...}', 'b8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8'),
+  ('57a57a57-57a1-57a1-57a1-57a57a57a57a', 'Budget comparison', 'transactionHistory,userBudgets', '{...},{...}', 'budget_adherence', '{"dining":0.9,"transportation":1.1,"groceries":1.0,...}', 'b8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8'),
+  ('58a58a58-58a1-58a1-58a1-58a58a58a58a', 'Savings opportunity identification', 'transactionHistory,balances', '{...},{...}', 'savings_opportunities', '["Reduce dining out","Consolidate subscriptions"]', 'b8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8'),
 
   -- Accounting system transformations
-  ('59a59a59-59a1-59a1-59a1-59a59a59a59a', 'GL account mapping', 'description,amount,type', 'OFFICE SUPPLY VENDOR,-125.45,DEBIT', 'gl_account_entry', '{"account":"5001-ExpenseOfficeSupplies","amount":125.45,"type":"debit"}', 'a9a9a9a9-a9a9-a9a9-a9a9-a9a9a9a9a9a9'),
-  ('60a60a60-60a1-60a1-60a1-60a60a60a60a', 'Tax classification', 'description,amount,merchantData', 'BUSINESS TRAVEL AIRLINE,-534.90,{...}', 'tax_category', 'BUSINESS_TRAVEL_DEDUCTIBLE', 'a9a9a9a9-a9a9-a9a9-a9a9-a9a9a9a9a9a9'),
-  ('61a61a61-61a1-61a1-61a1-61a61a61a61a', 'Receipt matching', 'description,amount,transactionDate', 'OFFICE SUPPLY VENDOR,-125.45,2025-02-15', 'receipt_match_id', 'REC12345', 'a9a9a9a9-a9a9-a9a9-a9a9-a9a9a9a9a9a9'),
+  ('59a59a59-59a1-59a1-59a1-59a59a59a59a', 'GL account mapping', 'description,amount,type', 'OFFICE SUPPLY VENDOR,-125.45,DEBIT', 'gl_account_entry', '{"account":"5001-ExpenseOfficeSupplies","amount":125.45,"type":"debit"}', 'b9b9b9b9-b9b9-b9b9-b9b9-b9b9b9b9b9b9'),
+  ('60a60a60-60a1-60a1-60a1-60a60a60a60a', 'Tax classification', 'description,amount,merchantData', 'BUSINESS TRAVEL AIRLINE,-534.90,{...}', 'tax_category', 'BUSINESS_TRAVEL_DEDUCTIBLE', 'b9b9b9b9-b9b9-b9b9-b9b9-b9b9b9b9b9b9'),
+  ('61a61a61-61a1-61a1-61a1-61a61a61a61a', 'Receipt matching', 'description,amount,transactionDate', 'OFFICE SUPPLY VENDOR,-125.45,2025-02-15', 'receipt_match_id', 'REC12345', 'b9b9b9b9-b9b9-b9b9-b9b9-b9b9b9b9b9b9'),
 
   -- Credit assessment transformations
-  ('62a62a62-62a1-62a1-62a1-62a62a62a62a', 'Payment history analysis', 'transactionHistory,dueDate,paymentDate', '{...},2025-01-15,2025-01-14', 'payment_reliability_score', '95', 'aaaa0000-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
-  ('63a63a63-63a1-63a1-63a1-63a63a63a63a', 'Credit utilization calculation', 'currentBalance,creditLimit', '3500.00,10000.00', 'credit_utilization_ratio', '0.35', 'aaaa0000-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
-  ('64a64a64-64a1-64a1-64a1-64a64a64a64a', 'Income stability assessment', 'transactionHistory,depositPatterns', '{...},{...}', 'income_stability_score', '88', 'aaaa0000-aaaa-aaaa-aaaa-aaaaaaaaaaaa');
+  ('62a62a62-62a1-62a1-62a1-62a62a62a62a', 'Payment history analysis', 'transactionHistory,dueDate,paymentDate', '{...},2025-01-15,2025-01-14', 'payment_reliability_score', '95', 'cdcd0000-cdcd-cdcd-cdcd-cdcdcdcdcdcd'),
+  ('63a63a63-63a1-63a1-63a1-63a63a63a63a', 'Credit utilization calculation', 'currentBalance,creditLimit', '3500.00,10000.00', 'credit_utilization_ratio', '0.35', 'cdcd0000-cdcd-cdcd-cdcd-cdcdcdcdcdcd'),
+  ('64a64a64-64a1-64a1-64a1-64a64a64a64a', 'Income stability assessment', 'transactionHistory,depositPatterns', '{...},{...}', 'income_stability_score', '88', 'cdcd0000-cdcd-cdcd-cdcd-cdcdcdcdcdcd');
