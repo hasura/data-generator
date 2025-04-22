@@ -1,0 +1,179 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_statement_benefits
+  description: Stores information about benefits received during a statement period
+  fields:
+    - name: amount
+      type: numeric!
+      description: Monetary value of the benefit
+    - name: consumer_banking_statement_benefit_id
+      type: int_4!
+      description: Auto-incrementing identifier for each benefit record
+    - name: consumer_banking_statement_id
+      type: int_4!
+      description: References the statement this benefit belongs to
+    - name: currency
+      type: varchar!
+      description: Currency code for the benefit amount
+    - name: type
+      type: consumer_banking_benefit_type!
+      description: Type of benefit (e.g., cashback, rewards, insurance)
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_statement_benefits
+    inputTypeName: ConsumerBanking_consumer_banking_statement_benefits_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statement_benefits
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_statement_benefits
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - consumer_banking_statement_benefit_id
+          - consumer_banking_statement_id
+          - currency
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_statement_benefits_bool_exp
+  operand:
+    object:
+      type: consumer_banking_statement_benefits
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: consumer_banking_statement_benefit_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_statement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: currency
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: type
+          booleanExpressionType: consumer_banking_benefit_type_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_statement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_statement_benefits_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_statement_benefits_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_statement_benefits
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: consumer_banking_statement_benefit_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_statement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: currency
+          aggregateExpression: varchar_agg_exp
+        - fieldName: type
+          aggregateExpression: consumer_banking_benefit_type_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_statement_benefits_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_statement_benefits_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_statement_benefits
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: consumer_banking_statement_benefit_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_statement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: currency
+          orderByExpression: varchar_order_by_exp
+        - fieldName: type
+          orderByExpression: consumer_banking_benefit_type_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_statement
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_statement_benefits_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_statement_benefits
+  objectType: consumer_banking_statement_benefits
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statement_benefits
+  filterExpressionType: consumer_banking_statement_benefits_bool_exp
+  aggregateExpression: consumer_banking_statement_benefits_agg_exp
+  orderByExpression: consumer_banking_statement_benefits_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_statement_benefits
+      subscription:
+        rootField: consumer_banking_statement_benefits
+    selectUniques:
+      - queryRootField: consumer_banking_statement_benefits_by_consumer_banking_statement_benefit_id
+        uniqueIdentifier:
+          - consumer_banking_statement_benefit_id
+        subscription:
+          rootField: consumer_banking_statement_benefits_by_consumer_banking_statement_benefit_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_statement_benefits_filter_input
+    aggregate:
+      queryRootField: consumer_banking_statement_benefits_aggregate
+      subscription:
+        rootField: consumer_banking_statement_benefits_aggregate
+  description: Stores information about benefits received during a statement period
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_statement_benefits
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_statement
+  sourceType: consumer_banking_statement_benefits
+  target:
+    model:
+      name: consumer_banking_statements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_statement_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_statement_id
+

@@ -1,0 +1,202 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_accounts
+  description: Root account record in the account hierarchy. All other account
+    types (consumer, mortgage, credit) are children of an enterprise account and
+    cannot exist without it. The single source of truth for account ownership
+    and access control.
+  fields:
+    - name: account_category
+      type: varchar
+      description: Customer defined category of account (e.g., personal, business,
+        retirement)
+    - name: description
+      type: varchar
+      description: Customer defined description of the account
+    - name: enterprise_account_id
+      type: int_4!
+      description: Unique identifier for each enterprise account
+    - name: opened_date
+      type: timestamptz
+      description: When the enterprise account was created, typically coincides with
+        first LOB account.
+    - name: status
+      type: enterprise_account_status!
+      description: Current status of the account. When set to 'CLOSED', all linked LOB
+        accounts must be closed or in a terminal state.
+    - name: status_update_date_time
+      type: timestamptz!
+      description: When the status was last updated. Updates here may trigger required
+        status changes in linked LOB accounts.
+  graphql:
+    typeName: Enterprise_enterprise_accounts
+    inputTypeName: Enterprise_enterprise_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_accounts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_category
+          - description
+          - enterprise_account_id
+          - opened_date
+          - status
+          - status_update_date_time
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_accounts_bool_exp
+  operand:
+    object:
+      type: enterprise_accounts
+      comparableFields:
+        - fieldName: account_category
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: description
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: opened_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: status
+          booleanExpressionType: enterprise_account_status_bool_exp
+        - fieldName: status_update_date_time
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_account_ownerships
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_accounts
+      aggregatableFields:
+        - fieldName: account_category
+          aggregateExpression: varchar_agg_exp
+        - fieldName: description
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: opened_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: status
+          aggregateExpression: enterprise_account_status_agg_exp
+        - fieldName: status_update_date_time
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_accounts
+      orderableFields:
+        - fieldName: account_category
+          orderByExpression: varchar_order_by_exp
+        - fieldName: description
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: opened_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: status
+          orderByExpression: enterprise_account_status_order_by_exp
+        - fieldName: status_update_date_time
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Enterprise_enterprise_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_accounts
+  objectType: enterprise_accounts
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_accounts
+  filterExpressionType: enterprise_accounts_bool_exp
+  aggregateExpression: enterprise_accounts_agg_exp
+  orderByExpression: enterprise_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_accounts
+      subscription:
+        rootField: enterprise_accounts
+    selectUniques:
+      - queryRootField: enterprise_accounts_by_enterprise_account_id
+        uniqueIdentifier:
+          - enterprise_account_id
+        subscription:
+          rootField: enterprise_accounts_by_enterprise_account_id
+    filterInputTypeName: Enterprise_enterprise_accounts_filter_input
+    aggregate:
+      queryRootField: enterprise_accounts_aggregate
+      subscription:
+        rootField: enterprise_accounts_aggregate
+  description: Root account record in the account hierarchy. All other account
+    types (consumer, mortgage, credit) are children of an enterprise account and
+    cannot exist without it. The single source of truth for account ownership
+    and access control.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_account_ownerships
+  sourceType: enterprise_accounts
+  target:
+    model:
+      name: enterprise_account_ownership
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_account_ownership_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_account_id
+      target:
+        modelField:
+          - fieldName: enterprise_account_id
+  graphql:
+    aggregateFieldName: enterprise_account_ownerships_aggregate
+

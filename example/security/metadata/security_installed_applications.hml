@@ -1,0 +1,172 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_installed_applications
+  description: Table storing information about installed applications on servers,
+    tracking software installations.
+  fields:
+    - name: app_mgmt_application_id
+      type: uuid!
+      description: Reference to the application definition.
+    - name: application_version
+      type: varchar
+      description: Version of the installed application.
+    - name: installation_date
+      type: timestamp
+      description: Timestamp when the application was installed.
+    - name: security_host_id
+      type: uuid!
+      description: Identifier of the system where the application is installed.
+  graphql:
+    typeName: Security_security_installed_applications
+    inputTypeName: Security_security_installed_applications_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_installed_applications
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_installed_applications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - app_mgmt_application_id
+          - application_version
+          - installation_date
+          - security_host_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_installed_applications_bool_exp
+  operand:
+    object:
+      type: security_installed_applications
+      comparableFields:
+        - fieldName: app_mgmt_application_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: application_version
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: installation_date
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: security_host_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_host
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_installed_applications_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_installed_applications_agg_exp
+  operand:
+    object:
+      aggregatedType: security_installed_applications
+      aggregatableFields:
+        - fieldName: app_mgmt_application_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: application_version
+          aggregateExpression: varchar_agg_exp
+        - fieldName: installation_date
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: security_host_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_installed_applications_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_installed_applications_order_by_exp
+  operand:
+    object:
+      orderedType: security_installed_applications
+      orderableFields:
+        - fieldName: app_mgmt_application_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: application_version
+          orderByExpression: varchar_order_by_exp
+        - fieldName: installation_date
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: security_host_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_host
+  graphql:
+    expressionTypeName: Security_security_installed_applications_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_installed_applications
+  objectType: security_installed_applications
+  source:
+    dataConnectorName: security
+    collection: security_installed_applications
+  filterExpressionType: security_installed_applications_bool_exp
+  aggregateExpression: security_installed_applications_agg_exp
+  orderByExpression: security_installed_applications_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_installed_applications
+      subscription:
+        rootField: security_installed_applications
+    selectUniques:
+      - queryRootField: security_installed_applications_by_installed_applications_pkey
+        uniqueIdentifier:
+          - app_mgmt_application_id
+          - security_host_id
+        subscription:
+          rootField: security_installed_applications_by_installed_applications_pkey
+    filterInputTypeName: Security_security_installed_applications_filter_input
+    aggregate:
+      queryRootField: security_installed_applications_aggregate
+      subscription:
+        rootField: security_installed_applications_aggregate
+  description: Table storing information about installed applications on servers,
+    tracking software installations.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_installed_applications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_installed_applications
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+

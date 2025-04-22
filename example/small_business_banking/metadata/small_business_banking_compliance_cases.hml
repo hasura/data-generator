@@ -1,0 +1,269 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_compliance_cases
+  description: Tracks compliance cases related to small business accounts
+  fields:
+    - name: assigned_to
+      type: int_4
+      description: Person or team assigned to the case
+    - name: case_type
+      type: varchar!
+      description: Type of compliance case (AML, KYC, fraud, fair lending, etc.)
+    - name: closed_date
+      type: date
+      description: Date the case was closed
+    - name: description
+      type: text!
+      description: Description of the compliance case
+    - name: escalated
+      type: bool!
+      description: Whether the case was escalated
+    - name: escalation_date
+      type: date
+      description: Date of escalation if applicable
+    - name: escalation_reason
+      type: text
+      description: Reason for escalation
+    - name: opened_date
+      type: date!
+      description: Date the case was opened
+    - name: priority
+      type: varchar!
+      description: Priority level (high, medium, low)
+    - name: resolution
+      type: text
+      description: Description of the resolution
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business
+    - name: small_business_banking_case_id
+      type: int_4!
+      description: Unique identifier for each compliance case
+    - name: source
+      type: varchar!
+      description: Source that initiated the case (system alert, manual review, exam)
+    - name: status
+      type: varchar!
+      description: Status of the case (open, in review, closed)
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_compliance_cases
+    inputTypeName: SmallBusinessBanking_small_business_banking_compliance_cases_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_compliance_cases
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_compliance_cases
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - assigned_to
+          - case_type
+          - closed_date
+          - description
+          - escalated
+          - escalation_date
+          - escalation_reason
+          - opened_date
+          - priority
+          - resolution
+          - small_business_banking_business_id
+          - small_business_banking_case_id
+          - source
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_compliance_cases_bool_exp
+  operand:
+    object:
+      type: small_business_banking_compliance_cases
+      comparableFields:
+        - fieldName: assigned_to
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: case_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: closed_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: escalated
+          booleanExpressionType: bool_bool_exp
+        - fieldName: escalation_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: escalation_reason
+          booleanExpressionType: text_bool_exp
+        - fieldName: opened_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: priority
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: resolution
+          booleanExpressionType: text_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_case_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: source
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_business
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_compliance_cases_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_compliance_cases_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_compliance_cases
+      aggregatableFields:
+        - fieldName: assigned_to
+          aggregateExpression: int_4_agg_exp
+        - fieldName: case_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: closed_date
+          aggregateExpression: date_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: escalated
+          aggregateExpression: bool_agg_exp
+        - fieldName: escalation_date
+          aggregateExpression: date_agg_exp
+        - fieldName: escalation_reason
+          aggregateExpression: text_agg_exp
+        - fieldName: opened_date
+          aggregateExpression: date_agg_exp
+        - fieldName: priority
+          aggregateExpression: varchar_agg_exp
+        - fieldName: resolution
+          aggregateExpression: text_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_case_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: source
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_compliance_cases_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_compliance_cases_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_compliance_cases
+      orderableFields:
+        - fieldName: assigned_to
+          orderByExpression: int_4_order_by_exp
+        - fieldName: case_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: closed_date
+          orderByExpression: date_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: escalated
+          orderByExpression: bool_order_by_exp
+        - fieldName: escalation_date
+          orderByExpression: date_order_by_exp
+        - fieldName: escalation_reason
+          orderByExpression: text_order_by_exp
+        - fieldName: opened_date
+          orderByExpression: date_order_by_exp
+        - fieldName: priority
+          orderByExpression: varchar_order_by_exp
+        - fieldName: resolution
+          orderByExpression: text_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_case_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: source
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_business
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_compliance_cases_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_compliance_cases
+  objectType: small_business_banking_compliance_cases
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_compliance_cases
+  filterExpressionType: small_business_banking_compliance_cases_bool_exp
+  aggregateExpression: small_business_banking_compliance_cases_agg_exp
+  orderByExpression: small_business_banking_compliance_cases_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_compliance_cases
+      subscription:
+        rootField: small_business_banking_compliance_cases
+    selectUniques:
+      - queryRootField: small_business_banking_compliance_cases_by_small_business_banking_case_id
+        uniqueIdentifier:
+          - small_business_banking_case_id
+        subscription:
+          rootField: small_business_banking_compliance_cases_by_small_business_banking_case_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_compliance_cases_filter_input
+    aggregate:
+      queryRootField: small_business_banking_compliance_cases_aggregate
+      subscription:
+        rootField: small_business_banking_compliance_cases_aggregate
+  description: Tracks compliance cases related to small business accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_compliance_cases
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_compliance_cases
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+

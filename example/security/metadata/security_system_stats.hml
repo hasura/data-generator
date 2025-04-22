@@ -1,0 +1,211 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_system_stats
+  description: Table storing system statistics, tracking resource usage and
+    performance metrics.
+  fields:
+    - name: cpu_usage_percent
+      type: int_4
+      description: CPU usage percentage.
+    - name: disk_free_gb
+      type: int_4
+      description: Free disk space in gigabytes.
+    - name: disk_total_gb
+      type: int_4
+      description: Total disk space in gigabytes.
+    - name: memory_total_gb
+      type: int_4
+      description: Total memory in gigabytes.
+    - name: memory_usage_gb
+      type: numeric
+      description: Memory usage in gigabytes.
+    - name: security_host_id
+      type: uuid!
+      description: Identifier of the system for which statistics are recorded.
+    - name: security_system_stat_id
+      type: uuid!
+      description: Unique identifier for the system statistics record.
+    - name: timestamp
+      type: timestamp
+      description: Timestamp when the statistics were recorded.
+  graphql:
+    typeName: Security_security_system_stats
+    inputTypeName: Security_security_system_stats_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_system_stats
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_system_stats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cpu_usage_percent
+          - disk_free_gb
+          - disk_total_gb
+          - memory_total_gb
+          - memory_usage_gb
+          - security_host_id
+          - security_system_stat_id
+          - timestamp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_system_stats_bool_exp
+  operand:
+    object:
+      type: security_system_stats
+      comparableFields:
+        - fieldName: cpu_usage_percent
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: disk_free_gb
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: disk_total_gb
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: memory_total_gb
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: memory_usage_gb
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: security_host_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_system_stat_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: timestamp
+          booleanExpressionType: timestamp_bool_exp
+      comparableRelationships:
+        - relationshipName: security_host
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_system_stats_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_system_stats_agg_exp
+  operand:
+    object:
+      aggregatedType: security_system_stats
+      aggregatableFields:
+        - fieldName: cpu_usage_percent
+          aggregateExpression: int_4_agg_exp
+        - fieldName: disk_free_gb
+          aggregateExpression: int_4_agg_exp
+        - fieldName: disk_total_gb
+          aggregateExpression: int_4_agg_exp
+        - fieldName: memory_total_gb
+          aggregateExpression: int_4_agg_exp
+        - fieldName: memory_usage_gb
+          aggregateExpression: numeric_agg_exp
+        - fieldName: security_host_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_system_stat_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: timestamp
+          aggregateExpression: timestamp_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_system_stats_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_system_stats_order_by_exp
+  operand:
+    object:
+      orderedType: security_system_stats
+      orderableFields:
+        - fieldName: cpu_usage_percent
+          orderByExpression: int_4_order_by_exp
+        - fieldName: disk_free_gb
+          orderByExpression: int_4_order_by_exp
+        - fieldName: disk_total_gb
+          orderByExpression: int_4_order_by_exp
+        - fieldName: memory_total_gb
+          orderByExpression: int_4_order_by_exp
+        - fieldName: memory_usage_gb
+          orderByExpression: numeric_order_by_exp
+        - fieldName: security_host_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_system_stat_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: timestamp
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_host
+  graphql:
+    expressionTypeName: Security_security_system_stats_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_system_stats
+  objectType: security_system_stats
+  source:
+    dataConnectorName: security
+    collection: security_system_stats
+  filterExpressionType: security_system_stats_bool_exp
+  aggregateExpression: security_system_stats_agg_exp
+  orderByExpression: security_system_stats_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_system_stats
+      subscription:
+        rootField: security_system_stats
+    selectUniques:
+      - queryRootField: security_system_stats_by_security_system_stat_id
+        uniqueIdentifier:
+          - security_system_stat_id
+        subscription:
+          rootField: security_system_stats_by_security_system_stat_id
+    filterInputTypeName: Security_security_system_stats_filter_input
+    aggregate:
+      queryRootField: security_system_stats_aggregate
+      subscription:
+        rootField: security_system_stats_aggregate
+  description: Table storing system statistics, tracking resource usage and
+    performance metrics.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_system_stats
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_system_stats
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+

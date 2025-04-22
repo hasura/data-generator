@@ -1,0 +1,141 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_governance_groups
+  description: Table storing information about governance groups, used for
+    managing access and permissions.
+  fields:
+    - name: name
+      type: varchar
+      description: Name of the governance group.
+    - name: owner_id
+      type: int_4
+      description: Identifier of the owner of the governance group.
+    - name: security_governance_group_id
+      type: uuid!
+      description: Unique identifier for the governance group.
+  graphql:
+    typeName: Security_security_governance_groups
+    inputTypeName: Security_security_governance_groups_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_governance_groups
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_governance_groups
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - name
+          - owner_id
+          - security_governance_group_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_governance_groups_bool_exp
+  operand:
+    object:
+      type: security_governance_groups
+      comparableFields:
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: owner_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: security_governance_group_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_governance_groups_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_governance_groups_agg_exp
+  operand:
+    object:
+      aggregatedType: security_governance_groups
+      aggregatableFields:
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: owner_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: security_governance_group_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_governance_groups_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_governance_groups_order_by_exp
+  operand:
+    object:
+      orderedType: security_governance_groups
+      orderableFields:
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: owner_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: security_governance_group_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_governance_groups_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_governance_groups
+  objectType: security_governance_groups
+  source:
+    dataConnectorName: security
+    collection: security_governance_groups
+  filterExpressionType: security_governance_groups_bool_exp
+  aggregateExpression: security_governance_groups_agg_exp
+  orderByExpression: security_governance_groups_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_governance_groups
+      subscription:
+        rootField: security_governance_groups
+    selectUniques:
+      - queryRootField: security_governance_groups_by_security_governance_group_id
+        uniqueIdentifier:
+          - security_governance_group_id
+        subscription:
+          rootField: security_governance_groups_by_security_governance_group_id
+    filterInputTypeName: Security_security_governance_groups_filter_input
+    aggregate:
+      queryRootField: security_governance_groups_aggregate
+      subscription:
+        rootField: security_governance_groups_aggregate
+  description: Table storing information about governance groups, used for
+    managing access and permissions.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_governance_groups
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

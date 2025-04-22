@@ -1,0 +1,480 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_accounts
+  description: Stores the business deposit and transaction accounts managed by the bank
+  fields:
+    - name: account_number
+      type: varchar!
+      description: Unique account number visible to customers
+    - name: account_type
+      type: varchar!
+      description: Type of account (checking, savings, money market, etc.)
+    - name: available_balance
+      type: numeric!
+      description: Available balance after holds and pending transactions
+    - name: balance
+      type: numeric!
+      description: Current balance of the account
+    - name: currency
+      type: enterprise_currency_code!
+      description: ISO currency code for the account
+    - name: enterprise_account_id
+      type: int_4!
+      description: References the main account
+    - name: interest_rate
+      type: numeric
+      description: Current interest rate applied to the account (if applicable)
+    - name: last_statement_date
+      type: date
+      description: Date when the last statement was generated
+    - name: opened_date
+      type: date!
+      description: Date when the account was opened
+    - name: overdraft_limit
+      type: numeric!
+      description: Maximum allowed overdraft amount
+    - name: small_business_banking_account_id
+      type: int_4!
+      description: Unique identifier for each business account
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business that owns this account
+    - name: small_business_banking_product_id
+      type: int_4!
+      description: Reference to the product this account is based on
+    - name: statement_day
+      type: int_4
+      description: Day of month/week when statements are generated
+    - name: statement_frequency
+      type: varchar!
+      description: Frequency of account statements (daily, weekly, monthly)
+    - name: status
+      type: varchar!
+      description: Current status of the account (active, inactive, frozen, closed)
+    - name: status_update_date_time
+      type: timestamptz!
+      description: When the status was last updated
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_accounts
+    inputTypeName: SmallBusinessBanking_small_business_banking_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_accounts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_number
+          - account_type
+          - available_balance
+          - balance
+          - currency
+          - enterprise_account_id
+          - interest_rate
+          - last_statement_date
+          - opened_date
+          - overdraft_limit
+          - small_business_banking_account_id
+          - small_business_banking_business_id
+          - small_business_banking_product_id
+          - statement_day
+          - statement_frequency
+          - status
+          - status_update_date_time
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_accounts_bool_exp
+  operand:
+    object:
+      type: small_business_banking_accounts
+      comparableFields:
+        - fieldName: account_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: account_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: available_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: enterprise_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: last_statement_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: opened_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: overdraft_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: small_business_banking_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_product_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: statement_day
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: statement_frequency
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status_update_date_time
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_account_signatories
+        - relationshipName: small_business_banking_business
+        - relationshipName: small_business_banking_product
+        - relationshipName: small_business_banking_business_card_accounts
+        - relationshipName: small_business_banking_credit_lines
+        - relationshipName: small_business_banking_loans
+        - relationshipName: small_business_banking_payments
+        - relationshipName: small_business_banking_payments_by_source_account_id
+        - relationshipName: small_business_banking_transactions
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_accounts
+      aggregatableFields:
+        - fieldName: account_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: account_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: available_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: enterprise_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: last_statement_date
+          aggregateExpression: date_agg_exp
+        - fieldName: opened_date
+          aggregateExpression: date_agg_exp
+        - fieldName: overdraft_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: small_business_banking_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_product_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: statement_day
+          aggregateExpression: int_4_agg_exp
+        - fieldName: statement_frequency
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status_update_date_time
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_accounts
+      orderableFields:
+        - fieldName: account_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: account_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: available_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: enterprise_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: last_statement_date
+          orderByExpression: date_order_by_exp
+        - fieldName: opened_date
+          orderByExpression: date_order_by_exp
+        - fieldName: overdraft_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: small_business_banking_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_product_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: statement_day
+          orderByExpression: int_4_order_by_exp
+        - fieldName: statement_frequency
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status_update_date_time
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_business
+        - relationshipName: small_business_banking_product
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_accounts
+  objectType: small_business_banking_accounts
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_accounts
+  filterExpressionType: small_business_banking_accounts_bool_exp
+  aggregateExpression: small_business_banking_accounts_agg_exp
+  orderByExpression: small_business_banking_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_accounts
+      subscription:
+        rootField: small_business_banking_accounts
+    selectUniques:
+      - queryRootField: small_business_banking_accounts_by_small_business_banking_account_id
+        uniqueIdentifier:
+          - small_business_banking_account_id
+        subscription:
+          rootField: small_business_banking_accounts_by_small_business_banking_account_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_accounts_filter_input
+    aggregate:
+      queryRootField: small_business_banking_accounts_aggregate
+      subscription:
+        rootField: small_business_banking_accounts_aggregate
+  description: Stores the business deposit and transaction accounts managed by the bank
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_account_signatories
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_account_signatories
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_account_signatories_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_account_signatories_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_product
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_product_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_card_accounts
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_business_card_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_card_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: linked_deposit_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_card_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_credit_lines
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_credit_lines
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_credit_lines_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_credit_lines_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_loans
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_loans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_loans_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_loans_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_payments
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_payments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_payments_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: destination_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_payments_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_payments_by_source_account_id
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_payments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_payments_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: source_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_payments_by_source_account_id_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_transactions
+  sourceType: small_business_banking_accounts
+  target:
+    model:
+      name: small_business_banking_transactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_transactions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_transactions_aggregate
+

@@ -1,0 +1,344 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_vehicles
+  description: Stores information about vehicles involved in auto loan
+    applications, including details like make, model, and purchase price.
+  fields:
+    - name: consumer_lending_application_id
+      type: int_4!
+      description: Reference to loan application
+    - name: dealer_address_id
+      type: int_4
+      description: Reference to enterprise.addresses
+    - name: dealer_name
+      type: varchar
+      description: Name of dealership
+    - name: down_payment
+      type: numeric
+      description: Down payment amount
+    - name: is_private_sale
+      type: bool!
+      description: Whether private sale or dealer
+    - name: make
+      type: varchar!
+      description: Vehicle manufacturer
+    - name: mileage
+      type: int_4
+      description: Current odometer reading
+    - name: model
+      type: varchar!
+      description: Vehicle model
+    - name: purchase_price
+      type: numeric!
+      description: Agreed purchase price
+    - name: trade_in_balance_owed
+      type: numeric
+      description: Loan balance on trade-in
+    - name: trade_in_value
+      type: numeric
+      description: Value of trade-in vehicle
+    - name: trim
+      type: varchar
+      description: Vehicle trim level
+    - name: valuation_amount
+      type: numeric
+      description: Third-party valuation amount
+    - name: valuation_date
+      type: date
+      description: Date of valuation
+    - name: valuation_source
+      type: consumer_lending_valuation_source
+      description: Source of vehicle valuation
+    - name: vehicle_id
+      type: int_4!
+      description: Unique identifier for vehicle
+    - name: vehicle_type
+      type: consumer_lending_vehicle_condition!
+      description: Condition of the vehicle
+    - name: vin
+      type: varchar
+      description: Vehicle Identification Number
+    - name: year
+      type: int_4!
+      description: Vehicle model year
+  graphql:
+    typeName: ConsumerLending_consumer_lending_vehicles
+    inputTypeName: ConsumerLending_consumer_lending_vehicles_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_vehicles
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_vehicles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumer_lending_application_id
+          - dealer_address_id
+          - dealer_name
+          - down_payment
+          - is_private_sale
+          - make
+          - mileage
+          - model
+          - purchase_price
+          - trade_in_balance_owed
+          - trade_in_value
+          - trim
+          - valuation_amount
+          - valuation_date
+          - valuation_source
+          - vehicle_id
+          - vehicle_type
+          - vin
+          - year
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_vehicles_bool_exp
+  operand:
+    object:
+      type: consumer_lending_vehicles
+      comparableFields:
+        - fieldName: consumer_lending_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: dealer_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: dealer_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: down_payment
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: is_private_sale
+          booleanExpressionType: bool_bool_exp
+        - fieldName: make
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: mileage
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: model
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: purchase_price
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: trade_in_balance_owed
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: trade_in_value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: trim
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: valuation_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: valuation_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: valuation_source
+          booleanExpressionType: consumer_lending_valuation_source_bool_exp
+        - fieldName: vehicle_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: vehicle_type
+          booleanExpressionType: consumer_lending_vehicle_condition_bool_exp
+        - fieldName: vin
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: year
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_collaterals
+        - relationshipName: consumer_lending_loan_application
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_vehicles_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_vehicles_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_vehicles
+      aggregatableFields:
+        - fieldName: consumer_lending_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: dealer_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: dealer_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: down_payment
+          aggregateExpression: numeric_agg_exp
+        - fieldName: is_private_sale
+          aggregateExpression: bool_agg_exp
+        - fieldName: make
+          aggregateExpression: varchar_agg_exp
+        - fieldName: mileage
+          aggregateExpression: int_4_agg_exp
+        - fieldName: model
+          aggregateExpression: varchar_agg_exp
+        - fieldName: purchase_price
+          aggregateExpression: numeric_agg_exp
+        - fieldName: trade_in_balance_owed
+          aggregateExpression: numeric_agg_exp
+        - fieldName: trade_in_value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: trim
+          aggregateExpression: varchar_agg_exp
+        - fieldName: valuation_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: valuation_date
+          aggregateExpression: date_agg_exp
+        - fieldName: valuation_source
+          aggregateExpression: consumer_lending_valuation_source_agg_exp
+        - fieldName: vehicle_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: vehicle_type
+          aggregateExpression: consumer_lending_vehicle_condition_agg_exp
+        - fieldName: vin
+          aggregateExpression: varchar_agg_exp
+        - fieldName: year
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_vehicles_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_vehicles_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_vehicles
+      orderableFields:
+        - fieldName: consumer_lending_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: dealer_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: dealer_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: down_payment
+          orderByExpression: numeric_order_by_exp
+        - fieldName: is_private_sale
+          orderByExpression: bool_order_by_exp
+        - fieldName: make
+          orderByExpression: varchar_order_by_exp
+        - fieldName: mileage
+          orderByExpression: int_4_order_by_exp
+        - fieldName: model
+          orderByExpression: varchar_order_by_exp
+        - fieldName: purchase_price
+          orderByExpression: numeric_order_by_exp
+        - fieldName: trade_in_balance_owed
+          orderByExpression: numeric_order_by_exp
+        - fieldName: trade_in_value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: trim
+          orderByExpression: varchar_order_by_exp
+        - fieldName: valuation_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: valuation_date
+          orderByExpression: date_order_by_exp
+        - fieldName: valuation_source
+          orderByExpression: consumer_lending_valuation_source_order_by_exp
+        - fieldName: vehicle_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: vehicle_type
+          orderByExpression: consumer_lending_vehicle_condition_order_by_exp
+        - fieldName: vin
+          orderByExpression: varchar_order_by_exp
+        - fieldName: year
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_application
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_vehicles_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_vehicles
+  objectType: consumer_lending_vehicles
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_vehicles
+  filterExpressionType: consumer_lending_vehicles_bool_exp
+  aggregateExpression: consumer_lending_vehicles_agg_exp
+  orderByExpression: consumer_lending_vehicles_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_vehicles
+      subscription:
+        rootField: consumer_lending_vehicles
+    selectUniques:
+      - queryRootField: consumer_lending_vehicles_by_vehicle_id
+        uniqueIdentifier:
+          - vehicle_id
+        subscription:
+          rootField: consumer_lending_vehicles_by_vehicle_id
+    filterInputTypeName: ConsumerLending_consumer_lending_vehicles_filter_input
+    aggregate:
+      queryRootField: consumer_lending_vehicles_aggregate
+      subscription:
+        rootField: consumer_lending_vehicles_aggregate
+  description: Stores information about vehicles involved in auto loan
+    applications, including details like make, model, and purchase price.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_vehicles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_collaterals
+  sourceType: consumer_lending_vehicles
+  target:
+    model:
+      name: consumer_lending_loan_collateral
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_loan_collateral_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: vehicle_id
+      target:
+        modelField:
+          - fieldName: vehicle_id
+  graphql:
+    aggregateFieldName: consumer_lending_loan_collaterals_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_application
+  sourceType: consumer_lending_vehicles
+  target:
+    model:
+      name: consumer_lending_loan_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+

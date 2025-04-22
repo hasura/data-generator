@@ -1,0 +1,435 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_standing_orders
+  description: Stores information about recurring payment instructions (standing orders)
+  fields:
+    - name: category
+      type: consumer_banking_standing_order_category
+      description: Category or purpose of the standing order
+    - name: consumer_banking_account_id
+      type: int_8!
+      description: References the account this standing order belongs to
+    - name: consumer_banking_standing_order_id
+      type: int_4!
+      description: Unique identifier for each standing order
+    - name: created_by
+      type: varchar
+      description: Who or what created the standing order
+    - name: created_date
+      type: timestamptz!
+      description: When the standing order was created
+    - name: day_of_month
+      type: int_4
+      description: Day of month for payments (for monthly/quarterly frequencies)
+    - name: day_of_week
+      type: int_4
+      description: Day of week for payments (for weekly frequencies)
+    - name: description
+      type: varchar
+      description: Description of the standing order purpose
+    - name: end_date
+      type: date
+      description: Date when the standing order expires (if specified)
+    - name: final_payment_amount
+      type: numeric
+      description: Amount of the final payment (if different)
+    - name: final_payment_currency
+      type: enterprise_currency_code
+      description: Currency of the final payment
+    - name: first_payment_amount
+      type: numeric
+      description: Amount of the first payment (if different)
+    - name: first_payment_currency
+      type: enterprise_currency_code
+      description: Currency of the first payment
+    - name: frequency
+      type: enterprise_frequency!
+      description: Frequency of standing order payments
+    - name: last_payment_amount
+      type: numeric
+      description: Amount of the most recent payment
+    - name: last_payment_currency
+      type: enterprise_currency_code
+      description: Currency of the most recent payment
+    - name: last_payment_date_time
+      type: timestamptz
+      description: When the most recent payment was made
+    - name: modified_date
+      type: timestamptz
+      description: When the standing order was last modified
+    - name: next_payment_amount
+      type: numeric
+      description: Amount of the next scheduled payment
+    - name: next_payment_currency
+      type: enterprise_currency_code
+      description: Currency of the next payment
+    - name: next_payment_date_time
+      type: timestamptz
+      description: When the next payment is scheduled
+    - name: payment_type
+      type: consumer_banking_standing_order_type!
+      description: Type of payment (fixed, variable, etc.)
+    - name: reference
+      type: varchar
+      description: Payment reference shown to the recipient
+    - name: standing_order_status_code
+      type: consumer_banking_standing_order_status_code!
+      description: Status code of the standing order (e.g., active, canceled)
+    - name: start_date
+      type: date!
+      description: Date when the first payment should be made
+    - name: supplementary_data
+      type: text
+      description: Additional information about the standing order in JSON format
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_standing_orders
+    inputTypeName: ConsumerBanking_consumer_banking_standing_orders_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_standing_orders
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_standing_orders
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - consumer_banking_account_id
+          - consumer_banking_standing_order_id
+          - created_by
+          - created_date
+          - day_of_month
+          - day_of_week
+          - description
+          - end_date
+          - final_payment_amount
+          - final_payment_currency
+          - first_payment_amount
+          - first_payment_currency
+          - frequency
+          - last_payment_amount
+          - last_payment_currency
+          - last_payment_date_time
+          - modified_date
+          - next_payment_amount
+          - next_payment_currency
+          - next_payment_date_time
+          - payment_type
+          - reference
+          - standing_order_status_code
+          - start_date
+          - supplementary_data
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_standing_orders_bool_exp
+  operand:
+    object:
+      type: consumer_banking_standing_orders
+      comparableFields:
+        - fieldName: category
+          booleanExpressionType: consumer_banking_standing_order_category_bool_exp
+        - fieldName: consumer_banking_account_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: consumer_banking_standing_order_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: created_by
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: created_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: day_of_month
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: day_of_week
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: end_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: final_payment_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: final_payment_currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: first_payment_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: first_payment_currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: frequency
+          booleanExpressionType: enterprise_frequency_bool_exp
+        - fieldName: last_payment_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: last_payment_currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: last_payment_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: modified_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: next_payment_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: next_payment_currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: next_payment_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: payment_type
+          booleanExpressionType: consumer_banking_standing_order_type_bool_exp
+        - fieldName: reference
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: standing_order_status_code
+          booleanExpressionType: consumer_banking_standing_order_status_code_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: supplementary_data
+          booleanExpressionType: text_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_standing_order_creditor_accounts
+        - relationshipName: consumer_banking_standing_order_creditor_agents
+        - relationshipName: consumer_banking_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_standing_orders_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_standing_orders_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_standing_orders
+      aggregatableFields:
+        - fieldName: category
+          aggregateExpression: consumer_banking_standing_order_category_agg_exp
+        - fieldName: consumer_banking_account_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: consumer_banking_standing_order_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: created_by
+          aggregateExpression: varchar_agg_exp
+        - fieldName: created_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: day_of_month
+          aggregateExpression: int_4_agg_exp
+        - fieldName: day_of_week
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: varchar_agg_exp
+        - fieldName: end_date
+          aggregateExpression: date_agg_exp
+        - fieldName: final_payment_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: final_payment_currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: first_payment_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: first_payment_currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: frequency
+          aggregateExpression: enterprise_frequency_agg_exp
+        - fieldName: last_payment_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: last_payment_currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: last_payment_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: modified_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: next_payment_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: next_payment_currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: next_payment_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: payment_type
+          aggregateExpression: consumer_banking_standing_order_type_agg_exp
+        - fieldName: reference
+          aggregateExpression: varchar_agg_exp
+        - fieldName: standing_order_status_code
+          aggregateExpression: consumer_banking_standing_order_status_code_agg_exp
+        - fieldName: start_date
+          aggregateExpression: date_agg_exp
+        - fieldName: supplementary_data
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_standing_orders_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_standing_orders_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_standing_orders
+      orderableFields:
+        - fieldName: category
+          orderByExpression: consumer_banking_standing_order_category_order_by_exp
+        - fieldName: consumer_banking_account_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: consumer_banking_standing_order_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: created_by
+          orderByExpression: varchar_order_by_exp
+        - fieldName: created_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: day_of_month
+          orderByExpression: int_4_order_by_exp
+        - fieldName: day_of_week
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: varchar_order_by_exp
+        - fieldName: end_date
+          orderByExpression: date_order_by_exp
+        - fieldName: final_payment_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: final_payment_currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: first_payment_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: first_payment_currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: frequency
+          orderByExpression: enterprise_frequency_order_by_exp
+        - fieldName: last_payment_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: last_payment_currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: last_payment_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: modified_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: next_payment_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: next_payment_currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: next_payment_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: payment_type
+          orderByExpression: consumer_banking_standing_order_type_order_by_exp
+        - fieldName: reference
+          orderByExpression: varchar_order_by_exp
+        - fieldName: standing_order_status_code
+          orderByExpression: consumer_banking_standing_order_status_code_order_by_exp
+        - fieldName: start_date
+          orderByExpression: date_order_by_exp
+        - fieldName: supplementary_data
+          orderByExpression: text_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_account
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_standing_orders_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_standing_orders
+  objectType: consumer_banking_standing_orders
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_standing_orders
+  filterExpressionType: consumer_banking_standing_orders_bool_exp
+  aggregateExpression: consumer_banking_standing_orders_agg_exp
+  orderByExpression: consumer_banking_standing_orders_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_standing_orders
+      subscription:
+        rootField: consumer_banking_standing_orders
+    selectUniques:
+      - queryRootField: consumer_banking_standing_orders_by_consumer_banking_standing_order_id
+        uniqueIdentifier:
+          - consumer_banking_standing_order_id
+        subscription:
+          rootField: consumer_banking_standing_orders_by_consumer_banking_standing_order_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_standing_orders_filter_input
+    aggregate:
+      queryRootField: consumer_banking_standing_orders_aggregate
+      subscription:
+        rootField: consumer_banking_standing_orders_aggregate
+  description: Stores information about recurring payment instructions (standing orders)
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_standing_orders
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_standing_order_creditor_accounts
+  sourceType: consumer_banking_standing_orders
+  target:
+    model:
+      name: consumer_banking_standing_order_creditor_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_standing_order_creditor_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_standing_order_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_standing_order_id
+  graphql:
+    aggregateFieldName: consumer_banking_standing_order_creditor_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_standing_order_creditor_agents
+  sourceType: consumer_banking_standing_orders
+  target:
+    model:
+      name: consumer_banking_standing_order_creditor_agents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_standing_order_creditor_agents_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_standing_order_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_standing_order_id
+  graphql:
+    aggregateFieldName: consumer_banking_standing_order_creditor_agents_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_account
+  sourceType: consumer_banking_standing_orders
+  target:
+    model:
+      name: consumer_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+

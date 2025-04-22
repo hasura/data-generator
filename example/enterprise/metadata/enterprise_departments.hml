@@ -1,0 +1,177 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_departments
+  description: Stores information about the various departments within the enterprise.
+  fields:
+    - name: department_name
+      type: varchar
+      description: Name of the department.
+    - name: enterprise_department_id
+      type: int_4!
+      description: Unique identifier for each department.
+    - name: location
+      type: varchar
+      description: Physical location of the department.
+    - name: operating_unit
+      type: enterprise_operating_unit
+      description: This department is managed under this operating unit.
+  graphql:
+    typeName: Enterprise_enterprise_departments
+    inputTypeName: Enterprise_enterprise_departments_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_departments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_departments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - department_name
+          - enterprise_department_id
+          - location
+          - operating_unit
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_departments_bool_exp
+  operand:
+    object:
+      type: enterprise_departments
+      comparableFields:
+        - fieldName: department_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_department_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: location
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: operating_unit
+          booleanExpressionType: enterprise_operating_unit_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_associates
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_departments_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_departments_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_departments
+      aggregatableFields:
+        - fieldName: department_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_department_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: location
+          aggregateExpression: varchar_agg_exp
+        - fieldName: operating_unit
+          aggregateExpression: enterprise_operating_unit_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_departments_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_departments_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_departments
+      orderableFields:
+        - fieldName: department_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_department_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: location
+          orderByExpression: varchar_order_by_exp
+        - fieldName: operating_unit
+          orderByExpression: enterprise_operating_unit_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Enterprise_enterprise_departments_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_departments
+  objectType: enterprise_departments
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_departments
+  filterExpressionType: enterprise_departments_bool_exp
+  aggregateExpression: enterprise_departments_agg_exp
+  orderByExpression: enterprise_departments_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_departments
+      subscription:
+        rootField: enterprise_departments
+    selectUniques:
+      - queryRootField: enterprise_departments_by_department_name
+        uniqueIdentifier:
+          - department_name
+        subscription:
+          rootField: enterprise_departments_by_department_name
+      - queryRootField: enterprise_departments_by_enterprise_department_id
+        uniqueIdentifier:
+          - enterprise_department_id
+        subscription:
+          rootField: enterprise_departments_by_enterprise_department_id
+    filterInputTypeName: Enterprise_enterprise_departments_filter_input
+    aggregate:
+      queryRootField: enterprise_departments_aggregate
+      subscription:
+        rootField: enterprise_departments_aggregate
+  description: Stores information about the various departments within the enterprise.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_departments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_associates
+  sourceType: enterprise_departments
+  target:
+    model:
+      name: enterprise_associates
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_associates_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_department_id
+      target:
+        modelField:
+          - fieldName: enterprise_department_id
+  graphql:
+    aggregateFieldName: enterprise_associates_aggregate
+

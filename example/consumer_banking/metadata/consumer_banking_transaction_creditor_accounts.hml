@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_transaction_creditor_accounts
+  description: Stores information about accounts receiving funds in transactions
+  fields:
+    - name: consumer_banking_transaction_creditor_account_id
+      type: int_4!
+      description: Auto-incrementing identifier for each creditor account record
+    - name: consumer_banking_transaction_id
+      type: int_4!
+      description: References the transaction this creditor account belongs to
+    - name: identification
+      type: varchar!
+      description: Account identifier receiving the funds
+    - name: name
+      type: varchar
+      description: Name associated with the receiving account
+    - name: scheme_name
+      type: enterprise_identifier_scheme!
+      description: Account identifier scheme (e.g., IBAN, BBAN)
+    - name: secondary_identification
+      type: varchar
+      description: Additional identification for the receiving account
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_creditor_accounts
+    inputTypeName: ConsumerBanking_consumer_banking_transaction_creditor_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_creditor_accounts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_transaction_creditor_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumer_banking_transaction_creditor_account_id
+          - consumer_banking_transaction_id
+          - identification
+          - name
+          - scheme_name
+          - secondary_identification
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_transaction_creditor_accounts_bool_exp
+  operand:
+    object:
+      type: consumer_banking_transaction_creditor_accounts
+      comparableFields:
+        - fieldName: consumer_banking_transaction_creditor_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: identification
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: scheme_name
+          booleanExpressionType: enterprise_identifier_scheme_bool_exp
+        - fieldName: secondary_identification
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_creditor_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_creditor_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_transaction_creditor_accounts
+      aggregatableFields:
+        - fieldName: consumer_banking_transaction_creditor_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: identification
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: scheme_name
+          aggregateExpression: enterprise_identifier_scheme_agg_exp
+        - fieldName: secondary_identification
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_transaction_creditor_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_creditor_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_transaction_creditor_accounts
+      orderableFields:
+        - fieldName: consumer_banking_transaction_creditor_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: identification
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: scheme_name
+          orderByExpression: enterprise_identifier_scheme_order_by_exp
+        - fieldName: secondary_identification
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_transaction
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_transaction_creditor_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_transaction_creditor_accounts
+  objectType: consumer_banking_transaction_creditor_accounts
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_creditor_accounts
+  filterExpressionType: consumer_banking_transaction_creditor_accounts_bool_exp
+  aggregateExpression: consumer_banking_transaction_creditor_accounts_agg_exp
+  orderByExpression: consumer_banking_transaction_creditor_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_transaction_creditor_accounts
+      subscription:
+        rootField: consumer_banking_transaction_creditor_accounts
+    selectUniques:
+      - queryRootField: consumer_banking_transaction_creditor_accounts_by_consumer_banking_transaction_creditor_account_id
+        uniqueIdentifier:
+          - consumer_banking_transaction_creditor_account_id
+        subscription:
+          rootField: consumer_banking_transaction_creditor_accounts_by_consumer_banking_transaction_creditor_account_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_transaction_creditor_accounts_filter_input
+    aggregate:
+      queryRootField: consumer_banking_transaction_creditor_accounts_aggregate
+      subscription:
+        rootField: consumer_banking_transaction_creditor_accounts_aggregate
+  description: Stores information about accounts receiving funds in transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_transaction_creditor_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transaction
+  sourceType: consumer_banking_transaction_creditor_accounts
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_transaction_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_transaction_id
+

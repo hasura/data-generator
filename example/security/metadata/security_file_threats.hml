@@ -1,0 +1,141 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_file_threats
+  description: Table storing information about file threats, linking file hashes
+    to threat levels and descriptions.
+  fields:
+    - name: security_file_threat_hash
+      type: varchar!
+      description: Hash of the file, used to identify threats.
+    - name: threat_description
+      type: text
+      description: Description of the threat associated with the file.
+    - name: threat_level
+      type: security_threat_level_type!
+      description: Level of threat associated with the file.
+  graphql:
+    typeName: Security_security_file_threats
+    inputTypeName: Security_security_file_threats_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_file_threats
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_file_threats
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - security_file_threat_hash
+          - threat_description
+          - threat_level
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_file_threats_bool_exp
+  operand:
+    object:
+      type: security_file_threats
+      comparableFields:
+        - fieldName: security_file_threat_hash
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: threat_description
+          booleanExpressionType: text_bool_exp
+        - fieldName: threat_level
+          booleanExpressionType: security_threat_level_type_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_file_threats_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_file_threats_agg_exp
+  operand:
+    object:
+      aggregatedType: security_file_threats
+      aggregatableFields:
+        - fieldName: security_file_threat_hash
+          aggregateExpression: varchar_agg_exp
+        - fieldName: threat_description
+          aggregateExpression: text_agg_exp
+        - fieldName: threat_level
+          aggregateExpression: security_threat_level_type_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_file_threats_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_file_threats_order_by_exp
+  operand:
+    object:
+      orderedType: security_file_threats
+      orderableFields:
+        - fieldName: security_file_threat_hash
+          orderByExpression: varchar_order_by_exp
+        - fieldName: threat_description
+          orderByExpression: text_order_by_exp
+        - fieldName: threat_level
+          orderByExpression: security_threat_level_type_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_file_threats_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_file_threats
+  objectType: security_file_threats
+  source:
+    dataConnectorName: security
+    collection: security_file_threats
+  filterExpressionType: security_file_threats_bool_exp
+  aggregateExpression: security_file_threats_agg_exp
+  orderByExpression: security_file_threats_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_file_threats
+      subscription:
+        rootField: security_file_threats
+    selectUniques:
+      - queryRootField: security_file_threats_by_security_file_threat_hash
+        uniqueIdentifier:
+          - security_file_threat_hash
+        subscription:
+          rootField: security_file_threats_by_security_file_threat_hash
+    filterInputTypeName: Security_security_file_threats_filter_input
+    aggregate:
+      queryRootField: security_file_threats_aggregate
+      subscription:
+        rootField: security_file_threats_aggregate
+  description: Table storing information about file threats, linking file hashes
+    to threat levels and descriptions.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_file_threats
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

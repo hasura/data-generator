@@ -1,0 +1,281 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: mortgage_services_loan_modifications
+  description: Tracks modifications made to existing loan accounts, such as
+    changes to interest rates, terms, or principal balance.
+  fields:
+    - name: approval_date
+      type: date
+      description: Date modification was approved
+    - name: approved_by_id
+      type: int_4
+      description: User who approved modification
+    - name: capitalized_amount
+      type: numeric
+      description: Amount of interest or fees capitalized
+    - name: document_path
+      type: varchar
+      description: Path to modification agreement document
+    - name: effective_date
+      type: date
+      description: Date modification takes effect
+    - name: hardship_reason
+      type: mortgage_services_hardship_reason!
+      description: Customer's reason for hardship
+    - name: loan_account_id
+      type: int_4!
+      description: Reference to loan account
+    - name: modification_type
+      type: mortgage_services_loan_modification_type!
+      description: Type of loan modification
+    - name: mortgage_services_modification_id
+      type: int_4!
+      description: Unique identifier for loan modification
+    - name: new_principal_balance
+      type: numeric
+      description: Principal balance after modification
+    - name: new_rate
+      type: numeric
+      description: Interest rate after modification
+    - name: new_term_months
+      type: int_4
+      description: Loan term after modification
+    - name: original_principal_balance
+      type: numeric
+      description: Principal balance before modification
+    - name: original_rate
+      type: numeric
+      description: Interest rate before modification
+    - name: original_term_months
+      type: int_4
+      description: Loan term before modification
+    - name: request_date
+      type: date!
+      description: Date modification was requested
+    - name: status
+      type: mortgage_services_loan_modification_status!
+      description: Current status of the modification
+  graphql:
+    typeName: MortgageServices_mortgage_services_loan_modifications
+    inputTypeName: MortgageServices_mortgage_services_loan_modifications_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_loan_modifications
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: mortgage_services_loan_modifications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - approval_date
+          - approved_by_id
+          - capitalized_amount
+          - document_path
+          - effective_date
+          - hardship_reason
+          - loan_account_id
+          - modification_type
+          - mortgage_services_modification_id
+          - new_principal_balance
+          - new_rate
+          - new_term_months
+          - original_principal_balance
+          - original_rate
+          - original_term_months
+          - request_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: mortgage_services_loan_modifications_bool_exp
+  operand:
+    object:
+      type: mortgage_services_loan_modifications
+      comparableFields:
+        - fieldName: approval_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: approved_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: capitalized_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: effective_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: hardship_reason
+          booleanExpressionType: mortgage_services_hardship_reason_bool_exp
+        - fieldName: loan_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: modification_type
+          booleanExpressionType: mortgage_services_loan_modification_type_bool_exp
+        - fieldName: mortgage_services_modification_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: new_principal_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: new_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: new_term_months
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: original_principal_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: original_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: original_term_months
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: request_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: status
+          booleanExpressionType: mortgage_services_loan_modification_status_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: MortgageServices_mortgage_services_loan_modifications_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: mortgage_services_loan_modifications_agg_exp
+  operand:
+    object:
+      aggregatedType: mortgage_services_loan_modifications
+      aggregatableFields:
+        - fieldName: approval_date
+          aggregateExpression: date_agg_exp
+        - fieldName: approved_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: capitalized_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: effective_date
+          aggregateExpression: date_agg_exp
+        - fieldName: hardship_reason
+          aggregateExpression: mortgage_services_hardship_reason_agg_exp
+        - fieldName: loan_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: modification_type
+          aggregateExpression: mortgage_services_loan_modification_type_agg_exp
+        - fieldName: mortgage_services_modification_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: new_principal_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: new_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: new_term_months
+          aggregateExpression: int_4_agg_exp
+        - fieldName: original_principal_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: original_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: original_term_months
+          aggregateExpression: int_4_agg_exp
+        - fieldName: request_date
+          aggregateExpression: date_agg_exp
+        - fieldName: status
+          aggregateExpression: mortgage_services_loan_modification_status_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: MortgageServices_mortgage_services_loan_modifications_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: mortgage_services_loan_modifications_order_by_exp
+  operand:
+    object:
+      orderedType: mortgage_services_loan_modifications
+      orderableFields:
+        - fieldName: approval_date
+          orderByExpression: date_order_by_exp
+        - fieldName: approved_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: capitalized_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: effective_date
+          orderByExpression: date_order_by_exp
+        - fieldName: hardship_reason
+          orderByExpression: mortgage_services_hardship_reason_order_by_exp
+        - fieldName: loan_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: modification_type
+          orderByExpression: mortgage_services_loan_modification_type_order_by_exp
+        - fieldName: mortgage_services_modification_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: new_principal_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: new_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: new_term_months
+          orderByExpression: int_4_order_by_exp
+        - fieldName: original_principal_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: original_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: original_term_months
+          orderByExpression: int_4_order_by_exp
+        - fieldName: request_date
+          orderByExpression: date_order_by_exp
+        - fieldName: status
+          orderByExpression: mortgage_services_loan_modification_status_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: MortgageServices_mortgage_services_loan_modifications_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: mortgage_services_loan_modifications
+  objectType: mortgage_services_loan_modifications
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_loan_modifications
+  filterExpressionType: mortgage_services_loan_modifications_bool_exp
+  aggregateExpression: mortgage_services_loan_modifications_agg_exp
+  orderByExpression: mortgage_services_loan_modifications_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: mortgage_services_loan_modifications
+      subscription:
+        rootField: mortgage_services_loan_modifications
+    selectUniques:
+      - queryRootField: mortgage_services_loan_modifications_by_mortgage_services_modification_id
+        uniqueIdentifier:
+          - mortgage_services_modification_id
+        subscription:
+          rootField: mortgage_services_loan_modifications_by_mortgage_services_modification_id
+    filterInputTypeName: MortgageServices_mortgage_services_loan_modifications_filter_input
+    aggregate:
+      queryRootField: mortgage_services_loan_modifications_aggregate
+      subscription:
+        rootField: mortgage_services_loan_modifications_aggregate
+  description: Tracks modifications made to existing loan accounts, such as
+    changes to interest rates, terms, or principal balance.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: mortgage_services_loan_modifications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

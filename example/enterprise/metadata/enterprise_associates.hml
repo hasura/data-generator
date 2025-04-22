@@ -1,0 +1,400 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_associates
+  description: Stores information about employees, contractors, or other
+    individuals associated with the enterprise.
+  fields:
+    - name: city
+      type: varchar
+      description: Associate's city of residence.
+    - name: country
+      type: varchar
+      description: Associate's country of residence.
+    - name: email
+      type: varchar
+      description: Associate's unique email address.
+    - name: enterprise_associate_id
+      type: int_4!
+      description: Unique identifier for each associate.
+    - name: enterprise_building_id
+      type: int_4
+      description: Foreign key referencing the building where the associate is
+        primarily located.
+    - name: enterprise_department_id
+      type: int_4
+      description: Foreign key referencing the department the associate belongs to.
+    - name: first_name
+      type: varchar
+      description: Associate's first name.
+    - name: hire_date
+      type: date
+      description: Date the associate was hired.
+    - name: job_title
+      type: varchar
+      description: Associate's functional job title (e.g., Teller, Loan Officer).
+    - name: last_name
+      type: varchar
+      description: Associate's last name.
+    - name: manager_id
+      type: int_4
+      description: Foreign key referencing the associate's manager.
+    - name: officer_title
+      type: varchar
+      description: Associate's formal officer title (e.g., VP, MD), if applicable.
+    - name: phone_number
+      type: varchar
+      description: Associate's phone number.
+    - name: post_code
+      type: varchar
+      description: Associate's postal code.
+    - name: relationship_type
+      type: enterprise_relationship_status
+      description: Type of relationship with the company.
+    - name: release_date
+      type: date
+      description: Date the associate was released from employment, if applicable.
+    - name: salary
+      type: numeric
+      description: Associate's annual salary.
+    - name: state
+      type: varchar
+      description: Associate's state of residence.
+    - name: status
+      type: enterprise_associate_status
+      description: Current status of the associate.
+    - name: street_address
+      type: varchar
+      description: Associate's street address.
+  graphql:
+    typeName: Enterprise_enterprise_associates
+    inputTypeName: Enterprise_enterprise_associates_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_associates
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_associates
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - city
+          - country
+          - email
+          - enterprise_associate_id
+          - enterprise_building_id
+          - enterprise_department_id
+          - first_name
+          - hire_date
+          - job_title
+          - last_name
+          - manager_id
+          - officer_title
+          - phone_number
+          - post_code
+          - relationship_type
+          - release_date
+          - salary
+          - state
+          - status
+          - street_address
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_associates_bool_exp
+  operand:
+    object:
+      type: enterprise_associates
+      comparableFields:
+        - fieldName: city
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: country
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: email
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_associate_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_building_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_department_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: first_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: hire_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: job_title
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: last_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: manager_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: officer_title
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: phone_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: post_code
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: relationship_type
+          booleanExpressionType: enterprise_relationship_status_bool_exp
+        - fieldName: release_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: salary
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: state
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: enterprise_associate_status_bool_exp
+        - fieldName: street_address
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_building
+        - relationshipName: enterprise_department
+        - relationshipName: enterprise_associate
+        - relationshipName: enterprise_associates
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_associates_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_associates_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_associates
+      aggregatableFields:
+        - fieldName: city
+          aggregateExpression: varchar_agg_exp
+        - fieldName: country
+          aggregateExpression: varchar_agg_exp
+        - fieldName: email
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_associate_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_building_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_department_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: first_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: hire_date
+          aggregateExpression: date_agg_exp
+        - fieldName: job_title
+          aggregateExpression: varchar_agg_exp
+        - fieldName: last_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: manager_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: officer_title
+          aggregateExpression: varchar_agg_exp
+        - fieldName: phone_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: post_code
+          aggregateExpression: varchar_agg_exp
+        - fieldName: relationship_type
+          aggregateExpression: enterprise_relationship_status_agg_exp
+        - fieldName: release_date
+          aggregateExpression: date_agg_exp
+        - fieldName: salary
+          aggregateExpression: numeric_agg_exp
+        - fieldName: state
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: enterprise_associate_status_agg_exp
+        - fieldName: street_address
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_associates_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_associates_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_associates
+      orderableFields:
+        - fieldName: city
+          orderByExpression: varchar_order_by_exp
+        - fieldName: country
+          orderByExpression: varchar_order_by_exp
+        - fieldName: email
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_associate_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_building_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_department_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: first_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: hire_date
+          orderByExpression: date_order_by_exp
+        - fieldName: job_title
+          orderByExpression: varchar_order_by_exp
+        - fieldName: last_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: manager_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: officer_title
+          orderByExpression: varchar_order_by_exp
+        - fieldName: phone_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: post_code
+          orderByExpression: varchar_order_by_exp
+        - fieldName: relationship_type
+          orderByExpression: enterprise_relationship_status_order_by_exp
+        - fieldName: release_date
+          orderByExpression: date_order_by_exp
+        - fieldName: salary
+          orderByExpression: numeric_order_by_exp
+        - fieldName: state
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: enterprise_associate_status_order_by_exp
+        - fieldName: street_address
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: enterprise_building
+        - relationshipName: enterprise_department
+        - relationshipName: enterprise_associate
+  graphql:
+    expressionTypeName: Enterprise_enterprise_associates_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_associates
+  objectType: enterprise_associates
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_associates
+  filterExpressionType: enterprise_associates_bool_exp
+  aggregateExpression: enterprise_associates_agg_exp
+  orderByExpression: enterprise_associates_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_associates
+      subscription:
+        rootField: enterprise_associates
+    selectUniques:
+      - queryRootField: enterprise_associates_by_email
+        uniqueIdentifier:
+          - email
+        subscription:
+          rootField: enterprise_associates_by_email
+      - queryRootField: enterprise_associates_by_enterprise_associate_id
+        uniqueIdentifier:
+          - enterprise_associate_id
+        subscription:
+          rootField: enterprise_associates_by_enterprise_associate_id
+    filterInputTypeName: Enterprise_enterprise_associates_filter_input
+    aggregate:
+      queryRootField: enterprise_associates_aggregate
+      subscription:
+        rootField: enterprise_associates_aggregate
+  description: Stores information about employees, contractors, or other
+    individuals associated with the enterprise.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_associates
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_building
+  sourceType: enterprise_associates
+  target:
+    model:
+      name: enterprise_buildings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_building_id
+      target:
+        modelField:
+          - fieldName: enterprise_building_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_department
+  sourceType: enterprise_associates
+  target:
+    model:
+      name: enterprise_departments
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_department_id
+      target:
+        modelField:
+          - fieldName: enterprise_department_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_associate
+  sourceType: enterprise_associates
+  target:
+    model:
+      name: enterprise_associates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: manager_id
+      target:
+        modelField:
+          - fieldName: enterprise_associate_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_associates
+  sourceType: enterprise_associates
+  target:
+    model:
+      name: enterprise_associates
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_associates_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_associate_id
+      target:
+        modelField:
+          - fieldName: manager_id
+  graphql:
+    aggregateFieldName: enterprise_associates_aggregate
+

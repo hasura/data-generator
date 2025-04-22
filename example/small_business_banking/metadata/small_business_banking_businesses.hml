@@ -1,0 +1,656 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_businesses
+  description: Stores core information about small businesses that are customers of the bank
+  fields:
+    - name: annual_revenue
+      type: numeric
+      description: Annual revenue amount for the business
+    - name: business_name
+      type: varchar!
+      description: Operating name of the business
+    - name: business_type
+      type: varchar!
+      description: Type of business entity (e.g., LLC, Corporation, Sole Proprietorship)
+    - name: employee_count
+      type: int_4
+      description: Number of employees in the business
+    - name: enterprise_party_id
+      type: int_4!
+      description: Reference to the enterprise party record representing this business
+    - name: establishment_date
+      type: date
+      description: Date the business was established
+    - name: industry_code
+      type: varchar!
+      description: Standard industry classification code for the business
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Unique identifier for each business entity
+    - name: status
+      type: varchar!
+      description: Current status of the business (active, inactive, suspended, etc.)
+    - name: tax_id
+      type: varchar!
+      description: Tax identification number for the business (e.g., EIN)
+    - name: website
+      type: varchar
+      description: Business website URL
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_businesses
+    inputTypeName: SmallBusinessBanking_small_business_banking_businesses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_businesses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_businesses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - annual_revenue
+          - business_name
+          - business_type
+          - employee_count
+          - enterprise_party_id
+          - establishment_date
+          - industry_code
+          - small_business_banking_business_id
+          - status
+          - tax_id
+          - website
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_businesses_bool_exp
+  operand:
+    object:
+      type: small_business_banking_businesses
+      comparableFields:
+        - fieldName: annual_revenue
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: business_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: business_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: employee_count
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: establishment_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: industry_code
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: tax_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: website
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_accounts
+        - relationshipName: small_business_banking_adverse_action_notices
+        - relationshipName: small_business_banking_beneficial_owner_verifications
+        - relationshipName: small_business_banking_business_card_accounts
+        - relationshipName: small_business_banking_business_card_users
+        - relationshipName: small_business_banking_business_due_diligences
+        - relationshipName: small_business_banking_business_expense_categories
+        - relationshipName: small_business_banking_business_owners
+        - relationshipName: small_business_banking_business_risk_assessments
+        - relationshipName: small_business_banking_business_transaction_categories
+        - relationshipName: small_business_banking_collaterals
+        - relationshipName: small_business_banking_compliance_cases
+        - relationshipName: small_business_banking_credit_decisions
+        - relationshipName: small_business_banking_credit_lines
+        - relationshipName: small_business_banking_documents
+        - relationshipName: small_business_banking_loan_fair_lendings
+        - relationshipName: small_business_banking_loans
+        - relationshipName: small_business_banking_regulatory_findings
+        - relationshipName: small_business_banking_suspicious_activity_reports
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_businesses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_businesses_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_businesses
+      aggregatableFields:
+        - fieldName: annual_revenue
+          aggregateExpression: numeric_agg_exp
+        - fieldName: business_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: business_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: employee_count
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: establishment_date
+          aggregateExpression: date_agg_exp
+        - fieldName: industry_code
+          aggregateExpression: varchar_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: tax_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: website
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_businesses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_businesses_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_businesses
+      orderableFields:
+        - fieldName: annual_revenue
+          orderByExpression: numeric_order_by_exp
+        - fieldName: business_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: business_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: employee_count
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: establishment_date
+          orderByExpression: date_order_by_exp
+        - fieldName: industry_code
+          orderByExpression: varchar_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: tax_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: website
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_businesses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_businesses
+  objectType: small_business_banking_businesses
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_businesses
+  filterExpressionType: small_business_banking_businesses_bool_exp
+  aggregateExpression: small_business_banking_businesses_agg_exp
+  orderByExpression: small_business_banking_businesses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_businesses
+      subscription:
+        rootField: small_business_banking_businesses
+    selectUniques:
+      - queryRootField: small_business_banking_businesses_by_small_business_banking_business_id
+        uniqueIdentifier:
+          - small_business_banking_business_id
+        subscription:
+          rootField: small_business_banking_businesses_by_small_business_banking_business_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_businesses_filter_input
+    aggregate:
+      queryRootField: small_business_banking_businesses_aggregate
+      subscription:
+        rootField: small_business_banking_businesses_aggregate
+  description: Stores core information about small businesses that are customers of the bank
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_businesses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_accounts
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_adverse_action_notices
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_adverse_action_notices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_adverse_action_notices_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_adverse_action_notices_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_beneficial_owner_verifications
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_beneficial_owner_verification
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_beneficial_owner_verification_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_beneficial_owner_verifications_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_card_accounts
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_business_card_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_card_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_card_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_card_users
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_business_card_users
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_card_users_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_card_users_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_due_diligences
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_business_due_diligence
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_due_diligence_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_due_diligences_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_expense_categories
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_business_expense_categories
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_expense_categories_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_expense_categories_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_owners
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_business_owners
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_owners_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_owners_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_risk_assessments
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_business_risk_assessments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_risk_assessments_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_risk_assessments_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_transaction_categories
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_business_transaction_categories
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_transaction_categories_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_transaction_categories_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_collaterals
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_collateral
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_collateral_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_collaterals_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_compliance_cases
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_compliance_cases
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_compliance_cases_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_compliance_cases_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_credit_decisions
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_credit_decisions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_credit_decisions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_credit_decisions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_credit_lines
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_credit_lines
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_credit_lines_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_credit_lines_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_documents
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_documents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_documents_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_documents_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_loan_fair_lendings
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_loan_fair_lending
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_loan_fair_lending_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_loan_fair_lendings_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_loans
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_loans
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_loans_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_loans_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_regulatory_findings
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_regulatory_findings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_regulatory_findings_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_regulatory_findings_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_suspicious_activity_reports
+  sourceType: small_business_banking_businesses
+  target:
+    model:
+      name: small_business_banking_suspicious_activity_reports
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_suspicious_activity_reports_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+  graphql:
+    aggregateFieldName: small_business_banking_suspicious_activity_reports_aggregate
+

@@ -1,0 +1,160 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_transaction_statement_references
+  description: Links transactions to specific statements they appear on
+  fields:
+    - name: consumer_banking_transaction_id
+      type: int_4!
+      description: References the transaction this reference belongs to
+    - name: consumer_banking_transaction_statement_reference_id
+      type: int_4!
+      description: Auto-incrementing identifier for each transaction-statement
+        reference record
+    - name: statement_reference
+      type: varchar
+      description: Statement reference n
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_statement_references
+    inputTypeName: ConsumerBanking_consumer_banking_transaction_statement_references_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_statement_references
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_transaction_statement_references
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumer_banking_transaction_id
+          - consumer_banking_transaction_statement_reference_id
+          - statement_reference
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_transaction_statement_references_bool_exp
+  operand:
+    object:
+      type: consumer_banking_transaction_statement_references
+      comparableFields:
+        - fieldName: consumer_banking_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_transaction_statement_reference_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: statement_reference
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_statement_references_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_statement_references_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_transaction_statement_references
+      aggregatableFields:
+        - fieldName: consumer_banking_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_transaction_statement_reference_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: statement_reference
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_transaction_statement_references_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_statement_references_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_transaction_statement_references
+      orderableFields:
+        - fieldName: consumer_banking_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_transaction_statement_reference_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: statement_reference
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_transaction
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_transaction_statement_references_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_transaction_statement_references
+  objectType: consumer_banking_transaction_statement_references
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_statement_references
+  filterExpressionType: consumer_banking_transaction_statement_references_bool_exp
+  aggregateExpression: consumer_banking_transaction_statement_references_agg_exp
+  orderByExpression: consumer_banking_transaction_statement_references_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_transaction_statement_references
+      subscription:
+        rootField: consumer_banking_transaction_statement_references
+    selectUniques:
+      - queryRootField: consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id
+        uniqueIdentifier:
+          - consumer_banking_transaction_statement_reference_id
+        subscription:
+          rootField: consumer_banking_transaction_statement_references_by_consumer_banking_transaction_statement_reference_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_transaction_statement_references_filter_input
+    aggregate:
+      queryRootField: consumer_banking_transaction_statement_references_aggregate
+      subscription:
+        rootField: consumer_banking_transaction_statement_references_aggregate
+  description: Links transactions to specific statements they appear on
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_transaction_statement_references
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transaction
+  sourceType: consumer_banking_transaction_statement_references
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_transaction_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_transaction_id
+

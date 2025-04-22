@@ -1,0 +1,214 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_files
+  description: Table storing information about files on systems, including file
+    paths, hashes, and sizes.
+  fields:
+    - name: file_hash
+      type: varchar
+      description: Hash of the file, used for integrity checks.
+    - name: file_path
+      type: text
+      description: Path to the file on the system.
+    - name: file_size
+      type: int_8
+      description: Size of the file in bytes.
+    - name: last_modified
+      type: timestamp
+      description: Timestamp when the file was last modified.
+    - name: security_file_id
+      type: uuid!
+      description: Unique identifier for the file.
+    - name: security_host_id
+      type: uuid!
+      description: Identifier of the system where the file is located.
+  graphql:
+    typeName: Security_security_files
+    inputTypeName: Security_security_files_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_files
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_files
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - file_hash
+          - file_path
+          - file_size
+          - last_modified
+          - security_file_id
+          - security_host_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_files_bool_exp
+  operand:
+    object:
+      type: security_files
+      comparableFields:
+        - fieldName: file_hash
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: file_path
+          booleanExpressionType: text_bool_exp
+        - fieldName: file_size
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: last_modified
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: security_file_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_host_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_file_accesses
+        - relationshipName: security_host
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_files_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_files_agg_exp
+  operand:
+    object:
+      aggregatedType: security_files
+      aggregatableFields:
+        - fieldName: file_hash
+          aggregateExpression: varchar_agg_exp
+        - fieldName: file_path
+          aggregateExpression: text_agg_exp
+        - fieldName: file_size
+          aggregateExpression: int_8_agg_exp
+        - fieldName: last_modified
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: security_file_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_host_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_files_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_files_order_by_exp
+  operand:
+    object:
+      orderedType: security_files
+      orderableFields:
+        - fieldName: file_hash
+          orderByExpression: varchar_order_by_exp
+        - fieldName: file_path
+          orderByExpression: text_order_by_exp
+        - fieldName: file_size
+          orderByExpression: int_8_order_by_exp
+        - fieldName: last_modified
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: security_file_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_host_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_host
+  graphql:
+    expressionTypeName: Security_security_files_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_files
+  objectType: security_files
+  source:
+    dataConnectorName: security
+    collection: security_files
+  filterExpressionType: security_files_bool_exp
+  aggregateExpression: security_files_agg_exp
+  orderByExpression: security_files_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_files
+      subscription:
+        rootField: security_files
+    selectUniques:
+      - queryRootField: security_files_by_security_file_id
+        uniqueIdentifier:
+          - security_file_id
+        subscription:
+          rootField: security_files_by_security_file_id
+    filterInputTypeName: Security_security_files_filter_input
+    aggregate:
+      queryRootField: security_files_aggregate
+      subscription:
+        rootField: security_files_aggregate
+  description: Table storing information about files on systems, including file
+    paths, hashes, and sizes.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_files
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_file_accesses
+  sourceType: security_files
+  target:
+    model:
+      name: security_file_accesses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_file_accesses_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_file_id
+      target:
+        modelField:
+          - fieldName: security_file_id
+  graphql:
+    aggregateFieldName: security_file_accesses_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_files
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+

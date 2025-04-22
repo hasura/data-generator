@@ -1,0 +1,541 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_card_products
+  description: Defines credit card products offered by the institution
+  fields:
+    - name: annual_fee
+      type: numeric
+      description: Annual fee for the card
+    - name: balance_transfer_fee_min
+      type: numeric
+      description: Minimum fee amount for balance transfers
+    - name: balance_transfer_fee_percent
+      type: numeric
+      description: Percentage fee for balance transfers
+    - name: balance_transfer_rate
+      type: numeric
+      description: APR for balance transfers
+    - name: base_interest_rate
+      type: numeric
+      description: Standard purchase APR (annual percentage rate)
+    - name: base_reward_rate
+      type: numeric
+      description: Base reward earning rate (e.g., 1.5% cashback)
+    - name: card_network
+      type: varchar!
+      description: Card network (Visa, Mastercard, Amex, Discover)
+    - name: card_tier
+      type: varchar!
+      description: Card tier (Standard, Gold, Platinum, etc.)
+    - name: card_type
+      type: varchar!
+      description: Type of card (Debit, Credit, Prepaid, Charge)
+    - name: cash_advance_fee_min
+      type: numeric
+      description: Minimum fee amount for cash advances
+    - name: cash_advance_fee_percent
+      type: numeric
+      description: Percentage fee for cash advances
+    - name: cash_advance_rate
+      type: numeric
+      description: APR for cash advances
+    - name: credit_cards_product_id
+      type: int_4!
+      description: Auto-incrementing identifier for each card product
+    - name: discontinue_date
+      type: date
+      description: Date when product was discontinued if applicable
+    - name: foreign_transaction_fee
+      type: numeric
+      description: Fee percentage for foreign transactions
+    - name: grace_period_days
+      type: int_4
+      description: Interest-free grace period in days
+    - name: image_url
+      type: varchar
+      description: URL to card image for marketing
+    - name: intro_rate
+      type: numeric
+      description: Introductory APR if offered
+    - name: intro_rate_period_months
+      type: int_4
+      description: Duration of introductory rate
+    - name: is_active
+      type: bool!
+      description: Whether product is currently offered
+    - name: is_annual_fee_waived_first_year
+      type: bool
+      description: Whether annual fee is waived first year
+    - name: is_secured
+      type: bool!
+      description: Whether card requires a security deposit
+    - name: late_payment_fee
+      type: numeric
+      description: Fee charged for late payments
+    - name: launch_date
+      type: date
+      description: Date when product was launched
+    - name: max_credit_limit
+      type: numeric
+      description: Maximum credit limit offered
+    - name: min_credit_limit
+      type: numeric
+      description: Minimum credit limit offered
+    - name: min_credit_score
+      type: int_4
+      description: Minimum credit score typically required
+    - name: overlimit_fee
+      type: numeric
+      description: Fee charged for exceeding credit limit
+    - name: penalty_rate
+      type: numeric
+      description: Penalty APR applied after late payments
+    - name: product_code
+      type: varchar!
+      description: Internal code identifying the card product
+    - name: product_name
+      type: varchar!
+      description: Marketing name of the card product
+    - name: return_payment_fee
+      type: numeric
+      description: Fee charged for returned payments
+    - name: reward_program
+      type: varchar
+      description: Description of reward program if any
+    - name: terms_and_conditions_url
+      type: varchar
+      description: URL to terms and conditions document
+  graphql:
+    typeName: CreditCards_credit_cards_card_products
+    inputTypeName: CreditCards_credit_cards_card_products_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_card_products
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_card_products
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - annual_fee
+          - balance_transfer_fee_min
+          - balance_transfer_fee_percent
+          - balance_transfer_rate
+          - base_interest_rate
+          - base_reward_rate
+          - card_network
+          - card_tier
+          - card_type
+          - cash_advance_fee_min
+          - cash_advance_fee_percent
+          - cash_advance_rate
+          - credit_cards_product_id
+          - discontinue_date
+          - foreign_transaction_fee
+          - grace_period_days
+          - image_url
+          - intro_rate
+          - intro_rate_period_months
+          - is_active
+          - is_annual_fee_waived_first_year
+          - is_secured
+          - late_payment_fee
+          - launch_date
+          - max_credit_limit
+          - min_credit_limit
+          - min_credit_score
+          - overlimit_fee
+          - penalty_rate
+          - product_code
+          - product_name
+          - return_payment_fee
+          - reward_program
+          - terms_and_conditions_url
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_card_products_bool_exp
+  operand:
+    object:
+      type: credit_cards_card_products
+      comparableFields:
+        - fieldName: annual_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: balance_transfer_fee_min
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: balance_transfer_fee_percent
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: balance_transfer_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: base_interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: base_reward_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: card_network
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: card_tier
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: card_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: cash_advance_fee_min
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: cash_advance_fee_percent
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: cash_advance_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: credit_cards_product_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: discontinue_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: foreign_transaction_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: grace_period_days
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: image_url
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: intro_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: intro_rate_period_months
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: is_active
+          booleanExpressionType: bool_bool_exp
+        - fieldName: is_annual_fee_waived_first_year
+          booleanExpressionType: bool_bool_exp
+        - fieldName: is_secured
+          booleanExpressionType: bool_bool_exp
+        - fieldName: late_payment_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: launch_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: max_credit_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: min_credit_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: min_credit_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: overlimit_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: penalty_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: product_code
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: product_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: return_payment_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: reward_program
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: terms_and_conditions_url
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_applications
+        - relationshipName: credit_cards_card_accounts
+        - relationshipName: credit_cards_card_product_features
+        - relationshipName: credit_cards_card_product_reward_categories
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_card_products_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_card_products_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_card_products
+      aggregatableFields:
+        - fieldName: annual_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: balance_transfer_fee_min
+          aggregateExpression: numeric_agg_exp
+        - fieldName: balance_transfer_fee_percent
+          aggregateExpression: numeric_agg_exp
+        - fieldName: balance_transfer_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: base_interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: base_reward_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: card_network
+          aggregateExpression: varchar_agg_exp
+        - fieldName: card_tier
+          aggregateExpression: varchar_agg_exp
+        - fieldName: card_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: cash_advance_fee_min
+          aggregateExpression: numeric_agg_exp
+        - fieldName: cash_advance_fee_percent
+          aggregateExpression: numeric_agg_exp
+        - fieldName: cash_advance_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: credit_cards_product_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: discontinue_date
+          aggregateExpression: date_agg_exp
+        - fieldName: foreign_transaction_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: grace_period_days
+          aggregateExpression: int_4_agg_exp
+        - fieldName: image_url
+          aggregateExpression: varchar_agg_exp
+        - fieldName: intro_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: intro_rate_period_months
+          aggregateExpression: int_4_agg_exp
+        - fieldName: is_active
+          aggregateExpression: bool_agg_exp
+        - fieldName: is_annual_fee_waived_first_year
+          aggregateExpression: bool_agg_exp
+        - fieldName: is_secured
+          aggregateExpression: bool_agg_exp
+        - fieldName: late_payment_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: launch_date
+          aggregateExpression: date_agg_exp
+        - fieldName: max_credit_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: min_credit_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: min_credit_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: overlimit_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: penalty_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: product_code
+          aggregateExpression: varchar_agg_exp
+        - fieldName: product_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: return_payment_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: reward_program
+          aggregateExpression: varchar_agg_exp
+        - fieldName: terms_and_conditions_url
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_card_products_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_card_products_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_card_products
+      orderableFields:
+        - fieldName: annual_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: balance_transfer_fee_min
+          orderByExpression: numeric_order_by_exp
+        - fieldName: balance_transfer_fee_percent
+          orderByExpression: numeric_order_by_exp
+        - fieldName: balance_transfer_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: base_interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: base_reward_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: card_network
+          orderByExpression: varchar_order_by_exp
+        - fieldName: card_tier
+          orderByExpression: varchar_order_by_exp
+        - fieldName: card_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: cash_advance_fee_min
+          orderByExpression: numeric_order_by_exp
+        - fieldName: cash_advance_fee_percent
+          orderByExpression: numeric_order_by_exp
+        - fieldName: cash_advance_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: credit_cards_product_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: discontinue_date
+          orderByExpression: date_order_by_exp
+        - fieldName: foreign_transaction_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: grace_period_days
+          orderByExpression: int_4_order_by_exp
+        - fieldName: image_url
+          orderByExpression: varchar_order_by_exp
+        - fieldName: intro_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: intro_rate_period_months
+          orderByExpression: int_4_order_by_exp
+        - fieldName: is_active
+          orderByExpression: bool_order_by_exp
+        - fieldName: is_annual_fee_waived_first_year
+          orderByExpression: bool_order_by_exp
+        - fieldName: is_secured
+          orderByExpression: bool_order_by_exp
+        - fieldName: late_payment_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: launch_date
+          orderByExpression: date_order_by_exp
+        - fieldName: max_credit_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: min_credit_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: min_credit_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: overlimit_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: penalty_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: product_code
+          orderByExpression: varchar_order_by_exp
+        - fieldName: product_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: return_payment_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: reward_program
+          orderByExpression: varchar_order_by_exp
+        - fieldName: terms_and_conditions_url
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_card_products_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_card_products
+  objectType: credit_cards_card_products
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_card_products
+  filterExpressionType: credit_cards_card_products_bool_exp
+  aggregateExpression: credit_cards_card_products_agg_exp
+  orderByExpression: credit_cards_card_products_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_card_products
+      subscription:
+        rootField: credit_cards_card_products
+    selectUniques:
+      - queryRootField: credit_cards_card_products_by_credit_cards_product_id
+        uniqueIdentifier:
+          - credit_cards_product_id
+        subscription:
+          rootField: credit_cards_card_products_by_credit_cards_product_id
+    filterInputTypeName: CreditCards_credit_cards_card_products_filter_input
+    aggregate:
+      queryRootField: credit_cards_card_products_aggregate
+      subscription:
+        rootField: credit_cards_card_products_aggregate
+  description: Defines credit card products offered by the institution
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_card_products
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_applications
+  sourceType: credit_cards_card_products
+  target:
+    model:
+      name: credit_cards_applications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_applications_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_product_id
+      target:
+        modelField:
+          - fieldName: credit_cards_product_id
+  graphql:
+    aggregateFieldName: credit_cards_applications_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_accounts
+  sourceType: credit_cards_card_products
+  target:
+    model:
+      name: credit_cards_card_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_card_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_product_id
+      target:
+        modelField:
+          - fieldName: credit_cards_product_id
+  graphql:
+    aggregateFieldName: credit_cards_card_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_product_features
+  sourceType: credit_cards_card_products
+  target:
+    model:
+      name: credit_cards_card_product_features
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_card_product_features_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_product_id
+      target:
+        modelField:
+          - fieldName: credit_cards_product_id
+  graphql:
+    aggregateFieldName: credit_cards_card_product_features_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_product_reward_categories
+  sourceType: credit_cards_card_products
+  target:
+    model:
+      name: credit_cards_card_product_reward_categories
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_card_product_reward_categories_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_product_id
+      target:
+        modelField:
+          - fieldName: credit_cards_product_id
+  graphql:
+    aggregateFieldName: credit_cards_card_product_reward_categories_aggregate
+

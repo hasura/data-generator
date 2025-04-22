@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_transaction_ultimate_debtors
+  description: Stores information about the original party that initiated the
+    payment in a transaction chain
+  fields:
+    - name: consumer_banking_transaction_id
+      type: int_4!
+      description: References the transaction this ultimate debtor belongs to
+    - name: consumer_banking_transaction_ultimate_debtor_id
+      type: int_4!
+      description: Auto-incrementing identifier for each ultimate debtor record
+    - name: identification
+      type: varchar
+      description: Identification code for the ultimate debtor
+    - name: lei
+      type: varchar
+      description: Legal Entity Identifier if the ultimate debtor is an organization
+    - name: name
+      type: varchar!
+      description: Name of the original party initiating the payment
+    - name: scheme_name
+      type: varchar
+      description: Identification scheme for the debtor's identifier
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_ultimate_debtors
+    inputTypeName: ConsumerBanking_consumer_banking_transaction_ultimate_debtors_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_ultimate_debtors
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_transaction_ultimate_debtors
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumer_banking_transaction_id
+          - consumer_banking_transaction_ultimate_debtor_id
+          - identification
+          - lei
+          - name
+          - scheme_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_transaction_ultimate_debtors_bool_exp
+  operand:
+    object:
+      type: consumer_banking_transaction_ultimate_debtors
+      comparableFields:
+        - fieldName: consumer_banking_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_transaction_ultimate_debtor_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: identification
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: lei
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: scheme_name
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_ultimate_debtors_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_ultimate_debtors_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_transaction_ultimate_debtors
+      aggregatableFields:
+        - fieldName: consumer_banking_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_transaction_ultimate_debtor_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: identification
+          aggregateExpression: varchar_agg_exp
+        - fieldName: lei
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: scheme_name
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_transaction_ultimate_debtors_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_ultimate_debtors_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_transaction_ultimate_debtors
+      orderableFields:
+        - fieldName: consumer_banking_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_transaction_ultimate_debtor_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: identification
+          orderByExpression: varchar_order_by_exp
+        - fieldName: lei
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: scheme_name
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_transaction
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_transaction_ultimate_debtors_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_transaction_ultimate_debtors
+  objectType: consumer_banking_transaction_ultimate_debtors
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_ultimate_debtors
+  filterExpressionType: consumer_banking_transaction_ultimate_debtors_bool_exp
+  aggregateExpression: consumer_banking_transaction_ultimate_debtors_agg_exp
+  orderByExpression: consumer_banking_transaction_ultimate_debtors_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_transaction_ultimate_debtors
+      subscription:
+        rootField: consumer_banking_transaction_ultimate_debtors
+    selectUniques:
+      - queryRootField: consumer_banking_transaction_ultimate_debtors_by_consumer_banking_transaction_ultimate_debtor_id
+        uniqueIdentifier:
+          - consumer_banking_transaction_ultimate_debtor_id
+        subscription:
+          rootField: consumer_banking_transaction_ultimate_debtors_by_consumer_banking_transaction_ultimate_debtor_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_transaction_ultimate_debtors_filter_input
+    aggregate:
+      queryRootField: consumer_banking_transaction_ultimate_debtors_aggregate
+      subscription:
+        rootField: consumer_banking_transaction_ultimate_debtors_aggregate
+  description: Stores information about the original party that initiated the
+    payment in a transaction chain
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_transaction_ultimate_debtors
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transaction
+  sourceType: consumer_banking_transaction_ultimate_debtors
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_transaction_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_transaction_id
+

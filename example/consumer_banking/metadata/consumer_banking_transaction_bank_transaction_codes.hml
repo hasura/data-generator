@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_transaction_bank_transaction_codes
+  description: Stores standardized bank transaction codes that categorize
+    transactions with detailed hierarchical classification
+  fields:
+    - name: code
+      type: consumer_banking_transaction_bank_code!
+      description: Detailed bank-specific transaction classification code
+    - name: consumer_banking_transaction_bank_transaction_code_id
+      type: int_4!
+      description: Auto-incrementing identifier for each transaction code record
+    - name: consumer_banking_transaction_id
+      type: int_4!
+      description: References the transaction this code belongs to
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_bank_transaction_codes
+    inputTypeName: ConsumerBanking_consumer_banking_transaction_bank_transaction_codes_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_bank_transaction_codes
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_transaction_bank_transaction_codes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - code
+          - consumer_banking_transaction_bank_transaction_code_id
+          - consumer_banking_transaction_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_transaction_bank_transaction_codes_bool_exp
+  operand:
+    object:
+      type: consumer_banking_transaction_bank_transaction_codes
+      comparableFields:
+        - fieldName: code
+          booleanExpressionType: consumer_banking_transaction_bank_code_bool_exp
+        - fieldName: consumer_banking_transaction_bank_transaction_code_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_transaction_id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_bank_transaction_codes_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_bank_transaction_codes_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_transaction_bank_transaction_codes
+      aggregatableFields:
+        - fieldName: code
+          aggregateExpression: consumer_banking_transaction_bank_code_agg_exp
+        - fieldName: consumer_banking_transaction_bank_transaction_code_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_transaction_id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_transaction_bank_transaction_codes_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_bank_transaction_codes_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_transaction_bank_transaction_codes
+      orderableFields:
+        - fieldName: code
+          orderByExpression: consumer_banking_transaction_bank_code_order_by_exp
+        - fieldName: consumer_banking_transaction_bank_transaction_code_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_transaction_id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_transaction
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_transaction_bank_transaction_codes_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_transaction_bank_transaction_codes
+  objectType: consumer_banking_transaction_bank_transaction_codes
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_bank_transaction_codes
+  filterExpressionType: consumer_banking_transaction_bank_transaction_codes_bool_exp
+  aggregateExpression: consumer_banking_transaction_bank_transaction_codes_agg_exp
+  orderByExpression: consumer_banking_transaction_bank_transaction_codes_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_transaction_bank_transaction_codes
+      subscription:
+        rootField: consumer_banking_transaction_bank_transaction_codes
+    selectUniques:
+      - queryRootField: consumer_banking_transaction_bank_transaction_codes_by_consumer_banking_transaction_bank_transaction_code_id
+        uniqueIdentifier:
+          - consumer_banking_transaction_bank_transaction_code_id
+        subscription:
+          rootField: consumer_banking_transaction_bank_transaction_codes_by_consumer_banking_transaction_bank_transaction_code_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_transaction_bank_transaction_codes_filter_input
+    aggregate:
+      queryRootField: consumer_banking_transaction_bank_transaction_codes_aggregate
+      subscription:
+        rootField: consumer_banking_transaction_bank_transaction_codes_aggregate
+  description: Stores standardized bank transaction codes that categorize
+    transactions with detailed hierarchical classification
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_transaction_bank_transaction_codes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transaction
+  sourceType: consumer_banking_transaction_bank_transaction_codes
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_transaction_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_transaction_id
+

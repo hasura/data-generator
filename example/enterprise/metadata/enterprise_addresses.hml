@@ -1,0 +1,335 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_addresses
+  description: Central repository for address information used across the system
+  fields:
+    - name: address_type
+      type: enterprise_address_type
+      description: Type of address (e.g., home, work, mailing)
+    - name: building_name
+      type: varchar
+      description: Name of building if applicable
+    - name: building_number
+      type: varchar
+      description: Building or house number
+    - name: care_of
+      type: varchar
+      description: Person to whose attention mail should be sent
+    - name: country
+      type: varchar
+      description: Two-letter country code
+    - name: country_sub_division
+      type: varchar
+      description: State, province, or region
+    - name: department
+      type: varchar
+      description: Department name for organizational addresses
+    - name: district_name
+      type: varchar
+      description: District or county
+    - name: enterprise_address_id
+      type: int_4!
+      description: Auto-incrementing identifier for each address record
+    - name: floor
+      type: varchar
+      description: Floor number or description
+    - name: post_box
+      type: varchar
+      description: Post office box number
+    - name: post_code
+      type: varchar
+      description: Postal or zip code
+    - name: room
+      type: varchar
+      description: Room identifier if applicable
+    - name: street_name
+      type: varchar
+      description: Street name component of the address
+    - name: sub_department
+      type: varchar
+      description: Sub-department name for organizational addresses
+    - name: town_location_name
+      type: varchar
+      description: Name of area within town
+    - name: town_name
+      type: varchar
+      description: City or town name
+    - name: unit_number
+      type: varchar
+      description: Apartment or unit number
+  graphql:
+    typeName: Enterprise_enterprise_addresses
+    inputTypeName: Enterprise_enterprise_addresses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_addresses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_addresses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - address_type
+          - building_name
+          - building_number
+          - care_of
+          - country
+          - country_sub_division
+          - department
+          - district_name
+          - enterprise_address_id
+          - floor
+          - post_box
+          - post_code
+          - room
+          - street_name
+          - sub_department
+          - town_location_name
+          - town_name
+          - unit_number
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_addresses_bool_exp
+  operand:
+    object:
+      type: enterprise_addresses
+      comparableFields:
+        - fieldName: address_type
+          booleanExpressionType: enterprise_address_type_bool_exp
+        - fieldName: building_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: building_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: care_of
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: country
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: country_sub_division
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: department
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: district_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: floor
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: post_box
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: post_code
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: room
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: street_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: sub_department
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: town_location_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: town_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: unit_number
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_buildings
+        - relationshipName: enterprise_party_entity_addresses
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_addresses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_addresses_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_addresses
+      aggregatableFields:
+        - fieldName: address_type
+          aggregateExpression: enterprise_address_type_agg_exp
+        - fieldName: building_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: building_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: care_of
+          aggregateExpression: varchar_agg_exp
+        - fieldName: country
+          aggregateExpression: varchar_agg_exp
+        - fieldName: country_sub_division
+          aggregateExpression: varchar_agg_exp
+        - fieldName: department
+          aggregateExpression: varchar_agg_exp
+        - fieldName: district_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: floor
+          aggregateExpression: varchar_agg_exp
+        - fieldName: post_box
+          aggregateExpression: varchar_agg_exp
+        - fieldName: post_code
+          aggregateExpression: varchar_agg_exp
+        - fieldName: room
+          aggregateExpression: varchar_agg_exp
+        - fieldName: street_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: sub_department
+          aggregateExpression: varchar_agg_exp
+        - fieldName: town_location_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: town_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: unit_number
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_addresses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_addresses_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_addresses
+      orderableFields:
+        - fieldName: address_type
+          orderByExpression: enterprise_address_type_order_by_exp
+        - fieldName: building_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: building_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: care_of
+          orderByExpression: varchar_order_by_exp
+        - fieldName: country
+          orderByExpression: varchar_order_by_exp
+        - fieldName: country_sub_division
+          orderByExpression: varchar_order_by_exp
+        - fieldName: department
+          orderByExpression: varchar_order_by_exp
+        - fieldName: district_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: floor
+          orderByExpression: varchar_order_by_exp
+        - fieldName: post_box
+          orderByExpression: varchar_order_by_exp
+        - fieldName: post_code
+          orderByExpression: varchar_order_by_exp
+        - fieldName: room
+          orderByExpression: varchar_order_by_exp
+        - fieldName: street_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: sub_department
+          orderByExpression: varchar_order_by_exp
+        - fieldName: town_location_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: town_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: unit_number
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Enterprise_enterprise_addresses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_addresses
+  objectType: enterprise_addresses
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_addresses
+  filterExpressionType: enterprise_addresses_bool_exp
+  aggregateExpression: enterprise_addresses_agg_exp
+  orderByExpression: enterprise_addresses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_addresses
+      subscription:
+        rootField: enterprise_addresses
+    selectUniques:
+      - queryRootField: enterprise_addresses_by_enterprise_address_id
+        uniqueIdentifier:
+          - enterprise_address_id
+        subscription:
+          rootField: enterprise_addresses_by_enterprise_address_id
+    filterInputTypeName: Enterprise_enterprise_addresses_filter_input
+    aggregate:
+      queryRootField: enterprise_addresses_aggregate
+      subscription:
+        rootField: enterprise_addresses_aggregate
+  description: Central repository for address information used across the system
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_addresses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_buildings
+  sourceType: enterprise_addresses
+  target:
+    model:
+      name: enterprise_buildings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_buildings_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_address_id
+      target:
+        modelField:
+          - fieldName: enterprise_address_id
+  graphql:
+    aggregateFieldName: enterprise_buildings_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party_entity_addresses
+  sourceType: enterprise_addresses
+  target:
+    model:
+      name: enterprise_party_entity_addresses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_party_entity_addresses_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_address_id
+      target:
+        modelField:
+          - fieldName: enterprise_address_id
+  graphql:
+    aggregateFieldName: enterprise_party_entity_addresses_aggregate
+

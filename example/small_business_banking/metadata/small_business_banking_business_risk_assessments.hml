@@ -1,0 +1,299 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_business_risk_assessments
+  description: Stores risk assessments performed on small business customers
+  fields:
+    - name: assessment_date
+      type: date!
+      description: Date of the risk assessment
+    - name: assessment_type
+      type: varchar!
+      description: Type of assessment (AML, credit, operational, etc.)
+    - name: conducted_by_id
+      type: int_4!
+      description: Person or team that conducted the assessment
+    - name: customer_risk_score
+      type: int_4!
+      description: Risk score based on customer attributes (1-5 scale)
+    - name: geographic_risk_score
+      type: int_4!
+      description: Risk score based on geographic location (1-5 scale)
+    - name: industry_risk_score
+      type: int_4!
+      description: Risk score based on industry (1-5 scale)
+    - name: methodology
+      type: text!
+      description: Methodology used for the assessment
+    - name: mitigating_factors
+      type: text
+      description: Factors that mitigate the identified risks
+    - name: next_review_date
+      type: date!
+      description: Date when the next assessment should be conducted
+    - name: overall_risk_score
+      type: int_4!
+      description: Combined overall risk score (1-5 scale)
+    - name: product_risk_score
+      type: int_4!
+      description: Risk score based on products used (1-5 scale)
+    - name: rationale
+      type: text!
+      description: Rationale for the risk scores and rating
+    - name: recommended_actions
+      type: text
+      description: Actions recommended to address risks
+    - name: risk_rating
+      type: varchar!
+      description: Overall risk rating (low, medium, high)
+    - name: small_business_banking_assessment_id
+      type: int_4!
+      description: Unique identifier for each risk assessment
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business being assessed
+    - name: transaction_risk_score
+      type: int_4!
+      description: Risk score based on transaction patterns (1-5 scale)
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_risk_assessments
+    inputTypeName: SmallBusinessBanking_small_business_banking_business_risk_assessments_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_business_risk_assessments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_business_risk_assessments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - assessment_date
+          - assessment_type
+          - conducted_by_id
+          - customer_risk_score
+          - geographic_risk_score
+          - industry_risk_score
+          - methodology
+          - mitigating_factors
+          - next_review_date
+          - overall_risk_score
+          - product_risk_score
+          - rationale
+          - recommended_actions
+          - risk_rating
+          - small_business_banking_assessment_id
+          - small_business_banking_business_id
+          - transaction_risk_score
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_business_risk_assessments_bool_exp
+  operand:
+    object:
+      type: small_business_banking_business_risk_assessments
+      comparableFields:
+        - fieldName: assessment_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: assessment_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: conducted_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: customer_risk_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: geographic_risk_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: industry_risk_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: methodology
+          booleanExpressionType: text_bool_exp
+        - fieldName: mitigating_factors
+          booleanExpressionType: text_bool_exp
+        - fieldName: next_review_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: overall_risk_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: product_risk_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: rationale
+          booleanExpressionType: text_bool_exp
+        - fieldName: recommended_actions
+          booleanExpressionType: text_bool_exp
+        - fieldName: risk_rating
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: small_business_banking_assessment_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: transaction_risk_score
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_business
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_risk_assessments_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_business_risk_assessments_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_business_risk_assessments
+      aggregatableFields:
+        - fieldName: assessment_date
+          aggregateExpression: date_agg_exp
+        - fieldName: assessment_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: conducted_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: customer_risk_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: geographic_risk_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: industry_risk_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: methodology
+          aggregateExpression: text_agg_exp
+        - fieldName: mitigating_factors
+          aggregateExpression: text_agg_exp
+        - fieldName: next_review_date
+          aggregateExpression: date_agg_exp
+        - fieldName: overall_risk_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: product_risk_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: rationale
+          aggregateExpression: text_agg_exp
+        - fieldName: recommended_actions
+          aggregateExpression: text_agg_exp
+        - fieldName: risk_rating
+          aggregateExpression: varchar_agg_exp
+        - fieldName: small_business_banking_assessment_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: transaction_risk_score
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_business_risk_assessments_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_business_risk_assessments_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_business_risk_assessments
+      orderableFields:
+        - fieldName: assessment_date
+          orderByExpression: date_order_by_exp
+        - fieldName: assessment_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: conducted_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: customer_risk_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: geographic_risk_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: industry_risk_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: methodology
+          orderByExpression: text_order_by_exp
+        - fieldName: mitigating_factors
+          orderByExpression: text_order_by_exp
+        - fieldName: next_review_date
+          orderByExpression: date_order_by_exp
+        - fieldName: overall_risk_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: product_risk_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: rationale
+          orderByExpression: text_order_by_exp
+        - fieldName: recommended_actions
+          orderByExpression: text_order_by_exp
+        - fieldName: risk_rating
+          orderByExpression: varchar_order_by_exp
+        - fieldName: small_business_banking_assessment_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: transaction_risk_score
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_business
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_business_risk_assessments_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_business_risk_assessments
+  objectType: small_business_banking_business_risk_assessments
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_business_risk_assessments
+  filterExpressionType: small_business_banking_business_risk_assessments_bool_exp
+  aggregateExpression: small_business_banking_business_risk_assessments_agg_exp
+  orderByExpression: small_business_banking_business_risk_assessments_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_business_risk_assessments
+      subscription:
+        rootField: small_business_banking_business_risk_assessments
+    selectUniques:
+      - queryRootField: small_business_banking_business_risk_assessments_by_small_business_banking_assessment_id
+        uniqueIdentifier:
+          - small_business_banking_assessment_id
+        subscription:
+          rootField: small_business_banking_business_risk_assessments_by_small_business_banking_assessment_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_business_risk_assessments_filter_input
+    aggregate:
+      queryRootField: small_business_banking_business_risk_assessments_aggregate
+      subscription:
+        rootField: small_business_banking_business_risk_assessments_aggregate
+  description: Stores risk assessments performed on small business customers
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_business_risk_assessments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_business_risk_assessments
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+

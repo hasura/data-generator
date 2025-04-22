@@ -1,0 +1,291 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_appraisal_disclosures
+  description: Manages appraisal disclosures provided to loan applicants,
+    including the type of appraisal and its value.
+  fields:
+    - name: appraisal_ordered_date
+      type: date
+      description: Date appraisal was ordered
+    - name: appraisal_provided_date
+      type: date
+      description: Date appraisal was provided to applicant
+    - name: appraisal_received_date
+      type: date
+      description: Date appraisal was received
+    - name: appraisal_type
+      type: varchar
+      description: Full Appraisal, AVM, BPO, etc.
+    - name: appraisal_value
+      type: numeric
+      description: Appraised value if known
+    - name: appraisal_waiver
+      type: bool!
+      description: Whether appraisal was waived
+    - name: consumer_lending_application_id
+      type: int_4!
+      description: Reference to loan application
+    - name: consumer_lending_disclosure_id
+      type: int_4!
+      description: Unique identifier for appraisal disclosure
+    - name: delivery_method
+      type: varchar!
+      description: Email, Mail, Electronic
+    - name: disclosure_date
+      type: timestamptz!
+      description: Date disclosure was generated
+    - name: disclosure_type
+      type: varchar!
+      description: Initial Disclosure, Final Disclosure
+    - name: document_path
+      type: varchar
+      description: Path to stored disclosure document
+    - name: property_address_id
+      type: int_4!
+      description: Reference to enterprise.addresses
+    - name: sent_date
+      type: timestamptz!
+      description: Date disclosure was sent
+    - name: user_id
+      type: int_4
+      description: User who generated disclosure
+    - name: waiver_reason
+      type: varchar
+      description: Reason for waiver if applicable
+  graphql:
+    typeName: ConsumerLending_consumer_lending_appraisal_disclosures
+    inputTypeName: ConsumerLending_consumer_lending_appraisal_disclosures_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_appraisal_disclosures
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_appraisal_disclosures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - appraisal_ordered_date
+          - appraisal_provided_date
+          - appraisal_received_date
+          - appraisal_type
+          - appraisal_value
+          - appraisal_waiver
+          - consumer_lending_application_id
+          - consumer_lending_disclosure_id
+          - delivery_method
+          - disclosure_date
+          - disclosure_type
+          - document_path
+          - property_address_id
+          - sent_date
+          - user_id
+          - waiver_reason
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_appraisal_disclosures_bool_exp
+  operand:
+    object:
+      type: consumer_lending_appraisal_disclosures
+      comparableFields:
+        - fieldName: appraisal_ordered_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: appraisal_provided_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: appraisal_received_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: appraisal_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: appraisal_value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: appraisal_waiver
+          booleanExpressionType: bool_bool_exp
+        - fieldName: consumer_lending_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_disclosure_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: delivery_method
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: disclosure_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: disclosure_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: property_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: sent_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: user_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: waiver_reason
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_application
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_appraisal_disclosures_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_appraisal_disclosures_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_appraisal_disclosures
+      aggregatableFields:
+        - fieldName: appraisal_ordered_date
+          aggregateExpression: date_agg_exp
+        - fieldName: appraisal_provided_date
+          aggregateExpression: date_agg_exp
+        - fieldName: appraisal_received_date
+          aggregateExpression: date_agg_exp
+        - fieldName: appraisal_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: appraisal_value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: appraisal_waiver
+          aggregateExpression: bool_agg_exp
+        - fieldName: consumer_lending_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_disclosure_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: delivery_method
+          aggregateExpression: varchar_agg_exp
+        - fieldName: disclosure_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: disclosure_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: property_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: sent_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: user_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: waiver_reason
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_appraisal_disclosures_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_appraisal_disclosures_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_appraisal_disclosures
+      orderableFields:
+        - fieldName: appraisal_ordered_date
+          orderByExpression: date_order_by_exp
+        - fieldName: appraisal_provided_date
+          orderByExpression: date_order_by_exp
+        - fieldName: appraisal_received_date
+          orderByExpression: date_order_by_exp
+        - fieldName: appraisal_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: appraisal_value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: appraisal_waiver
+          orderByExpression: bool_order_by_exp
+        - fieldName: consumer_lending_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_disclosure_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: delivery_method
+          orderByExpression: varchar_order_by_exp
+        - fieldName: disclosure_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: disclosure_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: property_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: sent_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: user_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: waiver_reason
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_application
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_appraisal_disclosures_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_appraisal_disclosures
+  objectType: consumer_lending_appraisal_disclosures
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_appraisal_disclosures
+  filterExpressionType: consumer_lending_appraisal_disclosures_bool_exp
+  aggregateExpression: consumer_lending_appraisal_disclosures_agg_exp
+  orderByExpression: consumer_lending_appraisal_disclosures_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_appraisal_disclosures
+      subscription:
+        rootField: consumer_lending_appraisal_disclosures
+    selectUniques:
+      - queryRootField: consumer_lending_appraisal_disclosures_by_consumer_lending_disclosure_id
+        uniqueIdentifier:
+          - consumer_lending_disclosure_id
+        subscription:
+          rootField: consumer_lending_appraisal_disclosures_by_consumer_lending_disclosure_id
+    filterInputTypeName: ConsumerLending_consumer_lending_appraisal_disclosures_filter_input
+    aggregate:
+      queryRootField: consumer_lending_appraisal_disclosures_aggregate
+      subscription:
+        rootField: consumer_lending_appraisal_disclosures_aggregate
+  description: Manages appraisal disclosures provided to loan applicants,
+    including the type of appraisal and its value.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_appraisal_disclosures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_application
+  sourceType: consumer_lending_appraisal_disclosures
+  target:
+    model:
+      name: consumer_lending_loan_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+

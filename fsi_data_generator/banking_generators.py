@@ -3,6 +3,7 @@ from fsi_data_generator.fsi_generators.app_mgmt import app_mgmt
 from fsi_data_generator.fsi_generators.consumer_banking import consumer_banking
 from fsi_data_generator.fsi_generators.consumer_lending import consumer_lending
 from fsi_data_generator.fsi_generators.credit_cards import credit_cards
+from fsi_data_generator.fsi_generators.data_quality import data_quality
 from fsi_data_generator.fsi_generators.enterprise import enterprise
 from fsi_data_generator.fsi_generators.mortgage_services import \
     mortgage_services
@@ -26,5 +27,6 @@ def custom_generators(gen: DataGenerator):
             credit_cards(dg) +
             consumer_banking(dg) +
             security(dg) +
-            app_mgmt(dg)
+            app_mgmt(dg) +
+            data_quality(dg)
     )

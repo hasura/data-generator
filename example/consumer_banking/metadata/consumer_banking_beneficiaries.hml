@@ -1,0 +1,227 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_beneficiaries
+  description: Stores beneficiary details for account payments, records entities
+    that can receive payments
+  fields:
+    - name: beneficiary_type
+      type: consumer_banking_beneficiary_type!
+      description: Type of beneficiary (individual, organization, etc.)
+    - name: consumer_banking_account_id
+      type: int_8!
+      description: References the account this balance belongs to
+    - name: consumer_banking_beneficiary_id
+      type: int_4!
+      description: Unique identifier for each beneficiary
+    - name: reference
+      type: varchar
+      description: Optional reference identifier for the beneficiary
+    - name: supplementary_data
+      type: text
+      description: Additional information in free-text format
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_beneficiaries
+    inputTypeName: ConsumerBanking_consumer_banking_beneficiaries_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_beneficiaries
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_beneficiaries
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - beneficiary_type
+          - consumer_banking_account_id
+          - consumer_banking_beneficiary_id
+          - reference
+          - supplementary_data
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_beneficiaries_bool_exp
+  operand:
+    object:
+      type: consumer_banking_beneficiaries
+      comparableFields:
+        - fieldName: beneficiary_type
+          booleanExpressionType: consumer_banking_beneficiary_type_bool_exp
+        - fieldName: consumer_banking_account_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: consumer_banking_beneficiary_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: reference
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: supplementary_data
+          booleanExpressionType: text_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_account
+        - relationshipName: consumer_banking_beneficiary_creditor_accounts
+        - relationshipName: consumer_banking_beneficiary_creditor_agents
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_beneficiaries_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_beneficiaries_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_beneficiaries
+      aggregatableFields:
+        - fieldName: beneficiary_type
+          aggregateExpression: consumer_banking_beneficiary_type_agg_exp
+        - fieldName: consumer_banking_account_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: consumer_banking_beneficiary_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: reference
+          aggregateExpression: varchar_agg_exp
+        - fieldName: supplementary_data
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_beneficiaries_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_beneficiaries_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_beneficiaries
+      orderableFields:
+        - fieldName: beneficiary_type
+          orderByExpression: consumer_banking_beneficiary_type_order_by_exp
+        - fieldName: consumer_banking_account_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: consumer_banking_beneficiary_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: reference
+          orderByExpression: varchar_order_by_exp
+        - fieldName: supplementary_data
+          orderByExpression: text_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_account
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_beneficiaries_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_beneficiaries
+  objectType: consumer_banking_beneficiaries
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_beneficiaries
+  filterExpressionType: consumer_banking_beneficiaries_bool_exp
+  aggregateExpression: consumer_banking_beneficiaries_agg_exp
+  orderByExpression: consumer_banking_beneficiaries_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_beneficiaries
+      subscription:
+        rootField: consumer_banking_beneficiaries
+    selectUniques:
+      - queryRootField: consumer_banking_beneficiaries_by_consumer_banking_beneficiary_id
+        uniqueIdentifier:
+          - consumer_banking_beneficiary_id
+        subscription:
+          rootField: consumer_banking_beneficiaries_by_consumer_banking_beneficiary_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_beneficiaries_filter_input
+    aggregate:
+      queryRootField: consumer_banking_beneficiaries_aggregate
+      subscription:
+        rootField: consumer_banking_beneficiaries_aggregate
+  description: Stores beneficiary details for account payments, records entities
+    that can receive payments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_beneficiaries
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_account
+  sourceType: consumer_banking_beneficiaries
+  target:
+    model:
+      name: consumer_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_beneficiary_creditor_accounts
+  sourceType: consumer_banking_beneficiaries
+  target:
+    model:
+      name: consumer_banking_beneficiary_creditor_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_beneficiary_creditor_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_beneficiary_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_beneficiary_id
+  graphql:
+    aggregateFieldName: consumer_banking_beneficiary_creditor_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_beneficiary_creditor_agents
+  sourceType: consumer_banking_beneficiaries
+  target:
+    model:
+      name: consumer_banking_beneficiary_creditor_agents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_beneficiary_creditor_agents_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_beneficiary_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_beneficiary_id
+  graphql:
+    aggregateFieldName: consumer_banking_beneficiary_creditor_agents_aggregate
+

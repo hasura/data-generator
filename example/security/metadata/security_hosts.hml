@@ -1,0 +1,541 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_hosts
+  description: Table storing information about systems, including hardware,
+    software, and status details.
+  fields:
+    - name: agent_identifier
+      type: varchar
+      description: Identifier of the agent installed on the system.
+    - name: agent_status
+      type: security_agent_status
+      description: Status of the agent installed on the system.
+    - name: agent_version
+      type: varchar
+      description: Version of the agent installed on the system.
+    - name: asset_owner_email
+      type: varchar
+      description: Email of the asset owner.
+    - name: asset_owner_name
+      type: varchar
+      description: Name of the asset owner.
+    - name: checked_out_date
+      type: date
+      description: Date when the system was checked out.
+    - name: compliance
+      type: security_compliance_status
+      description: Compliance status of the system.
+    - name: hostname
+      type: varchar
+      description: Hostname of the system.
+    - name: ip_address_external
+      type: inet
+      description: External IP address of the system.
+    - name: ip_address_internal
+      type: inet
+      description: Internal IP address of the system.
+    - name: last_patched
+      type: timestamp
+      description: Timestamp when the system was last patched.
+    - name: last_seen
+      type: timestamp
+      description: Timestamp when the system was last seen.
+    - name: mac_address
+      type: varchar
+      description: MAC address of the system.
+    - name: os
+      type: varchar
+      description: Operating system of the system.
+    - name: os_version
+      type: varchar
+      description: Operating system version.
+    - name: patch_level
+      type: varchar
+      description: Patch level of the system.
+    - name: patch_status
+      type: security_patch_status
+      description: Status of system patches.
+    - name: patch_update_available
+      type: bool
+      description: Indicates if patch updates are available.
+    - name: security_host_id
+      type: uuid!
+      description: Unique identifier for the system.
+    - name: system_type
+      type: security_system_type
+      description: Type of the system (e.g., server, workstation).
+  graphql:
+    typeName: Security_security_hosts
+    inputTypeName: Security_security_hosts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_hosts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_hosts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agent_identifier
+          - agent_status
+          - agent_version
+          - asset_owner_email
+          - asset_owner_name
+          - checked_out_date
+          - compliance
+          - hostname
+          - ip_address_external
+          - ip_address_internal
+          - last_patched
+          - last_seen
+          - mac_address
+          - os
+          - os_version
+          - patch_level
+          - patch_status
+          - patch_update_available
+          - security_host_id
+          - system_type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_hosts_bool_exp
+  operand:
+    object:
+      type: security_hosts
+      comparableFields:
+        - fieldName: agent_identifier
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: agent_status
+          booleanExpressionType: security_agent_status_bool_exp
+        - fieldName: agent_version
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: asset_owner_email
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: asset_owner_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: checked_out_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: compliance
+          booleanExpressionType: security_compliance_status_bool_exp
+        - fieldName: hostname
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: ip_address_external
+          booleanExpressionType: inet_bool_exp
+        - fieldName: ip_address_internal
+          booleanExpressionType: inet_bool_exp
+        - fieldName: last_patched
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: last_seen
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: mac_address
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: os
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: os_version
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: patch_level
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: patch_status
+          booleanExpressionType: security_patch_status_bool_exp
+        - fieldName: patch_update_available
+          booleanExpressionType: bool_bool_exp
+        - fieldName: security_host_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: system_type
+          booleanExpressionType: security_system_type_bool_exp
+      comparableRelationships:
+        - relationshipName: security_file_accesses
+        - relationshipName: security_files
+        - relationshipName: security_installed_applications
+        - relationshipName: security_network_connections
+        - relationshipName: security_open_ports
+        - relationshipName: security_process_executions
+        - relationshipName: security_resource_definitions
+        - relationshipName: security_running_services
+        - relationshipName: security_system_stats
+        - relationshipName: security_usb_device_usages
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_hosts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_hosts_agg_exp
+  operand:
+    object:
+      aggregatedType: security_hosts
+      aggregatableFields:
+        - fieldName: agent_identifier
+          aggregateExpression: varchar_agg_exp
+        - fieldName: agent_status
+          aggregateExpression: security_agent_status_agg_exp
+        - fieldName: agent_version
+          aggregateExpression: varchar_agg_exp
+        - fieldName: asset_owner_email
+          aggregateExpression: varchar_agg_exp
+        - fieldName: asset_owner_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: checked_out_date
+          aggregateExpression: date_agg_exp
+        - fieldName: compliance
+          aggregateExpression: security_compliance_status_agg_exp
+        - fieldName: hostname
+          aggregateExpression: varchar_agg_exp
+        - fieldName: ip_address_external
+          aggregateExpression: inet_agg_exp
+        - fieldName: ip_address_internal
+          aggregateExpression: inet_agg_exp
+        - fieldName: last_patched
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: last_seen
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: mac_address
+          aggregateExpression: varchar_agg_exp
+        - fieldName: os
+          aggregateExpression: varchar_agg_exp
+        - fieldName: os_version
+          aggregateExpression: varchar_agg_exp
+        - fieldName: patch_level
+          aggregateExpression: varchar_agg_exp
+        - fieldName: patch_status
+          aggregateExpression: security_patch_status_agg_exp
+        - fieldName: patch_update_available
+          aggregateExpression: bool_agg_exp
+        - fieldName: security_host_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: system_type
+          aggregateExpression: security_system_type_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_hosts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_hosts_order_by_exp
+  operand:
+    object:
+      orderedType: security_hosts
+      orderableFields:
+        - fieldName: agent_identifier
+          orderByExpression: varchar_order_by_exp
+        - fieldName: agent_status
+          orderByExpression: security_agent_status_order_by_exp
+        - fieldName: agent_version
+          orderByExpression: varchar_order_by_exp
+        - fieldName: asset_owner_email
+          orderByExpression: varchar_order_by_exp
+        - fieldName: asset_owner_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: checked_out_date
+          orderByExpression: date_order_by_exp
+        - fieldName: compliance
+          orderByExpression: security_compliance_status_order_by_exp
+        - fieldName: hostname
+          orderByExpression: varchar_order_by_exp
+        - fieldName: ip_address_external
+          orderByExpression: inet_order_by_exp
+        - fieldName: ip_address_internal
+          orderByExpression: inet_order_by_exp
+        - fieldName: last_patched
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: last_seen
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: mac_address
+          orderByExpression: varchar_order_by_exp
+        - fieldName: os
+          orderByExpression: varchar_order_by_exp
+        - fieldName: os_version
+          orderByExpression: varchar_order_by_exp
+        - fieldName: patch_level
+          orderByExpression: varchar_order_by_exp
+        - fieldName: patch_status
+          orderByExpression: security_patch_status_order_by_exp
+        - fieldName: patch_update_available
+          orderByExpression: bool_order_by_exp
+        - fieldName: security_host_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: system_type
+          orderByExpression: security_system_type_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_hosts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_hosts
+  objectType: security_hosts
+  source:
+    dataConnectorName: security
+    collection: security_hosts
+  filterExpressionType: security_hosts_bool_exp
+  aggregateExpression: security_hosts_agg_exp
+  orderByExpression: security_hosts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_hosts
+      subscription:
+        rootField: security_hosts
+    selectUniques:
+      - queryRootField: security_hosts_by_security_host_id
+        uniqueIdentifier:
+          - security_host_id
+        subscription:
+          rootField: security_hosts_by_security_host_id
+    filterInputTypeName: Security_security_hosts_filter_input
+    aggregate:
+      queryRootField: security_hosts_aggregate
+      subscription:
+        rootField: security_hosts_aggregate
+  description: Table storing information about systems, including hardware,
+    software, and status details.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_hosts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_file_accesses
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_file_accesses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_file_accesses_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_system_id
+  graphql:
+    aggregateFieldName: security_file_accesses_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_files
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_files
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_files_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+  graphql:
+    aggregateFieldName: security_files_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_installed_applications
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_installed_applications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_installed_applications_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+  graphql:
+    aggregateFieldName: security_installed_applications_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_network_connections
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_network_connections
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_network_connections_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+  graphql:
+    aggregateFieldName: security_network_connections_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_open_ports
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_open_ports
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_open_ports_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+  graphql:
+    aggregateFieldName: security_open_ports_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_process_executions
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_process_executions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_process_executions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+  graphql:
+    aggregateFieldName: security_process_executions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_resource_definitions
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_resource_definitions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_resource_definitions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: host_id
+  graphql:
+    aggregateFieldName: security_resource_definitions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_running_services
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_running_services
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_running_services_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+  graphql:
+    aggregateFieldName: security_running_services_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_system_stats
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_system_stats
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_system_stats_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+  graphql:
+    aggregateFieldName: security_system_stats_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_usb_device_usages
+  sourceType: security_hosts
+  target:
+    model:
+      name: security_usb_device_usage
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_usb_device_usage_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_system_id
+  graphql:
+    aggregateFieldName: security_usb_device_usages_aggregate
+

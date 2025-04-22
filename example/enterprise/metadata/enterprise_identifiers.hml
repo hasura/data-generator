@@ -1,0 +1,181 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_identifiers
+  description: Registry of identifiers applicable to accounts, individuals, or
+    institutions — referenced by business-line accounts
+  fields:
+    - name: enterprise_identifier_id
+      type: int_4!
+      description: Unique identifier for each identifier entry in the registry
+    - name: identification
+      type: varchar!
+      description: Actual identifier value such as a BIC code or national ID
+    - name: lei
+      type: varchar
+      description: Optional Legal Entity Identifier if known
+    - name: name
+      type: varchar
+      description: Optional display name for this identifier (e.g., institution name)
+    - name: note
+      type: text
+      description: Free-form notes or metadata about this identifier
+    - name: scheme_name
+      type: enterprise_identifier_scheme!
+      description: Type of identifier (e.g., BIC, IBAN, SSN, LEI, etc.)
+    - name: secondary_identification
+      type: varchar
+      description: Additional identifier component if applicable (e.g., sub-ID)
+  graphql:
+    typeName: Enterprise_enterprise_identifiers
+    inputTypeName: Enterprise_enterprise_identifiers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_identifiers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_identifiers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - enterprise_identifier_id
+          - identification
+          - lei
+          - name
+          - note
+          - scheme_name
+          - secondary_identification
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_identifiers_bool_exp
+  operand:
+    object:
+      type: enterprise_identifiers
+      comparableFields:
+        - fieldName: enterprise_identifier_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: identification
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: lei
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: note
+          booleanExpressionType: text_bool_exp
+        - fieldName: scheme_name
+          booleanExpressionType: enterprise_identifier_scheme_bool_exp
+        - fieldName: secondary_identification
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_identifiers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_identifiers_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_identifiers
+      aggregatableFields:
+        - fieldName: enterprise_identifier_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: identification
+          aggregateExpression: varchar_agg_exp
+        - fieldName: lei
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: note
+          aggregateExpression: text_agg_exp
+        - fieldName: scheme_name
+          aggregateExpression: enterprise_identifier_scheme_agg_exp
+        - fieldName: secondary_identification
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_identifiers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_identifiers_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_identifiers
+      orderableFields:
+        - fieldName: enterprise_identifier_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: identification
+          orderByExpression: varchar_order_by_exp
+        - fieldName: lei
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: note
+          orderByExpression: text_order_by_exp
+        - fieldName: scheme_name
+          orderByExpression: enterprise_identifier_scheme_order_by_exp
+        - fieldName: secondary_identification
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Enterprise_enterprise_identifiers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_identifiers
+  objectType: enterprise_identifiers
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_identifiers
+  filterExpressionType: enterprise_identifiers_bool_exp
+  aggregateExpression: enterprise_identifiers_agg_exp
+  orderByExpression: enterprise_identifiers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_identifiers
+      subscription:
+        rootField: enterprise_identifiers
+    selectUniques:
+      - queryRootField: enterprise_identifiers_by_enterprise_identifier_id
+        uniqueIdentifier:
+          - enterprise_identifier_id
+        subscription:
+          rootField: enterprise_identifiers_by_enterprise_identifier_id
+    filterInputTypeName: Enterprise_enterprise_identifiers_filter_input
+    aggregate:
+      queryRootField: enterprise_identifiers_aggregate
+      subscription:
+        rootField: enterprise_identifiers_aggregate
+  description: Registry of identifiers applicable to accounts, individuals, or
+    institutions — referenced by business-line accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_identifiers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

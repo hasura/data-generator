@@ -1,0 +1,240 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_reward_redemptions
+  description: Stores details of reward point redemptions
+  fields:
+    - name: cash_value
+      type: numeric!
+      description: Cash value of redemption
+    - name: confirmation_code
+      type: varchar
+      description: Confirmation code for redemption
+    - name: credit_cards_card_account_id
+      type: int_4!
+      description: Reference to card_accounts
+    - name: credit_cards_redemption_id
+      type: int_4!
+      description: Auto-incrementing identifier for each redemption
+    - name: description
+      type: varchar!
+      description: Description of redemption
+    - name: points_redeemed
+      type: int_4!
+      description: Number of points redeemed
+    - name: recipient_email
+      type: varchar
+      description: Email for digital items if applicable
+    - name: redemption_date
+      type: timestamptz!
+      description: Date and time of redemption
+    - name: redemption_type
+      type: varchar!
+      description: Type of redemption (Cashback, Travel, Gift Card, Merchandise,
+        Statement Credit)
+    - name: shipping_address_id
+      type: int_4
+      description: Reference to addresses if physical item
+    - name: status
+      type: varchar!
+      description: Status of redemption (Pending, Completed, Canceled)
+  graphql:
+    typeName: CreditCards_credit_cards_reward_redemptions
+    inputTypeName: CreditCards_credit_cards_reward_redemptions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_reward_redemptions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_reward_redemptions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cash_value
+          - confirmation_code
+          - credit_cards_card_account_id
+          - credit_cards_redemption_id
+          - description
+          - points_redeemed
+          - recipient_email
+          - redemption_date
+          - redemption_type
+          - shipping_address_id
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_reward_redemptions_bool_exp
+  operand:
+    object:
+      type: credit_cards_reward_redemptions
+      comparableFields:
+        - fieldName: cash_value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: confirmation_code
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: credit_cards_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_redemption_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: points_redeemed
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: recipient_email
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: redemption_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: redemption_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: shipping_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_card_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_reward_redemptions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_reward_redemptions_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_reward_redemptions
+      aggregatableFields:
+        - fieldName: cash_value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: confirmation_code
+          aggregateExpression: varchar_agg_exp
+        - fieldName: credit_cards_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_redemption_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: varchar_agg_exp
+        - fieldName: points_redeemed
+          aggregateExpression: int_4_agg_exp
+        - fieldName: recipient_email
+          aggregateExpression: varchar_agg_exp
+        - fieldName: redemption_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: redemption_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: shipping_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_reward_redemptions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_reward_redemptions_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_reward_redemptions
+      orderableFields:
+        - fieldName: cash_value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: confirmation_code
+          orderByExpression: varchar_order_by_exp
+        - fieldName: credit_cards_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_redemption_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: varchar_order_by_exp
+        - fieldName: points_redeemed
+          orderByExpression: int_4_order_by_exp
+        - fieldName: recipient_email
+          orderByExpression: varchar_order_by_exp
+        - fieldName: redemption_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: redemption_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: shipping_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: credit_cards_card_account
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_reward_redemptions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_reward_redemptions
+  objectType: credit_cards_reward_redemptions
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_reward_redemptions
+  filterExpressionType: credit_cards_reward_redemptions_bool_exp
+  aggregateExpression: credit_cards_reward_redemptions_agg_exp
+  orderByExpression: credit_cards_reward_redemptions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_reward_redemptions
+      subscription:
+        rootField: credit_cards_reward_redemptions
+    selectUniques:
+      - queryRootField: credit_cards_reward_redemptions_by_credit_cards_redemption_id
+        uniqueIdentifier:
+          - credit_cards_redemption_id
+        subscription:
+          rootField: credit_cards_reward_redemptions_by_credit_cards_redemption_id
+    filterInputTypeName: CreditCards_credit_cards_reward_redemptions_filter_input
+    aggregate:
+      queryRootField: credit_cards_reward_redemptions_aggregate
+      subscription:
+        rootField: credit_cards_reward_redemptions_aggregate
+  description: Stores details of reward point redemptions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_reward_redemptions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_account
+  sourceType: credit_cards_reward_redemptions
+  target:
+    model:
+      name: credit_cards_card_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+

@@ -12437,7 +12437,7 @@
           "temporary_limits": {
             "name": "temporary_limits",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": "Temporary spending limits if any"
@@ -14626,22 +14626,30 @@
         "schemaName": "data_quality",
         "tableName": "api_calls",
         "columns": {
-          "calledAt": {
-            "name": "calledAt",
+          "api_call_id": {
+            "name": "api_call_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nonNullable",
+            "description": "Unique identifier for the API call."
+          },
+          "created_at": {
+            "name": "created_at",
             "type": {
               "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
-            "description": null
+            "description": "Timestamp when the API call was made."
           },
-          "id": {
-            "name": "id",
+          "major_version": {
+            "name": "major_version",
             "type": {
-              "scalarType": "uuid"
+              "scalarType": "int4"
             },
-            "nullable": "nonNullable",
-            "description": null
+            "nullable": "nullable",
+            "description": "Server name API major version."
           },
           "method": {
             "name": "method",
@@ -14649,7 +14657,15 @@
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "HTTP method used for the API call (GET, POST, etc.)."
+          },
+          "minor_version": {
+            "name": "minor_version",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "Server name API minor version."
           },
           "path": {
             "name": "path",
@@ -14657,51 +14673,75 @@
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "API endpoint path that was called."
           },
-          "queryParams": {
-            "name": "queryParams",
+          "query_params": {
+            "name": "query_params",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Query parameters sent with the API call, stored as TEXT."
           },
-          "requestHeaders": {
-            "name": "requestHeaders",
+          "related_institution": {
+            "name": "related_institution",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "An identifier of the institution associated with the API call."
+          },
+          "request_headers": {
+            "name": "request_headers",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": "HTTP headers sent with the API call, stored as TEXT."
+          },
+          "server_name": {
+            "name": "server_name",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Server name associated with API call."
           }
         },
         "uniquenessConstraints": {
-          "PK_c13bd40114bb06091a7dc59d74c": [
-            "id"
+          "api_calls_pkey": [
+            "api_call_id"
           ]
         },
         "foreignRelations": {},
-        "description": null
+        "description": "Records actual instances of API calls made to the system for auditing and lineage tracking. These records can be tied by business rules to validation runs. A validation run with the same query and timestamp of less than once second earlier is probably related to this API call."
       },
       "data_quality_api_lineage": {
         "schemaName": "data_quality",
         "tableName": "api_lineage",
         "columns": {
-          "apiCall": {
-            "name": "apiCall",
+          "api_call": {
+            "name": "api_call",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "The API endpoint and method called."
           },
-          "apiLineageId": {
-            "name": "apiLineageId",
+          "api_lineage_id": {
+            "name": "api_lineage_id",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "uuid"
             },
             "nullable": "nonNullable",
+            "description": "Unique identifier for the API lineage record."
+          },
+          "app_mgmt_application_id": {
+            "name": "app_mgmt_application_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
             "description": null
           },
           "description": {
@@ -14710,48 +14750,105 @@
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Description of the API call purpose or context."
           },
-          "endDate": {
-            "name": "endDate",
+          "end_date": {
+            "name": "end_date",
             "type": {
               "scalarType": "timestamptz"
             },
             "nullable": "nullable",
+            "description": "Timestamp when this API lineage tracking ended, if applicable."
+          },
+          "host_app_mgmt_application_id": {
+            "name": "host_app_mgmt_application_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
             "description": null
           },
-          "serverName": {
-            "name": "serverName",
+          "major_version": {
+            "name": "major_version",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "The major version assigned to the API"
+          },
+          "minor_version": {
+            "name": "minor_version",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": "The minor version assigned to the API"
+          },
+          "query": {
+            "name": "query",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": "The DDN query that is used to source data for this API call. If this query is validated you can find its data validation runs by correlating by query. But its not guaranteed, there may be no validation runs and api's can use the same query but produce different outputs."
+          },
+          "security_host_id": {
+            "name": "security_host_id",
+            "type": {
+              "scalarType": "uuid"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "server_name": {
+            "name": "server_name",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Name of the server handling the API call."
           },
-          "startDate": {
-            "name": "startDate",
+          "start_date": {
+            "name": "start_date",
             "type": {
               "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
-            "description": null
+            "hasDefault": "hasDefault",
+            "description": "Timestamp when this API lineage tracking began."
           },
-          "updatedAt": {
-            "name": "updatedAt",
+          "updated_at": {
+            "name": "updated_at",
             "type": {
               "scalarType": "timestamptz"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Timestamp when this record was last updated."
           }
         },
         "uniquenessConstraints": {
-          "PK_36021aa6c14a4e971a96e5caba9": [
-            "apiLineageId"
+          "api_lineage_pkey": [
+            "api_lineage_id"
           ]
         },
-        "foreignRelations": {},
-        "description": null
+        "foreignRelations": {
+          "api_lineage_app_mgmt_application_id_fkey": {
+            "foreignSchema": "app_mgmt",
+            "foreignTable": "applications",
+            "columnMapping": {
+              "app_mgmt_application_id": "app_mgmt_application_id"
+            }
+          },
+          "api_lineage_security_host_id_host_app_mgmt_application_id_fkey": {
+            "foreignSchema": "security",
+            "foreignTable": "installed_applications",
+            "columnMapping": {
+              "host_app_mgmt_application_id": "app_mgmt_application_id",
+              "security_host_id": "security_host_id"
+            }
+          }
+        },
+        "description": "Represents historical documentation of API endpoint design. Documents the custom API endpoints available internally or externally, including Open Banking and FDX endpoints. Tracks the lineage of API calls for data governance and auditing purposes. The most recent API lineage records can be identified by an endDate of NULL. API's may use a base path for both 1) separation of concerns and 2) versioning, typically the base path is ignored when analyzing compliance with regulator mandated API resource paths."
       },
       "data_quality_field_lineage": {
         "schemaName": "data_quality",
@@ -14763,145 +14860,145 @@
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Description of this field lineage relationship."
           },
-          "fieldLineageId": {
-            "name": "fieldLineageId",
+          "field_lineage_id": {
+            "name": "field_lineage_id",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Unique identifier for the field lineage."
           },
-          "fieldName": {
-            "name": "fieldName",
+          "field_name": {
+            "name": "field_name",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Name of the field being tracked. Dot notation is used for representing nested fields, for example: customer.code, would represent the code field within a customer object field."
           },
-          "inputFields": {
-            "name": "inputFields",
+          "input_fields": {
+            "name": "input_fields",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Source fields that contribute to this field, comma-separated."
           },
-          "recordLineageId": {
-            "name": "recordLineageId",
+          "record_lineage_id": {
+            "name": "record_lineage_id",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Reference to the parent record lineage."
           }
         },
         "uniquenessConstraints": {
-          "PK_fcc2f37e5a4b33536d1673e4212": [
-            "fieldLineageId"
+          "field_lineage_pkey": [
+            "field_lineage_id"
           ]
         },
         "foreignRelations": {
-          "FK_4fe3f5d337ec743aa7576c755f9": {
+          "field_lineage_record_lineage_id_fkey": {
             "foreignSchema": "data_quality",
             "foreignTable": "record_lineage",
             "columnMapping": {
-              "recordLineageId": "recordLineageId"
+              "record_lineage_id": "record_lineage_id"
             }
           }
         },
-        "description": null
+        "description": "Tracks the lineage (design) of individual fields through data transformations. Field names use dot notation to represent nested fields"
       },
       "data_quality_field_transformation_details": {
         "schemaName": "data_quality",
         "tableName": "field_transformation_details",
         "columns": {
-          "id": {
-            "name": "id",
+          "field_transformation_detail_id": {
+            "name": "field_transformation_detail_id",
             "type": {
               "scalarType": "uuid"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Unique identifier for the field transformation detail."
           },
-          "inputFieldName": {
-            "name": "inputFieldName",
+          "input_field_name": {
+            "name": "input_field_name",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Name of the input field before transformation."
           },
-          "inputFieldValue": {
-            "name": "inputFieldValue",
+          "input_field_value": {
+            "name": "input_field_value",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Value of the input field before transformation."
           },
-          "outputFieldName": {
-            "name": "outputFieldName",
+          "output_field_name": {
+            "name": "output_field_name",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Name of the output field after transformation."
           },
-          "outputFieldValue": {
-            "name": "outputFieldValue",
+          "output_field_value": {
+            "name": "output_field_value",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Value of the output field after transformation."
           },
-          "transformDescription": {
-            "name": "transformDescription",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "transformationId": {
-            "name": "transformationId",
+          "record_transformation_id": {
+            "name": "record_transformation_id",
             "type": {
               "scalarType": "uuid"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Reference to the parent record transformation."
+          },
+          "transform_description": {
+            "name": "transform_description",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Description of the specific transformation applied to this field."
           }
         },
         "uniquenessConstraints": {
-          "PK_addab86dffb747e57dd721cef48": [
-            "id"
+          "field_transformation_details_pkey": [
+            "field_transformation_detail_id"
           ]
         },
         "foreignRelations": {
-          "FK_598c06d5447018701668f594893": {
+          "field_transformation_details_record_transformation_id_fkey": {
             "foreignSchema": "data_quality",
             "foreignTable": "record_transformations",
             "columnMapping": {
-              "transformationId": "id"
+              "record_transformation_id": "record_transformation_id"
             }
           }
         },
-        "description": null
+        "description": "Detailed tracking of instances of field-level transformations within a record transformation."
       },
       "data_quality_record_lineage": {
         "schemaName": "data_quality",
         "tableName": "record_lineage",
         "columns": {
-          "apiLineageId": {
-            "name": "apiLineageId",
+          "api_lineage_id": {
+            "name": "api_lineage_id",
             "type": {
-              "scalarType": "varchar"
+              "scalarType": "uuid"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Reference to the API lineage this record is part of."
           },
           "description": {
             "name": "description",
@@ -14909,84 +15006,93 @@
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "General description of this data lineage relationship."
           },
-          "inputDescription": {
-            "name": "inputDescription",
+          "input_description": {
+            "name": "input_description",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Description of the input data source or format."
           },
-          "inputType": {
-            "name": "inputType",
+          "input_type": {
+            "name": "input_type",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "The type/entity of input data in this lineage."
           },
-          "outputDescription": {
-            "name": "outputDescription",
+          "output_description": {
+            "name": "output_description",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Description of the output data destination or format."
           },
-          "outputType": {
-            "name": "outputType",
+          "output_type": {
+            "name": "output_type",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "The type/entity of output data in this lineage."
           },
-          "pkNames": {
-            "name": "pkNames",
+          "pk_names": {
+            "name": "pk_names",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Names of primary key fields used to track the record through transformations."
           },
-          "recordLineageId": {
-            "name": "recordLineageId",
+          "record_lineage_id": {
+            "name": "record_lineage_id",
             "type": {
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Unique identifier for the record lineage."
           }
         },
         "uniquenessConstraints": {
-          "PK_bb467416f33411fd00ab17ec4c9": [
-            "recordLineageId"
+          "record_lineage_pkey": [
+            "record_lineage_id"
           ]
         },
         "foreignRelations": {
-          "FK_e5b7a013671e436e10f1ac6e7ae": {
+          "record_lineage_api_lineage_id_fkey": {
             "foreignSchema": "data_quality",
             "foreignTable": "api_lineage",
             "columnMapping": {
-              "apiLineageId": "apiLineageId"
+              "api_lineage_id": "api_lineage_id"
             }
           }
         },
-        "description": null
+        "description": "Maps the lineage (design) of data records through transformations for traceability."
       },
       "data_quality_record_transformations": {
         "schemaName": "data_quality",
         "tableName": "record_transformations",
         "columns": {
-          "apiCallId": {
-            "name": "apiCallId",
+          "api_call_id": {
+            "name": "api_call_id",
             "type": {
               "scalarType": "uuid"
             },
             "nullable": "nullable",
-            "description": null
+            "description": "Reference to the API call that triggered this transformation, if applicable."
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": "Timestamp when the transformation was executed."
           },
           "description": {
             "name": "description",
@@ -14994,73 +15100,64 @@
               "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "description": null
+            "description": "Description of the transformation process or purpose."
           },
-          "executedAt": {
-            "name": "executedAt",
+          "input_type": {
+            "name": "input_type",
             "type": {
-              "scalarType": "timestamptz"
+              "scalarType": "varchar"
             },
             "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
+            "description": "The type/entity of the input record before transformation."
           },
-          "id": {
-            "name": "id",
+          "output_type": {
+            "name": "output_type",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "The type/entity of the output record after transformation."
+          },
+          "primary_key_names": {
+            "name": "primary_key_names",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Names of the primary key fields, comma-separated."
+          },
+          "primary_key_values": {
+            "name": "primary_key_values",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nonNullable",
+            "description": "Values of the primary keys, comma-separated."
+          },
+          "record_transformation_id": {
+            "name": "record_transformation_id",
             "type": {
               "scalarType": "uuid"
             },
             "nullable": "nonNullable",
-            "description": null
-          },
-          "inputType": {
-            "name": "inputType",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "outputType": {
-            "name": "outputType",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "primaryKeyNames": {
-            "name": "primaryKeyNames",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "primaryKeyValues": {
-            "name": "primaryKeyValues",
-            "type": {
-              "scalarType": "varchar"
-            },
-            "nullable": "nonNullable",
-            "description": null
+            "description": "Unique identifier for the record transformation."
           }
         },
         "uniquenessConstraints": {
-          "PK_23179e63ec1291f9e577939b2cd": [
-            "id"
+          "record_transformations_pkey": [
+            "record_transformation_id"
           ]
         },
         "foreignRelations": {
-          "FK_27720accfc505f36dc92391766d": {
+          "record_transformations_api_call_id_fkey": {
             "foreignSchema": "data_quality",
             "foreignTable": "api_calls",
             "columnMapping": {
-              "apiCallId": "id"
+              "api_call_id": "api_call_id"
             }
           }
         },
-        "description": null
+        "description": "Tracks actual instances of transformations applied to data records, linking input and output data."
       },
       "data_quality_validation_error": {
         "schemaName": "data_quality",
@@ -15149,12 +15246,12 @@
           }
         },
         "uniquenessConstraints": {
-          "PK_5415dd3267a2f610c7e0920f10e": [
+          "validation_error_pkey": [
             "validation_error_id"
           ]
         },
         "foreignRelations": {
-          "FK_bc051ff644730731677602d5a5d": {
+          "validation_error_validation_run_id_fkey": {
             "foreignSchema": "data_quality",
             "foreignTable": "validation_run",
             "columnMapping": {
@@ -15284,7 +15381,7 @@
           }
         },
         "uniquenessConstraints": {
-          "PK_2a1e12ee6cf299ac99d9dca9b5b": [
+          "validation_run_pkey": [
             "validation_run_id"
           ]
         },
@@ -39006,75 +39103,6 @@
               "operatorKind": "custom",
               "argumentType": "interval",
               "isInfix": true
-            }
-          },
-          "typeRepresentation": null
-        },
-        "jsonb": {
-          "typeName": "jsonb",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {},
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "jsonb",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "custom",
-              "argumentType": "jsonb",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "custom",
-              "argumentType": "jsonb",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "jsonb",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "custom",
-              "argumentType": "jsonb",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "custom",
-              "argumentType": "jsonb",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "jsonb",
-              "isInfix": true
-            },
-            "jsonb_contained": {
-              "operatorName": "jsonb_contained",
-              "operatorKind": "custom",
-              "argumentType": "jsonb",
-              "isInfix": false
-            },
-            "jsonb_contains": {
-              "operatorName": "jsonb_contains",
-              "operatorKind": "custom",
-              "argumentType": "jsonb",
-              "isInfix": false
-            },
-            "jsonb_exists": {
-              "operatorName": "jsonb_exists",
-              "operatorKind": "custom",
-              "argumentType": "text",
-              "isInfix": false
             }
           },
           "typeRepresentation": null

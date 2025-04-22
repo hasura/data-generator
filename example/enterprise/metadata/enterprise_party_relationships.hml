@@ -1,0 +1,203 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_party_relationships
+  description: Defines the role of related party acts to the the enterprise party,
+    such as power of attorney, beneficiary designations, etc.
+  fields:
+    - name: enterprise_party_id
+      type: int_4!
+      description: References the to the party being represented or acted upon
+    - name: enterprise_party_relationship_id
+      type: int_4!
+      description: Auto-incrementing identifier for each relationship record
+    - name: priority
+      type: int_4
+      description: Order of precedence for the relationship type (lower number =
+        higher priority)
+    - name: related_party_id
+      type: int_4!
+      description: References the party taking the role e.g. power of attorney,
+        guardian, etc.
+    - name: relationship_type
+      type: enterprise_party_relationship_type
+      description: Describes the role of the related party relative to the enterprise party
+  graphql:
+    typeName: Enterprise_enterprise_party_relationships
+    inputTypeName: Enterprise_enterprise_party_relationships_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_party_relationships
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_party_relationships
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - enterprise_party_id
+          - enterprise_party_relationship_id
+          - priority
+          - related_party_id
+          - relationship_type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_party_relationships_bool_exp
+  operand:
+    object:
+      type: enterprise_party_relationships
+      comparableFields:
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_party_relationship_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: priority
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: related_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: relationship_type
+          booleanExpressionType: enterprise_party_relationship_type_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_party
+        - relationshipName: enterprise_party_by_related_party_id
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_party_relationships_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_party_relationships_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_party_relationships
+      aggregatableFields:
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_party_relationship_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: priority
+          aggregateExpression: int_4_agg_exp
+        - fieldName: related_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: relationship_type
+          aggregateExpression: enterprise_party_relationship_type_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_party_relationships_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_party_relationships_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_party_relationships
+      orderableFields:
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_party_relationship_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: priority
+          orderByExpression: int_4_order_by_exp
+        - fieldName: related_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: relationship_type
+          orderByExpression: enterprise_party_relationship_type_order_by_exp
+      orderableRelationships:
+        - relationshipName: enterprise_party
+        - relationshipName: enterprise_party_by_related_party_id
+  graphql:
+    expressionTypeName: Enterprise_enterprise_party_relationships_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_party_relationships
+  objectType: enterprise_party_relationships
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_party_relationships
+  filterExpressionType: enterprise_party_relationships_bool_exp
+  aggregateExpression: enterprise_party_relationships_agg_exp
+  orderByExpression: enterprise_party_relationships_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_party_relationships
+      subscription:
+        rootField: enterprise_party_relationships
+    selectUniques:
+      - queryRootField: enterprise_party_relationships_by_enterprise_party_relationship_id
+        uniqueIdentifier:
+          - enterprise_party_relationship_id
+        subscription:
+          rootField: enterprise_party_relationships_by_enterprise_party_relationship_id
+    filterInputTypeName: Enterprise_enterprise_party_relationships_filter_input
+    aggregate:
+      queryRootField: enterprise_party_relationships_aggregate
+      subscription:
+        rootField: enterprise_party_relationships_aggregate
+  description: Defines the role of related party acts to the the enterprise party,
+    such as power of attorney, beneficiary designations, etc.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_party_relationships
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party
+  sourceType: enterprise_party_relationships
+  target:
+    model:
+      name: enterprise_parties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party_by_related_party_id
+  sourceType: enterprise_party_relationships
+  target:
+    model:
+      name: enterprise_parties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: related_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+

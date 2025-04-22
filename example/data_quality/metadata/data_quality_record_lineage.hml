@@ -1,0 +1,235 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: data_quality_record_lineage
+  description: Maps the lineage (design) of data records through transformations
+    for traceability.
+  fields:
+    - name: api_lineage_id
+      type: uuid
+      description: Reference to the API lineage this record is part of.
+    - name: description
+      type: text
+      description: General description of this data lineage relationship.
+    - name: input_description
+      type: text
+      description: Description of the input data source or format.
+    - name: input_type
+      type: varchar!
+      description: The type/entity of input data in this lineage.
+    - name: output_description
+      type: text
+      description: Description of the output data destination or format.
+    - name: output_type
+      type: varchar!
+      description: The type/entity of output data in this lineage.
+    - name: pk_names
+      type: varchar
+      description: Names of primary key fields used to track the record through
+        transformations.
+    - name: record_lineage_id
+      type: varchar!
+      description: Unique identifier for the record lineage.
+  graphql:
+    typeName: DQ_data_quality_record_lineage
+    inputTypeName: DQ_data_quality_record_lineage_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: data_quality_record_lineage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: data_quality_record_lineage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - api_lineage_id
+          - description
+          - input_description
+          - input_type
+          - output_description
+          - output_type
+          - pk_names
+          - record_lineage_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: data_quality_record_lineage_bool_exp
+  operand:
+    object:
+      type: data_quality_record_lineage
+      comparableFields:
+        - fieldName: api_lineage_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: input_description
+          booleanExpressionType: text_bool_exp
+        - fieldName: input_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: output_description
+          booleanExpressionType: text_bool_exp
+        - fieldName: output_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: pk_names
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: record_lineage_id
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: data_quality_field_lineages
+        - relationshipName: data_quality_api_lineage
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DQ_data_quality_record_lineage_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: data_quality_record_lineage_agg_exp
+  operand:
+    object:
+      aggregatedType: data_quality_record_lineage
+      aggregatableFields:
+        - fieldName: api_lineage_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: input_description
+          aggregateExpression: text_agg_exp
+        - fieldName: input_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: output_description
+          aggregateExpression: text_agg_exp
+        - fieldName: output_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: pk_names
+          aggregateExpression: varchar_agg_exp
+        - fieldName: record_lineage_id
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DQ_data_quality_record_lineage_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: data_quality_record_lineage_order_by_exp
+  operand:
+    object:
+      orderedType: data_quality_record_lineage
+      orderableFields:
+        - fieldName: api_lineage_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: input_description
+          orderByExpression: text_order_by_exp
+        - fieldName: input_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: output_description
+          orderByExpression: text_order_by_exp
+        - fieldName: output_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: pk_names
+          orderByExpression: varchar_order_by_exp
+        - fieldName: record_lineage_id
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: data_quality_api_lineage
+  graphql:
+    expressionTypeName: DQ_data_quality_record_lineage_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: data_quality_record_lineage
+  objectType: data_quality_record_lineage
+  source:
+    dataConnectorName: data_quality
+    collection: data_quality_record_lineage
+  filterExpressionType: data_quality_record_lineage_bool_exp
+  aggregateExpression: data_quality_record_lineage_agg_exp
+  orderByExpression: data_quality_record_lineage_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: data_quality_record_lineage
+      subscription:
+        rootField: data_quality_record_lineage
+    selectUniques:
+      - queryRootField: data_quality_record_lineage_by_record_lineage_id
+        uniqueIdentifier:
+          - record_lineage_id
+        subscription:
+          rootField: data_quality_record_lineage_by_record_lineage_id
+    filterInputTypeName: DQ_data_quality_record_lineage_filter_input
+    aggregate:
+      queryRootField: data_quality_record_lineage_aggregate
+      subscription:
+        rootField: data_quality_record_lineage_aggregate
+  description: Maps the lineage (design) of data records through transformations
+    for traceability.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: data_quality_record_lineage
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: data_quality_field_lineages
+  sourceType: data_quality_record_lineage
+  target:
+    model:
+      name: data_quality_field_lineage
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: data_quality_field_lineage_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: record_lineage_id
+      target:
+        modelField:
+          - fieldName: record_lineage_id
+  graphql:
+    aggregateFieldName: data_quality_field_lineages_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: data_quality_api_lineage
+  sourceType: data_quality_record_lineage
+  target:
+    model:
+      name: data_quality_api_lineage
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: api_lineage_id
+      target:
+        modelField:
+          - fieldName: api_lineage_id
+

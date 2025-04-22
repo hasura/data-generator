@@ -1,0 +1,898 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_card_accounts
+  description: Stores credit card accounts and their current status
+  fields:
+    - name: account_number
+      type: varchar!
+      description: Masked account number
+    - name: annual_fee_next_charge_date
+      type: date
+      description: Next date annual fee will be charged
+    - name: available_credit
+      type: numeric!
+      description: Current available credit
+    - name: balance_transfer_interest_rate
+      type: numeric
+      description: Current balance transfer APR
+    - name: cash_advance_interest_rate
+      type: numeric
+      description: Current cash advance APR
+    - name: cash_advance_limit
+      type: numeric
+      description: Limit for cash advances if different
+    - name: credit_cards_application_id
+      type: int_4
+      description: Reference to original application if applicable
+    - name: credit_cards_card_account_id
+      type: int_4!
+      description: Unique identifier for card account
+    - name: credit_cards_product_id
+      type: int_4!
+      description: Reference to card_products
+    - name: credit_limit
+      type: numeric!
+      description: Current approved credit limit
+    - name: current_balance
+      type: numeric!
+      description: Current outstanding balance
+    - name: customer_id
+      type: int_4!
+      description: Reference to enterprise.accounts
+    - name: cycle_cut_day
+      type: int_4
+      description: Day of month when billing cycle closes
+    - name: days_past_due
+      type: int_4!
+      description: Current days past due
+    - name: enterprise_account_id
+      type: int_4!
+      description: Reference to enterprise.accounts - the main account record
+    - name: intro_rate_expiration_date
+      type: date
+      description: When introductory rate expires
+    - name: is_secured
+      type: bool!
+      description: Whether account is secured
+    - name: last_payment_amount
+      type: numeric
+      description: Amount of last payment received
+    - name: last_payment_date
+      type: date
+      description: Date of last payment received
+    - name: minimum_payment_due
+      type: numeric!
+      description: Minimum payment due
+    - name: opened_date
+      type: date!
+      description: When account was opened
+    - name: overlimit_status
+      type: bool!
+      description: Whether account is over limit
+    - name: payment_due_date
+      type: date
+      description: Date payment is due
+    - name: penalty_interest_rate
+      type: numeric
+      description: Current penalty APR if applicable
+    - name: purchase_interest_rate
+      type: numeric!
+      description: Current purchase APR
+    - name: reward_points_balance
+      type: int_4!
+      description: Current reward points/cashback balance
+    - name: security_deposit_amount
+      type: numeric
+      description: Amount of security deposit if secured
+    - name: statement_balance
+      type: numeric!
+      description: Balance as of last statement
+    - name: status
+      type: varchar!
+      description: Account status (Active, Inactive, Closed, Suspended)
+    - name: status_update_date_time
+      type: timestamptz!
+      description: When the status was last updated
+    - name: times_past_due_30_days
+      type: int_4!
+      description: Count of 30+ day late payments
+    - name: times_past_due_60_days
+      type: int_4!
+      description: Count of 60+ day late payments
+    - name: times_past_due_90_days
+      type: int_4!
+      description: Count of 90+ day late payments
+  graphql:
+    typeName: CreditCards_credit_cards_card_accounts
+    inputTypeName: CreditCards_credit_cards_card_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_card_accounts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_card_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_number
+          - annual_fee_next_charge_date
+          - available_credit
+          - balance_transfer_interest_rate
+          - cash_advance_interest_rate
+          - cash_advance_limit
+          - credit_cards_application_id
+          - credit_cards_card_account_id
+          - credit_cards_product_id
+          - credit_limit
+          - current_balance
+          - customer_id
+          - cycle_cut_day
+          - days_past_due
+          - enterprise_account_id
+          - intro_rate_expiration_date
+          - is_secured
+          - last_payment_amount
+          - last_payment_date
+          - minimum_payment_due
+          - opened_date
+          - overlimit_status
+          - payment_due_date
+          - penalty_interest_rate
+          - purchase_interest_rate
+          - reward_points_balance
+          - security_deposit_amount
+          - statement_balance
+          - status
+          - status_update_date_time
+          - times_past_due_30_days
+          - times_past_due_60_days
+          - times_past_due_90_days
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_card_accounts_bool_exp
+  operand:
+    object:
+      type: credit_cards_card_accounts
+      comparableFields:
+        - fieldName: account_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: annual_fee_next_charge_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: available_credit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: balance_transfer_interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: cash_advance_interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: cash_advance_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: credit_cards_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_product_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: current_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: cycle_cut_day
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: days_past_due
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: intro_rate_expiration_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: is_secured
+          booleanExpressionType: bool_bool_exp
+        - fieldName: last_payment_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: last_payment_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: minimum_payment_due
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: opened_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: overlimit_status
+          booleanExpressionType: bool_bool_exp
+        - fieldName: payment_due_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: penalty_interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: purchase_interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: reward_points_balance
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: security_deposit_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: statement_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status_update_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: times_past_due_30_days
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: times_past_due_60_days
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: times_past_due_90_days
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_authorized_users
+        - relationshipName: credit_cards_autopay_settings
+        - relationshipName: credit_cards_balance_transfers
+        - relationshipName: credit_cards_application
+        - relationshipName: credit_cards_card_product
+        - relationshipName: credit_cards_card_alerts
+        - relationshipName: credit_cards_cards
+        - relationshipName: credit_cards_consumer_complaints
+        - relationshipName: credit_cards_credit_limit_changes
+        - relationshipName: credit_cards_disputed_transactions
+        - relationshipName: credit_cards_fees
+        - relationshipName: credit_cards_fraud_cases
+        - relationshipName: credit_cards_interest_charges
+        - relationshipName: credit_cards_payment_methods
+        - relationshipName: credit_cards_promotional_offers
+        - relationshipName: credit_cards_reg_z_credit_card_disclosures
+        - relationshipName: credit_cards_reward_redemptions
+        - relationshipName: credit_cards_rewards
+        - relationshipName: credit_cards_statements
+        - relationshipName: credit_cards_transactions
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_card_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_card_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_card_accounts
+      aggregatableFields:
+        - fieldName: account_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: annual_fee_next_charge_date
+          aggregateExpression: date_agg_exp
+        - fieldName: available_credit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: balance_transfer_interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: cash_advance_interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: cash_advance_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: credit_cards_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_product_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: current_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: cycle_cut_day
+          aggregateExpression: int_4_agg_exp
+        - fieldName: days_past_due
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: intro_rate_expiration_date
+          aggregateExpression: date_agg_exp
+        - fieldName: is_secured
+          aggregateExpression: bool_agg_exp
+        - fieldName: last_payment_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: last_payment_date
+          aggregateExpression: date_agg_exp
+        - fieldName: minimum_payment_due
+          aggregateExpression: numeric_agg_exp
+        - fieldName: opened_date
+          aggregateExpression: date_agg_exp
+        - fieldName: overlimit_status
+          aggregateExpression: bool_agg_exp
+        - fieldName: payment_due_date
+          aggregateExpression: date_agg_exp
+        - fieldName: penalty_interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: purchase_interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: reward_points_balance
+          aggregateExpression: int_4_agg_exp
+        - fieldName: security_deposit_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: statement_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status_update_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: times_past_due_30_days
+          aggregateExpression: int_4_agg_exp
+        - fieldName: times_past_due_60_days
+          aggregateExpression: int_4_agg_exp
+        - fieldName: times_past_due_90_days
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_card_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_card_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_card_accounts
+      orderableFields:
+        - fieldName: account_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: annual_fee_next_charge_date
+          orderByExpression: date_order_by_exp
+        - fieldName: available_credit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: balance_transfer_interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: cash_advance_interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: cash_advance_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: credit_cards_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_product_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: current_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: cycle_cut_day
+          orderByExpression: int_4_order_by_exp
+        - fieldName: days_past_due
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: intro_rate_expiration_date
+          orderByExpression: date_order_by_exp
+        - fieldName: is_secured
+          orderByExpression: bool_order_by_exp
+        - fieldName: last_payment_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: last_payment_date
+          orderByExpression: date_order_by_exp
+        - fieldName: minimum_payment_due
+          orderByExpression: numeric_order_by_exp
+        - fieldName: opened_date
+          orderByExpression: date_order_by_exp
+        - fieldName: overlimit_status
+          orderByExpression: bool_order_by_exp
+        - fieldName: payment_due_date
+          orderByExpression: date_order_by_exp
+        - fieldName: penalty_interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: purchase_interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: reward_points_balance
+          orderByExpression: int_4_order_by_exp
+        - fieldName: security_deposit_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: statement_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status_update_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: times_past_due_30_days
+          orderByExpression: int_4_order_by_exp
+        - fieldName: times_past_due_60_days
+          orderByExpression: int_4_order_by_exp
+        - fieldName: times_past_due_90_days
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: credit_cards_application
+        - relationshipName: credit_cards_card_product
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_card_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_card_accounts
+  objectType: credit_cards_card_accounts
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_card_accounts
+  filterExpressionType: credit_cards_card_accounts_bool_exp
+  aggregateExpression: credit_cards_card_accounts_agg_exp
+  orderByExpression: credit_cards_card_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_card_accounts
+      subscription:
+        rootField: credit_cards_card_accounts
+    selectUniques:
+      - queryRootField: credit_cards_card_accounts_by_account_number
+        uniqueIdentifier:
+          - account_number
+        subscription:
+          rootField: credit_cards_card_accounts_by_account_number
+      - queryRootField: credit_cards_card_accounts_by_credit_cards_card_account_id
+        uniqueIdentifier:
+          - credit_cards_card_account_id
+        subscription:
+          rootField: credit_cards_card_accounts_by_credit_cards_card_account_id
+    filterInputTypeName: CreditCards_credit_cards_card_accounts_filter_input
+    aggregate:
+      queryRootField: credit_cards_card_accounts_aggregate
+      subscription:
+        rootField: credit_cards_card_accounts_aggregate
+  description: Stores credit card accounts and their current status
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_card_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_authorized_users
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_authorized_users
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_authorized_users_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_authorized_users_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_autopay_settings
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_autopay_settings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_autopay_settings_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_autopay_settings_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_balance_transfers
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_balance_transfers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_balance_transfers_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_balance_transfers_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_application
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_application_id
+      target:
+        modelField:
+          - fieldName: credit_cards_application_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_product
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_card_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_product_id
+      target:
+        modelField:
+          - fieldName: credit_cards_product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_alerts
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_card_alerts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_card_alerts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_card_alerts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_cards
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_cards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_cards_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_cards_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_consumer_complaints
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_consumer_complaints
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_consumer_complaints_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_consumer_complaints_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_credit_limit_changes
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_credit_limit_changes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_credit_limit_changes_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_credit_limit_changes_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_disputed_transactions
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_disputed_transactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_disputed_transactions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_disputed_transactions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_fees
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_fees
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_fees_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_fees_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_fraud_cases
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_fraud_cases
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_fraud_cases_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_fraud_cases_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_interest_charges
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_interest_charges
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_interest_charges_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_interest_charges_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_payment_methods
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_payment_methods
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_payment_methods_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_payment_methods_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_promotional_offers
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_promotional_offers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_promotional_offers_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_promotional_offers_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_reg_z_credit_card_disclosures
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_reg_z_credit_card_disclosures
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_reg_z_credit_card_disclosures_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_reg_z_credit_card_disclosures_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_reward_redemptions
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_reward_redemptions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_reward_redemptions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_reward_redemptions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_rewards
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_rewards
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_rewards_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_rewards_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_statements
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_statements
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_statements_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_statements_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_transactions
+  sourceType: credit_cards_card_accounts
+  target:
+    model:
+      name: credit_cards_transactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_transactions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+  graphql:
+    aggregateFieldName: credit_cards_transactions_aggregate
+

@@ -1,0 +1,314 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_loan_collateral
+  description: Stores information about collateral used to secure loans, including
+    type, value, and insurance requirements.
+  fields:
+    - name: collateral_type
+      type: consumer_lending_collateral_type!
+      description: Type of collateral
+    - name: consumer_lending_collateral_id
+      type: int_4!
+      description: Unique identifier for collateral
+    - name: deposit_account_id
+      type: int_4
+      description: Reference to enterprise.accounts if deposit
+    - name: description
+      type: varchar!
+      description: Description of collateral
+    - name: insurance_expiration_date
+      type: date
+      description: Expiration date of insurance policy
+    - name: insurance_required
+      type: bool!
+      description: Whether insurance is required
+    - name: lien_position
+      type: int_4
+      description: Priority of lien
+    - name: lien_recording_date
+      type: date
+      description: Date lien was recorded
+    - name: lien_recording_number
+      type: varchar
+      description: Lien recording reference number
+    - name: loan_account_id
+      type: int_4!
+      description: Reference to loan account
+    - name: property_address_id
+      type: int_4
+      description: Reference to enterprise.addresses if property
+    - name: valuation_date
+      type: date!
+      description: Date of valuation
+    - name: value
+      type: numeric!
+      description: Estimated value of collateral
+    - name: vehicle_id
+      type: int_4
+      description: Reference to vehicles table if applicable
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_collateral
+    inputTypeName: ConsumerLending_consumer_lending_loan_collateral_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_collateral
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_loan_collateral
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - collateral_type
+          - consumer_lending_collateral_id
+          - deposit_account_id
+          - description
+          - insurance_expiration_date
+          - insurance_required
+          - lien_position
+          - lien_recording_date
+          - lien_recording_number
+          - loan_account_id
+          - property_address_id
+          - valuation_date
+          - value
+          - vehicle_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_loan_collateral_bool_exp
+  operand:
+    object:
+      type: consumer_lending_loan_collateral
+      comparableFields:
+        - fieldName: collateral_type
+          booleanExpressionType: consumer_lending_collateral_type_bool_exp
+        - fieldName: consumer_lending_collateral_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: deposit_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: insurance_expiration_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: insurance_required
+          booleanExpressionType: bool_bool_exp
+        - fieldName: lien_position
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: lien_recording_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: lien_recording_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: loan_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: property_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: valuation_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: vehicle_id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_account
+        - relationshipName: consumer_lending_vehicle
+        - relationshipName: consumer_lending_loan_insurances
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_collateral_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_loan_collateral_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_loan_collateral
+      aggregatableFields:
+        - fieldName: collateral_type
+          aggregateExpression: consumer_lending_collateral_type_agg_exp
+        - fieldName: consumer_lending_collateral_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: deposit_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: varchar_agg_exp
+        - fieldName: insurance_expiration_date
+          aggregateExpression: date_agg_exp
+        - fieldName: insurance_required
+          aggregateExpression: bool_agg_exp
+        - fieldName: lien_position
+          aggregateExpression: int_4_agg_exp
+        - fieldName: lien_recording_date
+          aggregateExpression: date_agg_exp
+        - fieldName: lien_recording_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: loan_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: property_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: valuation_date
+          aggregateExpression: date_agg_exp
+        - fieldName: value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: vehicle_id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_loan_collateral_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_loan_collateral_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_loan_collateral
+      orderableFields:
+        - fieldName: collateral_type
+          orderByExpression: consumer_lending_collateral_type_order_by_exp
+        - fieldName: consumer_lending_collateral_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: deposit_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: varchar_order_by_exp
+        - fieldName: insurance_expiration_date
+          orderByExpression: date_order_by_exp
+        - fieldName: insurance_required
+          orderByExpression: bool_order_by_exp
+        - fieldName: lien_position
+          orderByExpression: int_4_order_by_exp
+        - fieldName: lien_recording_date
+          orderByExpression: date_order_by_exp
+        - fieldName: lien_recording_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: loan_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: property_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: valuation_date
+          orderByExpression: date_order_by_exp
+        - fieldName: value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: vehicle_id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_account
+        - relationshipName: consumer_lending_vehicle
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_loan_collateral_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_loan_collateral
+  objectType: consumer_lending_loan_collateral
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_collateral
+  filterExpressionType: consumer_lending_loan_collateral_bool_exp
+  aggregateExpression: consumer_lending_loan_collateral_agg_exp
+  orderByExpression: consumer_lending_loan_collateral_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_loan_collateral
+      subscription:
+        rootField: consumer_lending_loan_collateral
+    selectUniques:
+      - queryRootField: consumer_lending_loan_collateral_by_consumer_lending_collateral_id
+        uniqueIdentifier:
+          - consumer_lending_collateral_id
+        subscription:
+          rootField: consumer_lending_loan_collateral_by_consumer_lending_collateral_id
+    filterInputTypeName: ConsumerLending_consumer_lending_loan_collateral_filter_input
+    aggregate:
+      queryRootField: consumer_lending_loan_collateral_aggregate
+      subscription:
+        rootField: consumer_lending_loan_collateral_aggregate
+  description: Stores information about collateral used to secure loans, including
+    type, value, and insurance requirements.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_loan_collateral
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_account
+  sourceType: consumer_lending_loan_collateral
+  target:
+    model:
+      name: consumer_lending_loan_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: loan_account_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_loan_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_vehicle
+  sourceType: consumer_lending_loan_collateral
+  target:
+    model:
+      name: consumer_lending_vehicles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: vehicle_id
+      target:
+        modelField:
+          - fieldName: vehicle_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_insurances
+  sourceType: consumer_lending_loan_collateral
+  target:
+    model:
+      name: consumer_lending_loan_insurance
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_loan_insurance_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_collateral_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_collateral_id
+  graphql:
+    aggregateFieldName: consumer_lending_loan_insurances_aggregate
+

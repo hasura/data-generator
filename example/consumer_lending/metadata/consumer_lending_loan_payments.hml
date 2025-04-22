@@ -1,0 +1,337 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_loan_payments
+  description: Records payments made on loan accounts, including payment date,
+    amount, method, and status.
+  fields:
+    - name: confirmation_number
+      type: varchar
+      description: Payment confirmation number
+    - name: consumer_lending_loan_account_id
+      type: int_4!
+      description: Reference to loan account
+    - name: consumer_lending_payment_id
+      type: int_4!
+      description: Unique identifier for payment
+    - name: interest_amount
+      type: numeric!
+      description: Amount applied to interest
+    - name: late_fee_amount
+      type: numeric!
+      description: Amount applied to late fees
+    - name: other_fee_amount
+      type: numeric!
+      description: Amount applied to other fees
+    - name: payment_amount
+      type: numeric!
+      description: Total payment amount
+    - name: payment_date
+      type: timestamptz!
+      description: Date/time payment was received
+    - name: payment_effective_date
+      type: date!
+      description: Date payment is effective
+    - name: payment_method
+      type: consumer_lending_payment_method!
+      description: Method used to make payment
+    - name: payment_status
+      type: consumer_lending_loan_payment_status!
+      description: Current status of the payment
+    - name: payment_type
+      type: consumer_lending_payment_type!
+      description: Type of payment
+    - name: principal_amount
+      type: numeric!
+      description: Amount applied to principal
+    - name: returned_date
+      type: date
+      description: Date payment was returned if applicable
+    - name: returned_reason
+      type: varchar
+      description: Reason for payment return if applicable
+    - name: transaction_id
+      type: varchar
+      description: External transaction identifier
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_payments
+    inputTypeName: ConsumerLending_consumer_lending_loan_payments_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_payments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_loan_payments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - confirmation_number
+          - consumer_lending_loan_account_id
+          - consumer_lending_payment_id
+          - interest_amount
+          - late_fee_amount
+          - other_fee_amount
+          - payment_amount
+          - payment_date
+          - payment_effective_date
+          - payment_method
+          - payment_status
+          - payment_type
+          - principal_amount
+          - returned_date
+          - returned_reason
+          - transaction_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_loan_payments_bool_exp
+  operand:
+    object:
+      type: consumer_lending_loan_payments
+      comparableFields:
+        - fieldName: confirmation_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: consumer_lending_loan_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_payment_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: interest_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: late_fee_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: other_fee_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: payment_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: payment_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: payment_effective_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: payment_method
+          booleanExpressionType: consumer_lending_payment_method_bool_exp
+        - fieldName: payment_status
+          booleanExpressionType: consumer_lending_loan_payment_status_bool_exp
+        - fieldName: payment_type
+          booleanExpressionType: consumer_lending_payment_type_bool_exp
+        - fieldName: principal_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: returned_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: returned_reason
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: transaction_id
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_fees
+        - relationshipName: consumer_lending_loan_account
+        - relationshipName: consumer_lending_payment_schedules
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_payments_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_loan_payments_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_loan_payments
+      aggregatableFields:
+        - fieldName: confirmation_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: consumer_lending_loan_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_payment_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: interest_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: late_fee_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: other_fee_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: payment_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: payment_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: payment_effective_date
+          aggregateExpression: date_agg_exp
+        - fieldName: payment_method
+          aggregateExpression: consumer_lending_payment_method_agg_exp
+        - fieldName: payment_status
+          aggregateExpression: consumer_lending_loan_payment_status_agg_exp
+        - fieldName: payment_type
+          aggregateExpression: consumer_lending_payment_type_agg_exp
+        - fieldName: principal_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: returned_date
+          aggregateExpression: date_agg_exp
+        - fieldName: returned_reason
+          aggregateExpression: varchar_agg_exp
+        - fieldName: transaction_id
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_loan_payments_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_loan_payments_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_loan_payments
+      orderableFields:
+        - fieldName: confirmation_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: consumer_lending_loan_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_payment_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: interest_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: late_fee_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: other_fee_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: payment_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: payment_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: payment_effective_date
+          orderByExpression: date_order_by_exp
+        - fieldName: payment_method
+          orderByExpression: consumer_lending_payment_method_order_by_exp
+        - fieldName: payment_status
+          orderByExpression: consumer_lending_loan_payment_status_order_by_exp
+        - fieldName: payment_type
+          orderByExpression: consumer_lending_payment_type_order_by_exp
+        - fieldName: principal_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: returned_date
+          orderByExpression: date_order_by_exp
+        - fieldName: returned_reason
+          orderByExpression: varchar_order_by_exp
+        - fieldName: transaction_id
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_account
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_loan_payments_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_loan_payments
+  objectType: consumer_lending_loan_payments
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_payments
+  filterExpressionType: consumer_lending_loan_payments_bool_exp
+  aggregateExpression: consumer_lending_loan_payments_agg_exp
+  orderByExpression: consumer_lending_loan_payments_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_loan_payments
+      subscription:
+        rootField: consumer_lending_loan_payments
+    selectUniques:
+      - queryRootField: consumer_lending_loan_payments_by_consumer_lending_payment_id
+        uniqueIdentifier:
+          - consumer_lending_payment_id
+        subscription:
+          rootField: consumer_lending_loan_payments_by_consumer_lending_payment_id
+    filterInputTypeName: ConsumerLending_consumer_lending_loan_payments_filter_input
+    aggregate:
+      queryRootField: consumer_lending_loan_payments_aggregate
+      subscription:
+        rootField: consumer_lending_loan_payments_aggregate
+  description: Records payments made on loan accounts, including payment date,
+    amount, method, and status.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_loan_payments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_fees
+  sourceType: consumer_lending_loan_payments
+  target:
+    model:
+      name: consumer_lending_loan_fees
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_loan_fees_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_payment_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_payment_id
+  graphql:
+    aggregateFieldName: consumer_lending_loan_fees_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_account
+  sourceType: consumer_lending_loan_payments
+  target:
+    model:
+      name: consumer_lending_loan_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_loan_account_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_loan_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_payment_schedules
+  sourceType: consumer_lending_loan_payments
+  target:
+    model:
+      name: consumer_lending_payment_schedules
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_payment_schedules_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_payment_id
+      target:
+        modelField:
+          - fieldName: actual_payment_id
+  graphql:
+    aggregateFieldName: consumer_lending_payment_schedules_aggregate
+

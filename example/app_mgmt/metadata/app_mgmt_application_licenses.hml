@@ -1,0 +1,170 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: app_mgmt_application_licenses
+  description: Table to store associations between applications and the licenses they use.
+  fields:
+    - name: app_mgmt_application_id
+      type: uuid!
+      description: Identifier for the application that uses the license.
+    - name: app_mgmt_license_id
+      type: uuid!
+      description: Identifier for the software license used by the application.
+  graphql:
+    typeName: App_Mgmt_app_mgmt_application_licenses
+    inputTypeName: App_Mgmt_app_mgmt_application_licenses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_application_licenses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: app_mgmt_application_licenses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - app_mgmt_application_id
+          - app_mgmt_license_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: app_mgmt_application_licenses_bool_exp
+  operand:
+    object:
+      type: app_mgmt_application_licenses
+      comparableFields:
+        - fieldName: app_mgmt_application_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: app_mgmt_license_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: app_mgmt_application
+        - relationshipName: app_mgmt_license
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_app_mgmt_application_licenses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: app_mgmt_application_licenses_agg_exp
+  operand:
+    object:
+      aggregatedType: app_mgmt_application_licenses
+      aggregatableFields:
+        - fieldName: app_mgmt_application_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: app_mgmt_license_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_app_mgmt_application_licenses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: app_mgmt_application_licenses_order_by_exp
+  operand:
+    object:
+      orderedType: app_mgmt_application_licenses
+      orderableFields:
+        - fieldName: app_mgmt_application_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: app_mgmt_license_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: app_mgmt_application
+        - relationshipName: app_mgmt_license
+  graphql:
+    expressionTypeName: App_Mgmt_app_mgmt_application_licenses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: app_mgmt_application_licenses
+  objectType: app_mgmt_application_licenses
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_application_licenses
+  filterExpressionType: app_mgmt_application_licenses_bool_exp
+  aggregateExpression: app_mgmt_application_licenses_agg_exp
+  orderByExpression: app_mgmt_application_licenses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: app_mgmt_application_licenses
+      subscription:
+        rootField: app_mgmt_application_licenses
+    selectUniques:
+      - queryRootField: app_mgmt_application_licenses_by_application_licenses_pkey
+        uniqueIdentifier:
+          - app_mgmt_application_id
+          - app_mgmt_license_id
+        subscription:
+          rootField: app_mgmt_application_licenses_by_application_licenses_pkey
+    filterInputTypeName: App_Mgmt_app_mgmt_application_licenses_filter_input
+    aggregate:
+      queryRootField: app_mgmt_application_licenses_aggregate
+      subscription:
+        rootField: app_mgmt_application_licenses_aggregate
+  description: Table to store associations between applications and the licenses they use.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: app_mgmt_application_licenses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_application
+  sourceType: app_mgmt_application_licenses
+  target:
+    model:
+      name: app_mgmt_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_application_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_application_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_license
+  sourceType: app_mgmt_application_licenses
+  target:
+    model:
+      name: app_mgmt_licenses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_license_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_license_id
+

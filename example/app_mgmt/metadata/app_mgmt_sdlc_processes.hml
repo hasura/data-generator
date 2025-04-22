@@ -1,0 +1,245 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: app_mgmt_sdlc_processes
+  description: Table to store software development lifecycle processes and their attributes.
+  fields:
+    - name: app_mgmt_sdlc_process_id
+      type: uuid!
+      description: Unique identifier for a defined software development lifecycle process.
+    - name: app_mgmt_team_id
+      type: uuid
+      description: Identifier for the team that manages this SDLC process.
+    - name: description
+      type: text
+      description: Description of the steps and activities within the SDLC process.
+    - name: documentation_url
+      type: varchar
+      description: Link to the full documentation for the SDLC process.
+    - name: process_name
+      type: varchar
+      description: Name of the software development lifecycle process.
+    - name: process_owner
+      type: int_4
+      description: The individual responsible for the SDLC process.
+    - name: version
+      type: varchar
+      description: Version number or identifier for the SDLC process.
+  graphql:
+    typeName: App_Mgmt_app_mgmt_sdlc_processes
+    inputTypeName: App_Mgmt_app_mgmt_sdlc_processes_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_sdlc_processes
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: app_mgmt_sdlc_processes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - app_mgmt_sdlc_process_id
+          - app_mgmt_team_id
+          - description
+          - documentation_url
+          - process_name
+          - process_owner
+          - version
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: app_mgmt_sdlc_processes_bool_exp
+  operand:
+    object:
+      type: app_mgmt_sdlc_processes
+      comparableFields:
+        - fieldName: app_mgmt_sdlc_process_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: app_mgmt_team_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: documentation_url
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: process_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: process_owner
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: version
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: app_mgmt_applications
+        - relationshipName: app_mgmt_architectures
+        - relationshipName: app_mgmt_team
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_app_mgmt_sdlc_processes_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: app_mgmt_sdlc_processes_agg_exp
+  operand:
+    object:
+      aggregatedType: app_mgmt_sdlc_processes
+      aggregatableFields:
+        - fieldName: app_mgmt_sdlc_process_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: app_mgmt_team_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: documentation_url
+          aggregateExpression: varchar_agg_exp
+        - fieldName: process_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: process_owner
+          aggregateExpression: int_4_agg_exp
+        - fieldName: version
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_app_mgmt_sdlc_processes_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: app_mgmt_sdlc_processes_order_by_exp
+  operand:
+    object:
+      orderedType: app_mgmt_sdlc_processes
+      orderableFields:
+        - fieldName: app_mgmt_sdlc_process_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: app_mgmt_team_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: documentation_url
+          orderByExpression: varchar_order_by_exp
+        - fieldName: process_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: process_owner
+          orderByExpression: int_4_order_by_exp
+        - fieldName: version
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: app_mgmt_team
+  graphql:
+    expressionTypeName: App_Mgmt_app_mgmt_sdlc_processes_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: app_mgmt_sdlc_processes
+  objectType: app_mgmt_sdlc_processes
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_sdlc_processes
+  filterExpressionType: app_mgmt_sdlc_processes_bool_exp
+  aggregateExpression: app_mgmt_sdlc_processes_agg_exp
+  orderByExpression: app_mgmt_sdlc_processes_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: app_mgmt_sdlc_processes
+      subscription:
+        rootField: app_mgmt_sdlc_processes
+    selectUniques:
+      - queryRootField: app_mgmt_sdlc_processes_by_app_mgmt_sdlc_process_id
+        uniqueIdentifier:
+          - app_mgmt_sdlc_process_id
+        subscription:
+          rootField: app_mgmt_sdlc_processes_by_app_mgmt_sdlc_process_id
+    filterInputTypeName: App_Mgmt_app_mgmt_sdlc_processes_filter_input
+    aggregate:
+      queryRootField: app_mgmt_sdlc_processes_aggregate
+      subscription:
+        rootField: app_mgmt_sdlc_processes_aggregate
+  description: Table to store software development lifecycle processes and their attributes.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: app_mgmt_sdlc_processes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_applications
+  sourceType: app_mgmt_sdlc_processes
+  target:
+    model:
+      name: app_mgmt_applications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: app_mgmt_applications_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_sdlc_process_id
+      target:
+        modelField:
+          - fieldName: sdlc_process_id
+  graphql:
+    aggregateFieldName: app_mgmt_applications_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_architectures
+  sourceType: app_mgmt_sdlc_processes
+  target:
+    model:
+      name: app_mgmt_architectures
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: app_mgmt_architectures_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_sdlc_process_id
+      target:
+        modelField:
+          - fieldName: sdlc_process_id
+  graphql:
+    aggregateFieldName: app_mgmt_architectures_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_team
+  sourceType: app_mgmt_sdlc_processes
+  target:
+    model:
+      name: app_mgmt_teams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_team_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_team_id
+

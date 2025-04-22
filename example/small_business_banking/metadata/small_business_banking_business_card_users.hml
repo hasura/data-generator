@@ -1,0 +1,279 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_business_card_users
+  description: Manages employee and owner cards issued under a business credit card account
+  fields:
+    - name: can_manage_all_cards
+      type: bool!
+      description: Whether user can manage all company cards
+    - name: can_view_all_transactions
+      type: bool!
+      description: Whether user can view all company transactions
+    - name: credit_cards_card_id
+      type: int_4!
+      description: Reference to the specific card in the credit_cards schema
+    - name: department
+      type: varchar
+      description: Department or cost center for this cardholder
+    - name: employee_id
+      type: varchar
+      description: Employee ID within the business if applicable
+    - name: enterprise_party_id
+      type: int_4!
+      description: Reference to the enterprise party who is issued a card
+    - name: merchant_category_restrictions
+      type: text
+      description: JSON object describing merchant category restrictions
+    - name: role
+      type: varchar!
+      description: Role of user in the business (owner, employee, accountant, etc.)
+    - name: small_business_banking_business_card_account_id
+      type: int_4!
+      description: Reference to the business card account
+    - name: small_business_banking_business_card_user_id
+      type: int_4!
+      description: Unique identifier for each business card user
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business
+    - name: spending_limit
+      type: numeric!
+      description: Monthly spending limit for this cardholder
+    - name: transaction_approval_required
+      type: bool!
+      description: Whether transactions require approval
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_card_users
+    inputTypeName: SmallBusinessBanking_small_business_banking_business_card_users_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_business_card_users
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_business_card_users
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - can_manage_all_cards
+          - can_view_all_transactions
+          - credit_cards_card_id
+          - department
+          - employee_id
+          - enterprise_party_id
+          - merchant_category_restrictions
+          - role
+          - small_business_banking_business_card_account_id
+          - small_business_banking_business_card_user_id
+          - small_business_banking_business_id
+          - spending_limit
+          - transaction_approval_required
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_business_card_users_bool_exp
+  operand:
+    object:
+      type: small_business_banking_business_card_users
+      comparableFields:
+        - fieldName: can_manage_all_cards
+          booleanExpressionType: bool_bool_exp
+        - fieldName: can_view_all_transactions
+          booleanExpressionType: bool_bool_exp
+        - fieldName: credit_cards_card_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: department
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: employee_id
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: merchant_category_restrictions
+          booleanExpressionType: text_bool_exp
+        - fieldName: role
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: small_business_banking_business_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_card_user_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: spending_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: transaction_approval_required
+          booleanExpressionType: bool_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_business_card_account
+        - relationshipName: small_business_banking_business
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_card_users_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_business_card_users_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_business_card_users
+      aggregatableFields:
+        - fieldName: can_manage_all_cards
+          aggregateExpression: bool_agg_exp
+        - fieldName: can_view_all_transactions
+          aggregateExpression: bool_agg_exp
+        - fieldName: credit_cards_card_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: department
+          aggregateExpression: varchar_agg_exp
+        - fieldName: employee_id
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: merchant_category_restrictions
+          aggregateExpression: text_agg_exp
+        - fieldName: role
+          aggregateExpression: varchar_agg_exp
+        - fieldName: small_business_banking_business_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_card_user_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: spending_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: transaction_approval_required
+          aggregateExpression: bool_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_business_card_users_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_business_card_users_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_business_card_users
+      orderableFields:
+        - fieldName: can_manage_all_cards
+          orderByExpression: bool_order_by_exp
+        - fieldName: can_view_all_transactions
+          orderByExpression: bool_order_by_exp
+        - fieldName: credit_cards_card_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: department
+          orderByExpression: varchar_order_by_exp
+        - fieldName: employee_id
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: merchant_category_restrictions
+          orderByExpression: text_order_by_exp
+        - fieldName: role
+          orderByExpression: varchar_order_by_exp
+        - fieldName: small_business_banking_business_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_card_user_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: spending_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: transaction_approval_required
+          orderByExpression: bool_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_business_card_account
+        - relationshipName: small_business_banking_business
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_business_card_users_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_business_card_users
+  objectType: small_business_banking_business_card_users
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_business_card_users
+  filterExpressionType: small_business_banking_business_card_users_bool_exp
+  aggregateExpression: small_business_banking_business_card_users_agg_exp
+  orderByExpression: small_business_banking_business_card_users_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_business_card_users
+      subscription:
+        rootField: small_business_banking_business_card_users
+    selectUniques:
+      - queryRootField: small_business_banking_business_card_users_by_small_business_banking_business_card_user_id
+        uniqueIdentifier:
+          - small_business_banking_business_card_user_id
+        subscription:
+          rootField: small_business_banking_business_card_users_by_small_business_banking_business_card_user_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_business_card_users_filter_input
+    aggregate:
+      queryRootField: small_business_banking_business_card_users_aggregate
+      subscription:
+        rootField: small_business_banking_business_card_users_aggregate
+  description: Manages employee and owner cards issued under a business credit card account
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_business_card_users
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_card_account
+  sourceType: small_business_banking_business_card_users
+  target:
+    model:
+      name: small_business_banking_business_card_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_card_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_card_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_business_card_users
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+

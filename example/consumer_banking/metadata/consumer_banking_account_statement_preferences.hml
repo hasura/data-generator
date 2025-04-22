@@ -1,0 +1,218 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_account_statement_preferences
+  description: Stores customer preferences for account statements
+  fields:
+    - name: communication_method
+      type: consumer_banking_communication_method!
+    - name: consumer_banking_account_id
+      type: int_8!
+    - name: consumer_banking_statement_id
+      type: int_4
+      description: Fake relationship, to influence data generator and make statements
+        be created before this record.
+    - name: enterprise_address_id
+      type: int_4
+    - name: format
+      type: consumer_banking_statement_format!
+    - name: frequency
+      type: enterprise_frequency!
+    - name: last_statement_date
+      type: date
+    - name: next_statement_date
+      type: date
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_account_statement_preferences
+    inputTypeName: ConsumerBanking_consumer_banking_account_statement_preferences_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_account_statement_preferences
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_account_statement_preferences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - communication_method
+          - consumer_banking_account_id
+          - consumer_banking_statement_id
+          - enterprise_address_id
+          - format
+          - frequency
+          - last_statement_date
+          - next_statement_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_account_statement_preferences_bool_exp
+  operand:
+    object:
+      type: consumer_banking_account_statement_preferences
+      comparableFields:
+        - fieldName: communication_method
+          booleanExpressionType: consumer_banking_communication_method_bool_exp
+        - fieldName: consumer_banking_account_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: consumer_banking_statement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: format
+          booleanExpressionType: consumer_banking_statement_format_bool_exp
+        - fieldName: frequency
+          booleanExpressionType: enterprise_frequency_bool_exp
+        - fieldName: last_statement_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: next_statement_date
+          booleanExpressionType: date_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_account
+        - relationshipName: consumer_banking_statement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_account_statement_preferences_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_account_statement_preferences_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_account_statement_preferences
+      aggregatableFields:
+        - fieldName: communication_method
+          aggregateExpression: consumer_banking_communication_method_agg_exp
+        - fieldName: consumer_banking_account_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: consumer_banking_statement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: format
+          aggregateExpression: consumer_banking_statement_format_agg_exp
+        - fieldName: frequency
+          aggregateExpression: enterprise_frequency_agg_exp
+        - fieldName: last_statement_date
+          aggregateExpression: date_agg_exp
+        - fieldName: next_statement_date
+          aggregateExpression: date_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_account_statement_preferences_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_account_statement_preferences_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_account_statement_preferences
+      orderableFields:
+        - fieldName: communication_method
+          orderByExpression: consumer_banking_communication_method_order_by_exp
+        - fieldName: consumer_banking_account_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: consumer_banking_statement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: format
+          orderByExpression: consumer_banking_statement_format_order_by_exp
+        - fieldName: frequency
+          orderByExpression: enterprise_frequency_order_by_exp
+        - fieldName: last_statement_date
+          orderByExpression: date_order_by_exp
+        - fieldName: next_statement_date
+          orderByExpression: date_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_account
+        - relationshipName: consumer_banking_statement
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_account_statement_preferences_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_account_statement_preferences
+  objectType: consumer_banking_account_statement_preferences
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_account_statement_preferences
+  filterExpressionType: consumer_banking_account_statement_preferences_bool_exp
+  aggregateExpression: consumer_banking_account_statement_preferences_agg_exp
+  orderByExpression: consumer_banking_account_statement_preferences_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_account_statement_preferences
+      subscription:
+        rootField: consumer_banking_account_statement_preferences
+    selectUniques: []
+    filterInputTypeName: ConsumerBanking_consumer_banking_account_statement_preferences_filter_input
+    aggregate:
+      queryRootField: consumer_banking_account_statement_preferences_aggregate
+      subscription:
+        rootField: consumer_banking_account_statement_preferences_aggregate
+  description: Stores customer preferences for account statements
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_account_statement_preferences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_account
+  sourceType: consumer_banking_account_statement_preferences
+  target:
+    model:
+      name: consumer_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_statement
+  sourceType: consumer_banking_account_statement_preferences
+  target:
+    model:
+      name: consumer_banking_statements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_statement_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_statement_id
+

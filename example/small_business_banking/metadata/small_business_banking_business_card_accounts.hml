@@ -1,0 +1,328 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_business_card_accounts
+  description: Links businesses to credit card accounts and stores
+    business-specific attributes
+  fields:
+    - name: account_type
+      type: varchar!
+      description: Categorization of the account (business, corporate, etc.)
+    - name: annual_review_date
+      type: date
+      description: Date when account should be reviewed annually
+    - name: business_structure
+      type: varchar!
+      description: Legal structure of the business for credit purposes
+    - name: card_account_id
+      type: int_4!
+      description: Reference to the primary credit card account in the credit_cards schema
+    - name: credit_cards_product_id
+      type: int_4!
+      description: Reference to the card product in credit_cards schema
+    - name: expense_category_setup
+      type: varchar!
+      description: Type of expense categorization setup (standard, custom)
+    - name: liability_type
+      type: varchar!
+      description: Liability arrangement (business liability, joint liability, etc.)
+    - name: linked_deposit_account_id
+      type: int_4
+      description: Reference to deposit account for automatic payments
+    - name: ownership_type
+      type: varchar!
+      description: Type of ownership for this card account (sole proprietor,
+        partnership, corporation)
+    - name: relationship_manager_id
+      type: int_4
+      description: Reference to the relationship manager for this business
+    - name: small_business_banking_business_card_account_id
+      type: int_4!
+      description: Unique identifier for each business credit card account
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business that owns the credit card account
+    - name: tax_id_reporting
+      type: varchar!
+      description: Tax ID used for reporting purposes
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_card_accounts
+    inputTypeName: SmallBusinessBanking_small_business_banking_business_card_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_business_card_accounts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_business_card_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_type
+          - annual_review_date
+          - business_structure
+          - card_account_id
+          - credit_cards_product_id
+          - expense_category_setup
+          - liability_type
+          - linked_deposit_account_id
+          - ownership_type
+          - relationship_manager_id
+          - small_business_banking_business_card_account_id
+          - small_business_banking_business_id
+          - tax_id_reporting
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_business_card_accounts_bool_exp
+  operand:
+    object:
+      type: small_business_banking_business_card_accounts
+      comparableFields:
+        - fieldName: account_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: annual_review_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: business_structure
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_product_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: expense_category_setup
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: liability_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: linked_deposit_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: ownership_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: relationship_manager_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: tax_id_reporting
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_account
+        - relationshipName: small_business_banking_business
+        - relationshipName: small_business_banking_business_card_users
+        - relationshipName: small_business_banking_payments
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_card_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_business_card_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_business_card_accounts
+      aggregatableFields:
+        - fieldName: account_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: annual_review_date
+          aggregateExpression: date_agg_exp
+        - fieldName: business_structure
+          aggregateExpression: varchar_agg_exp
+        - fieldName: card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_product_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: expense_category_setup
+          aggregateExpression: varchar_agg_exp
+        - fieldName: liability_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: linked_deposit_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: ownership_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: relationship_manager_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: tax_id_reporting
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_business_card_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_business_card_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_business_card_accounts
+      orderableFields:
+        - fieldName: account_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: annual_review_date
+          orderByExpression: date_order_by_exp
+        - fieldName: business_structure
+          orderByExpression: varchar_order_by_exp
+        - fieldName: card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_product_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: expense_category_setup
+          orderByExpression: varchar_order_by_exp
+        - fieldName: liability_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: linked_deposit_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: ownership_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: relationship_manager_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: tax_id_reporting
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_account
+        - relationshipName: small_business_banking_business
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_business_card_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_business_card_accounts
+  objectType: small_business_banking_business_card_accounts
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_business_card_accounts
+  filterExpressionType: small_business_banking_business_card_accounts_bool_exp
+  aggregateExpression: small_business_banking_business_card_accounts_agg_exp
+  orderByExpression: small_business_banking_business_card_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_business_card_accounts
+      subscription:
+        rootField: small_business_banking_business_card_accounts
+    selectUniques:
+      - queryRootField: small_business_banking_business_card_accounts_by_small_business_banking_business_card_account_id
+        uniqueIdentifier:
+          - small_business_banking_business_card_account_id
+        subscription:
+          rootField: small_business_banking_business_card_accounts_by_small_business_banking_business_card_account_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_business_card_accounts_filter_input
+    aggregate:
+      queryRootField: small_business_banking_business_card_accounts_aggregate
+      subscription:
+        rootField: small_business_banking_business_card_accounts_aggregate
+  description: Links businesses to credit card accounts and stores
+    business-specific attributes
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_business_card_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_account
+  sourceType: small_business_banking_business_card_accounts
+  target:
+    model:
+      name: small_business_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: linked_deposit_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_business_card_accounts
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business_card_users
+  sourceType: small_business_banking_business_card_accounts
+  target:
+    model:
+      name: small_business_banking_business_card_users
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_business_card_users_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_card_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_card_account_id
+  graphql:
+    aggregateFieldName: small_business_banking_business_card_users_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_payments
+  sourceType: small_business_banking_business_card_accounts
+  target:
+    model:
+      name: small_business_banking_payments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_payments_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_card_id
+  graphql:
+    aggregateFieldName: small_business_banking_payments_aggregate
+

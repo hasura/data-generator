@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_usb_device_usage
+  description: Table storing information about USB device usage, tracking
+    connection and disconnection times.
+  fields:
+    - name: connection_time
+      type: timestamp
+      description: Timestamp when the USB device was connected.
+    - name: device_name
+      type: varchar
+      description: Name of the USB device.
+    - name: device_type
+      type: varchar
+      description: Type of the USB device.
+    - name: disconnection_time
+      type: timestamp
+      description: Timestamp when the USB device was disconnected.
+    - name: security_system_id
+      type: uuid!
+      description: Identifier of the system where the USB device was used.
+    - name: security_usb_device_usage_id
+      type: uuid!
+      description: Unique identifier for the USB device usage record.
+  graphql:
+    typeName: Security_security_usb_device_usage
+    inputTypeName: Security_security_usb_device_usage_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_usb_device_usage
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_usb_device_usage
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - connection_time
+          - device_name
+          - device_type
+          - disconnection_time
+          - security_system_id
+          - security_usb_device_usage_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_usb_device_usage_bool_exp
+  operand:
+    object:
+      type: security_usb_device_usage
+      comparableFields:
+        - fieldName: connection_time
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: device_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: device_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: disconnection_time
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: security_system_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_usb_device_usage_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_host
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_usb_device_usage_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_usb_device_usage_agg_exp
+  operand:
+    object:
+      aggregatedType: security_usb_device_usage
+      aggregatableFields:
+        - fieldName: connection_time
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: device_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: device_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: disconnection_time
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: security_system_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_usb_device_usage_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_usb_device_usage_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_usb_device_usage_order_by_exp
+  operand:
+    object:
+      orderedType: security_usb_device_usage
+      orderableFields:
+        - fieldName: connection_time
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: device_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: device_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: disconnection_time
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: security_system_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_usb_device_usage_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_host
+  graphql:
+    expressionTypeName: Security_security_usb_device_usage_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_usb_device_usage
+  objectType: security_usb_device_usage
+  source:
+    dataConnectorName: security
+    collection: security_usb_device_usage
+  filterExpressionType: security_usb_device_usage_bool_exp
+  aggregateExpression: security_usb_device_usage_agg_exp
+  orderByExpression: security_usb_device_usage_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_usb_device_usage
+      subscription:
+        rootField: security_usb_device_usage
+    selectUniques:
+      - queryRootField: security_usb_device_usage_by_security_usb_device_usage_id
+        uniqueIdentifier:
+          - security_usb_device_usage_id
+        subscription:
+          rootField: security_usb_device_usage_by_security_usb_device_usage_id
+    filterInputTypeName: Security_security_usb_device_usage_filter_input
+    aggregate:
+      queryRootField: security_usb_device_usage_aggregate
+      subscription:
+        rootField: security_usb_device_usage_aggregate
+  description: Table storing information about USB device usage, tracking
+    connection and disconnection times.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_usb_device_usage
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_usb_device_usage
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_system_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+

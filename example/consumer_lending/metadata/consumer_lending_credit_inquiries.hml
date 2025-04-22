@@ -1,0 +1,181 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_credit_inquiries
+  description: Records inquiries made on a credit report, indicating potential
+    credit applications or checks.
+  fields:
+    - name: consumer_lending_credit_report_id
+      type: int_4!
+      description: Reference to credit report
+    - name: consumer_lending_inquiry_id
+      type: int_4!
+      description: Unique identifier for inquiry record
+    - name: creditor_name
+      type: varchar!
+      description: Institution that made inquiry
+    - name: inquiry_date
+      type: date!
+      description: Date of credit inquiry
+    - name: inquiry_type
+      type: consumer_lending_inquiry_type
+      description: Type of credit inquiry
+  graphql:
+    typeName: ConsumerLending_consumer_lending_credit_inquiries
+    inputTypeName: ConsumerLending_consumer_lending_credit_inquiries_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_credit_inquiries
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_credit_inquiries
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumer_lending_credit_report_id
+          - consumer_lending_inquiry_id
+          - creditor_name
+          - inquiry_date
+          - inquiry_type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_credit_inquiries_bool_exp
+  operand:
+    object:
+      type: consumer_lending_credit_inquiries
+      comparableFields:
+        - fieldName: consumer_lending_credit_report_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_inquiry_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: creditor_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: inquiry_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: inquiry_type
+          booleanExpressionType: consumer_lending_inquiry_type_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_credit_report
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_credit_inquiries_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_credit_inquiries_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_credit_inquiries
+      aggregatableFields:
+        - fieldName: consumer_lending_credit_report_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_inquiry_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: creditor_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: inquiry_date
+          aggregateExpression: date_agg_exp
+        - fieldName: inquiry_type
+          aggregateExpression: consumer_lending_inquiry_type_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_credit_inquiries_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_credit_inquiries_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_credit_inquiries
+      orderableFields:
+        - fieldName: consumer_lending_credit_report_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_inquiry_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: creditor_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: inquiry_date
+          orderByExpression: date_order_by_exp
+        - fieldName: inquiry_type
+          orderByExpression: consumer_lending_inquiry_type_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_credit_report
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_credit_inquiries_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_credit_inquiries
+  objectType: consumer_lending_credit_inquiries
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_credit_inquiries
+  filterExpressionType: consumer_lending_credit_inquiries_bool_exp
+  aggregateExpression: consumer_lending_credit_inquiries_agg_exp
+  orderByExpression: consumer_lending_credit_inquiries_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_credit_inquiries
+      subscription:
+        rootField: consumer_lending_credit_inquiries
+    selectUniques:
+      - queryRootField: consumer_lending_credit_inquiries_by_consumer_lending_inquiry_id
+        uniqueIdentifier:
+          - consumer_lending_inquiry_id
+        subscription:
+          rootField: consumer_lending_credit_inquiries_by_consumer_lending_inquiry_id
+    filterInputTypeName: ConsumerLending_consumer_lending_credit_inquiries_filter_input
+    aggregate:
+      queryRootField: consumer_lending_credit_inquiries_aggregate
+      subscription:
+        rootField: consumer_lending_credit_inquiries_aggregate
+  description: Records inquiries made on a credit report, indicating potential
+    credit applications or checks.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_credit_inquiries
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_credit_report
+  sourceType: consumer_lending_credit_inquiries
+  target:
+    model:
+      name: consumer_lending_credit_reports
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_credit_report_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_credit_report_id
+

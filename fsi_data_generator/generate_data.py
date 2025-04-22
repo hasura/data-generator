@@ -87,6 +87,14 @@ def generate_banking_data():
     # Read the environment variable and split it into a list
     exclude_schemas = os.getenv("EXCLUDE_SCHEMAS", "public").split(",")
     exclude_schemas = [schema.strip() for schema in exclude_schemas]
+    # Retrieve the EXCLUDE_TABLES environment variable
+    exclude_tables = os.getenv('EXCLUDE_TABLES', '')
+
+    # Split the variable into individual tables
+    tables = exclude_tables.split(',')
+
+    # Generate the list of tuples
+    exclude_tables = [(table.replace('.', '\\.'), '.*') for table in tables if table]
 
     # Get the SQL file path from the environment variable
     sql_file_path = os.environ.get("MODEL_FILE")
@@ -140,13 +148,7 @@ def generate_banking_data():
         generator = DataGenerator(
             conn_params=conn_params,
             exclude_schemas=exclude_schemas,
-            exclusions=[
-                ('enterprise\\.currency', '.*'),
-                ('security\\.cvss', '.*'),
-                ('security\\.cpe', '.*'),
-                ('security\\.cwe', '.*'),
-                ('security\\.cve_problem', '.*')
-            ],
+            exclusions=exclude_tables,
             dbml=dbml
         )
         generator.custom_generators = custom_generators(generator)
@@ -390,6 +392,10 @@ def generate_banking_data():
             "security.cpe": 200,  # CPE data related to vulnerabilities
             "security.cve_problem": 100,  # Problem descriptions for CVEs
             "security.cwe": 20,  # CWE data
+
+            # Data Quality
+            "data_quality.validation_run": 2000,
+            "data_quality.validation_error": 100
         })
 
         # Step 4: Execute any scripted scenarios from SQL files

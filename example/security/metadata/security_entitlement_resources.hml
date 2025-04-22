@@ -1,0 +1,230 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_entitlement_resources
+  description: Maps entitlements to resources with specific permission types and contexts
+  fields:
+    - name: context_conditions
+      type: varchar
+      description: Context conditions that restrict when this entitlement is applicable
+    - name: created_at
+      type: timestamptz
+      description: When the relationship was created
+    - name: created_by_id
+      type: int_4
+      description: Who created the relationship
+    - name: permission_type
+      type: security_permission_type!
+      description: Type of permission granted on the resource
+    - name: resource_details
+      type: varchar
+      description: Resource-specific details like column filters, row filters, access
+        parameters
+    - name: security_entitlement_id
+      type: uuid!
+      description: Reference to the entitlement
+    - name: security_entitlement_resource_id
+      type: uuid!
+      description: Unique identifier for this entitlement-resource relationship
+    - name: security_resource_id
+      type: uuid!
+      description: Reference to the resource
+  graphql:
+    typeName: Security_security_entitlement_resources
+    inputTypeName: Security_security_entitlement_resources_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_entitlement_resources
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_entitlement_resources
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - context_conditions
+          - created_at
+          - created_by_id
+          - permission_type
+          - resource_details
+          - security_entitlement_id
+          - security_entitlement_resource_id
+          - security_resource_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_entitlement_resources_bool_exp
+  operand:
+    object:
+      type: security_entitlement_resources
+      comparableFields:
+        - fieldName: context_conditions
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: created_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: permission_type
+          booleanExpressionType: security_permission_type_bool_exp
+        - fieldName: resource_details
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: security_entitlement_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_entitlement_resource_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_resource_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_enhanced_entitlement
+        - relationshipName: security_resource_definition
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_entitlement_resources_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_entitlement_resources_agg_exp
+  operand:
+    object:
+      aggregatedType: security_entitlement_resources
+      aggregatableFields:
+        - fieldName: context_conditions
+          aggregateExpression: varchar_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: created_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: permission_type
+          aggregateExpression: security_permission_type_agg_exp
+        - fieldName: resource_details
+          aggregateExpression: varchar_agg_exp
+        - fieldName: security_entitlement_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_entitlement_resource_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_resource_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_entitlement_resources_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_entitlement_resources_order_by_exp
+  operand:
+    object:
+      orderedType: security_entitlement_resources
+      orderableFields:
+        - fieldName: context_conditions
+          orderByExpression: varchar_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: created_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: permission_type
+          orderByExpression: security_permission_type_order_by_exp
+        - fieldName: resource_details
+          orderByExpression: varchar_order_by_exp
+        - fieldName: security_entitlement_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_entitlement_resource_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_resource_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_enhanced_entitlement
+        - relationshipName: security_resource_definition
+  graphql:
+    expressionTypeName: Security_security_entitlement_resources_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_entitlement_resources
+  objectType: security_entitlement_resources
+  source:
+    dataConnectorName: security
+    collection: security_entitlement_resources
+  filterExpressionType: security_entitlement_resources_bool_exp
+  aggregateExpression: security_entitlement_resources_agg_exp
+  orderByExpression: security_entitlement_resources_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_entitlement_resources
+      subscription:
+        rootField: security_entitlement_resources
+    selectUniques:
+      - queryRootField: security_entitlement_resources_by_security_entitlement_resource_id
+        uniqueIdentifier:
+          - security_entitlement_resource_id
+        subscription:
+          rootField: security_entitlement_resources_by_security_entitlement_resource_id
+    filterInputTypeName: Security_security_entitlement_resources_filter_input
+    aggregate:
+      queryRootField: security_entitlement_resources_aggregate
+      subscription:
+        rootField: security_entitlement_resources_aggregate
+  description: Maps entitlements to resources with specific permission types and contexts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_entitlement_resources
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_enhanced_entitlement
+  sourceType: security_entitlement_resources
+  target:
+    model:
+      name: security_enhanced_entitlements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_entitlement_id
+      target:
+        modelField:
+          - fieldName: security_entitlement_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_resource_definition
+  sourceType: security_entitlement_resources
+  target:
+    model:
+      name: security_resource_definitions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_resource_id
+      target:
+        modelField:
+          - fieldName: security_resource_id
+

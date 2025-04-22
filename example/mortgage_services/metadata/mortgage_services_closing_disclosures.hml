@@ -1,0 +1,259 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: mortgage_services_closing_disclosures
+  description: Manages closing disclosure documents required by regulations
+  fields:
+    - name: cash_to_close
+      type: numeric!
+      description: Cash to close shown on disclosure
+    - name: created_date
+      type: timestamptz!
+      description: When the disclosure was created
+    - name: delivery_method
+      type: mortgage_services_delivery_method!
+      description: How disclosure was delivered
+    - name: disclosure_type
+      type: mortgage_services_disclosure_type!
+      description: Type of disclosure document
+    - name: document_path
+      type: varchar
+      description: Storage location of the disclosure document
+    - name: interest_rate
+      type: numeric!
+      description: Interest rate shown on disclosure
+    - name: loan_amount
+      type: numeric!
+      description: Loan amount shown on disclosure
+    - name: monthly_payment
+      type: numeric!
+      description: Monthly payment shown on disclosure
+    - name: mortgage_services_disclosure_id
+      type: int_4!
+      description: Auto-incrementing identifier for each disclosure
+    - name: mortgage_services_loan_id
+      type: int_4!
+      description: Reference to the loan this disclosure is for
+    - name: received_date
+      type: timestamptz
+      description: When signed disclosure was received back
+    - name: sent_date
+      type: timestamptz
+      description: When the disclosure was sent to borrowers
+    - name: total_closing_costs
+      type: numeric!
+      description: Total closing costs shown on disclosure
+  graphql:
+    typeName: MortgageServices_mortgage_services_closing_disclosures
+    inputTypeName: MortgageServices_mortgage_services_closing_disclosures_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_closing_disclosures
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: mortgage_services_closing_disclosures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cash_to_close
+          - created_date
+          - delivery_method
+          - disclosure_type
+          - document_path
+          - interest_rate
+          - loan_amount
+          - monthly_payment
+          - mortgage_services_disclosure_id
+          - mortgage_services_loan_id
+          - received_date
+          - sent_date
+          - total_closing_costs
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: mortgage_services_closing_disclosures_bool_exp
+  operand:
+    object:
+      type: mortgage_services_closing_disclosures
+      comparableFields:
+        - fieldName: cash_to_close
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: created_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: delivery_method
+          booleanExpressionType: mortgage_services_delivery_method_bool_exp
+        - fieldName: disclosure_type
+          booleanExpressionType: mortgage_services_disclosure_type_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: loan_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: monthly_payment
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: mortgage_services_disclosure_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: mortgage_services_loan_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: received_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: sent_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: total_closing_costs
+          booleanExpressionType: numeric_bool_exp
+      comparableRelationships:
+        - relationshipName: mortgage_services_loan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: MortgageServices_mortgage_services_closing_disclosures_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: mortgage_services_closing_disclosures_agg_exp
+  operand:
+    object:
+      aggregatedType: mortgage_services_closing_disclosures
+      aggregatableFields:
+        - fieldName: cash_to_close
+          aggregateExpression: numeric_agg_exp
+        - fieldName: created_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: delivery_method
+          aggregateExpression: mortgage_services_delivery_method_agg_exp
+        - fieldName: disclosure_type
+          aggregateExpression: mortgage_services_disclosure_type_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: loan_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: monthly_payment
+          aggregateExpression: numeric_agg_exp
+        - fieldName: mortgage_services_disclosure_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: mortgage_services_loan_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: received_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: sent_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: total_closing_costs
+          aggregateExpression: numeric_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: MortgageServices_mortgage_services_closing_disclosures_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: mortgage_services_closing_disclosures_order_by_exp
+  operand:
+    object:
+      orderedType: mortgage_services_closing_disclosures
+      orderableFields:
+        - fieldName: cash_to_close
+          orderByExpression: numeric_order_by_exp
+        - fieldName: created_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: delivery_method
+          orderByExpression: mortgage_services_delivery_method_order_by_exp
+        - fieldName: disclosure_type
+          orderByExpression: mortgage_services_disclosure_type_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: loan_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: monthly_payment
+          orderByExpression: numeric_order_by_exp
+        - fieldName: mortgage_services_disclosure_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: mortgage_services_loan_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: received_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: sent_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: total_closing_costs
+          orderByExpression: numeric_order_by_exp
+      orderableRelationships:
+        - relationshipName: mortgage_services_loan
+  graphql:
+    expressionTypeName: MortgageServices_mortgage_services_closing_disclosures_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: mortgage_services_closing_disclosures
+  objectType: mortgage_services_closing_disclosures
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_closing_disclosures
+  filterExpressionType: mortgage_services_closing_disclosures_bool_exp
+  aggregateExpression: mortgage_services_closing_disclosures_agg_exp
+  orderByExpression: mortgage_services_closing_disclosures_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: mortgage_services_closing_disclosures
+      subscription:
+        rootField: mortgage_services_closing_disclosures
+    selectUniques:
+      - queryRootField: mortgage_services_closing_disclosures_by_mortgage_services_disclosure_id
+        uniqueIdentifier:
+          - mortgage_services_disclosure_id
+        subscription:
+          rootField: mortgage_services_closing_disclosures_by_mortgage_services_disclosure_id
+    filterInputTypeName: MortgageServices_mortgage_services_closing_disclosures_filter_input
+    aggregate:
+      queryRootField: mortgage_services_closing_disclosures_aggregate
+      subscription:
+        rootField: mortgage_services_closing_disclosures_aggregate
+  description: Manages closing disclosure documents required by regulations
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: mortgage_services_closing_disclosures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgage_services_loan
+  sourceType: mortgage_services_closing_disclosures
+  target:
+    model:
+      name: mortgage_services_loans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgage_services_loan_id
+      target:
+        modelField:
+          - fieldName: mortgage_services_loan_id
+

@@ -1,0 +1,312 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_network_events
+  description: Table storing detailed information about network events for
+    security monitoring and analysis.
+  fields:
+    - name: ack
+      type: int_8
+      description: TCP acknowledgment number, if applicable.
+    - name: bytes_received
+      type: int_4!
+      description: Number of bytes received during the event.
+    - name: bytes_sent
+      type: int_4!
+      description: Number of bytes sent during the event.
+    - name: created_at
+      type: timestamp
+      description: Timestamp when the event record was created.
+    - name: dest_ip
+      type: inet!
+      description: Destination IP address of the network event.
+    - name: dest_port
+      type: int_4!
+      description: Destination port of the network event.
+    - name: length
+      type: int_4!
+      description: Length of the data packet in bytes.
+    - name: log_message
+      type: text
+      description: Detailed log message associated with the network event.
+    - name: protocol
+      type: security_network_protocols!
+      description: Network protocol used (e.g., TCP, UDP, ICMP).
+    - name: security_device_id
+      type: inet!
+      description: IP address of the device involved in the event (likely the device
+        that logged the event)
+    - name: security_network_event_id
+      type: int_8!
+      description: Unique identifier for the network event. Automatically incrementing.
+    - name: sequence
+      type: int_8
+      description: TCP sequence number, if applicable.
+    - name: source_ip
+      type: inet!
+      description: Source IP address of the network event.
+    - name: source_port
+      type: int_4!
+      description: Source port of the network event.
+    - name: status
+      type: varchar!
+      description: Status of the network event (e.g., success, failure, blocked).
+    - name: tcp_flag
+      type: security_tcp_flag_type
+      description: TCP flags associated with the event, if applicable.
+    - name: timestamp
+      type: timestamp!
+      description: Timestamp when the network event occurred.
+    - name: window_size
+      type: int_4
+      description: TCP window size, if applicable.
+  graphql:
+    typeName: Security_security_network_events
+    inputTypeName: Security_security_network_events_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_network_events
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_network_events
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - ack
+          - bytes_received
+          - bytes_sent
+          - created_at
+          - dest_ip
+          - dest_port
+          - length
+          - log_message
+          - protocol
+          - security_device_id
+          - security_network_event_id
+          - sequence
+          - source_ip
+          - source_port
+          - status
+          - tcp_flag
+          - timestamp
+          - window_size
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_network_events_bool_exp
+  operand:
+    object:
+      type: security_network_events
+      comparableFields:
+        - fieldName: ack
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: bytes_received
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: bytes_sent
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: dest_ip
+          booleanExpressionType: inet_bool_exp
+        - fieldName: dest_port
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: length
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: log_message
+          booleanExpressionType: text_bool_exp
+        - fieldName: protocol
+          booleanExpressionType: security_network_protocols_bool_exp
+        - fieldName: security_device_id
+          booleanExpressionType: inet_bool_exp
+        - fieldName: security_network_event_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: sequence
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: source_ip
+          booleanExpressionType: inet_bool_exp
+        - fieldName: source_port
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: tcp_flag
+          booleanExpressionType: security_tcp_flag_type_bool_exp
+        - fieldName: timestamp
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: window_size
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: security_device
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_network_events_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_network_events_agg_exp
+  operand:
+    object:
+      aggregatedType: security_network_events
+      aggregatableFields:
+        - fieldName: ack
+          aggregateExpression: int_8_agg_exp
+        - fieldName: bytes_received
+          aggregateExpression: int_4_agg_exp
+        - fieldName: bytes_sent
+          aggregateExpression: int_4_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: dest_ip
+          aggregateExpression: inet_agg_exp
+        - fieldName: dest_port
+          aggregateExpression: int_4_agg_exp
+        - fieldName: length
+          aggregateExpression: int_4_agg_exp
+        - fieldName: log_message
+          aggregateExpression: text_agg_exp
+        - fieldName: protocol
+          aggregateExpression: security_network_protocols_agg_exp
+        - fieldName: security_device_id
+          aggregateExpression: inet_agg_exp
+        - fieldName: security_network_event_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: sequence
+          aggregateExpression: int_8_agg_exp
+        - fieldName: source_ip
+          aggregateExpression: inet_agg_exp
+        - fieldName: source_port
+          aggregateExpression: int_4_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: tcp_flag
+          aggregateExpression: security_tcp_flag_type_agg_exp
+        - fieldName: timestamp
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: window_size
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_network_events_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_network_events_order_by_exp
+  operand:
+    object:
+      orderedType: security_network_events
+      orderableFields:
+        - fieldName: ack
+          orderByExpression: int_8_order_by_exp
+        - fieldName: bytes_received
+          orderByExpression: int_4_order_by_exp
+        - fieldName: bytes_sent
+          orderByExpression: int_4_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: dest_ip
+          orderByExpression: inet_order_by_exp
+        - fieldName: dest_port
+          orderByExpression: int_4_order_by_exp
+        - fieldName: length
+          orderByExpression: int_4_order_by_exp
+        - fieldName: log_message
+          orderByExpression: text_order_by_exp
+        - fieldName: protocol
+          orderByExpression: security_network_protocols_order_by_exp
+        - fieldName: security_device_id
+          orderByExpression: inet_order_by_exp
+        - fieldName: security_network_event_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: sequence
+          orderByExpression: int_8_order_by_exp
+        - fieldName: source_ip
+          orderByExpression: inet_order_by_exp
+        - fieldName: source_port
+          orderByExpression: int_4_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: tcp_flag
+          orderByExpression: security_tcp_flag_type_order_by_exp
+        - fieldName: timestamp
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: window_size
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_device
+  graphql:
+    expressionTypeName: Security_security_network_events_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_network_events
+  objectType: security_network_events
+  source:
+    dataConnectorName: security
+    collection: security_network_events
+  filterExpressionType: security_network_events_bool_exp
+  aggregateExpression: security_network_events_agg_exp
+  orderByExpression: security_network_events_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_network_events
+      subscription:
+        rootField: security_network_events
+    selectUniques:
+      - queryRootField: security_network_events_by_security_network_event_id
+        uniqueIdentifier:
+          - security_network_event_id
+        subscription:
+          rootField: security_network_events_by_security_network_event_id
+    filterInputTypeName: Security_security_network_events_filter_input
+    aggregate:
+      queryRootField: security_network_events_aggregate
+      subscription:
+        rootField: security_network_events_aggregate
+  description: Table storing detailed information about network events for
+    security monitoring and analysis.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_network_events
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_device
+  sourceType: security_network_events
+  target:
+    model:
+      name: security_devices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_device_id
+      target:
+        modelField:
+          - fieldName: security_device_id
+

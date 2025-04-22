@@ -1,0 +1,215 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: app_mgmt_application_relationships
+  description: Table to store relationships between applications and their
+    criticality levels. Applications may have many relationships, even of the
+    same type. They are only differentiated through the description.
+  fields:
+    - name: app_mgmt_application_relationship_id
+      type: int_4!
+      description: Primary key for application relationships
+    - name: application_id_1
+      type: uuid
+      description: Identifier for the first application involved in the relationship.
+    - name: application_id_2
+      type: uuid
+      description: Identifier for the second application involved in the relationship.
+    - name: criticality
+      type: app_mgmt_criticality_levels
+      description: Criticality score of the relationship, indicating the impact of its
+        failure.
+    - name: description
+      type: text
+      description: Additional explanation about nature of relationship.
+    - name: relationship_type
+      type: app_mgmt_relationship_types
+      description: Type of relationship between the applications (e.g., depends on,
+        uses data from).
+  graphql:
+    typeName: App_Mgmt_app_mgmt_application_relationships
+    inputTypeName: App_Mgmt_app_mgmt_application_relationships_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_application_relationships
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: app_mgmt_application_relationships
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - app_mgmt_application_relationship_id
+          - application_id_1
+          - application_id_2
+          - criticality
+          - description
+          - relationship_type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: app_mgmt_application_relationships_bool_exp
+  operand:
+    object:
+      type: app_mgmt_application_relationships
+      comparableFields:
+        - fieldName: app_mgmt_application_relationship_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: application_id_1
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: application_id_2
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: criticality
+          booleanExpressionType: app_mgmt_criticality_levels_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: relationship_type
+          booleanExpressionType: app_mgmt_relationship_types_bool_exp
+      comparableRelationships:
+        - relationshipName: app_mgmt_application
+        - relationshipName: app_mgmt_application_by_application_id_2
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_app_mgmt_application_relationships_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: app_mgmt_application_relationships_agg_exp
+  operand:
+    object:
+      aggregatedType: app_mgmt_application_relationships
+      aggregatableFields:
+        - fieldName: app_mgmt_application_relationship_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: application_id_1
+          aggregateExpression: uuid_agg_exp
+        - fieldName: application_id_2
+          aggregateExpression: uuid_agg_exp
+        - fieldName: criticality
+          aggregateExpression: app_mgmt_criticality_levels_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: relationship_type
+          aggregateExpression: app_mgmt_relationship_types_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_app_mgmt_application_relationships_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: app_mgmt_application_relationships_order_by_exp
+  operand:
+    object:
+      orderedType: app_mgmt_application_relationships
+      orderableFields:
+        - fieldName: app_mgmt_application_relationship_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: application_id_1
+          orderByExpression: uuid_order_by_exp
+        - fieldName: application_id_2
+          orderByExpression: uuid_order_by_exp
+        - fieldName: criticality
+          orderByExpression: app_mgmt_criticality_levels_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: relationship_type
+          orderByExpression: app_mgmt_relationship_types_order_by_exp
+      orderableRelationships:
+        - relationshipName: app_mgmt_application
+        - relationshipName: app_mgmt_application_by_application_id_2
+  graphql:
+    expressionTypeName: App_Mgmt_app_mgmt_application_relationships_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: app_mgmt_application_relationships
+  objectType: app_mgmt_application_relationships
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_application_relationships
+  filterExpressionType: app_mgmt_application_relationships_bool_exp
+  aggregateExpression: app_mgmt_application_relationships_agg_exp
+  orderByExpression: app_mgmt_application_relationships_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: app_mgmt_application_relationships
+      subscription:
+        rootField: app_mgmt_application_relationships
+    selectUniques:
+      - queryRootField: app_mgmt_application_relationships_by_app_mgmt_application_relationship_id
+        uniqueIdentifier:
+          - app_mgmt_application_relationship_id
+        subscription:
+          rootField: app_mgmt_application_relationships_by_app_mgmt_application_relationship_id
+    filterInputTypeName: App_Mgmt_app_mgmt_application_relationships_filter_input
+    aggregate:
+      queryRootField: app_mgmt_application_relationships_aggregate
+      subscription:
+        rootField: app_mgmt_application_relationships_aggregate
+  description: Table to store relationships between applications and their
+    criticality levels. Applications may have many relationships, even of the
+    same type. They are only differentiated through the description.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: app_mgmt_application_relationships
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_application
+  sourceType: app_mgmt_application_relationships
+  target:
+    model:
+      name: app_mgmt_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: application_id_1
+      target:
+        modelField:
+          - fieldName: app_mgmt_application_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_application_by_application_id_2
+  sourceType: app_mgmt_application_relationships
+  target:
+    model:
+      name: app_mgmt_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: application_id_2
+      target:
+        modelField:
+          - fieldName: app_mgmt_application_id
+

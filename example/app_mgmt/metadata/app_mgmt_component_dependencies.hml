@@ -1,0 +1,190 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: app_mgmt_component_dependencies
+  description: Table to store component dependencies (BOM relationships).
+  fields:
+    - name: child_component_id
+      type: uuid!
+      description: Identifier for the component being depended upon.
+    - name: dependency_type
+      type: app_mgmt_dependency_types
+      description: Type of dependency (e.g., runtime, build, test).
+    - name: parent_component_id
+      type: uuid!
+      description: Identifier for the component that depends on another component.
+    - name: quantity
+      type: int_4
+      description: Number of times the child component is used by the parent.
+  graphql:
+    typeName: App_Mgmt_app_mgmt_component_dependencies
+    inputTypeName: App_Mgmt_app_mgmt_component_dependencies_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_component_dependencies
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: app_mgmt_component_dependencies
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - child_component_id
+          - dependency_type
+          - parent_component_id
+          - quantity
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: app_mgmt_component_dependencies_bool_exp
+  operand:
+    object:
+      type: app_mgmt_component_dependencies
+      comparableFields:
+        - fieldName: child_component_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: dependency_type
+          booleanExpressionType: app_mgmt_dependency_types_bool_exp
+        - fieldName: parent_component_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: quantity
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: app_mgmt_component
+        - relationshipName: app_mgmt_component_by_parent_component_id
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_app_mgmt_component_dependencies_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: app_mgmt_component_dependencies_agg_exp
+  operand:
+    object:
+      aggregatedType: app_mgmt_component_dependencies
+      aggregatableFields:
+        - fieldName: child_component_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: dependency_type
+          aggregateExpression: app_mgmt_dependency_types_agg_exp
+        - fieldName: parent_component_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: quantity
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_app_mgmt_component_dependencies_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: app_mgmt_component_dependencies_order_by_exp
+  operand:
+    object:
+      orderedType: app_mgmt_component_dependencies
+      orderableFields:
+        - fieldName: child_component_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: dependency_type
+          orderByExpression: app_mgmt_dependency_types_order_by_exp
+        - fieldName: parent_component_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: quantity
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: app_mgmt_component
+        - relationshipName: app_mgmt_component_by_parent_component_id
+  graphql:
+    expressionTypeName: App_Mgmt_app_mgmt_component_dependencies_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: app_mgmt_component_dependencies
+  objectType: app_mgmt_component_dependencies
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_component_dependencies
+  filterExpressionType: app_mgmt_component_dependencies_bool_exp
+  aggregateExpression: app_mgmt_component_dependencies_agg_exp
+  orderByExpression: app_mgmt_component_dependencies_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: app_mgmt_component_dependencies
+      subscription:
+        rootField: app_mgmt_component_dependencies
+    selectUniques:
+      - queryRootField: app_mgmt_component_dependencies_by_component_dependencies_pkey
+        uniqueIdentifier:
+          - child_component_id
+          - parent_component_id
+        subscription:
+          rootField: app_mgmt_component_dependencies_by_component_dependencies_pkey
+    filterInputTypeName: App_Mgmt_app_mgmt_component_dependencies_filter_input
+    aggregate:
+      queryRootField: app_mgmt_component_dependencies_aggregate
+      subscription:
+        rootField: app_mgmt_component_dependencies_aggregate
+  description: Table to store component dependencies (BOM relationships).
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: app_mgmt_component_dependencies
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_component
+  sourceType: app_mgmt_component_dependencies
+  target:
+    model:
+      name: app_mgmt_components
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: child_component_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_component_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_component_by_parent_component_id
+  sourceType: app_mgmt_component_dependencies
+  target:
+    model:
+      name: app_mgmt_components
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: parent_component_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_component_id
+

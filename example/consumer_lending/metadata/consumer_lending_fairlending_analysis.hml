@@ -1,0 +1,351 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_fairlending_analysis
+  description: Records fair lending analysis conducted to identify and address
+    potential disparities in lending practices.
+  fields:
+    - name: action_recommended
+      type: text
+      description: Recommended actions based on findings
+    - name: analysis_date
+      type: date!
+      description: Date analysis was performed
+    - name: analysis_type
+      type: consumer_lending_analysis_type!
+      description: Type of fair lending analysis
+    - name: analyst
+      type: int_4
+      description: Person who performed analysis
+    - name: consumer_lending_analysis_id
+      type: int_4!
+      description: Unique identifier for analysis record
+    - name: consumer_lending_loan_product_id
+      type: int_4!
+      description: Loan product analyzed if specific product
+    - name: control_group
+      type: varchar!
+      description: Reference group for comparison
+    - name: controls_applied
+      type: text
+      description: Variables controlled for in analysis
+    - name: disparity_ratio
+      type: numeric
+      description: Ratio of outcomes between groups
+    - name: findings
+      type: text
+      description: Summary of findings
+    - name: outcome_variable
+      type: consumer_lending_outcome_variable!
+      description: Outcome being measured
+    - name: p_value
+      type: numeric
+      description: Statistical significance level
+    - name: protected_class
+      type: consumer_lending_protected_class!
+      description: Protected class being analyzed
+    - name: report_path
+      type: varchar
+      description: Path to full analysis report
+    - name: reviewer
+      type: int_4
+      description: Person who reviewed analysis
+    - name: sample_size_control
+      type: int_4!
+      description: Number in control group
+    - name: sample_size_test
+      type: int_4!
+      description: Number in test group
+    - name: statistical_test
+      type: consumer_lending_statistical_test
+      description: Statistical method used
+    - name: statistically_significant
+      type: bool
+      description: Whether result is statistically significant
+    - name: test_group
+      type: varchar!
+      description: Group being tested for disparities
+    - name: time_period_end
+      type: date!
+      description: End of analysis period
+    - name: time_period_start
+      type: date!
+      description: Start of analysis period
+  graphql:
+    typeName: ConsumerLending_consumer_lending_fairlending_analysis
+    inputTypeName: ConsumerLending_consumer_lending_fairlending_analysis_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_fairlending_analysis
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_fairlending_analysis
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - action_recommended
+          - analysis_date
+          - analysis_type
+          - analyst
+          - consumer_lending_analysis_id
+          - consumer_lending_loan_product_id
+          - control_group
+          - controls_applied
+          - disparity_ratio
+          - findings
+          - outcome_variable
+          - p_value
+          - protected_class
+          - report_path
+          - reviewer
+          - sample_size_control
+          - sample_size_test
+          - statistical_test
+          - statistically_significant
+          - test_group
+          - time_period_end
+          - time_period_start
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_fairlending_analysis_bool_exp
+  operand:
+    object:
+      type: consumer_lending_fairlending_analysis
+      comparableFields:
+        - fieldName: action_recommended
+          booleanExpressionType: text_bool_exp
+        - fieldName: analysis_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: analysis_type
+          booleanExpressionType: consumer_lending_analysis_type_bool_exp
+        - fieldName: analyst
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_analysis_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_loan_product_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: control_group
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: controls_applied
+          booleanExpressionType: text_bool_exp
+        - fieldName: disparity_ratio
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: findings
+          booleanExpressionType: text_bool_exp
+        - fieldName: outcome_variable
+          booleanExpressionType: consumer_lending_outcome_variable_bool_exp
+        - fieldName: p_value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: protected_class
+          booleanExpressionType: consumer_lending_protected_class_bool_exp
+        - fieldName: report_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: reviewer
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: sample_size_control
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: sample_size_test
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: statistical_test
+          booleanExpressionType: consumer_lending_statistical_test_bool_exp
+        - fieldName: statistically_significant
+          booleanExpressionType: bool_bool_exp
+        - fieldName: test_group
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: time_period_end
+          booleanExpressionType: date_bool_exp
+        - fieldName: time_period_start
+          booleanExpressionType: date_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_product
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_fairlending_analysis_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_fairlending_analysis_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_fairlending_analysis
+      aggregatableFields:
+        - fieldName: action_recommended
+          aggregateExpression: text_agg_exp
+        - fieldName: analysis_date
+          aggregateExpression: date_agg_exp
+        - fieldName: analysis_type
+          aggregateExpression: consumer_lending_analysis_type_agg_exp
+        - fieldName: analyst
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_analysis_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_loan_product_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: control_group
+          aggregateExpression: varchar_agg_exp
+        - fieldName: controls_applied
+          aggregateExpression: text_agg_exp
+        - fieldName: disparity_ratio
+          aggregateExpression: numeric_agg_exp
+        - fieldName: findings
+          aggregateExpression: text_agg_exp
+        - fieldName: outcome_variable
+          aggregateExpression: consumer_lending_outcome_variable_agg_exp
+        - fieldName: p_value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: protected_class
+          aggregateExpression: consumer_lending_protected_class_agg_exp
+        - fieldName: report_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: reviewer
+          aggregateExpression: int_4_agg_exp
+        - fieldName: sample_size_control
+          aggregateExpression: int_4_agg_exp
+        - fieldName: sample_size_test
+          aggregateExpression: int_4_agg_exp
+        - fieldName: statistical_test
+          aggregateExpression: consumer_lending_statistical_test_agg_exp
+        - fieldName: statistically_significant
+          aggregateExpression: bool_agg_exp
+        - fieldName: test_group
+          aggregateExpression: varchar_agg_exp
+        - fieldName: time_period_end
+          aggregateExpression: date_agg_exp
+        - fieldName: time_period_start
+          aggregateExpression: date_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_fairlending_analysis_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_fairlending_analysis_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_fairlending_analysis
+      orderableFields:
+        - fieldName: action_recommended
+          orderByExpression: text_order_by_exp
+        - fieldName: analysis_date
+          orderByExpression: date_order_by_exp
+        - fieldName: analysis_type
+          orderByExpression: consumer_lending_analysis_type_order_by_exp
+        - fieldName: analyst
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_analysis_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_loan_product_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: control_group
+          orderByExpression: varchar_order_by_exp
+        - fieldName: controls_applied
+          orderByExpression: text_order_by_exp
+        - fieldName: disparity_ratio
+          orderByExpression: numeric_order_by_exp
+        - fieldName: findings
+          orderByExpression: text_order_by_exp
+        - fieldName: outcome_variable
+          orderByExpression: consumer_lending_outcome_variable_order_by_exp
+        - fieldName: p_value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: protected_class
+          orderByExpression: consumer_lending_protected_class_order_by_exp
+        - fieldName: report_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: reviewer
+          orderByExpression: int_4_order_by_exp
+        - fieldName: sample_size_control
+          orderByExpression: int_4_order_by_exp
+        - fieldName: sample_size_test
+          orderByExpression: int_4_order_by_exp
+        - fieldName: statistical_test
+          orderByExpression: consumer_lending_statistical_test_order_by_exp
+        - fieldName: statistically_significant
+          orderByExpression: bool_order_by_exp
+        - fieldName: test_group
+          orderByExpression: varchar_order_by_exp
+        - fieldName: time_period_end
+          orderByExpression: date_order_by_exp
+        - fieldName: time_period_start
+          orderByExpression: date_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_product
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_fairlending_analysis_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_fairlending_analysis
+  objectType: consumer_lending_fairlending_analysis
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_fairlending_analysis
+  filterExpressionType: consumer_lending_fairlending_analysis_bool_exp
+  aggregateExpression: consumer_lending_fairlending_analysis_agg_exp
+  orderByExpression: consumer_lending_fairlending_analysis_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_fairlending_analysis
+      subscription:
+        rootField: consumer_lending_fairlending_analysis
+    selectUniques:
+      - queryRootField: consumer_lending_fairlending_analysis_by_consumer_lending_analysis_id
+        uniqueIdentifier:
+          - consumer_lending_analysis_id
+        subscription:
+          rootField: consumer_lending_fairlending_analysis_by_consumer_lending_analysis_id
+    filterInputTypeName: ConsumerLending_consumer_lending_fairlending_analysis_filter_input
+    aggregate:
+      queryRootField: consumer_lending_fairlending_analysis_aggregate
+      subscription:
+        rootField: consumer_lending_fairlending_analysis_aggregate
+  description: Records fair lending analysis conducted to identify and address
+    potential disparities in lending practices.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_fairlending_analysis
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_product
+  sourceType: consumer_lending_fairlending_analysis
+  target:
+    model:
+      name: consumer_lending_loan_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_loan_product_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_loan_product_id
+

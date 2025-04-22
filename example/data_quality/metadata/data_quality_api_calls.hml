@@ -1,0 +1,238 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: data_quality_api_calls
+  description: Records actual instances of API calls made to the system for
+    auditing and lineage tracking. These records can be tied by business rules
+    to validation runs. A validation run with the same query and timestamp of
+    less than once second earlier is probably related to this API call.
+  fields:
+    - name: api_call_id
+      type: uuid!
+      description: Unique identifier for the API call.
+    - name: created_at
+      type: timestamptz!
+      description: Timestamp when the API call was made.
+    - name: major_version
+      type: int_4
+      description: Server name API major version.
+    - name: method
+      type: varchar!
+      description: HTTP method used for the API call (GET, POST, etc.).
+    - name: minor_version
+      type: int_4
+      description: Server name API minor version.
+    - name: path
+      type: varchar!
+      description: API endpoint path that was called.
+    - name: query_params
+      type: text
+      description: Query parameters sent with the API call, stored as TEXT.
+    - name: related_institution
+      type: varchar
+      description: An identifier of the institution associated with the API call.
+    - name: request_headers
+      type: text
+      description: HTTP headers sent with the API call, stored as TEXT.
+    - name: server_name
+      type: varchar
+      description: Server name associated with API call.
+  graphql:
+    typeName: DQ_data_quality_api_calls
+    inputTypeName: DQ_data_quality_api_calls_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: data_quality_api_calls
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: data_quality_api_calls
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - api_call_id
+          - created_at
+          - major_version
+          - method
+          - minor_version
+          - path
+          - query_params
+          - related_institution
+          - request_headers
+          - server_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: data_quality_api_calls_bool_exp
+  operand:
+    object:
+      type: data_quality_api_calls
+      comparableFields:
+        - fieldName: api_call_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: major_version
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: method
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: minor_version
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: query_params
+          booleanExpressionType: text_bool_exp
+        - fieldName: related_institution
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: request_headers
+          booleanExpressionType: text_bool_exp
+        - fieldName: server_name
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: data_quality_record_transformations
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DQ_data_quality_api_calls_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: data_quality_api_calls_agg_exp
+  operand:
+    object:
+      aggregatedType: data_quality_api_calls
+      aggregatableFields:
+        - fieldName: api_call_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: major_version
+          aggregateExpression: int_4_agg_exp
+        - fieldName: method
+          aggregateExpression: varchar_agg_exp
+        - fieldName: minor_version
+          aggregateExpression: int_4_agg_exp
+        - fieldName: path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: query_params
+          aggregateExpression: text_agg_exp
+        - fieldName: related_institution
+          aggregateExpression: varchar_agg_exp
+        - fieldName: request_headers
+          aggregateExpression: text_agg_exp
+        - fieldName: server_name
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DQ_data_quality_api_calls_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: data_quality_api_calls_order_by_exp
+  operand:
+    object:
+      orderedType: data_quality_api_calls
+      orderableFields:
+        - fieldName: api_call_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: major_version
+          orderByExpression: int_4_order_by_exp
+        - fieldName: method
+          orderByExpression: varchar_order_by_exp
+        - fieldName: minor_version
+          orderByExpression: int_4_order_by_exp
+        - fieldName: path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: query_params
+          orderByExpression: text_order_by_exp
+        - fieldName: related_institution
+          orderByExpression: varchar_order_by_exp
+        - fieldName: request_headers
+          orderByExpression: text_order_by_exp
+        - fieldName: server_name
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: DQ_data_quality_api_calls_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: data_quality_api_calls
+  objectType: data_quality_api_calls
+  source:
+    dataConnectorName: data_quality
+    collection: data_quality_api_calls
+  filterExpressionType: data_quality_api_calls_bool_exp
+  aggregateExpression: data_quality_api_calls_agg_exp
+  orderByExpression: data_quality_api_calls_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: data_quality_api_calls
+      subscription:
+        rootField: data_quality_api_calls
+    selectUniques:
+      - queryRootField: data_quality_api_calls_by_api_call_id
+        uniqueIdentifier:
+          - api_call_id
+        subscription:
+          rootField: data_quality_api_calls_by_api_call_id
+    filterInputTypeName: DQ_data_quality_api_calls_filter_input
+    aggregate:
+      queryRootField: data_quality_api_calls_aggregate
+      subscription:
+        rootField: data_quality_api_calls_aggregate
+  description: Records actual instances of API calls made to the system for
+    auditing and lineage tracking. These records can be tied by business rules
+    to validation runs. A validation run with the same query and timestamp of
+    less than once second earlier is probably related to this API call.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: data_quality_api_calls
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: data_quality_record_transformations
+  sourceType: data_quality_api_calls
+  target:
+    model:
+      name: data_quality_record_transformations
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: data_quality_record_transformations_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: api_call_id
+      target:
+        modelField:
+          - fieldName: api_call_id
+  graphql:
+    aggregateFieldName: data_quality_record_transformations_aggregate
+

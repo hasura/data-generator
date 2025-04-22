@@ -1,0 +1,279 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_consumer_complaints
+  description: Tracks customer complaints about credit card accounts
+  fields:
+    - name: cfpb_case_number
+      type: varchar
+      description: CFPB case number if applicable
+    - name: complaint_type
+      type: varchar!
+      description: Type of complaint (Billing, Fees, Interest, Customer Service)
+    - name: credit_cards_card_account_id
+      type: int_4!
+      description: Reference to card_accounts
+    - name: credit_cards_complaint_id
+      type: int_4!
+      description: Auto-incrementing identifier for each complaint
+    - name: description
+      type: text
+      description: Detailed description of complaint
+    - name: issue
+      type: varchar!
+      description: Specific issue raised
+    - name: monetary_relief_amount
+      type: numeric
+      description: Amount of monetary relief provided
+    - name: receipt_date
+      type: timestamptz!
+      description: Date complaint was received
+    - name: regulation_violated
+      type: varchar
+      description: Specific regulation violated if applicable
+    - name: regulatory_violation_found
+      type: bool
+      description: Whether regulatory violation was identified
+    - name: resolution
+      type: text
+      description: Description of how complaint was resolved
+    - name: resolution_date
+      type: date
+      description: Date complaint was resolved
+    - name: response_sent_date
+      type: date
+      description: Date response was sent to consumer
+    - name: source
+      type: varchar!
+      description: Source of complaint (Direct, CFPB, BBB, Social Media)
+    - name: status
+      type: varchar!
+      description: Status of complaint (New, In Progress, Resolved)
+  graphql:
+    typeName: CreditCards_credit_cards_consumer_complaints
+    inputTypeName: CreditCards_credit_cards_consumer_complaints_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_consumer_complaints
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_consumer_complaints
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cfpb_case_number
+          - complaint_type
+          - credit_cards_card_account_id
+          - credit_cards_complaint_id
+          - description
+          - issue
+          - monetary_relief_amount
+          - receipt_date
+          - regulation_violated
+          - regulatory_violation_found
+          - resolution
+          - resolution_date
+          - response_sent_date
+          - source
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_consumer_complaints_bool_exp
+  operand:
+    object:
+      type: credit_cards_consumer_complaints
+      comparableFields:
+        - fieldName: cfpb_case_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: complaint_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: credit_cards_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_complaint_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: issue
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: monetary_relief_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: receipt_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: regulation_violated
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: regulatory_violation_found
+          booleanExpressionType: bool_bool_exp
+        - fieldName: resolution
+          booleanExpressionType: text_bool_exp
+        - fieldName: resolution_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: response_sent_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: source
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_card_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_consumer_complaints_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_consumer_complaints_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_consumer_complaints
+      aggregatableFields:
+        - fieldName: cfpb_case_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: complaint_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: credit_cards_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_complaint_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: issue
+          aggregateExpression: varchar_agg_exp
+        - fieldName: monetary_relief_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: receipt_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: regulation_violated
+          aggregateExpression: varchar_agg_exp
+        - fieldName: regulatory_violation_found
+          aggregateExpression: bool_agg_exp
+        - fieldName: resolution
+          aggregateExpression: text_agg_exp
+        - fieldName: resolution_date
+          aggregateExpression: date_agg_exp
+        - fieldName: response_sent_date
+          aggregateExpression: date_agg_exp
+        - fieldName: source
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_consumer_complaints_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_consumer_complaints_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_consumer_complaints
+      orderableFields:
+        - fieldName: cfpb_case_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: complaint_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: credit_cards_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_complaint_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: issue
+          orderByExpression: varchar_order_by_exp
+        - fieldName: monetary_relief_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: receipt_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: regulation_violated
+          orderByExpression: varchar_order_by_exp
+        - fieldName: regulatory_violation_found
+          orderByExpression: bool_order_by_exp
+        - fieldName: resolution
+          orderByExpression: text_order_by_exp
+        - fieldName: resolution_date
+          orderByExpression: date_order_by_exp
+        - fieldName: response_sent_date
+          orderByExpression: date_order_by_exp
+        - fieldName: source
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: credit_cards_card_account
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_consumer_complaints_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_consumer_complaints
+  objectType: credit_cards_consumer_complaints
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_consumer_complaints
+  filterExpressionType: credit_cards_consumer_complaints_bool_exp
+  aggregateExpression: credit_cards_consumer_complaints_agg_exp
+  orderByExpression: credit_cards_consumer_complaints_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_consumer_complaints
+      subscription:
+        rootField: credit_cards_consumer_complaints
+    selectUniques:
+      - queryRootField: credit_cards_consumer_complaints_by_credit_cards_complaint_id
+        uniqueIdentifier:
+          - credit_cards_complaint_id
+        subscription:
+          rootField: credit_cards_consumer_complaints_by_credit_cards_complaint_id
+    filterInputTypeName: CreditCards_credit_cards_consumer_complaints_filter_input
+    aggregate:
+      queryRootField: credit_cards_consumer_complaints_aggregate
+      subscription:
+        rootField: credit_cards_consumer_complaints_aggregate
+  description: Tracks customer complaints about credit card accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_consumer_complaints
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_account
+  sourceType: credit_cards_consumer_complaints
+  target:
+    model:
+      name: credit_cards_card_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+

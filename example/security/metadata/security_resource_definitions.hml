@@ -1,0 +1,274 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_resource_definitions
+  description: Defines resources that can be secured through entitlements
+  fields:
+    - name: application_id
+      type: uuid
+      description: Owner application that manages this resource (for APPLICATION and
+        DATA types)
+    - name: created_at
+      type: timestamptz
+      description: When the resource definition was created
+    - name: created_by_id
+      type: int_4
+      description: Who created the resource definition
+    - name: description
+      type: text
+      description: Description of the resource
+    - name: host_id
+      type: uuid
+      description: Host where the resource is located (for HOST types)
+    - name: network_device_id
+      type: inet
+      description: Network device where the resource is located (for NETWORK_DEVICE types)
+    - name: resource_identifier
+      type: varchar!
+      description: Unique identifier for the resource (table name, API endpoint,
+        hostname, IP address, etc.)
+    - name: resource_name
+      type: varchar!
+      description: Name of the resource
+    - name: resource_type
+      type: security_resource_type!
+      description: Type of resource (DATA, APPLICATION, HOST, NETWORK_DEVICE)
+    - name: security_resource_id
+      type: uuid!
+      description: Unique identifier for the resource
+  graphql:
+    typeName: Security_security_resource_definitions
+    inputTypeName: Security_security_resource_definitions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_resource_definitions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_resource_definitions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - application_id
+          - created_at
+          - created_by_id
+          - description
+          - host_id
+          - network_device_id
+          - resource_identifier
+          - resource_name
+          - resource_type
+          - security_resource_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_resource_definitions_bool_exp
+  operand:
+    object:
+      type: security_resource_definitions
+      comparableFields:
+        - fieldName: application_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: created_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: host_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: network_device_id
+          booleanExpressionType: inet_bool_exp
+        - fieldName: resource_identifier
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: resource_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: resource_type
+          booleanExpressionType: security_resource_type_bool_exp
+        - fieldName: security_resource_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_entitlement_resources
+        - relationshipName: security_host
+        - relationshipName: security_device
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_resource_definitions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_resource_definitions_agg_exp
+  operand:
+    object:
+      aggregatedType: security_resource_definitions
+      aggregatableFields:
+        - fieldName: application_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: created_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: host_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: network_device_id
+          aggregateExpression: inet_agg_exp
+        - fieldName: resource_identifier
+          aggregateExpression: varchar_agg_exp
+        - fieldName: resource_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: resource_type
+          aggregateExpression: security_resource_type_agg_exp
+        - fieldName: security_resource_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_resource_definitions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_resource_definitions_order_by_exp
+  operand:
+    object:
+      orderedType: security_resource_definitions
+      orderableFields:
+        - fieldName: application_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: created_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: host_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: network_device_id
+          orderByExpression: inet_order_by_exp
+        - fieldName: resource_identifier
+          orderByExpression: varchar_order_by_exp
+        - fieldName: resource_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: resource_type
+          orderByExpression: security_resource_type_order_by_exp
+        - fieldName: security_resource_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_host
+        - relationshipName: security_device
+  graphql:
+    expressionTypeName: Security_security_resource_definitions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_resource_definitions
+  objectType: security_resource_definitions
+  source:
+    dataConnectorName: security
+    collection: security_resource_definitions
+  filterExpressionType: security_resource_definitions_bool_exp
+  aggregateExpression: security_resource_definitions_agg_exp
+  orderByExpression: security_resource_definitions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_resource_definitions
+      subscription:
+        rootField: security_resource_definitions
+    selectUniques:
+      - queryRootField: security_resource_definitions_by_security_resource_id
+        uniqueIdentifier:
+          - security_resource_id
+        subscription:
+          rootField: security_resource_definitions_by_security_resource_id
+    filterInputTypeName: Security_security_resource_definitions_filter_input
+    aggregate:
+      queryRootField: security_resource_definitions_aggregate
+      subscription:
+        rootField: security_resource_definitions_aggregate
+  description: Defines resources that can be secured through entitlements
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_resource_definitions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_entitlement_resources
+  sourceType: security_resource_definitions
+  target:
+    model:
+      name: security_entitlement_resources
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_entitlement_resources_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_resource_id
+      target:
+        modelField:
+          - fieldName: security_resource_id
+  graphql:
+    aggregateFieldName: security_entitlement_resources_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_resource_definitions
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_device
+  sourceType: security_resource_definitions
+  target:
+    model:
+      name: security_devices
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: network_device_id
+      target:
+        modelField:
+          - fieldName: security_device_id
+

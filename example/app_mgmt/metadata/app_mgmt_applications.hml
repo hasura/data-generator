@@ -1,0 +1,541 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: app_mgmt_applications
+  description: Table to store comprehensive information about software
+    applications within the organization.
+  fields:
+    - name: app_mgmt_application_id
+      type: uuid!
+      description: Unique identifier for an application.
+    - name: application_name
+      type: varchar
+      description: Name of the application.
+    - name: application_owner_id
+      type: int_4
+      description: Identifier for the individual responsible for communication with
+        stakeholders, funding, budget, and strategy for the application.
+    - name: application_type
+      type: app_mgmt_application_types
+      description: Type of application (e.g., web, mobile, desktop).
+    - name: architecture_id
+      type: uuid
+      description: Identifier for the approved architecture the application adheres to.
+    - name: created_by_team_id
+      type: uuid
+      description: Identifier for the team that initially created the application.
+    - name: created_by_user_id
+      type: int_4
+      description: Identifier of the employee who initially created the application record.
+    - name: date_deployed
+      type: timestamptz
+      description: Date the application was deployed to its environment.
+    - name: date_retired
+      type: timestamptz
+      description: Date the application was retired or decommissioned.
+    - name: deployment_environment
+      type: app_mgmt_deployment_environments
+      description: Environment where the application is deployed (e.g., on-premises, cloud).
+    - name: description
+      type: text
+      description: General description of the application's purpose.
+    - name: documentation_url
+      type: varchar
+      description: Link to the application's documentation.
+    - name: enterprise_department_id
+      type: int_4
+      description: Has financial responsibility for resource. This is the department
+        that pays for maintenance, upgrades and operation of the application.
+    - name: lifecycle_status
+      type: app_mgmt_application_lifecycle_status
+      description: Current stage in the application's lifecycle (e.g., development,
+        production).
+    - name: maintained_by_team_id
+      type: uuid
+      description: Identifier for the team responsible for maintaining the
+        application, including updates and fixes.
+    - name: modified_by_user_id
+      type: int_4
+      description: Identifier of the employee who last modified the application record.
+    - name: operated_by_team_id
+      type: uuid
+      description: Identifier for the team responsible for the day-to-day operation of
+        the application.
+    - name: rpo
+      type: interval
+      description: "Recovery Point Objective (RPO): The maximum acceptable data loss
+        for the application."
+    - name: rto
+      type: interval
+      description: "Recovery Time Objective (RTO): The maximum acceptable downtime for
+        the application."
+    - name: sdlc_process_id
+      type: uuid
+      description: Identifier for the SDLC process used to develop or manage the
+        application.
+    - name: source_code_repository
+      type: varchar
+      description: Link to the repository where the application's source code is stored.
+    - name: vendor
+      type: varchar
+      description: Name of the vendor if the application is purchased.
+    - name: version
+      type: varchar
+      description: Current version of the application.
+  graphql:
+    typeName: App_Mgmt_app_mgmt_applications
+    inputTypeName: App_Mgmt_app_mgmt_applications_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: app_mgmt
+      dataConnectorObjectType: app_mgmt_applications
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: app_mgmt_applications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - app_mgmt_application_id
+          - application_name
+          - application_owner_id
+          - application_type
+          - architecture_id
+          - created_by_team_id
+          - created_by_user_id
+          - date_deployed
+          - date_retired
+          - deployment_environment
+          - description
+          - documentation_url
+          - enterprise_department_id
+          - lifecycle_status
+          - maintained_by_team_id
+          - modified_by_user_id
+          - operated_by_team_id
+          - rpo
+          - rto
+          - sdlc_process_id
+          - source_code_repository
+          - vendor
+          - version
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: app_mgmt_applications_bool_exp
+  operand:
+    object:
+      type: app_mgmt_applications
+      comparableFields:
+        - fieldName: app_mgmt_application_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: application_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: application_owner_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: application_type
+          booleanExpressionType: app_mgmt_application_types_bool_exp
+        - fieldName: architecture_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: created_by_team_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: created_by_user_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: date_deployed
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: date_retired
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: deployment_environment
+          booleanExpressionType: app_mgmt_deployment_environments_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: documentation_url
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_department_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: lifecycle_status
+          booleanExpressionType: app_mgmt_application_lifecycle_status_bool_exp
+        - fieldName: maintained_by_team_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: modified_by_user_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: operated_by_team_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: rpo
+          booleanExpressionType: interval_bool_exp
+        - fieldName: rto
+          booleanExpressionType: interval_bool_exp
+        - fieldName: sdlc_process_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: source_code_repository
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: vendor
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: version
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: app_mgmt_application_components
+        - relationshipName: app_mgmt_application_licenses
+        - relationshipName: app_mgmt_application_relationships
+        - relationshipName: app_mgmt_application_relationships_by_application_id_2
+        - relationshipName: app_mgmt_architecture
+        - relationshipName: app_mgmt_team
+        - relationshipName: app_mgmt_team_by_maintained_by_team_id
+        - relationshipName: app_mgmt_team_by_operated_by_team_id
+        - relationshipName: app_mgmt_sdlc_process
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: App_Mgmt_app_mgmt_applications_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: app_mgmt_applications_agg_exp
+  operand:
+    object:
+      aggregatedType: app_mgmt_applications
+      aggregatableFields:
+        - fieldName: app_mgmt_application_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: application_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: application_owner_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: application_type
+          aggregateExpression: app_mgmt_application_types_agg_exp
+        - fieldName: architecture_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: created_by_team_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: created_by_user_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: date_deployed
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: date_retired
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: deployment_environment
+          aggregateExpression: app_mgmt_deployment_environments_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: documentation_url
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_department_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: lifecycle_status
+          aggregateExpression: app_mgmt_application_lifecycle_status_agg_exp
+        - fieldName: maintained_by_team_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: modified_by_user_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: operated_by_team_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: rpo
+          aggregateExpression: interval_agg_exp
+        - fieldName: rto
+          aggregateExpression: interval_agg_exp
+        - fieldName: sdlc_process_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: source_code_repository
+          aggregateExpression: varchar_agg_exp
+        - fieldName: vendor
+          aggregateExpression: varchar_agg_exp
+        - fieldName: version
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: App_Mgmt_app_mgmt_applications_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: app_mgmt_applications_order_by_exp
+  operand:
+    object:
+      orderedType: app_mgmt_applications
+      orderableFields:
+        - fieldName: app_mgmt_application_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: application_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: application_owner_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: application_type
+          orderByExpression: app_mgmt_application_types_order_by_exp
+        - fieldName: architecture_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: created_by_team_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: created_by_user_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: date_deployed
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: date_retired
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: deployment_environment
+          orderByExpression: app_mgmt_deployment_environments_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: documentation_url
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_department_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: lifecycle_status
+          orderByExpression: app_mgmt_application_lifecycle_status_order_by_exp
+        - fieldName: maintained_by_team_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: modified_by_user_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: operated_by_team_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: rpo
+          orderByExpression: interval_order_by_exp
+        - fieldName: rto
+          orderByExpression: interval_order_by_exp
+        - fieldName: sdlc_process_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: source_code_repository
+          orderByExpression: varchar_order_by_exp
+        - fieldName: vendor
+          orderByExpression: varchar_order_by_exp
+        - fieldName: version
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: app_mgmt_architecture
+        - relationshipName: app_mgmt_team
+        - relationshipName: app_mgmt_team_by_maintained_by_team_id
+        - relationshipName: app_mgmt_team_by_operated_by_team_id
+        - relationshipName: app_mgmt_sdlc_process
+  graphql:
+    expressionTypeName: App_Mgmt_app_mgmt_applications_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: app_mgmt_applications
+  objectType: app_mgmt_applications
+  source:
+    dataConnectorName: app_mgmt
+    collection: app_mgmt_applications
+  filterExpressionType: app_mgmt_applications_bool_exp
+  aggregateExpression: app_mgmt_applications_agg_exp
+  orderByExpression: app_mgmt_applications_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: app_mgmt_applications
+      subscription:
+        rootField: app_mgmt_applications
+    selectUniques:
+      - queryRootField: app_mgmt_applications_by_app_mgmt_application_id
+        uniqueIdentifier:
+          - app_mgmt_application_id
+        subscription:
+          rootField: app_mgmt_applications_by_app_mgmt_application_id
+    filterInputTypeName: App_Mgmt_app_mgmt_applications_filter_input
+    aggregate:
+      queryRootField: app_mgmt_applications_aggregate
+      subscription:
+        rootField: app_mgmt_applications_aggregate
+  description: Table to store comprehensive information about software
+    applications within the organization.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: app_mgmt_applications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_application_components
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_application_components
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: app_mgmt_application_components_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_application_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_application_id
+  graphql:
+    aggregateFieldName: app_mgmt_application_components_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_application_licenses
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_application_licenses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: app_mgmt_application_licenses_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_application_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_application_id
+  graphql:
+    aggregateFieldName: app_mgmt_application_licenses_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_application_relationships
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_application_relationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: app_mgmt_application_relationships_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_application_id
+      target:
+        modelField:
+          - fieldName: application_id_1
+  graphql:
+    aggregateFieldName: app_mgmt_application_relationships_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_application_relationships_by_application_id_2
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_application_relationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: app_mgmt_application_relationships_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: app_mgmt_application_id
+      target:
+        modelField:
+          - fieldName: application_id_2
+  graphql:
+    aggregateFieldName: app_mgmt_application_relationships_by_application_id_2_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_architecture
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_architectures
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: architecture_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_architecture_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_team
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_teams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: created_by_team_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_team_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_team_by_maintained_by_team_id
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_teams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: maintained_by_team_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_team_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_team_by_operated_by_team_id
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_teams
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: operated_by_team_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_team_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: app_mgmt_sdlc_process
+  sourceType: app_mgmt_applications
+  target:
+    model:
+      name: app_mgmt_sdlc_processes
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: sdlc_process_id
+      target:
+        modelField:
+          - fieldName: app_mgmt_sdlc_process_id
+

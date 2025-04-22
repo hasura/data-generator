@@ -1,0 +1,392 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_credit_lines
+  description: Manages revolving credit facilities provided to small businesses
+  fields:
+    - name: annual_fee
+      type: numeric
+      description: Annual fee charged for maintaining the credit line
+    - name: available_credit
+      type: numeric!
+      description: Current amount available to be drawn
+    - name: credit_limit
+      type: numeric!
+      description: Maximum amount that can be borrowed
+    - name: credit_line_number
+      type: varchar!
+      description: Unique credit line number visible to customers
+    - name: draw_period_months
+      type: int_4
+      description: Duration in months of the draw period
+    - name: interest_rate
+      type: numeric!
+      description: Annual interest rate for the credit line
+    - name: interest_type
+      type: varchar!
+      description: Type of interest rate (fixed, variable)
+    - name: minimum_payment_amount
+      type: numeric!
+      description: Minimum fixed amount required as monthly payment
+    - name: minimum_payment_percentage
+      type: numeric!
+      description: Minimum percentage of outstanding balance required as monthly payment
+    - name: outstanding_balance
+      type: numeric!
+      description: Current balance owed on the credit line
+    - name: rate_spread
+      type: numeric
+      description: Spread over the reference rate for variable rate credit lines
+    - name: reference_rate
+      type: varchar
+      description: Reference rate for variable rate credit lines (e.g., PRIME, SOFR)
+    - name: renewal_date
+      type: date
+      description: Date when the credit line is up for renewal
+    - name: repayment_period_months
+      type: int_4
+      description: Duration in months of the repayment period
+    - name: small_business_banking_account_id
+      type: int_4!
+      description: Reference to the associated account for fund disbursement and payments
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business that has the credit line
+    - name: small_business_banking_credit_line_id
+      type: int_4!
+      description: Unique identifier for each credit line
+    - name: small_business_banking_product_id
+      type: int_4!
+      description: Reference to the credit line product
+    - name: start_date
+      type: date!
+      description: Date when the credit line becomes available
+    - name: status
+      type: varchar!
+      description: Current status of the credit line (active, inactive, frozen, closed)
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_credit_lines
+    inputTypeName: SmallBusinessBanking_small_business_banking_credit_lines_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_credit_lines
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_credit_lines
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - annual_fee
+          - available_credit
+          - credit_limit
+          - credit_line_number
+          - draw_period_months
+          - interest_rate
+          - interest_type
+          - minimum_payment_amount
+          - minimum_payment_percentage
+          - outstanding_balance
+          - rate_spread
+          - reference_rate
+          - renewal_date
+          - repayment_period_months
+          - small_business_banking_account_id
+          - small_business_banking_business_id
+          - small_business_banking_credit_line_id
+          - small_business_banking_product_id
+          - start_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_credit_lines_bool_exp
+  operand:
+    object:
+      type: small_business_banking_credit_lines
+      comparableFields:
+        - fieldName: annual_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: available_credit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: credit_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: credit_line_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: draw_period_months
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: interest_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: interest_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: minimum_payment_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: minimum_payment_percentage
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: outstanding_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: rate_spread
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: reference_rate
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: renewal_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: repayment_period_months
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_credit_line_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_product_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_account
+        - relationshipName: small_business_banking_business
+        - relationshipName: small_business_banking_product
+        - relationshipName: small_business_banking_payments
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_credit_lines_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_credit_lines_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_credit_lines
+      aggregatableFields:
+        - fieldName: annual_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: available_credit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: credit_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: credit_line_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: draw_period_months
+          aggregateExpression: int_4_agg_exp
+        - fieldName: interest_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: interest_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: minimum_payment_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: minimum_payment_percentage
+          aggregateExpression: numeric_agg_exp
+        - fieldName: outstanding_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: rate_spread
+          aggregateExpression: numeric_agg_exp
+        - fieldName: reference_rate
+          aggregateExpression: varchar_agg_exp
+        - fieldName: renewal_date
+          aggregateExpression: date_agg_exp
+        - fieldName: repayment_period_months
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_credit_line_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_product_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: start_date
+          aggregateExpression: date_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_credit_lines_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_credit_lines_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_credit_lines
+      orderableFields:
+        - fieldName: annual_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: available_credit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: credit_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: credit_line_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: draw_period_months
+          orderByExpression: int_4_order_by_exp
+        - fieldName: interest_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: interest_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: minimum_payment_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: minimum_payment_percentage
+          orderByExpression: numeric_order_by_exp
+        - fieldName: outstanding_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: rate_spread
+          orderByExpression: numeric_order_by_exp
+        - fieldName: reference_rate
+          orderByExpression: varchar_order_by_exp
+        - fieldName: renewal_date
+          orderByExpression: date_order_by_exp
+        - fieldName: repayment_period_months
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_credit_line_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_product_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: start_date
+          orderByExpression: date_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_account
+        - relationshipName: small_business_banking_business
+        - relationshipName: small_business_banking_product
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_credit_lines_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_credit_lines
+  objectType: small_business_banking_credit_lines
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_credit_lines
+  filterExpressionType: small_business_banking_credit_lines_bool_exp
+  aggregateExpression: small_business_banking_credit_lines_agg_exp
+  orderByExpression: small_business_banking_credit_lines_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_credit_lines
+      subscription:
+        rootField: small_business_banking_credit_lines
+    selectUniques:
+      - queryRootField: small_business_banking_credit_lines_by_small_business_banking_credit_line_id
+        uniqueIdentifier:
+          - small_business_banking_credit_line_id
+        subscription:
+          rootField: small_business_banking_credit_lines_by_small_business_banking_credit_line_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_credit_lines_filter_input
+    aggregate:
+      queryRootField: small_business_banking_credit_lines_aggregate
+      subscription:
+        rootField: small_business_banking_credit_lines_aggregate
+  description: Manages revolving credit facilities provided to small businesses
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_credit_lines
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_account
+  sourceType: small_business_banking_credit_lines
+  target:
+    model:
+      name: small_business_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_credit_lines
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_product
+  sourceType: small_business_banking_credit_lines
+  target:
+    model:
+      name: small_business_banking_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_product_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_payments
+  sourceType: small_business_banking_credit_lines
+  target:
+    model:
+      name: small_business_banking_payments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_payments_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_credit_line_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_credit_line_id
+  graphql:
+    aggregateFieldName: small_business_banking_payments_aggregate
+

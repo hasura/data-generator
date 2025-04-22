@@ -1,0 +1,260 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_policies
+  description: Table storing security policies and their details.
+  fields:
+    - name: active
+      type: bool
+      description: Indicates whether the policy is currently active.
+    - name: created_at
+      type: timestamp
+      description: Timestamp when the policy was created.
+    - name: created_by_id
+      type: int_4
+      description: Who created the policy
+    - name: description
+      type: text!
+      description: Detailed description of the policy.
+    - name: ended_at
+      type: timestamp
+      description: Timestamp when the policy was no longer effective.
+    - name: name
+      type: varchar!
+      description: Name of the policy. Must be unique.
+    - name: security_policy_id
+      type: uuid!
+      description: Unique identifier for the policy.
+    - name: started_at
+      type: timestamp!
+      description: Timestamp when the policy became effective.
+    - name: updated_at
+      type: timestamp
+      description: Timestamp when the policy was last updated.
+    - name: updated_by_id
+      type: int_4
+      description: Who updated the policy
+  graphql:
+    typeName: Security_security_policies
+    inputTypeName: Security_security_policies_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_policies
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_policies
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - active
+          - created_at
+          - created_by_id
+          - description
+          - ended_at
+          - name
+          - security_policy_id
+          - started_at
+          - updated_at
+          - updated_by_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_policies_bool_exp
+  operand:
+    object:
+      type: security_policies
+      comparableFields:
+        - fieldName: active
+          booleanExpressionType: bool_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: created_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: ended_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: security_policy_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: started_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: updated_by_id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: security_policy_attributes
+        - relationshipName: security_policy_rules
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_policies_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_policies_agg_exp
+  operand:
+    object:
+      aggregatedType: security_policies
+      aggregatableFields:
+        - fieldName: active
+          aggregateExpression: bool_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: created_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: ended_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: security_policy_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: started_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: updated_by_id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_policies_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_policies_order_by_exp
+  operand:
+    object:
+      orderedType: security_policies
+      orderableFields:
+        - fieldName: active
+          orderByExpression: bool_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: created_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: ended_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: security_policy_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: started_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: updated_by_id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_policies_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_policies
+  objectType: security_policies
+  source:
+    dataConnectorName: security
+    collection: security_policies
+  filterExpressionType: security_policies_bool_exp
+  aggregateExpression: security_policies_agg_exp
+  orderByExpression: security_policies_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_policies
+      subscription:
+        rootField: security_policies
+    selectUniques:
+      - queryRootField: security_policies_by_name
+        uniqueIdentifier:
+          - name
+        subscription:
+          rootField: security_policies_by_name
+      - queryRootField: security_policies_by_security_policy_id
+        uniqueIdentifier:
+          - security_policy_id
+        subscription:
+          rootField: security_policies_by_security_policy_id
+    filterInputTypeName: Security_security_policies_filter_input
+    aggregate:
+      queryRootField: security_policies_aggregate
+      subscription:
+        rootField: security_policies_aggregate
+  description: Table storing security policies and their details.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_policies
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_policy_attributes
+  sourceType: security_policies
+  target:
+    model:
+      name: security_policy_attributes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_policy_attributes_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_policy_id
+      target:
+        modelField:
+          - fieldName: security_policy_id
+  graphql:
+    aggregateFieldName: security_policy_attributes_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_policy_rules
+  sourceType: security_policies
+  target:
+    model:
+      name: security_policy_rules
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_policy_rules_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_policy_id
+      target:
+        modelField:
+          - fieldName: security_policy_id
+  graphql:
+    aggregateFieldName: security_policy_rules_aggregate
+

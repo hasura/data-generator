@@ -1,0 +1,203 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_security_account_roles
+  description: Explicitly assigns roles to security accounts
+  fields:
+    - name: active
+      type: bool
+    - name: assigned_at
+      type: timestamptz
+    - name: assigned_by_id
+      type: int_4
+    - name: security_account_id
+      type: uuid!
+    - name: security_account_role_id
+      type: uuid!
+    - name: security_role_id
+      type: uuid!
+  graphql:
+    typeName: Security_security_security_account_roles
+    inputTypeName: Security_security_security_account_roles_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_security_account_roles
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_security_account_roles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - active
+          - assigned_at
+          - assigned_by_id
+          - security_account_id
+          - security_account_role_id
+          - security_role_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_security_account_roles_bool_exp
+  operand:
+    object:
+      type: security_security_account_roles
+      comparableFields:
+        - fieldName: active
+          booleanExpressionType: bool_bool_exp
+        - fieldName: assigned_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: assigned_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: security_account_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_account_role_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_role_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_account
+        - relationshipName: security_role
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_security_account_roles_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_security_account_roles_agg_exp
+  operand:
+    object:
+      aggregatedType: security_security_account_roles
+      aggregatableFields:
+        - fieldName: active
+          aggregateExpression: bool_agg_exp
+        - fieldName: assigned_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: assigned_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: security_account_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_account_role_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_role_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_security_account_roles_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_security_account_roles_order_by_exp
+  operand:
+    object:
+      orderedType: security_security_account_roles
+      orderableFields:
+        - fieldName: active
+          orderByExpression: bool_order_by_exp
+        - fieldName: assigned_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: assigned_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: security_account_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_account_role_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_role_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_account
+        - relationshipName: security_role
+  graphql:
+    expressionTypeName: Security_security_security_account_roles_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_security_account_roles
+  objectType: security_security_account_roles
+  source:
+    dataConnectorName: security
+    collection: security_security_account_roles
+  filterExpressionType: security_security_account_roles_bool_exp
+  aggregateExpression: security_security_account_roles_agg_exp
+  orderByExpression: security_security_account_roles_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_security_account_roles
+      subscription:
+        rootField: security_security_account_roles
+    selectUniques:
+      - queryRootField: security_security_account_roles_by_security_account_role_id
+        uniqueIdentifier:
+          - security_account_role_id
+        subscription:
+          rootField: security_security_account_roles_by_security_account_role_id
+    filterInputTypeName: Security_security_security_account_roles_filter_input
+    aggregate:
+      queryRootField: security_security_account_roles_aggregate
+      subscription:
+        rootField: security_security_account_roles_aggregate
+  description: Explicitly assigns roles to security accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_security_account_roles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_account
+  sourceType: security_security_account_roles
+  target:
+    model:
+      name: security_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_account_id
+      target:
+        modelField:
+          - fieldName: security_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_role
+  sourceType: security_security_account_roles
+  target:
+    model:
+      name: security_roles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_role_id
+      target:
+        modelField:
+          - fieldName: security_role_id
+

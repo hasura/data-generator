@@ -1,0 +1,249 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: mortgage_services_escrow_disbursements
+  description: Tracks payments made from escrow accounts for taxes, insurance, etc.
+  fields:
+    - name: amount
+      type: numeric!
+      description: Amount of the disbursement
+    - name: check_number
+      type: varchar
+      description: Check number for paper disbursements
+    - name: coverage_end_date
+      type: date
+      description: End of coverage period (for insurance payments)
+    - name: coverage_start_date
+      type: date
+      description: Start of coverage period (for insurance payments)
+    - name: disbursement_date
+      type: date!
+      description: When the disbursement was made
+    - name: disbursement_type
+      type: mortgage_services_disbursement_type!
+      description: Type of disbursement (e.g., Property Tax, Insurance, PMI)
+    - name: due_date
+      type: date
+      description: When the payment was due
+    - name: mortgage_services_disbursement_id
+      type: int_4!
+      description: Auto-incrementing identifier for each disbursement
+    - name: mortgage_services_servicing_account_id
+      type: int_4!
+      description: References the servicing account for this disbursement
+    - name: payee_account_number
+      type: varchar
+      description: Account number for electronic payments
+    - name: payee_name
+      type: varchar!
+      description: Entity receiving the disbursement
+    - name: status
+      type: mortgage_services_disbursement_status!
+      description: Current status of the disbursement
+  graphql:
+    typeName: MortgageServices_mortgage_services_escrow_disbursements
+    inputTypeName: MortgageServices_mortgage_services_escrow_disbursements_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_escrow_disbursements
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: mortgage_services_escrow_disbursements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - check_number
+          - coverage_end_date
+          - coverage_start_date
+          - disbursement_date
+          - disbursement_type
+          - due_date
+          - mortgage_services_disbursement_id
+          - mortgage_services_servicing_account_id
+          - payee_account_number
+          - payee_name
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: mortgage_services_escrow_disbursements_bool_exp
+  operand:
+    object:
+      type: mortgage_services_escrow_disbursements
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: check_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: coverage_end_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: coverage_start_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: disbursement_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: disbursement_type
+          booleanExpressionType: mortgage_services_disbursement_type_bool_exp
+        - fieldName: due_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: mortgage_services_disbursement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: mortgage_services_servicing_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: payee_account_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: payee_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: mortgage_services_disbursement_status_bool_exp
+      comparableRelationships:
+        - relationshipName: mortgage_services_servicing_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: MortgageServices_mortgage_services_escrow_disbursements_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: mortgage_services_escrow_disbursements_agg_exp
+  operand:
+    object:
+      aggregatedType: mortgage_services_escrow_disbursements
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: check_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: coverage_end_date
+          aggregateExpression: date_agg_exp
+        - fieldName: coverage_start_date
+          aggregateExpression: date_agg_exp
+        - fieldName: disbursement_date
+          aggregateExpression: date_agg_exp
+        - fieldName: disbursement_type
+          aggregateExpression: mortgage_services_disbursement_type_agg_exp
+        - fieldName: due_date
+          aggregateExpression: date_agg_exp
+        - fieldName: mortgage_services_disbursement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: mortgage_services_servicing_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: payee_account_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: payee_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: mortgage_services_disbursement_status_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: MortgageServices_mortgage_services_escrow_disbursements_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: mortgage_services_escrow_disbursements_order_by_exp
+  operand:
+    object:
+      orderedType: mortgage_services_escrow_disbursements
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: check_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: coverage_end_date
+          orderByExpression: date_order_by_exp
+        - fieldName: coverage_start_date
+          orderByExpression: date_order_by_exp
+        - fieldName: disbursement_date
+          orderByExpression: date_order_by_exp
+        - fieldName: disbursement_type
+          orderByExpression: mortgage_services_disbursement_type_order_by_exp
+        - fieldName: due_date
+          orderByExpression: date_order_by_exp
+        - fieldName: mortgage_services_disbursement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: mortgage_services_servicing_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: payee_account_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: payee_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: mortgage_services_disbursement_status_order_by_exp
+      orderableRelationships:
+        - relationshipName: mortgage_services_servicing_account
+  graphql:
+    expressionTypeName: MortgageServices_mortgage_services_escrow_disbursements_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: mortgage_services_escrow_disbursements
+  objectType: mortgage_services_escrow_disbursements
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_escrow_disbursements
+  filterExpressionType: mortgage_services_escrow_disbursements_bool_exp
+  aggregateExpression: mortgage_services_escrow_disbursements_agg_exp
+  orderByExpression: mortgage_services_escrow_disbursements_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: mortgage_services_escrow_disbursements
+      subscription:
+        rootField: mortgage_services_escrow_disbursements
+    selectUniques:
+      - queryRootField: mortgage_services_escrow_disbursements_by_mortgage_services_disbursement_id
+        uniqueIdentifier:
+          - mortgage_services_disbursement_id
+        subscription:
+          rootField: mortgage_services_escrow_disbursements_by_mortgage_services_disbursement_id
+    filterInputTypeName: MortgageServices_mortgage_services_escrow_disbursements_filter_input
+    aggregate:
+      queryRootField: mortgage_services_escrow_disbursements_aggregate
+      subscription:
+        rootField: mortgage_services_escrow_disbursements_aggregate
+  description: Tracks payments made from escrow accounts for taxes, insurance, etc.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: mortgage_services_escrow_disbursements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgage_services_servicing_account
+  sourceType: mortgage_services_escrow_disbursements
+  target:
+    model:
+      name: mortgage_services_servicing_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgage_services_servicing_account_id
+      target:
+        modelField:
+          - fieldName: mortgage_services_servicing_account_id
+

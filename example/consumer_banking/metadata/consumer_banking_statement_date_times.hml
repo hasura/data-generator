@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_statement_date_times
+  description: Stores important dates associated with a statement
+  fields:
+    - name: consumer_banking_statement_date_time_id
+      type: int_4!
+      description: Auto-incrementing identifier for each date record
+    - name: consumer_banking_statement_id
+      type: int_4!
+      description: References the statement this date belongs to
+    - name: date_time
+      type: timestamptz!
+      description: Date and time value
+    - name: type
+      type: consumer_banking_statement_date_type!
+      description: Type of date (e.g., payment due, minimum payment, cycle end)
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_statement_date_times
+    inputTypeName: ConsumerBanking_consumer_banking_statement_date_times_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statement_date_times
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_statement_date_times
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumer_banking_statement_date_time_id
+          - consumer_banking_statement_id
+          - date_time
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_statement_date_times_bool_exp
+  operand:
+    object:
+      type: consumer_banking_statement_date_times
+      comparableFields:
+        - fieldName: consumer_banking_statement_date_time_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_statement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: type
+          booleanExpressionType: consumer_banking_statement_date_type_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_statement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_statement_date_times_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_statement_date_times_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_statement_date_times
+      aggregatableFields:
+        - fieldName: consumer_banking_statement_date_time_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_statement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: type
+          aggregateExpression: consumer_banking_statement_date_type_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_statement_date_times_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_statement_date_times_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_statement_date_times
+      orderableFields:
+        - fieldName: consumer_banking_statement_date_time_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_statement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: type
+          orderByExpression: consumer_banking_statement_date_type_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_statement
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_statement_date_times_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_statement_date_times
+  objectType: consumer_banking_statement_date_times
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statement_date_times
+  filterExpressionType: consumer_banking_statement_date_times_bool_exp
+  aggregateExpression: consumer_banking_statement_date_times_agg_exp
+  orderByExpression: consumer_banking_statement_date_times_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_statement_date_times
+      subscription:
+        rootField: consumer_banking_statement_date_times
+    selectUniques:
+      - queryRootField: consumer_banking_statement_date_times_by_consumer_banking_statement_date_time_id
+        uniqueIdentifier:
+          - consumer_banking_statement_date_time_id
+        subscription:
+          rootField: consumer_banking_statement_date_times_by_consumer_banking_statement_date_time_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_statement_date_times_filter_input
+    aggregate:
+      queryRootField: consumer_banking_statement_date_times_aggregate
+      subscription:
+        rootField: consumer_banking_statement_date_times_aggregate
+  description: Stores important dates associated with a statement
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_statement_date_times
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_statement
+  sourceType: consumer_banking_statement_date_times
+  target:
+    model:
+      name: consumer_banking_statements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_statement_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_statement_id
+

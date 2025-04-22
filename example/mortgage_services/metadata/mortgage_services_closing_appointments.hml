@@ -1,0 +1,239 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: mortgage_services_closing_appointments
+  description: Schedules and tracks mortgage closing appointments
+  fields:
+    - name: actual_closing_date
+      type: timestamptz
+      description: When the closing actually occurred
+    - name: closing_agent
+      type: varchar
+      description: Name of the closing agent
+    - name: closing_company
+      type: varchar
+      description: Company handling the closing
+    - name: closing_fee
+      type: numeric
+      description: Fee charged for closing services
+    - name: closing_type
+      type: mortgage_services_closing_type!
+      description: Type of closing process being used
+    - name: location_address_id
+      type: int_4
+      description: References the address where closing will occur
+    - name: mortgage_services_appointment_id
+      type: int_4!
+      description: Auto-incrementing identifier for each appointment
+    - name: mortgage_services_loan_id
+      type: int_4!
+      description: Reference to the loan this closing is for
+    - name: notes
+      type: text
+      description: Additional information about the closing
+    - name: scheduled_date
+      type: timestamptz!
+      description: When the closing is scheduled
+    - name: status
+      type: mortgage_services_appointment_status!
+      description: Current status of the closing appointment
+  graphql:
+    typeName: MortgageServices_mortgage_services_closing_appointments
+    inputTypeName: MortgageServices_mortgage_services_closing_appointments_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_closing_appointments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: mortgage_services_closing_appointments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - actual_closing_date
+          - closing_agent
+          - closing_company
+          - closing_fee
+          - closing_type
+          - location_address_id
+          - mortgage_services_appointment_id
+          - mortgage_services_loan_id
+          - notes
+          - scheduled_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: mortgage_services_closing_appointments_bool_exp
+  operand:
+    object:
+      type: mortgage_services_closing_appointments
+      comparableFields:
+        - fieldName: actual_closing_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: closing_agent
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: closing_company
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: closing_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: closing_type
+          booleanExpressionType: mortgage_services_closing_type_bool_exp
+        - fieldName: location_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: mortgage_services_appointment_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: mortgage_services_loan_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: notes
+          booleanExpressionType: text_bool_exp
+        - fieldName: scheduled_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: status
+          booleanExpressionType: mortgage_services_appointment_status_bool_exp
+      comparableRelationships:
+        - relationshipName: mortgage_services_loan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: MortgageServices_mortgage_services_closing_appointments_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: mortgage_services_closing_appointments_agg_exp
+  operand:
+    object:
+      aggregatedType: mortgage_services_closing_appointments
+      aggregatableFields:
+        - fieldName: actual_closing_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: closing_agent
+          aggregateExpression: varchar_agg_exp
+        - fieldName: closing_company
+          aggregateExpression: varchar_agg_exp
+        - fieldName: closing_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: closing_type
+          aggregateExpression: mortgage_services_closing_type_agg_exp
+        - fieldName: location_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: mortgage_services_appointment_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: mortgage_services_loan_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: notes
+          aggregateExpression: text_agg_exp
+        - fieldName: scheduled_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: status
+          aggregateExpression: mortgage_services_appointment_status_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: MortgageServices_mortgage_services_closing_appointments_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: mortgage_services_closing_appointments_order_by_exp
+  operand:
+    object:
+      orderedType: mortgage_services_closing_appointments
+      orderableFields:
+        - fieldName: actual_closing_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: closing_agent
+          orderByExpression: varchar_order_by_exp
+        - fieldName: closing_company
+          orderByExpression: varchar_order_by_exp
+        - fieldName: closing_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: closing_type
+          orderByExpression: mortgage_services_closing_type_order_by_exp
+        - fieldName: location_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: mortgage_services_appointment_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: mortgage_services_loan_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: notes
+          orderByExpression: text_order_by_exp
+        - fieldName: scheduled_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: status
+          orderByExpression: mortgage_services_appointment_status_order_by_exp
+      orderableRelationships:
+        - relationshipName: mortgage_services_loan
+  graphql:
+    expressionTypeName: MortgageServices_mortgage_services_closing_appointments_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: mortgage_services_closing_appointments
+  objectType: mortgage_services_closing_appointments
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_closing_appointments
+  filterExpressionType: mortgage_services_closing_appointments_bool_exp
+  aggregateExpression: mortgage_services_closing_appointments_agg_exp
+  orderByExpression: mortgage_services_closing_appointments_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: mortgage_services_closing_appointments
+      subscription:
+        rootField: mortgage_services_closing_appointments
+    selectUniques:
+      - queryRootField: mortgage_services_closing_appointments_by_mortgage_services_appointment_id
+        uniqueIdentifier:
+          - mortgage_services_appointment_id
+        subscription:
+          rootField: mortgage_services_closing_appointments_by_mortgage_services_appointment_id
+    filterInputTypeName: MortgageServices_mortgage_services_closing_appointments_filter_input
+    aggregate:
+      queryRootField: mortgage_services_closing_appointments_aggregate
+      subscription:
+        rootField: mortgage_services_closing_appointments_aggregate
+  description: Schedules and tracks mortgage closing appointments
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: mortgage_services_closing_appointments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgage_services_loan
+  sourceType: mortgage_services_closing_appointments
+  target:
+    model:
+      name: mortgage_services_loans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgage_services_loan_id
+      target:
+        modelField:
+          - fieldName: mortgage_services_loan_id
+

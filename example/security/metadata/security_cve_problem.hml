@@ -1,0 +1,175 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_cve_problem
+  description: Stores problem descriptions associated with CVEs.
+  fields:
+    - name: cve
+      type: varchar
+      description: Common Vulnerabilities and Exposures identifier. Foreign key
+        referencing cvss.cve.
+    - name: cwe_id
+      type: int_4
+      description: A reference to the related Common Weakness Enumeration, if it exists
+    - name: problem
+      type: text
+      description: Problem description related to the CVE.
+  graphql:
+    typeName: Security_security_cve_problem
+    inputTypeName: Security_security_cve_problem_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_cve_problem
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_cve_problem
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cve
+          - cwe_id
+          - problem
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_cve_problem_bool_exp
+  operand:
+    object:
+      type: security_cve_problem
+      comparableFields:
+        - fieldName: cve
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: cwe_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: problem
+          booleanExpressionType: text_bool_exp
+      comparableRelationships:
+        - relationshipName: security_cvss
+        - relationshipName: security_cwe
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_cve_problem_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_cve_problem_agg_exp
+  operand:
+    object:
+      aggregatedType: security_cve_problem
+      aggregatableFields:
+        - fieldName: cve
+          aggregateExpression: varchar_agg_exp
+        - fieldName: cwe_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: problem
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_cve_problem_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_cve_problem_order_by_exp
+  operand:
+    object:
+      orderedType: security_cve_problem
+      orderableFields:
+        - fieldName: cve
+          orderByExpression: varchar_order_by_exp
+        - fieldName: cwe_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: problem
+          orderByExpression: text_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_cvss
+        - relationshipName: security_cwe
+  graphql:
+    expressionTypeName: Security_security_cve_problem_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_cve_problem
+  objectType: security_cve_problem
+  source:
+    dataConnectorName: security
+    collection: security_cve_problem
+  filterExpressionType: security_cve_problem_bool_exp
+  aggregateExpression: security_cve_problem_agg_exp
+  orderByExpression: security_cve_problem_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_cve_problem
+      subscription:
+        rootField: security_cve_problem
+    selectUniques: []
+    filterInputTypeName: Security_security_cve_problem_filter_input
+    aggregate:
+      queryRootField: security_cve_problem_aggregate
+      subscription:
+        rootField: security_cve_problem_aggregate
+  description: Stores problem descriptions associated with CVEs.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_cve_problem
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_cvss
+  sourceType: security_cve_problem
+  target:
+    model:
+      name: security_cvss
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cve
+      target:
+        modelField:
+          - fieldName: cve
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_cwe
+  sourceType: security_cve_problem
+  target:
+    model:
+      name: security_cwe
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cwe_id
+      target:
+        modelField:
+          - fieldName: cwe_id
+

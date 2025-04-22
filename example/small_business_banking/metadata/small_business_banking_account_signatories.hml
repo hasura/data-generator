@@ -1,0 +1,211 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_account_signatories
+  description: Identifies individuals who have authority to sign on or manage a
+    business account
+  fields:
+    - name: daily_limit
+      type: numeric
+      description: Maximum daily transaction limit for this signatory
+    - name: end_date
+      type: date
+      description: Date when the signing authority expires (if applicable)
+    - name: enterprise_party_id
+      type: int_4!
+      description: Reference to the enterprise party who has signing authority
+    - name: is_active
+      type: bool!
+      description: Indicates if the signing authority is currently active
+    - name: signatory_level
+      type: varchar!
+      description: Level of signing authority (primary, secondary, view-only)
+    - name: small_business_banking_account_id
+      type: int_4!
+      description: Reference to the account
+    - name: small_business_banking_account_signatory_id
+      type: int_4!
+      description: Unique identifier for each account signatory record
+    - name: start_date
+      type: date!
+      description: Date when the signing authority begins
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_account_signatories
+    inputTypeName: SmallBusinessBanking_small_business_banking_account_signatories_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_account_signatories
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_account_signatories
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - daily_limit
+          - end_date
+          - enterprise_party_id
+          - is_active
+          - signatory_level
+          - small_business_banking_account_id
+          - small_business_banking_account_signatory_id
+          - start_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_account_signatories_bool_exp
+  operand:
+    object:
+      type: small_business_banking_account_signatories
+      comparableFields:
+        - fieldName: daily_limit
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: end_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: is_active
+          booleanExpressionType: bool_bool_exp
+        - fieldName: signatory_level
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: small_business_banking_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_account_signatory_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: date_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_account_signatories_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_account_signatories_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_account_signatories
+      aggregatableFields:
+        - fieldName: daily_limit
+          aggregateExpression: numeric_agg_exp
+        - fieldName: end_date
+          aggregateExpression: date_agg_exp
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: is_active
+          aggregateExpression: bool_agg_exp
+        - fieldName: signatory_level
+          aggregateExpression: varchar_agg_exp
+        - fieldName: small_business_banking_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_account_signatory_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: start_date
+          aggregateExpression: date_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_account_signatories_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_account_signatories_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_account_signatories
+      orderableFields:
+        - fieldName: daily_limit
+          orderByExpression: numeric_order_by_exp
+        - fieldName: end_date
+          orderByExpression: date_order_by_exp
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: is_active
+          orderByExpression: bool_order_by_exp
+        - fieldName: signatory_level
+          orderByExpression: varchar_order_by_exp
+        - fieldName: small_business_banking_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_account_signatory_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: start_date
+          orderByExpression: date_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_account
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_account_signatories_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_account_signatories
+  objectType: small_business_banking_account_signatories
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_account_signatories
+  filterExpressionType: small_business_banking_account_signatories_bool_exp
+  aggregateExpression: small_business_banking_account_signatories_agg_exp
+  orderByExpression: small_business_banking_account_signatories_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_account_signatories
+      subscription:
+        rootField: small_business_banking_account_signatories
+    selectUniques:
+      - queryRootField: small_business_banking_account_signatories_by_small_business_banking_account_signatory_id
+        uniqueIdentifier:
+          - small_business_banking_account_signatory_id
+        subscription:
+          rootField: small_business_banking_account_signatories_by_small_business_banking_account_signatory_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_account_signatories_filter_input
+    aggregate:
+      queryRootField: small_business_banking_account_signatories_aggregate
+      subscription:
+        rootField: small_business_banking_account_signatories_aggregate
+  description: Identifies individuals who have authority to sign on or manage a
+    business account
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_account_signatories
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_account
+  sourceType: small_business_banking_account_signatories
+  target:
+    model:
+      name: small_business_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_account_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_account_id
+

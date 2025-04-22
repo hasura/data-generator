@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_fraud_transactions
+  description: Junction table linking fraud cases to specific transactions
+  fields:
+    - name: credit_cards_case_id
+      type: int_4!
+      description: Reference to fraud_cases
+    - name: credit_cards_fraud_transaction_id
+      type: int_4!
+      description: Auto-incrementing identifier for each linked transaction
+    - name: credit_cards_transaction_id
+      type: int_4!
+      description: Reference to transactions
+    - name: is_confirmed_fraud
+      type: bool!
+      description: Whether transaction is confirmed fraudulent
+  graphql:
+    typeName: CreditCards_credit_cards_fraud_transactions
+    inputTypeName: CreditCards_credit_cards_fraud_transactions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_fraud_transactions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_fraud_transactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - credit_cards_case_id
+          - credit_cards_fraud_transaction_id
+          - credit_cards_transaction_id
+          - is_confirmed_fraud
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_fraud_transactions_bool_exp
+  operand:
+    object:
+      type: credit_cards_fraud_transactions
+      comparableFields:
+        - fieldName: credit_cards_case_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_fraud_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: is_confirmed_fraud
+          booleanExpressionType: bool_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_fraud_case
+        - relationshipName: credit_cards_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_fraud_transactions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_fraud_transactions_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_fraud_transactions
+      aggregatableFields:
+        - fieldName: credit_cards_case_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_fraud_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: is_confirmed_fraud
+          aggregateExpression: bool_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_fraud_transactions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_fraud_transactions_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_fraud_transactions
+      orderableFields:
+        - fieldName: credit_cards_case_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_fraud_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: is_confirmed_fraud
+          orderByExpression: bool_order_by_exp
+      orderableRelationships:
+        - relationshipName: credit_cards_fraud_case
+        - relationshipName: credit_cards_transaction
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_fraud_transactions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_fraud_transactions
+  objectType: credit_cards_fraud_transactions
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_fraud_transactions
+  filterExpressionType: credit_cards_fraud_transactions_bool_exp
+  aggregateExpression: credit_cards_fraud_transactions_agg_exp
+  orderByExpression: credit_cards_fraud_transactions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_fraud_transactions
+      subscription:
+        rootField: credit_cards_fraud_transactions
+    selectUniques:
+      - queryRootField: credit_cards_fraud_transactions_by_credit_cards_fraud_transaction_id
+        uniqueIdentifier:
+          - credit_cards_fraud_transaction_id
+        subscription:
+          rootField: credit_cards_fraud_transactions_by_credit_cards_fraud_transaction_id
+    filterInputTypeName: CreditCards_credit_cards_fraud_transactions_filter_input
+    aggregate:
+      queryRootField: credit_cards_fraud_transactions_aggregate
+      subscription:
+        rootField: credit_cards_fraud_transactions_aggregate
+  description: Junction table linking fraud cases to specific transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_fraud_transactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_fraud_case
+  sourceType: credit_cards_fraud_transactions
+  target:
+    model:
+      name: credit_cards_fraud_cases
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_case_id
+      target:
+        modelField:
+          - fieldName: credit_cards_case_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_transaction
+  sourceType: credit_cards_fraud_transactions
+  target:
+    model:
+      name: credit_cards_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_transaction_id
+      target:
+        modelField:
+          - fieldName: credit_cards_transaction_id
+

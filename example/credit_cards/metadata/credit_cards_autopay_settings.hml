@@ -1,0 +1,279 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_autopay_settings
+  description: Stores automatic payment settings
+  fields:
+    - name: credit_cards_autopay_id
+      type: int_4!
+      description: Auto-incrementing identifier for each autopay setup
+    - name: credit_cards_card_account_id
+      type: int_4!
+      description: Reference to card_accounts
+    - name: credit_cards_payment_method_id
+      type: int_4!
+      description: Reference to payment_methods
+    - name: days_before_due
+      type: int_4
+      description: Days before due date if applicable
+    - name: end_date
+      type: date
+      description: When autopay ends if applicable
+    - name: fixed_amount
+      type: numeric
+      description: Fixed amount if applicable
+    - name: last_payment_date
+      type: date
+      description: Date of last autopay payment
+    - name: next_payment_date
+      type: date
+      description: Scheduled date of next payment
+    - name: payment_day
+      type: varchar!
+      description: When to pay (Due Date, Days Before Due Date, Specific Day)
+    - name: payment_option
+      type: varchar!
+      description: What to pay (Minimum, Statement Balance, Current Balance, Fixed Amount)
+    - name: specific_day
+      type: int_4
+      description: Specific day of month if applicable
+    - name: start_date
+      type: date!
+      description: When autopay begins
+    - name: status
+      type: varchar!
+      description: Status of autopay (Active, Inactive)
+  graphql:
+    typeName: CreditCards_credit_cards_autopay_settings
+    inputTypeName: CreditCards_credit_cards_autopay_settings_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_autopay_settings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_autopay_settings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - credit_cards_autopay_id
+          - credit_cards_card_account_id
+          - credit_cards_payment_method_id
+          - days_before_due
+          - end_date
+          - fixed_amount
+          - last_payment_date
+          - next_payment_date
+          - payment_day
+          - payment_option
+          - specific_day
+          - start_date
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_autopay_settings_bool_exp
+  operand:
+    object:
+      type: credit_cards_autopay_settings
+      comparableFields:
+        - fieldName: credit_cards_autopay_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_payment_method_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: days_before_due
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: end_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: fixed_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: last_payment_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: next_payment_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: payment_day
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: payment_option
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: specific_day
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: start_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_card_account
+        - relationshipName: credit_cards_payment_method
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_autopay_settings_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_autopay_settings_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_autopay_settings
+      aggregatableFields:
+        - fieldName: credit_cards_autopay_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_payment_method_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: days_before_due
+          aggregateExpression: int_4_agg_exp
+        - fieldName: end_date
+          aggregateExpression: date_agg_exp
+        - fieldName: fixed_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: last_payment_date
+          aggregateExpression: date_agg_exp
+        - fieldName: next_payment_date
+          aggregateExpression: date_agg_exp
+        - fieldName: payment_day
+          aggregateExpression: varchar_agg_exp
+        - fieldName: payment_option
+          aggregateExpression: varchar_agg_exp
+        - fieldName: specific_day
+          aggregateExpression: int_4_agg_exp
+        - fieldName: start_date
+          aggregateExpression: date_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_autopay_settings_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_autopay_settings_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_autopay_settings
+      orderableFields:
+        - fieldName: credit_cards_autopay_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_payment_method_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: days_before_due
+          orderByExpression: int_4_order_by_exp
+        - fieldName: end_date
+          orderByExpression: date_order_by_exp
+        - fieldName: fixed_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: last_payment_date
+          orderByExpression: date_order_by_exp
+        - fieldName: next_payment_date
+          orderByExpression: date_order_by_exp
+        - fieldName: payment_day
+          orderByExpression: varchar_order_by_exp
+        - fieldName: payment_option
+          orderByExpression: varchar_order_by_exp
+        - fieldName: specific_day
+          orderByExpression: int_4_order_by_exp
+        - fieldName: start_date
+          orderByExpression: date_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: credit_cards_card_account
+        - relationshipName: credit_cards_payment_method
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_autopay_settings_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_autopay_settings
+  objectType: credit_cards_autopay_settings
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_autopay_settings
+  filterExpressionType: credit_cards_autopay_settings_bool_exp
+  aggregateExpression: credit_cards_autopay_settings_agg_exp
+  orderByExpression: credit_cards_autopay_settings_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_autopay_settings
+      subscription:
+        rootField: credit_cards_autopay_settings
+    selectUniques:
+      - queryRootField: credit_cards_autopay_settings_by_credit_cards_autopay_id
+        uniqueIdentifier:
+          - credit_cards_autopay_id
+        subscription:
+          rootField: credit_cards_autopay_settings_by_credit_cards_autopay_id
+    filterInputTypeName: CreditCards_credit_cards_autopay_settings_filter_input
+    aggregate:
+      queryRootField: credit_cards_autopay_settings_aggregate
+      subscription:
+        rootField: credit_cards_autopay_settings_aggregate
+  description: Stores automatic payment settings
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_autopay_settings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_account
+  sourceType: credit_cards_autopay_settings
+  target:
+    model:
+      name: credit_cards_card_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_payment_method
+  sourceType: credit_cards_autopay_settings
+  target:
+    model:
+      name: credit_cards_payment_methods
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_payment_method_id
+      target:
+        modelField:
+          - fieldName: credit_cards_payment_method_id
+

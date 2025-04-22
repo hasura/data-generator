@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_transaction_balances
+  description: Stores account balance information at the time of each transaction
+  fields:
+    - name: amount
+      type: numeric!
+      description: Balance amount after the transaction
+    - name: consumer_banking_transaction_balance_id
+      type: int_4!
+      description: Auto-incrementing identifier for each transaction balance record
+    - name: consumer_banking_transaction_id
+      type: int_4!
+      description: References the transaction this balance belongs to
+    - name: credit_debit_indicator
+      type: enterprise_credit_debit_indicator!
+      description: Indicates if balance is credit or debit
+    - name: currency
+      type: enterprise_currency_code!
+      description: Currency code for the balance amount
+    - name: type
+      type: consumer_banking_balance_type!
+      description: Type of balance (e.g., available, booked)
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_balances
+    inputTypeName: ConsumerBanking_consumer_banking_transaction_balances_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_balances
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_transaction_balances
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - consumer_banking_transaction_balance_id
+          - consumer_banking_transaction_id
+          - credit_debit_indicator
+          - currency
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_transaction_balances_bool_exp
+  operand:
+    object:
+      type: consumer_banking_transaction_balances
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: consumer_banking_transaction_balance_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_debit_indicator
+          booleanExpressionType: enterprise_credit_debit_indicator_bool_exp
+        - fieldName: currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: type
+          booleanExpressionType: consumer_banking_balance_type_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_balances_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_balances_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_transaction_balances
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: consumer_banking_transaction_balance_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_debit_indicator
+          aggregateExpression: enterprise_credit_debit_indicator_agg_exp
+        - fieldName: currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: type
+          aggregateExpression: consumer_banking_balance_type_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_transaction_balances_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_balances_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_transaction_balances
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: consumer_banking_transaction_balance_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_debit_indicator
+          orderByExpression: enterprise_credit_debit_indicator_order_by_exp
+        - fieldName: currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: type
+          orderByExpression: consumer_banking_balance_type_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_transaction
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_transaction_balances_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_transaction_balances
+  objectType: consumer_banking_transaction_balances
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_balances
+  filterExpressionType: consumer_banking_transaction_balances_bool_exp
+  aggregateExpression: consumer_banking_transaction_balances_agg_exp
+  orderByExpression: consumer_banking_transaction_balances_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_transaction_balances
+      subscription:
+        rootField: consumer_banking_transaction_balances
+    selectUniques:
+      - queryRootField: consumer_banking_transaction_balances_by_consumer_banking_transaction_balance_id
+        uniqueIdentifier:
+          - consumer_banking_transaction_balance_id
+        subscription:
+          rootField: consumer_banking_transaction_balances_by_consumer_banking_transaction_balance_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_transaction_balances_filter_input
+    aggregate:
+      queryRootField: consumer_banking_transaction_balances_aggregate
+      subscription:
+        rootField: consumer_banking_transaction_balances_aggregate
+  description: Stores account balance information at the time of each transaction
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_transaction_balances
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transaction
+  sourceType: consumer_banking_transaction_balances
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_transaction_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_transaction_id
+

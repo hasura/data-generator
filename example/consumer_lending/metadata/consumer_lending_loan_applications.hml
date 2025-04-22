@@ -1,0 +1,624 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_loan_applications
+  description: Stores consumer lending applications for non-mortgage loans
+  fields:
+    - name: application_channel
+      type: varchar
+      description: Online, Mobile, Branch, Phone
+    - name: application_type
+      type: varchar!
+      description: Personal, Auto, Student, Home Improvement, etc.
+    - name: branch_id
+      type: int_4
+      description: Branch where application was processed
+    - name: consumer_lending_application_id
+      type: int_4!
+      description: Unique identifier for the loan application
+    - name: creation_date_time
+      type: timestamptz!
+      description: When application was initially created
+    - name: customer_id
+      type: int_4!
+      description: Reference to enterprise.accounts
+    - name: decision_date_time
+      type: timestamptz
+      description: When final decision was made
+    - name: decision_reason
+      type: varchar
+      description: Primary reason for approval/denial
+    - name: estimated_credit_score
+      type: int_4
+      description: Estimated or self-reported credit score
+    - name: last_updated_date_time
+      type: timestamptz!
+      description: Last modification timestamp
+    - name: loan_purpose
+      type: varchar!
+      description: Purpose for the loan
+    - name: officer_id
+      type: int_4
+      description: Loan officer assigned to application
+    - name: referral_source
+      type: varchar
+      description: Marketing channel or referral source
+    - name: requested_amount
+      type: numeric!
+      description: Amount requested by applicant
+    - name: requested_term_months
+      type: int_4!
+      description: Loan term in months requested by applicant
+    - name: status
+      type: varchar!
+      description: Draft, Submitted, In Review, Approved, Denied, Cancelled
+    - name: submission_date_time
+      type: timestamptz
+      description: When application was submitted by customer
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_applications
+    inputTypeName: ConsumerLending_consumer_lending_loan_applications_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_applications
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_loan_applications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - application_channel
+          - application_type
+          - branch_id
+          - consumer_lending_application_id
+          - creation_date_time
+          - customer_id
+          - decision_date_time
+          - decision_reason
+          - estimated_credit_score
+          - last_updated_date_time
+          - loan_purpose
+          - officer_id
+          - referral_source
+          - requested_amount
+          - requested_term_months
+          - status
+          - submission_date_time
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_loan_applications_bool_exp
+  operand:
+    object:
+      type: consumer_lending_loan_applications
+      comparableFields:
+        - fieldName: application_channel
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: application_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: branch_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: creation_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: decision_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: decision_reason
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: estimated_credit_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: last_updated_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: loan_purpose
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: officer_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: referral_source
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: requested_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: requested_term_months
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: submission_date_time
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_adverse_action_notices
+        - relationshipName: consumer_lending_application_applicants
+        - relationshipName: consumer_lending_application_decisions
+        - relationshipName: consumer_lending_appraisal_disclosures
+        - relationshipName: consumer_lending_compliance_exceptions
+        - relationshipName: consumer_lending_credit_reports
+        - relationshipName: consumer_lending_ecoa_monitorings
+        - relationshipName: consumer_lending_high_cost_mortgage_tests
+        - relationshipName: consumer_lending_loan_accounts
+        - relationshipName: consumer_lending_loan_communications
+        - relationshipName: consumer_lending_loan_documents
+        - relationshipName: consumer_lending_military_lending_checks
+        - relationshipName: consumer_lending_reg_b_notices
+        - relationshipName: consumer_lending_reg_z_disclosures
+        - relationshipName: consumer_lending_vehicles
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_applications_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_loan_applications_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_loan_applications
+      aggregatableFields:
+        - fieldName: application_channel
+          aggregateExpression: varchar_agg_exp
+        - fieldName: application_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: branch_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: creation_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: decision_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: decision_reason
+          aggregateExpression: varchar_agg_exp
+        - fieldName: estimated_credit_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: last_updated_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: loan_purpose
+          aggregateExpression: varchar_agg_exp
+        - fieldName: officer_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: referral_source
+          aggregateExpression: varchar_agg_exp
+        - fieldName: requested_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: requested_term_months
+          aggregateExpression: int_4_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: submission_date_time
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_loan_applications_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_loan_applications_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_loan_applications
+      orderableFields:
+        - fieldName: application_channel
+          orderByExpression: varchar_order_by_exp
+        - fieldName: application_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: branch_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: creation_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: decision_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: decision_reason
+          orderByExpression: varchar_order_by_exp
+        - fieldName: estimated_credit_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: last_updated_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: loan_purpose
+          orderByExpression: varchar_order_by_exp
+        - fieldName: officer_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: referral_source
+          orderByExpression: varchar_order_by_exp
+        - fieldName: requested_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: requested_term_months
+          orderByExpression: int_4_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: submission_date_time
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_loan_applications_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_loan_applications
+  objectType: consumer_lending_loan_applications
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_applications
+  filterExpressionType: consumer_lending_loan_applications_bool_exp
+  aggregateExpression: consumer_lending_loan_applications_agg_exp
+  orderByExpression: consumer_lending_loan_applications_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_loan_applications
+      subscription:
+        rootField: consumer_lending_loan_applications
+    selectUniques:
+      - queryRootField: consumer_lending_loan_applications_by_consumer_lending_application_id
+        uniqueIdentifier:
+          - consumer_lending_application_id
+        subscription:
+          rootField: consumer_lending_loan_applications_by_consumer_lending_application_id
+    filterInputTypeName: ConsumerLending_consumer_lending_loan_applications_filter_input
+    aggregate:
+      queryRootField: consumer_lending_loan_applications_aggregate
+      subscription:
+        rootField: consumer_lending_loan_applications_aggregate
+  description: Stores consumer lending applications for non-mortgage loans
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_loan_applications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_adverse_action_notices
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_adverse_action_notices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_adverse_action_notices_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_adverse_action_notices_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_application_applicants
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_application_applicants
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_application_applicants_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_application_applicants_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_application_decisions
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_application_decisions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_application_decisions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_application_decisions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_appraisal_disclosures
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_appraisal_disclosures
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_appraisal_disclosures_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_appraisal_disclosures_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_compliance_exceptions
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_compliance_exceptions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_compliance_exceptions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_compliance_exceptions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_credit_reports
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_credit_reports
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_credit_reports_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_credit_reports_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_ecoa_monitorings
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_ecoa_monitoring
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_ecoa_monitoring_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_ecoa_monitorings_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_high_cost_mortgage_tests
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_high_cost_mortgage_tests
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_high_cost_mortgage_tests_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_high_cost_mortgage_tests_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_accounts
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_loan_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_loan_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_loan_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_communications
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_loan_communications
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_loan_communications_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_loan_communications_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_documents
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_loan_documents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_loan_documents_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_loan_documents_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_military_lending_checks
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_military_lending_checks
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_military_lending_checks_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_military_lending_checks_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_reg_b_notices
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_reg_b_notices
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_reg_b_notices_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_reg_b_notices_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_reg_z_disclosures
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_reg_z_disclosures
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_reg_z_disclosures_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_reg_z_disclosures_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_vehicles
+  sourceType: consumer_lending_loan_applications
+  target:
+    model:
+      name: consumer_lending_vehicles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_lending_vehicles_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+  graphql:
+    aggregateFieldName: consumer_lending_vehicles_aggregate
+

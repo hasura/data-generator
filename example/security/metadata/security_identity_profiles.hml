@@ -1,0 +1,246 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_identity_profiles
+  description: Table storing information about identity profiles, defining sets of
+    attributes and rules for identities.
+  fields:
+    - name: access_review_frequency_days
+      type: int_4
+      description: How often accounts with this profile should be reviewed, in days.
+    - name: created_at
+      type: timestamptz
+      description: When the profile was created.
+    - name: default_session_timeout_minutes
+      type: int_4
+      description: Default session timeout in minutes for identities with this profile.
+    - name: description
+      type: text
+      description: Detailed description of the profile and its purpose.
+    - name: max_inactive_days
+      type: int_4
+      description: Maximum number of days an identity can be inactive before automatic
+        disablement.
+    - name: name
+      type: varchar
+      description: Name of the identity profile.
+    - name: password_expiry_days
+      type: int_4
+      description: Number of days before password expiration for this profile type.
+    - name: requires_mfa
+      type: bool
+      description: Whether multi-factor authentication is required for identities with
+        this profile.
+    - name: risk_level
+      type: security_risk_level!
+      description: Risk classification level for this profile type.
+    - name: security_identity_profile_id
+      type: uuid!
+      description: Unique identifier for the identity profile.
+    - name: updated_at
+      type: timestamptz
+      description: When the profile was last updated.
+  graphql:
+    typeName: Security_security_identity_profiles
+    inputTypeName: Security_security_identity_profiles_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_identity_profiles
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_identity_profiles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - access_review_frequency_days
+          - created_at
+          - default_session_timeout_minutes
+          - description
+          - max_inactive_days
+          - name
+          - password_expiry_days
+          - requires_mfa
+          - risk_level
+          - security_identity_profile_id
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_identity_profiles_bool_exp
+  operand:
+    object:
+      type: security_identity_profiles
+      comparableFields:
+        - fieldName: access_review_frequency_days
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: default_session_timeout_minutes
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: max_inactive_days
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: password_expiry_days
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: requires_mfa
+          booleanExpressionType: bool_bool_exp
+        - fieldName: risk_level
+          booleanExpressionType: security_risk_level_bool_exp
+        - fieldName: security_identity_profile_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: security_identities
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_identity_profiles_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_identity_profiles_agg_exp
+  operand:
+    object:
+      aggregatedType: security_identity_profiles
+      aggregatableFields:
+        - fieldName: access_review_frequency_days
+          aggregateExpression: int_4_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: default_session_timeout_minutes
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: max_inactive_days
+          aggregateExpression: int_4_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: password_expiry_days
+          aggregateExpression: int_4_agg_exp
+        - fieldName: requires_mfa
+          aggregateExpression: bool_agg_exp
+        - fieldName: risk_level
+          aggregateExpression: security_risk_level_agg_exp
+        - fieldName: security_identity_profile_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_identity_profiles_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_identity_profiles_order_by_exp
+  operand:
+    object:
+      orderedType: security_identity_profiles
+      orderableFields:
+        - fieldName: access_review_frequency_days
+          orderByExpression: int_4_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: default_session_timeout_minutes
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: max_inactive_days
+          orderByExpression: int_4_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: password_expiry_days
+          orderByExpression: int_4_order_by_exp
+        - fieldName: requires_mfa
+          orderByExpression: bool_order_by_exp
+        - fieldName: risk_level
+          orderByExpression: security_risk_level_order_by_exp
+        - fieldName: security_identity_profile_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_identity_profiles_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_identity_profiles
+  objectType: security_identity_profiles
+  source:
+    dataConnectorName: security
+    collection: security_identity_profiles
+  filterExpressionType: security_identity_profiles_bool_exp
+  aggregateExpression: security_identity_profiles_agg_exp
+  orderByExpression: security_identity_profiles_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_identity_profiles
+      subscription:
+        rootField: security_identity_profiles
+    selectUniques:
+      - queryRootField: security_identity_profiles_by_security_identity_profile_id
+        uniqueIdentifier:
+          - security_identity_profile_id
+        subscription:
+          rootField: security_identity_profiles_by_security_identity_profile_id
+    filterInputTypeName: Security_security_identity_profiles_filter_input
+    aggregate:
+      queryRootField: security_identity_profiles_aggregate
+      subscription:
+        rootField: security_identity_profiles_aggregate
+  description: Table storing information about identity profiles, defining sets of
+    attributes and rules for identities.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_identity_profiles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_identities
+  sourceType: security_identity_profiles
+  target:
+    model:
+      name: security_identities
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_identities_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_identity_profile_id
+      target:
+        modelField:
+          - fieldName: security_identity_profile_id
+  graphql:
+    aggregateFieldName: security_identities_aggregate
+

@@ -1,0 +1,385 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_statements
+  description: Stores monthly billing statements for card accounts
+  fields:
+    - name: balance_transfers
+      type: numeric!
+      description: Balance transfers in period
+    - name: cash_advances
+      type: numeric!
+      description: Cash advances in period
+    - name: credit_cards_card_account_id
+      type: int_4!
+      description: Reference to card_accounts
+    - name: credit_cards_statement_id
+      type: int_4!
+      description: Auto-incrementing identifier for each statement
+    - name: credits
+      type: numeric!
+      description: Credits/refunds in period
+    - name: days_in_billing_cycle
+      type: int_4!
+      description: Number of days in billing cycle
+    - name: document_path
+      type: varchar
+      description: Path to stored statement document
+    - name: due_date
+      type: date!
+      description: Payment due date
+    - name: ending_balance
+      type: numeric!
+      description: Ending statement balance
+    - name: fees
+      type: numeric!
+      description: Fees charged in period
+    - name: interest
+      type: numeric!
+      description: Interest charged in period
+    - name: minimum_payment
+      type: numeric!
+      description: Minimum payment due
+    - name: new_charges
+      type: numeric!
+      description: New purchases and charges
+    - name: payment_received
+      type: bool!
+      description: Whether payment was received by due date
+    - name: payment_received_amount
+      type: numeric
+      description: Amount of payment received
+    - name: payment_received_date
+      type: date
+      description: Date payment was received
+    - name: payments
+      type: numeric!
+      description: Payments received in period
+    - name: previous_balance
+      type: numeric!
+      description: Balance carried over from previous statement
+    - name: statement_date
+      type: date!
+      description: Date statement was generated
+    - name: statement_period_end
+      type: date!
+      description: End date for statement period
+    - name: statement_period_start
+      type: date!
+      description: Start date for statement period
+  graphql:
+    typeName: CreditCards_credit_cards_statements
+    inputTypeName: CreditCards_credit_cards_statements_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_statements
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_statements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - balance_transfers
+          - cash_advances
+          - credit_cards_card_account_id
+          - credit_cards_statement_id
+          - credits
+          - days_in_billing_cycle
+          - document_path
+          - due_date
+          - ending_balance
+          - fees
+          - interest
+          - minimum_payment
+          - new_charges
+          - payment_received
+          - payment_received_amount
+          - payment_received_date
+          - payments
+          - previous_balance
+          - statement_date
+          - statement_period_end
+          - statement_period_start
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_statements_bool_exp
+  operand:
+    object:
+      type: credit_cards_statements
+      comparableFields:
+        - fieldName: balance_transfers
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: cash_advances
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: credit_cards_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_statement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credits
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: days_in_billing_cycle
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: due_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: ending_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: fees
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: interest
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: minimum_payment
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: new_charges
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: payment_received
+          booleanExpressionType: bool_bool_exp
+        - fieldName: payment_received_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: payment_received_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: payments
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: previous_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: statement_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: statement_period_end
+          booleanExpressionType: date_bool_exp
+        - fieldName: statement_period_start
+          booleanExpressionType: date_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_fees
+        - relationshipName: credit_cards_interest_charges
+        - relationshipName: credit_cards_card_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_statements_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_statements_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_statements
+      aggregatableFields:
+        - fieldName: balance_transfers
+          aggregateExpression: numeric_agg_exp
+        - fieldName: cash_advances
+          aggregateExpression: numeric_agg_exp
+        - fieldName: credit_cards_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_statement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credits
+          aggregateExpression: numeric_agg_exp
+        - fieldName: days_in_billing_cycle
+          aggregateExpression: int_4_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: due_date
+          aggregateExpression: date_agg_exp
+        - fieldName: ending_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: fees
+          aggregateExpression: numeric_agg_exp
+        - fieldName: interest
+          aggregateExpression: numeric_agg_exp
+        - fieldName: minimum_payment
+          aggregateExpression: numeric_agg_exp
+        - fieldName: new_charges
+          aggregateExpression: numeric_agg_exp
+        - fieldName: payment_received
+          aggregateExpression: bool_agg_exp
+        - fieldName: payment_received_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: payment_received_date
+          aggregateExpression: date_agg_exp
+        - fieldName: payments
+          aggregateExpression: numeric_agg_exp
+        - fieldName: previous_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: statement_date
+          aggregateExpression: date_agg_exp
+        - fieldName: statement_period_end
+          aggregateExpression: date_agg_exp
+        - fieldName: statement_period_start
+          aggregateExpression: date_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_statements_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_statements_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_statements
+      orderableFields:
+        - fieldName: balance_transfers
+          orderByExpression: numeric_order_by_exp
+        - fieldName: cash_advances
+          orderByExpression: numeric_order_by_exp
+        - fieldName: credit_cards_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_statement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credits
+          orderByExpression: numeric_order_by_exp
+        - fieldName: days_in_billing_cycle
+          orderByExpression: int_4_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: due_date
+          orderByExpression: date_order_by_exp
+        - fieldName: ending_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: fees
+          orderByExpression: numeric_order_by_exp
+        - fieldName: interest
+          orderByExpression: numeric_order_by_exp
+        - fieldName: minimum_payment
+          orderByExpression: numeric_order_by_exp
+        - fieldName: new_charges
+          orderByExpression: numeric_order_by_exp
+        - fieldName: payment_received
+          orderByExpression: bool_order_by_exp
+        - fieldName: payment_received_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: payment_received_date
+          orderByExpression: date_order_by_exp
+        - fieldName: payments
+          orderByExpression: numeric_order_by_exp
+        - fieldName: previous_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: statement_date
+          orderByExpression: date_order_by_exp
+        - fieldName: statement_period_end
+          orderByExpression: date_order_by_exp
+        - fieldName: statement_period_start
+          orderByExpression: date_order_by_exp
+      orderableRelationships:
+        - relationshipName: credit_cards_card_account
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_statements_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_statements
+  objectType: credit_cards_statements
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_statements
+  filterExpressionType: credit_cards_statements_bool_exp
+  aggregateExpression: credit_cards_statements_agg_exp
+  orderByExpression: credit_cards_statements_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_statements
+      subscription:
+        rootField: credit_cards_statements
+    selectUniques:
+      - queryRootField: credit_cards_statements_by_credit_cards_statement_id
+        uniqueIdentifier:
+          - credit_cards_statement_id
+        subscription:
+          rootField: credit_cards_statements_by_credit_cards_statement_id
+    filterInputTypeName: CreditCards_credit_cards_statements_filter_input
+    aggregate:
+      queryRootField: credit_cards_statements_aggregate
+      subscription:
+        rootField: credit_cards_statements_aggregate
+  description: Stores monthly billing statements for card accounts
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_statements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_fees
+  sourceType: credit_cards_statements
+  target:
+    model:
+      name: credit_cards_fees
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_fees_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_statement_id
+      target:
+        modelField:
+          - fieldName: credit_cards_statement_id
+  graphql:
+    aggregateFieldName: credit_cards_fees_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_interest_charges
+  sourceType: credit_cards_statements
+  target:
+    model:
+      name: credit_cards_interest_charges
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: credit_cards_interest_charges_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_statement_id
+      target:
+        modelField:
+          - fieldName: credit_cards_statement_id
+  graphql:
+    aggregateFieldName: credit_cards_interest_charges_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_account
+  sourceType: credit_cards_statements
+  target:
+    model:
+      name: credit_cards_card_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+

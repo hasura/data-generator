@@ -1,0 +1,261 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_network_connections
+  description: Table storing information about network connections, tracking
+    network traffic and activity.
+  fields:
+    - name: connection_type
+      type: varchar
+      description: Type of network connection (e.g., TCP, UDP).
+    - name: end_time
+      type: timestamp
+      description: Timestamp when the connection ended.
+    - name: local_ip
+      type: inet
+      description: Local IP address of the connection.
+    - name: local_port
+      type: int_4
+      description: Local port number of the connection.
+    - name: protocol
+      type: security_network_protocols
+      description: Network protocol used for the connection.
+    - name: remote_ip
+      type: inet
+      description: Remote IP address of the connection.
+    - name: remote_port
+      type: int_4
+      description: Remote port number of the connection.
+    - name: security_host_id
+      type: uuid!
+      description: Identifier of the system where the connection originated.
+    - name: security_network_connection_id
+      type: uuid!
+      description: Unique identifier for the network connection.
+    - name: security_process_execution_id
+      type: uuid!
+      description: Identifier of the process execution that initiated the connection.
+    - name: start_time
+      type: timestamp
+      description: Timestamp when the connection started.
+  graphql:
+    typeName: Security_security_network_connections
+    inputTypeName: Security_security_network_connections_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_network_connections
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_network_connections
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - connection_type
+          - end_time
+          - local_ip
+          - local_port
+          - protocol
+          - remote_ip
+          - remote_port
+          - security_host_id
+          - security_network_connection_id
+          - security_process_execution_id
+          - start_time
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_network_connections_bool_exp
+  operand:
+    object:
+      type: security_network_connections
+      comparableFields:
+        - fieldName: connection_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: end_time
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: local_ip
+          booleanExpressionType: inet_bool_exp
+        - fieldName: local_port
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: protocol
+          booleanExpressionType: security_network_protocols_bool_exp
+        - fieldName: remote_ip
+          booleanExpressionType: inet_bool_exp
+        - fieldName: remote_port
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: security_host_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_network_connection_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_process_execution_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: start_time
+          booleanExpressionType: timestamp_bool_exp
+      comparableRelationships:
+        - relationshipName: security_host
+        - relationshipName: security_process_execution
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_network_connections_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_network_connections_agg_exp
+  operand:
+    object:
+      aggregatedType: security_network_connections
+      aggregatableFields:
+        - fieldName: connection_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: end_time
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: local_ip
+          aggregateExpression: inet_agg_exp
+        - fieldName: local_port
+          aggregateExpression: int_4_agg_exp
+        - fieldName: protocol
+          aggregateExpression: security_network_protocols_agg_exp
+        - fieldName: remote_ip
+          aggregateExpression: inet_agg_exp
+        - fieldName: remote_port
+          aggregateExpression: int_4_agg_exp
+        - fieldName: security_host_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_network_connection_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_process_execution_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: start_time
+          aggregateExpression: timestamp_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_network_connections_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_network_connections_order_by_exp
+  operand:
+    object:
+      orderedType: security_network_connections
+      orderableFields:
+        - fieldName: connection_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: end_time
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: local_ip
+          orderByExpression: inet_order_by_exp
+        - fieldName: local_port
+          orderByExpression: int_4_order_by_exp
+        - fieldName: protocol
+          orderByExpression: security_network_protocols_order_by_exp
+        - fieldName: remote_ip
+          orderByExpression: inet_order_by_exp
+        - fieldName: remote_port
+          orderByExpression: int_4_order_by_exp
+        - fieldName: security_host_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_network_connection_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_process_execution_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: start_time
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_host
+        - relationshipName: security_process_execution
+  graphql:
+    expressionTypeName: Security_security_network_connections_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_network_connections
+  objectType: security_network_connections
+  source:
+    dataConnectorName: security
+    collection: security_network_connections
+  filterExpressionType: security_network_connections_bool_exp
+  aggregateExpression: security_network_connections_agg_exp
+  orderByExpression: security_network_connections_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_network_connections
+      subscription:
+        rootField: security_network_connections
+    selectUniques:
+      - queryRootField: security_network_connections_by_security_network_connection_id
+        uniqueIdentifier:
+          - security_network_connection_id
+        subscription:
+          rootField: security_network_connections_by_security_network_connection_id
+    filterInputTypeName: Security_security_network_connections_filter_input
+    aggregate:
+      queryRootField: security_network_connections_aggregate
+      subscription:
+        rootField: security_network_connections_aggregate
+  description: Table storing information about network connections, tracking
+    network traffic and activity.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_network_connections
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_network_connections
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_process_execution
+  sourceType: security_network_connections
+  target:
+    model:
+      name: security_process_executions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_process_execution_id
+      target:
+        modelField:
+          - fieldName: security_process_execution_id
+

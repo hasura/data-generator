@@ -1,0 +1,156 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_policy_attributes
+  description: Table storing attributes associated with security policies. Allows
+    for flexible policy configuration.
+  fields:
+    - name: attribute_name
+      type: varchar!
+      description: Name of the policy attribute.
+    - name: attribute_value
+      type: varchar
+      description: Value of the policy attribute.
+    - name: security_policy_id
+      type: uuid!
+      description: Foreign key referencing the policy_id in the policies table.
+  graphql:
+    typeName: Security_security_policy_attributes
+    inputTypeName: Security_security_policy_attributes_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_policy_attributes
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_policy_attributes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - attribute_name
+          - attribute_value
+          - security_policy_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_policy_attributes_bool_exp
+  operand:
+    object:
+      type: security_policy_attributes
+      comparableFields:
+        - fieldName: attribute_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: attribute_value
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: security_policy_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_policy
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_policy_attributes_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_policy_attributes_agg_exp
+  operand:
+    object:
+      aggregatedType: security_policy_attributes
+      aggregatableFields:
+        - fieldName: attribute_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: attribute_value
+          aggregateExpression: varchar_agg_exp
+        - fieldName: security_policy_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_policy_attributes_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_policy_attributes_order_by_exp
+  operand:
+    object:
+      orderedType: security_policy_attributes
+      orderableFields:
+        - fieldName: attribute_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: attribute_value
+          orderByExpression: varchar_order_by_exp
+        - fieldName: security_policy_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_policy
+  graphql:
+    expressionTypeName: Security_security_policy_attributes_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_policy_attributes
+  objectType: security_policy_attributes
+  source:
+    dataConnectorName: security
+    collection: security_policy_attributes
+  filterExpressionType: security_policy_attributes_bool_exp
+  aggregateExpression: security_policy_attributes_agg_exp
+  orderByExpression: security_policy_attributes_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_policy_attributes
+      subscription:
+        rootField: security_policy_attributes
+    selectUniques: []
+    filterInputTypeName: Security_security_policy_attributes_filter_input
+    aggregate:
+      queryRootField: security_policy_attributes_aggregate
+      subscription:
+        rootField: security_policy_attributes_aggregate
+  description: Table storing attributes associated with security policies. Allows
+    for flexible policy configuration.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_policy_attributes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_policy
+  sourceType: security_policy_attributes
+  target:
+    model:
+      name: security_policies
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_policy_id
+      target:
+        modelField:
+          - fieldName: security_policy_id
+

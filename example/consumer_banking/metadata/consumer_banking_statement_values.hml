@@ -1,0 +1,253 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_statement_values
+  description: Stores miscellaneous values associated with a statement that aren't
+    monetary amounts, such as loyalty points, credit scores, or tier levels
+  fields:
+    - name: change_percentage
+      type: numeric
+      description: Percentage change from previous statement
+    - name: consumer_banking_statement_id
+      type: int_4!
+      description: References the statement this value belongs to
+    - name: consumer_banking_statement_value_id
+      type: int_4!
+      description: Auto-incrementing identifier for each value record
+    - name: created_at
+      type: timestamptz!
+      description: When this record was created
+    - name: description
+      type: varchar
+      description: Additional description or context for the value
+    - name: is_estimated
+      type: bool!
+      description: Whether this value is estimated rather than confirmed
+    - name: previous_value
+      type: varchar
+      description: Previous statement's value of the same type, for comparison
+    - name: reference_period_end
+      type: date
+      description: End of the period this value refers to, if different from statement
+        period
+    - name: reference_period_start
+      type: date
+      description: Start of the period this value refers to, if different from
+        statement period
+    - name: type
+      type: consumer_banking_statement_value_type!
+      description: Type of value stored
+    - name: updated_at
+      type: timestamptz!
+      description: When this record was last updated
+    - name: value
+      type: varchar!
+      description: Value content (e.g., loyalty points, tier level, credit score)
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_statement_values
+    inputTypeName: ConsumerBanking_consumer_banking_statement_values_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_statement_values
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_statement_values
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - change_percentage
+          - consumer_banking_statement_id
+          - consumer_banking_statement_value_id
+          - created_at
+          - description
+          - is_estimated
+          - previous_value
+          - reference_period_end
+          - reference_period_start
+          - type
+          - updated_at
+          - value
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_statement_values_bool_exp
+  operand:
+    object:
+      type: consumer_banking_statement_values
+      comparableFields:
+        - fieldName: change_percentage
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: consumer_banking_statement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_statement_value_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: description
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: is_estimated
+          booleanExpressionType: bool_bool_exp
+        - fieldName: previous_value
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: reference_period_end
+          booleanExpressionType: date_bool_exp
+        - fieldName: reference_period_start
+          booleanExpressionType: date_bool_exp
+        - fieldName: type
+          booleanExpressionType: consumer_banking_statement_value_type_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: value
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_statement
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_statement_values_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_statement_values_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_statement_values
+      aggregatableFields:
+        - fieldName: change_percentage
+          aggregateExpression: numeric_agg_exp
+        - fieldName: consumer_banking_statement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_statement_value_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: description
+          aggregateExpression: varchar_agg_exp
+        - fieldName: is_estimated
+          aggregateExpression: bool_agg_exp
+        - fieldName: previous_value
+          aggregateExpression: varchar_agg_exp
+        - fieldName: reference_period_end
+          aggregateExpression: date_agg_exp
+        - fieldName: reference_period_start
+          aggregateExpression: date_agg_exp
+        - fieldName: type
+          aggregateExpression: consumer_banking_statement_value_type_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: value
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_statement_values_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_statement_values_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_statement_values
+      orderableFields:
+        - fieldName: change_percentage
+          orderByExpression: numeric_order_by_exp
+        - fieldName: consumer_banking_statement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_statement_value_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: description
+          orderByExpression: varchar_order_by_exp
+        - fieldName: is_estimated
+          orderByExpression: bool_order_by_exp
+        - fieldName: previous_value
+          orderByExpression: varchar_order_by_exp
+        - fieldName: reference_period_end
+          orderByExpression: date_order_by_exp
+        - fieldName: reference_period_start
+          orderByExpression: date_order_by_exp
+        - fieldName: type
+          orderByExpression: consumer_banking_statement_value_type_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: value
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_statement
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_statement_values_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_statement_values
+  objectType: consumer_banking_statement_values
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_statement_values
+  filterExpressionType: consumer_banking_statement_values_bool_exp
+  aggregateExpression: consumer_banking_statement_values_agg_exp
+  orderByExpression: consumer_banking_statement_values_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_statement_values
+      subscription:
+        rootField: consumer_banking_statement_values
+    selectUniques:
+      - queryRootField: consumer_banking_statement_values_by_consumer_banking_statement_value_id
+        uniqueIdentifier:
+          - consumer_banking_statement_value_id
+        subscription:
+          rootField: consumer_banking_statement_values_by_consumer_banking_statement_value_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_statement_values_filter_input
+    aggregate:
+      queryRootField: consumer_banking_statement_values_aggregate
+      subscription:
+        rootField: consumer_banking_statement_values_aggregate
+  description: Stores miscellaneous values associated with a statement that aren't
+    monetary amounts, such as loyalty points, credit scores, or tier levels
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_statement_values
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_statement
+  sourceType: consumer_banking_statement_values
+  target:
+    model:
+      name: consumer_banking_statements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_statement_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_statement_id
+

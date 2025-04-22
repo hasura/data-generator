@@ -1,0 +1,187 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_account_ownership
+  description: The only table that controls account access rights. Creates the
+    mandatory link between parties and accounts. Any query checking account
+    access or ownership must start with this table. No direct relationships
+    exist between parties and other account tables.
+  fields:
+    - name: enterprise_account_id
+      type: int_4!
+      description: References the enterprise account being owned. When ownership ends,
+        access to all linked LOB accounts is terminated.
+    - name: enterprise_account_ownership_id
+      type: int_4!
+      description: Auto-incrementing, unique identifier for each account ownership record
+    - name: enterprise_party_id
+      type: int_4!
+      description: References the party who owns the account. Party must exist before
+        ownership can be established.
+  graphql:
+    typeName: Enterprise_enterprise_account_ownership
+    inputTypeName: Enterprise_enterprise_account_ownership_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_account_ownership
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_account_ownership
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - enterprise_account_id
+          - enterprise_account_ownership_id
+          - enterprise_party_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_account_ownership_bool_exp
+  operand:
+    object:
+      type: enterprise_account_ownership
+      comparableFields:
+        - fieldName: enterprise_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_account_ownership_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_account
+        - relationshipName: enterprise_party
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_account_ownership_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_account_ownership_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_account_ownership
+      aggregatableFields:
+        - fieldName: enterprise_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_account_ownership_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_account_ownership_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_account_ownership_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_account_ownership
+      orderableFields:
+        - fieldName: enterprise_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_account_ownership_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: enterprise_account
+        - relationshipName: enterprise_party
+  graphql:
+    expressionTypeName: Enterprise_enterprise_account_ownership_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_account_ownership
+  objectType: enterprise_account_ownership
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_account_ownership
+  filterExpressionType: enterprise_account_ownership_bool_exp
+  aggregateExpression: enterprise_account_ownership_agg_exp
+  orderByExpression: enterprise_account_ownership_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_account_ownership
+      subscription:
+        rootField: enterprise_account_ownership
+    selectUniques:
+      - queryRootField: enterprise_account_ownership_by_enterprise_account_ownership_id
+        uniqueIdentifier:
+          - enterprise_account_ownership_id
+        subscription:
+          rootField: enterprise_account_ownership_by_enterprise_account_ownership_id
+    filterInputTypeName: Enterprise_enterprise_account_ownership_filter_input
+    aggregate:
+      queryRootField: enterprise_account_ownership_aggregate
+      subscription:
+        rootField: enterprise_account_ownership_aggregate
+  description: The only table that controls account access rights. Creates the
+    mandatory link between parties and accounts. Any query checking account
+    access or ownership must start with this table. No direct relationships
+    exist between parties and other account tables.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_account_ownership
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_account
+  sourceType: enterprise_account_ownership
+  target:
+    model:
+      name: enterprise_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_account_id
+      target:
+        modelField:
+          - fieldName: enterprise_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party
+  sourceType: enterprise_account_ownership
+  target:
+    model:
+      name: enterprise_parties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+

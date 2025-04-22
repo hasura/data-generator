@@ -1,0 +1,163 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_open_ports
+  description: Table storing information about open ports on systems, tracking
+    network services and potential vulnerabilities.
+  fields:
+    - name: port_number
+      type: int_4!
+      description: Port number that is open.
+    - name: protocol
+      type: security_network_protocols!
+      description: Network protocol associated with the open port.
+    - name: security_host_id
+      type: uuid!
+      description: Identifier of the system with the open port.
+  graphql:
+    typeName: Security_security_open_ports
+    inputTypeName: Security_security_open_ports_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_open_ports
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_open_ports
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - port_number
+          - protocol
+          - security_host_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_open_ports_bool_exp
+  operand:
+    object:
+      type: security_open_ports
+      comparableFields:
+        - fieldName: port_number
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: protocol
+          booleanExpressionType: security_network_protocols_bool_exp
+        - fieldName: security_host_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_host
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_open_ports_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_open_ports_agg_exp
+  operand:
+    object:
+      aggregatedType: security_open_ports
+      aggregatableFields:
+        - fieldName: port_number
+          aggregateExpression: int_4_agg_exp
+        - fieldName: protocol
+          aggregateExpression: security_network_protocols_agg_exp
+        - fieldName: security_host_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_open_ports_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_open_ports_order_by_exp
+  operand:
+    object:
+      orderedType: security_open_ports
+      orderableFields:
+        - fieldName: port_number
+          orderByExpression: int_4_order_by_exp
+        - fieldName: protocol
+          orderByExpression: security_network_protocols_order_by_exp
+        - fieldName: security_host_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_host
+  graphql:
+    expressionTypeName: Security_security_open_ports_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_open_ports
+  objectType: security_open_ports
+  source:
+    dataConnectorName: security
+    collection: security_open_ports
+  filterExpressionType: security_open_ports_bool_exp
+  aggregateExpression: security_open_ports_agg_exp
+  orderByExpression: security_open_ports_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_open_ports
+      subscription:
+        rootField: security_open_ports
+    selectUniques:
+      - queryRootField: security_open_ports_by_open_ports_pkey
+        uniqueIdentifier:
+          - port_number
+          - protocol
+          - security_host_id
+        subscription:
+          rootField: security_open_ports_by_open_ports_pkey
+    filterInputTypeName: Security_security_open_ports_filter_input
+    aggregate:
+      queryRootField: security_open_ports_aggregate
+      subscription:
+        rootField: security_open_ports_aggregate
+  description: Table storing information about open ports on systems, tracking
+    network services and potential vulnerabilities.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_open_ports
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_open_ports
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_host_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+

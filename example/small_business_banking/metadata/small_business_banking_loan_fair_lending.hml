@@ -1,0 +1,411 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_loan_fair_lending
+  description: Captures data required for small business lending fair lending
+    analysis and reporting
+  fields:
+    - name: action_taken
+      type: varchar!
+      description: Action taken (approved, denied, withdrawn, etc.)
+    - name: amount_approved
+      type: numeric
+      description: Approved loan amount (if applicable)
+    - name: application_date
+      type: date!
+      description: Date the loan application was received
+    - name: census_tract
+      type: varchar
+      description: Census tract of the business location
+    - name: decision_date
+      type: date!
+      description: Date of the credit decision
+    - name: denial_reason_1
+      type: varchar
+      description: Primary reason for denial (if applicable)
+    - name: denial_reason_2
+      type: varchar
+      description: Secondary reason for denial (if applicable)
+    - name: denial_reason_3
+      type: varchar
+      description: Tertiary reason for denial (if applicable)
+    - name: denial_reason_4
+      type: varchar
+      description: Quaternary reason for denial (if applicable)
+    - name: exemption_claimed
+      type: bool!
+      description: Whether an exemption from reporting was claimed
+    - name: exemption_reason
+      type: varchar
+      description: Reason for reporting exemption (if applicable)
+    - name: lgbtq_owned
+      type: bool
+      description: Whether business is LGBTQ-owned
+    - name: loan_amount
+      type: numeric!
+      description: Requested loan amount
+    - name: loan_purpose
+      type: varchar!
+      description: Purpose of the loan
+    - name: loan_type
+      type: varchar!
+      description: Type of loan (term loan, line of credit, etc.)
+    - name: minority_owned
+      type: bool
+      description: Whether business is minority-owned
+    - name: msa_md
+      type: varchar
+      description: Metropolitan Statistical Area/Metropolitan Division code
+    - name: naics_code
+      type: varchar
+      description: North American Industry Classification System code
+    - name: number_of_employees
+      type: int_4
+      description: Number of business employees
+    - name: rate_spread
+      type: numeric
+      description: Difference between APR and average prime offer rate
+    - name: reported_revenue
+      type: numeric!
+      description: Gross annual revenue of the business as reported
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business
+    - name: small_business_banking_lending_record_id
+      type: int_4!
+      description: Unique identifier for each fair lending record
+    - name: small_business_banking_loan_id
+      type: int_4!
+      description: Reference to the loan
+    - name: veteran_owned
+      type: bool
+      description: Whether business is veteran-owned
+    - name: women_owned
+      type: bool
+      description: Whether business is women-owned
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_loan_fair_lending
+    inputTypeName: SmallBusinessBanking_small_business_banking_loan_fair_lending_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_loan_fair_lending
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_loan_fair_lending
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - action_taken
+          - amount_approved
+          - application_date
+          - census_tract
+          - decision_date
+          - denial_reason_1
+          - denial_reason_2
+          - denial_reason_3
+          - denial_reason_4
+          - exemption_claimed
+          - exemption_reason
+          - lgbtq_owned
+          - loan_amount
+          - loan_purpose
+          - loan_type
+          - minority_owned
+          - msa_md
+          - naics_code
+          - number_of_employees
+          - rate_spread
+          - reported_revenue
+          - small_business_banking_business_id
+          - small_business_banking_lending_record_id
+          - small_business_banking_loan_id
+          - veteran_owned
+          - women_owned
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_loan_fair_lending_bool_exp
+  operand:
+    object:
+      type: small_business_banking_loan_fair_lending
+      comparableFields:
+        - fieldName: action_taken
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: amount_approved
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: application_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: census_tract
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: decision_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: denial_reason_1
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: denial_reason_2
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: denial_reason_3
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: denial_reason_4
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: exemption_claimed
+          booleanExpressionType: bool_bool_exp
+        - fieldName: exemption_reason
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: lgbtq_owned
+          booleanExpressionType: bool_bool_exp
+        - fieldName: loan_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: loan_purpose
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: loan_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: minority_owned
+          booleanExpressionType: bool_bool_exp
+        - fieldName: msa_md
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: naics_code
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: number_of_employees
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: rate_spread
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: reported_revenue
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_lending_record_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_loan_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: veteran_owned
+          booleanExpressionType: bool_bool_exp
+        - fieldName: women_owned
+          booleanExpressionType: bool_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_business
+        - relationshipName: small_business_banking_loan
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_loan_fair_lending_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_loan_fair_lending_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_loan_fair_lending
+      aggregatableFields:
+        - fieldName: action_taken
+          aggregateExpression: varchar_agg_exp
+        - fieldName: amount_approved
+          aggregateExpression: numeric_agg_exp
+        - fieldName: application_date
+          aggregateExpression: date_agg_exp
+        - fieldName: census_tract
+          aggregateExpression: varchar_agg_exp
+        - fieldName: decision_date
+          aggregateExpression: date_agg_exp
+        - fieldName: denial_reason_1
+          aggregateExpression: varchar_agg_exp
+        - fieldName: denial_reason_2
+          aggregateExpression: varchar_agg_exp
+        - fieldName: denial_reason_3
+          aggregateExpression: varchar_agg_exp
+        - fieldName: denial_reason_4
+          aggregateExpression: varchar_agg_exp
+        - fieldName: exemption_claimed
+          aggregateExpression: bool_agg_exp
+        - fieldName: exemption_reason
+          aggregateExpression: varchar_agg_exp
+        - fieldName: lgbtq_owned
+          aggregateExpression: bool_agg_exp
+        - fieldName: loan_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: loan_purpose
+          aggregateExpression: varchar_agg_exp
+        - fieldName: loan_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: minority_owned
+          aggregateExpression: bool_agg_exp
+        - fieldName: msa_md
+          aggregateExpression: varchar_agg_exp
+        - fieldName: naics_code
+          aggregateExpression: varchar_agg_exp
+        - fieldName: number_of_employees
+          aggregateExpression: int_4_agg_exp
+        - fieldName: rate_spread
+          aggregateExpression: numeric_agg_exp
+        - fieldName: reported_revenue
+          aggregateExpression: numeric_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_lending_record_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_loan_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: veteran_owned
+          aggregateExpression: bool_agg_exp
+        - fieldName: women_owned
+          aggregateExpression: bool_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_loan_fair_lending_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_loan_fair_lending_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_loan_fair_lending
+      orderableFields:
+        - fieldName: action_taken
+          orderByExpression: varchar_order_by_exp
+        - fieldName: amount_approved
+          orderByExpression: numeric_order_by_exp
+        - fieldName: application_date
+          orderByExpression: date_order_by_exp
+        - fieldName: census_tract
+          orderByExpression: varchar_order_by_exp
+        - fieldName: decision_date
+          orderByExpression: date_order_by_exp
+        - fieldName: denial_reason_1
+          orderByExpression: varchar_order_by_exp
+        - fieldName: denial_reason_2
+          orderByExpression: varchar_order_by_exp
+        - fieldName: denial_reason_3
+          orderByExpression: varchar_order_by_exp
+        - fieldName: denial_reason_4
+          orderByExpression: varchar_order_by_exp
+        - fieldName: exemption_claimed
+          orderByExpression: bool_order_by_exp
+        - fieldName: exemption_reason
+          orderByExpression: varchar_order_by_exp
+        - fieldName: lgbtq_owned
+          orderByExpression: bool_order_by_exp
+        - fieldName: loan_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: loan_purpose
+          orderByExpression: varchar_order_by_exp
+        - fieldName: loan_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: minority_owned
+          orderByExpression: bool_order_by_exp
+        - fieldName: msa_md
+          orderByExpression: varchar_order_by_exp
+        - fieldName: naics_code
+          orderByExpression: varchar_order_by_exp
+        - fieldName: number_of_employees
+          orderByExpression: int_4_order_by_exp
+        - fieldName: rate_spread
+          orderByExpression: numeric_order_by_exp
+        - fieldName: reported_revenue
+          orderByExpression: numeric_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_lending_record_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_loan_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: veteran_owned
+          orderByExpression: bool_order_by_exp
+        - fieldName: women_owned
+          orderByExpression: bool_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_business
+        - relationshipName: small_business_banking_loan
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_loan_fair_lending_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_loan_fair_lending
+  objectType: small_business_banking_loan_fair_lending
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_loan_fair_lending
+  filterExpressionType: small_business_banking_loan_fair_lending_bool_exp
+  aggregateExpression: small_business_banking_loan_fair_lending_agg_exp
+  orderByExpression: small_business_banking_loan_fair_lending_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_loan_fair_lending
+      subscription:
+        rootField: small_business_banking_loan_fair_lending
+    selectUniques:
+      - queryRootField: small_business_banking_loan_fair_lending_by_small_business_banking_lending_record_id
+        uniqueIdentifier:
+          - small_business_banking_lending_record_id
+        subscription:
+          rootField: small_business_banking_loan_fair_lending_by_small_business_banking_lending_record_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_loan_fair_lending_filter_input
+    aggregate:
+      queryRootField: small_business_banking_loan_fair_lending_aggregate
+      subscription:
+        rootField: small_business_banking_loan_fair_lending_aggregate
+  description: Captures data required for small business lending fair lending
+    analysis and reporting
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_loan_fair_lending
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_loan_fair_lending
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_loan
+  sourceType: small_business_banking_loan_fair_lending
+  target:
+    model:
+      name: small_business_banking_loans
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_loan_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_loan_id
+

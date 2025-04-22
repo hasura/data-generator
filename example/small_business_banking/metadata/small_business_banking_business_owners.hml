@@ -1,0 +1,214 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: small_business_banking_business_owners
+  description: Identifies individuals who own or have significant control over a
+    business entity
+  fields:
+    - name: enterprise_party_id
+      type: int_4!
+      description: Reference to the enterprise party record representing this individual
+    - name: is_guarantor
+      type: bool!
+      description: Indicates if this owner serves as a loan guarantor
+    - name: ownership_percentage
+      type: numeric!
+      description: Percentage of business ownership (0-100)
+    - name: role
+      type: varchar!
+      description: Role in the business (e.g., CEO, CFO, Managing Partner)
+    - name: small_business_banking_business_id
+      type: int_4!
+      description: Reference to the business the person owns or controls
+    - name: small_business_banking_business_owner_id
+      type: int_4!
+      description: Unique identifier for each business owner record
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_owners
+    inputTypeName: SmallBusinessBanking_small_business_banking_business_owners_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: small_business_banking
+      dataConnectorObjectType: small_business_banking_business_owners
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: small_business_banking_business_owners
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - enterprise_party_id
+          - is_guarantor
+          - ownership_percentage
+          - role
+          - small_business_banking_business_id
+          - small_business_banking_business_owner_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: small_business_banking_business_owners_bool_exp
+  operand:
+    object:
+      type: small_business_banking_business_owners
+      comparableFields:
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: is_guarantor
+          booleanExpressionType: bool_bool_exp
+        - fieldName: ownership_percentage
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: role
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: small_business_banking_business_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: small_business_banking_business_owner_id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: small_business_banking_beneficial_owner_verifications
+        - relationshipName: small_business_banking_business
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SmallBusinessBanking_small_business_banking_business_owners_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: small_business_banking_business_owners_agg_exp
+  operand:
+    object:
+      aggregatedType: small_business_banking_business_owners
+      aggregatableFields:
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: is_guarantor
+          aggregateExpression: bool_agg_exp
+        - fieldName: ownership_percentage
+          aggregateExpression: numeric_agg_exp
+        - fieldName: role
+          aggregateExpression: varchar_agg_exp
+        - fieldName: small_business_banking_business_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: small_business_banking_business_owner_id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: SmallBusinessBanking_small_business_banking_business_owners_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: small_business_banking_business_owners_order_by_exp
+  operand:
+    object:
+      orderedType: small_business_banking_business_owners
+      orderableFields:
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: is_guarantor
+          orderByExpression: bool_order_by_exp
+        - fieldName: ownership_percentage
+          orderByExpression: numeric_order_by_exp
+        - fieldName: role
+          orderByExpression: varchar_order_by_exp
+        - fieldName: small_business_banking_business_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: small_business_banking_business_owner_id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: small_business_banking_business
+  graphql:
+    expressionTypeName: SmallBusinessBanking_small_business_banking_business_owners_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: small_business_banking_business_owners
+  objectType: small_business_banking_business_owners
+  source:
+    dataConnectorName: small_business_banking
+    collection: small_business_banking_business_owners
+  filterExpressionType: small_business_banking_business_owners_bool_exp
+  aggregateExpression: small_business_banking_business_owners_agg_exp
+  orderByExpression: small_business_banking_business_owners_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: small_business_banking_business_owners
+      subscription:
+        rootField: small_business_banking_business_owners
+    selectUniques:
+      - queryRootField: small_business_banking_business_owners_by_small_business_banking_business_owner_id
+        uniqueIdentifier:
+          - small_business_banking_business_owner_id
+        subscription:
+          rootField: small_business_banking_business_owners_by_small_business_banking_business_owner_id
+    filterInputTypeName: SmallBusinessBanking_small_business_banking_business_owners_filter_input
+    aggregate:
+      queryRootField: small_business_banking_business_owners_aggregate
+      subscription:
+        rootField: small_business_banking_business_owners_aggregate
+  description: Identifies individuals who own or have significant control over a
+    business entity
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: small_business_banking_business_owners
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_beneficial_owner_verifications
+  sourceType: small_business_banking_business_owners
+  target:
+    model:
+      name: small_business_banking_beneficial_owner_verification
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: small_business_banking_beneficial_owner_verification_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_owner_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_owner_id
+  graphql:
+    aggregateFieldName: small_business_banking_beneficial_owner_verifications_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: small_business_banking_business
+  sourceType: small_business_banking_business_owners
+  target:
+    model:
+      name: small_business_banking_businesses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: small_business_banking_business_id
+      target:
+        modelField:
+          - fieldName: small_business_banking_business_id
+

@@ -1,0 +1,307 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_identities
+  description: Table storing information about user identities, representing
+    individuals or entities.
+  fields:
+    - name: created
+      type: timestamp
+      description: Timestamp when the identity was created.
+    - name: display_name
+      type: varchar
+      description: User-friendly name of the identity.
+    - name: environment
+      type: security_environment
+      description: Identifies access to an environment e.g production, development, etc.
+    - name: inactive
+      type: bool
+      description: Indicates if the identity is inactive.
+    - name: is_fallback_approver
+      type: bool
+      description: Indicates if the identity is a fallback approver.
+    - name: modified
+      type: timestamp
+      description: Timestamp when the identity was last modified.
+    - name: name
+      type: varchar
+      description: Internal name of the identity.
+    - name: owner_id
+      type: int_4
+    - name: security_identity_id
+      type: uuid!
+      description: Unique identifier for the identity.
+    - name: security_identity_profile_id
+      type: uuid
+      description: Identifier of the identity profile associated with the identity.
+    - name: service_account
+      type: bool
+      description: If false than access is considered to be on behalf of the owner,
+        otherwise this is service account used for system to system automation
+    - name: status
+      type: varchar
+      description: Status of the identity.
+    - name: synced
+      type: timestamp
+      description: Timestamp when the identity was last synced.
+  graphql:
+    typeName: Security_security_identities
+    inputTypeName: Security_security_identities_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_identities
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_identities
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created
+          - display_name
+          - environment
+          - inactive
+          - is_fallback_approver
+          - modified
+          - name
+          - owner_id
+          - security_identity_id
+          - security_identity_profile_id
+          - service_account
+          - status
+          - synced
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_identities_bool_exp
+  operand:
+    object:
+      type: security_identities
+      comparableFields:
+        - fieldName: created
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: display_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: environment
+          booleanExpressionType: security_environment_bool_exp
+        - fieldName: inactive
+          booleanExpressionType: bool_bool_exp
+        - fieldName: is_fallback_approver
+          booleanExpressionType: bool_bool_exp
+        - fieldName: modified
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: owner_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: security_identity_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_identity_profile_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: service_account
+          booleanExpressionType: bool_bool_exp
+        - fieldName: status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: synced
+          booleanExpressionType: timestamp_bool_exp
+      comparableRelationships:
+        - relationshipName: security_accounts
+        - relationshipName: security_identity_profile
+        - relationshipName: security_identity_roles
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_identities_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_identities_agg_exp
+  operand:
+    object:
+      aggregatedType: security_identities
+      aggregatableFields:
+        - fieldName: created
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: display_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: environment
+          aggregateExpression: security_environment_agg_exp
+        - fieldName: inactive
+          aggregateExpression: bool_agg_exp
+        - fieldName: is_fallback_approver
+          aggregateExpression: bool_agg_exp
+        - fieldName: modified
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: owner_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: security_identity_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_identity_profile_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: service_account
+          aggregateExpression: bool_agg_exp
+        - fieldName: status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: synced
+          aggregateExpression: timestamp_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_identities_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_identities_order_by_exp
+  operand:
+    object:
+      orderedType: security_identities
+      orderableFields:
+        - fieldName: created
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: display_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: environment
+          orderByExpression: security_environment_order_by_exp
+        - fieldName: inactive
+          orderByExpression: bool_order_by_exp
+        - fieldName: is_fallback_approver
+          orderByExpression: bool_order_by_exp
+        - fieldName: modified
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: owner_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: security_identity_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_identity_profile_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: service_account
+          orderByExpression: bool_order_by_exp
+        - fieldName: status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: synced
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_identity_profile
+  graphql:
+    expressionTypeName: Security_security_identities_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_identities
+  objectType: security_identities
+  source:
+    dataConnectorName: security
+    collection: security_identities
+  filterExpressionType: security_identities_bool_exp
+  aggregateExpression: security_identities_agg_exp
+  orderByExpression: security_identities_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_identities
+      subscription:
+        rootField: security_identities
+    selectUniques:
+      - queryRootField: security_identities_by_security_identity_id
+        uniqueIdentifier:
+          - security_identity_id
+        subscription:
+          rootField: security_identities_by_security_identity_id
+    filterInputTypeName: Security_security_identities_filter_input
+    aggregate:
+      queryRootField: security_identities_aggregate
+      subscription:
+        rootField: security_identities_aggregate
+  description: Table storing information about user identities, representing
+    individuals or entities.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_identities
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_accounts
+  sourceType: security_identities
+  target:
+    model:
+      name: security_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_identity_id
+      target:
+        modelField:
+          - fieldName: security_identity_id
+  graphql:
+    aggregateFieldName: security_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_identity_profile
+  sourceType: security_identities
+  target:
+    model:
+      name: security_identity_profiles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_identity_profile_id
+      target:
+        modelField:
+          - fieldName: security_identity_profile_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_identity_roles
+  sourceType: security_identities
+  target:
+    model:
+      name: security_identity_roles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_identity_roles_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_identity_id
+      target:
+        modelField:
+          - fieldName: security_identity_id
+  graphql:
+    aggregateFieldName: security_identity_roles_aggregate
+

@@ -1,0 +1,231 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_file_accesses
+  description: Table storing information about file access events, tracking file
+    usage and access patterns.
+  fields:
+    - name: access_time
+      type: timestamp
+      description: Timestamp when the file access occurred.
+    - name: access_type
+      type: varchar
+      description: Type of file access (e.g., read, write, execute).
+    - name: security_file_access_id
+      type: uuid!
+      description: Unique identifier for the file access event.
+    - name: security_file_id
+      type: uuid!
+      description: Identifier of the accessed file.
+    - name: security_process_execution_id
+      type: uuid!
+      description: Identifier of the process execution that initiated the file access.
+    - name: security_system_id
+      type: uuid!
+      description: Identifier of the system where the file access occurred.
+  graphql:
+    typeName: Security_security_file_accesses
+    inputTypeName: Security_security_file_accesses_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_file_accesses
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_file_accesses
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - access_time
+          - access_type
+          - security_file_access_id
+          - security_file_id
+          - security_process_execution_id
+          - security_system_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_file_accesses_bool_exp
+  operand:
+    object:
+      type: security_file_accesses
+      comparableFields:
+        - fieldName: access_time
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: access_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: security_file_access_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_file_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_process_execution_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_system_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_file
+        - relationshipName: security_process_execution
+        - relationshipName: security_host
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_file_accesses_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_file_accesses_agg_exp
+  operand:
+    object:
+      aggregatedType: security_file_accesses
+      aggregatableFields:
+        - fieldName: access_time
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: access_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: security_file_access_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_file_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_process_execution_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_system_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_file_accesses_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_file_accesses_order_by_exp
+  operand:
+    object:
+      orderedType: security_file_accesses
+      orderableFields:
+        - fieldName: access_time
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: access_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: security_file_access_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_file_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_process_execution_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_system_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_file
+        - relationshipName: security_process_execution
+        - relationshipName: security_host
+  graphql:
+    expressionTypeName: Security_security_file_accesses_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_file_accesses
+  objectType: security_file_accesses
+  source:
+    dataConnectorName: security
+    collection: security_file_accesses
+  filterExpressionType: security_file_accesses_bool_exp
+  aggregateExpression: security_file_accesses_agg_exp
+  orderByExpression: security_file_accesses_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_file_accesses
+      subscription:
+        rootField: security_file_accesses
+    selectUniques:
+      - queryRootField: security_file_accesses_by_security_file_access_id
+        uniqueIdentifier:
+          - security_file_access_id
+        subscription:
+          rootField: security_file_accesses_by_security_file_access_id
+    filterInputTypeName: Security_security_file_accesses_filter_input
+    aggregate:
+      queryRootField: security_file_accesses_aggregate
+      subscription:
+        rootField: security_file_accesses_aggregate
+  description: Table storing information about file access events, tracking file
+    usage and access patterns.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_file_accesses
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_file
+  sourceType: security_file_accesses
+  target:
+    model:
+      name: security_files
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_file_id
+      target:
+        modelField:
+          - fieldName: security_file_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_process_execution
+  sourceType: security_file_accesses
+  target:
+    model:
+      name: security_process_executions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_process_execution_id
+      target:
+        modelField:
+          - fieldName: security_process_execution_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_host
+  sourceType: security_file_accesses
+  target:
+    model:
+      name: security_hosts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_system_id
+      target:
+        modelField:
+          - fieldName: security_host_id
+

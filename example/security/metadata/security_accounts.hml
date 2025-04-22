@@ -1,0 +1,318 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_accounts
+  description: Table storing information about user accounts across various systems.
+  fields:
+    - name: account_id_string
+      type: varchar
+      description: String representation of the account ID.
+    - name: created
+      type: timestamp
+      description: Timestamp when the account was created.
+    - name: disabled
+      type: bool
+      description: Indicates if the account is disabled.
+    - name: locked
+      type: bool
+      description: Indicates if the account is locked.
+    - name: manually_correlated
+      type: bool
+      description: Indicates if the account was manually correlated.
+    - name: name
+      type: varchar
+      description: Name of the account.
+    - name: password_last_set
+      type: timestamp
+      description: Timestamp when the account password was last set.
+    - name: privileged
+      type: bool
+      description: Indicates if the account has privileged access.
+    - name: security_account_id
+      type: uuid!
+      description: Unique identifier for the account.
+    - name: security_identity_id
+      type: uuid
+      description: Identifier of the associated identity.
+    - name: security_source_id
+      type: uuid
+      description: Identifier of the source system for the account.
+    - name: status_update_date_time
+      type: timestamp
+      description: Timestamp when the account status was last updated
+  graphql:
+    typeName: Security_security_accounts
+    inputTypeName: Security_security_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_accounts
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id_string
+          - created
+          - disabled
+          - locked
+          - manually_correlated
+          - name
+          - password_last_set
+          - privileged
+          - security_account_id
+          - security_identity_id
+          - security_source_id
+          - status_update_date_time
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_accounts_bool_exp
+  operand:
+    object:
+      type: security_accounts
+      comparableFields:
+        - fieldName: account_id_string
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: created
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: disabled
+          booleanExpressionType: bool_bool_exp
+        - fieldName: locked
+          booleanExpressionType: bool_bool_exp
+        - fieldName: manually_correlated
+          booleanExpressionType: bool_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: password_last_set
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: privileged
+          booleanExpressionType: bool_bool_exp
+        - fieldName: security_account_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_identity_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_source_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: status_update_date_time
+          booleanExpressionType: timestamp_bool_exp
+      comparableRelationships:
+        - relationshipName: security_identity
+        - relationshipName: security_iam_logins
+        - relationshipName: security_security_account_enterprise_accounts
+        - relationshipName: security_security_account_roles
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: security_accounts
+      aggregatableFields:
+        - fieldName: account_id_string
+          aggregateExpression: varchar_agg_exp
+        - fieldName: created
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: disabled
+          aggregateExpression: bool_agg_exp
+        - fieldName: locked
+          aggregateExpression: bool_agg_exp
+        - fieldName: manually_correlated
+          aggregateExpression: bool_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: password_last_set
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: privileged
+          aggregateExpression: bool_agg_exp
+        - fieldName: security_account_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_identity_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_source_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: status_update_date_time
+          aggregateExpression: timestamp_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: security_accounts
+      orderableFields:
+        - fieldName: account_id_string
+          orderByExpression: varchar_order_by_exp
+        - fieldName: created
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: disabled
+          orderByExpression: bool_order_by_exp
+        - fieldName: locked
+          orderByExpression: bool_order_by_exp
+        - fieldName: manually_correlated
+          orderByExpression: bool_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: password_last_set
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: privileged
+          orderByExpression: bool_order_by_exp
+        - fieldName: security_account_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_identity_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_source_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: status_update_date_time
+          orderByExpression: timestamp_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_identity
+  graphql:
+    expressionTypeName: Security_security_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_accounts
+  objectType: security_accounts
+  source:
+    dataConnectorName: security
+    collection: security_accounts
+  filterExpressionType: security_accounts_bool_exp
+  aggregateExpression: security_accounts_agg_exp
+  orderByExpression: security_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_accounts
+      subscription:
+        rootField: security_accounts
+    selectUniques:
+      - queryRootField: security_accounts_by_security_account_id
+        uniqueIdentifier:
+          - security_account_id
+        subscription:
+          rootField: security_accounts_by_security_account_id
+    filterInputTypeName: Security_security_accounts_filter_input
+    aggregate:
+      queryRootField: security_accounts_aggregate
+      subscription:
+        rootField: security_accounts_aggregate
+  description: Table storing information about user accounts across various systems.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_identity
+  sourceType: security_accounts
+  target:
+    model:
+      name: security_identities
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_identity_id
+      target:
+        modelField:
+          - fieldName: security_identity_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_iam_logins
+  sourceType: security_accounts
+  target:
+    model:
+      name: security_iam_logins
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_iam_logins_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_account_id
+      target:
+        modelField:
+          - fieldName: security_account_id
+  graphql:
+    aggregateFieldName: security_iam_logins_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_security_account_enterprise_accounts
+  sourceType: security_accounts
+  target:
+    model:
+      name: security_security_account_enterprise_accounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_security_account_enterprise_accounts_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_account_id
+      target:
+        modelField:
+          - fieldName: security_account_id
+  graphql:
+    aggregateFieldName: security_security_account_enterprise_accounts_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_security_account_roles
+  sourceType: security_accounts
+  target:
+    model:
+      name: security_security_account_roles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_security_account_roles_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_account_id
+      target:
+        modelField:
+          - fieldName: security_account_id
+  graphql:
+    aggregateFieldName: security_security_account_roles_aggregate
+

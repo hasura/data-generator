@@ -1,0 +1,320 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: credit_cards_reg_z_credit_card_disclosures
+  description: Tracks Truth in Lending Act disclosures required for credit cards
+  fields:
+    - name: annual_fee
+      type: numeric
+      description: Annual fee disclosed
+    - name: annual_percentage_rate
+      type: numeric
+      description: APR disclosed
+    - name: balance_computation_method
+      type: varchar
+      description: Method used to calculate balance
+    - name: credit_cards_application_id
+      type: int_4
+      description: Reference to applications if pre-account opening
+    - name: credit_cards_card_account_id
+      type: int_4
+      description: Reference to card_accounts if post-account opening
+    - name: credit_cards_disclosure_id
+      type: int_4!
+      description: Auto-incrementing identifier for each disclosure
+    - name: delivery_method
+      type: varchar!
+      description: How disclosure was delivered (Mail, Electronic)
+    - name: disclosure_date
+      type: timestamptz!
+      description: Date disclosure was generated
+    - name: disclosure_type
+      type: varchar!
+      description: Type of Reg Z disclosure (Solicitation, Application,
+        Account-Opening, Periodic Statement)
+    - name: document_path
+      type: varchar
+      description: Path to stored disclosure document
+    - name: grace_period_disclosure
+      type: text
+      description: Grace period disclosure text
+    - name: late_payment_fee
+      type: numeric
+      description: Late payment fee disclosed
+    - name: over_limit_fee
+      type: numeric
+      description: Over-limit fee disclosed
+    - name: transaction_fee_balance_transfers
+      type: numeric
+      description: Fee for balance transfers
+    - name: transaction_fee_cash_advance
+      type: numeric
+      description: Fee for cash advances
+    - name: transaction_fee_purchases
+      type: numeric
+      description: Fee for purchases if any
+    - name: variable_rate_indicator
+      type: bool
+      description: Whether rate is variable
+  graphql:
+    typeName: CreditCards_credit_cards_reg_z_credit_card_disclosures
+    inputTypeName: CreditCards_credit_cards_reg_z_credit_card_disclosures_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: credit_cards
+      dataConnectorObjectType: credit_cards_reg_z_credit_card_disclosures
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: credit_cards_reg_z_credit_card_disclosures
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - annual_fee
+          - annual_percentage_rate
+          - balance_computation_method
+          - credit_cards_application_id
+          - credit_cards_card_account_id
+          - credit_cards_disclosure_id
+          - delivery_method
+          - disclosure_date
+          - disclosure_type
+          - document_path
+          - grace_period_disclosure
+          - late_payment_fee
+          - over_limit_fee
+          - transaction_fee_balance_transfers
+          - transaction_fee_cash_advance
+          - transaction_fee_purchases
+          - variable_rate_indicator
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: credit_cards_reg_z_credit_card_disclosures_bool_exp
+  operand:
+    object:
+      type: credit_cards_reg_z_credit_card_disclosures
+      comparableFields:
+        - fieldName: annual_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: annual_percentage_rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: balance_computation_method
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: credit_cards_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_card_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_cards_disclosure_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: delivery_method
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: disclosure_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: disclosure_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: grace_period_disclosure
+          booleanExpressionType: text_bool_exp
+        - fieldName: late_payment_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: over_limit_fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: transaction_fee_balance_transfers
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: transaction_fee_cash_advance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: transaction_fee_purchases
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: variable_rate_indicator
+          booleanExpressionType: bool_bool_exp
+      comparableRelationships:
+        - relationshipName: credit_cards_application
+        - relationshipName: credit_cards_card_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: CreditCards_credit_cards_reg_z_credit_card_disclosures_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: credit_cards_reg_z_credit_card_disclosures_agg_exp
+  operand:
+    object:
+      aggregatedType: credit_cards_reg_z_credit_card_disclosures
+      aggregatableFields:
+        - fieldName: annual_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: annual_percentage_rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: balance_computation_method
+          aggregateExpression: varchar_agg_exp
+        - fieldName: credit_cards_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_card_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_cards_disclosure_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: delivery_method
+          aggregateExpression: varchar_agg_exp
+        - fieldName: disclosure_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: disclosure_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: grace_period_disclosure
+          aggregateExpression: text_agg_exp
+        - fieldName: late_payment_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: over_limit_fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: transaction_fee_balance_transfers
+          aggregateExpression: numeric_agg_exp
+        - fieldName: transaction_fee_cash_advance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: transaction_fee_purchases
+          aggregateExpression: numeric_agg_exp
+        - fieldName: variable_rate_indicator
+          aggregateExpression: bool_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: CreditCards_credit_cards_reg_z_credit_card_disclosures_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: credit_cards_reg_z_credit_card_disclosures_order_by_exp
+  operand:
+    object:
+      orderedType: credit_cards_reg_z_credit_card_disclosures
+      orderableFields:
+        - fieldName: annual_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: annual_percentage_rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: balance_computation_method
+          orderByExpression: varchar_order_by_exp
+        - fieldName: credit_cards_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_card_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_cards_disclosure_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: delivery_method
+          orderByExpression: varchar_order_by_exp
+        - fieldName: disclosure_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: disclosure_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: grace_period_disclosure
+          orderByExpression: text_order_by_exp
+        - fieldName: late_payment_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: over_limit_fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: transaction_fee_balance_transfers
+          orderByExpression: numeric_order_by_exp
+        - fieldName: transaction_fee_cash_advance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: transaction_fee_purchases
+          orderByExpression: numeric_order_by_exp
+        - fieldName: variable_rate_indicator
+          orderByExpression: bool_order_by_exp
+      orderableRelationships:
+        - relationshipName: credit_cards_application
+        - relationshipName: credit_cards_card_account
+  graphql:
+    expressionTypeName: CreditCards_credit_cards_reg_z_credit_card_disclosures_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: credit_cards_reg_z_credit_card_disclosures
+  objectType: credit_cards_reg_z_credit_card_disclosures
+  source:
+    dataConnectorName: credit_cards
+    collection: credit_cards_reg_z_credit_card_disclosures
+  filterExpressionType: credit_cards_reg_z_credit_card_disclosures_bool_exp
+  aggregateExpression: credit_cards_reg_z_credit_card_disclosures_agg_exp
+  orderByExpression: credit_cards_reg_z_credit_card_disclosures_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: credit_cards_reg_z_credit_card_disclosures
+      subscription:
+        rootField: credit_cards_reg_z_credit_card_disclosures
+    selectUniques:
+      - queryRootField: credit_cards_reg_z_credit_card_disclosures_by_credit_cards_disclosure_id
+        uniqueIdentifier:
+          - credit_cards_disclosure_id
+        subscription:
+          rootField: credit_cards_reg_z_credit_card_disclosures_by_credit_cards_disclosure_id
+    filterInputTypeName: CreditCards_credit_cards_reg_z_credit_card_disclosures_filter_input
+    aggregate:
+      queryRootField: credit_cards_reg_z_credit_card_disclosures_aggregate
+      subscription:
+        rootField: credit_cards_reg_z_credit_card_disclosures_aggregate
+  description: Tracks Truth in Lending Act disclosures required for credit cards
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: credit_cards_reg_z_credit_card_disclosures
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_application
+  sourceType: credit_cards_reg_z_credit_card_disclosures
+  target:
+    model:
+      name: credit_cards_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_application_id
+      target:
+        modelField:
+          - fieldName: credit_cards_application_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: credit_cards_card_account
+  sourceType: credit_cards_reg_z_credit_card_disclosures
+  target:
+    model:
+      name: credit_cards_card_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+

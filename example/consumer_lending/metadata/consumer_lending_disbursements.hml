@@ -1,0 +1,261 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_disbursements
+  description: Tracks the disbursement of funds for loan accounts, including the
+    date, amount, method, and recipient information.
+  fields:
+    - name: check_number
+      type: varchar
+      description: Check number if applicable
+    - name: consumer_lending_loan_account_id
+      type: int_4!
+      description: Reference to loan account
+    - name: disbursement_amount
+      type: numeric!
+      description: Amount disbursed
+    - name: disbursement_date
+      type: date!
+      description: Date funds were disbursed
+    - name: disbursement_id
+      type: int_4!
+      description: Unique identifier for disbursement
+    - name: disbursement_method
+      type: varchar!
+      description: ACH, Check, Wire
+    - name: disbursement_status
+      type: varchar!
+      description: Pending, Completed, Failed
+    - name: notes
+      type: text
+      description: Additional disbursement notes
+    - name: recipient_account_number
+      type: varchar
+      description: Recipient account number, encrypted
+    - name: recipient_account_type
+      type: varchar
+      description: Checking, Savings
+    - name: recipient_name
+      type: varchar!
+      description: Name of recipient
+    - name: recipient_routing_number
+      type: varchar
+      description: Recipient routing number
+    - name: tracking_number
+      type: varchar
+      description: Tracking or reference number
+  graphql:
+    typeName: ConsumerLending_consumer_lending_disbursements
+    inputTypeName: ConsumerLending_consumer_lending_disbursements_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_disbursements
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_disbursements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - check_number
+          - consumer_lending_loan_account_id
+          - disbursement_amount
+          - disbursement_date
+          - disbursement_id
+          - disbursement_method
+          - disbursement_status
+          - notes
+          - recipient_account_number
+          - recipient_account_type
+          - recipient_name
+          - recipient_routing_number
+          - tracking_number
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_disbursements_bool_exp
+  operand:
+    object:
+      type: consumer_lending_disbursements
+      comparableFields:
+        - fieldName: check_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: consumer_lending_loan_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: disbursement_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: disbursement_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: disbursement_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: disbursement_method
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: disbursement_status
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: notes
+          booleanExpressionType: text_bool_exp
+        - fieldName: recipient_account_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: recipient_account_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: recipient_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: recipient_routing_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: tracking_number
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_disbursements_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_disbursements_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_disbursements
+      aggregatableFields:
+        - fieldName: check_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: consumer_lending_loan_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: disbursement_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: disbursement_date
+          aggregateExpression: date_agg_exp
+        - fieldName: disbursement_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: disbursement_method
+          aggregateExpression: varchar_agg_exp
+        - fieldName: disbursement_status
+          aggregateExpression: varchar_agg_exp
+        - fieldName: notes
+          aggregateExpression: text_agg_exp
+        - fieldName: recipient_account_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: recipient_account_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: recipient_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: recipient_routing_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: tracking_number
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_disbursements_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_disbursements_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_disbursements
+      orderableFields:
+        - fieldName: check_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: consumer_lending_loan_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: disbursement_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: disbursement_date
+          orderByExpression: date_order_by_exp
+        - fieldName: disbursement_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: disbursement_method
+          orderByExpression: varchar_order_by_exp
+        - fieldName: disbursement_status
+          orderByExpression: varchar_order_by_exp
+        - fieldName: notes
+          orderByExpression: text_order_by_exp
+        - fieldName: recipient_account_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: recipient_account_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: recipient_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: recipient_routing_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: tracking_number
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_account
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_disbursements_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_disbursements
+  objectType: consumer_lending_disbursements
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_disbursements
+  filterExpressionType: consumer_lending_disbursements_bool_exp
+  aggregateExpression: consumer_lending_disbursements_agg_exp
+  orderByExpression: consumer_lending_disbursements_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_disbursements
+      subscription:
+        rootField: consumer_lending_disbursements
+    selectUniques:
+      - queryRootField: consumer_lending_disbursements_by_disbursement_id
+        uniqueIdentifier:
+          - disbursement_id
+        subscription:
+          rootField: consumer_lending_disbursements_by_disbursement_id
+    filterInputTypeName: ConsumerLending_consumer_lending_disbursements_filter_input
+    aggregate:
+      queryRootField: consumer_lending_disbursements_aggregate
+      subscription:
+        rootField: consumer_lending_disbursements_aggregate
+  description: Tracks the disbursement of funds for loan accounts, including the
+    date, amount, method, and recipient information.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_disbursements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_account
+  sourceType: consumer_lending_disbursements
+  target:
+    model:
+      name: consumer_lending_loan_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_loan_account_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_loan_account_id
+

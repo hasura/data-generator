@@ -1,0 +1,388 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_parties
+  description: Stores information about individuals and organizations that
+    interact with accounts, now with additional common personal attributes for
+    individuals
+  fields:
+    - name: beneficial_ownership
+      type: bool
+      description: Indicates if this party has beneficial ownership
+    - name: citizenship_status
+      type: enterprise_citizenship_status
+      description: Citizenship or residency status (for individuals)
+    - name: date_of_birth
+      type: date
+      description: Party's date of birth (for individuals)
+    - name: email_address
+      type: varchar
+      description: Primary email contact
+    - name: enterprise_party_id
+      type: int_4!
+      description: Unique identifier for each party
+    - name: full_business_legal_name
+      type: varchar
+      description: Complete legal name for business entities
+    - name: legal_structure
+      type: enterprise_legal_structure
+      description: Legal structure of the organization
+    - name: lei
+      type: varchar
+      description: Legal Entity Identifier for organizations
+    - name: marital_status
+      type: enterprise_marital_status
+      description: Marital status (for individuals)
+    - name: mobile
+      type: varchar
+      description: Mobile phone contact
+    - name: name
+      type: varchar!
+      description: Name of the party
+    - name: party_number
+      type: varchar
+      description: Alternative reference number for the party
+    - name: party_status
+      type: enterprise_party_status!
+      description: Current status of the party
+    - name: party_type
+      type: enterprise_party_type!
+      description: Type of party (individual or organization)
+    - name: phone
+      type: varchar
+      description: Primary phone contact
+    - name: ssn
+      type: varchar
+      description: Social Security Number (for US individuals)
+  graphql:
+    typeName: Enterprise_enterprise_parties
+    inputTypeName: Enterprise_enterprise_parties_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_parties
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_parties
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - beneficial_ownership
+          - citizenship_status
+          - date_of_birth
+          - email_address
+          - enterprise_party_id
+          - full_business_legal_name
+          - legal_structure
+          - lei
+          - marital_status
+          - mobile
+          - name
+          - party_number
+          - party_status
+          - party_type
+          - phone
+          - ssn
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_parties_bool_exp
+  operand:
+    object:
+      type: enterprise_parties
+      comparableFields:
+        - fieldName: beneficial_ownership
+          booleanExpressionType: bool_bool_exp
+        - fieldName: citizenship_status
+          booleanExpressionType: enterprise_citizenship_status_bool_exp
+        - fieldName: date_of_birth
+          booleanExpressionType: date_bool_exp
+        - fieldName: email_address
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: full_business_legal_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: legal_structure
+          booleanExpressionType: enterprise_legal_structure_bool_exp
+        - fieldName: lei
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: marital_status
+          booleanExpressionType: enterprise_marital_status_bool_exp
+        - fieldName: mobile
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: party_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: party_status
+          booleanExpressionType: enterprise_party_status_bool_exp
+        - fieldName: party_type
+          booleanExpressionType: enterprise_party_type_bool_exp
+        - fieldName: phone
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: ssn
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_account_ownerships
+        - relationshipName: enterprise_customer_demographics
+        - relationshipName: enterprise_party_entity_addresses
+        - relationshipName: enterprise_party_relationships
+        - relationshipName: enterprise_party_relationships_by_related_party_id
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_parties_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_parties_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_parties
+      aggregatableFields:
+        - fieldName: beneficial_ownership
+          aggregateExpression: bool_agg_exp
+        - fieldName: citizenship_status
+          aggregateExpression: enterprise_citizenship_status_agg_exp
+        - fieldName: date_of_birth
+          aggregateExpression: date_agg_exp
+        - fieldName: email_address
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: full_business_legal_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: legal_structure
+          aggregateExpression: enterprise_legal_structure_agg_exp
+        - fieldName: lei
+          aggregateExpression: varchar_agg_exp
+        - fieldName: marital_status
+          aggregateExpression: enterprise_marital_status_agg_exp
+        - fieldName: mobile
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: party_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: party_status
+          aggregateExpression: enterprise_party_status_agg_exp
+        - fieldName: party_type
+          aggregateExpression: enterprise_party_type_agg_exp
+        - fieldName: phone
+          aggregateExpression: varchar_agg_exp
+        - fieldName: ssn
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_parties_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_parties_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_parties
+      orderableFields:
+        - fieldName: beneficial_ownership
+          orderByExpression: bool_order_by_exp
+        - fieldName: citizenship_status
+          orderByExpression: enterprise_citizenship_status_order_by_exp
+        - fieldName: date_of_birth
+          orderByExpression: date_order_by_exp
+        - fieldName: email_address
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: full_business_legal_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: legal_structure
+          orderByExpression: enterprise_legal_structure_order_by_exp
+        - fieldName: lei
+          orderByExpression: varchar_order_by_exp
+        - fieldName: marital_status
+          orderByExpression: enterprise_marital_status_order_by_exp
+        - fieldName: mobile
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: party_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: party_status
+          orderByExpression: enterprise_party_status_order_by_exp
+        - fieldName: party_type
+          orderByExpression: enterprise_party_type_order_by_exp
+        - fieldName: phone
+          orderByExpression: varchar_order_by_exp
+        - fieldName: ssn
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Enterprise_enterprise_parties_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_parties
+  objectType: enterprise_parties
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_parties
+  filterExpressionType: enterprise_parties_bool_exp
+  aggregateExpression: enterprise_parties_agg_exp
+  orderByExpression: enterprise_parties_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_parties
+      subscription:
+        rootField: enterprise_parties
+    selectUniques:
+      - queryRootField: enterprise_parties_by_enterprise_party_id
+        uniqueIdentifier:
+          - enterprise_party_id
+        subscription:
+          rootField: enterprise_parties_by_enterprise_party_id
+    filterInputTypeName: Enterprise_enterprise_parties_filter_input
+    aggregate:
+      queryRootField: enterprise_parties_aggregate
+      subscription:
+        rootField: enterprise_parties_aggregate
+  description: Stores information about individuals and organizations that
+    interact with accounts, now with additional common personal attributes for
+    individuals
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_parties
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_account_ownerships
+  sourceType: enterprise_parties
+  target:
+    model:
+      name: enterprise_account_ownership
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_account_ownership_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+  graphql:
+    aggregateFieldName: enterprise_account_ownerships_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_customer_demographics
+  sourceType: enterprise_parties
+  target:
+    model:
+      name: enterprise_customer_demographics
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_customer_demographics_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+  graphql:
+    aggregateFieldName: enterprise_customer_demographics_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party_entity_addresses
+  sourceType: enterprise_parties
+  target:
+    model:
+      name: enterprise_party_entity_addresses
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_party_entity_addresses_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+  graphql:
+    aggregateFieldName: enterprise_party_entity_addresses_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party_relationships
+  sourceType: enterprise_parties
+  target:
+    model:
+      name: enterprise_party_relationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_party_relationships_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+  graphql:
+    aggregateFieldName: enterprise_party_relationships_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party_relationships_by_related_party_id
+  sourceType: enterprise_parties
+  target:
+    model:
+      name: enterprise_party_relationships
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_party_relationships_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: related_party_id
+  graphql:
+    aggregateFieldName: enterprise_party_relationships_by_related_party_id_aggregate
+

@@ -1,0 +1,268 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_roles
+  description: Defines roles that can be assigned to identities
+  fields:
+    - name: created_at
+      type: timestamptz
+      description: When the role was created
+    - name: created_by_id
+      type: int_4
+      description: Who created the role
+    - name: description
+      type: text
+      description: Description of the role's purpose and scope
+    - name: display_name
+      type: varchar
+      description: User-friendly name for the role
+    - name: managing_application_id
+      type: uuid
+      description: Application that manages this role
+    - name: owner_id
+      type: int_4
+      description: Who owns/manages this role
+    - name: role_name
+      type: varchar!
+      description: Internal name for the role
+    - name: security_role_id
+      type: uuid!
+      description: Unique identifier for the role
+    - name: status
+      type: security_role_status!
+      description: Current status of the role
+  graphql:
+    typeName: Security_security_roles
+    inputTypeName: Security_security_roles_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_roles
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_roles
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - created_by_id
+          - description
+          - display_name
+          - managing_application_id
+          - owner_id
+          - role_name
+          - security_role_id
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_roles_bool_exp
+  operand:
+    object:
+      type: security_roles
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: created_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: display_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: managing_application_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: owner_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: role_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: security_role_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: status
+          booleanExpressionType: security_role_status_bool_exp
+      comparableRelationships:
+        - relationshipName: security_identity_roles
+        - relationshipName: security_role_entitlements
+        - relationshipName: security_security_account_roles
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_roles_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_roles_agg_exp
+  operand:
+    object:
+      aggregatedType: security_roles
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: created_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: display_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: managing_application_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: owner_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: role_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: security_role_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: status
+          aggregateExpression: security_role_status_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_roles_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_roles_order_by_exp
+  operand:
+    object:
+      orderedType: security_roles
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: created_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: display_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: managing_application_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: owner_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: role_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: security_role_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: status
+          orderByExpression: security_role_status_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_roles_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_roles
+  objectType: security_roles
+  source:
+    dataConnectorName: security
+    collection: security_roles
+  filterExpressionType: security_roles_bool_exp
+  aggregateExpression: security_roles_agg_exp
+  orderByExpression: security_roles_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_roles
+      subscription:
+        rootField: security_roles
+    selectUniques:
+      - queryRootField: security_roles_by_security_role_id
+        uniqueIdentifier:
+          - security_role_id
+        subscription:
+          rootField: security_roles_by_security_role_id
+    filterInputTypeName: Security_security_roles_filter_input
+    aggregate:
+      queryRootField: security_roles_aggregate
+      subscription:
+        rootField: security_roles_aggregate
+  description: Defines roles that can be assigned to identities
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_roles
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_identity_roles
+  sourceType: security_roles
+  target:
+    model:
+      name: security_identity_roles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_identity_roles_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_role_id
+      target:
+        modelField:
+          - fieldName: security_role_id
+  graphql:
+    aggregateFieldName: security_identity_roles_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_role_entitlements
+  sourceType: security_roles
+  target:
+    model:
+      name: security_role_entitlements
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_role_entitlements_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_role_id
+      target:
+        modelField:
+          - fieldName: security_role_id
+  graphql:
+    aggregateFieldName: security_role_entitlements_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_security_account_roles
+  sourceType: security_roles
+  target:
+    model:
+      name: security_security_account_roles
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_security_account_roles_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_role_id
+      target:
+        modelField:
+          - fieldName: security_role_id
+  graphql:
+    aggregateFieldName: security_security_account_roles_aggregate
+

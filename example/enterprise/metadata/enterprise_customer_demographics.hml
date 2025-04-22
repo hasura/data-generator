@@ -1,0 +1,451 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_customer_demographics
+  description: Stores third-party demographic and marketing data about customers
+  fields:
+    - name: channel_preference
+      type: varchar
+      description: Preferred communication channel (mobile, online, branch, phone)
+    - name: churn_risk_score
+      type: int_4
+      description: Score indicating risk of account closure (1-100)
+    - name: consumer_banking_account_id
+      type: int_8
+      description: Reference is here to make sure that customer demographics are only
+        created afeter consumer_banking.accounts. Will always be NULL.
+    - name: credit_cards_card_accounts_id
+      type: int_4
+      description: Reference is here to make sure that customer demographics are only
+        created afeter credit_cards.card_accounts. Will always be NULL
+    - name: credit_risk_tier
+      type: enterprise_credit_risk_tier
+      description: Credit risk category
+    - name: cross_sell_propensity
+      type: int_4
+      description: Score indicating likelihood to purchase additional products (1-100)
+    - name: customer_lifetime_value
+      type: numeric
+      description: Calculated lifetime value to the organization
+    - name: data_consent_level
+      type: varchar
+      description: Level of consent provided for data usage
+    - name: data_source
+      type: varchar!
+      description: Source of the demographic data (e.g., Experian, Acxiom, TransUnion)
+    - name: data_usage_restriction
+      type: text
+      description: Any specific restrictions on data usage
+    - name: digital_engagement_score
+      type: int_4
+      description: Score indicating level of digital channel usage (1-100)
+    - name: discretionary_spending_estimate
+      type: numeric
+      description: Estimated monthly discretionary spending
+    - name: education_level
+      type: enterprise_education_level
+      description: Highest level of education completed
+    - name: employer
+      type: varchar
+      description: Current employer name if available
+    - name: employment_length_years
+      type: int_4
+      description: Years with current employer
+    - name: enterprise_customer_demographics_id
+      type: int_4!
+      description: Auto-incrementing identifier for each demographic record
+    - name: enterprise_party_id
+      type: int_4!
+      description: Reference to the party this demographic data belongs to
+    - name: estimated_home_value
+      type: numeric
+      description: Estimated value of primary residence if owned
+    - name: family_life_stage
+      type: enterprise_family_life_stage
+      description: Current family/life stage
+    - name: homeownership_status
+      type: enterprise_homeownership_status
+      description: Housing status
+    - name: household_size
+      type: int_4
+      description: Number of individuals in household
+    - name: income_bracket
+      type: enterprise_income_bracket
+      description: Estimated annual income range
+    - name: last_updated
+      type: date!
+      description: Date when the demographic data was last updated
+    - name: lifestyle_segment
+      type: enterprise_lifestyle_segment
+      description: Marketing lifestyle segmentation
+    - name: net_worth_estimate
+      type: numeric
+      description: Estimated net worth
+    - name: number_of_children
+      type: int_4
+      description: Number of children
+    - name: occupation_category
+      type: enterprise_occupation_category
+      description: General occupational category
+    - name: political_affiliation
+      type: enterprise_political_affiliation
+      description: Inferred political leaning
+    - name: primary_investment_goals
+      type: varchar
+      description: Main investment objectives
+    - name: risk_tolerance
+      type: varchar
+      description: Investment risk tolerance level (conservative, moderate, aggressive)
+    - name: total_household_income
+      type: numeric
+      description: Estimated total household income
+    - name: years_at_residence
+      type: int_4
+      description: Number of years at current residence
+  graphql:
+    typeName: Enterprise_enterprise_customer_demographics
+    inputTypeName: Enterprise_enterprise_customer_demographics_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_customer_demographics
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_customer_demographics
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - channel_preference
+          - churn_risk_score
+          - consumer_banking_account_id
+          - credit_cards_card_accounts_id
+          - credit_risk_tier
+          - cross_sell_propensity
+          - customer_lifetime_value
+          - data_consent_level
+          - data_source
+          - data_usage_restriction
+          - digital_engagement_score
+          - discretionary_spending_estimate
+          - education_level
+          - employer
+          - employment_length_years
+          - enterprise_customer_demographics_id
+          - enterprise_party_id
+          - estimated_home_value
+          - family_life_stage
+          - homeownership_status
+          - household_size
+          - income_bracket
+          - last_updated
+          - lifestyle_segment
+          - net_worth_estimate
+          - number_of_children
+          - occupation_category
+          - political_affiliation
+          - primary_investment_goals
+          - risk_tolerance
+          - total_household_income
+          - years_at_residence
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_customer_demographics_bool_exp
+  operand:
+    object:
+      type: enterprise_customer_demographics
+      comparableFields:
+        - fieldName: channel_preference
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: churn_risk_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_account_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: credit_cards_card_accounts_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: credit_risk_tier
+          booleanExpressionType: enterprise_credit_risk_tier_bool_exp
+        - fieldName: cross_sell_propensity
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: customer_lifetime_value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: data_consent_level
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: data_source
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: data_usage_restriction
+          booleanExpressionType: text_bool_exp
+        - fieldName: digital_engagement_score
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: discretionary_spending_estimate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: education_level
+          booleanExpressionType: enterprise_education_level_bool_exp
+        - fieldName: employer
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: employment_length_years
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_customer_demographics_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_party_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: estimated_home_value
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: family_life_stage
+          booleanExpressionType: enterprise_family_life_stage_bool_exp
+        - fieldName: homeownership_status
+          booleanExpressionType: enterprise_homeownership_status_bool_exp
+        - fieldName: household_size
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: income_bracket
+          booleanExpressionType: enterprise_income_bracket_bool_exp
+        - fieldName: last_updated
+          booleanExpressionType: date_bool_exp
+        - fieldName: lifestyle_segment
+          booleanExpressionType: enterprise_lifestyle_segment_bool_exp
+        - fieldName: net_worth_estimate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: number_of_children
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: occupation_category
+          booleanExpressionType: enterprise_occupation_category_bool_exp
+        - fieldName: political_affiliation
+          booleanExpressionType: enterprise_political_affiliation_bool_exp
+        - fieldName: primary_investment_goals
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: risk_tolerance
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: total_household_income
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: years_at_residence
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_party
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_customer_demographics_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_customer_demographics_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_customer_demographics
+      aggregatableFields:
+        - fieldName: channel_preference
+          aggregateExpression: varchar_agg_exp
+        - fieldName: churn_risk_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_account_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: credit_cards_card_accounts_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: credit_risk_tier
+          aggregateExpression: enterprise_credit_risk_tier_agg_exp
+        - fieldName: cross_sell_propensity
+          aggregateExpression: int_4_agg_exp
+        - fieldName: customer_lifetime_value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: data_consent_level
+          aggregateExpression: varchar_agg_exp
+        - fieldName: data_source
+          aggregateExpression: varchar_agg_exp
+        - fieldName: data_usage_restriction
+          aggregateExpression: text_agg_exp
+        - fieldName: digital_engagement_score
+          aggregateExpression: int_4_agg_exp
+        - fieldName: discretionary_spending_estimate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: education_level
+          aggregateExpression: enterprise_education_level_agg_exp
+        - fieldName: employer
+          aggregateExpression: varchar_agg_exp
+        - fieldName: employment_length_years
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_customer_demographics_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_party_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: estimated_home_value
+          aggregateExpression: numeric_agg_exp
+        - fieldName: family_life_stage
+          aggregateExpression: enterprise_family_life_stage_agg_exp
+        - fieldName: homeownership_status
+          aggregateExpression: enterprise_homeownership_status_agg_exp
+        - fieldName: household_size
+          aggregateExpression: int_4_agg_exp
+        - fieldName: income_bracket
+          aggregateExpression: enterprise_income_bracket_agg_exp
+        - fieldName: last_updated
+          aggregateExpression: date_agg_exp
+        - fieldName: lifestyle_segment
+          aggregateExpression: enterprise_lifestyle_segment_agg_exp
+        - fieldName: net_worth_estimate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: number_of_children
+          aggregateExpression: int_4_agg_exp
+        - fieldName: occupation_category
+          aggregateExpression: enterprise_occupation_category_agg_exp
+        - fieldName: political_affiliation
+          aggregateExpression: enterprise_political_affiliation_agg_exp
+        - fieldName: primary_investment_goals
+          aggregateExpression: varchar_agg_exp
+        - fieldName: risk_tolerance
+          aggregateExpression: varchar_agg_exp
+        - fieldName: total_household_income
+          aggregateExpression: numeric_agg_exp
+        - fieldName: years_at_residence
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_customer_demographics_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_customer_demographics_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_customer_demographics
+      orderableFields:
+        - fieldName: channel_preference
+          orderByExpression: varchar_order_by_exp
+        - fieldName: churn_risk_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_account_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: credit_cards_card_accounts_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: credit_risk_tier
+          orderByExpression: enterprise_credit_risk_tier_order_by_exp
+        - fieldName: cross_sell_propensity
+          orderByExpression: int_4_order_by_exp
+        - fieldName: customer_lifetime_value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: data_consent_level
+          orderByExpression: varchar_order_by_exp
+        - fieldName: data_source
+          orderByExpression: varchar_order_by_exp
+        - fieldName: data_usage_restriction
+          orderByExpression: text_order_by_exp
+        - fieldName: digital_engagement_score
+          orderByExpression: int_4_order_by_exp
+        - fieldName: discretionary_spending_estimate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: education_level
+          orderByExpression: enterprise_education_level_order_by_exp
+        - fieldName: employer
+          orderByExpression: varchar_order_by_exp
+        - fieldName: employment_length_years
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_customer_demographics_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_party_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: estimated_home_value
+          orderByExpression: numeric_order_by_exp
+        - fieldName: family_life_stage
+          orderByExpression: enterprise_family_life_stage_order_by_exp
+        - fieldName: homeownership_status
+          orderByExpression: enterprise_homeownership_status_order_by_exp
+        - fieldName: household_size
+          orderByExpression: int_4_order_by_exp
+        - fieldName: income_bracket
+          orderByExpression: enterprise_income_bracket_order_by_exp
+        - fieldName: last_updated
+          orderByExpression: date_order_by_exp
+        - fieldName: lifestyle_segment
+          orderByExpression: enterprise_lifestyle_segment_order_by_exp
+        - fieldName: net_worth_estimate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: number_of_children
+          orderByExpression: int_4_order_by_exp
+        - fieldName: occupation_category
+          orderByExpression: enterprise_occupation_category_order_by_exp
+        - fieldName: political_affiliation
+          orderByExpression: enterprise_political_affiliation_order_by_exp
+        - fieldName: primary_investment_goals
+          orderByExpression: varchar_order_by_exp
+        - fieldName: risk_tolerance
+          orderByExpression: varchar_order_by_exp
+        - fieldName: total_household_income
+          orderByExpression: numeric_order_by_exp
+        - fieldName: years_at_residence
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: enterprise_party
+  graphql:
+    expressionTypeName: Enterprise_enterprise_customer_demographics_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_customer_demographics
+  objectType: enterprise_customer_demographics
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_customer_demographics
+  filterExpressionType: enterprise_customer_demographics_bool_exp
+  aggregateExpression: enterprise_customer_demographics_agg_exp
+  orderByExpression: enterprise_customer_demographics_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_customer_demographics
+      subscription:
+        rootField: enterprise_customer_demographics
+    selectUniques:
+      - queryRootField: enterprise_customer_demographics_by_enterprise_customer_demographics_id
+        uniqueIdentifier:
+          - enterprise_customer_demographics_id
+        subscription:
+          rootField: enterprise_customer_demographics_by_enterprise_customer_demographics_id
+    filterInputTypeName: Enterprise_enterprise_customer_demographics_filter_input
+    aggregate:
+      queryRootField: enterprise_customer_demographics_aggregate
+      subscription:
+        rootField: enterprise_customer_demographics_aggregate
+  description: Stores third-party demographic and marketing data about customers
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_customer_demographics
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_party
+  sourceType: enterprise_customer_demographics
+  target:
+    model:
+      name: enterprise_parties
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_party_id
+      target:
+        modelField:
+          - fieldName: enterprise_party_id
+

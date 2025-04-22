@@ -338,7 +338,8 @@ Enum "enterprise"."credit_risk_tier" {
 Table "enterprise"."customer_demographics" {
   "enterprise_customer_demographics_id" SERIAL [pk, increment, note: "Auto-incrementing identifier for each demographic record"]
   "enterprise_party_id" INTEGER [not null, ref: > enterprise.parties.enterprise_party_id, note: "Reference to the party this demographic data belongs to"]
-  "consumer_banking_account_id" INTEGER [null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "Reference is here to make sure that customer demographics are only created afeter consumer_banking.accounts."]
+  "consumer_banking_account_id" BIGINT [null, ref: > consumer_banking.accounts.consumer_banking_account_id, note: "Reference is here to make sure that customer demographics are only created afeter consumer_banking.accounts. Will always be NULL."]
+  "credit_cards_card_accounts_id" INTEGER [null, ref: > credit_cards.card_accounts.credit_cards_card_account_id, note: "Reference is here to make sure that customer demographics are only created afeter credit_cards.card_accounts. Will always be NULL"]
   "data_source" VARCHAR(100) [not null, note: "Source of the demographic data (e.g., Experian, Acxiom, TransUnion)"]
   "last_updated" DATE [not null, note: "Date when the demographic data was last updated"]
   "education_level" enterprise.education_level [note: "Highest level of education completed"]
@@ -5425,7 +5426,7 @@ Table "credit_cards"."cards" {
   "is_virtual" BOOLEAN [not null, default: false, note: "Whether card is virtual only"]
   "digital_wallet_enabled" BOOLEAN [not null, default: false, note: "Whether added to digital wallet"]
   "pin_set" BOOLEAN [not null, default: false, note: "Whether PIN has been set"]
-  "temporary_limits" JSONB [note: "Temporary spending limits if any"]
+  "temporary_limits" TEXT [note: "Temporary spending limits if any"]
   "temporary_limits_expiry" DATE [note: "When temporary limits expire"]
 
   note: "Stores information about physical and virtual cards issued for accounts"
@@ -7271,4 +7272,123 @@ Table "app_mgmt"."team_members" {
   "enterprise_associate_id" INTEGER [ref: > "enterprise"."associates"."enterprise_associate_id", pk, note: 'Identifier of the team member from the enterprise associates table.']
   "function" VARCHAR(255) [note: 'Function or role of the team member within the team.']
   note: 'Table to store the associations between teams and their members, including member functions.'
+}
+
+//
+// DATA GOVERNANCE
+//
+
+// Data Quality Schema
+
+Table "data_quality"."validation_run" {
+  "validation_run_id" SERIAL [pk, increment, note: 'Unique identifier for the validation run.']
+  "run_timestamp" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: 'Timestamp indicating when the validation run was executed or recorded.']
+  "source_identifier" VARCHAR(255) [note: 'Optional identifier for the source system, file, or event that triggered this validation run.']
+  "run_user" VARCHAR(100) [note: 'Identifier of the user who initiated or is associated with this validation run.']
+  "run_role" VARCHAR(100) [note: 'Role associated with the user who initiated this validation run.']
+  "operation_name" VARCHAR(255) [note: 'Name of the specific operation being validated, if applicable.']
+  "variables" TEXT [note: 'Variables passed to the query, stored as a JSON string.']
+  "validation_config_data" BOOLEAN [note: 'Validation configuration flag: Indicates if the \'$data\' option (ajv) was enabled.']
+  "validation_config_verbose" BOOLEAN [note: 'Validation configuration flag: Indicates if the \'verbose\' option (ajv) was enabled.']
+  "validation_config_all_errors" BOOLEAN [note: 'Validation configuration flag: Indicates if the \'allErrors\' option (ajv) was enabled.']
+  "validation_config_strict" BOOLEAN [note: 'Validation configuration flag: Indicates if the \'strict\' option (ajv) was enabled.']
+  "query" TEXT [not null, note: 'The query string that was executed and validated.']
+  "validation_schema" TEXT [not null, note: 'The JSON schema used to validate the query results, stored as a JSON string.']
+  "total_errors" INTEGER [note: 'A summary count of the total number of validation errors found during this run.']
+
+  Note: 'Represents a single execution instance of a data quality validation run, including metadata and links to errors found.'
+}
+
+Table "data_quality"."validation_error" {
+  "validation_error_id" SERIAL [pk, increment, note: 'Unique identifier for the validation error record.']
+  "validation_run_id" INTEGER [not null, note: 'Foreign key linking to the specific validation run (validation_run table) where this error occurred.', ref: > data_quality.validation_run.validation_run_id]
+  "instance_path" TEXT [not null, note: 'JSON path within the validated data pointing to the element that failed validation.']
+  "schema_path" TEXT [not null, note: 'JSON path within the validation schema pointing to the rule/keyword that failed.']
+  "error_keyword" VARCHAR(100) [not null, note: 'The specific JSON schema keyword (e.g., type, required, pattern) that triggered the validation failure.']
+  "error_message" TEXT [not null, note: 'The human-readable error message generated by the validator.']
+  "failed_data" TEXT [note: 'String representation of the actual data value that failed the validation rule.']
+  "error_params" TEXT [note: 'Parameters associated with the failed validation keyword (e.g., allowed values for enum), stored as a JSON string.']
+  "error_schema_detail" TEXT [note: 'The specific part of the JSON schema definition that failed, stored as a JSON string.']
+  "error_parent_schema_detail" TEXT [note: 'The parent schema object containing the failed rule, stored as a JSON string.']
+
+  Note: 'Stores details for a single data quality validation error identified during a validation run.'
+}
+
+Table "data_quality"."api_calls" {
+  "api_call_id" UUID [pk, not null, note: 'Unique identifier for the API call.']
+  "method" VARCHAR [not null, note: 'HTTP method used for the API call (GET, POST, etc.).']
+  "path" VARCHAR [not null, note: 'API endpoint path that was called.']
+  "query_params" TEXT [note: 'Query parameters sent with the API call, stored as TEXT.']
+  "request_headers" TEXT [note: 'HTTP headers sent with the API call, stored as TEXT.']
+  "server_name" VARCHAR [note: 'Server name associated with API call.']
+  "major_version" INTEGER [note: 'Server name API major version.']
+  "minor_version" INTEGER [note: 'Server name API minor version.']
+  "related_institution" VARCHAR [note: 'An identifier of the institution associated with the API call.']
+  "created_at" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the API call was made.']
+
+  Note: 'Records actual instances of API calls made to the system for auditing and lineage tracking. These records can be tied by business rules to validation runs. A validation run with the same query and timestamp of less than once second earlier is probably related to this API call.'
+}
+
+Table "data_quality"."record_transformations" {
+  "record_transformation_id" UUID [pk, not null, note: 'Unique identifier for the record transformation.']
+  "input_type" VARCHAR [not null, note: 'The type/entity of the input record before transformation.']
+  "output_type" VARCHAR [not null, note: 'The type/entity of the output record after transformation.']
+  "description" VARCHAR [not null, note: 'Description of the transformation process or purpose.']
+  "primary_key_names" VARCHAR [not null, note: 'Names of the primary key fields, comma-separated.']
+  "primary_key_values" VARCHAR [not null, note: 'Values of the primary keys, comma-separated.']
+  "created_at" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: 'Timestamp when the transformation was executed.']
+  "api_call_id" UUID [note: 'Reference to the API call that triggered this transformation, if applicable.', ref: > data_quality.api_calls.api_call_id]
+
+  Note: 'Tracks actual instances of transformations applied to data records, linking input and output data.'
+}
+
+Table "data_quality"."field_transformation_details" {
+  "field_transformation_detail_id" UUID [pk, not null, note: 'Unique identifier for the field transformation detail.']
+  "transform_description" VARCHAR [not null, note: 'Description of the specific transformation applied to this field.']
+  "input_field_name" VARCHAR [not null, note: 'Name of the input field before transformation.']
+  "input_field_value" TEXT [note: 'Value of the input field before transformation.']
+  "output_field_name" VARCHAR [not null, note: 'Name of the output field after transformation.']
+  "output_field_value" TEXT [note: 'Value of the output field after transformation.']
+  "record_transformation_id" UUID [note: 'Reference to the parent record transformation.', ref: > data_quality.record_transformations.record_transformation_id]
+
+  Note: 'Detailed tracking of instances of field-level transformations within a record transformation.'
+}
+
+Table "data_quality"."api_lineage" {
+  "api_lineage_id" UUID [pk, not null, note: 'Unique identifier for the API lineage record.']
+  "app_mgmt_application_id" UUID [null, ref: > app_mgmt.applications.app_mgmt_application_id]
+  "server_name" VARCHAR [not null, note: 'Name of the server handling the API call.']
+  "major_version" INTEGER [note: 'The major version assigned to the API']
+  "minor_version" INTEGER [note: 'The minor version assigned to the API']
+  "api_call" VARCHAR [not null, note: 'The API endpoint and method called.']
+  "query" TEXT [not null, note: 'The DDN query that is used to source data for this API call. If this query is validated you can find its data validation runs by correlating by query. But its not guaranteed, there may be no validation runs and api\'s can use the same query but produce different outputs.']
+  "description" TEXT [note: 'Description of the API call purpose or context.']
+  "start_date" TIMESTAMPTZ [not null, default: `CURRENT_TIMESTAMP`, note: 'Timestamp when this API lineage tracking began.']
+  "end_date" TIMESTAMPTZ [note: 'Timestamp when this API lineage tracking ended, if applicable.']
+  "updated_at" TIMESTAMPTZ [note: 'Timestamp when this record was last updated.']
+
+  Note: 'Represents historical documentation of API endpoint design. Documents the custom API endpoints available internally or externally, including Open Banking and FDX endpoints. Tracks the lineage of API calls for data governance and auditing purposes. The most recent API lineage records can be identified by an endDate of NULL.'
+}
+
+Table "data_quality"."record_lineage" {
+  "record_lineage_id" VARCHAR [pk, not null, note: 'Unique identifier for the record lineage.']
+  "input_type" VARCHAR [not null, note: 'The type/entity of input data in this lineage.']
+  "output_type" VARCHAR [not null, note: 'The type/entity of output data in this lineage.']
+  "description" TEXT [note: 'General description of this data lineage relationship.']
+  "input_description" TEXT [note: 'Description of the input data source or format.']
+  "output_description" TEXT [note: 'Description of the output data destination or format.']
+  "pk_names" VARCHAR [note: 'Names of primary key fields used to track the record through transformations.']
+  "api_lineage_id" UUID [note: 'Reference to the API lineage this record is part of.', ref: > data_quality.api_lineage.api_lineage_id]
+
+  Note: 'Maps the lineage (design) of data records through transformations for traceability.'
+}
+
+Table "data_quality"."field_lineage" {
+  "field_lineage_id" VARCHAR [pk, not null, note: 'Unique identifier for the field lineage.']
+  "field_name" VARCHAR [not null, note: 'Name of the field being tracked. Dot notation is used for representing nested fields, for example: customer.code, would represent the code field within a customer object field.']
+  "description" TEXT [note: 'Description of this field lineage relationship.']
+  "input_fields" VARCHAR [note: 'Source fields that contribute to this field, comma-separated.']
+  "record_lineage_id" VARCHAR [note: 'Reference to the parent record lineage.', ref: > data_quality.record_lineage.record_lineage_id]
+
+  Note: 'Tracks the lineage (design) of individual fields through data transformations. Field names use dot notation to represent nested fields'
 }

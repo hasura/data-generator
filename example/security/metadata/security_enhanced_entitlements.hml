@@ -1,0 +1,235 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_enhanced_entitlements
+  description: Defines granular entitlements that can be granted to roles
+  fields:
+    - name: created_at
+      type: timestamptz
+      description: When the entitlement was created
+    - name: created_by_id
+      type: int_4
+      description: Who created the entitlement
+    - name: description
+      type: text
+      description: Description of what the entitlement grants access to
+    - name: display_name
+      type: varchar
+      description: User-friendly name for the entitlement
+    - name: entitlement_name
+      type: varchar!
+      description: Internal name for the entitlement
+    - name: managing_application_id
+      type: uuid
+      description: Application that manages this entitlement
+    - name: security_entitlement_id
+      type: uuid!
+      description: Unique identifier for the entitlement
+    - name: status
+      type: security_entitlement_status!
+      description: Current status of the entitlement
+  graphql:
+    typeName: Security_security_enhanced_entitlements
+    inputTypeName: Security_security_enhanced_entitlements_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_enhanced_entitlements
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_enhanced_entitlements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - created_at
+          - created_by_id
+          - description
+          - display_name
+          - entitlement_name
+          - managing_application_id
+          - security_entitlement_id
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_enhanced_entitlements_bool_exp
+  operand:
+    object:
+      type: security_enhanced_entitlements
+      comparableFields:
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: created_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: display_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: entitlement_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: managing_application_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_entitlement_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: status
+          booleanExpressionType: security_entitlement_status_bool_exp
+      comparableRelationships:
+        - relationshipName: security_entitlement_resources
+        - relationshipName: security_role_entitlements
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_enhanced_entitlements_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_enhanced_entitlements_agg_exp
+  operand:
+    object:
+      aggregatedType: security_enhanced_entitlements
+      aggregatableFields:
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: created_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: display_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: entitlement_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: managing_application_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_entitlement_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: status
+          aggregateExpression: security_entitlement_status_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_enhanced_entitlements_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_enhanced_entitlements_order_by_exp
+  operand:
+    object:
+      orderedType: security_enhanced_entitlements
+      orderableFields:
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: created_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: display_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: entitlement_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: managing_application_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_entitlement_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: status
+          orderByExpression: security_entitlement_status_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_enhanced_entitlements_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_enhanced_entitlements
+  objectType: security_enhanced_entitlements
+  source:
+    dataConnectorName: security
+    collection: security_enhanced_entitlements
+  filterExpressionType: security_enhanced_entitlements_bool_exp
+  aggregateExpression: security_enhanced_entitlements_agg_exp
+  orderByExpression: security_enhanced_entitlements_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_enhanced_entitlements
+      subscription:
+        rootField: security_enhanced_entitlements
+    selectUniques:
+      - queryRootField: security_enhanced_entitlements_by_security_entitlement_id
+        uniqueIdentifier:
+          - security_entitlement_id
+        subscription:
+          rootField: security_enhanced_entitlements_by_security_entitlement_id
+    filterInputTypeName: Security_security_enhanced_entitlements_filter_input
+    aggregate:
+      queryRootField: security_enhanced_entitlements_aggregate
+      subscription:
+        rootField: security_enhanced_entitlements_aggregate
+  description: Defines granular entitlements that can be granted to roles
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_enhanced_entitlements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_entitlement_resources
+  sourceType: security_enhanced_entitlements
+  target:
+    model:
+      name: security_entitlement_resources
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_entitlement_resources_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_entitlement_id
+      target:
+        modelField:
+          - fieldName: security_entitlement_id
+  graphql:
+    aggregateFieldName: security_entitlement_resources_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_role_entitlements
+  sourceType: security_enhanced_entitlements
+  target:
+    model:
+      name: security_role_entitlements
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_role_entitlements_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_entitlement_id
+      target:
+        modelField:
+          - fieldName: security_entitlement_id
+  graphql:
+    aggregateFieldName: security_role_entitlements_aggregate
+

@@ -1,0 +1,251 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_mandate_related_information
+  description: Stores detailed information about direct debit mandates including
+    payment schedules
+  fields:
+    - name: category
+      type: consumer_banking_direct_debit_category
+      description: Purpose code for categorizing the payment type
+    - name: classification
+      type: consumer_banking_direct_debit_classification
+      description: Classification of the mandate (e.g., personal, business)
+    - name: consumer_banking_direct_debit_id
+      type: int_4!
+      description: References the direct debit this mandate belongs to
+    - name: consumer_banking_mandate_related_information_id
+      type: int_4!
+      description: Auto-incrementing identifier for mandate information
+    - name: final_payment_date_time
+      type: timestamptz
+      description: When the final payment is scheduled (if applicable)
+    - name: first_payment_date_time
+      type: timestamptz
+      description: When the first payment is scheduled
+    - name: frequency_count_per_period
+      type: int_4
+      description: Number of payments in each period
+    - name: frequency_point_in_time
+      type: varchar
+      description: Specific day or time point for payments
+    - name: frequency_type
+      type: enterprise_frequency!
+      description: How often payments occur (e.g., monthly, weekly)
+    - name: mandate_id
+      type: int_4!
+      description: Unique reference for the direct debit mandate
+    - name: reason
+      type: varchar
+      description: Reason or purpose for the mandate
+    - name: recurring_payment_date_time
+      type: timestamptz
+      description: When recurring payments are scheduled
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_mandate_related_information
+    inputTypeName: ConsumerBanking_consumer_banking_mandate_related_information_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_mandate_related_information
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_mandate_related_information
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - category
+          - classification
+          - consumer_banking_direct_debit_id
+          - consumer_banking_mandate_related_information_id
+          - final_payment_date_time
+          - first_payment_date_time
+          - frequency_count_per_period
+          - frequency_point_in_time
+          - frequency_type
+          - mandate_id
+          - reason
+          - recurring_payment_date_time
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_mandate_related_information_bool_exp
+  operand:
+    object:
+      type: consumer_banking_mandate_related_information
+      comparableFields:
+        - fieldName: category
+          booleanExpressionType: consumer_banking_direct_debit_category_bool_exp
+        - fieldName: classification
+          booleanExpressionType: consumer_banking_direct_debit_classification_bool_exp
+        - fieldName: consumer_banking_direct_debit_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_mandate_related_information_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: final_payment_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: first_payment_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: frequency_count_per_period
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: frequency_point_in_time
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: frequency_type
+          booleanExpressionType: enterprise_frequency_bool_exp
+        - fieldName: mandate_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: reason
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: recurring_payment_date_time
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_direct_debit
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_mandate_related_information_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_mandate_related_information_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_mandate_related_information
+      aggregatableFields:
+        - fieldName: category
+          aggregateExpression: consumer_banking_direct_debit_category_agg_exp
+        - fieldName: classification
+          aggregateExpression: consumer_banking_direct_debit_classification_agg_exp
+        - fieldName: consumer_banking_direct_debit_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_mandate_related_information_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: final_payment_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: first_payment_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: frequency_count_per_period
+          aggregateExpression: int_4_agg_exp
+        - fieldName: frequency_point_in_time
+          aggregateExpression: varchar_agg_exp
+        - fieldName: frequency_type
+          aggregateExpression: enterprise_frequency_agg_exp
+        - fieldName: mandate_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: reason
+          aggregateExpression: varchar_agg_exp
+        - fieldName: recurring_payment_date_time
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_mandate_related_information_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_mandate_related_information_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_mandate_related_information
+      orderableFields:
+        - fieldName: category
+          orderByExpression: consumer_banking_direct_debit_category_order_by_exp
+        - fieldName: classification
+          orderByExpression: consumer_banking_direct_debit_classification_order_by_exp
+        - fieldName: consumer_banking_direct_debit_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_mandate_related_information_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: final_payment_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: first_payment_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: frequency_count_per_period
+          orderByExpression: int_4_order_by_exp
+        - fieldName: frequency_point_in_time
+          orderByExpression: varchar_order_by_exp
+        - fieldName: frequency_type
+          orderByExpression: enterprise_frequency_order_by_exp
+        - fieldName: mandate_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: reason
+          orderByExpression: varchar_order_by_exp
+        - fieldName: recurring_payment_date_time
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_direct_debit
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_mandate_related_information_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_mandate_related_information
+  objectType: consumer_banking_mandate_related_information
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_mandate_related_information
+  filterExpressionType: consumer_banking_mandate_related_information_bool_exp
+  aggregateExpression: consumer_banking_mandate_related_information_agg_exp
+  orderByExpression: consumer_banking_mandate_related_information_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_mandate_related_information
+      subscription:
+        rootField: consumer_banking_mandate_related_information
+    selectUniques:
+      - queryRootField: consumer_banking_mandate_related_information_by_consumer_banking_mandate_related_information_id
+        uniqueIdentifier:
+          - consumer_banking_mandate_related_information_id
+        subscription:
+          rootField: consumer_banking_mandate_related_information_by_consumer_banking_mandate_related_information_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_mandate_related_information_filter_input
+    aggregate:
+      queryRootField: consumer_banking_mandate_related_information_aggregate
+      subscription:
+        rootField: consumer_banking_mandate_related_information_aggregate
+  description: Stores detailed information about direct debit mandates including
+    payment schedules
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_mandate_related_information
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_direct_debit
+  sourceType: consumer_banking_mandate_related_information
+  target:
+    model:
+      name: consumer_banking_direct_debits
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_direct_debit_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_direct_debit_id
+

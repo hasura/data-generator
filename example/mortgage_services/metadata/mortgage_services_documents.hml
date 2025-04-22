@@ -1,0 +1,239 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: mortgage_services_documents
+  description: Stores and tracks documents submitted for mortgage applications
+  fields:
+    - name: document_name
+      type: varchar!
+      description: Filename or display name of the document
+    - name: document_path
+      type: varchar!
+      description: Storage location or path to access the document
+    - name: document_type
+      type: mortgage_services_document_type!
+      description: Category of document (e.g., W2, Tax Return)
+    - name: expiration_date
+      type: date
+      description: When the document expires or needs to be updated
+    - name: mortgage_services_application_id
+      type: int_4!
+      description: References the application this document belongs to
+    - name: mortgage_services_document_id
+      type: int_4!
+      description: Auto-incrementing identifier for each document
+    - name: notes
+      type: text
+      description: Additional information about the document
+    - name: review_date
+      type: timestamptz
+      description: When the document was reviewed
+    - name: reviewer_id
+      type: int_4
+      description: References the staff member who reviewed the document
+    - name: status
+      type: mortgage_services_document_status!
+      description: Current review status of the document
+    - name: upload_date
+      type: timestamptz!
+      description: When the document was uploaded
+  graphql:
+    typeName: MortgageServices_mortgage_services_documents
+    inputTypeName: MortgageServices_mortgage_services_documents_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_documents
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: mortgage_services_documents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - document_name
+          - document_path
+          - document_type
+          - expiration_date
+          - mortgage_services_application_id
+          - mortgage_services_document_id
+          - notes
+          - review_date
+          - reviewer_id
+          - status
+          - upload_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: mortgage_services_documents_bool_exp
+  operand:
+    object:
+      type: mortgage_services_documents
+      comparableFields:
+        - fieldName: document_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: document_type
+          booleanExpressionType: mortgage_services_document_type_bool_exp
+        - fieldName: expiration_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: mortgage_services_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: mortgage_services_document_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: notes
+          booleanExpressionType: text_bool_exp
+        - fieldName: review_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: reviewer_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: status
+          booleanExpressionType: mortgage_services_document_status_bool_exp
+        - fieldName: upload_date
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: mortgage_services_application
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: MortgageServices_mortgage_services_documents_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: mortgage_services_documents_agg_exp
+  operand:
+    object:
+      aggregatedType: mortgage_services_documents
+      aggregatableFields:
+        - fieldName: document_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: document_type
+          aggregateExpression: mortgage_services_document_type_agg_exp
+        - fieldName: expiration_date
+          aggregateExpression: date_agg_exp
+        - fieldName: mortgage_services_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: mortgage_services_document_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: notes
+          aggregateExpression: text_agg_exp
+        - fieldName: review_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: reviewer_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: status
+          aggregateExpression: mortgage_services_document_status_agg_exp
+        - fieldName: upload_date
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: MortgageServices_mortgage_services_documents_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: mortgage_services_documents_order_by_exp
+  operand:
+    object:
+      orderedType: mortgage_services_documents
+      orderableFields:
+        - fieldName: document_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: document_type
+          orderByExpression: mortgage_services_document_type_order_by_exp
+        - fieldName: expiration_date
+          orderByExpression: date_order_by_exp
+        - fieldName: mortgage_services_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: mortgage_services_document_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: notes
+          orderByExpression: text_order_by_exp
+        - fieldName: review_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: reviewer_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: status
+          orderByExpression: mortgage_services_document_status_order_by_exp
+        - fieldName: upload_date
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships:
+        - relationshipName: mortgage_services_application
+  graphql:
+    expressionTypeName: MortgageServices_mortgage_services_documents_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: mortgage_services_documents
+  objectType: mortgage_services_documents
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_documents
+  filterExpressionType: mortgage_services_documents_bool_exp
+  aggregateExpression: mortgage_services_documents_agg_exp
+  orderByExpression: mortgage_services_documents_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: mortgage_services_documents
+      subscription:
+        rootField: mortgage_services_documents
+    selectUniques:
+      - queryRootField: mortgage_services_documents_by_mortgage_services_document_id
+        uniqueIdentifier:
+          - mortgage_services_document_id
+        subscription:
+          rootField: mortgage_services_documents_by_mortgage_services_document_id
+    filterInputTypeName: MortgageServices_mortgage_services_documents_filter_input
+    aggregate:
+      queryRootField: mortgage_services_documents_aggregate
+      subscription:
+        rootField: mortgage_services_documents_aggregate
+  description: Stores and tracks documents submitted for mortgage applications
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: mortgage_services_documents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgage_services_application
+  sourceType: mortgage_services_documents
+  target:
+    model:
+      name: mortgage_services_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgage_services_application_id
+      target:
+        modelField:
+          - fieldName: mortgage_services_application_id
+

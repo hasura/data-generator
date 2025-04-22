@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_transaction_card_instruments
+  description: Stores information about payment cards used in transactions
+  fields:
+    - name: authorisation_type
+      type: consumer_banking_authorization_type
+      description: Type of authorization (e.g., PIN, signature, contactless)
+    - name: card_scheme_name
+      type: consumer_banking_card_scheme_name!
+      description: Card network (e.g., Visa, Mastercard, Amex)
+    - name: consumer_banking_transaction_card_instrument_id
+      type: int_4!
+      description: Auto-incrementing identifier for each card instrument record
+    - name: consumer_banking_transaction_id
+      type: int_4!
+      description: References the transaction this card instrument belongs to
+    - name: identification
+      type: varchar
+      description: Masked card number or other identifier
+    - name: name
+      type: varchar
+      description: Name of the cardholder as printed on the card
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_card_instruments
+    inputTypeName: ConsumerBanking_consumer_banking_transaction_card_instruments_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_transaction_card_instruments
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_transaction_card_instruments
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - authorisation_type
+          - card_scheme_name
+          - consumer_banking_transaction_card_instrument_id
+          - consumer_banking_transaction_id
+          - identification
+          - name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_transaction_card_instruments_bool_exp
+  operand:
+    object:
+      type: consumer_banking_transaction_card_instruments
+      comparableFields:
+        - fieldName: authorisation_type
+          booleanExpressionType: consumer_banking_authorization_type_bool_exp
+        - fieldName: card_scheme_name
+          booleanExpressionType: consumer_banking_card_scheme_name_bool_exp
+        - fieldName: consumer_banking_transaction_card_instrument_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_banking_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: identification
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: name
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_transaction_card_instruments_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_card_instruments_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_transaction_card_instruments
+      aggregatableFields:
+        - fieldName: authorisation_type
+          aggregateExpression: consumer_banking_authorization_type_agg_exp
+        - fieldName: card_scheme_name
+          aggregateExpression: consumer_banking_card_scheme_name_agg_exp
+        - fieldName: consumer_banking_transaction_card_instrument_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_banking_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: identification
+          aggregateExpression: varchar_agg_exp
+        - fieldName: name
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_transaction_card_instruments_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_transaction_card_instruments_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_transaction_card_instruments
+      orderableFields:
+        - fieldName: authorisation_type
+          orderByExpression: consumer_banking_authorization_type_order_by_exp
+        - fieldName: card_scheme_name
+          orderByExpression: consumer_banking_card_scheme_name_order_by_exp
+        - fieldName: consumer_banking_transaction_card_instrument_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_banking_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: identification
+          orderByExpression: varchar_order_by_exp
+        - fieldName: name
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_transaction
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_transaction_card_instruments_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_transaction_card_instruments
+  objectType: consumer_banking_transaction_card_instruments
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_transaction_card_instruments
+  filterExpressionType: consumer_banking_transaction_card_instruments_bool_exp
+  aggregateExpression: consumer_banking_transaction_card_instruments_agg_exp
+  orderByExpression: consumer_banking_transaction_card_instruments_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_transaction_card_instruments
+      subscription:
+        rootField: consumer_banking_transaction_card_instruments
+    selectUniques:
+      - queryRootField: consumer_banking_transaction_card_instruments_by_consumer_banking_transaction_card_instrument_id
+        uniqueIdentifier:
+          - consumer_banking_transaction_card_instrument_id
+        subscription:
+          rootField: consumer_banking_transaction_card_instruments_by_consumer_banking_transaction_card_instrument_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_transaction_card_instruments_filter_input
+    aggregate:
+      queryRootField: consumer_banking_transaction_card_instruments_aggregate
+      subscription:
+        rootField: consumer_banking_transaction_card_instruments_aggregate
+  description: Stores information about payment cards used in transactions
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_transaction_card_instruments
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transaction
+  sourceType: consumer_banking_transaction_card_instruments
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_transaction_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_transaction_id
+

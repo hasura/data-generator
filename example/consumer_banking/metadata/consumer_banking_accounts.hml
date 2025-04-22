@@ -1,0 +1,645 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_accounts
+  description: Deposit account linked to enterprise account; always serviced by a
+    this institution
+  fields:
+    - name: account_category
+      type: enterprise_account_category
+    - name: account_number
+      type: varchar
+      description: Customer facing account number
+    - name: annual_percentage_yield
+      type: numeric
+      description: APR on interest earned in this account, null if it is not interest
+        earning.
+    - name: available_balance
+      type: numeric!
+    - name: consumer_banking_account_id
+      type: int_8!
+      description: Unique ID for the consumer banking account
+    - name: consumer_banking_product_id
+      type: int_4
+      description: References the enterprise account this consumer account belongs to.
+        Required for all consumer accounts
+    - name: currency_code
+      type: enterprise_currency_code
+    - name: current_balance
+      type: numeric!
+    - name: display_name
+      type: varchar
+      description: A friendly account description provided by the institution.
+    - name: enterprise_account_id
+      type: int_4!
+      description: Link to the enterprise-level account bucket
+    - name: interest_ytd
+      type: numeric
+      description: Interest earned year to date in this account. null if it is not
+        interest earning.
+    - name: maturity_date
+      type: timestamptz
+      description: Used for products such as certificates of deposits that have a
+        maturity date
+    - name: nickname
+      type: varchar
+      description: A short name added by customer.
+    - name: opened_date
+      type: timestamptz!
+      description: Date the account was opened
+    - name: opening_day_balance
+      type: numeric!
+    - name: servicer_identifier_id
+      type: int_4!
+      description: Required reference to this institutions BIC scheme
+    - name: status
+      type: consumer_banking_account_status!
+      description: Operational status of the account
+    - name: status_update_date_time
+      type: timestamptz!
+      description: Last time the status was updated
+    - name: switch_status
+      type: enterprise_switch_status
+      description: Specific to the UK account account switching service.
+    - name: term
+      type: numeric
+      description: The total number of periods a time bound account is active (like a
+        CD). null if it is not a time bound product.
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_accounts
+    inputTypeName: ConsumerBanking_consumer_banking_accounts_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_accounts
+      fieldMapping:
+        account_category:
+          column:
+            name: account_category
+        account_number:
+          column:
+            name: account_number
+        annual_percentage_yield:
+          column:
+            name: annualPercentageYield
+        available_balance:
+          column:
+            name: available_balance
+        consumer_banking_account_id:
+          column:
+            name: consumer_banking_account_id
+        consumer_banking_product_id:
+          column:
+            name: consumer_banking_product_id
+        currency_code:
+          column:
+            name: currency_code
+        current_balance:
+          column:
+            name: current_balance
+        display_name:
+          column:
+            name: displayName
+        enterprise_account_id:
+          column:
+            name: enterprise_account_id
+        interest_ytd:
+          column:
+            name: interestYtd
+        maturity_date:
+          column:
+            name: maturity_date
+        nickname:
+          column:
+            name: nickname
+        opened_date:
+          column:
+            name: opened_date
+        opening_day_balance:
+          column:
+            name: opening_day_balance
+        servicer_identifier_id:
+          column:
+            name: servicer_identifier_id
+        status:
+          column:
+            name: status
+        status_update_date_time:
+          column:
+            name: status_update_date_time
+        switch_status:
+          column:
+            name: switch_status
+        term:
+          column:
+            name: term
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_accounts
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_category
+          - account_number
+          - annual_percentage_yield
+          - available_balance
+          - consumer_banking_account_id
+          - consumer_banking_product_id
+          - currency_code
+          - current_balance
+          - display_name
+          - enterprise_account_id
+          - interest_ytd
+          - maturity_date
+          - nickname
+          - opened_date
+          - opening_day_balance
+          - servicer_identifier_id
+          - status
+          - status_update_date_time
+          - switch_status
+          - term
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_accounts_bool_exp
+  operand:
+    object:
+      type: consumer_banking_accounts
+      comparableFields:
+        - fieldName: account_category
+          booleanExpressionType: enterprise_account_category_bool_exp
+        - fieldName: account_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: annual_percentage_yield
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: available_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: consumer_banking_account_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: consumer_banking_product_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: currency_code
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: current_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: display_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: enterprise_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: interest_ytd
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: maturity_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: nickname
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: opened_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: opening_day_balance
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: servicer_identifier_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: status
+          booleanExpressionType: consumer_banking_account_status_bool_exp
+        - fieldName: status_update_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: switch_status
+          booleanExpressionType: enterprise_switch_status_bool_exp
+        - fieldName: term
+          booleanExpressionType: numeric_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_account_access_consents
+        - relationshipName: consumer_banking_account_statement_preferences
+        - relationshipName: consumer_banking_product
+        - relationshipName: consumer_banking_balances
+        - relationshipName: consumer_banking_beneficiaries
+        - relationshipName: consumer_banking_customer_interactions
+        - relationshipName: consumer_banking_direct_debits
+        - relationshipName: consumer_banking_offers
+        - relationshipName: consumer_banking_scheduled_payments
+        - relationshipName: consumer_banking_standing_orders
+        - relationshipName: consumer_banking_statements
+        - relationshipName: consumer_banking_transactions
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_accounts_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_accounts_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_accounts
+      aggregatableFields:
+        - fieldName: account_category
+          aggregateExpression: enterprise_account_category_agg_exp
+        - fieldName: account_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: annual_percentage_yield
+          aggregateExpression: numeric_agg_exp
+        - fieldName: available_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: consumer_banking_account_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: consumer_banking_product_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: currency_code
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: current_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: display_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: enterprise_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: interest_ytd
+          aggregateExpression: numeric_agg_exp
+        - fieldName: maturity_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: nickname
+          aggregateExpression: varchar_agg_exp
+        - fieldName: opened_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: opening_day_balance
+          aggregateExpression: numeric_agg_exp
+        - fieldName: servicer_identifier_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: status
+          aggregateExpression: consumer_banking_account_status_agg_exp
+        - fieldName: status_update_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: switch_status
+          aggregateExpression: enterprise_switch_status_agg_exp
+        - fieldName: term
+          aggregateExpression: numeric_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_accounts_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_accounts_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_accounts
+      orderableFields:
+        - fieldName: account_category
+          orderByExpression: enterprise_account_category_order_by_exp
+        - fieldName: account_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: annual_percentage_yield
+          orderByExpression: numeric_order_by_exp
+        - fieldName: available_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: consumer_banking_account_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: consumer_banking_product_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: currency_code
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: current_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: display_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: enterprise_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: interest_ytd
+          orderByExpression: numeric_order_by_exp
+        - fieldName: maturity_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: nickname
+          orderByExpression: varchar_order_by_exp
+        - fieldName: opened_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: opening_day_balance
+          orderByExpression: numeric_order_by_exp
+        - fieldName: servicer_identifier_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: status
+          orderByExpression: consumer_banking_account_status_order_by_exp
+        - fieldName: status_update_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: switch_status
+          orderByExpression: enterprise_switch_status_order_by_exp
+        - fieldName: term
+          orderByExpression: numeric_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_product
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_accounts_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_accounts
+  objectType: consumer_banking_accounts
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_accounts
+  filterExpressionType: consumer_banking_accounts_bool_exp
+  aggregateExpression: consumer_banking_accounts_agg_exp
+  orderByExpression: consumer_banking_accounts_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_accounts
+      subscription:
+        rootField: consumer_banking_accounts
+    selectUniques:
+      - queryRootField: consumer_banking_accounts_by_consumer_banking_account_id
+        uniqueIdentifier:
+          - consumer_banking_account_id
+        subscription:
+          rootField: consumer_banking_accounts_by_consumer_banking_account_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_accounts_filter_input
+    aggregate:
+      queryRootField: consumer_banking_accounts_aggregate
+      subscription:
+        rootField: consumer_banking_accounts_aggregate
+  description: Deposit account linked to enterprise account; always serviced by a
+    this institution
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_accounts
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_account_access_consents
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_account_access_consents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_account_access_consents_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_account_access_consents_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_account_statement_preferences
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_account_statement_preferences
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_account_statement_preferences_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_account_statement_preferences_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_product
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_product_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_product_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_balances
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_balances
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_balances_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_balances_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_beneficiaries
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_beneficiaries
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_beneficiaries_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_beneficiaries_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_customer_interactions
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_customer_interactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_customer_interactions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: account_id
+  graphql:
+    aggregateFieldName: consumer_banking_customer_interactions_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_direct_debits
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_direct_debits
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_direct_debits_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_direct_debits_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_offers
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_offers
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_offers_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_offers_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_scheduled_payments
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_scheduled_payments
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_scheduled_payments_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_scheduled_payments_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_standing_orders
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_standing_orders
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_standing_orders_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_standing_orders_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_statements
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_statements
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_statements_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_statements_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transactions
+  sourceType: consumer_banking_accounts
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: consumer_banking_transactions_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+  graphql:
+    aggregateFieldName: consumer_banking_transactions_aggregate
+

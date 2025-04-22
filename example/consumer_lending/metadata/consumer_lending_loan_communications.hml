@@ -1,0 +1,291 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_loan_communications
+  description: Logs various communications related to loan applications and
+    accounts, such as emails, letters, and phone calls.
+  fields:
+    - name: communication_date
+      type: timestamptz!
+      description: Date/time of communication
+    - name: communication_type
+      type: consumer_lending_communication_type!
+      description: Method of communication
+    - name: consumer_lending_application_id
+      type: int_4
+      description: Reference to loan application if applicable
+    - name: consumer_lending_communication_id
+      type: int_4!
+      description: Unique identifier for communication
+    - name: content
+      type: text
+      description: Communication content or transcript
+    - name: direction
+      type: consumer_lending_communication_direction!
+      description: Direction of communication
+    - name: document_path
+      type: varchar
+      description: Path to stored communication document
+    - name: loan_account_id
+      type: int_4
+      description: Reference to loan account if applicable
+    - name: recipient
+      type: varchar
+      description: Person who received communication
+    - name: related_to
+      type: consumer_lending_communication_context
+      description: Context or purpose of communication
+    - name: sender
+      type: varchar
+      description: Person or system that sent communication
+    - name: status
+      type: consumer_lending_communication_status!
+      description: Current status of communication
+    - name: subject
+      type: varchar
+      description: Communication subject
+    - name: template_id
+      type: varchar
+      description: Reference to template if applicable
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_communications
+    inputTypeName: ConsumerLending_consumer_lending_loan_communications_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_communications
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_loan_communications
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - communication_date
+          - communication_type
+          - consumer_lending_application_id
+          - consumer_lending_communication_id
+          - content
+          - direction
+          - document_path
+          - loan_account_id
+          - recipient
+          - related_to
+          - sender
+          - status
+          - subject
+          - template_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_loan_communications_bool_exp
+  operand:
+    object:
+      type: consumer_lending_loan_communications
+      comparableFields:
+        - fieldName: communication_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: communication_type
+          booleanExpressionType: consumer_lending_communication_type_bool_exp
+        - fieldName: consumer_lending_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_communication_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: content
+          booleanExpressionType: text_bool_exp
+        - fieldName: direction
+          booleanExpressionType: consumer_lending_communication_direction_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: loan_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: recipient
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: related_to
+          booleanExpressionType: consumer_lending_communication_context_bool_exp
+        - fieldName: sender
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: consumer_lending_communication_status_bool_exp
+        - fieldName: subject
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: template_id
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_application
+        - relationshipName: consumer_lending_loan_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_communications_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_loan_communications_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_loan_communications
+      aggregatableFields:
+        - fieldName: communication_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: communication_type
+          aggregateExpression: consumer_lending_communication_type_agg_exp
+        - fieldName: consumer_lending_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_communication_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: content
+          aggregateExpression: text_agg_exp
+        - fieldName: direction
+          aggregateExpression: consumer_lending_communication_direction_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: loan_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: recipient
+          aggregateExpression: varchar_agg_exp
+        - fieldName: related_to
+          aggregateExpression: consumer_lending_communication_context_agg_exp
+        - fieldName: sender
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: consumer_lending_communication_status_agg_exp
+        - fieldName: subject
+          aggregateExpression: varchar_agg_exp
+        - fieldName: template_id
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_loan_communications_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_loan_communications_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_loan_communications
+      orderableFields:
+        - fieldName: communication_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: communication_type
+          orderByExpression: consumer_lending_communication_type_order_by_exp
+        - fieldName: consumer_lending_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_communication_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: content
+          orderByExpression: text_order_by_exp
+        - fieldName: direction
+          orderByExpression: consumer_lending_communication_direction_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: loan_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: recipient
+          orderByExpression: varchar_order_by_exp
+        - fieldName: related_to
+          orderByExpression: consumer_lending_communication_context_order_by_exp
+        - fieldName: sender
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: consumer_lending_communication_status_order_by_exp
+        - fieldName: subject
+          orderByExpression: varchar_order_by_exp
+        - fieldName: template_id
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_application
+        - relationshipName: consumer_lending_loan_account
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_loan_communications_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_loan_communications
+  objectType: consumer_lending_loan_communications
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_communications
+  filterExpressionType: consumer_lending_loan_communications_bool_exp
+  aggregateExpression: consumer_lending_loan_communications_agg_exp
+  orderByExpression: consumer_lending_loan_communications_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_loan_communications
+      subscription:
+        rootField: consumer_lending_loan_communications
+    selectUniques:
+      - queryRootField: consumer_lending_loan_communications_by_consumer_lending_communication_id
+        uniqueIdentifier:
+          - consumer_lending_communication_id
+        subscription:
+          rootField: consumer_lending_loan_communications_by_consumer_lending_communication_id
+    filterInputTypeName: ConsumerLending_consumer_lending_loan_communications_filter_input
+    aggregate:
+      queryRootField: consumer_lending_loan_communications_aggregate
+      subscription:
+        rootField: consumer_lending_loan_communications_aggregate
+  description: Logs various communications related to loan applications and
+    accounts, such as emails, letters, and phone calls.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_loan_communications
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_application
+  sourceType: consumer_lending_loan_communications
+  target:
+    model:
+      name: consumer_lending_loan_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_account
+  sourceType: consumer_lending_loan_communications
+  target:
+    model:
+      name: consumer_lending_loan_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: loan_account_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_loan_account_id
+

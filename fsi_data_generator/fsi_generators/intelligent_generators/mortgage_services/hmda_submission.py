@@ -174,7 +174,6 @@ def generate_random_hmda_submission(id_fields: Dict[str, Any], dg: DataGenerator
         "record_count": random.randint(100, 10000) if submission_status != HmdaSubmissionStatus.PENDING else None,
         "error_count": random.randint(0, 100) if submission_status == HmdaSubmissionStatus.REJECTED else 0,
         "warning_count": random.randint(0, 50) if submission_status != HmdaSubmissionStatus.PENDING else 0,
-        "submitted_by_id": random.randint(1000, 9999),  # Reference to enterprise associate
         "submission_notes": response_details,  # Using the response details as notes
         "confirmation_number": confirmation_number,
         "completion_date": response_date if submission_status == HmdaSubmissionStatus.ACCEPTED else None

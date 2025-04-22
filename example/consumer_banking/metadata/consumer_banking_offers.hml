@@ -1,0 +1,269 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_offers
+  description: Stores promotional offers made to account holders
+  fields:
+    - name: amount
+      type: numeric
+      description: Monetary amount of the offer
+    - name: amount_currency
+      type: enterprise_currency_code
+      description: Currency of the offer amount
+    - name: consumer_banking_account_id
+      type: int_8!
+      description: References the account this offer belongs to
+    - name: consumer_banking_offer_id
+      type: int_4!
+      description: Unique identifier for each offer
+    - name: description
+      type: varchar
+      description: Detailed description of the offer
+    - name: end_date_time
+      type: timestamptz
+      description: When the offer expires
+    - name: fee
+      type: numeric
+      description: Any fee associated with accepting the offer
+    - name: fee_currency
+      type: enterprise_currency_code
+      description: Currency of the fee
+    - name: offer_type
+      type: consumer_banking_offer_type!
+      description: Type of offer (e.g., loan, investment, balance transfer)
+    - name: rate
+      type: numeric
+      description: Interest rate associated with the offer
+    - name: start_date_time
+      type: timestamptz
+      description: When the offer becomes available
+    - name: term
+      type: varchar
+      description: Terms and conditions of the offer
+    - name: url
+      type: varchar
+      description: Web link for more information about the offer
+    - name: value
+      type: int_4
+      description: Numerical value related to the offer (e.g., reward points)
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_offers
+    inputTypeName: ConsumerBanking_consumer_banking_offers_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_offers
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_offers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - amount_currency
+          - consumer_banking_account_id
+          - consumer_banking_offer_id
+          - description
+          - end_date_time
+          - fee
+          - fee_currency
+          - offer_type
+          - rate
+          - start_date_time
+          - term
+          - url
+          - value
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_offers_bool_exp
+  operand:
+    object:
+      type: consumer_banking_offers
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: amount_currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: consumer_banking_account_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: consumer_banking_offer_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: end_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: fee
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: fee_currency
+          booleanExpressionType: enterprise_currency_code_bool_exp
+        - fieldName: offer_type
+          booleanExpressionType: consumer_banking_offer_type_bool_exp
+        - fieldName: rate
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: start_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: term
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: url
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: value
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_offers_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_offers_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_offers
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: amount_currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: consumer_banking_account_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: consumer_banking_offer_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: varchar_agg_exp
+        - fieldName: end_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: fee
+          aggregateExpression: numeric_agg_exp
+        - fieldName: fee_currency
+          aggregateExpression: enterprise_currency_code_agg_exp
+        - fieldName: offer_type
+          aggregateExpression: consumer_banking_offer_type_agg_exp
+        - fieldName: rate
+          aggregateExpression: numeric_agg_exp
+        - fieldName: start_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: term
+          aggregateExpression: varchar_agg_exp
+        - fieldName: url
+          aggregateExpression: varchar_agg_exp
+        - fieldName: value
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_offers_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_offers_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_offers
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: amount_currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: consumer_banking_account_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: consumer_banking_offer_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: varchar_order_by_exp
+        - fieldName: end_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: fee
+          orderByExpression: numeric_order_by_exp
+        - fieldName: fee_currency
+          orderByExpression: enterprise_currency_code_order_by_exp
+        - fieldName: offer_type
+          orderByExpression: consumer_banking_offer_type_order_by_exp
+        - fieldName: rate
+          orderByExpression: numeric_order_by_exp
+        - fieldName: start_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: term
+          orderByExpression: varchar_order_by_exp
+        - fieldName: url
+          orderByExpression: varchar_order_by_exp
+        - fieldName: value
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_account
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_offers_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_offers
+  objectType: consumer_banking_offers
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_offers
+  filterExpressionType: consumer_banking_offers_bool_exp
+  aggregateExpression: consumer_banking_offers_agg_exp
+  orderByExpression: consumer_banking_offers_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_offers
+      subscription:
+        rootField: consumer_banking_offers
+    selectUniques:
+      - queryRootField: consumer_banking_offers_by_consumer_banking_offer_id
+        uniqueIdentifier:
+          - consumer_banking_offer_id
+        subscription:
+          rootField: consumer_banking_offers_by_consumer_banking_offer_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_offers_filter_input
+    aggregate:
+      queryRootField: consumer_banking_offers_aggregate
+      subscription:
+        rootField: consumer_banking_offers_aggregate
+  description: Stores promotional offers made to account holders
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_offers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_account
+  sourceType: consumer_banking_offers
+  target:
+    model:
+      name: consumer_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_banking_account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+

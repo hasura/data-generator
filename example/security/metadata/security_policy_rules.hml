@@ -1,0 +1,169 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_policy_rules
+  description: Table storing specific rules associated with security policies.
+  fields:
+    - name: rule_description
+      type: text!
+      description: Detailed description of the policy rule.
+    - name: rule_name
+      type: varchar!
+      description: Name of the policy rule.
+    - name: security_policy_id
+      type: uuid
+      description: Foreign key referencing the policy_id in the policies table.
+    - name: security_policy_rule_id
+      type: uuid!
+      description: Unique identifier for the policy rule.
+  graphql:
+    typeName: Security_security_policy_rules
+    inputTypeName: Security_security_policy_rules_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_policy_rules
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_policy_rules
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - rule_description
+          - rule_name
+          - security_policy_id
+          - security_policy_rule_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_policy_rules_bool_exp
+  operand:
+    object:
+      type: security_policy_rules
+      comparableFields:
+        - fieldName: rule_description
+          booleanExpressionType: text_bool_exp
+        - fieldName: rule_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: security_policy_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_policy_rule_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: security_policy
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_policy_rules_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_policy_rules_agg_exp
+  operand:
+    object:
+      aggregatedType: security_policy_rules
+      aggregatableFields:
+        - fieldName: rule_description
+          aggregateExpression: text_agg_exp
+        - fieldName: rule_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: security_policy_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_policy_rule_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_policy_rules_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_policy_rules_order_by_exp
+  operand:
+    object:
+      orderedType: security_policy_rules
+      orderableFields:
+        - fieldName: rule_description
+          orderByExpression: text_order_by_exp
+        - fieldName: rule_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: security_policy_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_policy_rule_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_policy
+  graphql:
+    expressionTypeName: Security_security_policy_rules_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_policy_rules
+  objectType: security_policy_rules
+  source:
+    dataConnectorName: security
+    collection: security_policy_rules
+  filterExpressionType: security_policy_rules_bool_exp
+  aggregateExpression: security_policy_rules_agg_exp
+  orderByExpression: security_policy_rules_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_policy_rules
+      subscription:
+        rootField: security_policy_rules
+    selectUniques:
+      - queryRootField: security_policy_rules_by_security_policy_rule_id
+        uniqueIdentifier:
+          - security_policy_rule_id
+        subscription:
+          rootField: security_policy_rules_by_security_policy_rule_id
+    filterInputTypeName: Security_security_policy_rules_filter_input
+    aggregate:
+      queryRootField: security_policy_rules_aggregate
+      subscription:
+        rootField: security_policy_rules_aggregate
+  description: Table storing specific rules associated with security policies.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_policy_rules
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_policy
+  sourceType: security_policy_rules
+  target:
+    model:
+      name: security_policies
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_policy_id
+      target:
+        modelField:
+          - fieldName: security_policy_id
+

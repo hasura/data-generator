@@ -407,7 +407,13 @@ class DataGenerator:
 
                                 # Check if any newly added columns in row_values are valid columns for this table
                                 for col, val in list(row_values.items()):
-                                    if col not in column_names and col in valid_columns and col not in auto_gen_cols:
+                                    if col in column_names:
+                                        # Column already exists in column_names, update its value
+                                        # Find the index of the column in column_names
+                                        index = column_names.index(col)
+                                        # Update the value at the same index in values list
+                                        values[index] = val
+                                    elif col not in column_names and col in valid_columns:
                                         column_names.append(col)
                                         values.append(val)
                                         # logger.debug(f"Added valid extra column {col} from custom generator")

@@ -1,0 +1,239 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_role_entitlements
+  description: Maps roles to their constituent entitlements
+  fields:
+    - name: active
+      type: bool
+      description: Incicates that the entitlement is effective at this moment
+    - name: created_at
+      type: timestamptz!
+      description: When the entitlement was added to the role
+    - name: created_by_id
+      type: int_4
+      description: Who added the entitlement to the role
+    - name: ended_at
+      type: timestamptz
+      description: When the entitlement was no longer effective
+    - name: security_entitlement_id
+      type: uuid!
+      description: Reference to the entitlement
+    - name: security_role_entitlement_id
+      type: uuid!
+      description: Reference to the role entitlement pair
+    - name: security_role_id
+      type: uuid!
+      description: Reference to the role
+    - name: started_at
+      type: timestamptz!
+      description: When the entitlement became effective
+    - name: updated_by_id
+      type: int_4
+      description: Who added the entitlement to the role
+  graphql:
+    typeName: Security_security_role_entitlements
+    inputTypeName: Security_security_role_entitlements_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_role_entitlements
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_role_entitlements
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - active
+          - created_at
+          - created_by_id
+          - ended_at
+          - security_entitlement_id
+          - security_role_entitlement_id
+          - security_role_id
+          - started_at
+          - updated_by_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_role_entitlements_bool_exp
+  operand:
+    object:
+      type: security_role_entitlements
+      comparableFields:
+        - fieldName: active
+          booleanExpressionType: bool_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: created_by_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: ended_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: security_entitlement_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_role_entitlement_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_role_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: started_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: updated_by_id
+          booleanExpressionType: int_4_bool_exp
+      comparableRelationships:
+        - relationshipName: security_enhanced_entitlement
+        - relationshipName: security_role
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_role_entitlements_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_role_entitlements_agg_exp
+  operand:
+    object:
+      aggregatedType: security_role_entitlements
+      aggregatableFields:
+        - fieldName: active
+          aggregateExpression: bool_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: created_by_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: ended_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: security_entitlement_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_role_entitlement_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_role_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: started_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: updated_by_id
+          aggregateExpression: int_4_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_role_entitlements_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_role_entitlements_order_by_exp
+  operand:
+    object:
+      orderedType: security_role_entitlements
+      orderableFields:
+        - fieldName: active
+          orderByExpression: bool_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: created_by_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: ended_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: security_entitlement_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_role_entitlement_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_role_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: started_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: updated_by_id
+          orderByExpression: int_4_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_enhanced_entitlement
+        - relationshipName: security_role
+  graphql:
+    expressionTypeName: Security_security_role_entitlements_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_role_entitlements
+  objectType: security_role_entitlements
+  source:
+    dataConnectorName: security
+    collection: security_role_entitlements
+  filterExpressionType: security_role_entitlements_bool_exp
+  aggregateExpression: security_role_entitlements_agg_exp
+  orderByExpression: security_role_entitlements_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_role_entitlements
+      subscription:
+        rootField: security_role_entitlements
+    selectUniques:
+      - queryRootField: security_role_entitlements_by_security_role_entitlement_id
+        uniqueIdentifier:
+          - security_role_entitlement_id
+        subscription:
+          rootField: security_role_entitlements_by_security_role_entitlement_id
+    filterInputTypeName: Security_security_role_entitlements_filter_input
+    aggregate:
+      queryRootField: security_role_entitlements_aggregate
+      subscription:
+        rootField: security_role_entitlements_aggregate
+  description: Maps roles to their constituent entitlements
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_role_entitlements
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_enhanced_entitlement
+  sourceType: security_role_entitlements
+  target:
+    model:
+      name: security_enhanced_entitlements
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_entitlement_id
+      target:
+        modelField:
+          - fieldName: security_entitlement_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_role
+  sourceType: security_role_entitlements
+  target:
+    model:
+      name: security_roles
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_role_id
+      target:
+        modelField:
+          - fieldName: security_role_id
+

@@ -1,0 +1,271 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_lending_loan_documents
+  description: Tracks documents related to loan applications and accounts,
+    including application forms, contracts, and statements.
+  fields:
+    - name: consumer_lending_application_id
+      type: int_4
+      description: Reference to loan application if applicable
+    - name: consumer_lending_document_id
+      type: int_4!
+      description: Unique identifier for document
+    - name: document_name
+      type: varchar!
+      description: File name or title
+    - name: document_path
+      type: varchar!
+      description: Path to stored document
+    - name: document_type
+      type: consumer_lending_document_type!
+      description: Type of document
+    - name: expiration_date
+      type: date
+      description: Document expiration date if applicable
+    - name: loan_account_id
+      type: int_4
+      description: Reference to loan account if applicable
+    - name: notes
+      type: text
+      description: Additional document notes
+    - name: review_date
+      type: timestamptz
+      description: When document was reviewed
+    - name: reviewer_id
+      type: int_4
+      description: User who reviewed document
+    - name: status
+      type: consumer_lending_document_status!
+      description: Current status of the document
+    - name: upload_date
+      type: timestamptz!
+      description: When document was created/uploaded
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_documents
+    inputTypeName: ConsumerLending_consumer_lending_loan_documents_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_lending
+      dataConnectorObjectType: consumer_lending_loan_documents
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_lending_loan_documents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - consumer_lending_application_id
+          - consumer_lending_document_id
+          - document_name
+          - document_path
+          - document_type
+          - expiration_date
+          - loan_account_id
+          - notes
+          - review_date
+          - reviewer_id
+          - status
+          - upload_date
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_lending_loan_documents_bool_exp
+  operand:
+    object:
+      type: consumer_lending_loan_documents
+      comparableFields:
+        - fieldName: consumer_lending_application_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: consumer_lending_document_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: document_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: document_path
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: document_type
+          booleanExpressionType: consumer_lending_document_type_bool_exp
+        - fieldName: expiration_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: loan_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: notes
+          booleanExpressionType: text_bool_exp
+        - fieldName: review_date
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: reviewer_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: status
+          booleanExpressionType: consumer_lending_document_status_bool_exp
+        - fieldName: upload_date
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_lending_loan_application
+        - relationshipName: consumer_lending_loan_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerLending_consumer_lending_loan_documents_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_lending_loan_documents_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_lending_loan_documents
+      aggregatableFields:
+        - fieldName: consumer_lending_application_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: consumer_lending_document_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: document_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: document_path
+          aggregateExpression: varchar_agg_exp
+        - fieldName: document_type
+          aggregateExpression: consumer_lending_document_type_agg_exp
+        - fieldName: expiration_date
+          aggregateExpression: date_agg_exp
+        - fieldName: loan_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: notes
+          aggregateExpression: text_agg_exp
+        - fieldName: review_date
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: reviewer_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: status
+          aggregateExpression: consumer_lending_document_status_agg_exp
+        - fieldName: upload_date
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerLending_consumer_lending_loan_documents_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_lending_loan_documents_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_lending_loan_documents
+      orderableFields:
+        - fieldName: consumer_lending_application_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: consumer_lending_document_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: document_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: document_path
+          orderByExpression: varchar_order_by_exp
+        - fieldName: document_type
+          orderByExpression: consumer_lending_document_type_order_by_exp
+        - fieldName: expiration_date
+          orderByExpression: date_order_by_exp
+        - fieldName: loan_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: notes
+          orderByExpression: text_order_by_exp
+        - fieldName: review_date
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: reviewer_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: status
+          orderByExpression: consumer_lending_document_status_order_by_exp
+        - fieldName: upload_date
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_lending_loan_application
+        - relationshipName: consumer_lending_loan_account
+  graphql:
+    expressionTypeName: ConsumerLending_consumer_lending_loan_documents_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_lending_loan_documents
+  objectType: consumer_lending_loan_documents
+  source:
+    dataConnectorName: consumer_lending
+    collection: consumer_lending_loan_documents
+  filterExpressionType: consumer_lending_loan_documents_bool_exp
+  aggregateExpression: consumer_lending_loan_documents_agg_exp
+  orderByExpression: consumer_lending_loan_documents_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_lending_loan_documents
+      subscription:
+        rootField: consumer_lending_loan_documents
+    selectUniques:
+      - queryRootField: consumer_lending_loan_documents_by_consumer_lending_document_id
+        uniqueIdentifier:
+          - consumer_lending_document_id
+        subscription:
+          rootField: consumer_lending_loan_documents_by_consumer_lending_document_id
+    filterInputTypeName: ConsumerLending_consumer_lending_loan_documents_filter_input
+    aggregate:
+      queryRootField: consumer_lending_loan_documents_aggregate
+      subscription:
+        rootField: consumer_lending_loan_documents_aggregate
+  description: Tracks documents related to loan applications and accounts,
+    including application forms, contracts, and statements.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_lending_loan_documents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_application
+  sourceType: consumer_lending_loan_documents
+  target:
+    model:
+      name: consumer_lending_loan_applications
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: consumer_lending_application_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_application_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_lending_loan_account
+  sourceType: consumer_lending_loan_documents
+  target:
+    model:
+      name: consumer_lending_loan_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: loan_account_id
+      target:
+        modelField:
+          - fieldName: consumer_lending_loan_account_id
+

@@ -1,0 +1,259 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: mortgage_services_insurance_policies
+  description: Tracks insurance policies protecting mortgaged properties
+  fields:
+    - name: agent_name
+      type: varchar
+      description: Insurance agent's name
+    - name: agent_phone
+      type: varchar
+      description: Insurance agent's contact number
+    - name: annual_premium
+      type: numeric!
+      description: Annual cost of the insurance policy
+    - name: carrier_name
+      type: varchar!
+      description: Insurance company providing coverage
+    - name: coverage_amount
+      type: numeric!
+      description: Amount of insurance coverage
+    - name: effective_date
+      type: date!
+      description: Start date of policy coverage
+    - name: expiration_date
+      type: date!
+      description: End date of policy coverage
+    - name: insurance_type
+      type: mortgage_services_insurance_type!
+      description: Type of insurance coverage
+    - name: mortgage_services_policy_id
+      type: int_4!
+      description: Auto-incrementing identifier for each policy
+    - name: mortgage_services_servicing_account_id
+      type: int_4!
+      description: References the servicing account this policy protects
+    - name: paid_through_escrow
+      type: bool!
+      description: Whether premium is paid from escrow account
+    - name: policy_number
+      type: varchar!
+      description: Insurance policy identifier
+    - name: status
+      type: mortgage_services_insurance_policy_status!
+      description: Current status of the policy
+  graphql:
+    typeName: MortgageServices_mortgage_services_insurance_policies
+    inputTypeName: MortgageServices_mortgage_services_insurance_policies_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: mortgage_services
+      dataConnectorObjectType: mortgage_services_insurance_policies
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: mortgage_services_insurance_policies
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - agent_name
+          - agent_phone
+          - annual_premium
+          - carrier_name
+          - coverage_amount
+          - effective_date
+          - expiration_date
+          - insurance_type
+          - mortgage_services_policy_id
+          - mortgage_services_servicing_account_id
+          - paid_through_escrow
+          - policy_number
+          - status
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: mortgage_services_insurance_policies_bool_exp
+  operand:
+    object:
+      type: mortgage_services_insurance_policies
+      comparableFields:
+        - fieldName: agent_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: agent_phone
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: annual_premium
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: carrier_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: coverage_amount
+          booleanExpressionType: numeric_bool_exp
+        - fieldName: effective_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: expiration_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: insurance_type
+          booleanExpressionType: mortgage_services_insurance_type_bool_exp
+        - fieldName: mortgage_services_policy_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: mortgage_services_servicing_account_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: paid_through_escrow
+          booleanExpressionType: bool_bool_exp
+        - fieldName: policy_number
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: status
+          booleanExpressionType: mortgage_services_insurance_policy_status_bool_exp
+      comparableRelationships:
+        - relationshipName: mortgage_services_servicing_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: MortgageServices_mortgage_services_insurance_policies_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: mortgage_services_insurance_policies_agg_exp
+  operand:
+    object:
+      aggregatedType: mortgage_services_insurance_policies
+      aggregatableFields:
+        - fieldName: agent_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: agent_phone
+          aggregateExpression: varchar_agg_exp
+        - fieldName: annual_premium
+          aggregateExpression: numeric_agg_exp
+        - fieldName: carrier_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: coverage_amount
+          aggregateExpression: numeric_agg_exp
+        - fieldName: effective_date
+          aggregateExpression: date_agg_exp
+        - fieldName: expiration_date
+          aggregateExpression: date_agg_exp
+        - fieldName: insurance_type
+          aggregateExpression: mortgage_services_insurance_type_agg_exp
+        - fieldName: mortgage_services_policy_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: mortgage_services_servicing_account_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: paid_through_escrow
+          aggregateExpression: bool_agg_exp
+        - fieldName: policy_number
+          aggregateExpression: varchar_agg_exp
+        - fieldName: status
+          aggregateExpression: mortgage_services_insurance_policy_status_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: MortgageServices_mortgage_services_insurance_policies_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: mortgage_services_insurance_policies_order_by_exp
+  operand:
+    object:
+      orderedType: mortgage_services_insurance_policies
+      orderableFields:
+        - fieldName: agent_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: agent_phone
+          orderByExpression: varchar_order_by_exp
+        - fieldName: annual_premium
+          orderByExpression: numeric_order_by_exp
+        - fieldName: carrier_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: coverage_amount
+          orderByExpression: numeric_order_by_exp
+        - fieldName: effective_date
+          orderByExpression: date_order_by_exp
+        - fieldName: expiration_date
+          orderByExpression: date_order_by_exp
+        - fieldName: insurance_type
+          orderByExpression: mortgage_services_insurance_type_order_by_exp
+        - fieldName: mortgage_services_policy_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: mortgage_services_servicing_account_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: paid_through_escrow
+          orderByExpression: bool_order_by_exp
+        - fieldName: policy_number
+          orderByExpression: varchar_order_by_exp
+        - fieldName: status
+          orderByExpression: mortgage_services_insurance_policy_status_order_by_exp
+      orderableRelationships:
+        - relationshipName: mortgage_services_servicing_account
+  graphql:
+    expressionTypeName: MortgageServices_mortgage_services_insurance_policies_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: mortgage_services_insurance_policies
+  objectType: mortgage_services_insurance_policies
+  source:
+    dataConnectorName: mortgage_services
+    collection: mortgage_services_insurance_policies
+  filterExpressionType: mortgage_services_insurance_policies_bool_exp
+  aggregateExpression: mortgage_services_insurance_policies_agg_exp
+  orderByExpression: mortgage_services_insurance_policies_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: mortgage_services_insurance_policies
+      subscription:
+        rootField: mortgage_services_insurance_policies
+    selectUniques:
+      - queryRootField: mortgage_services_insurance_policies_by_mortgage_services_policy_id
+        uniqueIdentifier:
+          - mortgage_services_policy_id
+        subscription:
+          rootField: mortgage_services_insurance_policies_by_mortgage_services_policy_id
+    filterInputTypeName: MortgageServices_mortgage_services_insurance_policies_filter_input
+    aggregate:
+      queryRootField: mortgage_services_insurance_policies_aggregate
+      subscription:
+        rootField: mortgage_services_insurance_policies_aggregate
+  description: Tracks insurance policies protecting mortgaged properties
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: mortgage_services_insurance_policies
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: mortgage_services_servicing_account
+  sourceType: mortgage_services_insurance_policies
+  target:
+    model:
+      name: mortgage_services_servicing_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: mortgage_services_servicing_account_id
+      target:
+        modelField:
+          - fieldName: mortgage_services_servicing_account_id
+

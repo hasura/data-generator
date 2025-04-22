@@ -1,0 +1,202 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_cwe
+  description: Stores Common Weakness Enumeration (CWE) information.
+  fields:
+    - name: common_consequences
+      type: text
+      description: Common consequences of the CWE.
+    - name: cwe_id
+      type: int_4!
+      description: Common Weakness Enumeration identifier. Primary key.
+    - name: description
+      type: text
+      description: CWE description.
+    - name: extended_description
+      type: text
+      description: Extended CWE description.
+    - name: modes_of_introduction
+      type: text
+      description: Modes of introduction for the CWE.
+    - name: name
+      type: text
+      description: CWE name.
+    - name: potential_mitigations
+      type: text
+      description: Potential mitigations for the CWE.
+  graphql:
+    typeName: Security_security_cwe
+    inputTypeName: Security_security_cwe_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_cwe
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_cwe
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - common_consequences
+          - cwe_id
+          - description
+          - extended_description
+          - modes_of_introduction
+          - name
+          - potential_mitigations
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_cwe_bool_exp
+  operand:
+    object:
+      type: security_cwe
+      comparableFields:
+        - fieldName: common_consequences
+          booleanExpressionType: text_bool_exp
+        - fieldName: cwe_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: extended_description
+          booleanExpressionType: text_bool_exp
+        - fieldName: modes_of_introduction
+          booleanExpressionType: text_bool_exp
+        - fieldName: name
+          booleanExpressionType: text_bool_exp
+        - fieldName: potential_mitigations
+          booleanExpressionType: text_bool_exp
+      comparableRelationships:
+        - relationshipName: security_cve_problems
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_cwe_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_cwe_agg_exp
+  operand:
+    object:
+      aggregatedType: security_cwe
+      aggregatableFields:
+        - fieldName: common_consequences
+          aggregateExpression: text_agg_exp
+        - fieldName: cwe_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: extended_description
+          aggregateExpression: text_agg_exp
+        - fieldName: modes_of_introduction
+          aggregateExpression: text_agg_exp
+        - fieldName: name
+          aggregateExpression: text_agg_exp
+        - fieldName: potential_mitigations
+          aggregateExpression: text_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_cwe_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_cwe_order_by_exp
+  operand:
+    object:
+      orderedType: security_cwe
+      orderableFields:
+        - fieldName: common_consequences
+          orderByExpression: text_order_by_exp
+        - fieldName: cwe_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: extended_description
+          orderByExpression: text_order_by_exp
+        - fieldName: modes_of_introduction
+          orderByExpression: text_order_by_exp
+        - fieldName: name
+          orderByExpression: text_order_by_exp
+        - fieldName: potential_mitigations
+          orderByExpression: text_order_by_exp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: Security_security_cwe_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_cwe
+  objectType: security_cwe
+  source:
+    dataConnectorName: security
+    collection: security_cwe
+  filterExpressionType: security_cwe_bool_exp
+  aggregateExpression: security_cwe_agg_exp
+  orderByExpression: security_cwe_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_cwe
+      subscription:
+        rootField: security_cwe
+    selectUniques:
+      - queryRootField: security_cwe_by_cwe_id
+        uniqueIdentifier:
+          - cwe_id
+        subscription:
+          rootField: security_cwe_by_cwe_id
+    filterInputTypeName: Security_security_cwe_filter_input
+    aggregate:
+      queryRootField: security_cwe_aggregate
+      subscription:
+        rootField: security_cwe_aggregate
+  description: Stores Common Weakness Enumeration (CWE) information.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_cwe
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_cve_problems
+  sourceType: security_cwe
+  target:
+    model:
+      name: security_cve_problem
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: security_cve_problem_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cwe_id
+      target:
+        modelField:
+          - fieldName: cwe_id
+  graphql:
+    aggregateFieldName: security_cve_problems_aggregate
+

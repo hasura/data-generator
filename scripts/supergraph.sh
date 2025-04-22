@@ -3,7 +3,7 @@
 mkdir example
 cd example || exit
 
-ddn supergraph init . --no-subgraph --create-project
+ddn supergraph init . --no-subgraph --create-project --with-promptql
 
 cp -r ../scripts/globals/* globals/
 echo 'M_AUTH_KEY="secret"' >> .env
@@ -101,8 +101,8 @@ cp ../scripts/cross_schema_relationships/credit_cards* credit_cards/metadata
 cp ../scripts/cross_schema_relationships/mortgage_services* mortgage_services/metadata
 cp ../scripts/cross_schema_relationships/security* security/metadata
 cp ../scripts/cross_schema_relationships/app_mgmt* app_mgmt/metadata
+cp ../scripts/cross_schema_relationships/data_quality* data_quality/metadata
 
-printf '\n' | ddn codemod enable-promptql -f
 cp ../scripts/promptql_config.yaml.sample promptql_config.yaml
 ddn supergraph build local
 ddn run docker-start

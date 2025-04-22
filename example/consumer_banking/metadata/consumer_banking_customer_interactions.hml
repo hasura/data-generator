@@ -1,0 +1,303 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: consumer_banking_customer_interactions
+  fields:
+    - name: account_id
+      type: int_8
+      description: The ID of the specific account related to the interaction. This can
+        be NULL if the interaction isn't tied to a specific account (e.g., a
+        general inquiry).
+    - name: channel
+      type: consumer_banking_interaction_channel
+      description: The channel through which the interaction occurred (e.g., "phone,"
+        "email," "web," "branch," "mobile app").
+    - name: consumer_banking_interaction_id
+      type: int_4!
+      description: A unique identifier for each interaction.
+    - name: created_at
+      type: timestamptz
+      description: When the interaction record was created.
+    - name: customer_id
+      type: int_4
+      description: The ID of the customer involved in the interaction.
+    - name: description
+      type: text
+      description: A detailed description of the interaction.
+    - name: enterprise_associate_id
+      type: int_4
+      description: The ID of the bank employee who handled the interaction. This can
+        be NULL if it was an automated interaction.
+    - name: interaction_date_time
+      type: timestamptz
+      description: The date and time of the interaction.
+    - name: interaction_type
+      type: consumer_banking_interaction_type
+      description: The type of interaction (e.g., "phone call," "email," "chat,"
+        "in-person," "online form," "ATM interaction").
+    - name: priority
+      type: consumer_banking_interaction_priority
+      description: The priority of the interaction (e.g., "high," "medium," "low").
+    - name: related_transaction_id
+      type: int_4
+      description: If the interaction relates to a specific transaction, this can hold
+        that transaction ID.
+    - name: resolution
+      type: text
+      description: Description of how the interaction was resolved.
+    - name: status
+      type: consumer_banking_interaction_status
+      description: The status of the interaction (e.g., "open," "resolved," "pending").
+    - name: subject
+      type: varchar
+      description: A brief subject or title of the interaction.
+    - name: updated_at
+      type: timestamptz
+      description: When the interaction record was last updated.
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_customer_interactions
+    inputTypeName: ConsumerBanking_consumer_banking_customer_interactions_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: consumer_banking
+      dataConnectorObjectType: consumer_banking_customer_interactions
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: consumer_banking_customer_interactions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - account_id
+          - channel
+          - consumer_banking_interaction_id
+          - created_at
+          - customer_id
+          - description
+          - enterprise_associate_id
+          - interaction_date_time
+          - interaction_type
+          - priority
+          - related_transaction_id
+          - resolution
+          - status
+          - subject
+          - updated_at
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: consumer_banking_customer_interactions_bool_exp
+  operand:
+    object:
+      type: consumer_banking_customer_interactions
+      comparableFields:
+        - fieldName: account_id
+          booleanExpressionType: int_8_bool_exp
+        - fieldName: channel
+          booleanExpressionType: consumer_banking_interaction_channel_bool_exp
+        - fieldName: consumer_banking_interaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: customer_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: description
+          booleanExpressionType: text_bool_exp
+        - fieldName: enterprise_associate_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: interaction_date_time
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: interaction_type
+          booleanExpressionType: consumer_banking_interaction_type_bool_exp
+        - fieldName: priority
+          booleanExpressionType: consumer_banking_interaction_priority_bool_exp
+        - fieldName: related_transaction_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: resolution
+          booleanExpressionType: text_bool_exp
+        - fieldName: status
+          booleanExpressionType: consumer_banking_interaction_status_bool_exp
+        - fieldName: subject
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: updated_at
+          booleanExpressionType: timestamptz_bool_exp
+      comparableRelationships:
+        - relationshipName: consumer_banking_account
+        - relationshipName: consumer_banking_transaction
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ConsumerBanking_consumer_banking_customer_interactions_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: consumer_banking_customer_interactions_agg_exp
+  operand:
+    object:
+      aggregatedType: consumer_banking_customer_interactions
+      aggregatableFields:
+        - fieldName: account_id
+          aggregateExpression: int_8_agg_exp
+        - fieldName: channel
+          aggregateExpression: consumer_banking_interaction_channel_agg_exp
+        - fieldName: consumer_banking_interaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: customer_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: description
+          aggregateExpression: text_agg_exp
+        - fieldName: enterprise_associate_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: interaction_date_time
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: interaction_type
+          aggregateExpression: consumer_banking_interaction_type_agg_exp
+        - fieldName: priority
+          aggregateExpression: consumer_banking_interaction_priority_agg_exp
+        - fieldName: related_transaction_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: resolution
+          aggregateExpression: text_agg_exp
+        - fieldName: status
+          aggregateExpression: consumer_banking_interaction_status_agg_exp
+        - fieldName: subject
+          aggregateExpression: varchar_agg_exp
+        - fieldName: updated_at
+          aggregateExpression: timestamptz_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: ConsumerBanking_consumer_banking_customer_interactions_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: consumer_banking_customer_interactions_order_by_exp
+  operand:
+    object:
+      orderedType: consumer_banking_customer_interactions
+      orderableFields:
+        - fieldName: account_id
+          orderByExpression: int_8_order_by_exp
+        - fieldName: channel
+          orderByExpression: consumer_banking_interaction_channel_order_by_exp
+        - fieldName: consumer_banking_interaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: customer_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: description
+          orderByExpression: text_order_by_exp
+        - fieldName: enterprise_associate_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: interaction_date_time
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: interaction_type
+          orderByExpression: consumer_banking_interaction_type_order_by_exp
+        - fieldName: priority
+          orderByExpression: consumer_banking_interaction_priority_order_by_exp
+        - fieldName: related_transaction_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: resolution
+          orderByExpression: text_order_by_exp
+        - fieldName: status
+          orderByExpression: consumer_banking_interaction_status_order_by_exp
+        - fieldName: subject
+          orderByExpression: varchar_order_by_exp
+        - fieldName: updated_at
+          orderByExpression: timestamptz_order_by_exp
+      orderableRelationships:
+        - relationshipName: consumer_banking_account
+        - relationshipName: consumer_banking_transaction
+  graphql:
+    expressionTypeName: ConsumerBanking_consumer_banking_customer_interactions_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: consumer_banking_customer_interactions
+  objectType: consumer_banking_customer_interactions
+  source:
+    dataConnectorName: consumer_banking
+    collection: consumer_banking_customer_interactions
+  filterExpressionType: consumer_banking_customer_interactions_bool_exp
+  aggregateExpression: consumer_banking_customer_interactions_agg_exp
+  orderByExpression: consumer_banking_customer_interactions_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: consumer_banking_customer_interactions
+      subscription:
+        rootField: consumer_banking_customer_interactions
+    selectUniques:
+      - queryRootField: consumer_banking_customer_interactions_by_consumer_banking_interaction_id
+        uniqueIdentifier:
+          - consumer_banking_interaction_id
+        subscription:
+          rootField: consumer_banking_customer_interactions_by_consumer_banking_interaction_id
+    filterInputTypeName: ConsumerBanking_consumer_banking_customer_interactions_filter_input
+    aggregate:
+      queryRootField: consumer_banking_customer_interactions_aggregate
+      subscription:
+        rootField: consumer_banking_customer_interactions_aggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: consumer_banking_customer_interactions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_account
+  sourceType: consumer_banking_customer_interactions
+  target:
+    model:
+      name: consumer_banking_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: account_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_account_id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: consumer_banking_transaction
+  sourceType: consumer_banking_customer_interactions
+  target:
+    model:
+      name: consumer_banking_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: related_transaction_id
+      target:
+        modelField:
+          - fieldName: consumer_banking_transaction_id
+

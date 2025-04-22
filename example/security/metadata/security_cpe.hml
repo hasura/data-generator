@@ -1,0 +1,165 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_cpe
+  description: Stores Common Platform Enumeration (CPE) information associated with CVEs.
+  fields:
+    - name: cpe_23_uri
+      type: text
+      description: CPE 2.3 URI string.
+    - name: cve
+      type: varchar
+      description: Common Vulnerabilities and Exposures identifier. Foreign key
+        referencing cvss.cve.
+    - name: vulnerable
+      type: varchar
+      description: Indicates if the CPE is vulnerable to the CVE.
+  graphql:
+    typeName: Security_security_cpe
+    inputTypeName: Security_security_cpe_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_cpe
+      fieldMapping:
+        cpe_23_uri:
+          column:
+            name: cpe23uri
+        cve:
+          column:
+            name: cve
+        vulnerable:
+          column:
+            name: vulnerable
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_cpe
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - cpe_23_uri
+          - cve
+          - vulnerable
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_cpe_bool_exp
+  operand:
+    object:
+      type: security_cpe
+      comparableFields:
+        - fieldName: cpe_23_uri
+          booleanExpressionType: text_bool_exp
+        - fieldName: cve
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: vulnerable
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: security_cvss
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_cpe_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_cpe_agg_exp
+  operand:
+    object:
+      aggregatedType: security_cpe
+      aggregatableFields:
+        - fieldName: cpe_23_uri
+          aggregateExpression: text_agg_exp
+        - fieldName: cve
+          aggregateExpression: varchar_agg_exp
+        - fieldName: vulnerable
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_cpe_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_cpe_order_by_exp
+  operand:
+    object:
+      orderedType: security_cpe
+      orderableFields:
+        - fieldName: cpe_23_uri
+          orderByExpression: text_order_by_exp
+        - fieldName: cve
+          orderByExpression: varchar_order_by_exp
+        - fieldName: vulnerable
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_cvss
+  graphql:
+    expressionTypeName: Security_security_cpe_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_cpe
+  objectType: security_cpe
+  source:
+    dataConnectorName: security
+    collection: security_cpe
+  filterExpressionType: security_cpe_bool_exp
+  aggregateExpression: security_cpe_agg_exp
+  orderByExpression: security_cpe_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_cpe
+      subscription:
+        rootField: security_cpe
+    selectUniques: []
+    filterInputTypeName: Security_security_cpe_filter_input
+    aggregate:
+      queryRootField: security_cpe_aggregate
+      subscription:
+        rootField: security_cpe_aggregate
+  description: Stores Common Platform Enumeration (CPE) information associated with CVEs.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_cpe
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_cvss
+  sourceType: security_cpe
+  target:
+    model:
+      name: security_cvss
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cve
+      target:
+        modelField:
+          - fieldName: cve
+

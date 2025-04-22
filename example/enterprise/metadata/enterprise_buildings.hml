@@ -1,0 +1,224 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: enterprise_buildings
+  description: Stores information about the physical buildings used by the
+    enterprise, including branches and other facilities.
+  fields:
+    - name: building_name
+      type: varchar
+      description: Name of the building.
+    - name: building_type
+      type: enterprise_building_type!
+      description: Type of building classified by primary function.
+    - name: close_date
+      type: date
+      description: Date the building was closed, if applicable.
+    - name: enterprise_address_id
+      type: int_4
+      description: Address of the building
+    - name: enterprise_building_id
+      type: int_4!
+      description: Unique identifier for each building.
+    - name: open_date
+      type: date
+      description: Date the building was opened.
+    - name: phone_number
+      type: varchar
+      description: Phone number of the building.
+  graphql:
+    typeName: Enterprise_enterprise_buildings
+    inputTypeName: Enterprise_enterprise_buildings_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: enterprise
+      dataConnectorObjectType: enterprise_buildings
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: enterprise_buildings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - building_name
+          - building_type
+          - close_date
+          - enterprise_address_id
+          - enterprise_building_id
+          - open_date
+          - phone_number
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: enterprise_buildings_bool_exp
+  operand:
+    object:
+      type: enterprise_buildings
+      comparableFields:
+        - fieldName: building_name
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: building_type
+          booleanExpressionType: enterprise_building_type_bool_exp
+        - fieldName: close_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: enterprise_address_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: enterprise_building_id
+          booleanExpressionType: int_4_bool_exp
+        - fieldName: open_date
+          booleanExpressionType: date_bool_exp
+        - fieldName: phone_number
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: enterprise_associates
+        - relationshipName: enterprise_address
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Enterprise_enterprise_buildings_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: enterprise_buildings_agg_exp
+  operand:
+    object:
+      aggregatedType: enterprise_buildings
+      aggregatableFields:
+        - fieldName: building_name
+          aggregateExpression: varchar_agg_exp
+        - fieldName: building_type
+          aggregateExpression: enterprise_building_type_agg_exp
+        - fieldName: close_date
+          aggregateExpression: date_agg_exp
+        - fieldName: enterprise_address_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: enterprise_building_id
+          aggregateExpression: int_4_agg_exp
+        - fieldName: open_date
+          aggregateExpression: date_agg_exp
+        - fieldName: phone_number
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Enterprise_enterprise_buildings_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: enterprise_buildings_order_by_exp
+  operand:
+    object:
+      orderedType: enterprise_buildings
+      orderableFields:
+        - fieldName: building_name
+          orderByExpression: varchar_order_by_exp
+        - fieldName: building_type
+          orderByExpression: enterprise_building_type_order_by_exp
+        - fieldName: close_date
+          orderByExpression: date_order_by_exp
+        - fieldName: enterprise_address_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: enterprise_building_id
+          orderByExpression: int_4_order_by_exp
+        - fieldName: open_date
+          orderByExpression: date_order_by_exp
+        - fieldName: phone_number
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: enterprise_address
+  graphql:
+    expressionTypeName: Enterprise_enterprise_buildings_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: enterprise_buildings
+  objectType: enterprise_buildings
+  source:
+    dataConnectorName: enterprise
+    collection: enterprise_buildings
+  filterExpressionType: enterprise_buildings_bool_exp
+  aggregateExpression: enterprise_buildings_agg_exp
+  orderByExpression: enterprise_buildings_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: enterprise_buildings
+      subscription:
+        rootField: enterprise_buildings
+    selectUniques:
+      - queryRootField: enterprise_buildings_by_enterprise_building_id
+        uniqueIdentifier:
+          - enterprise_building_id
+        subscription:
+          rootField: enterprise_buildings_by_enterprise_building_id
+    filterInputTypeName: Enterprise_enterprise_buildings_filter_input
+    aggregate:
+      queryRootField: enterprise_buildings_aggregate
+      subscription:
+        rootField: enterprise_buildings_aggregate
+  description: Stores information about the physical buildings used by the
+    enterprise, including branches and other facilities.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: enterprise_buildings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_associates
+  sourceType: enterprise_buildings
+  target:
+    model:
+      name: enterprise_associates
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: enterprise_associates_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_building_id
+      target:
+        modelField:
+          - fieldName: enterprise_building_id
+  graphql:
+    aggregateFieldName: enterprise_associates_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: enterprise_address
+  sourceType: enterprise_buildings
+  target:
+    model:
+      name: enterprise_addresses
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: enterprise_address_id
+      target:
+        modelField:
+          - fieldName: enterprise_address_id
+

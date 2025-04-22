@@ -1,0 +1,235 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: data_quality_record_transformations
+  description: Tracks actual instances of transformations applied to data records,
+    linking input and output data.
+  fields:
+    - name: api_call_id
+      type: uuid
+      description: Reference to the API call that triggered this transformation, if
+        applicable.
+    - name: created_at
+      type: timestamptz!
+      description: Timestamp when the transformation was executed.
+    - name: description
+      type: varchar!
+      description: Description of the transformation process or purpose.
+    - name: input_type
+      type: varchar!
+      description: The type/entity of the input record before transformation.
+    - name: output_type
+      type: varchar!
+      description: The type/entity of the output record after transformation.
+    - name: primary_key_names
+      type: varchar!
+      description: Names of the primary key fields, comma-separated.
+    - name: primary_key_values
+      type: varchar!
+      description: Values of the primary keys, comma-separated.
+    - name: record_transformation_id
+      type: uuid!
+      description: Unique identifier for the record transformation.
+  graphql:
+    typeName: DQ_data_quality_record_transformations
+    inputTypeName: DQ_data_quality_record_transformations_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: data_quality
+      dataConnectorObjectType: data_quality_record_transformations
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: data_quality_record_transformations
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - api_call_id
+          - created_at
+          - description
+          - input_type
+          - output_type
+          - primary_key_names
+          - primary_key_values
+          - record_transformation_id
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: data_quality_record_transformations_bool_exp
+  operand:
+    object:
+      type: data_quality_record_transformations
+      comparableFields:
+        - fieldName: api_call_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: created_at
+          booleanExpressionType: timestamptz_bool_exp
+        - fieldName: description
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: input_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: output_type
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: primary_key_names
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: primary_key_values
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: record_transformation_id
+          booleanExpressionType: uuid_bool_exp
+      comparableRelationships:
+        - relationshipName: data_quality_field_transformation_details
+        - relationshipName: data_quality_api_call
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DQ_data_quality_record_transformations_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: data_quality_record_transformations_agg_exp
+  operand:
+    object:
+      aggregatedType: data_quality_record_transformations
+      aggregatableFields:
+        - fieldName: api_call_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: created_at
+          aggregateExpression: timestamptz_agg_exp
+        - fieldName: description
+          aggregateExpression: varchar_agg_exp
+        - fieldName: input_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: output_type
+          aggregateExpression: varchar_agg_exp
+        - fieldName: primary_key_names
+          aggregateExpression: varchar_agg_exp
+        - fieldName: primary_key_values
+          aggregateExpression: varchar_agg_exp
+        - fieldName: record_transformation_id
+          aggregateExpression: uuid_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: DQ_data_quality_record_transformations_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: data_quality_record_transformations_order_by_exp
+  operand:
+    object:
+      orderedType: data_quality_record_transformations
+      orderableFields:
+        - fieldName: api_call_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: created_at
+          orderByExpression: timestamptz_order_by_exp
+        - fieldName: description
+          orderByExpression: varchar_order_by_exp
+        - fieldName: input_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: output_type
+          orderByExpression: varchar_order_by_exp
+        - fieldName: primary_key_names
+          orderByExpression: varchar_order_by_exp
+        - fieldName: primary_key_values
+          orderByExpression: varchar_order_by_exp
+        - fieldName: record_transformation_id
+          orderByExpression: uuid_order_by_exp
+      orderableRelationships:
+        - relationshipName: data_quality_api_call
+  graphql:
+    expressionTypeName: DQ_data_quality_record_transformations_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: data_quality_record_transformations
+  objectType: data_quality_record_transformations
+  source:
+    dataConnectorName: data_quality
+    collection: data_quality_record_transformations
+  filterExpressionType: data_quality_record_transformations_bool_exp
+  aggregateExpression: data_quality_record_transformations_agg_exp
+  orderByExpression: data_quality_record_transformations_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: data_quality_record_transformations
+      subscription:
+        rootField: data_quality_record_transformations
+    selectUniques:
+      - queryRootField: data_quality_record_transformations_by_record_transformation_id
+        uniqueIdentifier:
+          - record_transformation_id
+        subscription:
+          rootField: data_quality_record_transformations_by_record_transformation_id
+    filterInputTypeName: DQ_data_quality_record_transformations_filter_input
+    aggregate:
+      queryRootField: data_quality_record_transformations_aggregate
+      subscription:
+        rootField: data_quality_record_transformations_aggregate
+  description: Tracks actual instances of transformations applied to data records,
+    linking input and output data.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: data_quality_record_transformations
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: data_quality_field_transformation_details
+  sourceType: data_quality_record_transformations
+  target:
+    model:
+      name: data_quality_field_transformation_details
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: data_quality_field_transformation_details_agg_exp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: record_transformation_id
+      target:
+        modelField:
+          - fieldName: record_transformation_id
+  graphql:
+    aggregateFieldName: data_quality_field_transformation_details_aggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: data_quality_api_call
+  sourceType: data_quality_record_transformations
+  target:
+    model:
+      name: data_quality_api_calls
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: api_call_id
+      target:
+        modelField:
+          - fieldName: api_call_id
+

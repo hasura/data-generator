@@ -1,0 +1,191 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: security_iam_logins
+  description: Table storing information about IAM logins, tracking user access
+    via accounts.
+  fields:
+    - name: login_method
+      type: varchar!
+      description: Method used for the login.
+    - name: login_time
+      type: timestamp!
+      description: Timestamp when the login occurred.
+    - name: logout_time
+      type: timestamp
+      description: Timestamp when the logout occurred.
+    - name: security_account_id
+      type: uuid!
+      description: Identifier of the account used for the login.
+    - name: security_login_id
+      type: uuid!
+      description: Unique identifier for the IAM login.
+    - name: user_name
+      type: varchar
+      description: Username used for the login.
+  graphql:
+    typeName: Security_security_iam_logins
+    inputTypeName: Security_security_iam_logins_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: security
+      dataConnectorObjectType: security_iam_logins
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: security_iam_logins
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - login_method
+          - login_time
+          - logout_time
+          - security_account_id
+          - security_login_id
+          - user_name
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: security_iam_logins_bool_exp
+  operand:
+    object:
+      type: security_iam_logins
+      comparableFields:
+        - fieldName: login_method
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: login_time
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: logout_time
+          booleanExpressionType: timestamp_bool_exp
+        - fieldName: security_account_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: security_login_id
+          booleanExpressionType: uuid_bool_exp
+        - fieldName: user_name
+          booleanExpressionType: varchar_bool_exp
+      comparableRelationships:
+        - relationshipName: security_account
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: Security_security_iam_logins_bool_exp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: security_iam_logins_agg_exp
+  operand:
+    object:
+      aggregatedType: security_iam_logins
+      aggregatableFields:
+        - fieldName: login_method
+          aggregateExpression: varchar_agg_exp
+        - fieldName: login_time
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: logout_time
+          aggregateExpression: timestamp_agg_exp
+        - fieldName: security_account_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: security_login_id
+          aggregateExpression: uuid_agg_exp
+        - fieldName: user_name
+          aggregateExpression: varchar_agg_exp
+  count:
+    enable: true
+  graphql:
+    selectTypeName: Security_security_iam_logins_agg_exp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: security_iam_logins_order_by_exp
+  operand:
+    object:
+      orderedType: security_iam_logins
+      orderableFields:
+        - fieldName: login_method
+          orderByExpression: varchar_order_by_exp
+        - fieldName: login_time
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: logout_time
+          orderByExpression: timestamp_order_by_exp
+        - fieldName: security_account_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: security_login_id
+          orderByExpression: uuid_order_by_exp
+        - fieldName: user_name
+          orderByExpression: varchar_order_by_exp
+      orderableRelationships:
+        - relationshipName: security_account
+  graphql:
+    expressionTypeName: Security_security_iam_logins_order_by_exp
+
+---
+kind: Model
+version: v2
+definition:
+  name: security_iam_logins
+  objectType: security_iam_logins
+  source:
+    dataConnectorName: security
+    collection: security_iam_logins
+  filterExpressionType: security_iam_logins_bool_exp
+  aggregateExpression: security_iam_logins_agg_exp
+  orderByExpression: security_iam_logins_order_by_exp
+  graphql:
+    selectMany:
+      queryRootField: security_iam_logins
+      subscription:
+        rootField: security_iam_logins
+    selectUniques:
+      - queryRootField: security_iam_logins_by_security_login_id
+        uniqueIdentifier:
+          - security_login_id
+        subscription:
+          rootField: security_iam_logins_by_security_login_id
+    filterInputTypeName: Security_security_iam_logins_filter_input
+    aggregate:
+      queryRootField: security_iam_logins_aggregate
+      subscription:
+        rootField: security_iam_logins_aggregate
+  description: Table storing information about IAM logins, tracking user access
+    via accounts.
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: security_iam_logins
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: security_account
+  sourceType: security_iam_logins
+  target:
+    model:
+      name: security_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: security_account_id
+      target:
+        modelField:
+          - fieldName: security_account_id
+
