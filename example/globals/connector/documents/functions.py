@@ -1,0 +1,51 @@
+"""
+functions.py
+
+This is an example of how you can use the Python SDK's built-in Function connector to easily write Python code.
+When you add a Python Lambda connector to your Hasura project, this file is generated for you!
+
+In this file you'll find code examples that will help you get up to speed with the usage of the Hasura lambda connector.
+If you are an old pro and already know what is going on you can get rid of these example functions and start writing your own code.
+"""
+from doculyzer import search_with_content
+from hasura_ndc import start
+from hasura_ndc.instrumentation import with_active_span # If you aren't planning on adding additional tracing spans, you don't need this!
+from opentelemetry.trace import get_tracer # If you aren't planning on adding additional tracing spans, you don't need this either!
+from hasura_ndc.function_connector import FunctionConnector
+from pydantic import BaseModel, Field # You only need this import if you plan to have complex inputs/outputs, which function similar to how frameworks like FastAPI do
+import asyncio # You might not need this import if you aren't doing asynchronous work
+from hasura_ndc.errors import UnprocessableContent
+from typing import Annotated, List
+from doculyzer.search import search_with_content, SearchResult
+
+connector = FunctionConnector()
+
+# This last section shows you how to add OTEL tracing to any of your functions!
+tracer = get_tracer("ndc-sdk-python.server") # You only need a tracer if you plan to add additional Otel spans
+
+@connector.register_query
+async def search_documents(search_for: str, limit: int = 10, min_confidence: float = .7) -> List[SearchResult]:
+    """
+    This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
+    and returns the type of elements, the content of those elements and a preview of its related items.
+    Items may be related structurally, like parent, child, sibling, explicitly like a link (if the document type
+    supports that), and semantically, like a similar word or phrase.
+
+    :param min_confidence: Min similarity score to consider a match.
+    :param search_for: A string representing the query text to search for in the documents.
+    :param limit: An integer specifying the maximum number of search results to return. Defaults to 10.
+    :return: A SearchResults object containing the search results matching the query.
+    """
+    def work(_span, work_response):
+        return search_with_content(search_for, limit, min_confidence = min_confidence)
+
+    return await with_active_span(
+        tracer,
+        "Search Documents",
+        lambda span: work(span, search_for),
+        {"search_for": search_for})
+
+
+
+if __name__ == "__main__":
+    start(connector)

@@ -1,0 +1,81 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: GreetPersonPersonPets
+  fields:
+    - name: name
+      type: String!
+  graphql:
+    typeName: GreetPersonPersonPets
+    inputTypeName: GreetPersonPersonPetsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: documents
+      dataConnectorObjectType: greet_person_person_pets
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: GreetPersonPersonPets
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - name
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: GreetPersonPerson
+  fields:
+    - name: name
+      type: String!
+    - name: pets
+      type: "[GreetPersonPersonPets!]"
+  graphql:
+    typeName: GreetPersonPerson
+    inputTypeName: GreetPersonPersonInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: documents
+      dataConnectorObjectType: greet_person_person
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: GreetPersonPerson
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - name
+          - pets
+
+---
+kind: Command
+version: v1
+definition:
+  name: GreetPerson
+  outputType: String!
+  arguments:
+    - name: person
+      type: GreetPersonPerson!
+  source:
+    dataConnectorName: documents
+    dataConnectorCommand:
+      function: greet_person
+  graphql:
+    rootFieldName: greetPerson
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: GreetPerson
+  permissions:
+    - role: admin
+      allowExecution: true
+

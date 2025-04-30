@@ -1,0 +1,26 @@
+---
+kind: Command
+version: v1
+definition:
+  name: ParallelQuery
+  outputType: String!
+  arguments:
+    - name: name
+      type: String!
+  source:
+    dataConnectorName: documents
+    dataConnectorCommand:
+      function: parallel_query
+  graphql:
+    rootFieldName: parallelQuery
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: ParallelQuery
+  permissions:
+    - role: admin
+      allowExecution: true
+

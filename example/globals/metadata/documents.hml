@@ -1,0 +1,435 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: documents
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: GLOBALS_DOCUMENTS_READ_URL
+      write:
+        valueFromEnv: GLOBALS_DOCUMENTS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: GLOBALS_DOCUMENTS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Boolean:
+          representation:
+            type: boolean
+          aggregate_functions: {}
+          comparison_operators: {}
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators: {}
+        HeaderMap:
+          representation:
+            type: json
+          aggregate_functions: {}
+          comparison_operators: {}
+        Int:
+          representation:
+            type: integer
+          aggregate_functions: {}
+          comparison_operators: {}
+        Json:
+          representation:
+            type: json
+          aggregate_functions: {}
+          comparison_operators: {}
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators: {}
+      object_types:
+        annotations:
+          fields:
+            bar:
+              description: The bar field
+              type:
+                name: String
+                type: named
+            baz:
+              description: The baz field
+              type:
+                name: String
+                type: named
+        annotations_foo:
+          fields:
+            bar:
+              description: The bar field
+              type:
+                name: String
+                type: named
+            baz:
+              description: The baz field
+              type:
+                name: String
+                type: named
+        complex_function:
+          fields:
+            lists:
+              type:
+                element_type:
+                  element_type:
+                    name: Json
+                    type: named
+                  type: array
+                type: array
+            person:
+              type:
+                type: nullable
+                underlying_type:
+                  name: complex_function_person
+                  type: named
+            x:
+              type:
+                name: Int
+                type: named
+            "y":
+              type:
+                name: Float
+                type: named
+            z:
+              type:
+                name: Boolean
+                type: named
+        complex_function_input:
+          fields:
+            lists:
+              type:
+                element_type:
+                  element_type:
+                    name: Json
+                    type: named
+                  type: array
+                type: array
+            person:
+              type:
+                type: nullable
+                underlying_type:
+                  name: complex_function_input_person
+                  type: named
+            x:
+              type:
+                name: Int
+                type: named
+            "y":
+              type:
+                name: Float
+                type: named
+            z:
+              type:
+                name: Boolean
+                type: named
+        complex_function_input_person:
+          fields:
+            name:
+              type:
+                name: String
+                type: named
+            pets:
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: complex_function_input_person_pets
+                    type: named
+                  type: array
+        complex_function_input_person_pets:
+          fields:
+            name:
+              type:
+                name: String
+                type: named
+        complex_function_person:
+          fields:
+            name:
+              type:
+                name: String
+                type: named
+            pets:
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: complex_function_person_pets
+                    type: named
+                  type: array
+        complex_function_person_pets:
+          fields:
+            name:
+              type:
+                name: String
+                type: named
+        greet_person_person:
+          fields:
+            name:
+              type:
+                name: String
+                type: named
+            pets:
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: greet_person_person_pets
+                    type: named
+                  type: array
+        greet_person_person_pets:
+          fields:
+            name:
+              type:
+                name: String
+                type: named
+        search_documents:
+          description: Pydantic model for storing search result data in a flat structure with relationships.
+          fields:
+            content_location:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            content_preview:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            doc_id:
+              type:
+                name: String
+                type: named
+            doc_type:
+              type:
+                name: String
+                type: named
+            element_id:
+              type:
+                name: String
+                type: named
+            element_pk:
+              type:
+                name: Int
+                type: named
+            element_type:
+              type:
+                name: String
+                type: named
+            outgoing_relationships:
+              type:
+                element_type:
+                  name: search_documents_outgoing_relationships
+                  type: named
+                type: array
+            resolution_error:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            resolved_content:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            similarity:
+              type:
+                name: Float
+                type: named
+            source:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+        search_documents_outgoing_relationships:
+          description: "\n    Class for representing relationships between elements.\n    Designed to avoid name collisions with SQLAlchemy's Relationship class.\n    Enriched with PK values for both source and target elements.\n    "
+          fields:
+            doc_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            is_source:
+              type:
+                name: Boolean
+                type: named
+            metadata:
+              type:
+                name: Json
+                type: named
+            relationship_id:
+              type:
+                name: String
+                type: named
+            relationship_type:
+              type:
+                name: String
+                type: named
+            source_element_pk:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            source_element_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            source_id:
+              type:
+                name: String
+                type: named
+            target_content_preview:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            target_element_pk:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            target_element_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            target_reference:
+              type:
+                name: String
+                type: named
+      collections: []
+      functions:
+        - name: hello
+          arguments:
+            name:
+              type:
+                name: String
+                type: named
+          result_type:
+            name: String
+            type: named
+        - name: nullable_hello
+          arguments:
+            name:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+          result_type:
+            name: String
+            type: named
+        - name: greet_person
+          arguments:
+            person:
+              type:
+                name: greet_person_person
+                type: named
+          result_type:
+            name: String
+            type: named
+        - name: complex_function
+          arguments:
+            input:
+              type:
+                name: complex_function_input
+                type: named
+          result_type:
+            name: complex_function
+            type: named
+        - name: search_documents
+          description: |-
+            This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
+                and returns the type of elements, the content of those elements and a preview of its related items.
+                Items may be related structurally, like parent, child, sibling, explicitly like a link (if the document type
+                supports that), and semantically, like a similar word or phrase.
+
+                :param search_for: A string representing the query text to search for in the documents.
+                :param limit: An integer specifying the maximum number of search results to return. Defaults to 10.
+                :return: A SearchResults object containing the search results matching the query.
+          arguments:
+            limit:
+              type:
+                name: Int
+                type: named
+            search_for:
+              type:
+                name: String
+                type: named
+          result_type:
+            element_type:
+              name: search_documents
+              type: named
+            type: array
+        - name: with_tracing
+          arguments:
+            name:
+              type:
+                name: String
+                type: named
+          result_type:
+            name: String
+            type: named
+        - name: parallel_query
+          arguments:
+            name:
+              type:
+                name: String
+                type: named
+          result_type:
+            name: String
+            type: named
+        - name: error
+          arguments: {}
+          result_type:
+            name: Json
+            type: named
+        - name: annotations
+          description: Writing a doc-string like this will become the function/procedure description
+          arguments:
+            foo:
+              description: The optional input Foo
+              type:
+                type: nullable
+                underlying_type:
+                  name: annotations_foo
+                  type: named
+          result_type:
+            type: nullable
+            underlying_type:
+              name: annotations
+              type: named
+      procedures:
+        - name: some_mutation_function
+          arguments:
+            any_type_param:
+              type:
+                name: Json
+                type: named
+          result_type:
+            name: Json
+            type: named
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+        mutation:
+          transactional: {}

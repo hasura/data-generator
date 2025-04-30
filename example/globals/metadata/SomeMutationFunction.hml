@@ -1,0 +1,28 @@
+---
+kind: Command
+version: v1
+definition:
+  name: SomeMutationFunction
+  outputType: Json!
+  arguments:
+    - name: anyTypeParam
+      type: Json!
+  source:
+    dataConnectorName: documents
+    dataConnectorCommand:
+      procedure: some_mutation_function
+    argumentMapping:
+      anyTypeParam: any_type_param
+  graphql:
+    rootFieldName: someMutationFunction
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: SomeMutationFunction
+  permissions:
+    - role: admin
+      allowExecution: true
+

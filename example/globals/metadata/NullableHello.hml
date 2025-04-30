@@ -1,0 +1,26 @@
+---
+kind: Command
+version: v1
+definition:
+  name: NullableHello
+  outputType: String!
+  arguments:
+    - name: name
+      type: String
+  source:
+    dataConnectorName: documents
+    dataConnectorCommand:
+      function: nullable_hello
+  graphql:
+    rootFieldName: nullableHello
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: NullableHello
+  permissions:
+    - role: admin
+      allowExecution: true
+

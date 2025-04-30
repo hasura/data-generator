@@ -1,0 +1,16 @@
+services:
+  globals_documents:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile
+    environment:
+      HASURA_SERVICE_TOKEN_SECRET: $GLOBALS_DOCUMENTS_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $GLOBALS_DOCUMENTS_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $GLOBALS_DOCUMENTS_OTEL_SERVICE_NAME
+      LOG_LEVEL: DEBUG
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 4175:8080
+    volumes:
+      - ./config.yaml:/functions/config.yaml
