@@ -46,14 +46,14 @@ def generate_random_field_lineage(_id_fields: Dict[str, Any], dg: DataGenerator)
         field_lineages_by_record[record_lineage_id] = set()
 
     # Generate field name based on record lineage information
-    field_name = _generate_field_name(record_info)
+    output_field = _generate_output_field(record_info)
 
     # Check if this field lineage already exists for this record lineage
     attempt = 0
-    original_field_name = field_name
-    while field_name in field_lineages_by_record[record_lineage_id] and attempt < 10:
+    original_output_field = output_field
+    while output_field in field_lineages_by_record[record_lineage_id] and attempt < 10:
         # Add a suffix to make it unique
-        field_name = f"{original_field_name}_{attempt}"
+        output_field = f"{original_output_field}_{attempt}"
         attempt += 1
 
     if attempt >= 10:
@@ -61,15 +61,15 @@ def generate_random_field_lineage(_id_fields: Dict[str, Any], dg: DataGenerator)
         raise SkipRowGenerationError("Could not generate unique field lineage")
 
     # Add to tracking set
-    field_lineages_by_record[record_lineage_id].add(field_name)
+    field_lineages_by_record[record_lineage_id].add(output_field)
 
     # Generate input fields based on the field name and record types
-    input_fields = _generate_input_fields(field_name, record_info)
+    input_fields = _generate_input_fields(output_field, record_info)
 
     # Create the field_lineage record
     field_lineage = {
-        "field_name": field_name,
-        "description": _generate_field_description(field_name, input_fields, record_info),
+        "output_field": output_field,
+        "description": _generate_field_description(output_field, input_fields, record_info),
         "input_fields": input_fields
         # record_lineage_id will be handled by the framework
     }
@@ -121,7 +121,7 @@ def _get_record_lineage_info(conn, record_lineage_id):
         return None
 
 
-def _generate_field_name(record_info):
+def _generate_output_field(record_info):
     """
     Generate a field name that is consistent with the record lineage information.
 
@@ -250,12 +250,12 @@ def _extract_fields_from_query(query):
     return fields
 
 
-def _generate_input_fields(field_name, record_info):
+def _generate_input_fields(output_field, record_info):
     """
     Generate input fields that contribute to the output field.
 
     Args:
-        field_name: The name of the output field
+        output_field: The name of the output field
         record_info: Dictionary containing record lineage information
 
     Returns:
@@ -265,14 +265,14 @@ def _generate_input_fields(field_name, record_info):
 
     # For simple pass-through fields (same name in input and output)
     if random.random() < 0.4:
-        return field_name
+        return output_field
 
     # For transformed or calculated fields
     num_input_fields = random.randint(1, 3)  # Most fields come from 1-3 source fields
 
     # Handle nested fields
-    if '.' in field_name:
-        parts = field_name.split('.')
+    if '.' in output_field:
+        parts = output_field.split('.')
         if len(parts) == 2:
             # If the field is something like "details.name", potential input fields could be:
             # - rawDetails.name
@@ -296,45 +296,45 @@ def _generate_input_fields(field_name, record_info):
         suffixes = ["Raw", "Data", "Value", "Input", "Source"]
 
         if random.random() < 0.5:
-            return f"{random.choice(prefixes)}{field_name}"
+            return f"{random.choice(prefixes)}{output_field}"
         else:
-            return f"{field_name}{random.choice(suffixes)}"
+            return f"{output_field}{random.choice(suffixes)}"
     else:
         # Multiple input fields
         related_fields = []
 
         # Handle special common fields
-        if field_name.lower() == "fullname":
+        if output_field.lower() == "fullname":
             return "firstName, lastName, middleName"
-        elif field_name.lower() == "address":
+        elif output_field.lower() == "address":
             return "street, city, state, postalCode, country"
-        elif field_name.lower() == "fulladdress":
+        elif output_field.lower() == "fulladdress":
             return "addressLine1, addressLine2, city, state, postalCode"
-        elif "amount" in field_name.lower() or "total" in field_name.lower():
-            return f"base{field_name}, fee{field_name}, tax{field_name}"
+        elif "amount" in output_field.lower() or "total" in output_field.lower():
+            return f"base{output_field}, fee{output_field}, tax{output_field}"
 
         # Generate related fields based on context
-        if "date" in field_name.lower():
+        if "date" in output_field.lower():
             date_parts = ["year", "month", "day", "timestamp", "timezone"]
             selected = random.sample(date_parts, min(num_input_fields, len(date_parts)))
-            return ", ".join([f"{field_name.replace('Date', '')}_{part}" for part in selected])
+            return ", ".join([f"{output_field.replace('Date', '')}_{part}" for part in selected])
 
         # Default case: add prefixes to create related field names
         input_prefixes = ["raw", "source", "input", "base", "legacy", "original"]
         selected_prefixes = random.sample(input_prefixes, min(num_input_fields, len(input_prefixes)))
 
         for prefix in selected_prefixes:
-            related_fields.append(f"{prefix}{field_name[0].upper()}{field_name[1:]}")
+            related_fields.append(f"{prefix}{output_field[0].upper()}{output_field[1:]}")
 
         return ", ".join(related_fields)
 
 
-def _generate_field_description(field_name, input_fields, record_info):
+def _generate_field_description(output_field, input_fields, record_info):
     """
     Generate a description for the field lineage.
 
     Args:
-        field_name: The name of the output field
+        output_field: The name of the output field
         input_fields: Comma-separated string of input field names
         record_info: Dictionary containing record lineage information
 
@@ -349,7 +349,7 @@ def _generate_field_description(field_name, input_fields, record_info):
     transformation_type = ""
 
     # Same field name in input and output - likely a direct mapping or simple transformation
-    if field_name in input_fields and ',' not in input_fields:
+    if output_field in input_fields and ',' not in input_fields:
         transformation_types = [
             "Direct mapping of",
             "Type conversion for",
@@ -360,7 +360,7 @@ def _generate_field_description(field_name, input_fields, record_info):
         ]
         transformation_type = random.choice(transformation_types)
 
-        return f"{transformation_type} {field_name} from {input_type} to {output_type}"
+        return f"{transformation_type} {output_field} from {input_type} to {output_type}"
 
     # Multiple input fields - likely a complex transformation
     elif ',' in input_fields:
@@ -369,7 +369,7 @@ def _generate_field_description(field_name, input_fields, record_info):
 
         if num_fields > 1:
             complex_transformations = [
-                f"Concatenation of {input_fields} into {field_name}",
+                f"Concatenation of {input_fields} into {output_field}",
                 f"Calculated field derived from {input_fields}",
                 f"Aggregated value combining {input_fields}",
                 f"Conditional mapping based on {input_fields}",
@@ -377,35 +377,35 @@ def _generate_field_description(field_name, input_fields, record_info):
             ]
 
             # Specific transformations for certain field types
-            if "date" in field_name.lower() or "time" in field_name.lower():
-                return f"Date/time formatting combining {input_fields} into standardized {field_name} format"
-            elif "name" in field_name.lower():
-                return f"Name formatting by combining {input_fields} into properly formatted {field_name}"
-            elif "address" in field_name.lower():
-                return f"Address formatting by combining {input_fields} into standardized {field_name} representation"
-            elif "amount" in field_name.lower() or "total" in field_name.lower() or "balance" in field_name.lower():
-                return f"Calculated {field_name} by combining and processing {input_fields} with business rules"
+            if "date" in output_field.lower() or "time" in output_field.lower():
+                return f"Date/time formatting combining {input_fields} into standardized {output_field} format"
+            elif "name" in output_field.lower():
+                return f"Name formatting by combining {input_fields} into properly formatted {output_field}"
+            elif "address" in output_field.lower():
+                return f"Address formatting by combining {input_fields} into standardized {output_field} representation"
+            elif "amount" in output_field.lower() or "total" in output_field.lower() or "balance" in output_field.lower():
+                return f"Calculated {output_field} by combining and processing {input_fields} with business rules"
             else:
                 return random.choice(complex_transformations)
 
     # Different field name in input vs output - likely a rename or simple transformation
     else:
         rename_transformations = [
-            f"Field renamed from {input_fields} to {field_name}",
-            f"Standardized naming from legacy {input_fields} to {field_name}",
-            f"Mapping from source system field {input_fields} to API field {field_name}",
-            f"Normalized field name from {input_fields} to standard {field_name}"
+            f"Field renamed from {input_fields} to {output_field}",
+            f"Standardized naming from legacy {input_fields} to {output_field}",
+            f"Mapping from source system field {input_fields} to API field {output_field}",
+            f"Normalized field name from {input_fields} to standard {output_field}"
         ]
 
         transform_descriptions = [
-            f"Transform {input_fields} from {input_type} to {field_name} in {output_type}",
-            f"Extract and process {input_fields} to create {field_name}",
-            f"Apply business rules to {input_fields} resulting in {field_name}",
-            f"Format and validate {input_fields} to produce {field_name}"
+            f"Transform {input_fields} from {input_type} to {output_field} in {output_type}",
+            f"Extract and process {input_fields} to create {output_field}",
+            f"Apply business rules to {input_fields} resulting in {output_field}",
+            f"Format and validate {input_fields} to produce {output_field}"
         ]
 
         # Select between rename or transformation
-        if field_name.lower() == input_fields.lower() or random.random() < 0.3:
+        if output_field.lower() == input_fields.lower() or random.random() < 0.3:
             return random.choice(rename_transformations)
         else:
             return random.choice(transform_descriptions)

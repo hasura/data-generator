@@ -3,7 +3,8 @@
 mkdir example
 cd example || exit
 
-ddn supergraph init . --no-subgraph --create-project --with-promptql
+ddn project init fsi-demo || ddn project init --with-project fsi-demo
+ddn supergraph init . --no-subgraph --with-promptql
 
 cp -r ../scripts/globals/* globals/
 echo 'M_AUTH_KEY="secret"' >> .env

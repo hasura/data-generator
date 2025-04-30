@@ -3,12 +3,10 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_record_lineage
-  description: Maps the lineage (design) of data records through transformations
-    for traceability.
+  description: Maps the lineage of data records through transformations for traceability.
   fields:
     - name: api_lineage_id
-      type: uuid
-      description: Reference to the API lineage this record is part of.
+      type: varchar
     - name: description
       type: text
       description: General description of this data lineage relationship.
@@ -66,7 +64,7 @@ definition:
       type: data_quality_record_lineage
       comparableFields:
         - fieldName: api_lineage_id
-          booleanExpressionType: uuid_bool_exp
+          booleanExpressionType: varchar_bool_exp
         - fieldName: description
           booleanExpressionType: text_bool_exp
         - fieldName: input_description
@@ -101,7 +99,7 @@ definition:
       aggregatedType: data_quality_record_lineage
       aggregatableFields:
         - fieldName: api_lineage_id
-          aggregateExpression: uuid_agg_exp
+          aggregateExpression: varchar_agg_exp
         - fieldName: description
           aggregateExpression: text_agg_exp
         - fieldName: input_description
@@ -131,7 +129,7 @@ definition:
       orderedType: data_quality_record_lineage
       orderableFields:
         - fieldName: api_lineage_id
-          orderByExpression: uuid_order_by_exp
+          orderByExpression: varchar_order_by_exp
         - fieldName: description
           orderByExpression: text_order_by_exp
         - fieldName: input_description
@@ -179,8 +177,7 @@ definition:
       queryRootField: data_quality_record_lineage_aggregate
       subscription:
         rootField: data_quality_record_lineage_aggregate
-  description: Maps the lineage (design) of data records through transformations
-    for traceability.
+  description: Maps the lineage of data records through transformations for traceability.
 
 ---
 kind: ModelPermissions
@@ -211,7 +208,7 @@ definition:
           - fieldName: record_lineage_id
       target:
         modelField:
-          - fieldName: record_lineage_id
+          - fieldName: record_lineage_record_lineage_id
   graphql:
     aggregateFieldName: data_quality_field_lineages_aggregate
 

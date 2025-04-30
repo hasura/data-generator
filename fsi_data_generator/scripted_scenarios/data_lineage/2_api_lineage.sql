@@ -22,7 +22,7 @@ WITH app_id AS (
   WHERE application_name = 'FDX API Gateway'
 )
 SELECT
-  '11111111-1111-1111-aaaa-111111111111'::uuid,
+  '11111111-1111-1111-aaaa-111111111111',
   app_mgmt_application_id,
   'fdx-gateway',
   1,
@@ -65,7 +65,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '22222222-2222-2222-aaaa-222222222222'::uuid,
+  '22222222-2222-2222-aaaa-222222222222',
   app_mgmt_application_id,
   'fdx-gateway',
   1,
@@ -109,7 +109,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '33333333-3333-3333-aaaa-333333333333'::uuid,
+  '33333333-3333-3333-aaaa-333333333333',
   app_mgmt_application_id,
   'fdx-gateway',
   1,
@@ -146,7 +146,7 @@ FROM app_id
 UNION ALL
 -- Version 1.1 API lineage (added fields for compliance) - note overlapping with v1.0 for 3 months
 SELECT
-  '44444444-4444-4444-aaaa-444444444444'::uuid,
+  '44444444-4444-4444-aaaa-444444444444',
   app_mgmt_application_id,
   'fdx-gateway',
   1,
@@ -189,7 +189,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '55555555-5555-5555-aaaa-555555555555'::uuid,
+  '55555555-5555-5555-aaaa-555555555555',
   app_mgmt_application_id,
   'fdx-gateway',
   1,
@@ -233,7 +233,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '66666666-6666-6666-aaaa-666666666666'::uuid,
+  '66666666-6666-6666-aaaa-666666666666',
   app_mgmt_application_id,
   'fdx-gateway',
   1,
@@ -270,7 +270,7 @@ FROM app_id
 UNION ALL
 -- Version 2.0 API lineage (major revision with enhanced security) - note overlapping with v1.1 for 3 months
 SELECT
-  '77777777-7777-7777-aaaa-777777777777'::uuid,
+  '77777777-7777-7777-aaaa-777777777777',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -313,7 +313,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '88888888-8888-8888-aaaa-888888888888'::uuid,
+  '88888888-8888-8888-aaaa-888888888888',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -357,7 +357,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '99999999-9999-9999-aaaa-999999999999'::uuid,
+  '99999999-9999-9999-aaaa-999999999999',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -393,7 +393,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'::uuid,
+  'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -424,7 +424,7 @@ FROM app_id
 UNION ALL
 -- Version 2.1 API lineage (added owner endpoint and performance improvements) - note overlapping with v2.0 for 3 months
 SELECT
-  'bbbbbbbb-bbbb-bbbb-aaaa-bbbbbbbbbbbb'::uuid,
+  'bbbbbbbb-bbbb-bbbb-aaaa-bbbbbbbbbbbb',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -467,7 +467,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  'cccccccc-cccc-cccc-aaaa-cccccccccccc'::uuid,
+  'cccccccc-cccc-cccc-aaaa-cccccccccccc',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -511,7 +511,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  'dddddddd-dddd-dddd-aaaa-dddddddddddd'::uuid,
+  'dddddddd-dddd-dddd-aaaa-dddddddddddd',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -547,7 +547,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  'eeeeeeee-eeee-eeee-aaaa-eeeeeeeeeeee'::uuid,
+  'eeeeeeee-eeee-eeee-aaaa-eeeeeeeeeeee',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -577,7 +577,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  'ffffffff-ffff-ffff-aaaa-ffffffffffff'::uuid,
+  'ffffffff-ffff-ffff-aaaa-ffffffffffff',
   app_mgmt_application_id,
   'fdx-gateway',
   2,
@@ -620,7 +620,7 @@ FROM app_id
 UNION ALL
 -- Current Version 5.0 API lineage (FDX 5.0 compliance) - note overlapping with v2.1 for 3 months
 SELECT
-  '11111111-2222-3333-aaaa-123456789abc'::uuid,
+  '11111111-2222-3333-aaaa-123456789abc',
   app_mgmt_application_id,
   'fdx-gateway',
   5,
@@ -663,7 +663,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '22222222-3333-4444-aaaa-234567890abc'::uuid,
+  '22222222-3333-4444-aaaa-234567890abc',
   app_mgmt_application_id,
   'fdx-gateway',
   5,
@@ -707,7 +707,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '33333333-4444-5555-aaaa-345678901abc'::uuid,
+  '33333333-4444-5555-aaaa-345678901abc',
   app_mgmt_application_id,
   'fdx-gateway',
   5,
@@ -743,7 +743,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '44444444-5555-6666-aaaa-456789012abc'::uuid,
+  '44444444-5555-6666-aaaa-456789012abc',
   app_mgmt_application_id,
   'fdx-gateway',
   5,
@@ -773,7 +773,7 @@ SELECT
 FROM app_id
 UNION ALL
 SELECT
-  '55555555-6666-7777-aaaa-567890123abc'::uuid,
+  '55555555-6666-7777-aaaa-567890123abc',
   app_mgmt_application_id,
   'fdx-gateway',
   5,

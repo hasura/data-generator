@@ -3,10 +3,7 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_api_calls
-  description: Records actual instances of API calls made to the system for
-    auditing and lineage tracking. These records can be tied by business rules
-    to validation runs. A validation run with the same query and timestamp of
-    less than once second earlier is probably related to this API call.
+  description: Records API calls made to the system for auditing and lineage tracking.
   fields:
     - name: api_call_id
       type: uuid!
@@ -15,14 +12,14 @@ definition:
       type: timestamptz!
       description: Timestamp when the API call was made.
     - name: major_version
-      type: int_4
-      description: Server name API major version.
+      type: int_4!
+      description: The major version assigned to the API
     - name: method
       type: varchar!
       description: HTTP method used for the API call (GET, POST, etc.).
     - name: minor_version
-      type: int_4
-      description: Server name API minor version.
+      type: int_4!
+      description: The minor version assigned to the API
     - name: path
       type: varchar!
       description: API endpoint path that was called.
@@ -36,8 +33,8 @@ definition:
       type: text
       description: HTTP headers sent with the API call, stored as TEXT.
     - name: server_name
-      type: varchar
-      description: Server name associated with API call.
+      type: varchar!
+      description: Name of the server handling the API call.
   graphql:
     typeName: DQ_data_quality_api_calls
     inputTypeName: DQ_data_quality_api_calls_input
@@ -198,10 +195,7 @@ definition:
       queryRootField: data_quality_api_calls_aggregate
       subscription:
         rootField: data_quality_api_calls_aggregate
-  description: Records actual instances of API calls made to the system for
-    auditing and lineage tracking. These records can be tied by business rules
-    to validation runs. A validation run with the same query and timestamp of
-    less than once second earlier is probably related to this API call.
+  description: Records API calls made to the system for auditing and lineage tracking.
 
 ---
 kind: ModelPermissions
@@ -232,7 +226,7 @@ definition:
           - fieldName: api_call_id
       target:
         modelField:
-          - fieldName: api_call_id
+          - fieldName: api_call_api_call_id
   graphql:
     aggregateFieldName: data_quality_record_transformations_aggregate
 

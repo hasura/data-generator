@@ -3,8 +3,8 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_field_transformation_details
-  description: Detailed tracking of instances of field-level transformations
-    within a record transformation.
+  description: Detailed tracking of field-level transformations within a record
+    transformation.
   fields:
     - name: field_transformation_detail_id
       type: uuid!
@@ -21,18 +21,40 @@ definition:
     - name: output_field_value
       type: text
       description: Value of the output field after transformation.
-    - name: record_transformation_id
-      type: uuid
-      description: Reference to the parent record transformation.
     - name: transform_description
       type: varchar!
       description: Description of the specific transformation applied to this field.
+    - name: transformation_record_transformation_id
+      type: uuid
+      description: Unique identifier for the record transformation.
   graphql:
     typeName: DQ_data_quality_field_transformation_details
     inputTypeName: DQ_data_quality_field_transformation_details_input
   dataConnectorTypeMapping:
     - dataConnectorName: data_quality
       dataConnectorObjectType: data_quality_field_transformation_details
+      fieldMapping:
+        field_transformation_detail_id:
+          column:
+            name: field_transformation_detail_id
+        input_field_name:
+          column:
+            name: input_field_name
+        input_field_value:
+          column:
+            name: input_field_value
+        output_field_name:
+          column:
+            name: output_field_name
+        output_field_value:
+          column:
+            name: output_field_value
+        transform_description:
+          column:
+            name: transform_description
+        transformation_record_transformation_id:
+          column:
+            name: transformationRecordTransformationId
 
 ---
 kind: TypePermissions
@@ -48,8 +70,8 @@ definition:
           - input_field_value
           - output_field_name
           - output_field_value
-          - record_transformation_id
           - transform_description
+          - transformation_record_transformation_id
 
 ---
 kind: BooleanExpressionType
@@ -70,10 +92,10 @@ definition:
           booleanExpressionType: varchar_bool_exp
         - fieldName: output_field_value
           booleanExpressionType: text_bool_exp
-        - fieldName: record_transformation_id
-          booleanExpressionType: uuid_bool_exp
         - fieldName: transform_description
           booleanExpressionType: varchar_bool_exp
+        - fieldName: transformation_record_transformation_id
+          booleanExpressionType: uuid_bool_exp
       comparableRelationships:
         - relationshipName: data_quality_record_transformation
   logicalOperators:
@@ -102,10 +124,10 @@ definition:
           aggregateExpression: varchar_agg_exp
         - fieldName: output_field_value
           aggregateExpression: text_agg_exp
-        - fieldName: record_transformation_id
-          aggregateExpression: uuid_agg_exp
         - fieldName: transform_description
           aggregateExpression: varchar_agg_exp
+        - fieldName: transformation_record_transformation_id
+          aggregateExpression: uuid_agg_exp
   count:
     enable: true
   graphql:
@@ -130,10 +152,10 @@ definition:
           orderByExpression: varchar_order_by_exp
         - fieldName: output_field_value
           orderByExpression: text_order_by_exp
-        - fieldName: record_transformation_id
-          orderByExpression: uuid_order_by_exp
         - fieldName: transform_description
           orderByExpression: varchar_order_by_exp
+        - fieldName: transformation_record_transformation_id
+          orderByExpression: uuid_order_by_exp
       orderableRelationships:
         - relationshipName: data_quality_record_transformation
   graphql:
@@ -167,8 +189,8 @@ definition:
       queryRootField: data_quality_field_transformation_details_aggregate
       subscription:
         rootField: data_quality_field_transformation_details_aggregate
-  description: Detailed tracking of instances of field-level transformations
-    within a record transformation.
+  description: Detailed tracking of field-level transformations within a record
+    transformation.
 
 ---
 kind: ModelPermissions
@@ -194,7 +216,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: record_transformation_id
+          - fieldName: transformation_record_transformation_id
       target:
         modelField:
           - fieldName: record_transformation_id

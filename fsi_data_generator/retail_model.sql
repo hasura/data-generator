@@ -6359,7 +6359,7 @@ CREATE TABLE "data_quality"."field_transformation_details" (
 );
 
 CREATE TABLE "data_quality"."api_lineage" (
-  "api_lineage_id" UUID PRIMARY KEY NOT NULL,
+  "api_lineage_id" VARCHAR PRIMARY KEY NOT NULL,
   "app_mgmt_application_id" UUID,
   "host_app_mgmt_application_id" UUID,
   "security_host_id" UUID,
@@ -6382,12 +6382,12 @@ CREATE TABLE "data_quality"."record_lineage" (
   "input_description" TEXT,
   "output_description" TEXT,
   "pk_names" VARCHAR,
-  "api_lineage_id" UUID
+  "api_lineage_id" VARCHAR
 );
 
 CREATE TABLE "data_quality"."field_lineage" (
   "field_lineage_id" VARCHAR PRIMARY KEY NOT NULL,
-  "field_name" VARCHAR NOT NULL,
+  "output_field" VARCHAR NOT NULL,
   "description" TEXT,
   "input_fields" VARCHAR,
   "record_lineage_id" VARCHAR
@@ -12113,7 +12113,7 @@ COMMENT ON COLUMN "small_business_banking"."suspicious_activity_reports"."sar_fi
 
 COMMENT ON COLUMN "small_business_banking"."suspicious_activity_reports"."supporting_documentation" IS 'List of supporting documentation';
 
-COMMENT ON TABLE "data_quality"."validation_run" IS 'Represents a single execution instance of a data quality validation run, including metadata and links to errors found.';
+COMMENT ON TABLE "data_quality"."validation_run" IS 'Represents a single execution instance of a data quality validation run, including metadata and links to errors found. This can be roughly connected to an API call as a validation should occur within less than 2 seconds prior to an api call. It can also be roughly connected to an API version by comparing normalized query fields AND if not conclusive then the active period of the API version AND if that is not conclusive then a semantic analysis of source identifier and the API name, major and minor version.';
 
 COMMENT ON COLUMN "data_quality"."validation_run"."validation_run_id" IS 'Unique identifier for the validation run.';
 
@@ -12137,7 +12137,7 @@ COMMENT ON COLUMN "data_quality"."validation_run"."validation_config_all_errors"
 
 COMMENT ON COLUMN "data_quality"."validation_run"."validation_config_strict" IS 'Validation configuration flag: Indicates if the ''strict'' option (ajv) was enabled.';
 
-COMMENT ON COLUMN "data_quality"."validation_run"."query" IS 'The query string that was executed and validated.';
+COMMENT ON COLUMN "data_quality"."validation_run"."query" IS 'The DDN query that is used to source data for this validation. You can find a the matching API lineage by comparing the query field AFTER NORMALIZING WHITE SPACE.';
 
 COMMENT ON COLUMN "data_quality"."validation_run"."validation_schema" IS 'The JSON schema used to validate the query results, stored as a JSON string.';
 
@@ -12149,9 +12149,9 @@ COMMENT ON COLUMN "data_quality"."validation_error"."validation_error_id" IS 'Un
 
 COMMENT ON COLUMN "data_quality"."validation_error"."validation_run_id" IS 'Foreign key linking to the specific validation run (validation_run table) where this error occurred.';
 
-COMMENT ON COLUMN "data_quality"."validation_error"."instance_path" IS 'JSON path within the validated data pointing to the element that failed validation.';
+COMMENT ON COLUMN "data_quality"."validation_error"."instance_path" IS 'Path to an element within a JSON document that failed validation. The leaf node of this error may represent a field, object or array. If it is a field, it can be related to: 1) API field lineage by matching against input_fields AND/OR 2) field transformations by matching against output_field_name to find the actual runtime value. A field may have either, both, or neither relationship.';
 
-COMMENT ON COLUMN "data_quality"."validation_error"."schema_path" IS 'JSON path within the validation schema pointing to the rule/keyword that failed.';
+COMMENT ON COLUMN "data_quality"."validation_error"."schema_path" IS 'Path to an element within a JSON schema document (the validation schema) pointing to the rule/keyword that failed.';
 
 COMMENT ON COLUMN "data_quality"."validation_error"."error_keyword" IS 'The specific JSON schema keyword (e.g., type, required, pattern) that triggered the validation failure.';
 
@@ -12165,7 +12165,7 @@ COMMENT ON COLUMN "data_quality"."validation_error"."error_schema_detail" IS 'Th
 
 COMMENT ON COLUMN "data_quality"."validation_error"."error_parent_schema_detail" IS 'The parent schema object containing the failed rule, stored as a JSON string.';
 
-COMMENT ON TABLE "data_quality"."api_calls" IS 'Records actual instances of API calls made to the system for auditing and lineage tracking. These records can be tied by business rules to validation runs. A validation run with the same query and timestamp of less than once second earlier is probably related to this API call.';
+COMMENT ON TABLE "data_quality"."api_calls" IS 'Records actual instances of API calls made to the system for auditing and lineage tracking. An API call can be related to an API lineage, by path, method and timestamp. These records can be tied by business rules to validation runs. A validation run with the same query and timestamp of less than 2 seconds earlier is probably related to this API call.';
 
 COMMENT ON COLUMN "data_quality"."api_calls"."api_call_id" IS 'Unique identifier for the API call.';
 
@@ -12231,9 +12231,9 @@ COMMENT ON COLUMN "data_quality"."api_lineage"."major_version" IS 'The major ver
 
 COMMENT ON COLUMN "data_quality"."api_lineage"."minor_version" IS 'The minor version assigned to the API';
 
-COMMENT ON COLUMN "data_quality"."api_lineage"."api_call" IS 'The API endpoint and method called.';
+COMMENT ON COLUMN "data_quality"."api_lineage"."api_call" IS 'The API endpoint and method called. Can be related to api_call instances through api_call.path.';
 
-COMMENT ON COLUMN "data_quality"."api_lineage"."query" IS 'The DDN query that is used to source data for this API call. If this query is validated you can find its data validation runs by correlating by query. But its not guaranteed, there may be no validation runs and api''s can use the same query but produce different outputs.';
+COMMENT ON COLUMN "data_quality"."api_lineage"."query" IS 'The DDN query that is used to source data for this API call. If this query is validated you can find its data validation runs by matching the query field AFTER NORMALIZING WHITE SPACE. But its not guaranteed, there may be no validation runs and api''s can use the same query but produce different outputs.';
 
 COMMENT ON COLUMN "data_quality"."api_lineage"."description" IS 'Description of the API call purpose or context.';
 
@@ -12243,7 +12243,7 @@ COMMENT ON COLUMN "data_quality"."api_lineage"."end_date" IS 'Timestamp when thi
 
 COMMENT ON COLUMN "data_quality"."api_lineage"."updated_at" IS 'Timestamp when this record was last updated.';
 
-COMMENT ON TABLE "data_quality"."record_lineage" IS 'Maps the lineage (design) of data records through transformations for traceability.';
+COMMENT ON TABLE "data_quality"."record_lineage" IS 'Maps the lineage (design) of data records through transformations for traceability. The input is generally an interal data type and the output is generally a transient data type to be consumed by a process.';
 
 COMMENT ON COLUMN "data_quality"."record_lineage"."record_lineage_id" IS 'Unique identifier for the record lineage.';
 
@@ -12261,11 +12261,11 @@ COMMENT ON COLUMN "data_quality"."record_lineage"."pk_names" IS 'Names of primar
 
 COMMENT ON COLUMN "data_quality"."record_lineage"."api_lineage_id" IS 'Reference to the API lineage this record is part of.';
 
-COMMENT ON TABLE "data_quality"."field_lineage" IS 'Tracks the lineage (design) of individual fields through data transformations. Field names use dot notation to represent nested fields';
+COMMENT ON TABLE "data_quality"."field_lineage" IS 'Traces the lineage (design) of input fields through data transformations into an output field. Field names use dot notation to represent nested fields.';
 
 COMMENT ON COLUMN "data_quality"."field_lineage"."field_lineage_id" IS 'Unique identifier for the field lineage.';
 
-COMMENT ON COLUMN "data_quality"."field_lineage"."field_name" IS 'Name of the field being tracked. Dot notation is used for representing nested fields, for example: customer.code, would represent the code field within a customer object field.';
+COMMENT ON COLUMN "data_quality"."field_lineage"."output_field" IS 'Name of the field being created. Dot notation is used for representing a nested field, for example: customer.code, would represent the code field within a customer object field.';
 
 COMMENT ON COLUMN "data_quality"."field_lineage"."description" IS 'Description of this field lineage relationship.';
 

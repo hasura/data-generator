@@ -6,10 +6,9 @@ definition:
   description: Tracks actual instances of transformations applied to data records,
     linking input and output data.
   fields:
-    - name: api_call_id
+    - name: api_call_api_call_id
       type: uuid
-      description: Reference to the API call that triggered this transformation, if
-        applicable.
+      description: Unique identifier for the API call.
     - name: created_at
       type: timestamptz!
       description: Timestamp when the transformation was executed.
@@ -37,6 +36,31 @@ definition:
   dataConnectorTypeMapping:
     - dataConnectorName: data_quality
       dataConnectorObjectType: data_quality_record_transformations
+      fieldMapping:
+        api_call_api_call_id:
+          column:
+            name: apiCallApiCallId
+        created_at:
+          column:
+            name: created_at
+        description:
+          column:
+            name: description
+        input_type:
+          column:
+            name: input_type
+        output_type:
+          column:
+            name: output_type
+        primary_key_names:
+          column:
+            name: primary_key_names
+        primary_key_values:
+          column:
+            name: primary_key_values
+        record_transformation_id:
+          column:
+            name: record_transformation_id
 
 ---
 kind: TypePermissions
@@ -47,7 +71,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - api_call_id
+          - api_call_api_call_id
           - created_at
           - description
           - input_type
@@ -65,7 +89,7 @@ definition:
     object:
       type: data_quality_record_transformations
       comparableFields:
-        - fieldName: api_call_id
+        - fieldName: api_call_api_call_id
           booleanExpressionType: uuid_bool_exp
         - fieldName: created_at
           booleanExpressionType: timestamptz_bool_exp
@@ -100,7 +124,7 @@ definition:
     object:
       aggregatedType: data_quality_record_transformations
       aggregatableFields:
-        - fieldName: api_call_id
+        - fieldName: api_call_api_call_id
           aggregateExpression: uuid_agg_exp
         - fieldName: created_at
           aggregateExpression: timestamptz_agg_exp
@@ -130,7 +154,7 @@ definition:
     object:
       orderedType: data_quality_record_transformations
       orderableFields:
-        - fieldName: api_call_id
+        - fieldName: api_call_api_call_id
           orderByExpression: uuid_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
@@ -211,7 +235,7 @@ definition:
           - fieldName: record_transformation_id
       target:
         modelField:
-          - fieldName: record_transformation_id
+          - fieldName: transformation_record_transformation_id
   graphql:
     aggregateFieldName: data_quality_field_transformation_details_aggregate
 
@@ -228,7 +252,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: api_call_id
+          - fieldName: api_call_api_call_id
       target:
         modelField:
           - fieldName: api_call_id

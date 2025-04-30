@@ -3,23 +3,17 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_api_lineage
-  description: Represents historical documentation of API endpoint design.
-    Documents the custom API endpoints available internally or externally,
-    including Open Banking and FDX endpoints. Tracks the lineage of API calls
-    for data governance and auditing purposes. The most recent API lineage
-    records can be identified by an endDate of NULL. API's may use a base path
-    for both 1) separation of concerns and 2) versioning, typically the base
-    path is ignored when analyzing compliance with regulator mandated API
-    resource paths.
+  description: Tracks the lineage of API calls for data governance and auditing purposes.
   fields:
     - name: api_call
       type: varchar!
       description: The API endpoint and method called.
     - name: api_lineage_id
-      type: uuid!
+      type: varchar!
       description: Unique identifier for the API lineage record.
     - name: app_mgmt_application_id
       type: uuid
+      description: Reference to associated app management record.
     - name: description
       type: text
       description: Description of the API call purpose or context.
@@ -28,20 +22,20 @@ definition:
       description: Timestamp when this API lineage tracking ended, if applicable.
     - name: host_app_mgmt_application_id
       type: uuid
+      description: Reference to associated app management record. Convenience for
+        processing.
     - name: major_version
-      type: int_4
+      type: int_4!
       description: The major version assigned to the API
     - name: minor_version
-      type: int_4
+      type: int_4!
       description: The minor version assigned to the API
     - name: query
       type: text!
-      description: The DDN query that is used to source data for this API call. If
-        this query is validated you can find its data validation runs by
-        correlating by query. But its not guaranteed, there may be no validation
-        runs and api's can use the same query but produce different outputs.
+      description: The DDN query used to source data for this API call
     - name: security_host_id
       type: uuid
+      description: Optional reference to server.
     - name: server_name
       type: varchar!
       description: Name of the server handling the API call.
@@ -93,7 +87,7 @@ definition:
         - fieldName: api_call
           booleanExpressionType: varchar_bool_exp
         - fieldName: api_lineage_id
-          booleanExpressionType: uuid_bool_exp
+          booleanExpressionType: varchar_bool_exp
         - fieldName: app_mgmt_application_id
           booleanExpressionType: uuid_bool_exp
         - fieldName: description
@@ -137,7 +131,7 @@ definition:
         - fieldName: api_call
           aggregateExpression: varchar_agg_exp
         - fieldName: api_lineage_id
-          aggregateExpression: uuid_agg_exp
+          aggregateExpression: varchar_agg_exp
         - fieldName: app_mgmt_application_id
           aggregateExpression: uuid_agg_exp
         - fieldName: description
@@ -177,7 +171,7 @@ definition:
         - fieldName: api_call
           orderByExpression: varchar_order_by_exp
         - fieldName: api_lineage_id
-          orderByExpression: uuid_order_by_exp
+          orderByExpression: varchar_order_by_exp
         - fieldName: app_mgmt_application_id
           orderByExpression: uuid_order_by_exp
         - fieldName: description
@@ -232,14 +226,7 @@ definition:
       queryRootField: data_quality_api_lineage_aggregate
       subscription:
         rootField: data_quality_api_lineage_aggregate
-  description: Represents historical documentation of API endpoint design.
-    Documents the custom API endpoints available internally or externally,
-    including Open Banking and FDX endpoints. Tracks the lineage of API calls
-    for data governance and auditing purposes. The most recent API lineage
-    records can be identified by an endDate of NULL. API's may use a base path
-    for both 1) separation of concerns and 2) versioning, typically the base
-    path is ignored when analyzing compliance with regulator mandated API
-    resource paths.
+  description: Tracks the lineage of API calls for data governance and auditing purposes.
 
 ---
 kind: ModelPermissions

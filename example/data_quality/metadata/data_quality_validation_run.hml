@@ -4,14 +4,22 @@ version: v1
 definition:
   name: data_quality_validation_run
   description: Represents a single execution instance of a data quality validation
-    run, including metadata and links to errors found.
+    run, including metadata and links to errors found. This can be roughly
+    connected to an API call as a validation should occur within less than 2
+    seconds prior to an api call. It can also be roughly connected to an API
+    version by comparing normalized query fields AND if not conclusive then the
+    active period of the API version AND if that is not conclusive then a
+    semantic analysis of source identifier and the API name, major and minor
+    version.
   fields:
     - name: operation_name
       type: varchar
       description: Name of the specific operation being validated, if applicable.
     - name: query
       type: text!
-      description: The query string that was executed and validated.
+      description: The DDN query that is used to source data for this validation. You
+        can find a the matching API lineage by comparing the query field AFTER
+        NORMALIZING WHITE SPACE.
     - name: run_role
       type: varchar
       description: Role associated with the user who initiated this validation run.
@@ -245,7 +253,13 @@ definition:
       subscription:
         rootField: data_quality_validation_run_aggregate
   description: Represents a single execution instance of a data quality validation
-    run, including metadata and links to errors found.
+    run, including metadata and links to errors found. This can be roughly
+    connected to an API call as a validation should occur within less than 2
+    seconds prior to an api call. It can also be roughly connected to an API
+    version by comparing normalized query fields AND if not conclusive then the
+    active period of the API version AND if that is not conclusive then a
+    semantic analysis of source identifier and the API name, major and minor
+    version.
 
 ---
 kind: ModelPermissions

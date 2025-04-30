@@ -5,7 +5,7 @@
 -- Field lineage showing how fields should be transformed with temporal evolution
 INSERT INTO data_quality.field_lineage (
   field_lineage_id,
-  field_name,
+  output_field,
   description,
   input_fields,
   record_lineage_id
