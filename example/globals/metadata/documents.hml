@@ -46,146 +46,6 @@ definition:
           aggregate_functions: {}
           comparison_operators: {}
       object_types:
-        annotations:
-          fields:
-            bar:
-              description: The bar field
-              type:
-                name: String
-                type: named
-            baz:
-              description: The baz field
-              type:
-                name: String
-                type: named
-        annotations_foo:
-          fields:
-            bar:
-              description: The bar field
-              type:
-                name: String
-                type: named
-            baz:
-              description: The baz field
-              type:
-                name: String
-                type: named
-        complex_function:
-          fields:
-            lists:
-              type:
-                element_type:
-                  element_type:
-                    name: Json
-                    type: named
-                  type: array
-                type: array
-            person:
-              type:
-                type: nullable
-                underlying_type:
-                  name: complex_function_person
-                  type: named
-            x:
-              type:
-                name: Int
-                type: named
-            "y":
-              type:
-                name: Float
-                type: named
-            z:
-              type:
-                name: Boolean
-                type: named
-        complex_function_input:
-          fields:
-            lists:
-              type:
-                element_type:
-                  element_type:
-                    name: Json
-                    type: named
-                  type: array
-                type: array
-            person:
-              type:
-                type: nullable
-                underlying_type:
-                  name: complex_function_input_person
-                  type: named
-            x:
-              type:
-                name: Int
-                type: named
-            "y":
-              type:
-                name: Float
-                type: named
-            z:
-              type:
-                name: Boolean
-                type: named
-        complex_function_input_person:
-          fields:
-            name:
-              type:
-                name: String
-                type: named
-            pets:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    name: complex_function_input_person_pets
-                    type: named
-                  type: array
-        complex_function_input_person_pets:
-          fields:
-            name:
-              type:
-                name: String
-                type: named
-        complex_function_person:
-          fields:
-            name:
-              type:
-                name: String
-                type: named
-            pets:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    name: complex_function_person_pets
-                    type: named
-                  type: array
-        complex_function_person_pets:
-          fields:
-            name:
-              type:
-                name: String
-                type: named
-        greet_person_person:
-          fields:
-            name:
-              type:
-                name: String
-                type: named
-            pets:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    name: greet_person_person_pets
-                    type: named
-                  type: array
-        greet_person_person_pets:
-          fields:
-            name:
-              type:
-                name: String
-                type: named
         search_documents:
           description: Pydantic model for storing search result data in a flat structure with relationships.
           fields:
@@ -314,44 +174,6 @@ definition:
                 type: named
       collections: []
       functions:
-        - name: hello
-          arguments:
-            name:
-              type:
-                name: String
-                type: named
-          result_type:
-            name: String
-            type: named
-        - name: nullable_hello
-          arguments:
-            name:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-          result_type:
-            name: String
-            type: named
-        - name: greet_person
-          arguments:
-            person:
-              type:
-                name: greet_person_person
-                type: named
-          result_type:
-            name: String
-            type: named
-        - name: complex_function
-          arguments:
-            input:
-              type:
-                name: complex_function_input
-                type: named
-          result_type:
-            name: complex_function
-            type: named
         - name: search_documents
           description: |-
             This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
@@ -359,14 +181,25 @@ definition:
                 Items may be related structurally, like parent, child, sibling, explicitly like a link (if the document type
                 supports that), and semantically, like a similar word or phrase.
 
+                :param min_confidence: Min similarity score to consider a match.
                 :param search_for: A string representing the query text to search for in the documents.
                 :param limit: An integer specifying the maximum number of search results to return. Defaults to 10.
                 :return: A SearchResults object containing the search results matching the query.
           arguments:
             limit:
+              description: An integer specifying the maximum number of search results to return. Defaults to 10.
               type:
-                name: Int
-                type: named
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            min_confidence:
+              description: The minimum similarity score for a match. Defaults to 0.5
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
             search_for:
               type:
                 name: String
@@ -376,53 +209,16 @@ definition:
               name: search_documents
               type: named
             type: array
-        - name: with_tracing
-          arguments:
-            name:
-              type:
-                name: String
-                type: named
-          result_type:
-            name: String
-            type: named
-        - name: parallel_query
-          arguments:
-            name:
-              type:
-                name: String
-                type: named
-          result_type:
-            name: String
-            type: named
-        - name: error
+      procedures:
+        - name: trigger_ingest_documents
+          description: |-
+            Starts a document ingestion process on another thread.
+                Returns immediately with success if the ingestion process starts successfully.
+
+                :return: A boolean indicating whether the ingestion process was started successfully.
           arguments: {}
           result_type:
-            name: Json
-            type: named
-        - name: annotations
-          description: Writing a doc-string like this will become the function/procedure description
-          arguments:
-            foo:
-              description: The optional input Foo
-              type:
-                type: nullable
-                underlying_type:
-                  name: annotations_foo
-                  type: named
-          result_type:
-            type: nullable
-            underlying_type:
-              name: annotations
-              type: named
-      procedures:
-        - name: some_mutation_function
-          arguments:
-            any_type_param:
-              type:
-                name: Json
-                type: named
-          result_type:
-            name: Json
+            name: Boolean
             type: named
     capabilities:
       version: 0.1.6

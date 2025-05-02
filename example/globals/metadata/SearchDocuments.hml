@@ -210,9 +210,14 @@ definition:
   outputType: "[SearchDocuments!]!"
   arguments:
     - name: limit
-      type: Int!
+      type: Int
+      description: An integer specifying the maximum number of search results to
+        return. Defaults to 10.
     - name: searchFor
       type: String!
+    - name: minConfidence
+      type: Float
+      description: The minimum similarity score for a match. Defaults to 0.5
   source:
     dataConnectorName: documents
     dataConnectorCommand:
@@ -220,6 +225,7 @@ definition:
     argumentMapping:
       limit: limit
       searchFor: search_for
+      minConfidence: min_confidence
   graphql:
     rootFieldName: searchDocuments
     rootFieldKind: Query

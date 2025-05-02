@@ -17,6 +17,7 @@ import asyncio # You might not need this import if you aren't doing asynchronous
 from hasura_ndc.errors import UnprocessableContent
 from typing import Annotated, List
 from doculyzer.search import search_with_content, SearchResult
+from doculyzer import ingest_documents
 
 connector = FunctionConnector()
 
@@ -24,18 +25,21 @@ connector = FunctionConnector()
 tracer = get_tracer("ndc-sdk-python.server") # You only need a tracer if you plan to add additional Otel spans
 
 @connector.register_query
-async def search_documents(search_for: str, limit: int = 10, min_confidence: float = .7) -> List[SearchResult]:
+async def search_documents(search_for: str, limit: int | None = Field(description="An integer specifying the maximum number of search results to return. Defaults to 10.", default=None), min_confidence: float | None = Field(default=None, description="Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.")) -> List[SearchResult]:
     """
     This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
     and returns the type of elements, the content of those elements and a preview of its related items.
     Items may be related structurally, like parent, child, sibling, explicitly like a link (if the document type
     supports that), and semantically, like a similar word or phrase.
 
-    :param min_confidence: Min similarity score to consider a match.
+    :param min_confidence: Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match.
     :param search_for: A string representing the query text to search for in the documents.
     :param limit: An integer specifying the maximum number of search results to return. Defaults to 10.
     :return: A SearchResults object containing the search results matching the query.
     """
+    limit = limit or 10
+    min_confidence = min_confidence or 0
+
     def work(_span, work_response):
         return search_with_content(search_for, limit, min_confidence = min_confidence)
 
@@ -46,6 +50,35 @@ async def search_documents(search_for: str, limit: int = 10, min_confidence: flo
         {"search_for": search_for})
 
 
+import threading
+import time
+
+
+@connector.register_mutation
+async def update_documents() -> bool:
+    """
+    Starts a document ingestion process on another thread.
+    Returns immediately with success if the ingestion process starts successfully.
+
+    :return: A boolean indicating whether the ingestion process was started successfully.
+    """
+
+    def work(_span, _):
+        # Start the ingestion task in a new thread
+        thread = threading.Thread(target=ingest_documents, daemon=True)
+        thread.start()
+
+        # Record that we've started the thread
+        _span.set_attribute("thread.started", True)
+
+        # Return true immediately to indicate successful start
+        return True
+
+    return await with_active_span(
+        tracer,
+        "Trigger Document Ingestion",
+        lambda span: work(span, None),
+        {})
 
 if __name__ == "__main__":
     start(connector)
