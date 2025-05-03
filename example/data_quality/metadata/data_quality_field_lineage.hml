@@ -3,45 +3,33 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_field_lineage
-  description: Tracks the lineage of individual fields through data transformations.
+  description: Traces the lineage (design) of input fields through data
+    transformations into an output field. Field names use dot notation to
+    represent nested fields.
   fields:
     - name: description
-      type: text
+      type: string
       description: Description of this field lineage relationship.
     - name: field_lineage_id
-      type: varchar!
+      type: string!
       description: Unique identifier for the field lineage.
     - name: input_fields
-      type: varchar
+      type: string
       description: Source fields that contribute to this field, comma-separated.
     - name: output_field
-      type: varchar!
-      description: Name of the field being tracked.
-    - name: record_lineage_record_lineage_id
-      type: varchar
-      description: Unique identifier for the record lineage.
+      type: string!
+      description: "Name of the field being created. Dot notation is used for
+        representing a nested field, for example: customer.code, would represent
+        the code field within a customer object field."
+    - name: record_lineage_id
+      type: string
+      description: Reference to the parent record lineage.
   graphql:
     typeName: DQ_data_quality_field_lineage
     inputTypeName: DQ_data_quality_field_lineage_input
   dataConnectorTypeMapping:
     - dataConnectorName: data_quality
       dataConnectorObjectType: data_quality_field_lineage
-      fieldMapping:
-        description:
-          column:
-            name: description
-        field_lineage_id:
-          column:
-            name: field_lineage_id
-        input_fields:
-          column:
-            name: input_fields
-        output_field:
-          column:
-            name: output_field
-        record_lineage_record_lineage_id:
-          column:
-            name: recordLineageRecordLineageId
 
 ---
 kind: TypePermissions
@@ -56,7 +44,7 @@ definition:
           - field_lineage_id
           - input_fields
           - output_field
-          - record_lineage_record_lineage_id
+          - record_lineage_id
 
 ---
 kind: BooleanExpressionType
@@ -75,7 +63,7 @@ definition:
           booleanExpressionType: varchar_bool_exp
         - fieldName: output_field
           booleanExpressionType: varchar_bool_exp
-        - fieldName: record_lineage_record_lineage_id
+        - fieldName: record_lineage_id
           booleanExpressionType: varchar_bool_exp
       comparableRelationships:
         - relationshipName: data_quality_record_lineage
@@ -103,7 +91,7 @@ definition:
           aggregateExpression: varchar_agg_exp
         - fieldName: output_field
           aggregateExpression: varchar_agg_exp
-        - fieldName: record_lineage_record_lineage_id
+        - fieldName: record_lineage_id
           aggregateExpression: varchar_agg_exp
   count:
     enable: true
@@ -120,15 +108,15 @@ definition:
       orderedType: data_quality_field_lineage
       orderableFields:
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: field_lineage_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: input_fields
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: output_field
-          orderByExpression: varchar_order_by_exp
-        - fieldName: record_lineage_record_lineage_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
+        - fieldName: record_lineage_id
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: data_quality_record_lineage
   graphql:
@@ -162,7 +150,9 @@ definition:
       queryRootField: data_quality_field_lineage_aggregate
       subscription:
         rootField: data_quality_field_lineage_aggregate
-  description: Tracks the lineage of individual fields through data transformations.
+  description: Traces the lineage (design) of input fields through data
+    transformations into an output field. Field names use dot notation to
+    represent nested fields.
 
 ---
 kind: ModelPermissions
@@ -188,7 +178,7 @@ definition:
   mapping:
     - source:
         fieldPath:
-          - fieldName: record_lineage_record_lineage_id
+          - fieldName: record_lineage_id
       target:
         modelField:
           - fieldName: record_lineage_id

@@ -6,40 +6,40 @@ definition:
   description: Tracks security blocks placed on cards
   fields:
     - name: block_type
-      type: varchar!
+      type: string!
       description: Type of block (Temporary, Permanent, Geographic)
     - name: credit_cards_block_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each security block
     - name: credit_cards_card_id
-      type: int_4!
+      type: int_32!
       description: Reference to specific card
     - name: end_date
       type: timestamptz
       description: When block ends if temporary
     - name: geographic_restriction
-      type: varchar
+      type: string
       description: Geographic area blocked if applicable
     - name: reason
-      type: varchar!
+      type: string!
       description: Reason for security block
     - name: removed_by_id
-      type: int_4
+      type: int_32
       description: User who removed the block
     - name: removed_date
       type: timestamptz
       description: When block was removed
     - name: requested_by
-      type: varchar!
+      type: string!
       description: Who requested the block (Customer, Bank, Fraud System)
     - name: start_date
       type: timestamptz!
       description: When block began
     - name: status
-      type: varchar!
+      type: string!
       description: Status of block (Active, Removed)
     - name: transaction_type_restricted
-      type: varchar
+      type: string
       description: Transaction types blocked if specific
   graphql:
     typeName: CreditCards_credit_cards_security_blocks
@@ -160,29 +160,29 @@ definition:
       orderedType: credit_cards_security_blocks
       orderableFields:
         - fieldName: block_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_block_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_card_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: end_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: geographic_restriction
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: removed_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: removed_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: requested_by
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: start_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: transaction_type_restricted
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card
   graphql:

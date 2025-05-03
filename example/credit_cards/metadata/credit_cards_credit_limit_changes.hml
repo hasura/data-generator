@@ -6,28 +6,28 @@ definition:
   description: Tracks history of credit limit changes
   fields:
     - name: approved_by_id
-      type: int_4
+      type: int_32
       description: User who approved change
     - name: change_date
       type: date!
       description: Date of credit limit change
     - name: change_reason
-      type: varchar!
+      type: string!
       description: Reason for limit change
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_change_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each limit change
     - name: new_limit
-      type: numeric!
+      type: bigdecimal!
       description: Credit limit after change
     - name: previous_limit
-      type: numeric!
+      type: bigdecimal!
       description: Credit limit before change
     - name: requested_by
-      type: varchar!
+      type: string!
       description: Who requested change (Customer, Bank)
   graphql:
     typeName: CreditCards_credit_cards_credit_limit_changes
@@ -128,21 +128,21 @@ definition:
       orderedType: credit_cards_credit_limit_changes
       orderableFields:
         - fieldName: approved_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: change_date
           orderByExpression: date_order_by_exp
         - fieldName: change_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_change_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: new_limit
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: previous_limit
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: requested_by
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
   graphql:

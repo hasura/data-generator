@@ -9,16 +9,16 @@ definition:
       type: timestamptz
       description: When the entitlement was created
     - name: created_by_id
-      type: int_4
+      type: int_32
       description: Who created the entitlement
     - name: description
-      type: text
+      type: string
       description: Description of what the entitlement grants access to
     - name: display_name
-      type: varchar
+      type: string
       description: User-friendly name for the entitlement
     - name: entitlement_name
-      type: varchar!
+      type: string!
       description: Internal name for the entitlement
     - name: managing_application_id
       type: uuid
@@ -27,7 +27,7 @@ definition:
       type: uuid!
       description: Unique identifier for the entitlement
     - name: status
-      type: security_entitlement_status!
+      type: enum!
       description: Current status of the entitlement
   graphql:
     typeName: Security_security_enhanced_entitlements
@@ -131,19 +131,19 @@ definition:
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: created_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: display_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: entitlement_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: managing_application_id
           orderByExpression: uuid_order_by_exp
         - fieldName: security_entitlement_id
           orderByExpression: uuid_order_by_exp
         - fieldName: status
-          orderByExpression: security_entitlement_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_security_enhanced_entitlements_order_by_exp

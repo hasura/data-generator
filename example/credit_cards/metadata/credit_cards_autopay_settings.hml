@@ -6,22 +6,22 @@ definition:
   description: Stores automatic payment settings
   fields:
     - name: credit_cards_autopay_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each autopay setup
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_payment_method_id
-      type: int_4!
+      type: int_32!
       description: Reference to payment_methods
     - name: days_before_due
-      type: int_4
+      type: int_32
       description: Days before due date if applicable
     - name: end_date
       type: date
       description: When autopay ends if applicable
     - name: fixed_amount
-      type: numeric
+      type: bigdecimal
       description: Fixed amount if applicable
     - name: last_payment_date
       type: date
@@ -30,19 +30,19 @@ definition:
       type: date
       description: Scheduled date of next payment
     - name: payment_day
-      type: varchar!
+      type: string!
       description: When to pay (Due Date, Days Before Due Date, Specific Day)
     - name: payment_option
-      type: varchar!
+      type: string!
       description: What to pay (Minimum, Statement Balance, Current Balance, Fixed Amount)
     - name: specific_day
-      type: int_4
+      type: int_32
       description: Specific day of month if applicable
     - name: start_date
       type: date!
       description: When autopay begins
     - name: status
-      type: varchar!
+      type: string!
       description: Status of autopay (Active, Inactive)
   graphql:
     typeName: CreditCards_credit_cards_autopay_settings
@@ -169,31 +169,31 @@ definition:
       orderedType: credit_cards_autopay_settings
       orderableFields:
         - fieldName: credit_cards_autopay_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_payment_method_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: days_before_due
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: end_date
           orderByExpression: date_order_by_exp
         - fieldName: fixed_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: last_payment_date
           orderByExpression: date_order_by_exp
         - fieldName: next_payment_date
           orderByExpression: date_order_by_exp
         - fieldName: payment_day
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: payment_option
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: specific_day
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: start_date
           orderByExpression: date_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_payment_method

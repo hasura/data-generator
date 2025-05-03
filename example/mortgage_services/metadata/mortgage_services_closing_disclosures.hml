@@ -6,34 +6,34 @@ definition:
   description: Manages closing disclosure documents required by regulations
   fields:
     - name: cash_to_close
-      type: numeric!
+      type: bigdecimal!
       description: Cash to close shown on disclosure
     - name: created_date
       type: timestamptz!
       description: When the disclosure was created
     - name: delivery_method
-      type: mortgage_services_delivery_method!
+      type: enum!
       description: How disclosure was delivered
     - name: disclosure_type
-      type: mortgage_services_disclosure_type!
+      type: enum!
       description: Type of disclosure document
     - name: document_path
-      type: varchar
+      type: string
       description: Storage location of the disclosure document
     - name: interest_rate
-      type: numeric!
+      type: bigdecimal!
       description: Interest rate shown on disclosure
     - name: loan_amount
-      type: numeric!
+      type: bigdecimal!
       description: Loan amount shown on disclosure
     - name: monthly_payment
-      type: numeric!
+      type: bigdecimal!
       description: Monthly payment shown on disclosure
     - name: mortgage_services_disclosure_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each disclosure
     - name: mortgage_services_loan_id
-      type: int_4!
+      type: int_32!
       description: Reference to the loan this disclosure is for
     - name: received_date
       type: timestamptz
@@ -42,7 +42,7 @@ definition:
       type: timestamptz
       description: When the disclosure was sent to borrowers
     - name: total_closing_costs
-      type: numeric!
+      type: bigdecimal!
       description: Total closing costs shown on disclosure
   graphql:
     typeName: MortgageServices_mortgage_services_closing_disclosures
@@ -168,31 +168,31 @@ definition:
       orderedType: mortgage_services_closing_disclosures
       orderableFields:
         - fieldName: cash_to_close
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: created_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: delivery_method
-          orderByExpression: mortgage_services_delivery_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: disclosure_type
-          orderByExpression: mortgage_services_disclosure_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: loan_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: monthly_payment
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: mortgage_services_disclosure_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: received_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: sent_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: total_closing_costs
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_loan
   graphql:

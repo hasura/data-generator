@@ -6,49 +6,49 @@ definition:
   description: Tracks balance transfers from other creditors
   fields:
     - name: account_number
-      type: varchar
+      type: string
       description: Account number at other creditor, masked
     - name: completion_date
       type: date
       description: When transfer was completed
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_offer_id
-      type: int_4
+      type: int_32
       description: Reference to promotional_offers if applicable
     - name: credit_cards_transaction_id
-      type: int_4
+      type: int_32
       description: Reference to transactions
     - name: credit_cards_transfer_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each balance transfer
     - name: creditor_name
-      type: varchar!
+      type: string!
       description: Name of creditor being paid
     - name: current_balance
-      type: numeric
+      type: bigdecimal
       description: Current balance remaining from transfer
     - name: fee_amount
-      type: numeric
+      type: bigdecimal
       description: Fee charged for transfer
     - name: interest_rate
-      type: numeric!
+      type: bigdecimal!
       description: Interest rate applied to transfer
     - name: promotion_end_date
       type: date
       description: When promotional rate ends if applicable
     - name: promotional_rate
-      type: bool!
+      type: boolean!
       description: Whether rate is promotional
     - name: request_date
       type: date!
       description: When transfer was requested
     - name: status
-      type: varchar!
+      type: string!
       description: Status of transfer (Pending, Completed, Rejected)
     - name: transfer_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount transferred
   graphql:
     typeName: CreditCards_credit_cards_balance_transfers
@@ -186,35 +186,35 @@ definition:
       orderedType: credit_cards_balance_transfers
       orderableFields:
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: completion_date
           orderByExpression: date_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_offer_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_transfer_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: creditor_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: current_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: fee_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: promotion_end_date
           orderByExpression: date_order_by_exp
         - fieldName: promotional_rate
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: request_date
           orderByExpression: date_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: transfer_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_promotional_offer

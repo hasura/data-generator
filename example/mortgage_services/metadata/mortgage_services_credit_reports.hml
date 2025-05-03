@@ -6,34 +6,34 @@ definition:
   description: Tracks credit reports pulled for mortgage applications
   fields:
     - name: bureau_name
-      type: mortgage_services_credit_bureau
+      type: enum
       description: Credit bureau providing the report
     - name: credit_score
-      type: int_4
+      type: int_32
       description: Credit score from the report
     - name: expiration_date
       type: date!
       description: When credit report expires
     - name: mortgage_services_application_id
-      type: int_4!
+      type: int_32!
       description: Reference to applications
     - name: mortgage_services_borrower_id
-      type: int_4!
+      type: int_32!
       description: Reference to borrower this credit report is for
     - name: mortgage_services_credit_report_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each credit report
     - name: report_date
       type: timestamptz!
       description: When credit report was pulled
     - name: report_path
-      type: varchar
+      type: string
       description: Path to stored credit report
     - name: report_type
-      type: mortgage_services_credit_report_type!
+      type: enum!
       description: Type of credit report pulled
     - name: status
-      type: mortgage_services_verification_status!
+      type: enum!
       description: Status of credit report retrieval
   graphql:
     typeName: MortgageServices_mortgage_services_credit_reports
@@ -145,25 +145,25 @@ definition:
       orderedType: mortgage_services_credit_reports
       orderableFields:
         - fieldName: bureau_name
-          orderByExpression: mortgage_services_credit_bureau_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: credit_score
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_borrower_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_credit_report_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: report_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: report_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: report_type
-          orderByExpression: mortgage_services_credit_report_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_verification_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_application
         - relationshipName: mortgage_services_borrower

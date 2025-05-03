@@ -7,19 +7,19 @@ definition:
     including interest rates, promotional rates, and exchange rates
   fields:
     - name: balance_subject_to_rate
-      type: numeric
+      type: bigdecimal
       description: Balance amount subject to this rate
     - name: consumer_banking_statement_id
-      type: int_4!
+      type: int_32!
       description: References the statement this rate belongs to
     - name: consumer_banking_statement_rate_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each rate record
     - name: created_at
       type: timestamptz!
       description: When this record was created
     - name: description
-      type: varchar
+      type: string
       description: Additional description of the rate's applicability
     - name: effective_date
       type: date
@@ -28,19 +28,19 @@ definition:
       type: date
       description: Date when this rate expires (if applicable)
     - name: index_rate
-      type: numeric
+      type: bigdecimal
       description: Base index rate for variable rates
     - name: is_variable
-      type: bool!
+      type: boolean!
       description: Whether this is a variable rate
     - name: margin
-      type: numeric
+      type: bigdecimal
       description: Margin added to index for variable rates
     - name: rate
-      type: numeric!
+      type: bigdecimal!
       description: Rate value (e.g., interest rate, exchange rate)
     - name: type
-      type: consumer_banking_statement_rate_type!
+      type: enum!
       description: Type of rate (e.g., APR, promotional rate)
     - name: updated_at
       type: timestamptz!
@@ -169,29 +169,29 @@ definition:
       orderedType: consumer_banking_statement_rates
       orderableFields:
         - fieldName: balance_subject_to_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_statement_rate_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: effective_date
           orderByExpression: date_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: index_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: is_variable
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: margin
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: type
-          orderByExpression: consumer_banking_statement_rate_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: updated_at
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

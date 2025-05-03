@@ -6,14 +6,14 @@ definition:
   description: Stores problem descriptions associated with CVEs.
   fields:
     - name: cve
-      type: varchar
+      type: string
       description: Common Vulnerabilities and Exposures identifier. Foreign key
         referencing cvss.cve.
     - name: cwe_id
-      type: int_4
+      type: int_32
       description: A reference to the related Common Weakness Enumeration, if it exists
     - name: problem
-      type: text
+      type: string
       description: Problem description related to the CVE.
   graphql:
     typeName: Security_security_cve_problem
@@ -90,11 +90,11 @@ definition:
       orderedType: security_cve_problem
       orderableFields:
         - fieldName: cve
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: cwe_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: problem
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: security_cvss
         - relationshipName: security_cwe

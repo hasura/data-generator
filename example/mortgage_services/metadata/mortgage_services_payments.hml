@@ -6,46 +6,46 @@ definition:
   description: Tracks mortgage loan payments made by borrowers
   fields:
     - name: confirmation_number
-      type: varchar
+      type: string
       description: Confirmation number provided to customer
     - name: escrow_amount
-      type: numeric
+      type: bigdecimal
       description: Portion of payment applied to escrow
     - name: interest_amount
-      type: numeric!
+      type: bigdecimal!
       description: Portion of payment applied to interest
     - name: late_fee_amount
-      type: numeric
+      type: bigdecimal
       description: Portion of payment applied to late fees
     - name: mortgage_services_payment_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each payment
     - name: mortgage_services_servicing_account_id
-      type: int_4!
+      type: int_32!
       description: References the servicing account receiving the payment
     - name: other_fee_amount
-      type: numeric
+      type: bigdecimal
       description: Portion of payment applied to other fees
     - name: payment_amount
-      type: numeric!
+      type: bigdecimal!
       description: Total amount of the payment
     - name: payment_date
       type: timestamptz!
       description: When the payment was made
     - name: payment_method
-      type: varchar!
+      type: string!
       description: Method used to make payment (e.g., ACH, Check, Online)
     - name: payment_type
-      type: mortgage_services_payment_type!
+      type: enum!
       description: Type of payment (e.g., Regular, Extra Principal, Escrow Only)
     - name: principal_amount
-      type: numeric!
+      type: bigdecimal!
       description: Portion of payment applied to principal
     - name: status
-      type: varchar!
+      type: string!
       description: Current status of the payment (e.g., Pending, Completed)
     - name: transaction_id
-      type: varchar
+      type: string
       description: Financial transaction identifier
   graphql:
     typeName: MortgageServices_mortgage_services_payments
@@ -176,33 +176,33 @@ definition:
       orderedType: mortgage_services_payments
       orderableFields:
         - fieldName: confirmation_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: escrow_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: interest_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: late_fee_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: mortgage_services_payment_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_servicing_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: other_fee_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: payment_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: payment_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: payment_method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: payment_type
-          orderByExpression: mortgage_services_payment_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: principal_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: transaction_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_servicing_account
   graphql:

@@ -7,10 +7,10 @@ definition:
     third parties are permitted to access consumer banking account information
   fields:
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: References the account that the consent is related to.
     - name: consumer_banking_consent_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each consent record
     - name: creation_date_time
       type: timestamptz!
@@ -19,7 +19,7 @@ definition:
       type: timestamptz
       description: When the consent will expire (if applicable)
     - name: status
-      type: consumer_banking_consent_status!
+      type: enum!
       description: Current status of the consent (e.g., Active, Revoked)
     - name: status_update_date_time
       type: timestamptz!
@@ -114,15 +114,15 @@ definition:
       orderedType: consumer_banking_account_access_consents
       orderableFields:
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_consent_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: creation_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: expiration_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_banking_consent_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status_update_date_time
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

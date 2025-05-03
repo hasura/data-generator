@@ -6,10 +6,10 @@ definition:
   description: Tracks payments made from escrow accounts for taxes, insurance, etc.
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount of the disbursement
     - name: check_number
-      type: varchar
+      type: string
       description: Check number for paper disbursements
     - name: coverage_end_date
       type: date
@@ -21,25 +21,25 @@ definition:
       type: date!
       description: When the disbursement was made
     - name: disbursement_type
-      type: mortgage_services_disbursement_type!
+      type: enum!
       description: Type of disbursement (e.g., Property Tax, Insurance, PMI)
     - name: due_date
       type: date
       description: When the payment was due
     - name: mortgage_services_disbursement_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each disbursement
     - name: mortgage_services_servicing_account_id
-      type: int_4!
+      type: int_32!
       description: References the servicing account for this disbursement
     - name: payee_account_number
-      type: varchar
+      type: string
       description: Account number for electronic payments
     - name: payee_name
-      type: varchar!
+      type: string!
       description: Entity receiving the disbursement
     - name: status
-      type: mortgage_services_disbursement_status!
+      type: enum!
       description: Current status of the disbursement
   graphql:
     typeName: MortgageServices_mortgage_services_escrow_disbursements
@@ -160,9 +160,9 @@ definition:
       orderedType: mortgage_services_escrow_disbursements
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: check_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: coverage_end_date
           orderByExpression: date_order_by_exp
         - fieldName: coverage_start_date
@@ -170,19 +170,19 @@ definition:
         - fieldName: disbursement_date
           orderByExpression: date_order_by_exp
         - fieldName: disbursement_type
-          orderByExpression: mortgage_services_disbursement_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: due_date
           orderByExpression: date_order_by_exp
         - fieldName: mortgage_services_disbursement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_servicing_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: payee_account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: payee_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_disbursement_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_servicing_account
   graphql:

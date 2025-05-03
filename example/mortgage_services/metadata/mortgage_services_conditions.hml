@@ -6,34 +6,34 @@ definition:
   description: Tracks underwriting conditions that must be cleared for loan approval
   fields:
     - name: cleared_by_id
-      type: int_4
+      type: int_32
       description: References the staff member who cleared the condition
     - name: cleared_date
       type: timestamptz
       description: When the condition was satisfied or waived
     - name: condition_type
-      type: mortgage_services_condition_type!
+      type: enum!
       description: When the condition must be satisfied
     - name: created_by_id
-      type: int_4!
+      type: int_32!
       description: References the staff member who created the condition
     - name: created_date
       type: timestamptz!
       description: When the condition was created
     - name: description
-      type: text!
+      type: string!
       description: Detailed explanation of what must be provided or resolved
     - name: due_date
       type: date
       description: Deadline for satisfying the condition
     - name: mortgage_services_application_id
-      type: int_4!
+      type: int_32!
       description: References the application this condition applies to
     - name: mortgage_services_condition_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each condition
     - name: status
-      type: mortgage_services_condition_status!
+      type: enum!
       description: Current status of the condition
   graphql:
     typeName: MortgageServices_mortgage_services_conditions
@@ -144,25 +144,25 @@ definition:
       orderedType: mortgage_services_conditions
       orderableFields:
         - fieldName: cleared_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: cleared_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: condition_type
-          orderByExpression: mortgage_services_condition_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: created_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: created_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: due_date
           orderByExpression: date_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_condition_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_condition_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_application
   graphql:

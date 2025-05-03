@@ -6,22 +6,22 @@ definition:
   description: Stores information about direct debit arrangements set up on accounts
   fields:
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: References the account this direct debit belongs to
     - name: consumer_banking_direct_debit_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each direct debit mandate
     - name: direct_debit_status_code
-      type: consumer_banking_direct_debit_status_code!
+      type: enum!
       description: Status code of the direct debit (e.g., active, canceled)
     - name: name
-      type: varchar!
+      type: string!
       description: Name of the merchant/organization collecting the direct debit
     - name: previous_payment_amount
-      type: numeric
+      type: bigdecimal
       description: Amount of the last payment
     - name: previous_payment_currency
-      type: varchar
+      type: string
       description: Currency of the last payment
     - name: previous_payment_date_time
       type: timestamptz
@@ -121,17 +121,17 @@ definition:
       orderedType: consumer_banking_direct_debits
       orderableFields:
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_direct_debit_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: direct_debit_status_code
-          orderByExpression: consumer_banking_direct_debit_status_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: previous_payment_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: previous_payment_currency
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: previous_payment_date_time
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

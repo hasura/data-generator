@@ -7,10 +7,10 @@ definition:
     network services and potential vulnerabilities.
   fields:
     - name: port_number
-      type: int_4!
+      type: int_32!
       description: Port number that is open.
     - name: protocol
-      type: security_network_protocols!
+      type: enum!
       description: Network protocol associated with the open port.
     - name: security_host_id
       type: uuid!
@@ -89,9 +89,9 @@ definition:
       orderedType: security_open_ports
       orderableFields:
         - fieldName: port_number
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: protocol
-          orderByExpression: security_network_protocols_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: security_host_id
           orderByExpression: uuid_order_by_exp
       orderableRelationships:

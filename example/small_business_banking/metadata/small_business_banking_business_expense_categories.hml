@@ -6,28 +6,28 @@ definition:
   description: Defines custom expense categories for business card transactions
   fields:
     - name: budget_amount
-      type: numeric
+      type: bigdecimal
       description: Monthly budget amount for this category
     - name: category_description
-      type: text
+      type: string
       description: Description of what expenses belong in this category
     - name: category_name
-      type: varchar!
+      type: string!
       description: Name of the expense category
     - name: gl_account_code
-      type: varchar
+      type: string
       description: General ledger account code for accounting integration
     - name: is_tax_deductible
-      type: bool
+      type: boolean
       description: Whether expenses in this category are typically tax deductible
     - name: parent_category_id
-      type: int_4
+      type: int_32
       description: Reference to parent category for hierarchical categorization
     - name: small_business_banking_business_id
-      type: int_4!
+      type: int_32!
       description: Reference to the business
     - name: small_business_banking_category_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each expense category
   graphql:
     typeName: SmallBusinessBanking_small_business_banking_business_expense_categories
@@ -131,21 +131,21 @@ definition:
       orderedType: small_business_banking_business_expense_categories
       orderableFields:
         - fieldName: budget_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: category_description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: category_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: gl_account_code
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: is_tax_deductible
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: parent_category_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_business_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_category_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: small_business_banking_business_expense_category
         - relationshipName: small_business_banking_business

@@ -6,38 +6,38 @@ definition:
   description: Stores details of reward point redemptions
   fields:
     - name: cash_value
-      type: numeric!
+      type: bigdecimal!
       description: Cash value of redemption
     - name: confirmation_code
-      type: varchar
+      type: string
       description: Confirmation code for redemption
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_redemption_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each redemption
     - name: description
-      type: varchar!
+      type: string!
       description: Description of redemption
     - name: points_redeemed
-      type: int_4!
+      type: int_32!
       description: Number of points redeemed
     - name: recipient_email
-      type: varchar
+      type: string
       description: Email for digital items if applicable
     - name: redemption_date
       type: timestamptz!
       description: Date and time of redemption
     - name: redemption_type
-      type: varchar!
+      type: string!
       description: Type of redemption (Cashback, Travel, Gift Card, Merchandise,
         Statement Credit)
     - name: shipping_address_id
-      type: int_4
+      type: int_32
       description: Reference to addresses if physical item
     - name: status
-      type: varchar!
+      type: string!
       description: Status of redemption (Pending, Completed, Canceled)
   graphql:
     typeName: CreditCards_credit_cards_reward_redemptions
@@ -153,27 +153,27 @@ definition:
       orderedType: credit_cards_reward_redemptions
       orderableFields:
         - fieldName: cash_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: confirmation_code
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_redemption_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: points_redeemed
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: recipient_email
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: redemption_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: redemption_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: shipping_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
   graphql:

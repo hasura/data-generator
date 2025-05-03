@@ -6,22 +6,22 @@ definition:
   description: Table storing security policies and their details.
   fields:
     - name: active
-      type: bool
+      type: boolean
       description: Indicates whether the policy is currently active.
     - name: created_at
       type: timestamp
       description: Timestamp when the policy was created.
     - name: created_by_id
-      type: int_4
+      type: int_32
       description: Who created the policy
     - name: description
-      type: text!
+      type: string!
       description: Detailed description of the policy.
     - name: ended_at
       type: timestamp
       description: Timestamp when the policy was no longer effective.
     - name: name
-      type: varchar!
+      type: string!
       description: Name of the policy. Must be unique.
     - name: security_policy_id
       type: uuid!
@@ -33,7 +33,7 @@ definition:
       type: timestamp
       description: Timestamp when the policy was last updated.
     - name: updated_by_id
-      type: int_4
+      type: int_32
       description: Who updated the policy
   graphql:
     typeName: Security_security_policies
@@ -145,17 +145,17 @@ definition:
       orderedType: security_policies
       orderableFields:
         - fieldName: active
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamp_order_by_exp
         - fieldName: created_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: ended_at
           orderByExpression: timestamp_order_by_exp
         - fieldName: name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: security_policy_id
           orderByExpression: uuid_order_by_exp
         - fieldName: started_at
@@ -163,7 +163,7 @@ definition:
         - fieldName: updated_at
           orderByExpression: timestamp_order_by_exp
         - fieldName: updated_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_security_policies_order_by_exp

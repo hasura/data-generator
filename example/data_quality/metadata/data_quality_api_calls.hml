@@ -3,7 +3,11 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_api_calls
-  description: Records API calls made to the system for auditing and lineage tracking.
+  description: Records actual instances of API calls made to the system for
+    auditing and lineage tracking. An API call can be related to an API lineage,
+    by path, method and timestamp. These records can be tied by business rules
+    to validation runs. A validation run with the same query and timestamp of
+    less than 2 seconds earlier is probably related to this API call.
   fields:
     - name: api_call_id
       type: uuid!
@@ -12,29 +16,29 @@ definition:
       type: timestamptz!
       description: Timestamp when the API call was made.
     - name: major_version
-      type: int_4!
-      description: The major version assigned to the API
+      type: int_32
+      description: Server name API major version.
     - name: method
-      type: varchar!
+      type: string!
       description: HTTP method used for the API call (GET, POST, etc.).
     - name: minor_version
-      type: int_4!
-      description: The minor version assigned to the API
+      type: int_32
+      description: Server name API minor version.
     - name: path
-      type: varchar!
+      type: string!
       description: API endpoint path that was called.
     - name: query_params
-      type: text
+      type: string
       description: Query parameters sent with the API call, stored as TEXT.
     - name: related_institution
-      type: varchar
+      type: string
       description: An identifier of the institution associated with the API call.
     - name: request_headers
-      type: text
+      type: string
       description: HTTP headers sent with the API call, stored as TEXT.
     - name: server_name
-      type: varchar!
-      description: Name of the server handling the API call.
+      type: string
+      description: Server name associated with API call.
   graphql:
     typeName: DQ_data_quality_api_calls
     inputTypeName: DQ_data_quality_api_calls_input
@@ -148,21 +152,21 @@ definition:
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: major_version
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: minor_version
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: query_params
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: related_institution
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: request_headers
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: server_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: DQ_data_quality_api_calls_order_by_exp
@@ -195,7 +199,11 @@ definition:
       queryRootField: data_quality_api_calls_aggregate
       subscription:
         rootField: data_quality_api_calls_aggregate
-  description: Records API calls made to the system for auditing and lineage tracking.
+  description: Records actual instances of API calls made to the system for
+    auditing and lineage tracking. An API call can be related to an API lineage,
+    by path, method and timestamp. These records can be tied by business rules
+    to validation runs. A validation run with the same query and timestamp of
+    less than 2 seconds earlier is probably related to this API call.
 
 ---
 kind: ModelPermissions
@@ -226,7 +234,7 @@ definition:
           - fieldName: api_call_id
       target:
         modelField:
-          - fieldName: api_call_api_call_id
+          - fieldName: api_call_id
   graphql:
     aggregateFieldName: data_quality_record_transformations_aggregate
 

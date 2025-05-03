@@ -6,25 +6,25 @@ definition:
   description: Stores the business deposit and transaction accounts managed by the bank
   fields:
     - name: account_number
-      type: varchar!
+      type: string!
       description: Unique account number visible to customers
     - name: account_type
-      type: varchar!
+      type: string!
       description: Type of account (checking, savings, money market, etc.)
     - name: available_balance
-      type: numeric!
+      type: bigdecimal!
       description: Available balance after holds and pending transactions
     - name: balance
-      type: numeric!
+      type: bigdecimal!
       description: Current balance of the account
     - name: currency
-      type: enterprise_currency_code!
+      type: enum!
       description: ISO currency code for the account
     - name: enterprise_account_id
-      type: int_4!
+      type: int_32!
       description: References the main account
     - name: interest_rate
-      type: numeric
+      type: bigdecimal
       description: Current interest rate applied to the account (if applicable)
     - name: last_statement_date
       type: date
@@ -33,25 +33,25 @@ definition:
       type: date!
       description: Date when the account was opened
     - name: overdraft_limit
-      type: numeric!
+      type: bigdecimal!
       description: Maximum allowed overdraft amount
     - name: small_business_banking_account_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each business account
     - name: small_business_banking_business_id
-      type: int_4!
+      type: int_32!
       description: Reference to the business that owns this account
     - name: small_business_banking_product_id
-      type: int_4!
+      type: int_32!
       description: Reference to the product this account is based on
     - name: statement_day
-      type: int_4
+      type: int_32
       description: Day of month/week when statements are generated
     - name: statement_frequency
-      type: varchar!
+      type: string!
       description: Frequency of account statements (daily, weekly, monthly)
     - name: status
-      type: varchar!
+      type: string!
       description: Current status of the account (active, inactive, frozen, closed)
     - name: status_update_date_time
       type: timestamptz!
@@ -208,37 +208,37 @@ definition:
       orderedType: small_business_banking_accounts
       orderableFields:
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: account_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: available_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: enterprise_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: last_statement_date
           orderByExpression: date_order_by_exp
         - fieldName: opened_date
           orderByExpression: date_order_by_exp
         - fieldName: overdraft_limit
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: small_business_banking_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_business_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_product_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: statement_day
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: statement_frequency
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status_update_date_time
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

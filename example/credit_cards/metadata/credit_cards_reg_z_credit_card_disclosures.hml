@@ -6,56 +6,56 @@ definition:
   description: Tracks Truth in Lending Act disclosures required for credit cards
   fields:
     - name: annual_fee
-      type: numeric
+      type: bigdecimal
       description: Annual fee disclosed
     - name: annual_percentage_rate
-      type: numeric
+      type: bigdecimal
       description: APR disclosed
     - name: balance_computation_method
-      type: varchar
+      type: string
       description: Method used to calculate balance
     - name: credit_cards_application_id
-      type: int_4
+      type: int_32
       description: Reference to applications if pre-account opening
     - name: credit_cards_card_account_id
-      type: int_4
+      type: int_32
       description: Reference to card_accounts if post-account opening
     - name: credit_cards_disclosure_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each disclosure
     - name: delivery_method
-      type: varchar!
+      type: string!
       description: How disclosure was delivered (Mail, Electronic)
     - name: disclosure_date
       type: timestamptz!
       description: Date disclosure was generated
     - name: disclosure_type
-      type: varchar!
+      type: string!
       description: Type of Reg Z disclosure (Solicitation, Application,
         Account-Opening, Periodic Statement)
     - name: document_path
-      type: varchar
+      type: string
       description: Path to stored disclosure document
     - name: grace_period_disclosure
-      type: text
+      type: string
       description: Grace period disclosure text
     - name: late_payment_fee
-      type: numeric
+      type: bigdecimal
       description: Late payment fee disclosed
     - name: over_limit_fee
-      type: numeric
+      type: bigdecimal
       description: Over-limit fee disclosed
     - name: transaction_fee_balance_transfers
-      type: numeric
+      type: bigdecimal
       description: Fee for balance transfers
     - name: transaction_fee_cash_advance
-      type: numeric
+      type: bigdecimal
       description: Fee for cash advances
     - name: transaction_fee_purchases
-      type: numeric
+      type: bigdecimal
       description: Fee for purchases if any
     - name: variable_rate_indicator
-      type: bool
+      type: boolean
       description: Whether rate is variable
   graphql:
     typeName: CreditCards_credit_cards_reg_z_credit_card_disclosures
@@ -202,39 +202,39 @@ definition:
       orderedType: credit_cards_reg_z_credit_card_disclosures
       orderableFields:
         - fieldName: annual_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: annual_percentage_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: balance_computation_method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_disclosure_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: delivery_method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: disclosure_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: disclosure_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: grace_period_disclosure
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: late_payment_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: over_limit_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: transaction_fee_balance_transfers
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: transaction_fee_cash_advance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: transaction_fee_purchases
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: variable_rate_indicator
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_application
         - relationshipName: credit_cards_card_account

@@ -7,19 +7,19 @@ definition:
     applications, linked to the application_decisions table.
   fields:
     - name: consumer_lending_decision_id
-      type: int_4!
+      type: int_32!
       description: Reference to application decision
     - name: consumer_lending_decision_reason_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for decision reason
     - name: reason_code
-      type: consumer_lending_decision_reason_code!
+      type: enum!
       description: Standard reason code for decision
     - name: reason_description
-      type: varchar!
+      type: string!
       description: Description of reason
     - name: sequence
-      type: int_4!
+      type: int_32!
       description: Order of importance for reason
   graphql:
     typeName: ConsumerLending_consumer_lending_decision_reasons
@@ -105,15 +105,15 @@ definition:
       orderedType: consumer_lending_decision_reasons
       orderableFields:
         - fieldName: consumer_lending_decision_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_decision_reason_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: reason_code
-          orderByExpression: consumer_lending_decision_reason_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: reason_description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: sequence
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_application_decision
   graphql:

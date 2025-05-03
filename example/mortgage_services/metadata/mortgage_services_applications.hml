@@ -8,49 +8,49 @@ definition:
     application_borrowers table, not directly from this table.
   fields:
     - name: application_type
-      type: mortgage_services_application_type!
+      type: enum!
       description: Type of mortgage application
     - name: branch_id
-      type: int_4
+      type: int_32
       description: References the branch processing the application
     - name: creation_date_time
       type: timestamptz!
       description: When the application was created
     - name: estimated_credit_score
-      type: int_4
+      type: int_32
       description: Estimated credit score of primary applicant
     - name: estimated_property_value
-      type: numeric
+      type: bigdecimal
       description: Estimated value of the property
     - name: last_updated_date_time
       type: timestamptz!
       description: When the application was last modified
     - name: loan_officer_id
-      type: int_4
+      type: int_32
       description: References the loan officer handling the application
     - name: loan_purpose
-      type: mortgage_services_loan_purpose
+      type: enum
       description: Purpose of the loan
     - name: mortgage_services_application_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each mortgage application
     - name: mortgage_services_loan_product_id
-      type: int_4!
+      type: int_32!
       description: References the loan product being applied for
     - name: referral_source
-      type: varchar
+      type: string
       description: How the applicant learned about the mortgage product
     - name: requested_loan_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount of financing requested
     - name: requested_loan_term_months
-      type: int_4!
+      type: int_32!
       description: Requested duration of the loan in months
     - name: status
-      type: mortgage_services_application_status!
+      type: enum!
       description: Current status in the application workflow
     - name: submission_channel
-      type: mortgage_services_submission_channel
+      type: enum
       description: Channel through which application was submitted
     - name: submission_date_time
       type: timestamptz
@@ -203,35 +203,35 @@ definition:
       orderedType: mortgage_services_applications
       orderableFields:
         - fieldName: application_type
-          orderByExpression: mortgage_services_application_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: branch_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: creation_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: estimated_credit_score
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: estimated_property_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: last_updated_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: loan_officer_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: loan_purpose
-          orderByExpression: mortgage_services_loan_purpose_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_loan_product_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: referral_source
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: requested_loan_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: requested_loan_term_months
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_application_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: submission_channel
-          orderByExpression: mortgage_services_submission_channel_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: submission_date_time
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

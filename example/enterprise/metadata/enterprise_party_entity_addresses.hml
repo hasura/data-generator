@@ -6,16 +6,16 @@ definition:
   description: Links parties to entity addresses with a defined relationship
   fields:
     - name: enterprise_address_id
-      type: int_4!
+      type: int_32!
       description: Reference to the entity address
     - name: enterprise_party_entity_address_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for party-entity address association
     - name: enterprise_party_id
-      type: int_4!
+      type: int_32!
       description: Reference to the party
     - name: relationship_type
-      type: enterprise_address_relationship_type
+      type: enum
       description: Type of relationship between the party and the address
   graphql:
     typeName: Enterprise_enterprise_party_entity_addresses
@@ -97,13 +97,13 @@ definition:
       orderedType: enterprise_party_entity_addresses
       orderableFields:
         - fieldName: enterprise_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: enterprise_party_entity_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: enterprise_party_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: relationship_type
-          orderByExpression: enterprise_address_relationship_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: enterprise_address
         - relationshipName: enterprise_party

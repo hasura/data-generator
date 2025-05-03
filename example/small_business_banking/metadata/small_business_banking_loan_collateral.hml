@@ -6,16 +6,16 @@ definition:
   description: Junction table linking collateral items to specific loans they secure
   fields:
     - name: collateral_percentage
-      type: numeric!
+      type: bigdecimal!
       description: Percentage of the collateral's value assigned to this loan
     - name: small_business_banking_collateral_id
-      type: int_4!
+      type: int_32!
       description: Reference to the collateral item
     - name: small_business_banking_loan_collateral_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each loan-collateral association
     - name: small_business_banking_loan_id
-      type: int_4!
+      type: int_32!
       description: Reference to the loan secured by the collateral
   graphql:
     typeName: SmallBusinessBanking_small_business_banking_loan_collateral
@@ -97,13 +97,13 @@ definition:
       orderedType: small_business_banking_loan_collateral
       orderableFields:
         - fieldName: collateral_percentage
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: small_business_banking_collateral_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_loan_collateral_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: small_business_banking_collateral
         - relationshipName: small_business_banking_loan

@@ -6,7 +6,7 @@ definition:
   description: Stores information about term loans issued to small businesses
   fields:
     - name: balloon_payment
-      type: numeric
+      type: bigdecimal
       description: Final balloon payment amount (if applicable)
     - name: disbursal_date
       type: date
@@ -15,55 +15,55 @@ definition:
       type: date
       description: Date when the first payment is due
     - name: interest_rate
-      type: numeric!
+      type: bigdecimal!
       description: Annual interest rate for the loan
     - name: interest_type
-      type: varchar!
+      type: string!
       description: Type of interest rate (fixed, variable, etc.)
     - name: loan_amount
-      type: numeric!
+      type: bigdecimal!
       description: Original principal amount of the loan
     - name: loan_number
-      type: varchar!
+      type: string!
       description: Unique loan number visible to customers
     - name: maturity_date
       type: date
       description: Date when the loan is scheduled to be fully paid
     - name: outstanding_balance
-      type: numeric!
+      type: bigdecimal!
       description: Current balance remaining on the loan
     - name: payment_amount
-      type: numeric!
+      type: bigdecimal!
       description: Regular payment amount
     - name: payment_frequency
-      type: varchar!
+      type: string!
       description: Frequency of payments (weekly, monthly, quarterly)
     - name: purpose
-      type: varchar
+      type: string
       description: Stated purpose of the loan
     - name: rate_spread
-      type: numeric
+      type: bigdecimal
       description: Spread over the reference rate for variable rate loans
     - name: reference_rate
-      type: varchar
+      type: string
       description: Reference rate for variable rate loans (e.g., PRIME, SOFR)
     - name: small_business_banking_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to the associated account for fund disbursement and payments
     - name: small_business_banking_business_id
-      type: int_4!
+      type: int_32!
       description: Reference to the business receiving the loan
     - name: small_business_banking_loan_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each loan
     - name: small_business_banking_product_id
-      type: int_4!
+      type: int_32!
       description: Reference to the loan product
     - name: status
-      type: varchar!
+      type: string!
       description: Current status of the loan (pending, active, paid, defaulted)
     - name: term_months
-      type: int_4!
+      type: int_32!
       description: Duration of the loan in months
   graphql:
     typeName: SmallBusinessBanking_small_business_banking_loans
@@ -229,45 +229,45 @@ definition:
       orderedType: small_business_banking_loans
       orderableFields:
         - fieldName: balloon_payment
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: disbursal_date
           orderByExpression: date_order_by_exp
         - fieldName: first_payment_date
           orderByExpression: date_order_by_exp
         - fieldName: interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: interest_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: loan_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: loan_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: maturity_date
           orderByExpression: date_order_by_exp
         - fieldName: outstanding_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: payment_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: payment_frequency
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: purpose
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: rate_spread
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: reference_rate
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: small_business_banking_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_business_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_product_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: term_months
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: small_business_banking_account
         - relationshipName: small_business_banking_business

@@ -6,37 +6,37 @@ definition:
   description: Tracks customer complaints about credit card accounts
   fields:
     - name: cfpb_case_number
-      type: varchar
+      type: string
       description: CFPB case number if applicable
     - name: complaint_type
-      type: varchar!
+      type: string!
       description: Type of complaint (Billing, Fees, Interest, Customer Service)
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_complaint_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each complaint
     - name: description
-      type: text
+      type: string
       description: Detailed description of complaint
     - name: issue
-      type: varchar!
+      type: string!
       description: Specific issue raised
     - name: monetary_relief_amount
-      type: numeric
+      type: bigdecimal
       description: Amount of monetary relief provided
     - name: receipt_date
       type: timestamptz!
       description: Date complaint was received
     - name: regulation_violated
-      type: varchar
+      type: string
       description: Specific regulation violated if applicable
     - name: regulatory_violation_found
-      type: bool
+      type: boolean
       description: Whether regulatory violation was identified
     - name: resolution
-      type: text
+      type: string
       description: Description of how complaint was resolved
     - name: resolution_date
       type: date
@@ -45,10 +45,10 @@ definition:
       type: date
       description: Date response was sent to consumer
     - name: source
-      type: varchar!
+      type: string!
       description: Source of complaint (Direct, CFPB, BBB, Social Media)
     - name: status
-      type: varchar!
+      type: string!
       description: Status of complaint (New, In Progress, Resolved)
   graphql:
     typeName: CreditCards_credit_cards_consumer_complaints
@@ -184,35 +184,35 @@ definition:
       orderedType: credit_cards_consumer_complaints
       orderableFields:
         - fieldName: cfpb_case_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: complaint_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_complaint_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: issue
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: monetary_relief_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: receipt_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: regulation_violated
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: regulatory_violation_found
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: resolution
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: resolution_date
           orderByExpression: date_order_by_exp
         - fieldName: response_sent_date
           orderByExpression: date_order_by_exp
         - fieldName: source
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
   graphql:

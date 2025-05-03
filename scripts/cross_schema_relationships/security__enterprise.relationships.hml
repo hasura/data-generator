@@ -1,0 +1,54 @@
+---
+kind: Relationship
+version: v1
+definition:
+  name: identity_owner
+  sourceType: security_identities
+  target:
+    model:
+      subgraph: enterprise
+      name: enterprise_associates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: owner_id
+      target:
+        modelField:
+          - fieldName: enterprise_associate_id
+---
+kind: Relationship
+version: v1
+definition:
+  name: group_owner
+  sourceType: security_governance_groups
+  target:
+    model:
+      subgraph: enterprise
+      name: enterprise_associates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: owner_id
+      target:
+        modelField:
+          - fieldName: enterprise_associate_id
+---
+kind: Relationship
+version: v1
+definition:
+  name: role_owner
+  sourceType: security_roles
+  target:
+    model:
+      subgraph: enterprise
+      name: enterprise_associates
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: owner_id
+      target:
+        modelField:
+          - fieldName: enterprise_associate_id

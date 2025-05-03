@@ -6,19 +6,19 @@ definition:
   description: Tracks insurance policies protecting mortgaged properties
   fields:
     - name: agent_name
-      type: varchar
+      type: string
       description: Insurance agent's name
     - name: agent_phone
-      type: varchar
+      type: string
       description: Insurance agent's contact number
     - name: annual_premium
-      type: numeric!
+      type: bigdecimal!
       description: Annual cost of the insurance policy
     - name: carrier_name
-      type: varchar!
+      type: string!
       description: Insurance company providing coverage
     - name: coverage_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount of insurance coverage
     - name: effective_date
       type: date!
@@ -27,22 +27,22 @@ definition:
       type: date!
       description: End date of policy coverage
     - name: insurance_type
-      type: mortgage_services_insurance_type!
+      type: enum!
       description: Type of insurance coverage
     - name: mortgage_services_policy_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each policy
     - name: mortgage_services_servicing_account_id
-      type: int_4!
+      type: int_32!
       description: References the servicing account this policy protects
     - name: paid_through_escrow
-      type: bool!
+      type: boolean!
       description: Whether premium is paid from escrow account
     - name: policy_number
-      type: varchar!
+      type: string!
       description: Insurance policy identifier
     - name: status
-      type: mortgage_services_insurance_policy_status!
+      type: enum!
       description: Current status of the policy
   graphql:
     typeName: MortgageServices_mortgage_services_insurance_policies
@@ -168,31 +168,31 @@ definition:
       orderedType: mortgage_services_insurance_policies
       orderableFields:
         - fieldName: agent_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: agent_phone
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: annual_premium
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: carrier_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: coverage_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: effective_date
           orderByExpression: date_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: insurance_type
-          orderByExpression: mortgage_services_insurance_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: mortgage_services_policy_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_servicing_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: paid_through_escrow
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: policy_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_insurance_policy_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_servicing_account
   graphql:

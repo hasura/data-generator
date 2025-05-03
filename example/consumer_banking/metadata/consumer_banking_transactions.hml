@@ -6,53 +6,53 @@ definition:
   description: Stores detailed information about account transactions
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Monetary amount of the transaction
     - name: category
-      type: consumer_banking_transaction_category
+      type: enum
       description: High-level categorization of the transaction
     - name: charge_amount
-      type: numeric
+      type: bigdecimal
       description: Any fees associated with the transaction
     - name: charge_currency
-      type: enterprise_currency_code
+      type: enum
       description: Currency code for the transaction fee
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: References the account this transaction belongs to
     - name: consumer_banking_balance_id
-      type: int_4
+      type: int_32
       description: No meaningful relationship, just guarantees that balances must
         exist before a transaction can be created.
     - name: consumer_banking_transaction_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each transaction
     - name: credit_debit_indicator
-      type: enterprise_credit_debit_indicator!
+      type: enum!
       description: Indicates if transaction is a credit or debit
     - name: currency
-      type: enterprise_currency_code!
+      type: enum!
       description: Currency code for the transaction amount
     - name: description
-      type: varchar
+      type: string
       description: Additional information about the transaction
     - name: merchant_address
-      type: varchar
+      type: string
       description: Address associated with the transaction, if applicable
     - name: status
-      type: consumer_banking_transaction_status!
+      type: enum!
       description: Status of the transaction (e.g., pending, booked, rejected)
     - name: transaction_date
       type: timestamptz!
       description: When the transaction was recorded in the books
     - name: transaction_mutability
-      type: consumer_banking_transaction_mutability
+      type: enum
       description: Whether the transaction can be changed (e.g., mutable, immutable)
     - name: transaction_reference
-      type: varchar
+      type: string
       description: Reference code for the transaction
     - name: transaction_type
-      type: consumer_banking_transaction_type
+      type: enum
       description: Specific type of transaction with more detail
     - name: value_date
       type: timestamptz
@@ -216,37 +216,37 @@ definition:
       orderedType: consumer_banking_transactions
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: category
-          orderByExpression: consumer_banking_transaction_category_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: charge_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: charge_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_balance_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_debit_indicator
-          orderByExpression: enterprise_credit_debit_indicator_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: merchant_address
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_banking_transaction_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: transaction_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: transaction_mutability
-          orderByExpression: consumer_banking_transaction_mutability_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: transaction_reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: transaction_type
-          orderByExpression: consumer_banking_transaction_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: value_date
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

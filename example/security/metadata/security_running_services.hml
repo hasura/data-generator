@@ -7,7 +7,7 @@ definition:
     tracking system services and their states.
   fields:
     - name: running_service_name
-      type: varchar!
+      type: string!
       description: Name of the running service.
     - name: security_host_id
       type: uuid!
@@ -16,7 +16,7 @@ definition:
       type: timestamp
       description: Timestamp when the service started running.
     - name: status
-      type: varchar
+      type: string
       description: Status of the running service (e.g., running, stopped).
   graphql:
     typeName: Security_security_running_services
@@ -97,13 +97,13 @@ definition:
       orderedType: security_running_services
       orderableFields:
         - fieldName: running_service_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: security_host_id
           orderByExpression: uuid_order_by_exp
         - fieldName: start_time
           orderByExpression: timestamp_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: security_host
   graphql:

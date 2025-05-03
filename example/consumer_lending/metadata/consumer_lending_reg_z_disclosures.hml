@@ -7,64 +7,64 @@ definition:
     Z), such as Loan Estimates and Closing Disclosures.
   fields:
     - name: amount_financed
-      type: numeric!
+      type: bigdecimal!
       description: Amount financed disclosed
     - name: annual_percentage_rate
-      type: numeric!
+      type: bigdecimal!
       description: APR disclosed
     - name: consumer_lending_application_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan application
     - name: consumer_lending_disclosure_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for disclosure
     - name: delivery_method
-      type: consumer_lending_disclosure_delivery_method!
+      type: enum!
       description: Method of delivering the disclosure
     - name: disclosure_date
       type: timestamptz!
       description: Date disclosure was generated
     - name: disclosure_type
-      type: consumer_lending_disclosure_type!
+      type: enum!
       description: Type of Regulation Z disclosure
     - name: document_path
-      type: varchar
+      type: string
       description: Path to stored disclosure document
     - name: finance_charge
-      type: numeric!
+      type: bigdecimal!
       description: Total finance charge disclosed
     - name: late_payment_fee
-      type: numeric
+      type: bigdecimal
       description: Late payment fee disclosed
     - name: loan_account_id
-      type: int_4
+      type: int_32
       description: Reference to loan account if originated
     - name: payment_schedule
-      type: text
+      type: string
       description: Summary of payment schedule
     - name: prepayment_penalty
-      type: text
+      type: string
       description: Description of prepayment penalty if any
     - name: receipt_date
       type: timestamptz
       description: Date receipt was confirmed
     - name: received_by_customer
-      type: bool
+      type: boolean
       description: Whether receipt confirmed
     - name: security_interest
-      type: text
+      type: string
       description: Description of security interest
     - name: sent_date
       type: timestamptz
       description: Date disclosure was sent to applicant
     - name: total_of_payments
-      type: numeric!
+      type: bigdecimal!
       description: Total of payments disclosed
     - name: user_id
-      type: int_4
+      type: int_32
       description: User who generated disclosure
     - name: version
-      type: int_4!
+      type: int_32!
       description: Version number if multiple disclosures of same type
   graphql:
     typeName: ConsumerLending_consumer_lending_reg_z_disclosures
@@ -226,45 +226,45 @@ definition:
       orderedType: consumer_lending_reg_z_disclosures
       orderableFields:
         - fieldName: amount_financed
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: annual_percentage_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_lending_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_disclosure_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: delivery_method
-          orderByExpression: consumer_lending_disclosure_delivery_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: disclosure_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: disclosure_type
-          orderByExpression: consumer_lending_disclosure_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: finance_charge
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: late_payment_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: payment_schedule
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: prepayment_penalty
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: receipt_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: received_by_customer
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: security_interest
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: sent_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: total_of_payments
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: user_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: version
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_application
         - relationshipName: consumer_lending_loan_account

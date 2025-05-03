@@ -7,21 +7,21 @@ definition:
     such as power of attorney, beneficiary designations, etc.
   fields:
     - name: enterprise_party_id
-      type: int_4!
+      type: int_32!
       description: References the to the party being represented or acted upon
     - name: enterprise_party_relationship_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each relationship record
     - name: priority
-      type: int_4
+      type: int_32
       description: Order of precedence for the relationship type (lower number =
         higher priority)
     - name: related_party_id
-      type: int_4!
+      type: int_32!
       description: References the party taking the role e.g. power of attorney,
         guardian, etc.
     - name: relationship_type
-      type: enterprise_party_relationship_type
+      type: enum
       description: Describes the role of the related party relative to the enterprise party
   graphql:
     typeName: Enterprise_enterprise_party_relationships
@@ -108,15 +108,15 @@ definition:
       orderedType: enterprise_party_relationships
       orderableFields:
         - fieldName: enterprise_party_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: enterprise_party_relationship_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: priority
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: related_party_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: relationship_type
-          orderByExpression: enterprise_party_relationship_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: enterprise_party
         - relationshipName: enterprise_party_by_related_party_id

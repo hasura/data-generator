@@ -9,21 +9,21 @@ definition:
     and access control.
   fields:
     - name: account_category
-      type: varchar
+      type: string
       description: Customer defined category of account (e.g., personal, business,
         retirement)
     - name: description
-      type: varchar
+      type: string
       description: Customer defined description of the account
     - name: enterprise_account_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each enterprise account
     - name: opened_date
       type: timestamptz
       description: When the enterprise account was created, typically coincides with
         first LOB account.
     - name: status
-      type: enterprise_account_status!
+      type: enum!
       description: Current status of the account. When set to 'CLOSED', all linked LOB
         accounts must be closed or in a terminal state.
     - name: status_update_date_time
@@ -119,15 +119,15 @@ definition:
       orderedType: enterprise_accounts
       orderableFields:
         - fieldName: account_category
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: enterprise_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: opened_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: status
-          orderByExpression: enterprise_account_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status_update_date_time
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships: []

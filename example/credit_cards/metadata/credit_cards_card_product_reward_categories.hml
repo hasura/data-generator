@@ -6,31 +6,31 @@ definition:
   description: Defines reward earning categories for card products
   fields:
     - name: cap_amount
-      type: numeric
+      type: bigdecimal
       description: Spending cap for elevated rewards if applicable
     - name: cap_period
-      type: varchar
+      type: string
       description: Period for cap (e.g., Monthly, Quarterly, Annually)
     - name: category_name
-      type: varchar!
+      type: string!
       description: Category name (e.g., Dining, Travel, Gas)
     - name: credit_cards_category_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each reward category
     - name: credit_cards_product_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_products
     - name: end_date
       type: date
       description: End date for category if temporary
     - name: is_capped
-      type: bool!
+      type: boolean!
       description: Whether rewards are capped
     - name: is_quarterly
-      type: bool!
+      type: boolean!
       description: Whether category rotates quarterly
     - name: reward_rate
-      type: numeric!
+      type: bigdecimal!
       description: Reward rate for this category (e.g., 3% cashback)
     - name: start_date
       type: date
@@ -144,23 +144,23 @@ definition:
       orderedType: credit_cards_card_product_reward_categories
       orderableFields:
         - fieldName: cap_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: cap_period
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: category_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_category_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_product_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: end_date
           orderByExpression: date_order_by_exp
         - fieldName: is_capped
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: is_quarterly
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: reward_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: start_date
           orderByExpression: date_order_by_exp
       orderableRelationships:

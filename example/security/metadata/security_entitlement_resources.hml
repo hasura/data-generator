@@ -6,19 +6,19 @@ definition:
   description: Maps entitlements to resources with specific permission types and contexts
   fields:
     - name: context_conditions
-      type: varchar
+      type: string
       description: Context conditions that restrict when this entitlement is applicable
     - name: created_at
       type: timestamptz
       description: When the relationship was created
     - name: created_by_id
-      type: int_4
+      type: int_32
       description: Who created the relationship
     - name: permission_type
-      type: security_permission_type!
+      type: enum!
       description: Type of permission granted on the resource
     - name: resource_details
-      type: varchar
+      type: string
       description: Resource-specific details like column filters, row filters, access
         parameters
     - name: security_entitlement_id
@@ -130,15 +130,15 @@ definition:
       orderedType: security_entitlement_resources
       orderableFields:
         - fieldName: context_conditions
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: created_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: permission_type
-          orderByExpression: security_permission_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: resource_details
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: security_entitlement_id
           orderByExpression: uuid_order_by_exp
         - fieldName: security_entitlement_resource_id

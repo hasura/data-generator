@@ -6,40 +6,40 @@ definition:
   description: Records all financial transactions across business accounts
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Transaction amount
     - name: created_by_id
-      type: int_4
+      type: int_32
       description: User that created the transaction
     - name: currency
-      type: enterprise_currency_code!
+      type: enum!
       description: Currency of the transaction
     - name: description
-      type: varchar
+      type: string
       description: Transaction description
     - name: post_date
       type: date
       description: Date when the transaction was posted to the account
     - name: reference_number
-      type: varchar
+      type: string
       description: External reference for the transaction
     - name: running_balance
-      type: numeric
+      type: bigdecimal
       description: Account balance after this transaction
     - name: small_business_banking_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to the account where the transaction occurred
     - name: small_business_banking_transaction_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each transaction
     - name: status
-      type: varchar!
+      type: string!
       description: Status of the transaction (pending, completed, failed, reversed)
     - name: transaction_date
       type: date!
       description: Date of the transaction
     - name: transaction_type
-      type: varchar!
+      type: string!
       description: Type of transaction (deposit, withdrawal, payment, fee, etc.)
   graphql:
     typeName: SmallBusinessBanking_small_business_banking_transactions
@@ -160,29 +160,29 @@ definition:
       orderedType: small_business_banking_transactions
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: created_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: post_date
           orderByExpression: date_order_by_exp
         - fieldName: reference_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: running_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: small_business_banking_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: transaction_date
           orderByExpression: date_order_by_exp
         - fieldName: transaction_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: small_business_banking_account
   graphql:

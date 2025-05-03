@@ -6,35 +6,35 @@ definition:
   description: Tracks fees charged to card accounts
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Fee amount
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_fee_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each fee
     - name: credit_cards_statement_id
-      type: int_4
+      type: int_32
       description: Reference to statements if included in statement
     - name: credit_cards_transaction_id
-      type: int_4
+      type: int_32
       description: Reference to transactions if associated with specific transaction
     - name: date_assessed
       type: date!
       description: Date fee was charged
     - name: description
-      type: varchar
+      type: string
       description: Description of fee
     - name: fee_type
-      type: varchar!
+      type: string!
       description: Type of fee (Annual, Late Payment, Cash Advance, Foreign
         Transaction, etc.)
     - name: waived
-      type: bool!
+      type: boolean!
       description: Whether fee was waived
     - name: waiver_reason
-      type: varchar
+      type: string
       description: Reason fee was waived if applicable
   graphql:
     typeName: CreditCards_credit_cards_fees
@@ -147,25 +147,25 @@ definition:
       orderedType: credit_cards_fees
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_fee_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: date_assessed
           orderByExpression: date_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: fee_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: waived
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: waiver_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_statement

@@ -6,31 +6,31 @@ definition:
   description: Tracks interest charges applied to card accounts
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Interest amount charged
     - name: balance_subject_to_interest
-      type: numeric!
+      type: bigdecimal!
       description: Balance amount subject to interest
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_charge_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each interest charge
     - name: credit_cards_statement_id
-      type: int_4!
+      type: int_32!
       description: Reference to statements
     - name: date_assessed
       type: date!
       description: Date interest was charged
     - name: days_in_period
-      type: int_4!
+      type: int_32!
       description: Number of days interest was calculated for
     - name: interest_rate
-      type: numeric!
+      type: bigdecimal!
       description: Interest rate applied
     - name: interest_type
-      type: varchar!
+      type: string!
       description: Type of interest (Purchase, Cash Advance, Balance Transfer, Penalty)
   graphql:
     typeName: CreditCards_credit_cards_interest_charges
@@ -137,23 +137,23 @@ definition:
       orderedType: credit_cards_interest_charges
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: balance_subject_to_interest
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_charge_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: date_assessed
           orderByExpression: date_order_by_exp
         - fieldName: days_in_period
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: interest_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_statement

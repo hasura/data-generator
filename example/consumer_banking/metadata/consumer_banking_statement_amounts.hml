@@ -6,25 +6,25 @@ definition:
   description: Stores various monetary amount totals associated with a statement
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Monetary value
     - name: consumer_banking_statement_amount_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each amount record
     - name: consumer_banking_statement_id
-      type: int_4!
+      type: int_32!
       description: References the statement this amount belongs to
     - name: credit_debit_indicator
-      type: enterprise_credit_debit_indicator!
+      type: enum!
       description: Indicates if amount is a credit or debit
     - name: currency
-      type: enterprise_currency_code!
+      type: enum!
       description: Currency code for the amount
     - name: sub_type
-      type: consumer_banking_amount_sub_type
+      type: enum
       description: Further classification of the amount type
     - name: type
-      type: consumer_banking_amount_type!
+      type: enum!
       description: Type of amount (e.g., opening balance, closing balance, payments)
   graphql:
     typeName: ConsumerBanking_consumer_banking_statement_amounts
@@ -120,19 +120,19 @@ definition:
       orderedType: consumer_banking_statement_amounts
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_banking_statement_amount_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_debit_indicator
-          orderByExpression: enterprise_credit_debit_indicator_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: sub_type
-          orderByExpression: consumer_banking_amount_sub_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: type
-          orderByExpression: consumer_banking_amount_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_statement
   graphql:

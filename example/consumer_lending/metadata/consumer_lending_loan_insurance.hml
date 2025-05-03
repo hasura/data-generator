@@ -7,22 +7,22 @@ definition:
     accounts or collateral.
   fields:
     - name: beneficiary
-      type: varchar
+      type: string
       description: Named beneficiary if applicable
     - name: carrier_name
-      type: varchar!
+      type: string!
       description: Name of insurance company
     - name: consumer_lending_collateral_id
-      type: int_4
+      type: int_32
       description: Reference to loan_collateral if associated with specific collateral
     - name: consumer_lending_insurance_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for insurance record
     - name: consumer_lending_loan_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan account
     - name: coverage_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount of coverage
     - name: effective_date
       type: date!
@@ -31,19 +31,19 @@ definition:
       type: date!
       description: Policy end date
     - name: insurance_type
-      type: consumer_lending_insurance_type!
+      type: enum!
       description: Type of insurance
     - name: policy_number
-      type: varchar!
+      type: string!
       description: Insurance policy number
     - name: premium_amount
-      type: numeric!
+      type: bigdecimal!
       description: Cost of insurance premium
     - name: premium_frequency
-      type: consumer_lending_premium_frequency!
+      type: enum!
       description: Frequency of premium payments
     - name: status
-      type: consumer_lending_insurance_status!
+      type: enum!
       description: Current status of the insurance policy
   graphql:
     typeName: ConsumerLending_consumer_lending_loan_insurance
@@ -170,31 +170,31 @@ definition:
       orderedType: consumer_lending_loan_insurance
       orderableFields:
         - fieldName: beneficiary
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: carrier_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: consumer_lending_collateral_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_insurance_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: coverage_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: effective_date
           orderByExpression: date_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: insurance_type
-          orderByExpression: consumer_lending_insurance_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: policy_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: premium_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: premium_frequency
-          orderByExpression: consumer_lending_premium_frequency_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_lending_insurance_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_collateral
         - relationshipName: consumer_lending_loan_account

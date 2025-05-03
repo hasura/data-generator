@@ -7,46 +7,46 @@ definition:
     type, value, and insurance requirements.
   fields:
     - name: collateral_type
-      type: consumer_lending_collateral_type!
+      type: enum!
       description: Type of collateral
     - name: consumer_lending_collateral_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for collateral
     - name: deposit_account_id
-      type: int_4
+      type: int_32
       description: Reference to enterprise.accounts if deposit
     - name: description
-      type: varchar!
+      type: string!
       description: Description of collateral
     - name: insurance_expiration_date
       type: date
       description: Expiration date of insurance policy
     - name: insurance_required
-      type: bool!
+      type: boolean!
       description: Whether insurance is required
     - name: lien_position
-      type: int_4
+      type: int_32
       description: Priority of lien
     - name: lien_recording_date
       type: date
       description: Date lien was recorded
     - name: lien_recording_number
-      type: varchar
+      type: string
       description: Lien recording reference number
     - name: loan_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan account
     - name: property_address_id
-      type: int_4
+      type: int_32
       description: Reference to enterprise.addresses if property
     - name: valuation_date
       type: date!
       description: Date of valuation
     - name: value
-      type: numeric!
+      type: bigdecimal!
       description: Estimated value of collateral
     - name: vehicle_id
-      type: int_4
+      type: int_32
       description: Reference to vehicles table if applicable
   graphql:
     typeName: ConsumerLending_consumer_lending_loan_collateral
@@ -179,33 +179,33 @@ definition:
       orderedType: consumer_lending_loan_collateral
       orderableFields:
         - fieldName: collateral_type
-          orderByExpression: consumer_lending_collateral_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_lending_collateral_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: deposit_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: insurance_expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: insurance_required
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: lien_position
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: lien_recording_date
           orderByExpression: date_order_by_exp
         - fieldName: lien_recording_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: property_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: valuation_date
           orderByExpression: date_order_by_exp
         - fieldName: value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: vehicle_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_account
         - relationshipName: consumer_lending_vehicle

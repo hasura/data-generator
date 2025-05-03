@@ -1,0 +1,72 @@
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: card_account
+  sourceType: small_business_banking_business_card_accounts
+  target:
+    model:
+      subgraph: credit_cards
+      name: credit_cards_card_accounts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: card_account_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_account_id
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: credit_cards_product
+  sourceType: small_business_banking_business_card_accounts
+  target:
+    model:
+      subgraph: credit_cards
+      name: credit_cards_card_products
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_product_id
+      target:
+        modelField:
+          - fieldName: credit_cards_product_id
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: credit_cards_card
+  sourceType: small_business_banking_business_card_users
+  target:
+    model:
+      subgraph: credit_cards
+      name: credit_cards_cards
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: credit_cards_card_id
+      target:
+        modelField:
+          - fieldName: credit_cards_card_id
+---
+kind: Relationship # New relationship
+version: v1
+definition:
+  name: transaction
+  sourceType: small_business_banking_business_transaction_categories
+  target:
+    model:
+      subgraph: credit_cards
+      name: credit_cards_transactions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: transaction_id
+      target:
+        modelField:
+          - fieldName: credit_cards_transaction_id

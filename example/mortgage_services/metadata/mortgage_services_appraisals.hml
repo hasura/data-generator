@@ -6,19 +6,19 @@ definition:
   description: Manages property appraisals for mortgage loans
   fields:
     - name: appraisal_company
-      type: varchar
+      type: string
       description: Company performing the appraisal
     - name: appraisal_fee
-      type: numeric
+      type: bigdecimal
       description: Fee charged for the appraisal
     - name: appraisal_type
-      type: mortgage_services_appraisal_type!
+      type: enum!
       description: Type of appraisal being performed
     - name: appraised_value
-      type: numeric
+      type: bigdecimal
       description: Value determined by the appraisal
     - name: appraiser_name
-      type: varchar
+      type: string
       description: Name of the assigned appraiser
     - name: completion_date
       type: date
@@ -27,22 +27,22 @@ definition:
       type: date
       description: When the property was inspected
     - name: mortgage_services_application_id
-      type: int_4!
+      type: int_32!
       description: References the application this appraisal is for
     - name: mortgage_services_appraisal_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each appraisal
     - name: mortgage_services_property_id
-      type: int_4!
+      type: int_32!
       description: References the property being appraised
     - name: ordered_date
       type: timestamptz!
       description: When the appraisal was ordered
     - name: report_path
-      type: varchar
+      type: string
       description: Storage location of the appraisal report
     - name: status
-      type: mortgage_services_appraisal_status!
+      type: enum!
       description: Current status of the appraisal process
   graphql:
     typeName: MortgageServices_mortgage_services_appraisals
@@ -169,31 +169,31 @@ definition:
       orderedType: mortgage_services_appraisals
       orderableFields:
         - fieldName: appraisal_company
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: appraisal_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: appraisal_type
-          orderByExpression: mortgage_services_appraisal_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: appraised_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: appraiser_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: completion_date
           orderByExpression: date_order_by_exp
         - fieldName: inspection_date
           orderByExpression: date_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_appraisal_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_property_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: ordered_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: report_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_appraisal_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_application
         - relationshipName: mortgage_services_property

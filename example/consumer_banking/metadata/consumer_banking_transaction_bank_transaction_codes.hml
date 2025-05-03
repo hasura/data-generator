@@ -7,13 +7,13 @@ definition:
     transactions with detailed hierarchical classification
   fields:
     - name: code
-      type: consumer_banking_transaction_bank_code!
+      type: enum!
       description: Detailed bank-specific transaction classification code
     - name: consumer_banking_transaction_bank_transaction_code_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each transaction code record
     - name: consumer_banking_transaction_id
-      type: int_4!
+      type: int_32!
       description: References the transaction this code belongs to
   graphql:
     typeName: ConsumerBanking_consumer_banking_transaction_bank_transaction_codes
@@ -89,11 +89,11 @@ definition:
       orderedType: consumer_banking_transaction_bank_transaction_codes
       orderableFields:
         - fieldName: code
-          orderByExpression: consumer_banking_transaction_bank_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_banking_transaction_bank_transaction_code_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_transaction
   graphql:

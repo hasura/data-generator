@@ -15,31 +15,31 @@ definition:
       type: date!
       description: When the analysis results take effect
     - name: escrow_shortage
-      type: numeric
+      type: bigdecimal
       description: Amount by which the escrow account is short
     - name: escrow_surplus
-      type: numeric
+      type: bigdecimal
       description: Amount by which the escrow account exceeds requirements
     - name: mortgage_services_analysis_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each analysis
     - name: mortgage_services_servicing_account_id
-      type: int_4!
+      type: int_32!
       description: References the servicing account being analyzed
     - name: new_monthly_escrow
-      type: numeric!
+      type: bigdecimal!
       description: New monthly escrow payment amount
     - name: previous_monthly_escrow
-      type: numeric
+      type: bigdecimal
       description: Previous monthly escrow payment amount
     - name: shortage_spread_months
-      type: int_4
+      type: int_32
       description: Number of months to spread shortage payment
     - name: status
-      type: mortgage_services_escrow_analysis_status!
+      type: enum!
       description: Current status of the analysis
     - name: surplus_refund_amount
-      type: numeric
+      type: bigdecimal
       description: Amount of surplus to be refunded
   graphql:
     typeName: MortgageServices_mortgage_services_escrow_analyses
@@ -166,23 +166,23 @@ definition:
         - fieldName: effective_date
           orderByExpression: date_order_by_exp
         - fieldName: escrow_shortage
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: escrow_surplus
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: mortgage_services_analysis_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_servicing_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: new_monthly_escrow
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: previous_monthly_escrow
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: shortage_spread_months
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_escrow_analysis_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: surplus_refund_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_servicing_account
   graphql:

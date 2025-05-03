@@ -5,52 +5,52 @@ definition:
   name: consumer_banking_customer_interactions
   fields:
     - name: account_id
-      type: int_8
+      type: int_64
       description: The ID of the specific account related to the interaction. This can
         be NULL if the interaction isn't tied to a specific account (e.g., a
         general inquiry).
     - name: channel
-      type: consumer_banking_interaction_channel
+      type: enum
       description: The channel through which the interaction occurred (e.g., "phone,"
         "email," "web," "branch," "mobile app").
     - name: consumer_banking_interaction_id
-      type: int_4!
+      type: int_32!
       description: A unique identifier for each interaction.
     - name: created_at
       type: timestamptz
       description: When the interaction record was created.
     - name: customer_id
-      type: int_4
+      type: int_32
       description: The ID of the customer involved in the interaction.
     - name: description
-      type: text
+      type: string
       description: A detailed description of the interaction.
     - name: enterprise_associate_id
-      type: int_4
+      type: int_32
       description: The ID of the bank employee who handled the interaction. This can
         be NULL if it was an automated interaction.
     - name: interaction_date_time
       type: timestamptz
       description: The date and time of the interaction.
     - name: interaction_type
-      type: consumer_banking_interaction_type
+      type: enum
       description: The type of interaction (e.g., "phone call," "email," "chat,"
         "in-person," "online form," "ATM interaction").
     - name: priority
-      type: consumer_banking_interaction_priority
+      type: enum
       description: The priority of the interaction (e.g., "high," "medium," "low").
     - name: related_transaction_id
-      type: int_4
+      type: int_32
       description: If the interaction relates to a specific transaction, this can hold
         that transaction ID.
     - name: resolution
-      type: text
+      type: string
       description: Description of how the interaction was resolved.
     - name: status
-      type: consumer_banking_interaction_status
+      type: enum
       description: The status of the interaction (e.g., "open," "resolved," "pending").
     - name: subject
-      type: varchar
+      type: string
       description: A brief subject or title of the interaction.
     - name: updated_at
       type: timestamptz
@@ -190,33 +190,33 @@ definition:
       orderedType: consumer_banking_customer_interactions
       orderableFields:
         - fieldName: account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: channel
-          orderByExpression: consumer_banking_interaction_channel_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_banking_interaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: customer_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: enterprise_associate_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: interaction_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: interaction_type
-          orderByExpression: consumer_banking_interaction_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: priority
-          orderByExpression: consumer_banking_interaction_priority_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: related_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: resolution
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_banking_interaction_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: subject
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: updated_at
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

@@ -6,10 +6,10 @@ definition:
   description: Stores credit card applications and their status
   fields:
     - name: annual_income
-      type: numeric
+      type: bigdecimal
       description: Applicant's reported annual income
     - name: application_channel
-      type: varchar!
+      type: string!
       description: Channel used for application (Online, Branch, Mail, Phone)
     - name: application_date
       type: timestamptz!
@@ -18,64 +18,64 @@ definition:
       type: date
       description: Date when approval expires if not accepted
     - name: approved_credit_limit
-      type: numeric
+      type: bigdecimal
       description: Credit limit approved by issuer
     - name: approved_interest_rate
-      type: numeric
+      type: bigdecimal
       description: Interest rate approved for account
     - name: authorized_users_requested
-      type: int_4
+      type: int_32
       description: Number of authorized users requested
     - name: balance_transfer_requested
-      type: bool!
+      type: boolean!
       description: Whether balance transfer was requested
     - name: credit_cards_application_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for card application
     - name: credit_cards_product_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_products
     - name: customer_id
-      type: int_4!
+      type: int_32!
       description: Reference to enterprise.accounts
     - name: decision_date
       type: timestamptz
       description: When decision was made
     - name: decision_method
-      type: varchar
+      type: string
       description: Automated or Manual decision
     - name: decision_reason
-      type: varchar
+      type: string
       description: Primary reason for decision
     - name: employment_status
-      type: varchar
+      type: string
       description: Applicant's employment status
     - name: housing_payment
-      type: numeric
+      type: bigdecimal
       description: Applicant's monthly housing payment
     - name: is_preapproved
-      type: bool!
+      type: boolean!
       description: Whether application was pre-approved
     - name: is_secured
-      type: bool!
+      type: boolean!
       description: Whether card requires security deposit
     - name: offer_code
-      type: varchar
+      type: string
       description: Promotional offer code if applicable
     - name: referring_source
-      type: varchar
+      type: string
       description: Marketing source or referral
     - name: requested_credit_limit
-      type: numeric
+      type: bigdecimal
       description: Credit limit requested by applicant
     - name: security_deposit_amount
-      type: numeric
+      type: bigdecimal
       description: Amount of security deposit if secured card
     - name: status
-      type: varchar!
+      type: string!
       description: Current status (Pending, Approved, Denied, Canceled)
     - name: time_at_current_address_years
-      type: int_4
+      type: int_32
       description: Years at current address
   graphql:
     typeName: CreditCards_credit_cards_applications
@@ -260,53 +260,53 @@ definition:
       orderedType: credit_cards_applications
       orderableFields:
         - fieldName: annual_income
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: application_channel
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: application_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: approval_expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: approved_credit_limit
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: approved_interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: authorized_users_requested
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: balance_transfer_requested
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: credit_cards_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_product_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: customer_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: decision_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: decision_method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: decision_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: employment_status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: housing_payment
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: is_preapproved
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: is_secured
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: offer_code
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: referring_source
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: requested_credit_limit
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: security_deposit_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: time_at_current_address_years
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_product
   graphql:

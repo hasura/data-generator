@@ -6,10 +6,10 @@ definition:
   description: Stores information about account statements
   fields:
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: References the account this balance belongs to
     - name: consumer_banking_statement_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each statement
     - name: creation_date_time
       type: timestamptz!
@@ -21,10 +21,10 @@ definition:
       type: timestamptz!
       description: Start of the period covered by the statement
     - name: statement_reference
-      type: varchar
+      type: string
       description: Reference number for the statement
     - name: type
-      type: consumer_banking_statement_type!
+      type: enum!
       description: Type of statement (e.g., regular, interim, final)
   graphql:
     typeName: ConsumerBanking_consumer_banking_statements
@@ -129,9 +129,9 @@ definition:
       orderedType: consumer_banking_statements
       orderableFields:
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: creation_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: end_date_time
@@ -139,9 +139,9 @@ definition:
         - fieldName: start_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: statement_reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: type
-          orderByExpression: consumer_banking_statement_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_account
   graphql:

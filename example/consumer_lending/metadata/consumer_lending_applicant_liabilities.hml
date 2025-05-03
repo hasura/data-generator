@@ -6,34 +6,34 @@ definition:
   description: Tracks liabilities and debt obligations of loan applicants.
   fields:
     - name: account_number
-      type: varchar
+      type: string
       description: Account number, stored encrypted
     - name: consumer_lending_applicant_id
-      type: int_4!
+      type: int_32!
       description: Reference to applicant
     - name: consumer_lending_liability_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for liability record
     - name: creditor_name
-      type: varchar!
+      type: string!
       description: Name of creditor
     - name: current_balance
-      type: numeric!
+      type: bigdecimal!
       description: Current outstanding balance
     - name: interest_rate
-      type: numeric
+      type: bigdecimal
       description: Current interest rate percentage
     - name: liability_type
-      type: consumer_lending_liability_type!
+      type: enum!
       description: Type of liability
     - name: maturity_date
       type: date
       description: When debt will be paid off
     - name: monthly_payment
-      type: numeric!
+      type: bigdecimal!
       description: Required monthly payment amount
     - name: original_amount
-      type: numeric
+      type: bigdecimal
       description: Original loan or credit amount
     - name: origination_date
       type: date
@@ -42,10 +42,10 @@ definition:
       type: date
       description: Date liability was verified
     - name: verification_status
-      type: consumer_lending_verification_status!
+      type: enum!
       description: Status of liability verification
     - name: will_be_paid_off
-      type: bool
+      type: boolean
       description: Indicates if debt will be paid off with loan
   graphql:
     typeName: ConsumerLending_consumer_lending_applicant_liabilities
@@ -176,33 +176,33 @@ definition:
       orderedType: consumer_lending_applicant_liabilities
       orderableFields:
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: consumer_lending_applicant_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_liability_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: creditor_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: current_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: liability_type
-          orderByExpression: consumer_lending_liability_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: maturity_date
           orderByExpression: date_order_by_exp
         - fieldName: monthly_payment
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: original_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: origination_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_status
-          orderByExpression: consumer_lending_verification_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: will_be_paid_off
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_applicant
   graphql:

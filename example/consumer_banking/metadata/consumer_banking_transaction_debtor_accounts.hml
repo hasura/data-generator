@@ -6,22 +6,22 @@ definition:
   description: Stores information about accounts sending funds in transactions
   fields:
     - name: consumer_banking_transaction_debtor_account_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each debtor account record
     - name: consumer_banking_transaction_id
-      type: int_4!
+      type: int_32!
       description: References the transaction this debtor account belongs to
     - name: identification
-      type: varchar!
+      type: string!
       description: Account identifier sending the funds
     - name: name
-      type: varchar
+      type: string
       description: Name associated with the sending account
     - name: scheme_name
-      type: enterprise_identifier_scheme!
+      type: enum!
       description: Account identifier scheme (e.g., IBAN, BBAN)
     - name: secondary_identification
-      type: varchar
+      type: string
       description: Additional identification for the sending account
   graphql:
     typeName: ConsumerBanking_consumer_banking_transaction_debtor_accounts
@@ -112,17 +112,17 @@ definition:
       orderedType: consumer_banking_transaction_debtor_accounts
       orderableFields:
         - fieldName: consumer_banking_transaction_debtor_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: identification
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: scheme_name
-          orderByExpression: enterprise_identifier_scheme_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: secondary_identification
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_transaction
   graphql:

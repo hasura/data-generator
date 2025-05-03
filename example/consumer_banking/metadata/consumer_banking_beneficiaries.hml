@@ -7,19 +7,19 @@ definition:
     that can receive payments
   fields:
     - name: beneficiary_type
-      type: consumer_banking_beneficiary_type!
+      type: enum!
       description: Type of beneficiary (individual, organization, etc.)
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: References the account this balance belongs to
     - name: consumer_banking_beneficiary_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each beneficiary
     - name: reference
-      type: varchar
+      type: string
       description: Optional reference identifier for the beneficiary
     - name: supplementary_data
-      type: text
+      type: string
       description: Additional information in free-text format
   graphql:
     typeName: ConsumerBanking_consumer_banking_beneficiaries
@@ -107,15 +107,15 @@ definition:
       orderedType: consumer_banking_beneficiaries
       orderableFields:
         - fieldName: beneficiary_type
-          orderByExpression: consumer_banking_beneficiary_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_beneficiary_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: supplementary_data
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_account
   graphql:

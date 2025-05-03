@@ -7,40 +7,40 @@ definition:
     activity, balances, and payments.
   fields:
     - name: amount_due
-      type: numeric!
+      type: bigdecimal!
       description: Amount due for next payment
     - name: closing_balance
-      type: numeric!
+      type: bigdecimal!
       description: Balance at end of period
     - name: consumer_lending_statement_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for statement
     - name: delivery_method
-      type: consumer_lending_statement_delivery_method
+      type: enum
       description: Method of statement delivery
     - name: document_path
-      type: varchar
+      type: string
       description: Path to stored statement document
     - name: due_date
       type: date!
       description: Next payment due date
     - name: fees_charged
-      type: numeric!
+      type: bigdecimal!
       description: Fees charged in period
     - name: fees_paid
-      type: numeric!
+      type: bigdecimal!
       description: Fees paid in period
     - name: interest_paid
-      type: numeric!
+      type: bigdecimal!
       description: Interest paid in period
     - name: loan_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan account
     - name: opening_balance
-      type: numeric!
+      type: bigdecimal!
       description: Balance at start of period
     - name: principal_paid
-      type: numeric!
+      type: bigdecimal!
       description: Principal paid in period
     - name: sent_date
       type: date
@@ -55,7 +55,7 @@ definition:
       type: date!
       description: Start date of statement period
     - name: total_payments
-      type: numeric!
+      type: bigdecimal!
       description: Sum of payments in period
   graphql:
     typeName: ConsumerLending_consumer_lending_loan_statements
@@ -201,29 +201,29 @@ definition:
       orderedType: consumer_lending_loan_statements
       orderableFields:
         - fieldName: amount_due
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: closing_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_lending_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: delivery_method
-          orderByExpression: consumer_lending_statement_delivery_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: due_date
           orderByExpression: date_order_by_exp
         - fieldName: fees_charged
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: fees_paid
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: interest_paid
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: opening_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: principal_paid
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: sent_date
           orderByExpression: date_order_by_exp
         - fieldName: statement_date
@@ -233,7 +233,7 @@ definition:
         - fieldName: statement_period_start
           orderByExpression: date_order_by_exp
         - fieldName: total_payments
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_account
   graphql:

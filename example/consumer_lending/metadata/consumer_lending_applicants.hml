@@ -6,55 +6,55 @@ definition:
   description: Stores personal and contact information for loan applicants.
   fields:
     - name: citizenship_status
-      type: enterprise_citizenship_status!
+      type: enum!
       description: US Citizen, Permanent Resident, etc.
     - name: consumer_lending_applicant_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for applicant, may link to parties table
     - name: current_address_id
-      type: int_4
+      type: int_32
       description: Reference to enterprise.addresses
     - name: date_of_birth
       type: date!
       description: Applicant's date of birth
     - name: email
-      type: varchar!
+      type: string!
       description: Primary email address
     - name: first_name
-      type: varchar!
+      type: string!
       description: Applicant's legal first name
     - name: housing_status
-      type: consumer_lending_housing_status!
+      type: enum!
       description: Current housing situation
     - name: last_name
-      type: varchar!
+      type: string!
       description: Applicant's legal last name
     - name: mailing_address_id
-      type: int_4
+      type: int_32
       description: Reference to enterprise.addresses if different from current
     - name: marital_status
-      type: enterprise_marital_status
+      type: enum
       description: Married, Single, Divorced, etc.
     - name: middle_name
-      type: varchar
+      type: string
       description: Applicant's middle name
     - name: mobile_phone
-      type: varchar
+      type: string
       description: Mobile phone number if different from primary
     - name: monthly_housing_expense
-      type: numeric
+      type: bigdecimal
       description: Monthly housing payment amount
     - name: phone
-      type: varchar!
+      type: string!
       description: Primary phone number
     - name: previous_address_id
-      type: int_4
+      type: int_32
       description: Reference to enterprise.addresses for previous residence
     - name: ssn
-      type: varchar!
+      type: string!
       description: Social Security Number, stored encrypted
     - name: years_at_current_address
-      type: int_4
+      type: int_32
       description: Years at current residence
   graphql:
     typeName: ConsumerLending_consumer_lending_applicants
@@ -207,39 +207,39 @@ definition:
       orderedType: consumer_lending_applicants
       orderableFields:
         - fieldName: citizenship_status
-          orderByExpression: enterprise_citizenship_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_lending_applicant_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: current_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: date_of_birth
           orderByExpression: date_order_by_exp
         - fieldName: email
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: first_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: housing_status
-          orderByExpression: consumer_lending_housing_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: last_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: mailing_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: marital_status
-          orderByExpression: enterprise_marital_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: middle_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: mobile_phone
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: monthly_housing_expense
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: phone
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: previous_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: ssn
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: years_at_current_address
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: ConsumerLending_consumer_lending_applicants_order_by_exp

@@ -12,16 +12,16 @@ definition:
       type: date
       description: When funds were disbursed to relevant parties
     - name: final_cash_to_close
-      type: numeric!
+      type: bigdecimal!
       description: Final amount borrower paid at closing
     - name: final_interest_rate
-      type: numeric!
+      type: bigdecimal!
       description: Final interest rate of the loan
     - name: final_loan_amount
-      type: numeric!
+      type: bigdecimal!
       description: Final principal amount of the loan
     - name: final_monthly_payment
-      type: numeric!
+      type: bigdecimal!
       description: Final principal and interest payment
     - name: first_payment_date
       type: date!
@@ -33,19 +33,19 @@ definition:
       type: date!
       description: When loan is scheduled to be fully paid off
     - name: mortgage_services_closed_loan_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each closed loan record
     - name: mortgage_services_loan_id
-      type: int_4!
+      type: int_32!
       description: References the loan that was closed
     - name: recording_date
       type: date
       description: When mortgage was recorded with government office
     - name: settlement_agent
-      type: varchar
+      type: string
       description: Name of the settlement agent
     - name: settlement_company
-      type: varchar
+      type: string
       description: Company handling the settlement
   graphql:
     typeName: MortgageServices_mortgage_services_closed_loans
@@ -180,13 +180,13 @@ definition:
         - fieldName: disbursement_date
           orderByExpression: date_order_by_exp
         - fieldName: final_cash_to_close
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: final_interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: final_loan_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: final_monthly_payment
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: first_payment_date
           orderByExpression: date_order_by_exp
         - fieldName: funding_date
@@ -194,15 +194,15 @@ definition:
         - fieldName: maturity_date
           orderByExpression: date_order_by_exp
         - fieldName: mortgage_services_closed_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: recording_date
           orderByExpression: date_order_by_exp
         - fieldName: settlement_agent
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: settlement_company
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_loan
   graphql:

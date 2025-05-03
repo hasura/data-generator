@@ -9,43 +9,43 @@ definition:
       type: timestamptz!
       description: When the communication occurred
     - name: communication_type
-      type: mortgage_services_communication_type!
+      type: enum!
       description: Method of communication
     - name: content
-      type: text
+      type: string
       description: Content of the communication
     - name: direction
-      type: mortgage_services_communication_direction!
+      type: enum!
       description: Whether communication was incoming or outgoing
     - name: document_path
-      type: varchar
+      type: string
       description: Storage location for communication document if applicable
     - name: mortgage_services_application_id
-      type: int_4
+      type: int_32
       description: References the application if communication is about application
     - name: mortgage_services_communication_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each communication record
     - name: mortgage_services_servicing_account_id
-      type: int_4
+      type: int_32
       description: References the servicing account if communication is about servicing
     - name: recipient
-      type: varchar
+      type: string
       description: Person or entity that received the communication
     - name: related_to
-      type: mortgage_services_communication_purpose
+      type: enum
       description: Purpose or context of the communication
     - name: sender
-      type: varchar
+      type: string
       description: Person or system that sent the communication
     - name: status
-      type: mortgage_services_communication_status!
+      type: enum!
       description: Delivery status of the communication
     - name: subject
-      type: varchar
+      type: string
       description: Subject or topic of communication
     - name: template_id
-      type: varchar
+      type: string
       description: Template used for the communication if applicable
   graphql:
     typeName: MortgageServices_mortgage_services_customer_communications
@@ -179,31 +179,31 @@ definition:
         - fieldName: communication_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: communication_type
-          orderByExpression: mortgage_services_communication_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: content
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: direction
-          orderByExpression: mortgage_services_communication_direction_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_communication_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_servicing_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: recipient
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: related_to
-          orderByExpression: mortgage_services_communication_purpose_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: sender
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_communication_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: subject
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: template_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_application
         - relationshipName: mortgage_services_servicing_account

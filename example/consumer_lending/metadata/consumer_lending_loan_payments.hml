@@ -7,25 +7,25 @@ definition:
     amount, method, and status.
   fields:
     - name: confirmation_number
-      type: varchar
+      type: string
       description: Payment confirmation number
     - name: consumer_lending_loan_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan account
     - name: consumer_lending_payment_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for payment
     - name: interest_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount applied to interest
     - name: late_fee_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount applied to late fees
     - name: other_fee_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount applied to other fees
     - name: payment_amount
-      type: numeric!
+      type: bigdecimal!
       description: Total payment amount
     - name: payment_date
       type: timestamptz!
@@ -34,25 +34,25 @@ definition:
       type: date!
       description: Date payment is effective
     - name: payment_method
-      type: consumer_lending_payment_method!
+      type: enum!
       description: Method used to make payment
     - name: payment_status
-      type: consumer_lending_loan_payment_status!
+      type: enum!
       description: Current status of the payment
     - name: payment_type
-      type: consumer_lending_payment_type!
+      type: enum!
       description: Type of payment
     - name: principal_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount applied to principal
     - name: returned_date
       type: date
       description: Date payment was returned if applicable
     - name: returned_reason
-      type: varchar
+      type: string
       description: Reason for payment return if applicable
     - name: transaction_id
-      type: varchar
+      type: string
       description: External transaction identifier
   graphql:
     typeName: ConsumerLending_consumer_lending_loan_payments
@@ -195,37 +195,37 @@ definition:
       orderedType: consumer_lending_loan_payments
       orderableFields:
         - fieldName: confirmation_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: consumer_lending_loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_payment_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: interest_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: late_fee_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: other_fee_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: payment_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: payment_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: payment_effective_date
           orderByExpression: date_order_by_exp
         - fieldName: payment_method
-          orderByExpression: consumer_lending_payment_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: payment_status
-          orderByExpression: consumer_lending_loan_payment_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: payment_type
-          orderByExpression: consumer_lending_payment_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: principal_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: returned_date
           orderByExpression: date_order_by_exp
         - fieldName: returned_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: transaction_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_account
   graphql:

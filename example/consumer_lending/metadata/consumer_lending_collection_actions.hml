@@ -7,34 +7,34 @@ definition:
     such as calls, letters, and emails.
   fields:
     - name: action_by_id
-      type: int_4!
+      type: int_32!
       description: User who performed action
     - name: action_date
       type: timestamptz!
       description: Date/time action was taken
     - name: action_result
-      type: consumer_lending_collection_action_result
+      type: enum
       description: Result of the collection action
     - name: action_type
-      type: consumer_lending_collection_action_type!
+      type: enum!
       description: Type of collection action
     - name: consumer_lending_action_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for collection action
     - name: consumer_lending_collection_id
-      type: int_4!
+      type: int_32!
       description: Reference to collection account
     - name: next_action_date
       type: date
       description: Date for next planned action
     - name: next_action_type
-      type: consumer_lending_next_collection_action_type
+      type: enum
       description: Type of next planned action
     - name: notes
-      type: text
+      type: string
       description: Details of action and outcome
     - name: promise_to_pay_amount
-      type: numeric
+      type: bigdecimal
       description: Amount customer promised to pay
     - name: promise_to_pay_date
       type: date
@@ -153,25 +153,25 @@ definition:
       orderedType: consumer_lending_collection_actions
       orderableFields:
         - fieldName: action_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: action_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: action_result
-          orderByExpression: consumer_lending_collection_action_result_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: action_type
-          orderByExpression: consumer_lending_collection_action_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_lending_action_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_collection_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: next_action_date
           orderByExpression: date_order_by_exp
         - fieldName: next_action_type
-          orderByExpression: consumer_lending_next_collection_action_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: promise_to_pay_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: promise_to_pay_date
           orderByExpression: date_order_by_exp
       orderableRelationships:

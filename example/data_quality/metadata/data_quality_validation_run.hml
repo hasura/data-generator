@@ -13,56 +13,56 @@ definition:
     version.
   fields:
     - name: operation_name
-      type: varchar
+      type: string
       description: Name of the specific operation being validated, if applicable.
     - name: query
-      type: text!
+      type: string!
       description: The DDN query that is used to source data for this validation. You
         can find a the matching API lineage by comparing the query field AFTER
         NORMALIZING WHITE SPACE.
     - name: run_role
-      type: varchar
+      type: string
       description: Role associated with the user who initiated this validation run.
     - name: run_timestamp
       type: timestamptz!
       description: Timestamp indicating when the validation run was executed or recorded.
     - name: run_user
-      type: varchar
+      type: string
       description: Identifier of the user who initiated or is associated with this
         validation run.
     - name: source_identifier
-      type: varchar
+      type: string
       description: Optional identifier for the source system, file, or event that
         triggered this validation run.
     - name: total_errors
-      type: int_4
+      type: int_32
       description: A summary count of the total number of validation errors found
         during this run.
     - name: validation_config_all_errors
-      type: bool
+      type: boolean
       description: "Validation configuration flag: Indicates if the 'allErrors' option
         (ajv) was enabled."
     - name: validation_config_data
-      type: bool
+      type: boolean
       description: "Validation configuration flag: Indicates if the '$data' option
         (ajv) was enabled."
     - name: validation_config_strict
-      type: bool
+      type: boolean
       description: "Validation configuration flag: Indicates if the 'strict' option
         (ajv) was enabled."
     - name: validation_config_verbose
-      type: bool
+      type: boolean
       description: "Validation configuration flag: Indicates if the 'verbose' option
         (ajv) was enabled."
     - name: validation_run_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for the validation run.
     - name: validation_schema
-      type: text!
+      type: string!
       description: The JSON schema used to validate the query results, stored as a
         JSON string.
     - name: variables
-      type: text
+      type: string
       description: Variables passed to the query, stored as a JSON string.
   graphql:
     typeName: DQ_data_quality_validation_run
@@ -193,33 +193,33 @@ definition:
       orderedType: data_quality_validation_run
       orderableFields:
         - fieldName: operation_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: query
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: run_role
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: run_timestamp
           orderByExpression: timestamptz_order_by_exp
         - fieldName: run_user
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: source_identifier
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: total_errors
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: validation_config_all_errors
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: validation_config_data
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: validation_config_strict
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: validation_config_verbose
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: validation_run_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: validation_schema
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: variables
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: DQ_data_quality_validation_run_order_by_exp

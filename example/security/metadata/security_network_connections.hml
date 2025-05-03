@@ -7,7 +7,7 @@ definition:
     network traffic and activity.
   fields:
     - name: connection_type
-      type: varchar
+      type: string
       description: Type of network connection (e.g., TCP, UDP).
     - name: end_time
       type: timestamp
@@ -16,16 +16,16 @@ definition:
       type: inet
       description: Local IP address of the connection.
     - name: local_port
-      type: int_4
+      type: int_32
       description: Local port number of the connection.
     - name: protocol
-      type: security_network_protocols
+      type: enum
       description: Network protocol used for the connection.
     - name: remote_ip
       type: inet
       description: Remote IP address of the connection.
     - name: remote_port
-      type: int_4
+      type: int_32
       description: Remote port number of the connection.
     - name: security_host_id
       type: uuid!
@@ -154,19 +154,19 @@ definition:
       orderedType: security_network_connections
       orderableFields:
         - fieldName: connection_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: end_time
           orderByExpression: timestamp_order_by_exp
         - fieldName: local_ip
           orderByExpression: inet_order_by_exp
         - fieldName: local_port
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: protocol
-          orderByExpression: security_network_protocols_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: remote_ip
           orderByExpression: inet_order_by_exp
         - fieldName: remote_port
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: security_host_id
           orderByExpression: uuid_order_by_exp
         - fieldName: security_network_connection_id

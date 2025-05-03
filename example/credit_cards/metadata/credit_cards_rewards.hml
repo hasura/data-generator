@@ -6,34 +6,34 @@ definition:
   description: Tracks reward earning and redemption activity
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount of reward earned or redeemed
     - name: category
-      type: varchar
+      type: string
       description: Category associated with reward if applicable
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_reward_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each reward record
     - name: credit_cards_transaction_id
-      type: int_4
+      type: int_32
       description: Reference to transactions if earned from transaction
     - name: date_earned
       type: date!
       description: Date reward was earned or redeemed
     - name: description
-      type: varchar!
+      type: string!
       description: Description of reward activity
     - name: event_type
-      type: varchar!
+      type: string!
       description: Earned, Bonus, Redeemed, Expired, Adjusted
     - name: expiration_date
       type: date
       description: Date reward will expire if applicable
     - name: reward_type
-      type: varchar!
+      type: string!
       description: Type of reward (Points, Cashback, Miles)
   graphql:
     typeName: CreditCards_credit_cards_rewards
@@ -145,25 +145,25 @@ definition:
       orderedType: credit_cards_rewards
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: category
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_reward_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: date_earned
           orderByExpression: date_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: event_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: reward_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_transaction

@@ -6,31 +6,31 @@ definition:
   description: Tracks employment history and income sources for mortgage borrowers
   fields:
     - name: employer_name
-      type: varchar!
+      type: string!
       description: Name of the employer
     - name: employment_type
-      type: mortgage_services_employment_type!
+      type: enum!
       description: Type of employment arrangement
     - name: end_date
       type: date
       description: When employment ended, if applicable
     - name: is_current
-      type: bool!
+      type: boolean!
       description: Indicates if this is the borrower's current job
     - name: monthly_income
-      type: numeric!
+      type: bigdecimal!
       description: Gross monthly income from this employment
     - name: mortgage_services_borrower_id
-      type: int_4!
+      type: int_32!
       description: References the borrower this employment belongs to
     - name: mortgage_services_employment_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each employment record
     - name: phone
-      type: varchar
+      type: string
       description: Employer's phone number
     - name: position
-      type: varchar!
+      type: string!
       description: Job title or position
     - name: start_date
       type: date!
@@ -39,10 +39,10 @@ definition:
       type: date
       description: When the income was verified
     - name: verification_status
-      type: mortgage_services_verification_status!
+      type: enum!
       description: Status of income verification process
     - name: years_in_profession
-      type: int_4
+      type: int_32
       description: Total years in this profession, even at different employers
   graphql:
     typeName: MortgageServices_mortgage_services_borrower_employments
@@ -168,31 +168,31 @@ definition:
       orderedType: mortgage_services_borrower_employments
       orderableFields:
         - fieldName: employer_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: employment_type
-          orderByExpression: mortgage_services_employment_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: end_date
           orderByExpression: date_order_by_exp
         - fieldName: is_current
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: monthly_income
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: mortgage_services_borrower_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_employment_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: phone
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: position
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: start_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_status
-          orderByExpression: mortgage_services_verification_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: years_in_profession
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_borrower
   graphql:

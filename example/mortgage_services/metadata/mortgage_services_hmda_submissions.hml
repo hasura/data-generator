@@ -9,46 +9,46 @@ definition:
       type: timestamptz
       description: When the submission was accepted as complete
     - name: confirmation_number
-      type: varchar
+      type: string
       description: Confirmation number provided by the regulatory agency
     - name: error_count
-      type: int_4
+      type: int_32
       description: Number of errors found in the submission
     - name: file_name
-      type: varchar
+      type: string
       description: Name of the submitted file
     - name: file_size
-      type: int_4
+      type: int_32
       description: Size of the submitted file in bytes
     - name: institution_lei
-      type: varchar!
+      type: string!
       description: Legal Entity Identifier of the reporting institution
     - name: mortgage_services_submission_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each submission
     - name: record_count
-      type: int_4
+      type: int_32
       description: Number of records in the submission
     - name: reporting_period
-      type: mortgage_services_reporting_period!
+      type: enum!
       description: Reporting period (ANNUAL, QUARTERLY_Q1, etc.)
     - name: reporting_year
-      type: int_4!
+      type: int_32!
       description: Calendar year for this submission
     - name: submission_date
       type: timestamptz!
       description: When the submission was made
     - name: submission_notes
-      type: text
+      type: string
       description: Additional notes about the submission
     - name: submission_status
-      type: mortgage_services_submission_status!
+      type: enum!
       description: Current status of the submission process
     - name: submitted_by_id
-      type: int_4
+      type: int_32
       description: User who made the submission
     - name: warning_count
-      type: int_4
+      type: int_32
       description: Number of warnings found in the submission
   graphql:
     typeName: MortgageServices_mortgage_services_hmda_submissions
@@ -185,33 +185,33 @@ definition:
         - fieldName: completion_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: confirmation_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: error_count
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: file_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: file_size
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: institution_lei
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: mortgage_services_submission_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: record_count
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: reporting_period
-          orderByExpression: mortgage_services_reporting_period_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: reporting_year
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: submission_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: submission_notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: submission_status
-          orderByExpression: mortgage_services_submission_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: submitted_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: warning_count
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: MortgageServices_mortgage_services_hmda_submissions_order_by_exp

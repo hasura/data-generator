@@ -6,19 +6,19 @@ definition:
   description: Stores information about benefits received during a statement period
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Monetary value of the benefit
     - name: consumer_banking_statement_benefit_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each benefit record
     - name: consumer_banking_statement_id
-      type: int_4!
+      type: int_32!
       description: References the statement this benefit belongs to
     - name: currency
-      type: varchar!
+      type: string!
       description: Currency code for the benefit amount
     - name: type
-      type: consumer_banking_benefit_type!
+      type: enum!
       description: Type of benefit (e.g., cashback, rewards, insurance)
   graphql:
     typeName: ConsumerBanking_consumer_banking_statement_benefits
@@ -104,15 +104,15 @@ definition:
       orderedType: consumer_banking_statement_benefits
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_banking_statement_benefit_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: currency
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: type
-          orderByExpression: consumer_banking_benefit_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_statement
   graphql:

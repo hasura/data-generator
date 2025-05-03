@@ -7,35 +7,35 @@ definition:
     this institution
   fields:
     - name: account_category
-      type: enterprise_account_category
+      type: enum
     - name: account_number
-      type: varchar
+      type: string
       description: Customer facing account number
     - name: annual_percentage_yield
-      type: numeric
+      type: bigdecimal
       description: APR on interest earned in this account, null if it is not interest
         earning.
     - name: available_balance
-      type: numeric!
+      type: bigdecimal!
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: Unique ID for the consumer banking account
     - name: consumer_banking_product_id
-      type: int_4
+      type: int_32
       description: References the enterprise account this consumer account belongs to.
         Required for all consumer accounts
     - name: currency_code
-      type: enterprise_currency_code
+      type: enum
     - name: current_balance
-      type: numeric!
+      type: bigdecimal!
     - name: display_name
-      type: varchar
+      type: string
       description: A friendly account description provided by the institution.
     - name: enterprise_account_id
-      type: int_4!
+      type: int_32!
       description: Link to the enterprise-level account bucket
     - name: interest_ytd
-      type: numeric
+      type: bigdecimal
       description: Interest earned year to date in this account. null if it is not
         interest earning.
     - name: maturity_date
@@ -43,27 +43,27 @@ definition:
       description: Used for products such as certificates of deposits that have a
         maturity date
     - name: nickname
-      type: varchar
+      type: string
       description: A short name added by customer.
     - name: opened_date
       type: timestamptz!
       description: Date the account was opened
     - name: opening_day_balance
-      type: numeric!
+      type: bigdecimal!
     - name: servicer_identifier_id
-      type: int_4!
+      type: int_32!
       description: Required reference to this institutions BIC scheme
     - name: status
-      type: consumer_banking_account_status!
+      type: enum!
       description: Operational status of the account
     - name: status_update_date_time
       type: timestamptz!
       description: Last time the status was updated
     - name: switch_status
-      type: enterprise_switch_status
+      type: enum
       description: Specific to the UK account account switching service.
     - name: term
-      type: numeric
+      type: bigdecimal
       description: The total number of periods a time bound account is active (like a
         CD). null if it is not a time bound product.
   graphql:
@@ -297,45 +297,45 @@ definition:
       orderedType: consumer_banking_accounts
       orderableFields:
         - fieldName: account_category
-          orderByExpression: enterprise_account_category_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: annual_percentage_yield
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: available_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_product_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: currency_code
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: current_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: display_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: enterprise_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: interest_ytd
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: maturity_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: nickname
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: opened_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: opening_day_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: servicer_identifier_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_banking_account_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status_update_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: switch_status
-          orderByExpression: enterprise_switch_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: term
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_product
   graphql:

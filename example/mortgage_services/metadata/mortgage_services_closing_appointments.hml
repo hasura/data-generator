@@ -9,34 +9,34 @@ definition:
       type: timestamptz
       description: When the closing actually occurred
     - name: closing_agent
-      type: varchar
+      type: string
       description: Name of the closing agent
     - name: closing_company
-      type: varchar
+      type: string
       description: Company handling the closing
     - name: closing_fee
-      type: numeric
+      type: bigdecimal
       description: Fee charged for closing services
     - name: closing_type
-      type: mortgage_services_closing_type!
+      type: enum!
       description: Type of closing process being used
     - name: location_address_id
-      type: int_4
+      type: int_32
       description: References the address where closing will occur
     - name: mortgage_services_appointment_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each appointment
     - name: mortgage_services_loan_id
-      type: int_4!
+      type: int_32!
       description: Reference to the loan this closing is for
     - name: notes
-      type: text
+      type: string
       description: Additional information about the closing
     - name: scheduled_date
       type: timestamptz!
       description: When the closing is scheduled
     - name: status
-      type: mortgage_services_appointment_status!
+      type: enum!
       description: Current status of the closing appointment
   graphql:
     typeName: MortgageServices_mortgage_services_closing_appointments
@@ -154,25 +154,25 @@ definition:
         - fieldName: actual_closing_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: closing_agent
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: closing_company
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: closing_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: closing_type
-          orderByExpression: mortgage_services_closing_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: location_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_appointment_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: scheduled_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_appointment_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_loan
   graphql:

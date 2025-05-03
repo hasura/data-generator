@@ -6,16 +6,16 @@ definition:
   description: Stores important dates associated with a statement
   fields:
     - name: consumer_banking_statement_date_time_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each date record
     - name: consumer_banking_statement_id
-      type: int_4!
+      type: int_32!
       description: References the statement this date belongs to
     - name: date_time
       type: timestamptz!
       description: Date and time value
     - name: type
-      type: consumer_banking_statement_date_type!
+      type: enum!
       description: Type of date (e.g., payment due, minimum payment, cycle end)
   graphql:
     typeName: ConsumerBanking_consumer_banking_statement_date_times
@@ -96,13 +96,13 @@ definition:
       orderedType: consumer_banking_statement_date_times
       orderableFields:
         - fieldName: consumer_banking_statement_date_time_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: type
-          orderByExpression: consumer_banking_statement_date_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_statement
   graphql:

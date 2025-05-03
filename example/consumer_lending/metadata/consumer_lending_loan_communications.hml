@@ -10,43 +10,43 @@ definition:
       type: timestamptz!
       description: Date/time of communication
     - name: communication_type
-      type: consumer_lending_communication_type!
+      type: enum!
       description: Method of communication
     - name: consumer_lending_application_id
-      type: int_4
+      type: int_32
       description: Reference to loan application if applicable
     - name: consumer_lending_communication_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for communication
     - name: content
-      type: text
+      type: string
       description: Communication content or transcript
     - name: direction
-      type: consumer_lending_communication_direction!
+      type: enum!
       description: Direction of communication
     - name: document_path
-      type: varchar
+      type: string
       description: Path to stored communication document
     - name: loan_account_id
-      type: int_4
+      type: int_32
       description: Reference to loan account if applicable
     - name: recipient
-      type: varchar
+      type: string
       description: Person who received communication
     - name: related_to
-      type: consumer_lending_communication_context
+      type: enum
       description: Context or purpose of communication
     - name: sender
-      type: varchar
+      type: string
       description: Person or system that sent communication
     - name: status
-      type: consumer_lending_communication_status!
+      type: enum!
       description: Current status of communication
     - name: subject
-      type: varchar
+      type: string
       description: Communication subject
     - name: template_id
-      type: varchar
+      type: string
       description: Reference to template if applicable
   graphql:
     typeName: ConsumerLending_consumer_lending_loan_communications
@@ -180,31 +180,31 @@ definition:
         - fieldName: communication_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: communication_type
-          orderByExpression: consumer_lending_communication_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_lending_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_communication_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: content
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: direction
-          orderByExpression: consumer_lending_communication_direction_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: recipient
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: related_to
-          orderByExpression: consumer_lending_communication_context_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: sender
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_lending_communication_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: subject
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: template_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_application
         - relationshipName: consumer_lending_loan_account

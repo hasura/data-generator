@@ -8,7 +8,7 @@ definition:
     same type. They are only differentiated through the description.
   fields:
     - name: app_mgmt_application_relationship_id
-      type: int_4!
+      type: int_32!
       description: Primary key for application relationships
     - name: application_id_1
       type: uuid
@@ -17,14 +17,14 @@ definition:
       type: uuid
       description: Identifier for the second application involved in the relationship.
     - name: criticality
-      type: app_mgmt_criticality_levels
+      type: enum
       description: Criticality score of the relationship, indicating the impact of its
         failure.
     - name: description
-      type: text
+      type: string
       description: Additional explanation about nature of relationship.
     - name: relationship_type
-      type: app_mgmt_relationship_types
+      type: enum
       description: Type of relationship between the applications (e.g., depends on,
         uses data from).
   graphql:
@@ -117,17 +117,17 @@ definition:
       orderedType: app_mgmt_application_relationships
       orderableFields:
         - fieldName: app_mgmt_application_relationship_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: application_id_1
           orderByExpression: uuid_order_by_exp
         - fieldName: application_id_2
           orderByExpression: uuid_order_by_exp
         - fieldName: criticality
-          orderByExpression: app_mgmt_criticality_levels_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: relationship_type
-          orderByExpression: app_mgmt_relationship_types_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: app_mgmt_application
         - relationshipName: app_mgmt_application_by_application_id_2

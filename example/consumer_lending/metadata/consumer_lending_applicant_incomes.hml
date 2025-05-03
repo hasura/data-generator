@@ -7,25 +7,25 @@ definition:
     employment and other income types.
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Income amount
     - name: consumer_lending_applicant_id
-      type: int_4!
+      type: int_32!
       description: Reference to applicant
     - name: consumer_lending_income_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for income record
     - name: frequency
-      type: varchar!
+      type: string!
       description: Monthly, Annual, etc.
     - name: income_type
-      type: consumer_lending_income_type!
+      type: enum!
       description: Type of income source
     - name: verification_date
       type: date
       description: Date income was verified
     - name: verification_status
-      type: varchar!
+      type: string!
       description: Self-reported, Verified, Failed
   graphql:
     typeName: ConsumerLending_consumer_lending_applicant_incomes
@@ -121,19 +121,19 @@ definition:
       orderedType: consumer_lending_applicant_incomes
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_lending_applicant_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_income_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: frequency
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: income_type
-          orderByExpression: consumer_lending_income_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: verification_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_applicant
   graphql:

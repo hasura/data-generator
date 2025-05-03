@@ -6,16 +6,16 @@ definition:
   description: Stores information about the various departments within the enterprise.
   fields:
     - name: department_name
-      type: varchar
+      type: string
       description: Name of the department.
     - name: enterprise_department_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each department.
     - name: location
-      type: varchar
+      type: string
       description: Physical location of the department.
     - name: operating_unit
-      type: enterprise_operating_unit
+      type: enum
       description: This department is managed under this operating unit.
   graphql:
     typeName: Enterprise_enterprise_departments
@@ -96,13 +96,13 @@ definition:
       orderedType: enterprise_departments
       orderableFields:
         - fieldName: department_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: enterprise_department_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: location
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: operating_unit
-          orderByExpression: enterprise_operating_unit_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: Enterprise_enterprise_departments_order_by_exp

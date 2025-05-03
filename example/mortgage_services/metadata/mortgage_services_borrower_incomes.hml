@@ -6,25 +6,25 @@ definition:
   description: Tracks various income sources for mortgage borrowers beyond employment
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Income amount
     - name: frequency
-      type: mortgage_services_income_frequency!
+      type: enum!
       description: How often income is received
     - name: income_type
-      type: mortgage_services_income_type!
+      type: enum!
       description: Source or type of income
     - name: mortgage_services_borrower_id
-      type: int_4!
+      type: int_32!
       description: References the borrower this income belongs to
     - name: mortgage_services_income_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each income record
     - name: verification_date
       type: date
       description: When the income was verified
     - name: verification_status
-      type: mortgage_services_verification_status!
+      type: enum!
       description: Status of income verification process
   graphql:
     typeName: MortgageServices_mortgage_services_borrower_incomes
@@ -120,19 +120,19 @@ definition:
       orderedType: mortgage_services_borrower_incomes
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: frequency
-          orderByExpression: mortgage_services_income_frequency_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: income_type
-          orderByExpression: mortgage_services_income_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: mortgage_services_borrower_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_income_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: verification_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_status
-          orderByExpression: mortgage_services_verification_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_borrower
   graphql:

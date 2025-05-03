@@ -8,10 +8,10 @@ definition:
     detection models.
   fields:
     - name: consumer_lending_model_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for decision model
     - name: description
-      type: text
+      type: string
       description: Description of the model and its purpose
     - name: effective_date
       type: date!
@@ -20,16 +20,16 @@ definition:
       type: date
       description: When model expires
     - name: is_active
-      type: bool!
+      type: boolean!
       description: Whether model is in active use
     - name: model_name
-      type: varchar!
+      type: string!
       description: Name of the model
     - name: model_type
-      type: consumer_lending_decision_model_type!
+      type: enum!
       description: Type of decision model
     - name: model_version
-      type: varchar!
+      type: string!
       description: Version of the model
   graphql:
     typeName: ConsumerLending_consumer_lending_decision_models
@@ -130,21 +130,21 @@ definition:
       orderedType: consumer_lending_decision_models
       orderableFields:
         - fieldName: consumer_lending_model_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: effective_date
           orderByExpression: date_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: is_active
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: model_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: model_type
-          orderByExpression: consumer_lending_decision_model_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: model_version
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: ConsumerLending_consumer_lending_decision_models_order_by_exp

@@ -7,43 +7,43 @@ definition:
     applications, including reasons and credit information.
   fields:
     - name: consumer_lending_adverse_action_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for adverse action record
     - name: consumer_lending_notice_id
-      type: int_4!
+      type: int_32!
       description: Reference to adverse_action_notices
     - name: credit_bureau_name
-      type: consumer_lending_credit_bureau
+      type: enum
       description: Credit bureau providing the report
     - name: credit_score_disclosed
-      type: int_4
+      type: int_32
       description: Credit score disclosed to applicant
     - name: credit_score_factors
-      type: text
+      type: string
       description: Key factors affecting score
     - name: credit_score_range_max
-      type: int_4
+      type: int_32
       description: Maximum score in range
     - name: credit_score_range_min
-      type: int_4
+      type: int_32
       description: Minimum score in range
     - name: ecoa_reason_code
-      type: consumer_lending_ecoa_reason_code!
+      type: enum!
       description: Standard ECOA reason code
     - name: fcra_reason_code
-      type: consumer_lending_fcra_reason_code
+      type: enum
       description: Standard FCRA reason code if applicable
     - name: generated_date
       type: timestamptz!
       description: Date details were generated
     - name: reason_description
-      type: varchar!
+      type: string!
       description: Description of reason for adverse action
     - name: sequence
-      type: int_4!
+      type: int_32!
       description: Order of importance for reason
     - name: user_id
-      type: int_4
+      type: int_32
       description: User who generated adverse action
   graphql:
     typeName: ConsumerLending_consumer_lending_adverse_action_details
@@ -169,31 +169,31 @@ definition:
       orderedType: consumer_lending_adverse_action_details
       orderableFields:
         - fieldName: consumer_lending_adverse_action_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_notice_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_bureau_name
-          orderByExpression: consumer_lending_credit_bureau_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: credit_score_disclosed
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_score_factors
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_score_range_max
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_score_range_min
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: ecoa_reason_code
-          orderByExpression: consumer_lending_ecoa_reason_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: fcra_reason_code
-          orderByExpression: consumer_lending_fcra_reason_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: generated_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: reason_description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: sequence
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: user_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_adverse_action_notice
   graphql:

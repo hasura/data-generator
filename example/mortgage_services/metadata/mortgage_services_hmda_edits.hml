@@ -9,31 +9,31 @@ definition:
       type: timestamptz!
       description: When the edit was first identified
     - name: edit_code
-      type: varchar!
+      type: string!
       description: Standardized code identifying the specific edit rule
     - name: edit_description
-      type: text!
+      type: string!
       description: Description of the edit issue
     - name: edit_type
-      type: mortgage_services_hmda_edit_type!
+      type: enum!
       description: Category of edit (SYNTACTICAL, VALIDITY, QUALITY, MACRO)
     - name: mortgage_services_edit_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each edit finding
     - name: mortgage_services_hmda_record_id
-      type: int_4!
+      type: int_32!
       description: References the HMDA record with the edit issue
     - name: resolution_notes
-      type: text
+      type: string
       description: Notes explaining how the edit was resolved
     - name: resolved_by_id
-      type: int_4
+      type: int_32
       description: User who resolved the edit
     - name: resolved_date
       type: timestamptz
       description: When the edit was resolved if applicable
     - name: status
-      type: mortgage_services_hmda_edit_status!
+      type: enum!
       description: Current status of the edit (OPEN, VERIFIED, CORRECTED)
   graphql:
     typeName: MortgageServices_mortgage_services_hmda_edits
@@ -146,23 +146,23 @@ definition:
         - fieldName: created_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: edit_code
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: edit_description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: edit_type
-          orderByExpression: mortgage_services_hmda_edit_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: mortgage_services_edit_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_hmda_record_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: resolution_notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: resolved_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: resolved_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_hmda_edit_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_hmda_record
   graphql:

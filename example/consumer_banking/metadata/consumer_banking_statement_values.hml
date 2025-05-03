@@ -7,25 +7,25 @@ definition:
     monetary amounts, such as loyalty points, credit scores, or tier levels
   fields:
     - name: change_percentage
-      type: numeric
+      type: bigdecimal
       description: Percentage change from previous statement
     - name: consumer_banking_statement_id
-      type: int_4!
+      type: int_32!
       description: References the statement this value belongs to
     - name: consumer_banking_statement_value_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each value record
     - name: created_at
       type: timestamptz!
       description: When this record was created
     - name: description
-      type: varchar
+      type: string
       description: Additional description or context for the value
     - name: is_estimated
-      type: bool!
+      type: boolean!
       description: Whether this value is estimated rather than confirmed
     - name: previous_value
-      type: varchar
+      type: string
       description: Previous statement's value of the same type, for comparison
     - name: reference_period_end
       type: date
@@ -36,13 +36,13 @@ definition:
       description: Start of the period this value refers to, if different from
         statement period
     - name: type
-      type: consumer_banking_statement_value_type!
+      type: enum!
       description: Type of value stored
     - name: updated_at
       type: timestamptz!
       description: When this record was last updated
     - name: value
-      type: varchar!
+      type: string!
       description: Value content (e.g., loyalty points, tier level, credit score)
   graphql:
     typeName: ConsumerBanking_consumer_banking_statement_values
@@ -163,29 +163,29 @@ definition:
       orderedType: consumer_banking_statement_values
       orderableFields:
         - fieldName: change_percentage
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_statement_value_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: is_estimated
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: previous_value
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: reference_period_end
           orderByExpression: date_order_by_exp
         - fieldName: reference_period_start
           orderByExpression: date_order_by_exp
         - fieldName: type
-          orderByExpression: consumer_banking_statement_value_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: updated_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: value
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_statement
   graphql:

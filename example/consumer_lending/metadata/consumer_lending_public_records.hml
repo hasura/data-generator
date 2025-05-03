@@ -7,25 +7,25 @@ definition:
     associated with a credit report.
   fields:
     - name: amount
-      type: numeric
+      type: bigdecimal
       description: Amount of judgment or lien
     - name: consumer_lending_credit_report_id
-      type: int_4!
+      type: int_32!
       description: Reference to credit report
     - name: consumer_lending_record_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for public record
     - name: filing_date
       type: date!
       description: Date record was filed
     - name: record_type
-      type: consumer_lending_public_record_type!
+      type: enum!
       description: Type of public record
     - name: reference_number
-      type: varchar
+      type: string
       description: Court or filing reference number
     - name: status
-      type: consumer_lending_public_record_status!
+      type: enum!
       description: Current status of the public record
   graphql:
     typeName: ConsumerLending_consumer_lending_public_records
@@ -121,19 +121,19 @@ definition:
       orderedType: consumer_lending_public_records
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_lending_credit_report_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_record_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: filing_date
           orderByExpression: date_order_by_exp
         - fieldName: record_type
-          orderByExpression: consumer_lending_public_record_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: reference_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_lending_public_record_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_credit_report
   graphql:

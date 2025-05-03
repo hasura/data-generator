@@ -6,40 +6,40 @@ definition:
   description: Stores payment methods for card account payments
   fields:
     - name: account_number
-      type: varchar
+      type: string
       description: Masked account number
     - name: account_type
-      type: varchar
+      type: string
       description: Checking or Savings if bank account
     - name: bank_name
-      type: varchar
+      type: string
       description: Name of the bank if applicable
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_payment_method_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each payment method
     - name: expiration_date
       type: date
       description: Expiration date if debit card
     - name: is_default
-      type: bool!
+      type: boolean!
       description: Whether this is the default payment method
     - name: nickname
-      type: varchar
+      type: string
       description: User-assigned nickname for payment method
     - name: payment_type
-      type: varchar!
+      type: string!
       description: Type of payment method (Bank Account, Debit Card, Check)
     - name: routing_number
-      type: varchar
+      type: string
       description: Routing number if bank account
     - name: status
-      type: varchar!
+      type: string!
       description: Status of payment method (Active, Inactive, Removed)
     - name: verification_status
-      type: varchar!
+      type: string!
       description: Status of verification (Verified, Pending, Failed)
   graphql:
     typeName: CreditCards_credit_cards_payment_methods
@@ -161,29 +161,29 @@ definition:
       orderedType: credit_cards_payment_methods
       orderableFields:
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: account_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: bank_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_payment_method_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: is_default
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: nickname
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: payment_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: routing_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: verification_status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
   graphql:

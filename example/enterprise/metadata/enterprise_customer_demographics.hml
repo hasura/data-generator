@@ -6,102 +6,102 @@ definition:
   description: Stores third-party demographic and marketing data about customers
   fields:
     - name: channel_preference
-      type: varchar
+      type: string
       description: Preferred communication channel (mobile, online, branch, phone)
     - name: churn_risk_score
-      type: int_4
+      type: int_32
       description: Score indicating risk of account closure (1-100)
     - name: consumer_banking_account_id
-      type: int_8
+      type: int_64
       description: Reference is here to make sure that customer demographics are only
         created afeter consumer_banking.accounts. Will always be NULL.
     - name: credit_cards_card_accounts_id
-      type: int_4
+      type: int_32
       description: Reference is here to make sure that customer demographics are only
         created afeter credit_cards.card_accounts. Will always be NULL
     - name: credit_risk_tier
-      type: enterprise_credit_risk_tier
+      type: enum
       description: Credit risk category
     - name: cross_sell_propensity
-      type: int_4
+      type: int_32
       description: Score indicating likelihood to purchase additional products (1-100)
     - name: customer_lifetime_value
-      type: numeric
+      type: bigdecimal
       description: Calculated lifetime value to the organization
     - name: data_consent_level
-      type: varchar
+      type: string
       description: Level of consent provided for data usage
     - name: data_source
-      type: varchar!
+      type: string!
       description: Source of the demographic data (e.g., Experian, Acxiom, TransUnion)
     - name: data_usage_restriction
-      type: text
+      type: string
       description: Any specific restrictions on data usage
     - name: digital_engagement_score
-      type: int_4
+      type: int_32
       description: Score indicating level of digital channel usage (1-100)
     - name: discretionary_spending_estimate
-      type: numeric
+      type: bigdecimal
       description: Estimated monthly discretionary spending
     - name: education_level
-      type: enterprise_education_level
+      type: enum
       description: Highest level of education completed
     - name: employer
-      type: varchar
+      type: string
       description: Current employer name if available
     - name: employment_length_years
-      type: int_4
+      type: int_32
       description: Years with current employer
     - name: enterprise_customer_demographics_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each demographic record
     - name: enterprise_party_id
-      type: int_4!
+      type: int_32!
       description: Reference to the party this demographic data belongs to
     - name: estimated_home_value
-      type: numeric
+      type: bigdecimal
       description: Estimated value of primary residence if owned
     - name: family_life_stage
-      type: enterprise_family_life_stage
+      type: enum
       description: Current family/life stage
     - name: homeownership_status
-      type: enterprise_homeownership_status
+      type: enum
       description: Housing status
     - name: household_size
-      type: int_4
+      type: int_32
       description: Number of individuals in household
     - name: income_bracket
-      type: enterprise_income_bracket
+      type: enum
       description: Estimated annual income range
     - name: last_updated
       type: date!
       description: Date when the demographic data was last updated
     - name: lifestyle_segment
-      type: enterprise_lifestyle_segment
+      type: enum
       description: Marketing lifestyle segmentation
     - name: net_worth_estimate
-      type: numeric
+      type: bigdecimal
       description: Estimated net worth
     - name: number_of_children
-      type: int_4
+      type: int_32
       description: Number of children
     - name: occupation_category
-      type: enterprise_occupation_category
+      type: enum
       description: General occupational category
     - name: political_affiliation
-      type: enterprise_political_affiliation
+      type: enum
       description: Inferred political leaning
     - name: primary_investment_goals
-      type: varchar
+      type: string
       description: Main investment objectives
     - name: risk_tolerance
-      type: varchar
+      type: string
       description: Investment risk tolerance level (conservative, moderate, aggressive)
     - name: total_household_income
-      type: numeric
+      type: bigdecimal
       description: Estimated total household income
     - name: years_at_residence
-      type: int_4
+      type: int_32
       description: Number of years at current residence
   graphql:
     typeName: Enterprise_enterprise_customer_demographics
@@ -322,69 +322,69 @@ definition:
       orderedType: enterprise_customer_demographics
       orderableFields:
         - fieldName: channel_preference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: churn_risk_score
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: credit_cards_card_accounts_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_risk_tier
-          orderByExpression: enterprise_credit_risk_tier_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: cross_sell_propensity
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: customer_lifetime_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: data_consent_level
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: data_source
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: data_usage_restriction
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: digital_engagement_score
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: discretionary_spending_estimate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: education_level
-          orderByExpression: enterprise_education_level_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: employer
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: employment_length_years
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: enterprise_customer_demographics_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: enterprise_party_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: estimated_home_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: family_life_stage
-          orderByExpression: enterprise_family_life_stage_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: homeownership_status
-          orderByExpression: enterprise_homeownership_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: household_size
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: income_bracket
-          orderByExpression: enterprise_income_bracket_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: last_updated
           orderByExpression: date_order_by_exp
         - fieldName: lifestyle_segment
-          orderByExpression: enterprise_lifestyle_segment_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: net_worth_estimate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: number_of_children
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: occupation_category
-          orderByExpression: enterprise_occupation_category_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: political_affiliation
-          orderByExpression: enterprise_political_affiliation_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: primary_investment_goals
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: risk_tolerance
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: total_household_income
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: years_at_residence
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: enterprise_party
   graphql:

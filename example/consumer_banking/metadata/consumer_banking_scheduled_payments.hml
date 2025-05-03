@@ -6,46 +6,46 @@ definition:
   description: Stores information about one-time and recurring scheduled payments
   fields:
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: References the account this balance belongs to
     - name: consumer_banking_scheduled_payment_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each scheduled payment
     - name: debtor_reference
-      type: varchar
+      type: string
       description: Reference identifier for the payer
     - name: end_date
       type: date
       description: End date for recurring payments
     - name: execution_count
-      type: int_4
+      type: int_32
       description: Number of times recurring payment has executed
     - name: frequency
-      type: enterprise_frequency
+      type: enum
       description: Frequency of recurring payments if applicable
     - name: instructed_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount to be paid
     - name: instructed_amount_currency
-      type: enterprise_currency_code!
+      type: enum!
       description: Currency of the payment amount
     - name: max_executions
-      type: int_4
+      type: int_32
       description: Maximum number of executions for recurring payment
     - name: payment_method
-      type: consumer_banking_payment_method!
+      type: enum!
       description: Method of payment execution
     - name: payment_status
-      type: consumer_banking_scheduled_payment_status!
+      type: enum!
       description: Current status of the scheduled payment
     - name: reference
-      type: varchar
+      type: string
       description: Reference identifier for the payment
     - name: scheduled_payment_date_time
       type: timestamptz!
       description: When the payment is scheduled to occur
     - name: scheduled_type
-      type: consumer_banking_scheduled_payment_type!
+      type: enum!
       description: Type of scheduled payment
   graphql:
     typeName: ConsumerBanking_consumer_banking_scheduled_payments
@@ -178,33 +178,33 @@ definition:
       orderedType: consumer_banking_scheduled_payments
       orderableFields:
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_scheduled_payment_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: debtor_reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: end_date
           orderByExpression: date_order_by_exp
         - fieldName: execution_count
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: frequency
-          orderByExpression: enterprise_frequency_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: instructed_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: instructed_amount_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: max_executions
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: payment_method
-          orderByExpression: consumer_banking_payment_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: payment_status
-          orderByExpression: consumer_banking_scheduled_payment_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: scheduled_payment_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: scheduled_type
-          orderByExpression: consumer_banking_scheduled_payment_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_account
   graphql:

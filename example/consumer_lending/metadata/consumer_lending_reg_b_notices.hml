@@ -8,40 +8,40 @@ definition:
     adverse action.
   fields:
     - name: appraisal_notice_included
-      type: bool!
+      type: boolean!
       description: Whether appraisal notice included
     - name: consumer_lending_application_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan application
     - name: consumer_lending_notice_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for Reg B notice
     - name: counteroffer_terms
-      type: text
+      type: string
       description: Terms of counteroffer if applicable
     - name: deadline_date
       type: date
       description: Deadline for response if applicable
     - name: delivery_method
-      type: consumer_lending_delivery_method!
+      type: enum!
       description: Method of delivering the notice
     - name: document_path
-      type: varchar
+      type: string
       description: Path to stored notice document
     - name: generated_date
       type: timestamptz!
       description: Date notice was generated
     - name: incomplete_items
-      type: text
+      type: string
       description: Items needed if incompleteness notice
     - name: notice_type
-      type: consumer_lending_reg_b_notice_type!
+      type: enum!
       description: Type of Regulation B notice
     - name: sent_date
       type: timestamptz!
       description: Date notice was sent
     - name: user_id
-      type: int_4
+      type: int_32
       description: User who generated notice
   graphql:
     typeName: ConsumerLending_consumer_lending_reg_b_notices
@@ -162,29 +162,29 @@ definition:
       orderedType: consumer_lending_reg_b_notices
       orderableFields:
         - fieldName: appraisal_notice_included
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: consumer_lending_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_notice_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: counteroffer_terms
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: deadline_date
           orderByExpression: date_order_by_exp
         - fieldName: delivery_method
-          orderByExpression: consumer_lending_delivery_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: generated_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: incomplete_items
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: notice_type
-          orderByExpression: consumer_lending_reg_b_notice_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: sent_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: user_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_application
   graphql:

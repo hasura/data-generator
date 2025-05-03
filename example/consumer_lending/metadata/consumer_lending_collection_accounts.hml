@@ -7,46 +7,46 @@ definition:
     delinquency details and collection actions.
   fields:
     - name: amount_past_due
-      type: numeric!
+      type: bigdecimal!
       description: Total amount past due
     - name: assigned_date
       type: date!
       description: Date account was placed in collections
     - name: assigned_to
-      type: varchar
+      type: string
       description: Collector assigned to account
     - name: consumer_lending_collection_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for collection record
     - name: days_delinquent
-      type: int_4!
+      type: int_32!
       description: Current days delinquent
     - name: delinquency_date
       type: date!
       description: First date of delinquency
     - name: delinquency_reason
-      type: varchar
+      type: string
       description: Customer-provided reason for delinquency
     - name: last_action_date
       type: date
       description: Date of most recent action taken
     - name: loan_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan account
     - name: next_action_date
       type: date
       description: Date of next scheduled action
     - name: priority
-      type: consumer_lending_collection_priority
+      type: enum
       description: Priority level of the collection account
     - name: resolution_date
       type: date
       description: Date collection was resolved
     - name: resolution_type
-      type: consumer_lending_collection_resolution_type
+      type: enum
       description: Type of resolution for the collection account
     - name: status
-      type: consumer_lending_collection_status!
+      type: enum!
       description: Current status of collection account
   graphql:
     typeName: ConsumerLending_consumer_lending_collection_accounts
@@ -179,33 +179,33 @@ definition:
       orderedType: consumer_lending_collection_accounts
       orderableFields:
         - fieldName: amount_past_due
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: assigned_date
           orderByExpression: date_order_by_exp
         - fieldName: assigned_to
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: consumer_lending_collection_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: days_delinquent
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: delinquency_date
           orderByExpression: date_order_by_exp
         - fieldName: delinquency_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: last_action_date
           orderByExpression: date_order_by_exp
         - fieldName: loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: next_action_date
           orderByExpression: date_order_by_exp
         - fieldName: priority
-          orderByExpression: consumer_lending_collection_priority_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: resolution_date
           orderByExpression: date_order_by_exp
         - fieldName: resolution_type
-          orderByExpression: consumer_lending_collection_resolution_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_lending_collection_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_account
   graphql:

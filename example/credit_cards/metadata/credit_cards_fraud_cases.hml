@@ -6,49 +6,49 @@ definition:
   description: Tracks fraud cases related to card accounts
   fields:
     - name: case_type
-      type: varchar!
+      type: string!
       description: Type of fraud (Card Fraud, Account Takeover, Application Fraud)
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_card_id
-      type: int_4
+      type: int_32
       description: Reference to specific card if applicable
     - name: credit_cards_case_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each fraud case
     - name: description
-      type: text
+      type: string
       description: Description of fraud incident
     - name: investigator_id
-      type: int_4
+      type: int_32
       description: User ID of fraud investigator
     - name: new_card_issued
-      type: bool!
+      type: boolean!
       description: Whether replacement card was issued
     - name: police_report_filed
-      type: bool!
+      type: boolean!
       description: Whether police report was filed
     - name: provisional_credit_issued
-      type: bool
+      type: boolean
       description: Whether provisional credit was issued
     - name: report_date
       type: timestamptz!
       description: Date and time fraud was reported
     - name: reported_by
-      type: varchar!
+      type: string!
       description: Who reported fraud (Customer, Bank, Merchant)
     - name: resolution
-      type: varchar
+      type: string
       description: Final resolution of case
     - name: resolution_date
       type: date
       description: Date case was resolved
     - name: status
-      type: varchar!
+      type: string!
       description: Status of case (Open, Investigation, Closed)
     - name: total_disputed_amount
-      type: numeric
+      type: bigdecimal
       description: Total amount of fraudulent transactions
   graphql:
     typeName: CreditCards_credit_cards_fraud_cases
@@ -186,35 +186,35 @@ definition:
       orderedType: credit_cards_fraud_cases
       orderableFields:
         - fieldName: case_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_card_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_case_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: investigator_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: new_card_issued
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: police_report_filed
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: provisional_credit_issued
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: report_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: reported_by
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: resolution
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: resolution_date
           orderByExpression: date_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: total_disputed_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_card

@@ -7,28 +7,28 @@ definition:
     software, and status details.
   fields:
     - name: agent_identifier
-      type: varchar
+      type: string
       description: Identifier of the agent installed on the system.
     - name: agent_status
-      type: security_agent_status
+      type: enum
       description: Status of the agent installed on the system.
     - name: agent_version
-      type: varchar
+      type: string
       description: Version of the agent installed on the system.
     - name: asset_owner_email
-      type: varchar
+      type: string
       description: Email of the asset owner.
     - name: asset_owner_name
-      type: varchar
+      type: string
       description: Name of the asset owner.
     - name: checked_out_date
       type: date
       description: Date when the system was checked out.
     - name: compliance
-      type: security_compliance_status
+      type: enum
       description: Compliance status of the system.
     - name: hostname
-      type: varchar
+      type: string
       description: Hostname of the system.
     - name: ip_address_external
       type: inet
@@ -43,28 +43,28 @@ definition:
       type: timestamp
       description: Timestamp when the system was last seen.
     - name: mac_address
-      type: varchar
+      type: string
       description: MAC address of the system.
     - name: os
-      type: varchar
+      type: string
       description: Operating system of the system.
     - name: os_version
-      type: varchar
+      type: string
       description: Operating system version.
     - name: patch_level
-      type: varchar
+      type: string
       description: Patch level of the system.
     - name: patch_status
-      type: security_patch_status
+      type: enum
       description: Status of system patches.
     - name: patch_update_available
-      type: bool
+      type: boolean
       description: Indicates if patch updates are available.
     - name: security_host_id
       type: uuid!
       description: Unique identifier for the system.
     - name: system_type
-      type: security_system_type
+      type: enum
       description: Type of the system (e.g., server, workstation).
   graphql:
     typeName: Security_security_hosts
@@ -234,21 +234,21 @@ definition:
       orderedType: security_hosts
       orderableFields:
         - fieldName: agent_identifier
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: agent_status
-          orderByExpression: security_agent_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: agent_version
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: asset_owner_email
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: asset_owner_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: checked_out_date
           orderByExpression: date_order_by_exp
         - fieldName: compliance
-          orderByExpression: security_compliance_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: hostname
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: ip_address_external
           orderByExpression: inet_order_by_exp
         - fieldName: ip_address_internal
@@ -258,21 +258,21 @@ definition:
         - fieldName: last_seen
           orderByExpression: timestamp_order_by_exp
         - fieldName: mac_address
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: os
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: os_version
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: patch_level
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: patch_status
-          orderByExpression: security_patch_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: patch_update_available
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: security_host_id
           orderByExpression: uuid_order_by_exp
         - fieldName: system_type
-          orderByExpression: security_system_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_security_hosts_order_by_exp

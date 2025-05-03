@@ -6,16 +6,16 @@ definition:
   description: Junction table linking fraud cases to specific transactions
   fields:
     - name: credit_cards_case_id
-      type: int_4!
+      type: int_32!
       description: Reference to fraud_cases
     - name: credit_cards_fraud_transaction_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each linked transaction
     - name: credit_cards_transaction_id
-      type: int_4!
+      type: int_32!
       description: Reference to transactions
     - name: is_confirmed_fraud
-      type: bool!
+      type: boolean!
       description: Whether transaction is confirmed fraudulent
   graphql:
     typeName: CreditCards_credit_cards_fraud_transactions
@@ -97,13 +97,13 @@ definition:
       orderedType: credit_cards_fraud_transactions
       orderableFields:
         - fieldName: credit_cards_case_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_fraud_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: is_confirmed_fraud
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_fraud_case
         - relationshipName: credit_cards_transaction

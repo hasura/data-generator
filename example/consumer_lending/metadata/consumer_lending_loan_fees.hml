@@ -7,37 +7,37 @@ definition:
     status, and payment details.
   fields:
     - name: consumer_lending_fee_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for fee
     - name: consumer_lending_loan_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan account
     - name: consumer_lending_payment_id
-      type: int_4
+      type: int_32
       description: Reference to loan_payments if paid
     - name: fee_amount
-      type: numeric!
+      type: bigdecimal!
       description: Fee amount
     - name: fee_date
       type: date!
       description: Date fee was assessed
     - name: fee_status
-      type: consumer_lending_loan_fee_status!
+      type: enum!
       description: Current status of the fee
     - name: fee_type
-      type: consumer_lending_loan_fee_type!
+      type: enum!
       description: Type of fee charged
     - name: paid_date
       type: date
       description: Date fee was paid
     - name: waived_by_id
-      type: int_4
+      type: int_32
       description: User who waived the fee
     - name: waived_date
       type: date
       description: Date fee was waived if applicable
     - name: waiver_reason
-      type: varchar
+      type: string
       description: Reason fee was waived
   graphql:
     typeName: ConsumerLending_consumer_lending_loan_fees
@@ -154,27 +154,27 @@ definition:
       orderedType: consumer_lending_loan_fees
       orderableFields:
         - fieldName: consumer_lending_fee_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_loan_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_payment_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: fee_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: fee_date
           orderByExpression: date_order_by_exp
         - fieldName: fee_status
-          orderByExpression: consumer_lending_loan_fee_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: fee_type
-          orderByExpression: consumer_lending_loan_fee_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: paid_date
           orderByExpression: date_order_by_exp
         - fieldName: waived_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: waived_date
           orderByExpression: date_order_by_exp
         - fieldName: waiver_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_account
         - relationshipName: consumer_lending_loan_payment

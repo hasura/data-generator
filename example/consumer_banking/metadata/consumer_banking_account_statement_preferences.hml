@@ -6,19 +6,19 @@ definition:
   description: Stores customer preferences for account statements
   fields:
     - name: communication_method
-      type: consumer_banking_communication_method!
+      type: enum!
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
     - name: consumer_banking_statement_id
-      type: int_4
+      type: int_32
       description: Fake relationship, to influence data generator and make statements
         be created before this record.
     - name: enterprise_address_id
-      type: int_4
+      type: int_32
     - name: format
-      type: consumer_banking_statement_format!
+      type: enum!
     - name: frequency
-      type: enterprise_frequency!
+      type: enum!
     - name: last_statement_date
       type: date
     - name: next_statement_date
@@ -123,17 +123,17 @@ definition:
       orderedType: consumer_banking_account_statement_preferences
       orderableFields:
         - fieldName: communication_method
-          orderByExpression: consumer_banking_communication_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: enterprise_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: format
-          orderByExpression: consumer_banking_statement_format_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: frequency
-          orderByExpression: enterprise_frequency_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: last_statement_date
           orderByExpression: date_order_by_exp
         - fieldName: next_statement_date

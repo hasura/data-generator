@@ -6,34 +6,34 @@ definition:
   description: Stores and tracks documents submitted for mortgage applications
   fields:
     - name: document_name
-      type: varchar!
+      type: string!
       description: Filename or display name of the document
     - name: document_path
-      type: varchar!
+      type: string!
       description: Storage location or path to access the document
     - name: document_type
-      type: mortgage_services_document_type!
+      type: enum!
       description: Category of document (e.g., W2, Tax Return)
     - name: expiration_date
       type: date
       description: When the document expires or needs to be updated
     - name: mortgage_services_application_id
-      type: int_4!
+      type: int_32!
       description: References the application this document belongs to
     - name: mortgage_services_document_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each document
     - name: notes
-      type: text
+      type: string
       description: Additional information about the document
     - name: review_date
       type: timestamptz
       description: When the document was reviewed
     - name: reviewer_id
-      type: int_4
+      type: int_32
       description: References the staff member who reviewed the document
     - name: status
-      type: mortgage_services_document_status!
+      type: enum!
       description: Current review status of the document
     - name: upload_date
       type: timestamptz!
@@ -152,25 +152,25 @@ definition:
       orderedType: mortgage_services_documents
       orderableFields:
         - fieldName: document_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: document_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: document_type
-          orderByExpression: mortgage_services_document_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_document_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: review_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: reviewer_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_document_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: upload_date
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

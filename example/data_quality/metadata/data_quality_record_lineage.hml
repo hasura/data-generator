@@ -3,31 +3,34 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_record_lineage
-  description: Maps the lineage of data records through transformations for traceability.
+  description: Maps the lineage (design) of data records through transformations
+    for traceability. The input is generally an interal data type and the output
+    is generally a transient data type to be consumed by a process.
   fields:
     - name: api_lineage_id
-      type: varchar
+      type: string
+      description: Reference to the API lineage this record is part of.
     - name: description
-      type: text
+      type: string
       description: General description of this data lineage relationship.
     - name: input_description
-      type: text
+      type: string
       description: Description of the input data source or format.
     - name: input_type
-      type: varchar!
+      type: string!
       description: The type/entity of input data in this lineage.
     - name: output_description
-      type: text
+      type: string
       description: Description of the output data destination or format.
     - name: output_type
-      type: varchar!
+      type: string!
       description: The type/entity of output data in this lineage.
     - name: pk_names
-      type: varchar
+      type: string
       description: Names of primary key fields used to track the record through
         transformations.
     - name: record_lineage_id
-      type: varchar!
+      type: string!
       description: Unique identifier for the record lineage.
   graphql:
     typeName: DQ_data_quality_record_lineage
@@ -129,21 +132,21 @@ definition:
       orderedType: data_quality_record_lineage
       orderableFields:
         - fieldName: api_lineage_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: input_description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: input_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: output_description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: output_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: pk_names
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: record_lineage_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: data_quality_api_lineage
   graphql:
@@ -177,7 +180,9 @@ definition:
       queryRootField: data_quality_record_lineage_aggregate
       subscription:
         rootField: data_quality_record_lineage_aggregate
-  description: Maps the lineage of data records through transformations for traceability.
+  description: Maps the lineage (design) of data records through transformations
+    for traceability. The input is generally an interal data type and the output
+    is generally a transient data type to be consumed by a process.
 
 ---
 kind: ModelPermissions
@@ -208,7 +213,7 @@ definition:
           - fieldName: record_lineage_id
       target:
         modelField:
-          - fieldName: record_lineage_record_lineage_id
+          - fieldName: record_lineage_id
   graphql:
     aggregateFieldName: data_quality_field_lineages_aggregate
 

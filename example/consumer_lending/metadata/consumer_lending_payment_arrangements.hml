@@ -7,37 +7,37 @@ definition:
     delinquent accounts.
   fields:
     - name: approved_by_id
-      type: int_4
+      type: int_32
       description: User who approved arrangement
     - name: arrangement_date
       type: date!
       description: Date arrangement was created
     - name: consumer_lending_arrangement_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for payment arrangement
     - name: consumer_lending_collection_id
-      type: int_4!
+      type: int_32!
       description: Reference to collection account
     - name: first_payment_date
       type: date!
       description: Date first payment is due
     - name: notes
-      type: text
+      type: string
       description: Additional arrangement notes
     - name: number_of_payments
-      type: int_4!
+      type: int_32!
       description: Number of payments in arrangement
     - name: payment_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount of each payment
     - name: payment_frequency
-      type: consumer_lending_payment_frequency!
+      type: enum!
       description: Frequency of payments
     - name: status
-      type: consumer_lending_payment_arrangement_status!
+      type: enum!
       description: Current status of payment arrangement
     - name: total_amount
-      type: numeric!
+      type: bigdecimal!
       description: Total amount to be paid
   graphql:
     typeName: ConsumerLending_consumer_lending_payment_arrangements
@@ -153,27 +153,27 @@ definition:
       orderedType: consumer_lending_payment_arrangements
       orderableFields:
         - fieldName: approved_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: arrangement_date
           orderByExpression: date_order_by_exp
         - fieldName: consumer_lending_arrangement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_collection_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: first_payment_date
           orderByExpression: date_order_by_exp
         - fieldName: notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: number_of_payments
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: payment_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: payment_frequency
-          orderByExpression: consumer_lending_payment_frequency_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_lending_payment_arrangement_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: total_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_collection_account
   graphql:

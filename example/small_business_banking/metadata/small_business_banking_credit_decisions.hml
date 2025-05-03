@@ -6,64 +6,64 @@ definition:
   description: Documents credit decisions for regulatory review and fair lending analysis
   fields:
     - name: annual_revenue
-      type: numeric
+      type: bigdecimal
       description: Annual revenue considered in decision
     - name: application_id
-      type: varchar!
+      type: string!
       description: Application identifier
     - name: collateral_value
-      type: numeric
+      type: bigdecimal
       description: Value of collateral (if applicable)
     - name: credit_score
-      type: int_4
+      type: int_32
       description: Credit score used in decision
     - name: credit_score_model
-      type: varchar
+      type: string
       description: Model used for credit score
     - name: debt_service_coverage_ratio
-      type: numeric
+      type: bigdecimal
       description: Debt service coverage ratio calculated
     - name: decision_date
       type: timestamptz!
       description: Date and time of the decision
     - name: decision_factors
-      type: text
+      type: string
       description: Factors that influenced the decision
     - name: decision_made_by_id
-      type: int_4!
+      type: int_32!
       description: Person or system that made the decision
     - name: decision_notes
-      type: text
+      type: string
       description: Additional notes about the decision
     - name: decision_outcome
-      type: varchar!
+      type: string!
       description: Outcome of the decision (approved, declined, counter-offer)
     - name: decision_type
-      type: varchar!
+      type: string!
       description: Type of decision (automated, manual, hybrid)
     - name: exception_approver
-      type: int_4
+      type: int_32
       description: Person who approved the exception
     - name: exception_made
-      type: bool!
+      type: boolean!
       description: Whether an exception to policy was made
     - name: exception_reason
-      type: text
+      type: string
       description: Reason for the exception (if applicable)
     - name: loan_to_value_ratio
-      type: numeric
+      type: bigdecimal
       description: Loan to value ratio (if applicable)
     - name: product_type
-      type: varchar!
+      type: string!
       description: Type of credit product (loan, line of credit, card)
     - name: small_business_banking_business_id
-      type: int_4!
+      type: int_32!
       description: Reference to the business
     - name: small_business_banking_decision_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each credit decision
     - name: time_in_business
-      type: int_4
+      type: int_32
       description: Time in business (months) considered in decision
   graphql:
     typeName: SmallBusinessBanking_small_business_banking_credit_decisions
@@ -225,45 +225,45 @@ definition:
       orderedType: small_business_banking_credit_decisions
       orderableFields:
         - fieldName: annual_revenue
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: application_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: collateral_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: credit_score
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_score_model
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: debt_service_coverage_ratio
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: decision_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: decision_factors
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: decision_made_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: decision_notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: decision_outcome
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: decision_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: exception_approver
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: exception_made
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: exception_reason
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: loan_to_value_ratio
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: product_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: small_business_banking_business_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_decision_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: time_in_business
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: small_business_banking_business
   graphql:

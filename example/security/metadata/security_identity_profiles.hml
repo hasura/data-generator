@@ -7,33 +7,33 @@ definition:
     attributes and rules for identities.
   fields:
     - name: access_review_frequency_days
-      type: int_4
+      type: int_32
       description: How often accounts with this profile should be reviewed, in days.
     - name: created_at
       type: timestamptz
       description: When the profile was created.
     - name: default_session_timeout_minutes
-      type: int_4
+      type: int_32
       description: Default session timeout in minutes for identities with this profile.
     - name: description
-      type: text
+      type: string
       description: Detailed description of the profile and its purpose.
     - name: max_inactive_days
-      type: int_4
+      type: int_32
       description: Maximum number of days an identity can be inactive before automatic
         disablement.
     - name: name
-      type: varchar
+      type: string
       description: Name of the identity profile.
     - name: password_expiry_days
-      type: int_4
+      type: int_32
       description: Number of days before password expiration for this profile type.
     - name: requires_mfa
-      type: bool
+      type: boolean
       description: Whether multi-factor authentication is required for identities with
         this profile.
     - name: risk_level
-      type: security_risk_level!
+      type: enum!
       description: Risk classification level for this profile type.
     - name: security_identity_profile_id
       type: uuid!
@@ -155,23 +155,23 @@ definition:
       orderedType: security_identity_profiles
       orderableFields:
         - fieldName: access_review_frequency_days
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: default_session_timeout_minutes
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: max_inactive_days
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: password_expiry_days
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: requires_mfa
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: risk_level
-          orderByExpression: security_risk_level_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: security_identity_profile_id
           orderByExpression: uuid_order_by_exp
         - fieldName: updated_at

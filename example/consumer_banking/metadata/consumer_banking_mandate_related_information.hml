@@ -7,16 +7,16 @@ definition:
     payment schedules
   fields:
     - name: category
-      type: consumer_banking_direct_debit_category
+      type: enum
       description: Purpose code for categorizing the payment type
     - name: classification
-      type: consumer_banking_direct_debit_classification
+      type: enum
       description: Classification of the mandate (e.g., personal, business)
     - name: consumer_banking_direct_debit_id
-      type: int_4!
+      type: int_32!
       description: References the direct debit this mandate belongs to
     - name: consumer_banking_mandate_related_information_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for mandate information
     - name: final_payment_date_time
       type: timestamptz
@@ -25,19 +25,19 @@ definition:
       type: timestamptz
       description: When the first payment is scheduled
     - name: frequency_count_per_period
-      type: int_4
+      type: int_32
       description: Number of payments in each period
     - name: frequency_point_in_time
-      type: varchar
+      type: string
       description: Specific day or time point for payments
     - name: frequency_type
-      type: enterprise_frequency!
+      type: enum!
       description: How often payments occur (e.g., monthly, weekly)
     - name: mandate_id
-      type: int_4!
+      type: int_32!
       description: Unique reference for the direct debit mandate
     - name: reason
-      type: varchar
+      type: string
       description: Reason or purpose for the mandate
     - name: recurring_payment_date_time
       type: timestamptz
@@ -161,27 +161,27 @@ definition:
       orderedType: consumer_banking_mandate_related_information
       orderableFields:
         - fieldName: category
-          orderByExpression: consumer_banking_direct_debit_category_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: classification
-          orderByExpression: consumer_banking_direct_debit_classification_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_banking_direct_debit_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_mandate_related_information_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: final_payment_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: first_payment_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: frequency_count_per_period
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: frequency_point_in_time
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: frequency_type
-          orderByExpression: enterprise_frequency_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: mandate_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: recurring_payment_date_time
           orderByExpression: timestamptz_order_by_exp
       orderableRelationships:

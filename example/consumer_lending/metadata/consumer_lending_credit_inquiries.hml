@@ -7,19 +7,19 @@ definition:
     credit applications or checks.
   fields:
     - name: consumer_lending_credit_report_id
-      type: int_4!
+      type: int_32!
       description: Reference to credit report
     - name: consumer_lending_inquiry_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for inquiry record
     - name: creditor_name
-      type: varchar!
+      type: string!
       description: Institution that made inquiry
     - name: inquiry_date
       type: date!
       description: Date of credit inquiry
     - name: inquiry_type
-      type: consumer_lending_inquiry_type
+      type: enum
       description: Type of credit inquiry
   graphql:
     typeName: ConsumerLending_consumer_lending_credit_inquiries
@@ -105,15 +105,15 @@ definition:
       orderedType: consumer_lending_credit_inquiries
       orderableFields:
         - fieldName: consumer_lending_credit_report_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_inquiry_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: creditor_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: inquiry_date
           orderByExpression: date_order_by_exp
         - fieldName: inquiry_type
-          orderByExpression: consumer_lending_inquiry_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_credit_report
   graphql:

@@ -8,22 +8,22 @@ definition:
     relationships
   fields:
     - name: borrower_type
-      type: mortgage_services_borrower_type!
+      type: enum!
       description: Role of this borrower (Primary, Co-Borrower, etc.)
     - name: contribution_percentage
-      type: numeric
+      type: bigdecimal
       description: Percentage of financial contribution to the loan
     - name: mortgage_services_application_borrower_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each application-borrower relationship
     - name: mortgage_services_application_id
-      type: int_4!
+      type: int_32!
       description: References the mortgage application
     - name: mortgage_services_borrower_id
-      type: int_4!
+      type: int_32!
       description: References the borrower associated with this application
     - name: relationship_to_primary
-      type: mortgage_services_relationship_type
+      type: enum
       description: Relationship of co-borrower to primary borrower
   graphql:
     typeName: MortgageServices_mortgage_services_application_borrowers
@@ -115,17 +115,17 @@ definition:
       orderedType: mortgage_services_application_borrowers
       orderableFields:
         - fieldName: borrower_type
-          orderByExpression: mortgage_services_borrower_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: contribution_percentage
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: mortgage_services_application_borrower_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_borrower_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: relationship_to_primary
-          orderByExpression: mortgage_services_relationship_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_application
         - relationshipName: mortgage_services_borrower

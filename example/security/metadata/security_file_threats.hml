@@ -7,13 +7,13 @@ definition:
     to threat levels and descriptions.
   fields:
     - name: security_file_threat_hash
-      type: varchar!
+      type: string!
       description: Hash of the file, used to identify threats.
     - name: threat_description
-      type: text
+      type: string
       description: Description of the threat associated with the file.
     - name: threat_level
-      type: security_threat_level_type!
+      type: enum!
       description: Level of threat associated with the file.
   graphql:
     typeName: Security_security_file_threats
@@ -88,11 +88,11 @@ definition:
       orderedType: security_file_threats
       orderableFields:
         - fieldName: security_file_threat_hash
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: threat_description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: threat_level
-          orderByExpression: security_threat_level_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: Security_security_file_threats_order_by_exp

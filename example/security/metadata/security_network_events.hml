@@ -7,13 +7,13 @@ definition:
     security monitoring and analysis.
   fields:
     - name: ack
-      type: int_8
+      type: int_64
       description: TCP acknowledgment number, if applicable.
     - name: bytes_received
-      type: int_4!
+      type: int_32!
       description: Number of bytes received during the event.
     - name: bytes_sent
-      type: int_4!
+      type: int_32!
       description: Number of bytes sent during the event.
     - name: created_at
       type: timestamp
@@ -22,44 +22,44 @@ definition:
       type: inet!
       description: Destination IP address of the network event.
     - name: dest_port
-      type: int_4!
+      type: int_32!
       description: Destination port of the network event.
     - name: length
-      type: int_4!
+      type: int_32!
       description: Length of the data packet in bytes.
     - name: log_message
-      type: text
+      type: string
       description: Detailed log message associated with the network event.
     - name: protocol
-      type: security_network_protocols!
+      type: enum!
       description: Network protocol used (e.g., TCP, UDP, ICMP).
     - name: security_device_id
       type: inet!
       description: IP address of the device involved in the event (likely the device
         that logged the event)
     - name: security_network_event_id
-      type: int_8!
+      type: int_64!
       description: Unique identifier for the network event. Automatically incrementing.
     - name: sequence
-      type: int_8
+      type: int_64
       description: TCP sequence number, if applicable.
     - name: source_ip
       type: inet!
       description: Source IP address of the network event.
     - name: source_port
-      type: int_4!
+      type: int_32!
       description: Source port of the network event.
     - name: status
-      type: varchar!
+      type: string!
       description: Status of the network event (e.g., success, failure, blocked).
     - name: tcp_flag
-      type: security_tcp_flag_type
+      type: enum
       description: TCP flags associated with the event, if applicable.
     - name: timestamp
       type: timestamp!
       description: Timestamp when the network event occurred.
     - name: window_size
-      type: int_4
+      type: int_32
       description: TCP window size, if applicable.
   graphql:
     typeName: Security_security_network_events
@@ -210,41 +210,41 @@ definition:
       orderedType: security_network_events
       orderableFields:
         - fieldName: ack
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: bytes_received
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: bytes_sent
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: created_at
           orderByExpression: timestamp_order_by_exp
         - fieldName: dest_ip
           orderByExpression: inet_order_by_exp
         - fieldName: dest_port
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: length
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: log_message
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: protocol
-          orderByExpression: security_network_protocols_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: security_device_id
           orderByExpression: inet_order_by_exp
         - fieldName: security_network_event_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: sequence
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: source_ip
           orderByExpression: inet_order_by_exp
         - fieldName: source_port
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: tcp_flag
-          orderByExpression: security_tcp_flag_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: timestamp
           orderByExpression: timestamp_order_by_exp
         - fieldName: window_size
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: security_device
   graphql:

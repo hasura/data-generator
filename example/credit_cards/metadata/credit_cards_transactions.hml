@@ -6,70 +6,70 @@ definition:
   description: Stores all transaction activity on card accounts
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Transaction amount
     - name: auth_code
-      type: varchar
+      type: string
       description: Authorization code
     - name: category
-      type: varchar
+      type: string
       description: Spending category (e.g., Dining, Travel, Merchandise)
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_card_id
-      type: int_4!
+      type: int_32!
       description: Reference to specific card used
     - name: credit_cards_transaction_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for transaction
     - name: decline_reason
-      type: varchar
+      type: string
       description: Reason for decline if applicable
     - name: description
-      type: varchar!
+      type: string!
       description: Merchant name or transaction description
     - name: exchange_rate
-      type: numeric
+      type: bigdecimal
       description: Exchange rate used if international
     - name: is_billable
-      type: bool!
+      type: boolean!
       description: Whether transaction is included in statement billing
     - name: is_international
-      type: bool!
+      type: boolean!
       description: Whether transaction is international
     - name: is_pending
-      type: bool!
+      type: boolean!
       description: Whether transaction is pending
     - name: is_recurring
-      type: bool
+      type: boolean
       description: Whether transaction appears to be recurring
     - name: mcc_code
-      type: varchar
+      type: string
       description: Merchant Category Code
     - name: original_amount
-      type: numeric
+      type: bigdecimal
       description: Amount in original currency if international
     - name: original_currency
-      type: enterprise_currency_code
+      type: enum
       description: Original currency if international
     - name: post_date
       type: date!
       description: Date transaction posted to account
     - name: reference_number
-      type: varchar
+      type: string
       description: Transaction reference number
     - name: rewards_earned
-      type: numeric
+      type: bigdecimal
       description: Rewards points or cashback earned
     - name: status
-      type: varchar!
+      type: string!
       description: Approved, Declined, Reversed, Disputed
     - name: transaction_date
       type: timestamptz!
       description: Date and time of transaction
     - name: transaction_type
-      type: varchar!
+      type: string!
       description: Purchase, Cash Advance, Balance Transfer, Payment, Fee, Adjustment
   graphql:
     typeName: CreditCards_credit_cards_transactions
@@ -246,49 +246,49 @@ definition:
       orderedType: credit_cards_transactions
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: auth_code
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: category
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_card_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: decline_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: exchange_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: is_billable
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: is_international
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: is_pending
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: is_recurring
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: mcc_code
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: original_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: original_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: post_date
           orderByExpression: date_order_by_exp
         - fieldName: reference_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: rewards_earned
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: transaction_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: transaction_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_card

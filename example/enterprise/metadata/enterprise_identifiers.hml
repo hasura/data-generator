@@ -7,25 +7,25 @@ definition:
     institutions — referenced by business-line accounts
   fields:
     - name: enterprise_identifier_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each identifier entry in the registry
     - name: identification
-      type: varchar!
+      type: string!
       description: Actual identifier value such as a BIC code or national ID
     - name: lei
-      type: varchar
+      type: string
       description: Optional Legal Entity Identifier if known
     - name: name
-      type: varchar
+      type: string
       description: Optional display name for this identifier (e.g., institution name)
     - name: note
-      type: text
+      type: string
       description: Free-form notes or metadata about this identifier
     - name: scheme_name
-      type: enterprise_identifier_scheme!
+      type: enum!
       description: Type of identifier (e.g., BIC, IBAN, SSN, LEI, etc.)
     - name: secondary_identification
-      type: varchar
+      type: string
       description: Additional identifier component if applicable (e.g., sub-ID)
   graphql:
     typeName: Enterprise_enterprise_identifiers
@@ -120,19 +120,19 @@ definition:
       orderedType: enterprise_identifiers
       orderableFields:
         - fieldName: enterprise_identifier_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: identification
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: lei
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: note
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: scheme_name
-          orderByExpression: enterprise_identifier_scheme_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: secondary_identification
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships: []
   graphql:
     expressionTypeName: Enterprise_enterprise_identifiers_order_by_exp

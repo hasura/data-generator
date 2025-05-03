@@ -6,46 +6,46 @@ definition:
   description: Manages ongoing servicing of closed mortgage loans
   fields:
     - name: current_interest_rate
-      type: numeric!
+      type: bigdecimal!
       description: Current applicable interest rate
     - name: current_principal_balance
-      type: numeric!
+      type: bigdecimal!
       description: Current remaining principal balance
     - name: escrow_balance
-      type: numeric
+      type: bigdecimal
       description: Current balance in escrow account
     - name: escrow_paid_ytd
-      type: numeric
+      type: bigdecimal
       description: Escrow paid year-to-date
     - name: homeowners_insurance_due_date
       type: date
       description: When next insurance payment is due
     - name: interest_paid_ytd
-      type: numeric
+      type: bigdecimal
       description: Interest paid year-to-date
     - name: last_payment_amount
-      type: numeric
+      type: bigdecimal
       description: Amount of last payment received
     - name: last_payment_date
       type: date
       description: When last payment was received
     - name: mortgage_services_loan_id
-      type: int_4!
+      type: int_32!
       description: References the originated loan
     - name: mortgage_services_servicing_account_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each servicing account
     - name: next_payment_amount
-      type: numeric
+      type: bigdecimal
       description: Amount due for next payment
     - name: next_payment_due_date
       type: date
       description: When next payment is due
     - name: original_principal_balance
-      type: numeric!
+      type: bigdecimal!
       description: Original loan amount at closing
     - name: principal_paid_ytd
-      type: numeric
+      type: bigdecimal
       description: Principal paid year-to-date
     - name: property_tax_due_date
       type: date
@@ -54,7 +54,7 @@ definition:
       type: date
       description: When servicing was transferred to current servicer
     - name: status
-      type: mortgage_services_servicing_account_status!
+      type: enum!
       description: Current status of the loan being serviced
   graphql:
     typeName: MortgageServices_mortgage_services_servicing_accounts
@@ -205,39 +205,39 @@ definition:
       orderedType: mortgage_services_servicing_accounts
       orderableFields:
         - fieldName: current_interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: current_principal_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: escrow_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: escrow_paid_ytd
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: homeowners_insurance_due_date
           orderByExpression: date_order_by_exp
         - fieldName: interest_paid_ytd
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: last_payment_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: last_payment_date
           orderByExpression: date_order_by_exp
         - fieldName: mortgage_services_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_servicing_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: next_payment_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: next_payment_due_date
           orderByExpression: date_order_by_exp
         - fieldName: original_principal_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: principal_paid_ytd
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: property_tax_due_date
           orderByExpression: date_order_by_exp
         - fieldName: servicing_transferred_date
           orderByExpression: date_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_servicing_account_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_loan
   graphql:

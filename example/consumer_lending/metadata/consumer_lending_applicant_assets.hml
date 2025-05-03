@@ -7,31 +7,31 @@ definition:
     accounts and property.
   fields:
     - name: account_number
-      type: varchar
+      type: string
       description: Account number, stored encrypted
     - name: asset_type
-      type: consumer_lending_asset_type!
+      type: enum!
       description: Type of asset
     - name: consumer_lending_applicant_id
-      type: int_4!
+      type: int_32!
       description: Reference to applicant
     - name: consumer_lending_asset_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for asset record
     - name: current_value
-      type: numeric!
+      type: bigdecimal!
       description: Current market value of asset
     - name: institution_name
-      type: varchar
+      type: string
       description: Financial institution holding the asset
     - name: property_address_id
-      type: int_4
+      type: int_32
       description: Reference to enterprise.addresses if asset is property
     - name: verification_date
       type: date
       description: Date asset was verified
     - name: verification_status
-      type: consumer_lending_verification_status!
+      type: enum!
       description: Self-reported, Verified, Failed
   graphql:
     typeName: ConsumerLending_consumer_lending_applicant_assets
@@ -137,23 +137,23 @@ definition:
       orderedType: consumer_lending_applicant_assets
       orderableFields:
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: asset_type
-          orderByExpression: consumer_lending_asset_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_lending_applicant_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_asset_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: current_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: institution_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: property_address_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: verification_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_status
-          orderByExpression: consumer_lending_verification_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_applicant
   graphql:

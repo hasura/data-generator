@@ -6,14 +6,14 @@ definition:
   description: Links transactions to specific statements they appear on
   fields:
     - name: consumer_banking_transaction_id
-      type: int_4!
+      type: int_32!
       description: References the transaction this reference belongs to
     - name: consumer_banking_transaction_statement_reference_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each transaction-statement
         reference record
     - name: statement_reference
-      type: varchar
+      type: string
       description: Statement reference n
   graphql:
     typeName: ConsumerBanking_consumer_banking_transaction_statement_references
@@ -89,11 +89,11 @@ definition:
       orderedType: consumer_banking_transaction_statement_references
       orderableFields:
         - fieldName: consumer_banking_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_transaction_statement_reference_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: statement_reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_transaction
   graphql:

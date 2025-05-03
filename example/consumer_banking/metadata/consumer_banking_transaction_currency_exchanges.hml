@@ -6,34 +6,34 @@ definition:
   description: Stores currency exchange details for cross-currency transactions
   fields:
     - name: consumer_banking_transaction_currency_exchange_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each currency exchange record
     - name: consumer_banking_transaction_id
-      type: int_4!
+      type: int_32!
       description: References the transaction this currency exchange belongs to
     - name: contract_identification
-      type: varchar
+      type: string
       description: Identifier for any forex contract used
     - name: exchange_rate
-      type: numeric!
+      type: bigdecimal!
       description: Rate used for the currency conversion
     - name: instructed_amount
-      type: numeric
+      type: bigdecimal
       description: Original amount before conversion
     - name: instructed_amount_currency
-      type: enterprise_currency_code
+      type: enum
       description: Currency of the original instructed amount
     - name: quotation_date
       type: timestamptz
       description: When the exchange rate was quoted
     - name: source_currency
-      type: enterprise_currency_code!
+      type: enum!
       description: Original currency of the transaction
     - name: target_currency
-      type: enterprise_currency_code
+      type: enum
       description: Destination currency after conversion
     - name: unit_currency
-      type: enterprise_currency_code
+      type: enum
       description: Currency used as the unit for the exchange rate
   graphql:
     typeName: ConsumerBanking_consumer_banking_transaction_currency_exchanges
@@ -144,25 +144,25 @@ definition:
       orderedType: consumer_banking_transaction_currency_exchanges
       orderableFields:
         - fieldName: consumer_banking_transaction_currency_exchange_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: contract_identification
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: exchange_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: instructed_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: instructed_amount_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: quotation_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: source_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: target_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: unit_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_transaction
   graphql:

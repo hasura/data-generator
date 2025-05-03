@@ -6,34 +6,34 @@ definition:
   description: Stores information about interest earned or charged during a statement period
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Monetary amount of interest earned or charged
     - name: consumer_banking_statement_id
-      type: int_4!
+      type: int_32!
       description: References the statement this interest belongs to
     - name: consumer_banking_statement_interest_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each interest record
     - name: credit_debit_indicator
-      type: enterprise_credit_debit_indicator!
+      type: enum!
       description: Indicates if interest is earned (credit) or charged (debit)
     - name: currency
-      type: enterprise_currency_code!
+      type: enum!
       description: Currency code for the interest amount
     - name: description
-      type: varchar
+      type: string
       description: Description of the interest
     - name: frequency
-      type: enterprise_frequency
+      type: enum
       description: How often interest is calculated (e.g., daily, monthly)
     - name: rate
-      type: numeric
+      type: bigdecimal
       description: Interest rate applied
     - name: rate_type
-      type: consumer_banking_rate_type
+      type: enum
       description: Type of rate (e.g., fixed, variable, promotional)
     - name: type
-      type: consumer_banking_interest_type!
+      type: enum!
       description: Type of interest (e.g., deposit, loan, credit card)
   graphql:
     typeName: ConsumerBanking_consumer_banking_statement_interests
@@ -144,25 +144,25 @@ definition:
       orderedType: consumer_banking_statement_interests
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: consumer_banking_statement_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_banking_statement_interest_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_debit_indicator
-          orderByExpression: enterprise_credit_debit_indicator_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: frequency
-          orderByExpression: enterprise_frequency_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: rate_type
-          orderByExpression: consumer_banking_rate_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: type
-          orderByExpression: consumer_banking_interest_type_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_statement
   graphql:

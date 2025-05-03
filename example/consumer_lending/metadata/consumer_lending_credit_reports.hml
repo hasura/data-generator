@@ -7,19 +7,19 @@ definition:
     credit scores and other relevant information.
   fields:
     - name: bureau_name
-      type: consumer_lending_credit_bureau
+      type: enum
       description: Credit bureau providing the report
     - name: consumer_lending_applicant_id
-      type: int_4!
+      type: int_32!
       description: Reference to applicant
     - name: consumer_lending_application_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan application
     - name: consumer_lending_credit_report_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for credit report
     - name: credit_score
-      type: int_4
+      type: int_32
       description: Primary credit score from report
     - name: expiration_date
       type: date!
@@ -28,16 +28,16 @@ definition:
       type: timestamptz!
       description: When report was pulled
     - name: report_path
-      type: varchar
+      type: string
       description: Path to stored report file
     - name: report_reference
-      type: varchar
+      type: string
       description: External reference ID from bureau
     - name: report_type
-      type: consumer_lending_credit_report_type!
+      type: enum!
       description: Type of credit report
     - name: status
-      type: consumer_lending_credit_report_status!
+      type: enum!
       description: Status of credit report retrieval
   graphql:
     typeName: ConsumerLending_consumer_lending_credit_reports
@@ -157,27 +157,27 @@ definition:
       orderedType: consumer_lending_credit_reports
       orderableFields:
         - fieldName: bureau_name
-          orderByExpression: consumer_lending_credit_bureau_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_lending_applicant_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_credit_report_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_score
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: expiration_date
           orderByExpression: date_order_by_exp
         - fieldName: report_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: report_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: report_reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: report_type
-          orderByExpression: consumer_lending_credit_report_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_lending_credit_report_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_applicant
         - relationshipName: consumer_lending_loan_application

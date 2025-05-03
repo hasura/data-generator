@@ -7,55 +7,55 @@ definition:
     between accounts
   fields:
     - name: amount
-      type: numeric!
+      type: bigdecimal!
       description: Payment amount
     - name: credit_card_id
-      type: int_4
+      type: int_32
       description: Reference to the credit card being paid (for card payments)
     - name: destination_account_id
-      type: int_4
+      type: int_32
       description: Reference to the account funds are deposited to (for internal transfers)
     - name: effective_date
       type: date
       description: Date the payment is applied to the account
     - name: external_reference
-      type: varchar
+      type: string
       description: External reference number for the payment
     - name: fees_portion
-      type: numeric
+      type: bigdecimal
       description: Portion of payment applied to fees
     - name: interest_portion
-      type: numeric
+      type: bigdecimal
       description: Portion of payment applied to interest
     - name: memo
-      type: varchar
+      type: string
       description: Additional payment information or notes
     - name: payment_date
       type: date!
       description: Date the payment was made or scheduled
     - name: payment_method
-      type: varchar!
+      type: string!
       description: Method of payment (ACH, wire, internal transfer, check)
     - name: payment_type
-      type: varchar!
+      type: string!
       description: Type of payment (principal, interest, fees, or combination)
     - name: principal_portion
-      type: numeric
+      type: bigdecimal
       description: Portion of payment applied to principal
     - name: small_business_banking_credit_line_id
-      type: int_4
+      type: int_32
       description: Reference to the credit line being paid (for credit line payments)
     - name: small_business_banking_loan_id
-      type: int_4
+      type: int_32
       description: Reference to the loan being paid (for loan payments)
     - name: small_business_banking_payment_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each payment
     - name: source_account_id
-      type: int_4
+      type: int_32
       description: Reference to the account funds are drawn from (for internal transfers)
     - name: status
-      type: varchar!
+      type: string!
       description: Status of the payment (pending, processed, failed)
   graphql:
     typeName: SmallBusinessBanking_small_business_banking_payments
@@ -205,39 +205,39 @@ definition:
       orderedType: small_business_banking_payments
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: credit_card_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: destination_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: effective_date
           orderByExpression: date_order_by_exp
         - fieldName: external_reference
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: fees_portion
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: interest_portion
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: memo
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: payment_date
           orderByExpression: date_order_by_exp
         - fieldName: payment_method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: payment_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: principal_portion
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: small_business_banking_credit_line_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_payment_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: source_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: small_business_banking_business_card_account
         - relationshipName: small_business_banking_account

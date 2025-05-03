@@ -7,25 +7,25 @@ definition:
     credit score, income, and employment requirements.
   fields:
     - name: consumer_lending_criteria_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for eligibility criteria
     - name: consumer_lending_loan_product_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan product
     - name: criteria_type
-      type: consumer_lending_eligibility_criteria_type!
+      type: enum!
       description: Type of eligibility criteria
     - name: description
-      type: text
+      type: string
       description: Description of the eligibility criteria
     - name: max_value
-      type: varchar
+      type: string
       description: Maximum value for eligibility
     - name: min_value
-      type: varchar
+      type: string
       description: Minimum value for eligibility
     - name: required
-      type: bool!
+      type: boolean!
       description: Whether this criteria is required
   graphql:
     typeName: ConsumerLending_consumer_lending_product_eligibility_criteria
@@ -121,19 +121,19 @@ definition:
       orderedType: consumer_lending_product_eligibility_criteria
       orderableFields:
         - fieldName: consumer_lending_criteria_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_loan_product_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: criteria_type
-          orderByExpression: consumer_lending_eligibility_criteria_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: max_value
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: min_value
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: required
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_product
   graphql:

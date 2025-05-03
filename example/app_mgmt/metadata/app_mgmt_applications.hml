@@ -10,14 +10,14 @@ definition:
       type: uuid!
       description: Unique identifier for an application.
     - name: application_name
-      type: varchar
+      type: string
       description: Name of the application.
     - name: application_owner_id
-      type: int_4
+      type: int_32
       description: Identifier for the individual responsible for communication with
         stakeholders, funding, budget, and strategy for the application.
     - name: application_type
-      type: app_mgmt_application_types
+      type: enum
       description: Type of application (e.g., web, mobile, desktop).
     - name: architecture_id
       type: uuid
@@ -26,7 +26,7 @@ definition:
       type: uuid
       description: Identifier for the team that initially created the application.
     - name: created_by_user_id
-      type: int_4
+      type: int_32
       description: Identifier of the employee who initially created the application record.
     - name: date_deployed
       type: timestamptz
@@ -35,20 +35,20 @@ definition:
       type: timestamptz
       description: Date the application was retired or decommissioned.
     - name: deployment_environment
-      type: app_mgmt_deployment_environments
+      type: enum
       description: Environment where the application is deployed (e.g., on-premises, cloud).
     - name: description
-      type: text
+      type: string
       description: General description of the application's purpose.
     - name: documentation_url
-      type: varchar
+      type: string
       description: Link to the application's documentation.
     - name: enterprise_department_id
-      type: int_4
+      type: int_32
       description: Has financial responsibility for resource. This is the department
         that pays for maintenance, upgrades and operation of the application.
     - name: lifecycle_status
-      type: app_mgmt_application_lifecycle_status
+      type: enum
       description: Current stage in the application's lifecycle (e.g., development,
         production).
     - name: maintained_by_team_id
@@ -56,7 +56,7 @@ definition:
       description: Identifier for the team responsible for maintaining the
         application, including updates and fixes.
     - name: modified_by_user_id
-      type: int_4
+      type: int_32
       description: Identifier of the employee who last modified the application record.
     - name: operated_by_team_id
       type: uuid
@@ -75,13 +75,13 @@ definition:
       description: Identifier for the SDLC process used to develop or manage the
         application.
     - name: source_code_repository
-      type: varchar
+      type: string
       description: Link to the repository where the application's source code is stored.
     - name: vendor
-      type: varchar
+      type: string
       description: Name of the vendor if the application is purchased.
     - name: version
-      type: varchar
+      type: string
       description: Current version of the application.
   graphql:
     typeName: App_Mgmt_app_mgmt_applications
@@ -267,35 +267,35 @@ definition:
         - fieldName: app_mgmt_application_id
           orderByExpression: uuid_order_by_exp
         - fieldName: application_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: application_owner_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: application_type
-          orderByExpression: app_mgmt_application_types_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: architecture_id
           orderByExpression: uuid_order_by_exp
         - fieldName: created_by_team_id
           orderByExpression: uuid_order_by_exp
         - fieldName: created_by_user_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: date_deployed
           orderByExpression: timestamptz_order_by_exp
         - fieldName: date_retired
           orderByExpression: timestamptz_order_by_exp
         - fieldName: deployment_environment
-          orderByExpression: app_mgmt_deployment_environments_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: documentation_url
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: enterprise_department_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: lifecycle_status
-          orderByExpression: app_mgmt_application_lifecycle_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: maintained_by_team_id
           orderByExpression: uuid_order_by_exp
         - fieldName: modified_by_user_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: operated_by_team_id
           orderByExpression: uuid_order_by_exp
         - fieldName: rpo
@@ -305,11 +305,11 @@ definition:
         - fieldName: sdlc_process_id
           orderByExpression: uuid_order_by_exp
         - fieldName: source_code_repository
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: vendor
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: version
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: app_mgmt_architecture
         - relationshipName: app_mgmt_team

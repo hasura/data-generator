@@ -9,13 +9,13 @@ definition:
       type: uuid!
       description: Identifier for the component being depended upon.
     - name: dependency_type
-      type: app_mgmt_dependency_types
+      type: enum
       description: Type of dependency (e.g., runtime, build, test).
     - name: parent_component_id
       type: uuid!
       description: Identifier for the component that depends on another component.
     - name: quantity
-      type: int_4
+      type: int_32
       description: Number of times the child component is used by the parent.
   graphql:
     typeName: App_Mgmt_app_mgmt_component_dependencies
@@ -99,11 +99,11 @@ definition:
         - fieldName: child_component_id
           orderByExpression: uuid_order_by_exp
         - fieldName: dependency_type
-          orderByExpression: app_mgmt_dependency_types_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: parent_component_id
           orderByExpression: uuid_order_by_exp
         - fieldName: quantity
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: app_mgmt_component
         - relationshipName: app_mgmt_component_by_parent_component_id

@@ -6,34 +6,34 @@ definition:
   description: Records submissions of regulatory reports to authorities
   fields:
     - name: confirmation_number
-      type: varchar
+      type: string
       description: Confirmation number received upon submission
     - name: response_date
       type: timestamptz
       description: Date and time of regulator response
     - name: response_details
-      type: text
+      type: string
       description: Details of the regulator's response
     - name: response_status
-      type: varchar
+      type: string
       description: Status of the regulator's response (accepted, rejected, need more info)
     - name: small_business_banking_report_id
-      type: int_4!
+      type: int_32!
       description: Reference to the regulatory report
     - name: small_business_banking_submission_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each report submission
     - name: submission_date
       type: timestamptz!
       description: Date and time of submission
     - name: submission_file_path
-      type: varchar
+      type: string
       description: Path to the submitted file
     - name: submission_method
-      type: varchar!
+      type: string!
       description: Method of submission (portal, API, mail, etc.)
     - name: submitted_by_id
-      type: int_4!
+      type: int_32!
       description: Person who submitted the report
   graphql:
     typeName: SmallBusinessBanking_small_business_banking_report_submissions
@@ -144,25 +144,25 @@ definition:
       orderedType: small_business_banking_report_submissions
       orderableFields:
         - fieldName: confirmation_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: response_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: response_details
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: response_status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: small_business_banking_report_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: small_business_banking_submission_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: submission_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: submission_file_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: submission_method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: submitted_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: small_business_banking_regulatory_report
   graphql:

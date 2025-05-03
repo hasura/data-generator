@@ -13,10 +13,10 @@ definition:
       type: timestamptz
       description: When the resource definition was created
     - name: created_by_id
-      type: int_4
+      type: int_32
       description: Who created the resource definition
     - name: description
-      type: text
+      type: string
       description: Description of the resource
     - name: host_id
       type: uuid
@@ -25,14 +25,14 @@ definition:
       type: inet
       description: Network device where the resource is located (for NETWORK_DEVICE types)
     - name: resource_identifier
-      type: varchar!
+      type: string!
       description: Unique identifier for the resource (table name, API endpoint,
         hostname, IP address, etc.)
     - name: resource_name
-      type: varchar!
+      type: string!
       description: Name of the resource
     - name: resource_type
-      type: security_resource_type!
+      type: enum!
       description: Type of resource (DATA, APPLICATION, HOST, NETWORK_DEVICE)
     - name: security_resource_id
       type: uuid!
@@ -152,19 +152,19 @@ definition:
         - fieldName: created_at
           orderByExpression: timestamptz_order_by_exp
         - fieldName: created_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: host_id
           orderByExpression: uuid_order_by_exp
         - fieldName: network_device_id
           orderByExpression: inet_order_by_exp
         - fieldName: resource_identifier
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: resource_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: resource_type
-          orderByExpression: security_resource_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: security_resource_id
           orderByExpression: uuid_order_by_exp
       orderableRelationships:

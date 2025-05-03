@@ -17,6 +17,8 @@ class ComponentType(BaseEnum):
     DOCKER_IMAGE = auto()  # A lightweight, standalone software package
     GRADLE_PLUGIN = auto()  # A plugin for the Gradle build automation system
     MAVEN_PLUGIN = auto()  # A plugin for the Maven build automation tool
+    OPERATING_SYSTEM = auto()
+    HARDWARE_DEVICE = auto()
 
     _DEFAULT_WEIGHTS = [
         20.0,  # JAVA_LIBRARY

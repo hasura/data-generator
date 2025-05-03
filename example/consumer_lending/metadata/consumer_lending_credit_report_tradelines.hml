@@ -7,43 +7,43 @@ definition:
     reported on a credit report.
   fields:
     - name: account_number
-      type: varchar
+      type: string
       description: Masked account number
     - name: account_type
-      type: consumer_lending_account_type!
+      type: enum!
       description: Type of credit account
     - name: consumer_lending_credit_report_id
-      type: int_4!
+      type: int_32!
       description: Reference to credit report
     - name: consumer_lending_tradeline_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for tradeline
     - name: credit_limit
-      type: numeric
+      type: bigdecimal
       description: Credit limit if applicable
     - name: creditor_name
-      type: varchar!
+      type: string!
       description: Name of creditor
     - name: current_balance
-      type: numeric
+      type: bigdecimal
       description: Current balance on account
     - name: days_past_due
-      type: int_4
+      type: int_32
       description: Current days past due
     - name: high_credit
-      type: numeric
+      type: bigdecimal
       description: Highest balance or credit limit
     - name: monthly_payment
-      type: numeric
+      type: bigdecimal
       description: Monthly payment amount
     - name: open_date
       type: date
       description: When account was opened
     - name: payment_status
-      type: consumer_lending_payment_status
+      type: enum
       description: Current status of account payments
     - name: worst_delinquency
-      type: consumer_lending_delinquency_severity
+      type: enum
       description: Worst historical delinquency
     - name: worst_delinquency_date
       type: date
@@ -177,31 +177,31 @@ definition:
       orderedType: consumer_lending_credit_report_tradelines
       orderableFields:
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: account_type
-          orderByExpression: consumer_lending_account_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_lending_credit_report_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_tradeline_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_limit
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: creditor_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: current_balance
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: days_past_due
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: high_credit
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: monthly_payment
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: open_date
           orderByExpression: date_order_by_exp
         - fieldName: payment_status
-          orderByExpression: consumer_lending_payment_status_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: worst_delinquency
-          orderByExpression: consumer_lending_delinquency_severity_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: worst_delinquency_date
           orderByExpression: date_order_by_exp
       orderableRelationships:

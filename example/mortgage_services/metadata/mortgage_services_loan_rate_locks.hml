@@ -12,28 +12,28 @@ definition:
       type: timestamptz
       description: Date the lock was extended, if applicable
     - name: extension_fee
-      type: numeric
+      type: bigdecimal
       description: Fee charged for extending the lock, if any
     - name: lock_date
       type: timestamptz!
       description: When the interest rate was locked
     - name: lock_fee
-      type: numeric
+      type: bigdecimal
       description: Fee charged for the rate lock, if any
     - name: lock_period_days
-      type: int_4!
+      type: int_32!
       description: Duration of the lock in days
     - name: locked_interest_rate
-      type: numeric!
+      type: bigdecimal!
       description: The interest rate secured by this lock
     - name: mortgage_services_loan_id
-      type: int_4!
+      type: int_32!
       description: References the loan this rate lock applies to
     - name: mortgage_services_rate_lock_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each rate lock
     - name: status
-      type: mortgage_services_loan_rate_lock_status!
+      type: enum!
       description: Current status of the rate lock
   graphql:
     typeName: MortgageServices_mortgage_services_loan_rate_locks
@@ -148,21 +148,21 @@ definition:
         - fieldName: extension_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: extension_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: lock_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: lock_fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: lock_period_days
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: locked_interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: mortgage_services_loan_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_rate_lock_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: status
-          orderByExpression: mortgage_services_loan_rate_lock_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_loan
   graphql:

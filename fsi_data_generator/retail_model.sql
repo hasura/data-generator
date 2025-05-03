@@ -5258,7 +5258,8 @@ CREATE TABLE "app_mgmt"."components" (
   "modified_by_user_id" INTEGER,
   "package_info" TEXT,
   "repository_url" VARCHAR(2048),
-  "namespace_or_module" VARCHAR(255)
+  "namespace_or_module" VARCHAR(255),
+  "cpe23uri" VARCHAR
 );
 
 CREATE TABLE "app_mgmt"."component_dependencies" (
@@ -10302,6 +10303,8 @@ COMMENT ON COLUMN "app_mgmt"."components"."package_info" IS 'Language-specific p
 COMMENT ON COLUMN "app_mgmt"."components"."repository_url" IS 'Link to the component''s repository (e.g., Maven repository, npm registry, NuGet feed).';
 
 COMMENT ON COLUMN "app_mgmt"."components"."namespace_or_module" IS 'Namespace or module name within the component (if applicable).';
+
+COMMENT ON COLUMN "app_mgmt"."components"."cpe23uri" IS 'Represents a logical relationship (but not always valid) to security.cpe.cpe23uri';
 
 COMMENT ON TABLE "app_mgmt"."component_dependencies" IS 'Table to store component dependencies (BOM relationships).';
 

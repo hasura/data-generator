@@ -7,25 +7,25 @@ definition:
     applications are denied.
   fields:
     - name: consumer_lending_application_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan application
     - name: consumer_lending_notice_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for notice
     - name: delivery_method
-      type: consumer_lending_delivery_method!
+      type: enum!
       description: Method of delivering the notice
     - name: generated_date
       type: timestamptz!
       description: When notice was generated
     - name: notice_path
-      type: varchar
+      type: string
       description: Path to stored notice document
     - name: sent_date
       type: timestamptz
       description: When notice was sent to applicant
     - name: status
-      type: consumer_lending_adverse_action_notice_status!
+      type: enum!
       description: Current status of the notice
   graphql:
     typeName: ConsumerLending_consumer_lending_adverse_action_notices
@@ -122,19 +122,19 @@ definition:
       orderedType: consumer_lending_adverse_action_notices
       orderableFields:
         - fieldName: consumer_lending_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_notice_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: delivery_method
-          orderByExpression: consumer_lending_delivery_method_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: generated_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: notice_path
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: sent_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: status
-          orderByExpression: consumer_lending_adverse_action_notice_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_application
   graphql:

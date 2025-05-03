@@ -7,22 +7,22 @@ definition:
     multiple applicants per application.
   fields:
     - name: applicant_type
-      type: varchar!
+      type: string!
       description: Primary, Co-Applicant, Guarantor
     - name: consumer_lending_applicant_id
-      type: int_4!
+      type: int_32!
       description: Reference to applicant
     - name: consumer_lending_application_applicant_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for application-applicant relationship
     - name: consumer_lending_application_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan application
     - name: contribution_percentage
-      type: numeric
+      type: bigdecimal
       description: Percentage of loan responsibility
     - name: relationship_to_primary
-      type: varchar
+      type: string
       description: Spouse, Relative, Friend, etc.
   graphql:
     typeName: ConsumerLending_consumer_lending_application_applicants
@@ -114,17 +114,17 @@ definition:
       orderedType: consumer_lending_application_applicants
       orderableFields:
         - fieldName: applicant_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: consumer_lending_applicant_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_application_applicant_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: contribution_percentage
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: relationship_to_primary
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_applicant
         - relationshipName: consumer_lending_loan_application

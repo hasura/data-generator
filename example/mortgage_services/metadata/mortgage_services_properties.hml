@@ -6,43 +6,43 @@ definition:
   description: Stores information about properties being purchased or refinanced
   fields:
     - name: address
-      type: varchar!
+      type: string!
       description: References the complete property address
     - name: bathrooms
-      type: numeric
+      type: bigdecimal
       description: Number of bathrooms (allows for half baths)
     - name: bedrooms
-      type: int_4
+      type: int_32
       description: Number of bedrooms
     - name: construction_completion_date
       type: date
       description: Expected completion date for new construction
     - name: hoa_dues
-      type: numeric
+      type: bigdecimal
       description: Monthly homeowners association fees if applicable
     - name: is_new_construction
-      type: bool
+      type: boolean
       description: Indicates if the property is newly constructed
     - name: lot_size
-      type: numeric
+      type: bigdecimal
       description: Size of the property lot
     - name: mortgage_services_application_id
-      type: int_4!
+      type: int_32!
       description: References the mortgage application this property is associated with
     - name: mortgage_services_property_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each property record
     - name: occupancy_type
-      type: mortgage_services_occupancy_type!
+      type: enum!
       description: How the property will be used by the borrower
     - name: property_type
-      type: mortgage_services_property_type!
+      type: enum!
       description: Type of property
     - name: square_feet
-      type: int_4
+      type: int_32
       description: Total living area in square feet
     - name: year_built
-      type: int_4
+      type: int_32
       description: Year the property was constructed
   graphql:
     typeName: MortgageServices_mortgage_services_properties
@@ -169,31 +169,31 @@ definition:
       orderedType: mortgage_services_properties
       orderableFields:
         - fieldName: address
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: bathrooms
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: bedrooms
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: construction_completion_date
           orderByExpression: date_order_by_exp
         - fieldName: hoa_dues
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: is_new_construction
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: lot_size
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: mortgage_services_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_property_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: occupancy_type
-          orderByExpression: mortgage_services_occupancy_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: property_type
-          orderByExpression: mortgage_services_property_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: square_feet
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: year_built
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_application
   graphql:

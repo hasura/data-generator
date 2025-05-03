@@ -6,35 +6,35 @@ definition:
   description: Stores customer alert preferences
   fields:
     - name: alert_type
-      type: varchar!
+      type: string!
       description: Type of alert (Payment Due, Payment Posted, Purchase, Credit Limit,
         Fraud)
     - name: contact_info
-      type: varchar!
+      type: string!
       description: Email or phone number for alert
     - name: created_date
       type: date!
       description: When alert was set up
     - name: credit_cards_alert_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each alert
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_card_id
-      type: int_4
+      type: int_32
       description: Reference to specific card if applicable
     - name: delivery_method
-      type: varchar!
+      type: string!
       description: How alert is delivered (Email, SMS, Push)
     - name: is_active
-      type: bool!
+      type: boolean!
       description: Whether alert is currently active
     - name: modified_date
       type: date
       description: When alert was last modified
     - name: threshold_amount
-      type: numeric
+      type: bigdecimal
       description: Amount threshold if applicable
   graphql:
     typeName: CreditCards_credit_cards_card_alerts
@@ -146,25 +146,25 @@ definition:
       orderedType: credit_cards_card_alerts
       orderableFields:
         - fieldName: alert_type
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: contact_info
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: created_date
           orderByExpression: date_order_by_exp
         - fieldName: credit_cards_alert_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_card_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: delivery_method
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: is_active
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: modified_date
           orderByExpression: date_order_by_exp
         - fieldName: threshold_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_card

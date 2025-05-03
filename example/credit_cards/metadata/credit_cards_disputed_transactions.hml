@@ -6,46 +6,46 @@ definition:
   description: Tracks disputed transactions and their resolution
   fields:
     - name: case_number
-      type: varchar!
+      type: string!
       description: Dispute case identifier
     - name: credit_cards_card_account_id
-      type: int_4!
+      type: int_32!
       description: Reference to card_accounts
     - name: credit_cards_dispute_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each dispute
     - name: credit_cards_transaction_id
-      type: int_4!
+      type: int_32!
       description: Reference to transactions
     - name: description
-      type: text
+      type: string
       description: Customer description of dispute
     - name: dispute_date
       type: timestamptz!
       description: Date and time dispute was filed
     - name: dispute_reason
-      type: varchar!
+      type: string!
       description: Reason for dispute (Fraud, Product Issue, Duplicate Charge, etc.)
     - name: disputed_amount
-      type: numeric!
+      type: bigdecimal!
       description: Amount being disputed
     - name: documentation_received
-      type: bool!
+      type: boolean!
       description: Whether documentation was received
     - name: provisional_credit_amount
-      type: numeric
+      type: bigdecimal
       description: Amount of provisional credit
     - name: provisional_credit_date
       type: date
       description: Date provisional credit was issued if applicable
     - name: resolution
-      type: varchar
+      type: string
       description: Final resolution (Customer Favor, Merchant Favor)
     - name: resolution_date
       type: date
       description: Date dispute was resolved
     - name: status
-      type: varchar!
+      type: string!
       description: Status of dispute (Filed, Processing, Resolved, Declined)
   graphql:
     typeName: CreditCards_credit_cards_disputed_transactions
@@ -177,33 +177,33 @@ definition:
       orderedType: credit_cards_disputed_transactions
       orderableFields:
         - fieldName: case_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: credit_cards_card_account_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_dispute_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: credit_cards_transaction_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: dispute_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: dispute_reason
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: disputed_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: documentation_received
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: provisional_credit_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: provisional_credit_date
           orderByExpression: date_order_by_exp
         - fieldName: resolution
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: resolution_date
           orderByExpression: date_order_by_exp
         - fieldName: status
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: credit_cards_card_account
         - relationshipName: credit_cards_transaction

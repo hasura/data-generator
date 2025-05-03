@@ -3,41 +3,49 @@ kind: ObjectType
 version: v1
 definition:
   name: data_quality_api_lineage
-  description: Tracks the lineage of API calls for data governance and auditing purposes.
+  description: Represents historical documentation of API endpoint design.
+    Documents the custom API endpoints available internally or externally,
+    including Open Banking and FDX endpoints. Tracks the lineage of API calls
+    for data governance and auditing purposes. The most recent API lineage
+    records can be identified by an endDate of NULL. API's may use a base path
+    for both 1) separation of concerns and 2) versioning, typically the base
+    path is ignored when analyzing compliance with regulator mandated API
+    resource paths.
   fields:
     - name: api_call
-      type: varchar!
-      description: The API endpoint and method called.
+      type: string!
+      description: The API endpoint and method called. Can be related to api_call
+        instances through api_call.path.
     - name: api_lineage_id
-      type: varchar!
+      type: string!
       description: Unique identifier for the API lineage record.
     - name: app_mgmt_application_id
       type: uuid
-      description: Reference to associated app management record.
     - name: description
-      type: text
+      type: string
       description: Description of the API call purpose or context.
     - name: end_date
       type: timestamptz
       description: Timestamp when this API lineage tracking ended, if applicable.
     - name: host_app_mgmt_application_id
       type: uuid
-      description: Reference to associated app management record. Convenience for
-        processing.
     - name: major_version
-      type: int_4!
+      type: int_32
       description: The major version assigned to the API
     - name: minor_version
-      type: int_4!
+      type: int_32
       description: The minor version assigned to the API
     - name: query
-      type: text!
-      description: The DDN query used to source data for this API call
+      type: string!
+      description: The DDN query that is used to source data for this API call. If
+        this query is validated you can find its data validation runs by
+        matching the query field AFTER NORMALIZING WHITE SPACE. But its not
+        guaranteed, there may be no validation runs and api's can use the same
+        query but produce different outputs.
     - name: security_host_id
       type: uuid
-      description: Optional reference to server.
     - name: server_name
-      type: varchar!
+      type: string!
       description: Name of the server handling the API call.
     - name: start_date
       type: timestamptz!
@@ -169,27 +177,27 @@ definition:
       orderedType: data_quality_api_lineage
       orderableFields:
         - fieldName: api_call
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: api_lineage_id
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: app_mgmt_application_id
           orderByExpression: uuid_order_by_exp
         - fieldName: description
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: end_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: host_app_mgmt_application_id
           orderByExpression: uuid_order_by_exp
         - fieldName: major_version
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: minor_version
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: query
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: security_host_id
           orderByExpression: uuid_order_by_exp
         - fieldName: server_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: start_date
           orderByExpression: timestamptz_order_by_exp
         - fieldName: updated_at
@@ -226,7 +234,14 @@ definition:
       queryRootField: data_quality_api_lineage_aggregate
       subscription:
         rootField: data_quality_api_lineage_aggregate
-  description: Tracks the lineage of API calls for data governance and auditing purposes.
+  description: Represents historical documentation of API endpoint design.
+    Documents the custom API endpoints available internally or externally,
+    including Open Banking and FDX endpoints. Tracks the lineage of API calls
+    for data governance and auditing purposes. The most recent API lineage
+    records can be identified by an endDate of NULL. API's may use a base path
+    for both 1) separation of concerns and 2) versioning, typically the base
+    path is ignored when analyzing compliance with regulator mandated API
+    resource paths.
 
 ---
 kind: ModelPermissions

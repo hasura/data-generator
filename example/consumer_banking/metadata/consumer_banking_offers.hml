@@ -6,46 +6,46 @@ definition:
   description: Stores promotional offers made to account holders
   fields:
     - name: amount
-      type: numeric
+      type: bigdecimal
       description: Monetary amount of the offer
     - name: amount_currency
-      type: enterprise_currency_code
+      type: enum
       description: Currency of the offer amount
     - name: consumer_banking_account_id
-      type: int_8!
+      type: int_64!
       description: References the account this offer belongs to
     - name: consumer_banking_offer_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for each offer
     - name: description
-      type: varchar
+      type: string
       description: Detailed description of the offer
     - name: end_date_time
       type: timestamptz
       description: When the offer expires
     - name: fee
-      type: numeric
+      type: bigdecimal
       description: Any fee associated with accepting the offer
     - name: fee_currency
-      type: enterprise_currency_code
+      type: enum
       description: Currency of the fee
     - name: offer_type
-      type: consumer_banking_offer_type!
+      type: enum!
       description: Type of offer (e.g., loan, investment, balance transfer)
     - name: rate
-      type: numeric
+      type: bigdecimal
       description: Interest rate associated with the offer
     - name: start_date_time
       type: timestamptz
       description: When the offer becomes available
     - name: term
-      type: varchar
+      type: string
       description: Terms and conditions of the offer
     - name: url
-      type: varchar
+      type: string
       description: Web link for more information about the offer
     - name: value
-      type: int_4
+      type: int_32
       description: Numerical value related to the offer (e.g., reward points)
   graphql:
     typeName: ConsumerBanking_consumer_banking_offers
@@ -176,33 +176,33 @@ definition:
       orderedType: consumer_banking_offers
       orderableFields:
         - fieldName: amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: amount_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: consumer_banking_account_id
-          orderByExpression: int_8_order_by_exp
+          orderByExpression: int_64_order_by_exp
         - fieldName: consumer_banking_offer_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: description
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: end_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: fee
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: fee_currency
-          orderByExpression: enterprise_currency_code_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: offer_type
-          orderByExpression: consumer_banking_offer_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: start_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: term
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: url
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: value
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_banking_account
   graphql:

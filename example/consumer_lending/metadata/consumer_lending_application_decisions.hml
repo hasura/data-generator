@@ -7,52 +7,52 @@ definition:
     approvals, denials, and pre-qualifications.
   fields:
     - name: approved_amount
-      type: numeric
+      type: bigdecimal
       description: Approved loan amount
     - name: approved_interest_rate
-      type: numeric
+      type: bigdecimal
       description: Approved interest rate
     - name: approved_monthly_payment
-      type: numeric
+      type: bigdecimal
       description: Estimated monthly payment
     - name: approved_term_months
-      type: int_4
+      type: int_32
       description: Approved loan term in months
     - name: conditional_approval
-      type: bool
+      type: boolean
       description: Whether approval has conditions
     - name: consumer_lending_application_id
-      type: int_4!
+      type: int_32!
       description: Reference to loan application
     - name: consumer_lending_decision_id
-      type: int_4!
+      type: int_32!
       description: Unique identifier for decision
     - name: consumer_lending_model_id
-      type: int_4
+      type: int_32
       description: Reference to decision model used
     - name: consumer_lending_pricing_tier_id
-      type: int_4
+      type: int_32
       description: Reference to pricing tier if approved
     - name: decision_by_id
-      type: int_4
+      type: int_32
       description: User that made decision
     - name: decision_date_time
       type: timestamptz!
       description: When decision was made
     - name: decision_result
-      type: consumer_lending_decision_result!
+      type: enum!
       description: Result of the decision
     - name: decision_score
-      type: numeric
+      type: bigdecimal
       description: Numeric score from decision model
     - name: decision_type
-      type: consumer_lending_decision_type!
+      type: enum!
       description: Type of decision
     - name: expires_date
       type: date
       description: When approval or prequalification expires
     - name: notes
-      type: text
+      type: string
       description: Additional decision notes
   graphql:
     typeName: ConsumerLending_consumer_lending_application_decisions
@@ -196,37 +196,37 @@ definition:
       orderedType: consumer_lending_application_decisions
       orderableFields:
         - fieldName: approved_amount
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: approved_interest_rate
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: approved_monthly_payment
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: approved_term_months
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: conditional_approval
-          orderByExpression: bool_order_by_exp
+          orderByExpression: boolean_order_by_exp
         - fieldName: consumer_lending_application_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_decision_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_model_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: consumer_lending_pricing_tier_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: decision_by_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: decision_date_time
           orderByExpression: timestamptz_order_by_exp
         - fieldName: decision_result
-          orderByExpression: consumer_lending_decision_result_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: decision_score
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: decision_type
-          orderByExpression: consumer_lending_decision_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: expires_date
           orderByExpression: date_order_by_exp
         - fieldName: notes
-          orderByExpression: text_order_by_exp
+          orderByExpression: string_order_by_exp
       orderableRelationships:
         - relationshipName: consumer_lending_loan_application
         - relationshipName: consumer_lending_decision_model

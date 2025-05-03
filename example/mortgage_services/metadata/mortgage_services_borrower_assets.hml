@@ -7,31 +7,31 @@ definition:
     qualification
   fields:
     - name: account_number
-      type: varchar
+      type: string
       description: Account number for financial assets
     - name: asset_type
-      type: mortgage_services_asset_type!
+      type: enum!
       description: Type of asset (e.g., bank account, property)
     - name: current_value
-      type: numeric!
+      type: bigdecimal!
       description: Current estimated value of the asset
     - name: institution_name
-      type: varchar
+      type: string
       description: Financial institution holding the asset
     - name: mortgage_services_asset_id
-      type: int_4!
+      type: int_32!
       description: Auto-incrementing identifier for each asset record
     - name: mortgage_services_borrower_id
-      type: int_4!
+      type: int_32!
       description: References the borrower this asset belongs to
     - name: property_address
-      type: varchar
+      type: string
       description: Full text address for real estate assets
     - name: verification_date
       type: date
       description: When the asset was verified
     - name: verification_status
-      type: mortgage_services_verification_status!
+      type: enum!
       description: Status of asset verification process
   graphql:
     typeName: MortgageServices_mortgage_services_borrower_assets
@@ -137,23 +137,23 @@ definition:
       orderedType: mortgage_services_borrower_assets
       orderableFields:
         - fieldName: account_number
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: asset_type
-          orderByExpression: mortgage_services_asset_type_order_by_exp
+          orderByExpression: enum_order_by_exp
         - fieldName: current_value
-          orderByExpression: numeric_order_by_exp
+          orderByExpression: bigdecimal_order_by_exp
         - fieldName: institution_name
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: mortgage_services_asset_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: mortgage_services_borrower_id
-          orderByExpression: int_4_order_by_exp
+          orderByExpression: int_32_order_by_exp
         - fieldName: property_address
-          orderByExpression: varchar_order_by_exp
+          orderByExpression: string_order_by_exp
         - fieldName: verification_date
           orderByExpression: date_order_by_exp
         - fieldName: verification_status
-          orderByExpression: mortgage_services_verification_status_order_by_exp
+          orderByExpression: enum_order_by_exp
       orderableRelationships:
         - relationshipName: mortgage_services_borrower
   graphql:
