@@ -733,7 +733,8 @@ def generate_random_component(_id_fields: Dict[str, Any], dg: DataGenerator) -> 
         "package_info": package_info,
         "repository_url": repository_url,
         "namespace_or_module": namespace_or_module,
-        "cpe23uri": cpe23uri
+        "cpe23uri": cpe23uri,
+        "normalized_vendor": cpe_vendor
     }
 
     return component

@@ -2898,7 +2898,9 @@ CREATE TYPE "app_mgmt"."component_types" AS ENUM (
   'DOTNET_ASSEMBLY',
   'DOCKER_IMAGE',
   'GRADLE_PLUGIN',
-  'MAVEN_PLUGIN'
+  'MAVEN_PLUGIN',
+  'HARDWARE_DEVICE',
+  'OPERATING_SYSTEM'
 );
 
 CREATE TYPE "app_mgmt"."dependency_types" AS ENUM (
@@ -5178,7 +5180,8 @@ CREATE TABLE "security"."cvss" (
 CREATE TABLE "security"."cpe" (
   "cve" VARCHAR(20),
   "cpe23uri" TEXT,
-  "vulnerable" VARCHAR(5)
+  "vulnerable" VARCHAR(5),
+  "normalized_vendor" VARCHAR(255)
 );
 
 CREATE TABLE "security"."cve_problem" (
@@ -5259,7 +5262,8 @@ CREATE TABLE "app_mgmt"."components" (
   "package_info" TEXT,
   "repository_url" VARCHAR(2048),
   "namespace_or_module" VARCHAR(255),
-  "cpe23uri" VARCHAR
+  "cpe23uri" VARCHAR,
+  "normalized_vendor" VARCHAR(255)
 );
 
 CREATE TABLE "app_mgmt"."component_dependencies" (
@@ -10164,9 +10168,11 @@ COMMENT ON TABLE "security"."cpe" IS 'Stores Common Platform Enumeration (CPE) i
 
 COMMENT ON COLUMN "security"."cpe"."cve" IS 'Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.';
 
-COMMENT ON COLUMN "security"."cpe"."cpe23uri" IS 'CPE 2.3 URI string.';
+COMMENT ON COLUMN "security"."cpe"."cpe23uri" IS 'CPE 2.3 URI string. This represents a regex match, where * means anything. To match this to a component''s cpe23uri use regex-style matching.';
 
 COMMENT ON COLUMN "security"."cpe"."vulnerable" IS 'Indicates if the CPE is vulnerable to the CVE.';
+
+COMMENT ON COLUMN "security"."cpe"."normalized_vendor" IS 'Extracted vendor from cpe23uri to support matching with application components.';
 
 COMMENT ON TABLE "security"."cve_problem" IS 'Stores problem descriptions associated with CVEs.';
 
@@ -10305,6 +10311,8 @@ COMMENT ON COLUMN "app_mgmt"."components"."repository_url" IS 'Link to the compo
 COMMENT ON COLUMN "app_mgmt"."components"."namespace_or_module" IS 'Namespace or module name within the component (if applicable).';
 
 COMMENT ON COLUMN "app_mgmt"."components"."cpe23uri" IS 'Represents a logical relationship (but not always valid) to security.cpe.cpe23uri';
+
+COMMENT ON COLUMN "app_mgmt"."components"."normalized_vendor" IS 'Extracted vendor from cpe23uri to support matching with CPEs.';
 
 COMMENT ON TABLE "app_mgmt"."component_dependencies" IS 'Table to store component dependencies (BOM relationships).';
 

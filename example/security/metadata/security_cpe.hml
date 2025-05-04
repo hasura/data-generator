@@ -7,11 +7,17 @@ definition:
   fields:
     - name: cpe_23_uri
       type: string
-      description: CPE 2.3 URI string.
+      description: CPE 2.3 URI string. This represents a regex match, where * means
+        anything. To match this to a component's cpe23uri use regex-style
+        matching.
     - name: cve
       type: string
       description: Common Vulnerabilities and Exposures identifier. Foreign key
         referencing cvss.cve.
+    - name: normalized_vendor
+      type: string
+      description: Extracted vendor from cpe23uri to support matching with application
+        components.
     - name: vulnerable
       type: string
       description: Indicates if the CPE is vulnerable to the CVE.
@@ -28,6 +34,9 @@ definition:
         cve:
           column:
             name: cve
+        normalized_vendor:
+          column:
+            name: normalized_vendor
         vulnerable:
           column:
             name: vulnerable
@@ -43,6 +52,7 @@ definition:
         allowedFields:
           - cpe_23_uri
           - cve
+          - normalized_vendor
           - vulnerable
 
 ---
@@ -57,6 +67,8 @@ definition:
         - fieldName: cpe_23_uri
           booleanExpressionType: text_bool_exp
         - fieldName: cve
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: normalized_vendor
           booleanExpressionType: varchar_bool_exp
         - fieldName: vulnerable
           booleanExpressionType: varchar_bool_exp
@@ -82,6 +94,8 @@ definition:
           aggregateExpression: text_agg_exp
         - fieldName: cve
           aggregateExpression: varchar_agg_exp
+        - fieldName: normalized_vendor
+          aggregateExpression: varchar_agg_exp
         - fieldName: vulnerable
           aggregateExpression: varchar_agg_exp
   count:
@@ -101,6 +115,8 @@ definition:
         - fieldName: cpe_23_uri
           orderByExpression: string_order_by_exp
         - fieldName: cve
+          orderByExpression: string_order_by_exp
+        - fieldName: normalized_vendor
           orderByExpression: string_order_by_exp
         - fieldName: vulnerable
           orderByExpression: string_order_by_exp

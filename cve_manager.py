@@ -96,7 +96,9 @@ CREATE TABLE IF NOT EXISTS security.cpe (
     -- CPE 2.3 URI string.
     cpe23uri text,
     -- Indicates if the CPE is vulnerable to the CVE.
-    vulnerable character(5)
+    vulnerable character(5),
+    -- Normalized vendor name extracted from CPE23URI
+    normalized_vendor varchar(255)
 );
 
 -- Stores problem descriptions associated with CVEs.
@@ -104,7 +106,7 @@ CREATE TABLE IF NOT EXISTS security.cve_problem (
     -- Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve.
     cve character(20) NOT NULL,
     -- Problem description related to the CVE.
-    problem text
+    problem text,
     cwe_id integer
 );
 
@@ -134,10 +136,11 @@ CREATE VIEW IF NOT EXISTS security.cvss_vs_cpes AS
     cvss.base_score,
     cvss.severity,
     cpe.cpe23uri,
+    cpe.normalized_vendor,
     cvss.description,
     cvss.published_date
-   FROM public.cpe,
-    public.cvss
+   FROM security.cpe,
+    security.cvss
   WHERE (cpe.cve = cvss.cve) AND cpe.vulnerable = 'True'::bpchar;
 '''
 
@@ -227,6 +230,30 @@ def create_tables(myuser, myhost, database):
                 print("PostgreSQL connection is closed")
 
 
+# Helper function to extract vendor from CPE23URI
+def extract_normalized_vendor(cpe23uri):
+    """
+    Extracts and normalizes the vendor portion from a CPE23URI string.
+
+    Example CPE23URI format: cpe:2.3:a:vendor:product:version:update:edition:language:sw_edition:target_sw:target_hw:other
+    """
+    if not cpe23uri:
+        return None
+
+    parts = cpe23uri.split(':')
+    if len(parts) < 5:  # Ensure we have enough parts
+        return None
+
+    # The vendor is the 4th part in the CPE string (index 3)
+    vendor = parts[3]
+
+    # Normalize vendor name
+    # Replace underscores with spaces and convert to lowercase
+    normalized_vendor = vendor.replace('_', ' ').lower()
+
+    return normalized_vendor
+
+
 # Download CVEs
 def download_cves(directory='nvd/', year=None):
     r = None
@@ -286,7 +313,7 @@ def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=
         file_cpes = open(results + "cve_cpes.csv", "w", encoding='utf8')
         writer_cpe = csv.writer(file_cpes, delimiter="\t")
 
-        writer_cpe.writerow(["CVE", "cpe23Uri", "Vulnerable"])
+        writer_cpe.writerow(["CVE", "cpe23Uri", "Vulnerable", "normalized_vendor"])
         writer_cwe.writerow(["CVE", "Problem"])
         writer_cvss.writerow(
             ["CVE", "Attack Complexity", "Attack Vector", "Availability Impact", "Confidentiality Impact",
@@ -468,14 +495,16 @@ def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=
                                         for cpe in cpes:
                                             if csv_file:
                                                 if 'cpe23Uri' in cpe:
-                                                    writer_cpe.writerow([cve, cpe['cpe23Uri'], str(cpe['vulnerable'])])
+                                                    normalized_vendor = extract_normalized_vendor(cpe['cpe23Uri'])
+                                                    writer_cpe.writerow([cve, cpe['cpe23Uri'], str(cpe['vulnerable']), normalized_vendor])
                         else:
                             if 'cpe_match' in cves['configurations']['nodes'][i]:
                                 cpes = cves['configurations']['nodes'][i]['cpe_match']
                                 for cpe in cpes:
                                     if csv_file:
                                         if 'cpe23Uri' in cpe:
-                                            writer_cpe.writerow([cve, cpe['cpe23Uri'], str(cpe['vulnerable'])])
+                                            normalized_vendor = extract_normalized_vendor(cpe['cpe23Uri'])
+                                            writer_cpe.writerow([cve, cpe['cpe23Uri'], str(cpe['vulnerable']), normalized_vendor])
                             else:
                                 cpe_inner_list_length = len(cves['configurations']['nodes'])
                                 if cpe_inner_list_length != 0:
@@ -485,8 +514,8 @@ def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=
                                             for cpe in cpes:
                                                 if csv_file:
                                                     if 'cpe23Uri' in cpe:
-                                                        writer_cpe.writerow(
-                                                            [cve, cpe['cpe23Uri'], str(cpe['vulnerable'])])
+                                                        normalized_vendor = extract_normalized_vendor(cpe['cpe23Uri'])
+                                                        writer_cpe.writerow([cve, cpe['cpe23Uri'], str(cpe['vulnerable']), normalized_vendor])
             except Exception as e:
                 print(str(e), cves['configurations'])  # check it
         file_cve_related_problems.close()
@@ -586,7 +615,7 @@ def process_cves(directory='nvd/', results='results/', csv_file=None, import_db=
             with open(filename, 'r') as f:
                 print("importing CVEs vs CPEs")
                 f.readline()
-                cur.copy_from(f, 'cpe', sep='\t', columns=('cve', 'cpe23uri', 'vulnerable'))
+                cur.copy_from(f, 'cpe', sep='\t', columns=('cve', 'cpe23uri', 'vulnerable', 'normalized_vendor'))
             conn.commit()
             f.close()
 
@@ -658,12 +687,12 @@ def execute_query(myuser, myhost, database, cve, score, date, csv_on, output_fol
                             print(i[0], selected_cve2[0])
                         else:
                             print(i[0])
-                cur.execute("SELECT cpe23uri FROM cpe WHERE cve LIKE '%" + cve + "%' AND vulnerable='True'")
+                cur.execute("SELECT cpe23uri, normalized_vendor FROM cpe WHERE cve LIKE '%" + cve + "%' AND vulnerable='True'")
                 selected_cve = cur.fetchall()
                 print("\r\nRelated Common Platform Enumerations (CPE)")
                 print("-------------------------------------------")
                 for i in selected_cve:
-                    print(i[0])
+                    print(i[0], "Vendor:", i[1] if i[1] else "Unknown")
             elif score or date:
                 if csv_on:
                     cves = []
@@ -735,20 +764,20 @@ def execute_query_cpe(myuser, myhost, database, cpe, score, date, csv_on, output
             print("Executing query\r\n")
             if date:
                 cur.execute(
-                    "SELECT cpe23uri, cve, base_score_3, base_score, published_date FROM cvss_vs_cpes WHERE cpe23uri LIKE '%" + cpe + "%' AND (base_score_3 >= " + score + "OR base_score >= " + score + ") AND (published_date >= '" + date + "'::date)")
+                    "SELECT cpe23uri, normalized_vendor, cve, base_score_3, base_score, published_date FROM cvss_vs_cpes WHERE cpe23uri LIKE '%" + cpe + "%' AND (base_score_3 >= " + score + "OR base_score >= " + score + ") AND (published_date >= '" + date + "'::date)")
                 selected_cpe = cur.fetchall()
-                print("CPE\t\t\t\t\t\t\tCVE\t\tCVSSv3.x CVSSv2\t Published Date")
+                print("CPE\t\t\t\t\t\t\tVendor\t\tCVE\t\tCVSSv3.x CVSSv2\t Published Date")
                 for r in selected_cpe:
-                    print(r[0], r[1], r[2], "\t", r[3], "\t", r[4])
+                    print(r[0], r[1] if r[1] else "Unknown", r[2], r[3], "\t", r[4], "\t", r[5])
                     if csv_on:
                         cpes.append(r)
             else:
                 cur.execute(
-                    "SELECT cpe23uri, cve, base_score_3, base_score,published_date FROM cvss_vs_cpes WHERE cpe23uri LIKE '%" + cpe + "%' AND (base_score_3 >= " + score + "OR base_score >= " + score + ")")
+                    "SELECT cpe23uri, normalized_vendor, cve, base_score_3, base_score, published_date FROM cvss_vs_cpes WHERE cpe23uri LIKE '%" + cpe + "%' AND (base_score_3 >= " + score + "OR base_score >= " + score + ")")
                 selected_cpe = cur.fetchall()
-                print("CPE\t\t\t\t\t\t\tCVE\t\tCVSSv3.x CVSSv2")
+                print("CPE\t\t\t\t\t\t\tVendor\t\tCVE\t\tCVSSv3.x CVSSv2")
                 for r in selected_cpe:
-                    print(r[0], r[1], r[2], "\t", r[3])
+                    print(r[0], r[1] if r[1] else "Unknown", r[2], r[3], "\t", r[4])
                     if csv_on:
                         cpes.append(r)
         except (Exception, psycopg2.DatabaseError) as error:
@@ -771,9 +800,9 @@ def execute_query_cpe(myuser, myhost, database, cpe, score, date, csv_on, output
                     print("Directory %s already exists" % output_folder)
                 file_cpe = open(output_folder + cpe + "_" + score + "_" + str(date) + ".csv", "w")
                 writer_cpe = csv.writer(file_cpe, delimiter=",")
-                writer_cpe.writerow(["CPE", "CVE", "CVSSv3 Score", "CVSSv2 Score", "Published Date"])
+                writer_cpe.writerow(["CPE", "Vendor", "CVE", "CVSSv3 Score", "CVSSv2 Score", "Published Date"])
                 for r in cpes:
-                    writer_cpe.writerow([r[0], r[1], r[2], r[3], r[4]])
+                    writer_cpe.writerow([r[0], r[1], r[2], r[3], r[4], r[5]])
                 file_cpe.close()
 
 
@@ -901,6 +930,75 @@ def cwe(user, host, database, password=None, port=5432, cursor_factory=None):
             os.remove(extracted_csv_file)
 
 
+# Add functionality to search by vendor
+def execute_query_vendor(myuser, myhost, database, vendor, score=0.0, date=False, csv_on=False, output_folder='results/'):
+    """Search for vulnerabilities by normalized vendor name"""
+    con = None
+    mypassword = None
+    vendors = None
+    cur = None
+    if csv_on:
+        vendors = []
+    try:
+        con = connect(dbname=database, user=myuser, host=myhost)
+    except (Exception, psycopg2.DatabaseError) as _error:
+        mypassword = getpass.getpass('Password:')
+    finally:
+        try:
+            con = connect(dbname=database, user=myuser, host=myhost, password=mypassword)
+            cur = con.cursor()
+            print("Executing vendor query\r\n")
+
+            # Normalize the input vendor name for comparison
+            vendor_search = vendor.lower().replace('_', ' ')
+
+            if date:
+                cur.execute(
+                    "SELECT cpe23uri, normalized_vendor, cve, base_score_3, base_score, published_date FROM cvss_vs_cpes " +
+                    "WHERE normalized_vendor LIKE '%" + vendor_search + "%' AND (base_score_3 >= " + str(score) + " OR base_score >= " + str(score) + ") " +
+                    "AND (published_date >= '" + date + "'::date)")
+                selected_vendors = cur.fetchall()
+                print("CPE\t\t\t\t\t\t\tVendor\t\tCVE\t\tCVSSv3.x CVSSv2\t Published Date")
+                for r in selected_vendors:
+                    print(r[0], r[1], r[2], r[3], "\t", r[4], "\t", r[5])
+                    if csv_on:
+                        vendors.append(r)
+            else:
+                cur.execute(
+                    "SELECT cpe23uri, normalized_vendor, cve, base_score_3, base_score, published_date FROM cvss_vs_cpes " +
+                    "WHERE normalized_vendor LIKE '%" + vendor_search + "%' AND (base_score_3 >= " + str(score) + " OR base_score >= " + str(score) + ")")
+                selected_vendors = cur.fetchall()
+                print("CPE\t\t\t\t\t\t\tVendor\t\tCVE\t\tCVSSv3.x CVSSv2")
+                for r in selected_vendors:
+                    print(r[0], r[1], r[2], r[3], "\t", r[4])
+                    if csv_on:
+                        vendors.append(r)
+        except (Exception, psycopg2.DatabaseError) as error:
+            print("Error while Querying Database", error)
+        finally:
+            if con:
+                cur.close()
+                con.close()
+                print("\r\nPostgreSQL connection is closed")
+            if csv_on:
+                if not os.path.exists(output_folder):
+                    try:
+                        os.makedirs(output_folder)
+                    except OSError:
+                        print('Error: Creating directory. ' + output_folder)
+                        exit(0)
+                    else:
+                        print("Successfully created the directory %s" % output_folder)
+                else:
+                    print("Directory %s already exists" % output_folder)
+                file_vendor = open(output_folder + "vendor_" + vendor + "_" + str(score) + "_" + str(date) + ".csv", "w")
+                writer_vendor = csv.writer(file_vendor, delimiter=",")
+                writer_vendor.writerow(["CPE", "Vendor", "CVE", "CVSSv3 Score", "CVSSv2 Score", "Published Date"])
+                for r in vendors:
+                    writer_vendor.writerow([r[0], r[1], r[2], r[3], r[4], r[5]])
+                file_vendor.close()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='CVEs Manager.')
     parser.add_argument('-p', '--parse', action="store_true", dest="process", default=False,
@@ -943,6 +1041,8 @@ if __name__ == '__main__':
                         help="List all the CVEs for the selected CPE(s)")
     parser.add_argument('-cwe', '--cwe', action="store", dest="cwe", default=None,
                         help="Provide info for the requested CWE)")
+    parser.add_argument('-v', '--vendor', action="store", dest="vendor", default=None,
+                        help="List all the CVEs for the selected vendor")
     parser.add_argument('-sc', '--score', action="store", dest="score", default=0.0,
                         help="Use base score of a CVE as a selection criterion")
     parser.add_argument('-dt', '--date', action="store", dest="date", default=False,
@@ -980,7 +1080,11 @@ if __name__ == '__main__':
         print("Importing CWE data")
         # cwe(values.user,values.password,values.host,values.database,values.icwe)
         cwe(values.user, values.host, values.database, values.icwe)
-    if values.cpe:
+    if values.vendor:
+        print("Vendor queries")
+        execute_query_vendor(values.user, values.host, values.database, values.vendor, str(values.score), values.date,
+                          values.csv_file, values.results)
+    elif values.cpe:
         print("CPE queries")
         # execute_query_cpe(values.user,values.password,values.host,values.database,values.cpe,str(values.score),values.date,values.csv_file,values.results)
         execute_query_cpe(values.user, values.host, values.database, values.cpe, str(values.score), values.date,

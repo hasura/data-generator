@@ -680,6 +680,14 @@
             "nullable": "nullable",
             "description": "Version identifier for the software component."
           },
+          "cpe23uri": {
+            "name": "cpe23uri",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Represents a logical relationship (but not always valid) to security.cpe.cpe23uri"
+          },
           "created_by_user_id": {
             "name": "created_by_user_id",
             "type": {
@@ -711,6 +719,14 @@
             },
             "nullable": "nullable",
             "description": "Namespace or module name within the component (if applicable)."
+          },
+          "normalized_vendor": {
+            "name": "normalized_vendor",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Extracted vendor from cpe23uri to support matching with CPEs."
           },
           "package_info": {
             "name": "package_info",
@@ -20945,7 +20961,7 @@
               "scalarType": "text"
             },
             "nullable": "nullable",
-            "description": "CPE 2.3 URI string."
+            "description": "CPE 2.3 URI string. This represents a regex match, where * means anything. To match this to a component's cpe23uri use regex-style matching."
           },
           "cve": {
             "name": "cve",
@@ -20954,6 +20970,14 @@
             },
             "nullable": "nullable",
             "description": "Common Vulnerabilities and Exposures identifier. Foreign key referencing cvss.cve."
+          },
+          "normalized_vendor": {
+            "name": "normalized_vendor",
+            "type": {
+              "scalarType": "varchar"
+            },
+            "nullable": "nullable",
+            "description": "Extracted vendor from cpe23uri to support matching with application components."
           },
           "vulnerable": {
             "name": "vulnerable",
@@ -28424,7 +28448,9 @@
               "DOTNET_ASSEMBLY",
               "DOCKER_IMAGE",
               "GRADLE_PLUGIN",
-              "MAVEN_PLUGIN"
+              "MAVEN_PLUGIN",
+              "HARDWARE_DEVICE",
+              "OPERATING_SYSTEM"
             ]
           }
         },

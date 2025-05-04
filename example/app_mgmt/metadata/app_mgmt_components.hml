@@ -22,6 +22,10 @@ definition:
     - name: component_version
       type: string
       description: Version identifier for the software component.
+    - name: cpe_23_uri
+      type: string
+      description: Represents a logical relationship (but not always valid) to
+        security.cpe.cpe23uri
     - name: created_by_user_id
       type: int_32
       description: Identifier of the employee who initially created the component record.
@@ -34,6 +38,9 @@ definition:
     - name: namespace_or_module
       type: string
       description: Namespace or module name within the component (if applicable).
+    - name: normalized_vendor
+      type: string
+      description: Extracted vendor from cpe23uri to support matching with CPEs.
     - name: package_info
       type: string
       description: Language-specific package information (e.g., Maven coordinates, npm
@@ -51,6 +58,49 @@ definition:
   dataConnectorTypeMapping:
     - dataConnectorName: app_mgmt
       dataConnectorObjectType: app_mgmt_components
+      fieldMapping:
+        app_mgmt_component_id:
+          column:
+            name: app_mgmt_component_id
+        app_mgmt_license_id:
+          column:
+            name: app_mgmt_license_id
+        component_name:
+          column:
+            name: component_name
+        component_type:
+          column:
+            name: component_type
+        component_version:
+          column:
+            name: component_version
+        cpe_23_uri:
+          column:
+            name: cpe23uri
+        created_by_user_id:
+          column:
+            name: created_by_user_id
+        description:
+          column:
+            name: description
+        modified_by_user_id:
+          column:
+            name: modified_by_user_id
+        namespace_or_module:
+          column:
+            name: namespace_or_module
+        normalized_vendor:
+          column:
+            name: normalized_vendor
+        package_info:
+          column:
+            name: package_info
+        repository_url:
+          column:
+            name: repository_url
+        vendor:
+          column:
+            name: vendor
 
 ---
 kind: TypePermissions
@@ -66,10 +116,12 @@ definition:
           - component_name
           - component_type
           - component_version
+          - cpe_23_uri
           - created_by_user_id
           - description
           - modified_by_user_id
           - namespace_or_module
+          - normalized_vendor
           - package_info
           - repository_url
           - vendor
@@ -93,6 +145,8 @@ definition:
           booleanExpressionType: app_mgmt_component_types_bool_exp
         - fieldName: component_version
           booleanExpressionType: varchar_bool_exp
+        - fieldName: cpe_23_uri
+          booleanExpressionType: varchar_bool_exp
         - fieldName: created_by_user_id
           booleanExpressionType: int_4_bool_exp
         - fieldName: description
@@ -100,6 +154,8 @@ definition:
         - fieldName: modified_by_user_id
           booleanExpressionType: int_4_bool_exp
         - fieldName: namespace_or_module
+          booleanExpressionType: varchar_bool_exp
+        - fieldName: normalized_vendor
           booleanExpressionType: varchar_bool_exp
         - fieldName: package_info
           booleanExpressionType: text_bool_exp
@@ -138,6 +194,8 @@ definition:
           aggregateExpression: app_mgmt_component_types_agg_exp
         - fieldName: component_version
           aggregateExpression: varchar_agg_exp
+        - fieldName: cpe_23_uri
+          aggregateExpression: varchar_agg_exp
         - fieldName: created_by_user_id
           aggregateExpression: int_4_agg_exp
         - fieldName: description
@@ -145,6 +203,8 @@ definition:
         - fieldName: modified_by_user_id
           aggregateExpression: int_4_agg_exp
         - fieldName: namespace_or_module
+          aggregateExpression: varchar_agg_exp
+        - fieldName: normalized_vendor
           aggregateExpression: varchar_agg_exp
         - fieldName: package_info
           aggregateExpression: text_agg_exp
@@ -176,6 +236,8 @@ definition:
           orderByExpression: enum_order_by_exp
         - fieldName: component_version
           orderByExpression: string_order_by_exp
+        - fieldName: cpe_23_uri
+          orderByExpression: string_order_by_exp
         - fieldName: created_by_user_id
           orderByExpression: int_32_order_by_exp
         - fieldName: description
@@ -183,6 +245,8 @@ definition:
         - fieldName: modified_by_user_id
           orderByExpression: int_32_order_by_exp
         - fieldName: namespace_or_module
+          orderByExpression: string_order_by_exp
+        - fieldName: normalized_vendor
           orderByExpression: string_order_by_exp
         - fieldName: package_info
           orderByExpression: string_order_by_exp

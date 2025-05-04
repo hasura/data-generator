@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import random
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 
 def generate_random_validation_run(id_fields: Dict[str, Any], dg: Any = None) -> Dict[str, Any]:
@@ -49,7 +49,7 @@ def generate_random_validation_run(id_fields: Dict[str, Any], dg: Any = None) ->
 
     # Instead of hardcoded roles, fetch roles from security system if connection available
     # Otherwise fall back to sample roles
-    roles: List[str | None] = []
+    roles: List[Optional[str]] = []
     if conn:
         cursor = conn.cursor()
         try:

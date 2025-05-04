@@ -21,15 +21,17 @@ class ComponentType(BaseEnum):
     HARDWARE_DEVICE = auto()
 
     _DEFAULT_WEIGHTS = [
-        20.0,  # JAVA_LIBRARY
-        15.0,  # NPM_PACKAGE
+        18.0,  # JAVA_LIBRARY
+        14.0,  # NPM_PACKAGE
         10.0,  # NUGET_PACKAGE
         12.0,  # PYTHON_MODULE
-        5.0,   # RUBY_GEM
+        5.0,  # RUBY_GEM
         10.0,  # FRAMEWORK
-        15.0,  # API
-        8.0,   # DOTNET_ASSEMBLY
-        12.0,  # DOCKER_IMAGE
-        6.0,   # GRADLE_PLUGIN
-        7.0    # MAVEN_PLUGIN
+        12.0,  # API
+        8.0,  # DOTNET_ASSEMBLY
+        11.0,  # DOCKER_IMAGE
+        5.0,  # GRADLE_PLUGIN
+        6.0,  # MAVEN_PLUGIN
+        15.0,  # OPERATING_SYSTEM
+        10.0  # HARDWARE_DEVICE
     ]
