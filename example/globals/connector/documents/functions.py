@@ -27,7 +27,7 @@ tracer = get_tracer("ndc-sdk-python.server") # You only need a tracer if you pla
 async def search_documents(
         search_for: str,
         limit: Optional[int] = Field(description="An integer specifying the maximum number of search results to return. Defaults to 10.", default=None),
-        min_score: Optional[float] = Field(default=None, description="Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.")) -> List[SearchResult]:
+        min_score: Optional[float] = Field(default=None, description="Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.")) -> List[ElementElement]:
     """
     This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
     and returns the type of elements, the content of those elements and a preview of its related items.
@@ -43,7 +43,7 @@ async def search_documents(
     min_score = min_score or 0
 
     def work(_span, work_response):
-        return search_with_content(search_for, limit, min_score = min_score)
+        return search_by_text(search_for, limit, min_score = min_score)
 
     return await with_active_span(
         tracer,
