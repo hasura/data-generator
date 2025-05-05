@@ -14,8 +14,9 @@ from opentelemetry.trace import get_tracer # If you aren't planning on adding ad
 from hasura_ndc.function_connector import FunctionConnector
 from pydantic import BaseModel, Field # You only need this import if you plan to have complex inputs/outputs, which function similar to how frameworks like FastAPI do
 from typing import Annotated, List, Optional
-from doculyzer.search import search_with_content, SearchResult
+from doculyzer.search import search_with_content, SearchResult, search_by_text
 from doculyzer import ingest_documents
+from doculyzer.storage import ElementElement
 
 connector = FunctionConnector()
 
