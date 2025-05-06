@@ -14,9 +14,9 @@ from opentelemetry.trace import get_tracer # If you aren't planning on adding ad
 from hasura_ndc.function_connector import FunctionConnector
 from pydantic import BaseModel, Field # You only need this import if you plan to have complex inputs/outputs, which function similar to how frameworks like FastAPI do
 from typing import Annotated, List, Optional
-from doculyzer.search import search_with_content, SearchResult, search_by_text
+from doculyzer.search import search_with_content, SearchResult, search_by_text, SearchResults
 from doculyzer import ingest_documents
-from doculyzer.storage import ElementElement
+
 
 connector = FunctionConnector()
 
@@ -27,7 +27,7 @@ tracer = get_tracer("ndc-sdk-python.server") # You only need a tracer if you pla
 async def search_documents(
         search_for: str,
         limit: Optional[int] = Field(description="An integer specifying the maximum number of search results to return. Defaults to 10.", default=None),
-        min_score: Optional[float] = Field(default=None, description="Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.")) -> List[ElementElement]:
+        min_score: Optional[float] = Field(default=None, description="Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.")) -> SearchResults:
     """
     This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
     and returns the type of elements, the content of those elements and a preview of its related items.

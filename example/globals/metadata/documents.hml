@@ -47,136 +47,54 @@ definition:
           comparison_operators: {}
       object_types:
         search_documents:
-          description: Pydantic model for storing search result data in a flat structure with relationships.
+          description: Pydantic model for search results collection.
           fields:
-            content_location:
+            documents:
+              type:
+                element_type:
+                  name: String
+                  type: named
+                type: array
+            filter_criteria:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Json
+                  type: named
+            min_score:
+              type:
+                name: Float
+                type: named
+            query:
               type:
                 type: nullable
                 underlying_type:
                   name: String
                   type: named
-            content_preview:
+            results:
               type:
-                type: nullable
-                underlying_type:
-                  name: String
+                element_type:
+                  name: search_documents_results
                   type: named
-            doc_id:
+                type: array
+            search_type:
               type:
                 name: String
                 type: named
-            doc_type:
+            total_results:
               type:
-                name: String
+                name: Int
                 type: named
-            element_id:
-              type:
-                name: String
-                type: named
+        search_documents_results:
+          description: Pydantic model for a single search result item.
+          fields:
             element_pk:
               type:
                 name: Int
                 type: named
-            element_type:
-              type:
-                name: String
-                type: named
-            outgoing_relationships:
-              type:
-                element_type:
-                  name: search_documents_outgoing_relationships
-                  type: named
-                type: array
-            resolution_error:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-            resolved_content:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-            resolved_text:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
             similarity:
               type:
                 name: Float
-                type: named
-            source:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-        search_documents_outgoing_relationships:
-          description: "\n    Class for representing relationships between elements.\n    Designed to avoid name collisions with SQLAlchemy's Relationship class.\n    Enriched with PK values for both source and target elements.\n    "
-          fields:
-            doc_id:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-            is_source:
-              type:
-                name: Boolean
-                type: named
-            metadata:
-              type:
-                name: Json
-                type: named
-            relationship_id:
-              type:
-                name: String
-                type: named
-            relationship_type:
-              type:
-                name: String
-                type: named
-            source_element_pk:
-              type:
-                type: nullable
-                underlying_type:
-                  name: Int
-                  type: named
-            source_element_type:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-            source_id:
-              type:
-                name: String
-                type: named
-            target_content_preview:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-            target_element_pk:
-              type:
-                type: nullable
-                underlying_type:
-                  name: Int
-                  type: named
-            target_element_type:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-            target_reference:
-              type:
-                name: String
                 type: named
       collections: []
       functions:
@@ -211,10 +129,8 @@ definition:
                 name: String
                 type: named
           result_type:
-            element_type:
-              name: search_documents
-              type: named
-            type: array
+            name: search_documents
+            type: named
       procedures:
         - name: update_documents
           description: |-
