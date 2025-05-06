@@ -47,55 +47,55 @@ definition:
           comparison_operators: {}
       object_types:
         search_documents:
-          description: Pydantic model for search results collection.
           fields:
-            documents:
-              type:
-                element_type:
-                  name: String
-                  type: named
-                type: array
-            filter_criteria:
-              type:
-                type: nullable
-                underlying_type:
-                  name: Json
-                  type: named
-            min_score:
-              type:
-                name: Float
-                type: named
-            query:
-              type:
-                type: nullable
-                underlying_type:
-                  name: String
-                  type: named
-            results:
-              type:
-                element_type:
-                  name: search_documents_results
-                  type: named
-                type: array
-            search_type:
+            content_hash:
               type:
                 name: String
                 type: named
-            total_results:
+            content_location:
               type:
-                name: Int
+                name: String
                 type: named
-        search_documents_results:
-          description: Pydantic model for a single search result item.
-          fields:
+            content_preview:
+              type:
+                name: String
+                type: named
+            doc_id:
+              type:
+                name: String
+                type: named
+            element_id:
+              type:
+                name: String
+                type: named
             element_pk:
               type:
                 name: Int
                 type: named
-            similarity:
+            element_type:
               type:
-                name: Float
+                name: String
                 type: named
+            metadata:
+              type:
+                name: String
+                type: named
+            parent_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            path:
+              type:
+                name: String
+                type: named
+            score:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
       collections: []
       functions:
         - name: search_documents
@@ -129,8 +129,10 @@ definition:
                 name: String
                 type: named
           result_type:
-            name: search_documents
-            type: named
+            element_type:
+              name: search_documents
+              type: named
+            type: array
       procedures:
         - name: update_documents
           description: |-

@@ -4,38 +4,29 @@ FROM ghcr.io/hasura/ndc-python-lambda:v0.2.0
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libmagic-dev \
-    file \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Copy the requirements.txt to the container
-COPY requirements.txt /functions/
+    file && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /functions
 
-# Install Python dependencies in a virtual environment
+# Copy the requirements.txt and install Python dependencies
+COPY requirements.txt /functions/
 RUN python3 -m venv venv && \
     . venv/bin/activate && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Install python-magic via pip
-RUN . venv/bin/activate && \
-    pip install python-magic
-
-# Install the wheel package
-RUN . venv/bin/activate && \
-    pip install doculyzer
+    pip install --no-cache-dir -r requirements.txt && \
+    # Install additional Python dependencies in the same layer
+    pip install --no-cache-dir python-magic doculyzer
 
 # Copy the rest of the application code
 COPY ./ /functions
 
-# Create the group and user
-RUN adduser -u 1000 python
-
-# Fix ownership of files for non-root usage
-RUN chown -R python:python /functions
+# Create a user and adjust permissions in a single layer
+RUN adduser -u 1000 python && \
+    chown -R python:python /functions
 
 # Switch to the non-root python user
 USER python
 
-#CMD ["venv/bin/python", "startup.py", "--log-level", "DEBUG"]
+# Uncomment the command when ready to run
+# CMD ["venv/bin/python", "startup.py", "--log-level", "DEBUG"]

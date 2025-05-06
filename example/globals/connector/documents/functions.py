@@ -7,16 +7,20 @@ When you add a Python Lambda connector to your Hasura project, this file is gene
 In this file you'll find code examples that will help you get up to speed with the usage of the Hasura lambda connector.
 If you are an old pro and already know what is going on you can get rid of these example functions and start writing your own code.
 """
-from doculyzer import search_with_content
-from hasura_ndc import start
-from hasura_ndc.instrumentation import with_active_span # If you aren't planning on adding additional tracing spans, you don't need this!
-from opentelemetry.trace import get_tracer # If you aren't planning on adding additional tracing spans, you don't need this either!
-from hasura_ndc.function_connector import FunctionConnector
-from pydantic import BaseModel, Field # You only need this import if you plan to have complex inputs/outputs, which function similar to how frameworks like FastAPI do
-from typing import Annotated, List, Optional
-from doculyzer.search import search_with_content, SearchResult, search_by_text, SearchResults
-from doculyzer import ingest_documents
+from typing import List, Optional
 
+from hasura_ndc import start
+from hasura_ndc.function_connector import FunctionConnector
+from hasura_ndc.instrumentation import \
+    with_active_span  # If you aren't planning on adding additional tracing spans, you don't need this!
+from opentelemetry.trace import \
+    get_tracer  # If you aren't planning on adding additional tracing spans, you don't need this either!
+from pydantic import \
+    Field  # You only need this import if you plan to have complex inputs/outputs, which function similar to how frameworks like FastAPI do
+
+from doculyzer import ingest_documents
+from doculyzer.search import search_by_text
+from doculyzer.storage import flatten_hierarchy, ElementFlat
 
 connector = FunctionConnector()
 
@@ -27,7 +31,7 @@ tracer = get_tracer("ndc-sdk-python.server") # You only need a tracer if you pla
 async def search_documents(
         search_for: str,
         limit: Optional[int] = Field(description="An integer specifying the maximum number of search results to return. Defaults to 10.", default=None),
-        min_score: Optional[float] = Field(default=None, description="Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.")) -> SearchResults:
+        min_score: Optional[float] = Field(default=None, description="Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.")) -> List[ElementFlat]:
     """
     This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
     and returns the type of elements, the content of those elements and a preview of its related items.
@@ -42,8 +46,10 @@ async def search_documents(
     limit = limit or 10
     min_score = min_score or 0
 
-    def work(_span, work_response):
-        return search_by_text(search_for, limit, min_score = min_score)
+    def work(_span, work_response) -> List[ElementFlat]:
+        result = search_by_text(search_for, limit, min_score = min_score)
+        flat_result = flatten_hierarchy(result.search_tree)
+        return flat_result
 
     return await with_active_span(
         tracer,
@@ -53,7 +59,6 @@ async def search_documents(
 
 
 import threading
-import time
 
 
 @connector.register_mutation
