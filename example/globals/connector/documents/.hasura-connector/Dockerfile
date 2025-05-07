@@ -2,10 +2,6 @@ FROM ghcr.io/hasura/ndc-python-lambda:v0.2.0
 
 # Install system dependencies for python-magic
 USER root
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libmagic-dev \
-    file \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements.txt to the container
 COPY requirements.txt /functions/
