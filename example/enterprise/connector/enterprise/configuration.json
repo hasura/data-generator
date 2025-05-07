@@ -15404,6 +15404,232 @@
         "foreignRelations": {},
         "description": "Represents a single execution instance of a data quality validation run, including metadata and links to errors found. This can be roughly connected to an API call as a validation should occur within less than 2 seconds prior to an api call. It can also be roughly connected to an API version by comparing normalized query fields AND if not conclusive then the active period of the API version AND if that is not conclusive then a semantic analysis of source identifier and the API name, major and minor version."
       },
+      "documents": {
+        "schemaName": "public",
+        "tableName": "documents",
+        "columns": {
+          "content_hash": {
+            "name": "content_hash",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "float8"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "doc_id": {
+            "name": "doc_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "doc_type": {
+            "name": "doc_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "metadata": {
+            "name": "metadata",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "source": {
+            "name": "source",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "updated_at": {
+            "name": "updated_at",
+            "type": {
+              "scalarType": "float8"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "documents_pkey": [
+            "doc_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "elements": {
+        "schemaName": "public",
+        "tableName": "elements",
+        "columns": {
+          "content_hash": {
+            "name": "content_hash",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "content_location": {
+            "name": "content_location",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "content_preview": {
+            "name": "content_preview",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "doc_id": {
+            "name": "doc_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "element_id": {
+            "name": "element_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "element_pk": {
+            "name": "element_pk",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "element_type": {
+            "name": "element_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "metadata": {
+            "name": "metadata",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "parent_id": {
+            "name": "parent_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "elements_element_id_key": [
+            "element_id"
+          ],
+          "elements_pkey": [
+            "element_pk"
+          ]
+        },
+        "foreignRelations": {
+          "elements_doc_id_fkey": {
+            "foreignSchema": "public",
+            "foreignTable": "documents",
+            "columnMapping": {
+              "doc_id": "doc_id"
+            }
+          },
+          "elements_parent_id_fkey": {
+            "foreignSchema": "public",
+            "foreignTable": "elements",
+            "columnMapping": {
+              "parent_id": "element_id"
+            }
+          }
+        },
+        "description": null
+      },
+      "embeddings": {
+        "schemaName": "public",
+        "tableName": "embeddings",
+        "columns": {
+          "created_at": {
+            "name": "created_at",
+            "type": {
+              "scalarType": "float8"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "dimensions": {
+            "name": "dimensions",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "element_pk": {
+            "name": "element_pk",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "embedding": {
+            "name": "embedding",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "embeddings_pkey": [
+            "element_pk"
+          ]
+        },
+        "foreignRelations": {
+          "embeddings_element_pk_fkey": {
+            "foreignSchema": "public",
+            "foreignTable": "elements",
+            "columnMapping": {
+              "element_pk": "element_pk"
+            }
+          }
+        },
+        "description": null
+      },
       "enterprise_account_ownership": {
         "schemaName": "enterprise",
         "tableName": "account_ownership",
@@ -20826,6 +21052,113 @@
           }
         },
         "description": "Manages ongoing servicing of closed mortgage loans"
+      },
+      "processing_history": {
+        "schemaName": "public",
+        "tableName": "processing_history",
+        "columns": {
+          "content_hash": {
+            "name": "content_hash",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "last_modified": {
+            "name": "last_modified",
+            "type": {
+              "scalarType": "float8"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "processing_count": {
+            "name": "processing_count",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "source_id": {
+            "name": "source_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "processing_history_pkey": [
+            "source_id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "relationships": {
+        "schemaName": "public",
+        "tableName": "relationships",
+        "columns": {
+          "metadata": {
+            "name": "metadata",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "relationship_id": {
+            "name": "relationship_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "relationship_type": {
+            "name": "relationship_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "source_id": {
+            "name": "source_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "target_reference": {
+            "name": "target_reference",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "relationships_pkey": [
+            "relationship_id"
+          ]
+        },
+        "foreignRelations": {
+          "relationships_source_id_fkey": {
+            "foreignSchema": "public",
+            "foreignTable": "elements",
+            "columnMapping": {
+              "source_id": "element_id"
+            }
+          }
+        },
+        "description": null
       },
       "security_accounts": {
         "schemaName": "security",
@@ -39129,6 +39462,75 @@
               "operatorKind": "custom",
               "argumentType": "interval",
               "isInfix": true
+            }
+          },
+          "typeRepresentation": null
+        },
+        "jsonb": {
+          "typeName": "jsonb",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {},
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": true
+            },
+            "jsonb_contained": {
+              "operatorName": "jsonb_contained",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": false
+            },
+            "jsonb_contains": {
+              "operatorName": "jsonb_contains",
+              "operatorKind": "custom",
+              "argumentType": "jsonb",
+              "isInfix": false
+            },
+            "jsonb_exists": {
+              "operatorName": "jsonb_exists",
+              "operatorKind": "custom",
+              "argumentType": "text",
+              "isInfix": false
             }
           },
           "typeRepresentation": null
