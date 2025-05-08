@@ -1,0 +1,28 @@
+---
+kind: Command
+version: v1
+definition:
+  name: update_documents
+  outputType: Boolean!
+  source:
+    dataConnectorName: documents
+    dataConnectorCommand:
+      procedure: update_documents
+  graphql:
+    rootFieldName: update_documents
+    rootFieldKind: Mutation
+  description: >-
+    Starts a document ingestion process on another thread.
+        Returns immediately with success if the ingestion process starts successfully.
+
+        :return: A boolean indicating whether the ingestion process was started successfully.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: update_documents
+  permissions:
+    - role: admin
+      allowExecution: true
+

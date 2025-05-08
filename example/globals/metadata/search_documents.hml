@@ -1,0 +1,101 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: search_documents
+  fields:
+    - name: content_hash
+      type: String!
+    - name: content_location
+      type: String!
+    - name: content_preview
+      type: String!
+    - name: doc_id
+      type: String!
+    - name: element_id
+      type: String!
+    - name: element_pk
+      type: Int!
+    - name: element_type
+      type: String!
+    - name: metadata
+      type: String!
+    - name: parent_id
+      type: String
+    - name: path
+      type: String!
+    - name: score
+      type: Float
+  graphql:
+    typeName: search_documents
+    inputTypeName: search_documents_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: documents
+      dataConnectorObjectType: search_documents
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: search_documents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - content_hash
+          - content_location
+          - content_preview
+          - doc_id
+          - element_id
+          - element_pk
+          - element_type
+          - metadata
+          - parent_id
+          - path
+          - score
+
+---
+kind: Command
+version: v1
+definition:
+  name: search_documents
+  outputType: "[search_documents!]!"
+  arguments:
+    - name: limit
+      type: Int
+      description: An integer specifying the maximum number of search results to
+        return. Defaults to 10.
+    - name: min_score
+      type: Float
+      description: Min similarity score to consider a match. 0 is neutral. 1 is
+        perfect match. -1 is no match. Defaults to 0.
+    - name: search_for
+      type: String!
+  source:
+    dataConnectorName: documents
+    dataConnectorCommand:
+      function: search_documents
+  graphql:
+    rootFieldName: search_documents
+    rootFieldKind: Query
+  description: >-
+    This performs a similarity search to identify individual elements (like
+    paragraphs, list items, or tables) in a document
+        and returns the type of elements, the content of those elements and a preview of its related items.
+        Items may be related structurally, like parent, child, sibling, explicitly like a link (if the document type
+        supports that), and semantically, like a similar word or phrase.
+
+        :param min_score: Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match.
+        :param search_for: A string representing the query text to search for in the documents.
+        :param limit: An integer specifying the maximum number of search results to return. Defaults to 10.
+        :return: A SearchResults object containing the search results matching the query.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: search_documents
+  permissions:
+    - role: admin
+      allowExecution: true
+
