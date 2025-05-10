@@ -4,6 +4,8 @@ version: v1
 definition:
   name: search_documents
   fields:
+    - name: content
+      type: String
     - name: content_hash
       type: String!
     - name: content_location
@@ -26,6 +28,8 @@ definition:
       type: String!
     - name: score
       type: Float
+    - name: text
+      type: String
   graphql:
     typeName: search_documents
     inputTypeName: search_documents_input
@@ -42,6 +46,7 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - content
           - content_hash
           - content_location
           - content_preview
@@ -53,6 +58,7 @@ definition:
           - parent_id
           - path
           - score
+          - text
 
 ---
 kind: Command
@@ -73,6 +79,12 @@ definition:
       type: Float
       description: Min similarity score to consider a match. 0 is neutral. 1 is
         perfect match. -1 is no match. Defaults to 0.
+    - name: resolve_content
+      type: Boolean
+      description: Whether to include the fully resolved element content. Defaults to False.
+    - name: resolve_text
+      type: Boolean
+      description: Whether to include the fully resolved text content. Defaults to False.
     - name: search_for
       type: String!
   source:

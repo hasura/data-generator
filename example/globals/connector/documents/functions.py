@@ -79,6 +79,7 @@ async def search_documents(
             _span.set_attribute("error", str(e))
 
         end_time_2 = time.perf_counter()
+
         _span.set_attribute("search_time", end_time_1 - start_time_1)
         _span.set_attribute("flatten_time", end_time_2 - start_time_2)
 
