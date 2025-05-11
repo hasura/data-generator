@@ -1,0 +1,189 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: documents
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: GLOBALS_DOCUMENTS_READ_URL
+      write:
+        valueFromEnv: GLOBALS_DOCUMENTS_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: GLOBALS_DOCUMENTS_AUTHORIZATION_HEADER
+  schema:
+    version: v0.1
+    schema:
+      scalar_types:
+        Boolean:
+          representation:
+            type: boolean
+          aggregate_functions: {}
+          comparison_operators: {}
+        Float:
+          representation:
+            type: float64
+          aggregate_functions: {}
+          comparison_operators: {}
+        HeaderMap:
+          representation:
+            type: json
+          aggregate_functions: {}
+          comparison_operators: {}
+        Int:
+          representation:
+            type: integer
+          aggregate_functions: {}
+          comparison_operators: {}
+        Json:
+          representation:
+            type: json
+          aggregate_functions: {}
+          comparison_operators: {}
+        String:
+          representation:
+            type: string
+          aggregate_functions: {}
+          comparison_operators: {}
+      object_types:
+        search_documents:
+          fields:
+            content:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            content_hash:
+              type:
+                name: String
+                type: named
+            content_location:
+              type:
+                name: String
+                type: named
+            content_preview:
+              type:
+                name: String
+                type: named
+            doc_id:
+              type:
+                name: String
+                type: named
+            element_id:
+              type:
+                name: String
+                type: named
+            element_pk:
+              type:
+                name: Int
+                type: named
+            element_type:
+              type:
+                name: String
+                type: named
+            metadata:
+              type:
+                name: String
+                type: named
+            parent_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            path:
+              type:
+                name: String
+                type: named
+            score:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            text:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+      collections: []
+      functions:
+        - name: search_documents
+          description: |-
+            This performs a similarity search to identify individual elements (like paragraphs, list items, or tables) in a document
+                and returns the type of elements, the content of those elements and a preview of its related items.
+                Items may be related structurally, like parent, child, sibling, explicitly like a link (if the document type
+                supports that), and semantically, like a similar word or phrase.
+
+                :param include_parents: Whether to include parent elements in the search results. Defaults to False.
+                :param min_score: Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match.
+                :param search_for: A string representing the query text to search for in the documents.
+                :param limit: An integer specifying the maximum number of search results to return. Defaults to 10.
+                :return: A SearchResults object containing the search results matching the query.
+          arguments:
+            include_parents:
+              description: Whether to include parent elements in the search results. Defaults to False.
+              type:
+                type: nullable
+                underlying_type:
+                  name: Boolean
+                  type: named
+            limit:
+              description: An integer specifying the maximum number of search results to return. Defaults to 10.
+              type:
+                type: nullable
+                underlying_type:
+                  name: Int
+                  type: named
+            min_score:
+              description: Min similarity score to consider a match. 0 is neutral. 1 is perfect match. -1 is no match. Defaults to 0.
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            resolve_content:
+              description: Whether to include the fully resolved element content. Defaults to False.
+              type:
+                type: nullable
+                underlying_type:
+                  name: Boolean
+                  type: named
+            resolve_text:
+              description: Whether to include the fully resolved text content. Defaults to False.
+              type:
+                type: nullable
+                underlying_type:
+                  name: Boolean
+                  type: named
+            search_for:
+              type:
+                name: String
+                type: named
+          result_type:
+            element_type:
+              name: search_documents
+              type: named
+            type: array
+      procedures:
+        - name: update_documents
+          description: |-
+            Starts a document ingestion process on another thread.
+                Returns immediately with success if the ingestion process starts successfully.
+
+                :return: A boolean indicating whether the ingestion process was started successfully.
+          arguments: {}
+          result_type:
+            name: Boolean
+            type: named
+    capabilities:
+      version: 0.1.6
+      capabilities:
+        query:
+          aggregates: {}
+          variables: {}
+          explain: {}
+        mutation:
+          transactional: {}

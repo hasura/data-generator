@@ -56,7 +56,6 @@ async def search_documents(
     :return: A SearchResults object containing the search results matching the query.
     """
     async def work(_search_for, _limit, _min_score, _include_parents, _resolve_text, _resolve_content) -> List[ElementFlat]:
-
         _span = get_current_span()
 
         # Set defaults
@@ -86,13 +85,12 @@ async def search_documents(
         payload = {
             'query': _search_for,
             'limit': _limit,
-            'include_parents': _include_parents,
             'min_score': _min_score,
             'text': _resolve_text,
-            'content': _resolve_content,
-            'flat': True
+            'content': _resolve_content
         }
 
+        start_time_1 = time.perf_counter()
 
         try:
             # Make HTTP request to the search server
@@ -109,14 +107,58 @@ async def search_documents(
 
                     response_data = await response.json()
 
-                    _span.set_attribute("result_count", len(response_data.get('search_tree')))
-
         except Exception as e:
             _span.set_attribute("error", str(e))
             _span.set_attribute("search_error", "HTTP request failed")
             raise Exception(f"Failed to search documents: {str(e)}")
 
-        return response_data.get('search_tree')
+        end_time_1 = time.perf_counter()
+
+        # Process the response to create ElementFlat objects
+        start_time_2 = time.perf_counter()
+
+        try:
+            # Convert the response to ElementFlat objects
+            flat_result = []
+
+            # The server returns basic search results, so we need to construct the tree structure
+            # For now, we'll create a simple list of ElementFlat objects
+            for item in response_data.get('results', []):
+                element_flat = ElementFlat(
+                    element_pk=item.get('element_pk'),
+                    score=item.get('similarity'),  # Using similarity as score
+                    element_id=item.get('element_id', ''),
+                    element_type=item.get('element_type', ''),
+                    content_preview=item.get('content_preview', ''),
+                    doc_id=item.get('doc_id', ''),
+                    content_location=None,  # Would need to get this from server if needed
+                    text=item.get('text') if _resolve_text else None,
+                    content=item.get('content') if _resolve_content else None,
+                    parent_element=item.get('parent_element'),
+                    path=item.get('path'),
+                    content_hash=item.get('content_hash'),
+                    metadata=item.get('metadata', {})
+                )
+                flat_result.append(element_flat)
+
+            # Filter based on include_parents if needed
+            if not _include_parents:
+                # Only keep results where score is not None (direct matches)
+                flat_result = [r for r in flat_result if r.score is not None and r.score >= _min_score]
+
+        except Exception as e:
+            _span.set_attribute("error", str(e))
+            _span.set_attribute("processing_error", "Failed to process search results")
+            # Fall back to empty result
+            flat_result = []
+
+        end_time_2 = time.perf_counter()
+
+        _span.set_attribute("search_time", end_time_1 - start_time_1)
+        _span.set_attribute("flatten_time", end_time_2 - start_time_2)
+        _span.set_attribute("result_count", len(flat_result))
+
+        return flat_result
 
     return await with_active_span(
         tracer,
@@ -128,6 +170,36 @@ async def search_documents(
             "min_score": str(min_score),
             "include_parents": str(include_parents),
         })
+
+
+import threading
+
+
+@connector.register_mutation
+async def update_documents() -> bool:
+    """
+    Starts a document ingestion process on another thread.
+    Returns immediately with success if the ingestion process starts successfully.
+
+    :return: A boolean indicating whether the ingestion process was started successfully.
+    """
+
+    def work(_span, _):
+        # Start the ingestion task in a new thread
+        thread = threading.Thread(target=ingest_documents, daemon=True)
+        thread.start()
+
+        # Record that we've started the thread
+        _span.set_attribute("thread.started", True)
+
+        # Return true immediately to indicate successful start
+        return True
+
+    return await with_active_span(
+        tracer,
+        "Trigger Document Ingestion",
+        lambda span: work(span, None),
+        {})
 
 if __name__ == "__main__":
     start(connector)
