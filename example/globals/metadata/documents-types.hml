@@ -38,3 +38,41 @@ definition:
   graphql:
     comparisonExpressionTypeName: string_comparison_exp
 
+---
+kind: ScalarType
+version: v1
+definition:
+  name: json
+  graphql:
+    typeName: json
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: json_bool_exp
+  operand:
+    scalar:
+      type: json
+      comparisonOperators: []
+      dataConnectorOperatorMapping:
+        - dataConnectorName: documents
+          dataConnectorScalarType: Json
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: json_bool_exp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: documents
+  dataConnectorScalarType: Json
+  representation: json
+  graphql:
+    comparisonExpressionTypeName: json_comparison_exp
+
