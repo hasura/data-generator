@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: search_documents
+  name: search_document_detail
   fields:
     - name: content
       type: String
@@ -65,17 +65,17 @@ definition:
       description: Complete text content of the matching element when resolve_text is
         true. Provides full context of the match without structural formatting.
   graphql:
-    typeName: search_documents
-    inputTypeName: search_documents_input
+    typeName: search_document_detail
+    inputTypeName: search_document_detail_input
   dataConnectorTypeMapping:
     - dataConnectorName: documents
-      dataConnectorObjectType: search_documents
+      dataConnectorObjectType: search_document_detail
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: search_documents
+  typeName: search_document_detail
   permissions:
     - role: admin
       output:
@@ -99,14 +99,17 @@ definition:
 kind: Command
 version: v1
 definition:
-  name: search_documents
-  outputType: "[search_documents!]!"
+  name: search_document_detail
+  outputType: "[search_document_detail!]!"
   arguments:
     - name: include_parents
       type: Boolean
       description: Include containing elements (e.g., sections containing matching
         paragraphs) to provide fuller context. Parent elements help understand
         where matches fit in the document structure. Defaults to False.
+    - name: just_documents
+      type: Boolean
+      description: Include only the top level documents for the search.
     - name: limit
       type: Int
       description: Maximum results to return. Higher limits find more matches but may
@@ -133,9 +136,9 @@ definition:
   source:
     dataConnectorName: documents
     dataConnectorCommand:
-      function: search_documents
+      function: search_document_detail
   graphql:
-    rootFieldName: search_documents
+    rootFieldName: search_document_detail
     rootFieldKind: Query
   description: >-
     This performs semantic similarity search to find relevant content across
@@ -170,6 +173,8 @@ definition:
             to provide fuller context. Useful when matching content is part of a larger relevant section. Defaults to False.
         :param limit: Maximum number of results to return. Higher limits find more matches but may include less relevant content.
             Defaults to 10.
+        :param just_documents: If True, returns only the highest scoring element per document, with path and content_location
+            updated to match the top-level document. Useful for document-level searches.
 
         Returns:
         A SearchResults object containing matching elements with:
@@ -189,7 +194,7 @@ definition:
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: search_documents
+  commandName: search_document_detail
   permissions:
     - role: admin
       allowExecution: true

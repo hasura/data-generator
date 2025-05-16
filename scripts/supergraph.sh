@@ -56,6 +56,7 @@ usage() {
 # --- Initialize variables ---
 PG_CONNECTION_URI=""
 SUBGRAPH_LIST_CSV="" # Will store value from -s if provided
+SOURCE_METADATA_DIR="./scripts/cross_schema_relationships"
 
 # --- Initialize Optional Variables with Defaults ---
 PROJECT_NAME_ARG="fsi" # Default project name
@@ -365,8 +366,8 @@ for subgraph_name in "${requested_subgraphs_ordered[@]}"; do
                     subgraphB="${base_name#*__}"
 
                     # Check if the current subgraph is the FIRST part of the filename
-                    # AND the SECOND part was requested.
-                    if [[ "$subgraphA" == "$subgraph_name" && -v requested_subgraph_set["$subgraphB"] ]]; then
+                    # AND the SECOND part was requested OR it is "globals"
+                    if [[ "$subgraphA" == "$subgraph_name" && ( -v requested_subgraph_set["$subgraphB"] || "$subgraphB" == "globals" ) ]]; then
                          # We know subgraphA (current subgraph_name) was processed successfully because we are inside this if block.
                          dest_dir="${subgraph_name}/metadata/"
                          mkdir -p "$dest_dir" # Ensure metadata dir exists

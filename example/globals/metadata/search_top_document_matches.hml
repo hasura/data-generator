@@ -1,0 +1,161 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: search_top_document_matches
+  fields:
+    - name: content
+      type: String
+      description: Complete structured content of the matching element when
+        resolve_content is true. Preserves document-specific formatting and
+        structure.
+    - name: content_hash
+      type: String
+      description: Hash identifier of the element's content. Useful for tracking
+        content changes, versioning, or deduplication.
+    - name: content_location
+      type: json
+      description: Location details of the content within its document, such as page
+        numbers, sections, or coordinates. Format varies by document type.
+    - name: content_preview
+      type: String!
+      description: Abbreviated preview of the matching content, suitable for display.
+        May be truncated for large elements. Use text field for complete
+        content.
+    - name: doc_id
+      type: String!
+      description: Unique identifier of the document containing this match. Use to
+        locate or reference source documents.
+    - name: element_id
+      type: String!
+      description: Unique identifier of the specific matching element within its
+        document. Used for element-level referencing and relationships.
+    - name: element_pk
+      type: Int!
+      description: Primary key of the element in the document store. Used for direct
+        element retrieval and unique identification.
+    - name: element_type
+      type: String!
+      description: Type of document element (e.g., section, paragraph, table, list)
+        indicating the structural context of the match. Helps understand content
+        organization.
+    - name: metadata
+      type: json!
+      description: Additional document or element metadata key-value pairs. May
+        include custom attributes, tags, or system-specific information.
+    - name: parent_id
+      type: String
+      description: Identifier of the element's parent when include_parents is true.
+        Used to understand containment relationships and document hierarchy.
+    - name: path
+      type: String
+      description: Full path showing element's location in document hierarchy. Format
+        depends on document type. Useful for understanding context and
+        navigation.
+    - name: score
+      type: Float
+      description: Semantic similarity score (-1 to 1) indicating how closely the
+        content matches conceptually. Higher scores mean more relevant matches.
+    - name: source
+      type: String
+      description: Origin or system source of the document. Useful for tracking
+        document provenance and filtering results by system.
+    - name: text
+      type: String
+      description: Complete text content of the matching element when resolve_text is
+        true. Provides full context of the match without structural formatting.
+  graphql:
+    typeName: search_top_document_matches
+    inputTypeName: search_top_document_matches_input
+  dataConnectorTypeMapping:
+    - dataConnectorName: documents
+      dataConnectorObjectType: search_top_document_matches
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: search_top_document_matches
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - content
+          - content_hash
+          - content_location
+          - content_preview
+          - doc_id
+          - element_id
+          - element_pk
+          - element_type
+          - metadata
+          - parent_id
+          - path
+          - score
+          - source
+          - text
+
+---
+kind: Command
+version: v1
+definition:
+  name: search_top_document_matches
+  outputType: "[search_top_document_matches!]!"
+  arguments:
+    - name: limit
+      type: Int
+      description: Maximum results to return. Higher limits find more matches but may
+        include less relevant content. Consider balancing with min_score to
+        maintain relevance quality. Defaults to 10.
+    - name: min_score
+      type: Float
+      description: "Semantic similarity threshold (-1 to 1). Higher values ensure
+        closer conceptual matches: 0.7+ for exact concepts, 0.5+ for closely
+        related, 0.3+ for broadly related, 0.1+ for exploratory searches.
+        Defaults to 0."
+    - name: resolve_content
+      type: Boolean
+      description: Include complete structured content of matching elements. Useful
+        when document structure (like XML or JSON) contains important context
+        beyond plain text. Defaults to False.
+    - name: resolve_text
+      type: Boolean
+      description: Include complete text content of matching elements. Always defaults
+        to True for this query to provide full context of the best matches.
+    - name: search_for
+      type: String!
+  source:
+    dataConnectorName: documents
+    dataConnectorCommand:
+      function: search_top_document_matches
+  graphql:
+    rootFieldName: search_top_document_matches
+    rootFieldKind: Query
+  description: >-
+    This function performs a document-level semantic search, returning the best
+    matching element from each document.
+
+        It always sets just_documents=True and calls search_document_detail, which:
+        1. Searches at the document level
+        2. For each document, selects only the element with the highest score
+        3. Standardizes path and content_location to match the top-level document
+
+        This approach is useful when you want document-level results but with the most relevant content
+        from each document highlighted, while maintaining a document-oriented result structure.
+
+        Parameters are the same as search_document_detail except:
+        - just_documents is always set to True
+        - resolve_text defaults to True to provide the complete text of the best matches
+
+        Returns:
+        A list of ElementFlat objects representing the top matching element from each document.
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: search_top_document_matches
+  permissions:
+    - role: admin
+      allowExecution: true
+
