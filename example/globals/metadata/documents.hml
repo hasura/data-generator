@@ -330,6 +330,8 @@ definition:
                 - Matching technical documentation to user questions
 
                 Parameters:
+                :param include_topics:
+                :param exclude_topics:
                 :param resolve_text: This will provide the complete textual version of the matching element.
                 :param resolve_content: This will provide the complete content (meaning any structural decorators or tags like formatting) of the matching element.
                 :param search_for: Natural language text to search with. Can be a question ("How do I dispute a charge?"),
@@ -362,6 +364,15 @@ definition:
                 - Related: Paragraph about international transfer costs (score: 0.65)
                 - Broader: Table of all service fees (score: 0.45)
           arguments:
+            exclude_topics:
+              description: A list of topics to include in the search. Excludes ANY document that matches ANY topic
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: String
+                    type: named
+                  type: array
             include_parents:
               description: Include containing elements (e.g., sections containing matching paragraphs) to provide fuller context. Parent elements help understand where matches fit in the document structure. Defaults to False.
               type:
@@ -369,6 +380,15 @@ definition:
                 underlying_type:
                   name: Boolean
                   type: named
+            include_topics:
+              description: A list of topics to include in the search. Includes ANY document that matches ANY topic
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: String
+                    type: named
+                  type: array
             just_documents:
               description: Include only the top level documents for the search.
               type:
@@ -432,6 +452,24 @@ definition:
                 Returns:
                 A list of ElementFlat objects representing the top matching element from each document.
           arguments:
+            exclude_topics:
+              description: A list of topics to include in the search. Excludes ANY document that matches ANY topic
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: String
+                    type: named
+                  type: array
+            include_topics:
+              description: A list of topics to include in the search. Includes ANY document that matches ANY topic
+              type:
+                type: nullable
+                underlying_type:
+                  element_type:
+                    name: String
+                    type: named
+                  type: array
             limit:
               description: Maximum results to return. Higher limits find more matches but may include less relevant content. Consider balancing with min_score to maintain relevance quality. Defaults to 10.
               type:
