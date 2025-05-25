@@ -251,6 +251,7 @@ async def search_document_detail(
                 search_tree = top_elements
 
             _span.set_attribute("result_count", len(search_tree))
+            _span.set_attributes(payload)
             return search_tree
 
         except Exception as e:
@@ -261,11 +262,13 @@ async def search_document_detail(
     return await with_active_span(
         tracer,
         "Search Documents",
-        lambda span: work(search_for, limit, min_score, include_parents, resolve_text, resolve_content, just_documents),
+        lambda span: work(_search_for=search_for, _limit=limit, _min_score=min_score, _include_parents=include_parents, _resolve_text=resolve_text, _resolve_content=resolve_content, _just_documents=just_documents),
         {
             "search_for": search_for,
             "limit": str(limit),
             "min_score": str(min_score),
+            "resolve_text": str(resolve_text),
+            "resolve_content": str(resolve_content),
             "include_parents": str(include_parents),
             "just_documents": str(just_documents),
         })
@@ -318,6 +321,11 @@ async def search_top_document_matches(
         limit=limit,
         min_score=min_score
     )
+
+@connector.register_query
+async def search_top_document_matches_with_defaults(search_for: str,) -> List[ElementFlat]:
+    return await search_top_document_matches(search_for=search_for, resolve_content=True, resolve_text=True, limit=10, min_score=0.3)
+
 
 if __name__ == "__main__":
     start(connector)

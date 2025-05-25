@@ -222,6 +222,94 @@ definition:
                 underlying_type:
                   name: String
                   type: named
+        search_top_document_matches_with_defaults:
+          fields:
+            content:
+              description: Complete structured content of the matching element when resolve_content is true. Preserves document-specific formatting and structure.
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            content_hash:
+              description: Hash identifier of the element's content. Useful for tracking content changes, versioning, or deduplication.
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            content_location:
+              description: Location details of the content within its document, such as page numbers, sections, or coordinates. Format varies by document type.
+              type:
+                type: nullable
+                underlying_type:
+                  name: Json
+                  type: named
+            content_preview:
+              description: Abbreviated preview of the matching content, suitable for display. May be truncated for large elements. Use text field for complete content.
+              type:
+                name: String
+                type: named
+            doc_id:
+              description: Unique identifier of the document containing this match. Use to locate or reference source documents.
+              type:
+                name: String
+                type: named
+            element_id:
+              description: Unique identifier of the specific matching element within its document. Used for element-level referencing and relationships.
+              type:
+                name: String
+                type: named
+            element_pk:
+              description: Primary key of the element in the document store. Used for direct element retrieval and unique identification.
+              type:
+                name: Int
+                type: named
+            element_type:
+              description: Type of document element (e.g., section, paragraph, table, list) indicating the structural context of the match. Helps understand content organization.
+              type:
+                name: String
+                type: named
+            metadata:
+              description: Additional document or element metadata key-value pairs. May include custom attributes, tags, or system-specific information.
+              type:
+                name: Json
+                type: named
+            parent_id:
+              description: Identifier of the element's parent when include_parents is true. Used to understand containment relationships and document hierarchy.
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            path:
+              description: Full path showing element's location in document hierarchy. Format depends on document type. Useful for understanding context and navigation.
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            score:
+              description: Semantic similarity score (-1 to 1) indicating how closely the content matches conceptually. Higher scores mean more relevant matches.
+              type:
+                type: nullable
+                underlying_type:
+                  name: Float
+                  type: named
+            source:
+              description: Origin or system source of the document. Useful for tracking document provenance and filtering results by system.
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            text:
+              description: Complete text content of the matching element when resolve_text is true. Provides full context of the match without structural formatting.
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
       collections: []
       functions:
         - name: search_document_detail
@@ -379,6 +467,17 @@ definition:
           result_type:
             element_type:
               name: search_top_document_matches
+              type: named
+            type: array
+        - name: search_top_document_matches_with_defaults
+          arguments:
+            search_for:
+              type:
+                name: String
+                type: named
+          result_type:
+            element_type:
+              name: search_top_document_matches_with_defaults
               type: named
             type: array
       procedures: []
