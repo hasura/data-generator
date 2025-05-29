@@ -119,7 +119,7 @@ async def search_document_detail(
         ),
         include_topics: Optional[List[str]] = Field(
         default=None,
-        description="A list of topics to include in the search. Includes ANY document that matches ANY topic"
+        description="A list of topics to include in the search. Includes ANY document that matches ANY topic. Uses a LIKE syntax where % matches any text. For example if the document topics included the source you might look for wikipedia articles setting this to: [\"%wikipedia%\"]"
         ),
         exclude_topics: Optional[List[str]] = Field(
         default=None,
@@ -144,8 +144,8 @@ async def search_document_detail(
     - Matching technical documentation to user questions
 
     Parameters:
-    :param include_topics:
-    :param exclude_topics:
+    :param include_topics: a list of topics to include in the search. Includes ANY document that matches ANY topic. Uses a LIKE syntax where % matches any text. For example if the document topics included the source you might look for wikipedia articles setting this to: ["%wikipedia%"]
+    :param exclude_topics: a list of topics to exclude from the search. Excludes ANY document that matches ANY topic.
     :param resolve_text: This will provide the complete textual version of the matching element.
     :param resolve_content: This will provide the complete content (meaning any structural decorators or tags like formatting) of the matching element.
     :param search_for: Natural language text to search with. Can be a question ("How do I dispute a charge?"),
@@ -199,6 +199,11 @@ async def search_document_detail(
 
         if not isinstance(_just_documents, bool):
             _just_documents = False
+
+        if not isinstance(_include_topics, list):
+            _include_topics = []
+        if not isinstance(_exclude_topics, list):
+            _exclude_topics = []
 
         # Prepare request headers
         headers = {
@@ -310,7 +315,7 @@ async def search_top_document_matches(
         ),
         include_topics: Optional[List[str]] = Field(
         default=None,
-        description="A list of topics to include in the search. Includes ANY document that matches ANY topic"
+        description="A list of topics to include in the search. Includes ANY document that matches ANY topic. Uses a LIKE syntax where % matches any text. For example if the document topics included the source you might look for wikipedia articles setting this to: [\"%wikipedia%\"]"
         ),
         exclude_topics: Optional[List[str]] = Field(
         default=None,
