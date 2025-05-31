@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: search_top_document_matches
+  name: search_simple_structured
   fields:
     - name: content
       type: String
@@ -65,17 +65,17 @@ definition:
       description: Complete text content of the matching element when resolve_text is
         true. Provides full context of the match without structural formatting.
   graphql:
-    typeName: search_top_document_matches
-    inputTypeName: search_top_document_matches_input
+    typeName: search_simple_structured
+    inputTypeName: search_simple_structured_input
   dataConnectorTypeMapping:
     - dataConnectorName: documents
-      dataConnectorObjectType: search_top_document_matches
+      dataConnectorObjectType: search_simple_structured
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: search_top_document_matches
+  typeName: search_simple_structured
   permissions:
     - role: admin
       output:
@@ -99,73 +99,91 @@ definition:
 kind: Command
 version: v1
 definition:
-  name: search_top_document_matches
-  outputType: "[search_top_document_matches!]!"
+  name: search_simple_structured
+  outputType: "[search_simple_structured!]!"
   arguments:
-    - name: limit
+    - name: days_back
       type: Int
-      description: Maximum results to return. Higher limits find more matches but may
-        include less relevant content. Consider balancing with min_score to
-        maintain relevance quality. Defaults to 10.
-    - name: min_score
-      type: Float
-      description: "Semantic similarity threshold (-1 to 1). Higher values ensure
-        closer conceptual matches: 0.7+ for exact concepts, 0.5+ for closely
-        related, 0.3+ for broadly related, 0.1+ for exploratory searches.
-        Defaults to 0."
-    - name: resolve_content
-      type: Boolean
-      description: Include complete structured content of matching elements. Useful
-        when document structure (like XML or JSON) contains important context
-        beyond plain text. Defaults to False.
-    - name: resolve_text
-      type: Boolean
-      description: Include complete text content of matching elements. Always defaults
-        to True for this query to provide full context of the best matches.
-    - name: search_for
-      type: String!
-      description: Natural language text to search with. Can be a question,
-        description, or topic. The search uses semantic similarity, so exact
-        word matches aren't needed.
+      description: "Filter to documents from last N days. Example: 30 for last month"
+    - name: element_types
+      type: "[String!]"
+      description: "Filter by element types. Example: ['paragraph', 'header', 'list_item']"
     - name: exclude_topics
       type: "[String!]"
-      description: A list of topics to include in the search. Excludes ANY document
-        that matches ANY topic
+      description: "Topic patterns to exclude (supports % wildcards). Example:
+        ['deprecated%', 'draft%']"
+    - name: flat
+      type: Boolean
+      description: Whether to return flat results instead of hierarchical
+    - name: include_parents
+      type: Boolean
+      description: Whether to include parent elements in flat results
     - name: include_topics
       type: "[String!]"
-      description: A list of topics to include in the search. Includes ANY document
-        that matches ANY topic
+      description: "Topic patterns to include (supports % wildcards). Example: ['ai%',
+        'machine-learning%']"
+    - name: limit
+      type: Int
+      description: Maximum number of results to return
+    - name: query_text
+      type: String!
+      description: Natural language search query (required)
+    - name: resolve_content
+      type: Boolean
+      description: Whether to resolve raw content in search tree
+    - name: resolve_text
+      type: Boolean
+      description: Whether to resolve text content in search tree
+    - name: similarity_threshold
+      type: Float
+      description: Minimum similarity score threshold (0.0-1.0)
   source:
     dataConnectorName: documents
     dataConnectorCommand:
-      function: search_top_document_matches
+      function: search_simple_structured
   graphql:
-    rootFieldName: search_top_document_matches
+    rootFieldName: search_simple_structured
     rootFieldKind: Query
   description: >-
-    This function performs a document-level semantic search, returning the best
-    matching element from each document.
+    Simplified structured search interface for common search patterns.
 
-        It always sets just_documents=True and calls search_document_detail, which:
-        1. Searches at the document level
-        2. For each document, selects only the element with the highest score
-        3. Standardizes path and content_location to match the top-level document
+        This function provides an easy-to-use interface for structured search without requiring
+        you to construct complex criteria group objects. It automatically builds structured
+        queries from common parameters like topic filtering, date ranges, and element types.
 
-        This approach is useful when you want document-level results but with the most relevant content
-        from each document highlighted, while maintaining a document-oriented result structure.
+        Common use cases:
+        - Search for "machine learning" in documents with AI topics from the last 30 days
+        - Find "security policies" excluding deprecated content
+        - Locate "customer support" procedures in paragraph elements only
+        - Search recent documentation (last 60 days) about "API integration"
 
-        Parameters are the same as search_document_detail except:
-        - just_documents is always set to True
-        - resolve_text defaults to True to provide the complete text of the best matches
+        The function combines semantic text search with optional filters:
+        - Topic filtering: Include/exclude documents based on topic classifications
+        - Date filtering: Limit to documents from recent time periods
+        - Element filtering: Focus on specific document element types
+        - Content materialization: Optionally resolve full text/content with document hierarchy
+
+        Parameters:
+        :param query_text: Natural language search query (required)
+        :param limit: Maximum results to return (default: 10)
+        :param similarity_threshold: Minimum semantic similarity score 0.0-1.0 (default: 0.7)
+        :param include_topics: Topic patterns to include, supports wildcards (optional)
+        :param exclude_topics: Topic patterns to exclude, supports wildcards (optional)
+        :param days_back: Filter to documents from last N days (optional)
+        :param element_types: Filter by document element types (optional)
+        :param resolve_text: Whether to materialize text content (default: False)
+        :param resolve_content: Whether to materialize raw content (default: False)
+        :param flat: Whether to return flat vs hierarchical results (default: False)
+        :param include_parents: Whether to include parent elements in flat results (default: True)
 
         Returns:
-        A list of ElementFlat objects representing the top matching element from each document.
+        List of ElementFlat objects representing search results with optional materialized content.
 
 ---
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: search_top_document_matches
+  commandName: search_simple_structured
   permissions:
     - role: admin
       allowExecution: true

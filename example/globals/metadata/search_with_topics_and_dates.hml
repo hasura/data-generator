@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: search_top_document_matches_with_defaults
+  name: search_with_topics_and_dates
   fields:
     - name: content
       type: String
@@ -65,17 +65,17 @@ definition:
       description: Complete text content of the matching element when resolve_text is
         true. Provides full context of the match without structural formatting.
   graphql:
-    typeName: search_top_document_matches_with_defaults
-    inputTypeName: search_top_document_matches_with_defaults_input
+    typeName: search_with_topics_and_dates
+    inputTypeName: search_with_topics_and_dates_input
   dataConnectorTypeMapping:
     - dataConnectorName: documents
-      dataConnectorObjectType: search_top_document_matches_with_defaults
+      dataConnectorObjectType: search_with_topics_and_dates
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: search_top_document_matches_with_defaults
+  typeName: search_with_topics_and_dates
   permissions:
     - role: admin
       output:
@@ -99,26 +99,50 @@ definition:
 kind: Command
 version: v1
 definition:
-  name: search_top_document_matches_with_defaults
-  outputType: "[search_top_document_matches_with_defaults!]!"
+  name: search_with_topics_and_dates
+  outputType: "[search_with_topics_and_dates!]!"
   arguments:
-    - name: search_for
+    - name: days_back
+      type: Int!
+      description: "Filter to documents from last N days (required). Example: 30 for
+        last month"
+    - name: exclude_topics
+      type: "[String!]"
+      description: "Topic patterns to exclude. Example: ['deprecated%', 'draft%']"
+    - name: include_topics
+      type: "[String!]!"
+      description: "Topic patterns to include (required). Example: ['ai%',
+        'machine-learning%']"
+    - name: limit
+      type: Int
+      description: Maximum number of results to return
+    - name: query_text
       type: String!
-      description: "Natural language text to search with. Uses default settings:
-        resolve_content=True, resolve_text=True, limit=10, min_score=0.3"
+      description: Natural language search query (required)
+    - name: resolve_text
+      type: Boolean
+      description: Whether to resolve text content in search tree
+    - name: similarity_threshold
+      type: Float
+      description: Minimum similarity score threshold (0.0-1.0)
   source:
     dataConnectorName: documents
     dataConnectorCommand:
-      function: search_top_document_matches_with_defaults
+      function: search_with_topics_and_dates
   graphql:
-    rootFieldName: search_top_document_matches_with_defaults
+    rootFieldName: search_with_topics_and_dates
     rootFieldKind: Query
+  description: >-
+    Convenience function for searching with topic and date filtering.
+
+        Common pattern for finding recent documents on specific topics.
+        Equivalent to simple structured search but with required topic and date filters.
 
 ---
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: search_top_document_matches_with_defaults
+  commandName: search_with_topics_and_dates
   permissions:
     - role: admin
       allowExecution: true

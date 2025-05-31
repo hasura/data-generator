@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: search_top_document_matches_with_defaults
+  name: search_recent_by_topics
   fields:
     - name: content
       type: String
@@ -65,17 +65,17 @@ definition:
       description: Complete text content of the matching element when resolve_text is
         true. Provides full context of the match without structural formatting.
   graphql:
-    typeName: search_top_document_matches_with_defaults
-    inputTypeName: search_top_document_matches_with_defaults_input
+    typeName: search_recent_by_topics
+    inputTypeName: search_recent_by_topics_input
   dataConnectorTypeMapping:
     - dataConnectorName: documents
-      dataConnectorObjectType: search_top_document_matches_with_defaults
+      dataConnectorObjectType: search_recent_by_topics
 
 ---
 kind: TypePermissions
 version: v1
 definition:
-  typeName: search_top_document_matches_with_defaults
+  typeName: search_recent_by_topics
   permissions:
     - role: admin
       output:
@@ -99,26 +99,43 @@ definition:
 kind: Command
 version: v1
 definition:
-  name: search_top_document_matches_with_defaults
-  outputType: "[search_top_document_matches_with_defaults!]!"
+  name: search_recent_by_topics
+  outputType: "[search_recent_by_topics!]!"
   arguments:
-    - name: search_for
-      type: String!
-      description: "Natural language text to search with. Uses default settings:
-        resolve_content=True, resolve_text=True, limit=10, min_score=0.3"
+    - name: days_back
+      type: Int!
+      description: Filter to documents from last N days
+    - name: exclude_topics
+      type: "[String!]"
+      description: "Topic patterns to exclude. Example: ['deprecated%', 'draft%']"
+    - name: include_topics
+      type: "[String!]!"
+      description: "Topic patterns to include (required). Example: ['ai%',
+        'machine-learning%']"
+    - name: limit
+      type: Int
+      description: Maximum number of results to return
+    - name: min_confidence
+      type: Float
+      description: Minimum confidence threshold for topic results (0.0-1.0)
   source:
     dataConnectorName: documents
     dataConnectorCommand:
-      function: search_top_document_matches_with_defaults
+      function: search_recent_by_topics
   graphql:
-    rootFieldName: search_top_document_matches_with_defaults
+    rootFieldName: search_recent_by_topics
     rootFieldKind: Query
+  description: >-
+    Topic-only search for recent documents without text query.
+
+        Useful for browsing recent content by category or discovering new documents
+        in specific topic areas.
 
 ---
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: search_top_document_matches_with_defaults
+  commandName: search_recent_by_topics
   permissions:
     - role: admin
       allowExecution: true
